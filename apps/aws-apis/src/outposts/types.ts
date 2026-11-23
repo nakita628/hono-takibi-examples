@@ -1,9 +1,4 @@
 type CancelOrderOutput = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
-type AccessDeniedException = { [x: string]: unknown }
-type NotFoundException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type LineItemRequest = { CatalogItemId?: {} | undefined; Quantity?: {} | undefined }
 type CreateOrderOutput = {
   Order?:
@@ -20,7 +15,6 @@ type CreateOrderOutput = {
       }
     | undefined
 }
-type ServiceQuotaExceededException = { [x: string]: unknown }
 type TagValue = string
 type OwnerId = string
 type OutpostArn = string
@@ -194,3327 +188,668 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/orders/:OrderId/cancel': {
-      $post:
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CancelOrderOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { OrderId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: CancelOrderOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/orders': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: CreateOrderOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            OutpostIdentifier: string
+            LineItems: LineItemRequest[]
+            PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
+            PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                OutpostIdentifier: string
-                LineItems: LineItemRequest[]
-                PaymentOption: 'ALL_UPFRONT' | 'NO_UPFRONT' | 'PARTIAL_UPFRONT'
-                PaymentTerm?: 'THREE_YEARS' | 'ONE_YEAR' | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: CreateOrderOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/outposts': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: CreateOutpostOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            Name: string
+            Description?: string | undefined
+            SiteId: string
+            AvailabilityZone?: string | undefined
+            AvailabilityZoneId?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
+            SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateOutpostOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            LifeCycleStatusFilter?: LifeCycleStatus[] | undefined
+            AvailabilityZoneFilter?: AvailabilityZone[] | undefined
+            AvailabilityZoneIdFilter?: AvailabilityZoneId[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                SiteId: string
-                AvailabilityZone?: string | undefined
-                AvailabilityZoneId?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LifeCycleStatusFilter?: LifeCycleStatus[] | undefined
-                AvailabilityZoneFilter?: AvailabilityZone[] | undefined
-                AvailabilityZoneIdFilter?: AvailabilityZoneId[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListOutpostsOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LifeCycleStatusFilter?: LifeCycleStatus[] | undefined
-                AvailabilityZoneFilter?: AvailabilityZone[] | undefined
-                AvailabilityZoneIdFilter?: AvailabilityZoneId[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LifeCycleStatusFilter?: LifeCycleStatus[] | undefined
-                AvailabilityZoneFilter?: AvailabilityZone[] | undefined
-                AvailabilityZoneIdFilter?: AvailabilityZoneId[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LifeCycleStatusFilter?: LifeCycleStatus[] | undefined
-                AvailabilityZoneFilter?: AvailabilityZone[] | undefined
-                AvailabilityZoneIdFilter?: AvailabilityZoneId[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListOutpostsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/sites': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: CreateSiteOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            Name: string
+            Description?: string | undefined
+            Notes?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
+            OperatingAddress?:
+              | {
+                  ContactName?: {} | undefined
+                  ContactPhoneNumber?: {} | undefined
+                  AddressLine1?: {} | undefined
+                  AddressLine2?: {} | undefined
+                  AddressLine3?: {} | undefined
+                  City?: {} | undefined
+                  StateOrRegion?: {} | undefined
+                  DistrictOrCounty?: {} | undefined
+                  PostalCode?: {} | undefined
+                  CountryCode?: {} | undefined
+                  Municipality?: {} | undefined
+                }
+              | undefined
+            ShippingAddress?:
+              | {
+                  ContactName?: {} | undefined
+                  ContactPhoneNumber?: {} | undefined
+                  AddressLine1?: {} | undefined
+                  AddressLine2?: {} | undefined
+                  AddressLine3?: {} | undefined
+                  City?: {} | undefined
+                  StateOrRegion?: {} | undefined
+                  DistrictOrCounty?: {} | undefined
+                  PostalCode?: {} | undefined
+                  CountryCode?: {} | undefined
+                  Municipality?: {} | undefined
+                }
+              | undefined
+            RackPhysicalProperties?:
+              | {
+                  PowerDrawKva?: {} | undefined
+                  PowerPhase?: {} | undefined
+                  PowerConnector?: {} | undefined
+                  PowerFeedDrop?: {} | undefined
+                  UplinkGbps?: {} | undefined
+                  UplinkCount?: {} | undefined
+                  FiberOpticCableType?: {} | undefined
+                  OpticalStandard?: {} | undefined
+                  MaximumSupportedWeightLbs?: {} | undefined
+                }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateSiteOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            OperatingAddressCountryCodeFilter?: CountryCode[] | undefined
+            OperatingAddressStateOrRegionFilter?: StateOrRegion[] | undefined
+            OperatingAddressCityFilter?: City[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name: string
-                Description?: string | undefined
-                Notes?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                OperatingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      ContactName?: {} | undefined
-                      ContactPhoneNumber?: {} | undefined
-                      AddressLine1?: {} | undefined
-                      AddressLine2?: {} | undefined
-                      AddressLine3?: {} | undefined
-                      City?: {} | undefined
-                      StateOrRegion?: {} | undefined
-                      DistrictOrCounty?: {} | undefined
-                      PostalCode?: {} | undefined
-                      CountryCode?: {} | undefined
-                      Municipality?: {} | undefined
-                    }
-                  | undefined
-                RackPhysicalProperties?:
-                  | {
-                      PowerDrawKva?: {} | undefined
-                      PowerPhase?: {} | undefined
-                      PowerConnector?: {} | undefined
-                      PowerFeedDrop?: {} | undefined
-                      UplinkGbps?: {} | undefined
-                      UplinkCount?: {} | undefined
-                      FiberOpticCableType?: {} | undefined
-                      OpticalStandard?: {} | undefined
-                      MaximumSupportedWeightLbs?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                OperatingAddressCountryCodeFilter?: CountryCode[] | undefined
-                OperatingAddressStateOrRegionFilter?: StateOrRegion[] | undefined
-                OperatingAddressCityFilter?: City[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListSitesOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                OperatingAddressCountryCodeFilter?: CountryCode[] | undefined
-                OperatingAddressStateOrRegionFilter?: StateOrRegion[] | undefined
-                OperatingAddressCityFilter?: City[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                OperatingAddressCountryCodeFilter?: CountryCode[] | undefined
-                OperatingAddressStateOrRegionFilter?: StateOrRegion[] | undefined
-                OperatingAddressCityFilter?: City[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                OperatingAddressCountryCodeFilter?: CountryCode[] | undefined
-                OperatingAddressStateOrRegionFilter?: StateOrRegion[] | undefined
-                OperatingAddressCityFilter?: City[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListSitesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/outposts/:OutpostId': {
-      $delete:
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteOutpostOutput
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { OutpostId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteOutpostOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { OutpostId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetOutpostOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { OutpostId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            Name?: string | undefined
+            Description?: string | undefined
+            SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetOutpostOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-      $patch:
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: UpdateOutpostOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                SupportedHardwareType?: 'RACK' | 'SERVER' | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateOutpostOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/sites/:SiteId': {
-      $delete:
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteSiteOutput
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { SiteId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteSiteOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { SiteId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetSiteOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { SiteId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            Name?: string | undefined
+            Description?: string | undefined
+            Notes?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSiteOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-      $patch:
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: UpdateSiteOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Name?: string | undefined
-                Description?: string | undefined
-                Notes?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateSiteOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/catalog/item/:CatalogItemId': {
-      $get:
-        | {
-            input: { param: { CatalogItemId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetCatalogItemOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { CatalogItemId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CatalogItemId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { CatalogItemId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { CatalogItemId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetCatalogItemOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/connections/:ConnectionId': {
-      $get:
-        | {
-            input: { param: { ConnectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ConnectionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ConnectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ConnectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ConnectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { ConnectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/orders/:OrderId': {
-      $get:
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetOrderOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { OrderId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OrderId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetOrderOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/outposts/:OutpostId/instanceTypes': {
-      $get:
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: { NextToken?: string | undefined; MaxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetOutpostInstanceTypesOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { OutpostId: string } } & {
+          query: { NextToken?: string | undefined; MaxResults?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: { NextToken?: string | undefined; MaxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: { NextToken?: string | undefined; MaxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: { NextToken?: string | undefined; MaxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: { NextToken?: string | undefined; MaxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetOutpostInstanceTypesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/sites/:SiteId/address#AddressType': {
-      $get:
-        | {
-            input: { param: { SiteId: string } } & {
-              query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSiteAddressOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { SiteId: string } } & {
+          query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              query: { AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetSiteAddressOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/outposts/:OutpostId/assets': {
-      $get:
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: {
-                HostIdFilter?: HostId[] | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-                StatusFilter?: AssetState[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListAssetsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { OutpostId: string } } & {
+          query: {
+            HostIdFilter?: HostId[] | undefined
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
+            StatusFilter?: AssetState[] | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: {
-                HostIdFilter?: HostId[] | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-                StatusFilter?: AssetState[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: {
-                HostIdFilter?: HostId[] | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-                StatusFilter?: AssetState[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: {
-                HostIdFilter?: HostId[] | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-                StatusFilter?: AssetState[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { OutpostId: string } } & {
-              query: {
-                HostIdFilter?: HostId[] | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-                StatusFilter?: AssetState[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListAssetsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/catalog/items': {
-      $get:
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                ItemClassFilter?: CatalogItemClass[] | undefined
-                SupportedStorageFilter?: SupportedStorageEnum[] | undefined
-                EC2FamilyFilter?: Family[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListCatalogItemsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            ItemClassFilter?: CatalogItemClass[] | undefined
+            SupportedStorageFilter?: SupportedStorageEnum[] | undefined
+            EC2FamilyFilter?: Family[] | undefined
           }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                ItemClassFilter?: CatalogItemClass[] | undefined
-                SupportedStorageFilter?: SupportedStorageEnum[] | undefined
-                EC2FamilyFilter?: Family[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                ItemClassFilter?: CatalogItemClass[] | undefined
-                SupportedStorageFilter?: SupportedStorageEnum[] | undefined
-                EC2FamilyFilter?: Family[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                ItemClassFilter?: CatalogItemClass[] | undefined
-                SupportedStorageFilter?: SupportedStorageEnum[] | undefined
-                EC2FamilyFilter?: Family[] | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListCatalogItemsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/list-orders': {
-      $get:
-        | {
-            input: {
-              query: {
-                OutpostIdentifierFilter?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListOrdersOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            OutpostIdentifierFilter?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: {
-                OutpostIdentifierFilter?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                OutpostIdentifierFilter?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                OutpostIdentifierFilter?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                OutpostIdentifierFilter?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListOrdersOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:ResourceArn': {
-      $get:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { Tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/connections': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeviceSerialNumber: string
-                AssetId: string
-                ClientPublicKey: string
-                NetworkInterfaceDeviceIndex: number
-              }
-            }
-            output: StartConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeviceSerialNumber: string
-                AssetId: string
-                ClientPublicKey: string
-                NetworkInterfaceDeviceIndex: number
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            DeviceSerialNumber: string
+            AssetId: string
+            ClientPublicKey: string
+            NetworkInterfaceDeviceIndex: number
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeviceSerialNumber: string
-                AssetId: string
-                ClientPublicKey: string
-                NetworkInterfaceDeviceIndex: number
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeviceSerialNumber: string
-                AssetId: string
-                ClientPublicKey: string
-                NetworkInterfaceDeviceIndex: number
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeviceSerialNumber: string
-                AssetId: string
-                ClientPublicKey: string
-                NetworkInterfaceDeviceIndex: number
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: StartConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:ResourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/sites/:SiteId/address': {
-      $put:
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
-            }
-            output: UpdateSiteAddressOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { SiteId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
+        } & {
+          json: {
+            AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
+            Address: {
+              ContactName?: {} | undefined
+              ContactPhoneNumber?: {} | undefined
+              AddressLine1?: {} | undefined
+              AddressLine2?: {} | undefined
+              AddressLine3?: {} | undefined
+              City?: {} | undefined
+              StateOrRegion?: {} | undefined
+              DistrictOrCounty?: {} | undefined
+              PostalCode?: {} | undefined
+              CountryCode?: {} | undefined
+              Municipality?: {} | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AddressType: 'SHIPPING_ADDRESS' | 'OPERATING_ADDRESS'
-                Address: {
-                  ContactName?: {} | undefined
-                  ContactPhoneNumber?: {} | undefined
-                  AddressLine1?: {} | undefined
-                  AddressLine2?: {} | undefined
-                  AddressLine3?: {} | undefined
-                  City?: {} | undefined
-                  StateOrRegion?: {} | undefined
-                  DistrictOrCounty?: {} | undefined
-                  PostalCode?: {} | undefined
-                  CountryCode?: {} | undefined
-                  Municipality?: {} | undefined
-                }
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateSiteAddressOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/sites/:SiteId/rackPhysicalProperties': {
-      $patch:
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: UpdateSiteRackPhysicalPropertiesOutput
-            outputFormat: 'json'
-            status: 200
+      $patch: {
+        input: { param: { SiteId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            PowerDrawKva?:
+              | 'POWER_5_KVA'
+              | 'POWER_10_KVA'
+              | 'POWER_15_KVA'
+              | 'POWER_30_KVA'
+              | undefined
+            PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
+            PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
+            PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
+            UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
+            UplinkCount?:
+              | 'UPLINK_COUNT_1'
+              | 'UPLINK_COUNT_2'
+              | 'UPLINK_COUNT_3'
+              | 'UPLINK_COUNT_4'
+              | 'UPLINK_COUNT_5'
+              | 'UPLINK_COUNT_6'
+              | 'UPLINK_COUNT_7'
+              | 'UPLINK_COUNT_8'
+              | 'UPLINK_COUNT_12'
+              | 'UPLINK_COUNT_16'
+              | undefined
+            FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
+            OpticalStandard?:
+              | 'OPTIC_10GBASE_SR'
+              | 'OPTIC_10GBASE_IR'
+              | 'OPTIC_10GBASE_LR'
+              | 'OPTIC_40GBASE_SR'
+              | 'OPTIC_40GBASE_ESR'
+              | 'OPTIC_40GBASE_IR4_LR4L'
+              | 'OPTIC_40GBASE_LR4'
+              | 'OPTIC_100GBASE_SR4'
+              | 'OPTIC_100GBASE_CWDM4'
+              | 'OPTIC_100GBASE_LR4'
+              | 'OPTIC_100G_PSM4_MSA'
+              | 'OPTIC_1000BASE_LX'
+              | 'OPTIC_1000BASE_SX'
+              | undefined
+            MaximumSupportedWeightLbs?:
+              | 'NO_LIMIT'
+              | 'MAX_1400_LBS'
+              | 'MAX_1600_LBS'
+              | 'MAX_1800_LBS'
+              | 'MAX_2000_LBS'
+              | undefined
           }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { SiteId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                PowerDrawKva?:
-                  | 'POWER_5_KVA'
-                  | 'POWER_10_KVA'
-                  | 'POWER_15_KVA'
-                  | 'POWER_30_KVA'
-                  | undefined
-                PowerPhase?: 'SINGLE_PHASE' | 'THREE_PHASE' | undefined
-                PowerConnector?: 'L6_30P' | 'IEC309' | 'AH530P7W' | 'AH532P6W' | undefined
-                PowerFeedDrop?: 'ABOVE_RACK' | 'BELOW_RACK' | undefined
-                UplinkGbps?: 'UPLINK_1G' | 'UPLINK_10G' | 'UPLINK_40G' | 'UPLINK_100G' | undefined
-                UplinkCount?:
-                  | 'UPLINK_COUNT_1'
-                  | 'UPLINK_COUNT_2'
-                  | 'UPLINK_COUNT_3'
-                  | 'UPLINK_COUNT_4'
-                  | 'UPLINK_COUNT_5'
-                  | 'UPLINK_COUNT_6'
-                  | 'UPLINK_COUNT_7'
-                  | 'UPLINK_COUNT_8'
-                  | 'UPLINK_COUNT_12'
-                  | 'UPLINK_COUNT_16'
-                  | undefined
-                FiberOpticCableType?: 'SINGLE_MODE' | 'MULTI_MODE' | undefined
-                OpticalStandard?:
-                  | 'OPTIC_10GBASE_SR'
-                  | 'OPTIC_10GBASE_IR'
-                  | 'OPTIC_10GBASE_LR'
-                  | 'OPTIC_40GBASE_SR'
-                  | 'OPTIC_40GBASE_ESR'
-                  | 'OPTIC_40GBASE_IR4_LR4L'
-                  | 'OPTIC_40GBASE_LR4'
-                  | 'OPTIC_100GBASE_SR4'
-                  | 'OPTIC_100GBASE_CWDM4'
-                  | 'OPTIC_100GBASE_LR4'
-                  | 'OPTIC_100G_PSM4_MSA'
-                  | 'OPTIC_1000BASE_LX'
-                  | 'OPTIC_1000BASE_SX'
-                  | undefined
-                MaximumSupportedWeightLbs?:
-                  | 'NO_LIMIT'
-                  | 'MAX_1400_LBS'
-                  | 'MAX_1600_LBS'
-                  | 'MAX_1800_LBS'
-                  | 'MAX_2000_LBS'
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateSiteRackPhysicalPropertiesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

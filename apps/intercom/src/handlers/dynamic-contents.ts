@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDynamicContentsIdRoute,
   getDynamicContentsIdRoute,
   getDynamicContentsRoute,
@@ -7,21 +7,32 @@ import {
   putDynamicContentsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDynamicContentsRouteHandler: RouteHandler<typeof getDynamicContentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dynamicContentsHandler = app
-  .openapi(getDynamicContentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDynamicContentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDynamicContentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDynamicContentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDynamicContentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDynamicContentsRouteHandler: RouteHandler<
+  typeof postDynamicContentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDynamicContentsIdRouteHandler: RouteHandler<
+  typeof getDynamicContentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDynamicContentsIdRouteHandler: RouteHandler<
+  typeof putDynamicContentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDynamicContentsIdRouteHandler: RouteHandler<
+  typeof deleteDynamicContentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

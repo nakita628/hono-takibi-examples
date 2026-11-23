@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListFailedIPNsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListFailedIPNsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listFailedIpNsHandler = app.openapi(postListFailedIPNsRoute, (c) => {
+export const postListFailedIPNsRouteHandler: RouteHandler<typeof postListFailedIPNsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPreviewCameraNameStartStartTsEndEndTsFramesRoute,
   getPreviewCameraNameStartStartTsEndEndTsRoute,
   getPreviewFileNameThumbnailJpgRoute,
@@ -7,21 +7,32 @@ import {
   getPreviewYearMonthDayHourCameraNameTzNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPreviewCameraNameStartStartTsEndEndTsRouteHandler: RouteHandler<
+  typeof getPreviewCameraNameStartStartTsEndEndTsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const previewHandler = app
-  .openapi(getPreviewCameraNameStartStartTsEndEndTsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPreviewYearMonthDayHourCameraNameTzNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPreviewCameraNameStartStartTsEndEndTsFramesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPreviewFileNameThumbnailWebpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPreviewFileNameThumbnailJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPreviewYearMonthDayHourCameraNameTzNameRouteHandler: RouteHandler<
+  typeof getPreviewYearMonthDayHourCameraNameTzNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPreviewCameraNameStartStartTsEndEndTsFramesRouteHandler: RouteHandler<
+  typeof getPreviewCameraNameStartStartTsEndEndTsFramesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPreviewFileNameThumbnailWebpRouteHandler: RouteHandler<
+  typeof getPreviewFileNameThumbnailWebpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPreviewFileNameThumbnailJpgRouteHandler: RouteHandler<
+  typeof getPreviewFileNameThumbnailJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

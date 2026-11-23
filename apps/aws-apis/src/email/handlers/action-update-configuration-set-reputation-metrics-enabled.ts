@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionUpdateConfigurationSetReputationMetricsEnabledRoute,
   postActionUpdateConfigurationSetReputationMetricsEnabledRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionUpdateConfigurationSetReputationMetricsEnabledRouteHandler: RouteHandler<
+  typeof getActionUpdateConfigurationSetReputationMetricsEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionUpdateConfigurationSetReputationMetricsEnabledHandler = app
-  .openapi(getActionUpdateConfigurationSetReputationMetricsEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionUpdateConfigurationSetReputationMetricsEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionUpdateConfigurationSetReputationMetricsEnabledRouteHandler: RouteHandler<
+  typeof postActionUpdateConfigurationSetReputationMetricsEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postOrganizationHealthResourceCollectionRoute,
   postOrganizationHealthRoute,
   postOrganizationInsightsRoute,
@@ -7,21 +7,32 @@ import {
   postOrganizationOverviewRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOrganizationHealthRouteHandler: RouteHandler<
+  typeof postOrganizationHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const organizationHandler = app
-  .openapi(postOrganizationHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationHealthResourceCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationInsightsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrganizationOverviewRouteHandler: RouteHandler<
+  typeof postOrganizationOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationHealthResourceCollectionRouteHandler: RouteHandler<
+  typeof postOrganizationHealthResourceCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationInsightsRouteHandler: RouteHandler<
+  typeof postOrganizationInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationInsightsSearchRouteHandler: RouteHandler<
+  typeof postOrganizationInsightsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

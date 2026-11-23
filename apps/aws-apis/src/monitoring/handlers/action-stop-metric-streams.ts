@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionStopMetricStreamsRoute, postActionStopMetricStreamsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionStopMetricStreamsRoute, postActionStopMetricStreamsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionStopMetricStreamsRouteHandler: RouteHandler<
+  typeof getActionStopMetricStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionStopMetricStreamsHandler = app
-  .openapi(getActionStopMetricStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionStopMetricStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionStopMetricStreamsRouteHandler: RouteHandler<
+  typeof postActionStopMetricStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

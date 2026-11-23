@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute,
   deleteVoiceConnectorsVoiceConnectorIdOriginationRoute,
   deleteVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute,
@@ -35,105 +35,200 @@ import {
   putVoiceConnectorsVoiceConnectorIdTerminationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVoiceConnectorsVoiceConnectorIdOperationAssociatePhoneNumbersRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdOperationAssociatePhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const voiceConnectorsHandler = app
-  .openapi(postVoiceConnectorsVoiceConnectorIdOperationAssociatePhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsVoiceConnectorIdProxySessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdProxySessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdOriginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdOriginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdOriginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVoiceConnectorsVoiceConnectorIdTerminationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdTerminationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdTerminationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsVoiceConnectorIdOperationDisassociatePhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdLoggingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceConnectorsVoiceConnectorIdLoggingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdTerminationHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceConnectorsVoiceConnectorIdTerminationCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationPutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVoiceConnectorsVoiceConnectorIdProxySessionsRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdProxySessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdProxySessionsRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdProxySessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceConnectorsRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsRouteHandler: RouteHandler<typeof getVoiceConnectorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdProxySessionsProxySessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdOriginationRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdOriginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdOriginationRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdOriginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdOriginationRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdOriginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdProgrammableNumbersProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdStreamingConfigurationRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdStreamingConfigurationRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdStreamingConfigurationRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVoiceConnectorsVoiceConnectorIdTerminationRouteHandler: RouteHandler<
+  typeof deleteVoiceConnectorsVoiceConnectorIdTerminationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdTerminationRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdTerminationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdTerminationRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdTerminationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationDeleteRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceConnectorsVoiceConnectorIdOperationDisassociatePhoneNumbersRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdOperationDisassociatePhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdLoggingConfigurationRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdLoggingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceConnectorsVoiceConnectorIdLoggingConfigurationRouteHandler: RouteHandler<
+  typeof putVoiceConnectorsVoiceConnectorIdLoggingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdTerminationHealthRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdTerminationHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceConnectorsVoiceConnectorIdTerminationCredentialsRouteHandler: RouteHandler<
+  typeof getVoiceConnectorsVoiceConnectorIdTerminationCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationPutRouteHandler: RouteHandler<
+  typeof postVoiceConnectorsVoiceConnectorIdTerminationCredentialsOperationPutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

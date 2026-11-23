@@ -11,7 +11,7 @@ export const postCallPhoneNumberAuthRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
 })
 
 export const getCheckForUpdateRoute = createRoute({
@@ -43,7 +43,7 @@ export const getCheckForUpdateRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful response', content: {} } },
+  responses: { 200: { description: 'successful response' } },
 })
 
 export const postCheckWaitlistStatusRoute = createRoute({
@@ -51,8 +51,8 @@ export const postCheckWaitlistStatusRoute = createRoute({
   path: '/check_waitlist_status',
   summary: 'checks waitlist status.',
   responses: {
-    200: { description: 'got waitlist status', content: {} },
-    401: { description: 'authorization not provided', content: {} },
+    200: { description: 'got waitlist status' },
+    401: { description: 'authorization not provided' },
   },
 })
 
@@ -72,7 +72,7 @@ export const postCompletePhoneNumberAuthRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
 })
 
 export const postCreateChannelRoute = createRoute({
@@ -110,7 +110,7 @@ export const postCreateChannelRoute = createRoute({
       },
     },
   },
-  responses: { 400: { description: 'waitlisted', content: {} } },
+  responses: { 400: { description: 'waitlisted' } },
 })
 
 export const postFollowRoute = createRoute({
@@ -127,28 +127,28 @@ export const postFollowRoute = createRoute({
       },
     },
   },
-  responses: { 401: { description: 'waitlisted', content: {} } },
+  responses: { 401: { description: 'waitlisted' } },
 })
 
 export const getGetActionableNotificationsRoute = createRoute({
   method: 'get',
   path: '/get_actionable_notifications',
   summary: 'get actionable notifications (the bell again)',
-  responses: { 200: { description: 'Returns a list of actionable notifications.', content: {} } },
+  responses: { 200: { description: 'Returns a list of actionable notifications.' } },
 })
 
 export const getGetAllTopicsRoute = createRoute({
   method: 'get',
   path: '/get_all_topics',
   summary: 'gets all topics.',
-  responses: { 200: { description: 'a list of topics', content: {} } },
+  responses: { 200: { description: 'a list of topics' } },
 })
 
 export const getGetChannelsRoute = createRoute({
   method: 'get',
   path: '/get_channels',
   summary: 'get all channels',
-  responses: { 200: { description: 'list of channels', content: {} } },
+  responses: { 200: { description: 'list of channels' } },
 })
 
 export const postGetClubRoute = createRoute({
@@ -165,7 +165,7 @@ export const postGetClubRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns club object', content: {} } },
+  responses: { 200: { description: 'returns club object' } },
 })
 
 export const postGetClubsForTopicRoute = createRoute({
@@ -182,7 +182,7 @@ export const postGetClubsForTopicRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns list of clubs with pagination', content: {} } },
+  responses: { 200: { description: 'returns list of clubs with pagination' } },
 })
 
 export const postGetCreateChannelTargetsRoute = createRoute({
@@ -192,7 +192,7 @@ export const postGetCreateChannelTargetsRoute = createRoute({
   request: {
     body: { content: { 'application/json': { schema: z.looseObject({}), example: {} } } },
   },
-  responses: { 400: { description: 'waitlisted', content: {} } },
+  responses: { 400: { description: 'waitlisted' } },
 })
 
 export const getGetEventsRoute = createRoute({
@@ -255,7 +255,7 @@ export const getGetEventsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'a list of events', content: {} } },
+  responses: { 200: { description: 'a list of events' } },
 })
 
 export const postGetFollowingRoute = createRoute({
@@ -273,7 +273,7 @@ export const postGetFollowingRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns list of users and clubs', content: {} } },
+  responses: { 200: { description: 'returns list of users and clubs' } },
 })
 
 export const getGetNotificationsRoute = createRoute({
@@ -324,7 +324,7 @@ export const getGetNotificationsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Returns a list of notifications.', content: {} } },
+  responses: { 200: { description: 'Returns a list of notifications.' } },
 })
 
 export const postGetOnlineFriendsRoute = createRoute({
@@ -341,7 +341,7 @@ export const postGetOnlineFriendsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'a list of online clubs and users.', content: {} } },
+  responses: { 200: { description: 'a list of online clubs and users.' } },
 })
 
 export const postGetProfileRoute = createRoute({
@@ -358,21 +358,21 @@ export const postGetProfileRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns user profile info', content: {} } },
+  responses: { 200: { description: 'returns user profile info' } },
 })
 
 export const postGetReleaseNotesRoute = createRoute({
   method: 'post',
   path: '/get_release_notes',
   summary: 'gets release notes.',
-  responses: { 200: { description: 'the response', content: {} } },
+  responses: { 200: { description: 'the response' } },
 })
 
 export const getGetSettingsRoute = createRoute({
   method: 'get',
   path: '/get_settings',
   summary: 'get notification settings',
-  responses: { 200: { description: 'notification settings', content: {} } },
+  responses: { 200: { description: 'notification settings' } },
 })
 
 export const postGetSuggestedClubInvitesRoute = createRoute({
@@ -396,7 +396,7 @@ export const postGetSuggestedClubInvitesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns list of suggested invites.', content: {} } },
+  responses: { 200: { description: 'returns list of suggested invites.' } },
 })
 
 export const getGetSuggestedFollowsAllRoute = createRoute({
@@ -459,9 +459,7 @@ export const getGetSuggestedFollowsAllRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'a list of users to follow. bios truncated to 80 chars.', content: {} },
-  },
+  responses: { 200: { description: 'a list of users to follow. bios truncated to 80 chars.' } },
 })
 
 export const postGetSuggestedFollowsFriendsOnlyRoute = createRoute({
@@ -480,7 +478,7 @@ export const postGetSuggestedFollowsFriendsOnlyRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns list of users and clubs', content: {} } },
+  responses: { 200: { description: 'returns list of users and clubs' } },
 })
 
 export const postGetSuggestedFollowsSimilarRoute = createRoute({
@@ -492,9 +490,7 @@ export const postGetSuggestedFollowsSimilarRoute = createRoute({
       content: { 'application/json': { schema: z.looseObject({}), example: { user_id: 4 } } },
     },
   },
-  responses: {
-    200: { description: 'Returns a list of users. Bios truncated to 80 chars.', content: {} },
-  },
+  responses: { 200: { description: 'Returns a list of users. Bios truncated to 80 chars.' } },
 })
 
 export const postGetSuggestedInvitesRoute = createRoute({
@@ -521,7 +517,7 @@ export const postGetSuggestedInvitesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns list of users that can be invited.', content: {} } },
+  responses: { 200: { description: 'returns list of users that can be invited.' } },
 })
 
 export const postGetSuggestedSpeakersRoute = createRoute({
@@ -538,7 +534,7 @@ export const postGetSuggestedSpeakersRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'Returns a list of actionable notifications.', content: {} } },
+  responses: { 200: { description: 'Returns a list of actionable notifications.' } },
 })
 
 export const postGetTopicRoute = createRoute({
@@ -555,7 +551,7 @@ export const postGetTopicRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'returns topic info', content: {} } },
+  responses: { 200: { description: 'returns topic info' } },
 })
 
 export const getGetUsersForTopicRoute = createRoute({
@@ -627,10 +623,7 @@ export const getGetUsersForTopicRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: 'returns list of users with pagination. Bios truncated to 80 chars.',
-      content: {},
-    },
+    200: { description: 'returns list of users with pagination. Bios truncated to 80 chars.' },
   },
 })
 
@@ -638,7 +631,7 @@ export const getGetWelcomeChannelRoute = createRoute({
   method: 'get',
   path: '/get_welcome_channel',
   summary: 'called during signup',
-  responses: { 200: { description: 'empty???', content: {} } },
+  responses: { 200: { description: 'empty???' } },
 })
 
 export const postInviteFromWaitlistRoute = createRoute({
@@ -656,10 +649,7 @@ export const postInviteFromWaitlistRoute = createRoute({
     },
   },
   responses: {
-    400: {
-      description: 'your own account is waitlisted, or some other error occurred',
-      content: {},
-    },
+    400: { description: 'your own account is waitlisted, or some other error occurred' },
   },
 })
 
@@ -681,9 +671,7 @@ export const postInviteToAppRoute = createRoute({
       },
     },
   },
-  responses: {
-    400: { description: "your own account doesn't have an invite either", content: {} },
-  },
+  responses: { 400: { description: "your own account doesn't have an invite either" } },
 })
 
 export const postJoinChannelRoute = createRoute({
@@ -710,8 +698,8 @@ export const postJoinChannelRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'stuff needed to actually join a channel', content: {} },
-    400: { description: 'cannot join', content: {} },
+    200: { description: 'stuff needed to actually join a channel' },
+    400: { description: 'cannot join' },
   },
 })
 
@@ -729,7 +717,7 @@ export const postLeaveChannelRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'left the channel', content: {} } },
+  responses: { 200: { description: 'left the channel' } },
 })
 
 export const postMeRoute = createRoute({
@@ -756,8 +744,8 @@ export const postMeRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'the response', content: {} },
-    403: { description: 'error response - happens if account is banned (is_blocked)', content: {} },
+    200: { description: 'the response' },
+    403: { description: 'error response - happens if account is banned (is_blocked)' },
   },
 })
 
@@ -783,7 +771,7 @@ export const postRecordActionTrailsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'always empty', content: {} } },
+  responses: { 200: { description: 'always empty' } },
 })
 
 export const postRefreshTokenRoute = createRoute({
@@ -801,8 +789,8 @@ export const postRefreshTokenRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'returns new access and refresh token', content: {} },
-    401: { description: 'invalid refresh token', content: {} },
+    200: { description: 'returns new access and refresh token' },
+    401: { description: 'invalid refresh token' },
   },
 })
 
@@ -817,7 +805,7 @@ export const postResendPhoneNumberAuthRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
 })
 
 export const postSearchClubsRoute = createRoute({
@@ -843,7 +831,7 @@ export const postSearchClubsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'Returns a list of clubs.', content: {} } },
+  responses: { 200: { description: 'Returns a list of clubs.' } },
 })
 
 export const postSearchUsersRoute = createRoute({
@@ -869,7 +857,7 @@ export const postSearchUsersRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'Returns a list of users.', content: {} } },
+  responses: { 200: { description: 'Returns a list of users.' } },
 })
 
 export const postStartPhoneNumberAuthRoute = createRoute({
@@ -886,7 +874,7 @@ export const postStartPhoneNumberAuthRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
 })
 
 export const postUpdateNotificationsRoute = createRoute({
@@ -914,7 +902,7 @@ export const postUpdateNotificationsRoute = createRoute({
       },
     },
   },
-  responses: { 400: { description: 'waitlisted', content: {} } },
+  responses: { 400: { description: 'waitlisted' } },
 })
 
 export const postUpdateUsernameRoute = createRoute({
@@ -932,7 +920,7 @@ export const postUpdateUsernameRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'username successfully set', content: {} },
-    400: { description: 'invalid/taken username (eg empty string)', content: {} },
+    200: { description: 'username successfully set' },
+    400: { description: 'invalid/taken username (eg empty string)' },
   },
 })

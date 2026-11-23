@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSubscriptionsEstimateRoute,
   getSubscriptionsItemsRoute,
   getSubscriptionsSubscriptionIdRoute,
@@ -12,36 +12,62 @@ import {
   putSubscriptionsSubscriptionIdUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSubscriptionsRouteHandler: RouteHandler<typeof postSubscriptionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const subscriptionsHandler = app
-  .openapi(postSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsSubscriptionIdConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsSubscriptionIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsEstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsSubscriptionIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsSubscriptionIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsSubscriptionIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSubscriptionsCreateRouteHandler: RouteHandler<
+  typeof postSubscriptionsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsSubscriptionIdConfirmRouteHandler: RouteHandler<
+  typeof postSubscriptionsSubscriptionIdConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsSubscriptionIdUpdateRouteHandler: RouteHandler<
+  typeof putSubscriptionsSubscriptionIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsItemsRouteHandler: RouteHandler<
+  typeof getSubscriptionsItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsEstimateRouteHandler: RouteHandler<
+  typeof getSubscriptionsEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsSubscriptionIdPauseRouteHandler: RouteHandler<
+  typeof postSubscriptionsSubscriptionIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsSubscriptionIdResumeRouteHandler: RouteHandler<
+  typeof postSubscriptionsSubscriptionIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsSubscriptionIdCancelRouteHandler: RouteHandler<
+  typeof postSubscriptionsSubscriptionIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

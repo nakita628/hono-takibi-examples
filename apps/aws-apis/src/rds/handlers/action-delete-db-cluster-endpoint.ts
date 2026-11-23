@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteDBClusterEndpointRoute,
   postActionDeleteDBClusterEndpointRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteDBClusterEndpointRouteHandler: RouteHandler<
+  typeof getActionDeleteDBClusterEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteDbClusterEndpointHandler = app
-  .openapi(getActionDeleteDBClusterEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteDBClusterEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteDBClusterEndpointRouteHandler: RouteHandler<
+  typeof postActionDeleteDBClusterEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

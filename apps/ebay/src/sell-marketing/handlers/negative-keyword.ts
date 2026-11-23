@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNegativeKeywordNegativeKeywordIdRoute,
   getNegativeKeywordRoute,
   postNegativeKeywordRoute,
   putNegativeKeywordNegativeKeywordIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNegativeKeywordRouteHandler: RouteHandler<typeof getNegativeKeywordRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const negativeKeywordHandler = app
-  .openapi(getNegativeKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNegativeKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNegativeKeywordNegativeKeywordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNegativeKeywordNegativeKeywordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNegativeKeywordRouteHandler: RouteHandler<
+  typeof postNegativeKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNegativeKeywordNegativeKeywordIdRouteHandler: RouteHandler<
+  typeof getNegativeKeywordNegativeKeywordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNegativeKeywordNegativeKeywordIdRouteHandler: RouteHandler<
+  typeof putNegativeKeywordNegativeKeywordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

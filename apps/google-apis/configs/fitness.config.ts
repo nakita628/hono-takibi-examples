@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/fitness/v1/openapi.yaml',
   output: './src/fitness/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fitness/types.ts' },
   client: { output: './src/fitness/client.ts', baseUrl: '/' },
   rpc: { output: './src/fitness/rpc.ts', parseResponse: true },

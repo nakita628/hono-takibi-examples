@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotevents/2018-07-27/openapi.yaml',
   output: './src/iotevents/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iotevents/types.ts' },
   client: { output: './src/iotevents/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotevents/rpc.ts', parseResponse: true },

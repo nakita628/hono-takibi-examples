@@ -1,21 +1,1067 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  apiHandler,
-  authHandler,
-  edgeHandler,
-  healthHandler,
-  inviteHandler,
-  readyHandler,
+  deleteApiAdminAddonsIdRoute,
+  deleteApiAdminApiTokensTokenRoute,
+  deleteApiAdminArchiveFeatureNameRoute,
+  deleteApiAdminContextContextFieldLegalValuesLegalValueRoute,
+  deleteApiAdminContextContextFieldRoute,
+  deleteApiAdminEmailSubscriptionSubscriptionRoute,
+  deleteApiAdminFeaturesFeatureNameTagsTypeValueRoute,
+  deleteApiAdminMetricsApplicationsAppNameRoute,
+  deleteApiAdminProjectsProjectIdApiTokensTokenRoute,
+  deleteApiAdminProjectsProjectIdContextContextFieldLegalValuesLegalValueRoute,
+  deleteApiAdminProjectsProjectIdContextContextFieldRoute,
+  deleteApiAdminProjectsProjectIdEnvironmentsEnvironmentRoute,
+  deleteApiAdminProjectsProjectIdFavoritesRoute,
+  deleteApiAdminProjectsProjectIdFeaturesChildDependenciesParentRoute,
+  deleteApiAdminProjectsProjectIdFeaturesChildDependenciesRoute,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRoute,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRoute,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+  deleteApiAdminProjectsProjectIdGroupsGroupIdRolesRoute,
+  deleteApiAdminProjectsProjectIdRoute,
+  deleteApiAdminProjectsProjectIdUsersUserIdRolesRoute,
+  deleteApiAdminSegmentsIdRoute,
+  deleteApiAdminStrategiesNameRoute,
+  deleteApiAdminTagsTypeValueRoute,
+  deleteApiAdminTagTypesNameRoute,
+  deleteApiAdminUserAdminIdRoute,
+  deleteApiAdminUserAdminInactiveDeleteRoute,
+  deleteApiAdminUserAdminScimUsersRoute,
+  deleteApiAdminUserTokensIdRoute,
+  getApiAdminAddonsIdEventsRoute,
+  getApiAdminAddonsIdRoute,
+  getApiAdminAddonsRoute,
+  getApiAdminApiTokensNameRoute,
+  getApiAdminApiTokensRoute,
+  getApiAdminClientMetricsFeaturesNameRawRoute,
+  getApiAdminClientMetricsFeaturesNameRoute,
+  getApiAdminContextContextFieldRoute,
+  getApiAdminContextContextFieldStrategiesRoute,
+  getApiAdminContextRoute,
+  getApiAdminEnvironmentsNameRoute,
+  getApiAdminEnvironmentsProjectProjectIdRoute,
+  getApiAdminEnvironmentsRoute,
+  getApiAdminEventCreatorsRoute,
+  getApiAdminEventsFeatureNameRoute,
+  getApiAdminEventsRoute,
+  getApiAdminFeaturesFeatureNameTagsRoute,
+  getApiAdminFeatureTypesRoute,
+  getApiAdminFlagCreatorsRoute,
+  getApiAdminInsightsLifecycleRoute,
+  getApiAdminInsightsRoute,
+  getApiAdminInstanceAdminStatisticsCsvRoute,
+  getApiAdminInstanceAdminStatisticsRoute,
+  getApiAdminInviteLinkTokensRoute,
+  getApiAdminInviteLinkTokensTokenRoute,
+  getApiAdminLicensedUsersRoute,
+  getApiAdminLifecycleCountRoute,
+  getApiAdminMaintenanceRoute,
+  getApiAdminMetricsApplicationsAppNameOverviewRoute,
+  getApiAdminMetricsApplicationsAppNameRoute,
+  getApiAdminMetricsApplicationsRoute,
+  getApiAdminMetricsConnectionRoute,
+  getApiAdminMetricsInstancesAppNameEnvironmentEnvironmentRoute,
+  getApiAdminMetricsRequestRoute,
+  getApiAdminMetricsRpsRoute,
+  getApiAdminMetricsSdksOutdatedRoute,
+  getApiAdminMetricsTrafficRoute,
+  getApiAdminMetricsUnknownFlagsRoute,
+  getApiAdminNotificationsRoute,
+  getApiAdminPermissionsRoute,
+  getApiAdminPersonalDashboardProjectIdRoute,
+  getApiAdminPersonalDashboardRoute,
+  getApiAdminProjectsProjectIdAccessRoute,
+  getApiAdminProjectsProjectIdAddonsRoute,
+  getApiAdminProjectsProjectIdApiTokensRoute,
+  getApiAdminProjectsProjectIdApplicationsRoute,
+  getApiAdminProjectsProjectIdContextContextFieldRoute,
+  getApiAdminProjectsProjectIdContextContextFieldStrategiesRoute,
+  getApiAdminProjectsProjectIdContextRoute,
+  getApiAdminProjectsProjectIdDependenciesRoute,
+  getApiAdminProjectsProjectIdDoraRoute,
+  getApiAdminProjectsProjectIdFeaturesChildParentsRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleRoute,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+  getApiAdminProjectsProjectIdFeaturesParentParentVariantsRoute,
+  getApiAdminProjectsProjectIdFeaturesRoute,
+  getApiAdminProjectsProjectIdFlagCreatorsRoute,
+  getApiAdminProjectsProjectIdHealthReportRoute,
+  getApiAdminProjectsProjectIdInsightsRoute,
+  getApiAdminProjectsProjectIdOverviewRoute,
+  getApiAdminProjectsProjectIdSdksOutdatedRoute,
+  getApiAdminProjectsProjectIdStatusRoute,
+  getApiAdminProjectsRolesRoleIdAccessRoute,
+  getApiAdminProjectsRoute,
+  getApiAdminSearchEventsRoute,
+  getApiAdminSearchFeaturesRoute,
+  getApiAdminSegmentsIdRoute,
+  getApiAdminSegmentsIdStrategiesRoute,
+  getApiAdminSegmentsRoute,
+  getApiAdminSegmentsStrategiesStrategyIdRoute,
+  getApiAdminStrategiesNameRoute,
+  getApiAdminStrategiesRoute,
+  getApiAdminTagsRoute,
+  getApiAdminTagsTypeRoute,
+  getApiAdminTagsTypeValueRoute,
+  getApiAdminTagTypesNameRoute,
+  getApiAdminTagTypesNameValuesRoute,
+  getApiAdminTagTypesRoute,
+  getApiAdminTelemetrySettingsRoute,
+  getApiAdminUiConfigRoute,
+  getApiAdminUserAdminAccessRoute,
+  getApiAdminUserAdminAdminCountRoute,
+  getApiAdminUserAdminIdRoute,
+  getApiAdminUserAdminInactiveRoute,
+  getApiAdminUserAdminRoute,
+  getApiAdminUserAdminSearchRoute,
+  getApiAdminUserProfileRoute,
+  getApiAdminUserRolesRoute,
+  getApiAdminUserRoute,
+  getApiAdminUserTokensRoute,
+  getApiClientFeaturesFeatureNameRoute,
+  getApiClientFeaturesRoute,
+  getApiFrontendRoute,
+  getAuthResetValidateRoute,
+  getHealthRoute,
+  getInviteTokenValidateRoute,
+  getReadyRoute,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+  postApiAdminAddonsRoute,
+  postApiAdminApiTokensRoute,
+  postApiAdminArchiveReviveFeatureNameRoute,
+  postApiAdminConstraintsValidateRoute,
+  postApiAdminContextContextFieldLegalValuesRoute,
+  postApiAdminContextRoute,
+  postApiAdminContextValidateRoute,
+  postApiAdminEnvironmentsNameOffRoute,
+  postApiAdminEnvironmentsNameOnRoute,
+  postApiAdminFeaturesBatchExportRoute,
+  postApiAdminFeaturesBatchImportRoute,
+  postApiAdminFeaturesBatchValidateRoute,
+  postApiAdminFeaturesFeatureNameTagsRoute,
+  postApiAdminFeaturesValidateRoute,
+  postApiAdminFeedbackRoute,
+  postApiAdminInviteLinkTokensRoute,
+  postApiAdminMaintenanceRoute,
+  postApiAdminMetricsApplicationsAppNameRoute,
+  postApiAdminNotificationsReadRoute,
+  postApiAdminPlaygroundAdvancedRoute,
+  postApiAdminPlaygroundFeaturesFeatureNameRoute,
+  postApiAdminPlaygroundRoute,
+  postApiAdminProjectsArchiveProjectIdRoute,
+  postApiAdminProjectsProjectIdAccessRoute,
+  postApiAdminProjectsProjectIdAddonsRoute,
+  postApiAdminProjectsProjectIdApiTokensRoute,
+  postApiAdminProjectsProjectIdArchiveRoute,
+  postApiAdminProjectsProjectIdArchiveValidateRoute,
+  postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOffRoute,
+  postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOnRoute,
+  postApiAdminProjectsProjectIdContextContextFieldLegalValuesRoute,
+  postApiAdminProjectsProjectIdContextRoute,
+  postApiAdminProjectsProjectIdContextValidateRoute,
+  postApiAdminProjectsProjectIdDeleteRoute,
+  postApiAdminProjectsProjectIdEnvironmentsEnvironmentDefaultStrategyRoute,
+  postApiAdminProjectsProjectIdEnvironmentsRoute,
+  postApiAdminProjectsProjectIdFavoritesRoute,
+  postApiAdminProjectsProjectIdFeaturesChildDependenciesRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameChangeProjectRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameCloneRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOffRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOnRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesSetSortOrderRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleCompleteRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleUncompleteRoute,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLinkRoute,
+  postApiAdminProjectsProjectIdFeaturesRoute,
+  postApiAdminProjectsProjectIdReviveRoute,
+  postApiAdminProjectsProjectIdStaleRoute,
+  postApiAdminProjectsReviveProjectIdRoute,
+  postApiAdminProjectsRoute,
+  postApiAdminProjectsValidateRoute,
+  postApiAdminRecordUiErrorRoute,
+  postApiAdminSegmentsRoute,
+  postApiAdminSegmentsStrategiesRoute,
+  postApiAdminSegmentsValidateRoute,
+  postApiAdminSplashIdRoute,
+  postApiAdminStrategiesRoute,
+  postApiAdminStrategiesStrategyNameDeprecateRoute,
+  postApiAdminStrategiesStrategyNameReactivateRoute,
+  postApiAdminTagsRoute,
+  postApiAdminTagsTypeValueRenameRoute,
+  postApiAdminTagTypesRoute,
+  postApiAdminTagTypesValidateRoute,
+  postApiAdminUiConfigCorsRoute,
+  postApiAdminUserAdminIdChangePasswordRoute,
+  postApiAdminUserAdminInactiveDeleteRoute,
+  postApiAdminUserAdminResetPasswordRoute,
+  postApiAdminUserAdminRoute,
+  postApiAdminUserAdminValidatePasswordRoute,
+  postApiAdminUserChangePasswordRoute,
+  postApiAdminUserTokensRoute,
+  postApiClientEdgeLicensingHeartbeatRoute,
+  postApiClientMetricsBulkRoute,
+  postApiClientMetricsEdgeRoute,
+  postApiClientMetricsRoute,
+  postApiClientRegisterRoute,
+  postApiFrontendClientMetricsRoute,
+  postApiFrontendClientRegisterRoute,
+  postApiFrontendRoute,
+  postAuthResetPasswordEmailRoute,
+  postAuthResetPasswordRoute,
+  postAuthResetValidatePasswordRoute,
+  postAuthSimpleLoginRoute,
+  postEdgeIssueTokenRoute,
+  postEdgeValidateRoute,
+  postInviteTokenSignupRoute,
+  putApiAdminAddonsIdRoute,
+  putApiAdminApiTokensTokenRoute,
+  putApiAdminContextContextFieldRoute,
+  putApiAdminEmailSubscriptionSubscriptionRoute,
+  putApiAdminEnvironmentsSortOrderRoute,
+  putApiAdminFeaturesFeatureNameTagsRoute,
+  putApiAdminFeatureTypesIdLifetimeRoute,
+  putApiAdminFeedbackIdRoute,
+  putApiAdminInviteLinkTokensTokenRoute,
+  putApiAdminProjectsProjectIdAccessRoute,
+  putApiAdminProjectsProjectIdAddonsIdRoute,
+  putApiAdminProjectsProjectIdContextContextFieldRoute,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRoute,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameVariantsBatchRoute,
+  putApiAdminProjectsProjectIdGroupsGroupIdRolesRoute,
+  putApiAdminProjectsProjectIdRoute,
+  putApiAdminProjectsProjectIdSettingsRoute,
+  putApiAdminProjectsProjectIdTagsRoute,
+  putApiAdminProjectsProjectIdUsersUserIdRolesRoute,
+  putApiAdminSegmentsIdRoute,
+  putApiAdminStrategiesNameRoute,
+  putApiAdminTagTypesNameRoute,
+  putApiAdminUserAdminIdRoute,
+} from './routes'
+import {
+  deleteApiAdminAddonsIdRouteHandler,
+  deleteApiAdminApiTokensTokenRouteHandler,
+  deleteApiAdminArchiveFeatureNameRouteHandler,
+  deleteApiAdminContextContextFieldLegalValuesLegalValueRouteHandler,
+  deleteApiAdminContextContextFieldRouteHandler,
+  deleteApiAdminEmailSubscriptionSubscriptionRouteHandler,
+  deleteApiAdminFeaturesFeatureNameTagsTypeValueRouteHandler,
+  deleteApiAdminMetricsApplicationsAppNameRouteHandler,
+  deleteApiAdminProjectsProjectIdApiTokensTokenRouteHandler,
+  deleteApiAdminProjectsProjectIdContextContextFieldLegalValuesLegalValueRouteHandler,
+  deleteApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  deleteApiAdminProjectsProjectIdEnvironmentsEnvironmentRouteHandler,
+  deleteApiAdminProjectsProjectIdFavoritesRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesChildDependenciesParentRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesChildDependenciesRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRouteHandler,
+  deleteApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  deleteApiAdminProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  deleteApiAdminProjectsProjectIdRouteHandler,
+  deleteApiAdminProjectsProjectIdUsersUserIdRolesRouteHandler,
+  deleteApiAdminSegmentsIdRouteHandler,
+  deleteApiAdminStrategiesNameRouteHandler,
+  deleteApiAdminTagsTypeValueRouteHandler,
+  deleteApiAdminTagTypesNameRouteHandler,
+  deleteApiAdminUserAdminIdRouteHandler,
+  deleteApiAdminUserAdminInactiveDeleteRouteHandler,
+  deleteApiAdminUserAdminScimUsersRouteHandler,
+  deleteApiAdminUserTokensIdRouteHandler,
+  getApiAdminAddonsIdEventsRouteHandler,
+  getApiAdminAddonsIdRouteHandler,
+  getApiAdminAddonsRouteHandler,
+  getApiAdminApiTokensNameRouteHandler,
+  getApiAdminApiTokensRouteHandler,
+  getApiAdminClientMetricsFeaturesNameRawRouteHandler,
+  getApiAdminClientMetricsFeaturesNameRouteHandler,
+  getApiAdminContextContextFieldRouteHandler,
+  getApiAdminContextContextFieldStrategiesRouteHandler,
+  getApiAdminContextRouteHandler,
+  getApiAdminEnvironmentsNameRouteHandler,
+  getApiAdminEnvironmentsProjectProjectIdRouteHandler,
+  getApiAdminEnvironmentsRouteHandler,
+  getApiAdminEventCreatorsRouteHandler,
+  getApiAdminEventsFeatureNameRouteHandler,
+  getApiAdminEventsRouteHandler,
+  getApiAdminFeaturesFeatureNameTagsRouteHandler,
+  getApiAdminFeatureTypesRouteHandler,
+  getApiAdminFlagCreatorsRouteHandler,
+  getApiAdminInsightsLifecycleRouteHandler,
+  getApiAdminInsightsRouteHandler,
+  getApiAdminInstanceAdminStatisticsCsvRouteHandler,
+  getApiAdminInstanceAdminStatisticsRouteHandler,
+  getApiAdminInviteLinkTokensRouteHandler,
+  getApiAdminInviteLinkTokensTokenRouteHandler,
+  getApiAdminLicensedUsersRouteHandler,
+  getApiAdminLifecycleCountRouteHandler,
+  getApiAdminMaintenanceRouteHandler,
+  getApiAdminMetricsApplicationsAppNameOverviewRouteHandler,
+  getApiAdminMetricsApplicationsAppNameRouteHandler,
+  getApiAdminMetricsApplicationsRouteHandler,
+  getApiAdminMetricsConnectionRouteHandler,
+  getApiAdminMetricsInstancesAppNameEnvironmentEnvironmentRouteHandler,
+  getApiAdminMetricsRequestRouteHandler,
+  getApiAdminMetricsRpsRouteHandler,
+  getApiAdminMetricsSdksOutdatedRouteHandler,
+  getApiAdminMetricsTrafficRouteHandler,
+  getApiAdminMetricsUnknownFlagsRouteHandler,
+  getApiAdminNotificationsRouteHandler,
+  getApiAdminPermissionsRouteHandler,
+  getApiAdminPersonalDashboardProjectIdRouteHandler,
+  getApiAdminPersonalDashboardRouteHandler,
+  getApiAdminProjectsProjectIdAccessRouteHandler,
+  getApiAdminProjectsProjectIdAddonsRouteHandler,
+  getApiAdminProjectsProjectIdApiTokensRouteHandler,
+  getApiAdminProjectsProjectIdApplicationsRouteHandler,
+  getApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  getApiAdminProjectsProjectIdContextContextFieldStrategiesRouteHandler,
+  getApiAdminProjectsProjectIdContextRouteHandler,
+  getApiAdminProjectsProjectIdDependenciesRouteHandler,
+  getApiAdminProjectsProjectIdDoraRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesChildParentsRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesParentParentVariantsRouteHandler,
+  getApiAdminProjectsProjectIdFeaturesRouteHandler,
+  getApiAdminProjectsProjectIdFlagCreatorsRouteHandler,
+  getApiAdminProjectsProjectIdHealthReportRouteHandler,
+  getApiAdminProjectsProjectIdInsightsRouteHandler,
+  getApiAdminProjectsProjectIdOverviewRouteHandler,
+  getApiAdminProjectsProjectIdSdksOutdatedRouteHandler,
+  getApiAdminProjectsProjectIdStatusRouteHandler,
+  getApiAdminProjectsRolesRoleIdAccessRouteHandler,
+  getApiAdminProjectsRouteHandler,
+  getApiAdminSearchEventsRouteHandler,
+  getApiAdminSearchFeaturesRouteHandler,
+  getApiAdminSegmentsIdRouteHandler,
+  getApiAdminSegmentsIdStrategiesRouteHandler,
+  getApiAdminSegmentsRouteHandler,
+  getApiAdminSegmentsStrategiesStrategyIdRouteHandler,
+  getApiAdminStrategiesNameRouteHandler,
+  getApiAdminStrategiesRouteHandler,
+  getApiAdminTagsRouteHandler,
+  getApiAdminTagsTypeRouteHandler,
+  getApiAdminTagsTypeValueRouteHandler,
+  getApiAdminTagTypesNameRouteHandler,
+  getApiAdminTagTypesNameValuesRouteHandler,
+  getApiAdminTagTypesRouteHandler,
+  getApiAdminTelemetrySettingsRouteHandler,
+  getApiAdminUiConfigRouteHandler,
+  getApiAdminUserAdminAccessRouteHandler,
+  getApiAdminUserAdminAdminCountRouteHandler,
+  getApiAdminUserAdminIdRouteHandler,
+  getApiAdminUserAdminInactiveRouteHandler,
+  getApiAdminUserAdminRouteHandler,
+  getApiAdminUserAdminSearchRouteHandler,
+  getApiAdminUserProfileRouteHandler,
+  getApiAdminUserRolesRouteHandler,
+  getApiAdminUserRouteHandler,
+  getApiAdminUserTokensRouteHandler,
+  getApiClientFeaturesFeatureNameRouteHandler,
+  getApiClientFeaturesRouteHandler,
+  getApiFrontendRouteHandler,
+  getAuthResetValidateRouteHandler,
+  getHealthRouteHandler,
+  getInviteTokenValidateRouteHandler,
+  getReadyRouteHandler,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  patchApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  postApiAdminAddonsRouteHandler,
+  postApiAdminApiTokensRouteHandler,
+  postApiAdminArchiveReviveFeatureNameRouteHandler,
+  postApiAdminConstraintsValidateRouteHandler,
+  postApiAdminContextContextFieldLegalValuesRouteHandler,
+  postApiAdminContextRouteHandler,
+  postApiAdminContextValidateRouteHandler,
+  postApiAdminEnvironmentsNameOffRouteHandler,
+  postApiAdminEnvironmentsNameOnRouteHandler,
+  postApiAdminFeaturesBatchExportRouteHandler,
+  postApiAdminFeaturesBatchImportRouteHandler,
+  postApiAdminFeaturesBatchValidateRouteHandler,
+  postApiAdminFeaturesFeatureNameTagsRouteHandler,
+  postApiAdminFeaturesValidateRouteHandler,
+  postApiAdminFeedbackRouteHandler,
+  postApiAdminInviteLinkTokensRouteHandler,
+  postApiAdminMaintenanceRouteHandler,
+  postApiAdminMetricsApplicationsAppNameRouteHandler,
+  postApiAdminNotificationsReadRouteHandler,
+  postApiAdminPlaygroundAdvancedRouteHandler,
+  postApiAdminPlaygroundFeaturesFeatureNameRouteHandler,
+  postApiAdminPlaygroundRouteHandler,
+  postApiAdminProjectsArchiveProjectIdRouteHandler,
+  postApiAdminProjectsProjectIdAccessRouteHandler,
+  postApiAdminProjectsProjectIdAddonsRouteHandler,
+  postApiAdminProjectsProjectIdApiTokensRouteHandler,
+  postApiAdminProjectsProjectIdArchiveRouteHandler,
+  postApiAdminProjectsProjectIdArchiveValidateRouteHandler,
+  postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOffRouteHandler,
+  postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOnRouteHandler,
+  postApiAdminProjectsProjectIdContextContextFieldLegalValuesRouteHandler,
+  postApiAdminProjectsProjectIdContextRouteHandler,
+  postApiAdminProjectsProjectIdContextValidateRouteHandler,
+  postApiAdminProjectsProjectIdDeleteRouteHandler,
+  postApiAdminProjectsProjectIdEnvironmentsEnvironmentDefaultStrategyRouteHandler,
+  postApiAdminProjectsProjectIdEnvironmentsRouteHandler,
+  postApiAdminProjectsProjectIdFavoritesRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesChildDependenciesRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameChangeProjectRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameCloneRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOffRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOnRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesSetSortOrderRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleCompleteRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleUncompleteRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesFeatureNameLinkRouteHandler,
+  postApiAdminProjectsProjectIdFeaturesRouteHandler,
+  postApiAdminProjectsProjectIdReviveRouteHandler,
+  postApiAdminProjectsProjectIdStaleRouteHandler,
+  postApiAdminProjectsReviveProjectIdRouteHandler,
+  postApiAdminProjectsRouteHandler,
+  postApiAdminProjectsValidateRouteHandler,
+  postApiAdminRecordUiErrorRouteHandler,
+  postApiAdminSegmentsRouteHandler,
+  postApiAdminSegmentsStrategiesRouteHandler,
+  postApiAdminSegmentsValidateRouteHandler,
+  postApiAdminSplashIdRouteHandler,
+  postApiAdminStrategiesRouteHandler,
+  postApiAdminStrategiesStrategyNameDeprecateRouteHandler,
+  postApiAdminStrategiesStrategyNameReactivateRouteHandler,
+  postApiAdminTagsRouteHandler,
+  postApiAdminTagsTypeValueRenameRouteHandler,
+  postApiAdminTagTypesRouteHandler,
+  postApiAdminTagTypesValidateRouteHandler,
+  postApiAdminUiConfigCorsRouteHandler,
+  postApiAdminUserAdminIdChangePasswordRouteHandler,
+  postApiAdminUserAdminInactiveDeleteRouteHandler,
+  postApiAdminUserAdminResetPasswordRouteHandler,
+  postApiAdminUserAdminRouteHandler,
+  postApiAdminUserAdminValidatePasswordRouteHandler,
+  postApiAdminUserChangePasswordRouteHandler,
+  postApiAdminUserTokensRouteHandler,
+  postApiClientEdgeLicensingHeartbeatRouteHandler,
+  postApiClientMetricsBulkRouteHandler,
+  postApiClientMetricsEdgeRouteHandler,
+  postApiClientMetricsRouteHandler,
+  postApiClientRegisterRouteHandler,
+  postApiFrontendClientMetricsRouteHandler,
+  postApiFrontendClientRegisterRouteHandler,
+  postApiFrontendRouteHandler,
+  postAuthResetPasswordEmailRouteHandler,
+  postAuthResetPasswordRouteHandler,
+  postAuthResetValidatePasswordRouteHandler,
+  postAuthSimpleLoginRouteHandler,
+  postEdgeIssueTokenRouteHandler,
+  postEdgeValidateRouteHandler,
+  postInviteTokenSignupRouteHandler,
+  putApiAdminAddonsIdRouteHandler,
+  putApiAdminApiTokensTokenRouteHandler,
+  putApiAdminContextContextFieldRouteHandler,
+  putApiAdminEmailSubscriptionSubscriptionRouteHandler,
+  putApiAdminEnvironmentsSortOrderRouteHandler,
+  putApiAdminFeaturesFeatureNameTagsRouteHandler,
+  putApiAdminFeatureTypesIdLifetimeRouteHandler,
+  putApiAdminFeedbackIdRouteHandler,
+  putApiAdminInviteLinkTokensTokenRouteHandler,
+  putApiAdminProjectsProjectIdAccessRouteHandler,
+  putApiAdminProjectsProjectIdAddonsIdRouteHandler,
+  putApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRouteHandler,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  putApiAdminProjectsProjectIdFeaturesFeatureNameVariantsBatchRouteHandler,
+  putApiAdminProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  putApiAdminProjectsProjectIdRouteHandler,
+  putApiAdminProjectsProjectIdSettingsRouteHandler,
+  putApiAdminProjectsProjectIdTagsRouteHandler,
+  putApiAdminProjectsProjectIdUsersUserIdRolesRouteHandler,
+  putApiAdminSegmentsIdRouteHandler,
+  putApiAdminStrategiesNameRouteHandler,
+  putApiAdminTagTypesNameRouteHandler,
+  putApiAdminUserAdminIdRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', apiHandler)
-  .route('/', readyHandler)
-  .route('/', healthHandler)
-  .route('/', inviteHandler)
-  .route('/', authHandler)
-  .route('/', edgeHandler)
+  .openapi(getApiAdminProjectsRoute, getApiAdminProjectsRouteHandler)
+  .openapi(postApiAdminProjectsRoute, postApiAdminProjectsRouteHandler)
+  .openapi(postApiAdminProjectsValidateRoute, postApiAdminProjectsValidateRouteHandler)
+  .openapi(putApiAdminProjectsProjectIdRoute, putApiAdminProjectsProjectIdRouteHandler)
+  .openapi(deleteApiAdminProjectsProjectIdRoute, deleteApiAdminProjectsProjectIdRouteHandler)
+  .openapi(
+    putApiAdminProjectsProjectIdSettingsRoute,
+    putApiAdminProjectsProjectIdSettingsRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsArchiveProjectIdRoute,
+    postApiAdminProjectsArchiveProjectIdRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsReviveProjectIdRoute,
+    postApiAdminProjectsReviveProjectIdRouteHandler,
+  )
+  .openapi(getApiAdminProjectsProjectIdAccessRoute, getApiAdminProjectsProjectIdAccessRouteHandler)
+  .openapi(putApiAdminProjectsProjectIdAccessRoute, putApiAdminProjectsProjectIdAccessRouteHandler)
+  .openapi(
+    postApiAdminProjectsProjectIdAccessRoute,
+    postApiAdminProjectsProjectIdAccessRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsRolesRoleIdAccessRoute,
+    getApiAdminProjectsRolesRoleIdAccessRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdUsersUserIdRolesRoute,
+    putApiAdminProjectsProjectIdUsersUserIdRolesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdUsersUserIdRolesRoute,
+    deleteApiAdminProjectsProjectIdUsersUserIdRolesRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdGroupsGroupIdRolesRoute,
+    putApiAdminProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdGroupsGroupIdRolesRoute,
+    deleteApiAdminProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameChangeProjectRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameChangeProjectRouteHandler,
+  )
+  .openapi(getApiAdminPermissionsRoute, getApiAdminPermissionsRouteHandler)
+  .openapi(getApiAdminMetricsRpsRoute, getApiAdminMetricsRpsRouteHandler)
+  .openapi(getApiAdminMetricsTrafficRoute, getApiAdminMetricsTrafficRouteHandler)
+  .openapi(getApiAdminMetricsConnectionRoute, getApiAdminMetricsConnectionRouteHandler)
+  .openapi(getApiAdminMetricsRequestRoute, getApiAdminMetricsRequestRouteHandler)
+  .openapi(getApiAdminNotificationsRoute, getApiAdminNotificationsRouteHandler)
+  .openapi(postApiAdminNotificationsReadRoute, postApiAdminNotificationsReadRouteHandler)
+  .openapi(getApiAdminInsightsLifecycleRoute, getApiAdminInsightsLifecycleRouteHandler)
+  .openapi(getApiAdminInsightsRoute, getApiAdminInsightsRouteHandler)
+  .openapi(
+    putApiAdminEmailSubscriptionSubscriptionRoute,
+    putApiAdminEmailSubscriptionSubscriptionRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminEmailSubscriptionSubscriptionRoute,
+    deleteApiAdminEmailSubscriptionSubscriptionRouteHandler,
+  )
+  .openapi(getApiAdminLicensedUsersRoute, getApiAdminLicensedUsersRouteHandler)
+  .openapi(postApiClientMetricsEdgeRoute, postApiClientMetricsEdgeRouteHandler)
+  .openapi(
+    postApiClientEdgeLicensingHeartbeatRoute,
+    postApiClientEdgeLicensingHeartbeatRouteHandler,
+  )
+  .openapi(getReadyRoute, getReadyRouteHandler)
+  .openapi(getHealthRoute, getHealthRouteHandler)
+  .openapi(getInviteTokenValidateRoute, getInviteTokenValidateRouteHandler)
+  .openapi(postInviteTokenSignupRoute, postInviteTokenSignupRouteHandler)
+  .openapi(postAuthSimpleLoginRoute, postAuthSimpleLoginRouteHandler)
+  .openapi(getAuthResetValidateRoute, getAuthResetValidateRouteHandler)
+  .openapi(postAuthResetPasswordRoute, postAuthResetPasswordRouteHandler)
+  .openapi(postAuthResetValidatePasswordRoute, postAuthResetValidatePasswordRouteHandler)
+  .openapi(postAuthResetPasswordEmailRoute, postAuthResetPasswordEmailRouteHandler)
+  .openapi(postApiAdminFeaturesValidateRoute, postApiAdminFeaturesValidateRouteHandler)
+  .openapi(getApiAdminFeaturesFeatureNameTagsRoute, getApiAdminFeaturesFeatureNameTagsRouteHandler)
+  .openapi(
+    postApiAdminFeaturesFeatureNameTagsRoute,
+    postApiAdminFeaturesFeatureNameTagsRouteHandler,
+  )
+  .openapi(putApiAdminFeaturesFeatureNameTagsRoute, putApiAdminFeaturesFeatureNameTagsRouteHandler)
+  .openapi(
+    deleteApiAdminFeaturesFeatureNameTagsTypeValueRoute,
+    deleteApiAdminFeaturesFeatureNameTagsTypeValueRouteHandler,
+  )
+  .openapi(getApiAdminFeatureTypesRoute, getApiAdminFeatureTypesRouteHandler)
+  .openapi(putApiAdminFeatureTypesIdLifetimeRoute, putApiAdminFeatureTypesIdLifetimeRouteHandler)
+  .openapi(deleteApiAdminArchiveFeatureNameRoute, deleteApiAdminArchiveFeatureNameRouteHandler)
+  .openapi(
+    postApiAdminArchiveReviveFeatureNameRoute,
+    postApiAdminArchiveReviveFeatureNameRouteHandler,
+  )
+  .openapi(getApiAdminStrategiesRoute, getApiAdminStrategiesRouteHandler)
+  .openapi(postApiAdminStrategiesRoute, postApiAdminStrategiesRouteHandler)
+  .openapi(getApiAdminStrategiesNameRoute, getApiAdminStrategiesNameRouteHandler)
+  .openapi(deleteApiAdminStrategiesNameRoute, deleteApiAdminStrategiesNameRouteHandler)
+  .openapi(putApiAdminStrategiesNameRoute, putApiAdminStrategiesNameRouteHandler)
+  .openapi(
+    postApiAdminStrategiesStrategyNameDeprecateRoute,
+    postApiAdminStrategiesStrategyNameDeprecateRouteHandler,
+  )
+  .openapi(
+    postApiAdminStrategiesStrategyNameReactivateRoute,
+    postApiAdminStrategiesStrategyNameReactivateRouteHandler,
+  )
+  .openapi(getApiAdminEventsRoute, getApiAdminEventsRouteHandler)
+  .openapi(getApiAdminEventsFeatureNameRoute, getApiAdminEventsFeatureNameRouteHandler)
+  .openapi(getApiAdminEventCreatorsRoute, getApiAdminEventCreatorsRouteHandler)
+  .openapi(postApiAdminPlaygroundRoute, postApiAdminPlaygroundRouteHandler)
+  .openapi(postApiAdminPlaygroundAdvancedRoute, postApiAdminPlaygroundAdvancedRouteHandler)
+  .openapi(
+    postApiAdminPlaygroundFeaturesFeatureNameRoute,
+    postApiAdminPlaygroundFeaturesFeatureNameRouteHandler,
+  )
+  .openapi(getApiAdminMetricsUnknownFlagsRoute, getApiAdminMetricsUnknownFlagsRouteHandler)
+  .openapi(
+    postApiAdminMetricsApplicationsAppNameRoute,
+    postApiAdminMetricsApplicationsAppNameRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminMetricsApplicationsAppNameRoute,
+    deleteApiAdminMetricsApplicationsAppNameRouteHandler,
+  )
+  .openapi(
+    getApiAdminMetricsApplicationsAppNameRoute,
+    getApiAdminMetricsApplicationsAppNameRouteHandler,
+  )
+  .openapi(getApiAdminMetricsApplicationsRoute, getApiAdminMetricsApplicationsRouteHandler)
+  .openapi(
+    getApiAdminMetricsApplicationsAppNameOverviewRoute,
+    getApiAdminMetricsApplicationsAppNameOverviewRouteHandler,
+  )
+  .openapi(
+    getApiAdminMetricsInstancesAppNameEnvironmentEnvironmentRoute,
+    getApiAdminMetricsInstancesAppNameEnvironmentEnvironmentRouteHandler,
+  )
+  .openapi(getApiAdminMetricsSdksOutdatedRoute, getApiAdminMetricsSdksOutdatedRouteHandler)
+  .openapi(
+    getApiAdminClientMetricsFeaturesNameRawRoute,
+    getApiAdminClientMetricsFeaturesNameRawRouteHandler,
+  )
+  .openapi(
+    getApiAdminClientMetricsFeaturesNameRoute,
+    getApiAdminClientMetricsFeaturesNameRouteHandler,
+  )
+  .openapi(getApiAdminUserRoute, getApiAdminUserRouteHandler)
+  .openapi(getApiAdminUserProfileRoute, getApiAdminUserProfileRouteHandler)
+  .openapi(postApiAdminUserChangePasswordRoute, postApiAdminUserChangePasswordRouteHandler)
+  .openapi(getApiAdminUserRolesRoute, getApiAdminUserRolesRouteHandler)
+  .openapi(getApiAdminUserTokensRoute, getApiAdminUserTokensRouteHandler)
+  .openapi(postApiAdminUserTokensRoute, postApiAdminUserTokensRouteHandler)
+  .openapi(deleteApiAdminUserTokensIdRoute, deleteApiAdminUserTokensIdRouteHandler)
+  .openapi(getApiAdminUiConfigRoute, getApiAdminUiConfigRouteHandler)
+  .openapi(postApiAdminUiConfigCorsRoute, postApiAdminUiConfigCorsRouteHandler)
+  .openapi(getApiAdminContextRoute, getApiAdminContextRouteHandler)
+  .openapi(postApiAdminContextRoute, postApiAdminContextRouteHandler)
+  .openapi(getApiAdminContextContextFieldRoute, getApiAdminContextContextFieldRouteHandler)
+  .openapi(putApiAdminContextContextFieldRoute, putApiAdminContextContextFieldRouteHandler)
+  .openapi(deleteApiAdminContextContextFieldRoute, deleteApiAdminContextContextFieldRouteHandler)
+  .openapi(
+    getApiAdminContextContextFieldStrategiesRoute,
+    getApiAdminContextContextFieldStrategiesRouteHandler,
+  )
+  .openapi(
+    postApiAdminContextContextFieldLegalValuesRoute,
+    postApiAdminContextContextFieldLegalValuesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminContextContextFieldLegalValuesLegalValueRoute,
+    deleteApiAdminContextContextFieldLegalValuesLegalValueRouteHandler,
+  )
+  .openapi(postApiAdminContextValidateRoute, postApiAdminContextValidateRouteHandler)
+  .openapi(postApiAdminFeaturesBatchExportRoute, postApiAdminFeaturesBatchExportRouteHandler)
+  .openapi(postApiAdminFeaturesBatchValidateRoute, postApiAdminFeaturesBatchValidateRouteHandler)
+  .openapi(postApiAdminFeaturesBatchImportRoute, postApiAdminFeaturesBatchImportRouteHandler)
+  .openapi(getApiAdminTagsRoute, getApiAdminTagsRouteHandler)
+  .openapi(postApiAdminTagsRoute, postApiAdminTagsRouteHandler)
+  .openapi(getApiAdminTagsTypeRoute, getApiAdminTagsTypeRouteHandler)
+  .openapi(getApiAdminTagsTypeValueRoute, getApiAdminTagsTypeValueRouteHandler)
+  .openapi(deleteApiAdminTagsTypeValueRoute, deleteApiAdminTagsTypeValueRouteHandler)
+  .openapi(postApiAdminTagsTypeValueRenameRoute, postApiAdminTagsTypeValueRenameRouteHandler)
+  .openapi(getApiAdminTagTypesRoute, getApiAdminTagTypesRouteHandler)
+  .openapi(postApiAdminTagTypesRoute, postApiAdminTagTypesRouteHandler)
+  .openapi(postApiAdminTagTypesValidateRoute, postApiAdminTagTypesValidateRouteHandler)
+  .openapi(getApiAdminTagTypesNameRoute, getApiAdminTagTypesNameRouteHandler)
+  .openapi(putApiAdminTagTypesNameRoute, putApiAdminTagTypesNameRouteHandler)
+  .openapi(deleteApiAdminTagTypesNameRoute, deleteApiAdminTagTypesNameRouteHandler)
+  .openapi(getApiAdminTagTypesNameValuesRoute, getApiAdminTagTypesNameValuesRouteHandler)
+  .openapi(getApiAdminAddonsRoute, getApiAdminAddonsRouteHandler)
+  .openapi(postApiAdminAddonsRoute, postApiAdminAddonsRouteHandler)
+  .openapi(getApiAdminAddonsIdRoute, getApiAdminAddonsIdRouteHandler)
+  .openapi(putApiAdminAddonsIdRoute, putApiAdminAddonsIdRouteHandler)
+  .openapi(deleteApiAdminAddonsIdRoute, deleteApiAdminAddonsIdRouteHandler)
+  .openapi(getApiAdminAddonsIdEventsRoute, getApiAdminAddonsIdEventsRouteHandler)
+  .openapi(getApiAdminApiTokensRoute, getApiAdminApiTokensRouteHandler)
+  .openapi(postApiAdminApiTokensRoute, postApiAdminApiTokensRouteHandler)
+  .openapi(getApiAdminApiTokensNameRoute, getApiAdminApiTokensNameRouteHandler)
+  .openapi(putApiAdminApiTokensTokenRoute, putApiAdminApiTokensTokenRouteHandler)
+  .openapi(deleteApiAdminApiTokensTokenRoute, deleteApiAdminApiTokensTokenRouteHandler)
+  .openapi(getApiAdminUserAdminInactiveRoute, getApiAdminUserAdminInactiveRouteHandler)
+  .openapi(
+    postApiAdminUserAdminInactiveDeleteRoute,
+    postApiAdminUserAdminInactiveDeleteRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminUserAdminInactiveDeleteRoute,
+    deleteApiAdminUserAdminInactiveDeleteRouteHandler,
+  )
+  .openapi(
+    postApiAdminUserAdminValidatePasswordRoute,
+    postApiAdminUserAdminValidatePasswordRouteHandler,
+  )
+  .openapi(
+    postApiAdminUserAdminIdChangePasswordRoute,
+    postApiAdminUserAdminIdChangePasswordRouteHandler,
+  )
+  .openapi(postApiAdminUserAdminResetPasswordRoute, postApiAdminUserAdminResetPasswordRouteHandler)
+  .openapi(getApiAdminUserAdminRoute, getApiAdminUserAdminRouteHandler)
+  .openapi(postApiAdminUserAdminRoute, postApiAdminUserAdminRouteHandler)
+  .openapi(getApiAdminUserAdminSearchRoute, getApiAdminUserAdminSearchRouteHandler)
+  .openapi(getApiAdminUserAdminAccessRoute, getApiAdminUserAdminAccessRouteHandler)
+  .openapi(getApiAdminUserAdminAdminCountRoute, getApiAdminUserAdminAdminCountRouteHandler)
+  .openapi(getApiAdminUserAdminIdRoute, getApiAdminUserAdminIdRouteHandler)
+  .openapi(putApiAdminUserAdminIdRoute, putApiAdminUserAdminIdRouteHandler)
+  .openapi(deleteApiAdminUserAdminIdRoute, deleteApiAdminUserAdminIdRouteHandler)
+  .openapi(deleteApiAdminUserAdminScimUsersRoute, deleteApiAdminUserAdminScimUsersRouteHandler)
+  .openapi(postApiAdminFeedbackRoute, postApiAdminFeedbackRouteHandler)
+  .openapi(putApiAdminFeedbackIdRoute, putApiAdminFeedbackIdRouteHandler)
+  .openapi(
+    getApiAdminProjectsProjectIdOverviewRoute,
+    getApiAdminProjectsProjectIdOverviewRouteHandler,
+  )
+  .openapi(getApiAdminProjectsProjectIdDoraRoute, getApiAdminProjectsProjectIdDoraRouteHandler)
+  .openapi(
+    getApiAdminProjectsProjectIdApplicationsRoute,
+    getApiAdminProjectsProjectIdApplicationsRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFlagCreatorsRoute,
+    getApiAdminProjectsProjectIdFlagCreatorsRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdSdksOutdatedRoute,
+    getApiAdminProjectsProjectIdSdksOutdatedRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOffRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOffRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOnRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentOnRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOnRoute,
+    postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOnRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOffRoute,
+    postApiAdminProjectsProjectIdBulkFeaturesEnvironmentsEnvironmentOffRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+    putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  )
+  .openapi(
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRoute,
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesStrategyIdRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesSetSortOrderRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentStrategiesSetSortOrderRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesRoute,
+    getApiAdminProjectsProjectIdFeaturesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesRoute,
+    postApiAdminProjectsProjectIdFeaturesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameCloneRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameCloneRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+    putApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  )
+  .openapi(
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameRoute,
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameRouteHandler,
+  )
+  .openapi(postApiAdminProjectsProjectIdStaleRoute, postApiAdminProjectsProjectIdStaleRouteHandler)
+  .openapi(putApiAdminProjectsProjectIdTagsRoute, putApiAdminProjectsProjectIdTagsRouteHandler)
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesChildDependenciesRoute,
+    postApiAdminProjectsProjectIdFeaturesChildDependenciesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesChildDependenciesRoute,
+    deleteApiAdminProjectsProjectIdFeaturesChildDependenciesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesChildDependenciesParentRoute,
+    deleteApiAdminProjectsProjectIdFeaturesChildDependenciesParentRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesChildParentsRoute,
+    getApiAdminProjectsProjectIdFeaturesChildParentsRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesParentParentVariantsRoute,
+    getApiAdminProjectsProjectIdFeaturesParentParentVariantsRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdDependenciesRoute,
+    getApiAdminProjectsProjectIdDependenciesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdEnvironmentsRoute,
+    postApiAdminProjectsProjectIdEnvironmentsRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdEnvironmentsEnvironmentRoute,
+    deleteApiAdminProjectsProjectIdEnvironmentsEnvironmentRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdEnvironmentsEnvironmentDefaultStrategyRoute,
+    postApiAdminProjectsProjectIdEnvironmentsEnvironmentDefaultStrategyRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdHealthReportRoute,
+    getApiAdminProjectsProjectIdHealthReportRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  )
+  .openapi(
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+    patchApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRoute,
+    putApiAdminProjectsProjectIdFeaturesFeatureNameEnvironmentsEnvironmentVariantsRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdFeaturesFeatureNameVariantsBatchRoute,
+    putApiAdminProjectsProjectIdFeaturesFeatureNameVariantsBatchRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdApiTokensRoute,
+    getApiAdminProjectsProjectIdApiTokensRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdApiTokensRoute,
+    postApiAdminProjectsProjectIdApiTokensRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdApiTokensTokenRoute,
+    deleteApiAdminProjectsProjectIdApiTokensTokenRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdDeleteRoute,
+    postApiAdminProjectsProjectIdDeleteRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdReviveRoute,
+    postApiAdminProjectsProjectIdReviveRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdArchiveValidateRoute,
+    postApiAdminProjectsProjectIdArchiveValidateRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdArchiveRoute,
+    postApiAdminProjectsProjectIdArchiveRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdInsightsRoute,
+    getApiAdminProjectsProjectIdInsightsRouteHandler,
+  )
+  .openapi(getApiAdminProjectsProjectIdStatusRoute, getApiAdminProjectsProjectIdStatusRouteHandler)
+  .openapi(
+    getApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleRoute,
+    getApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleCompleteRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleCompleteRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleUncompleteRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLifecycleUncompleteRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLinkRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameLinkRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRoute,
+    putApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRoute,
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameLinkLinkIdRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdContextRoute,
+    getApiAdminProjectsProjectIdContextRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdContextRoute,
+    postApiAdminProjectsProjectIdContextRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdContextContextFieldRoute,
+    getApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdContextContextFieldRoute,
+    putApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdContextContextFieldRoute,
+    deleteApiAdminProjectsProjectIdContextContextFieldRouteHandler,
+  )
+  .openapi(
+    getApiAdminProjectsProjectIdContextContextFieldStrategiesRoute,
+    getApiAdminProjectsProjectIdContextContextFieldStrategiesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdContextContextFieldLegalValuesRoute,
+    postApiAdminProjectsProjectIdContextContextFieldLegalValuesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdContextContextFieldLegalValuesLegalValueRoute,
+    deleteApiAdminProjectsProjectIdContextContextFieldLegalValuesLegalValueRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdContextValidateRoute,
+    postApiAdminProjectsProjectIdContextValidateRouteHandler,
+  )
+  .openapi(getApiAdminProjectsProjectIdAddonsRoute, getApiAdminProjectsProjectIdAddonsRouteHandler)
+  .openapi(
+    postApiAdminProjectsProjectIdAddonsRoute,
+    postApiAdminProjectsProjectIdAddonsRouteHandler,
+  )
+  .openapi(
+    putApiAdminProjectsProjectIdAddonsIdRoute,
+    putApiAdminProjectsProjectIdAddonsIdRouteHandler,
+  )
+  .openapi(getApiAdminLifecycleCountRoute, getApiAdminLifecycleCountRouteHandler)
+  .openapi(getApiAdminPersonalDashboardRoute, getApiAdminPersonalDashboardRouteHandler)
+  .openapi(
+    getApiAdminPersonalDashboardProjectIdRoute,
+    getApiAdminPersonalDashboardProjectIdRouteHandler,
+  )
+  .openapi(getApiAdminEnvironmentsRoute, getApiAdminEnvironmentsRouteHandler)
+  .openapi(getApiAdminEnvironmentsNameRoute, getApiAdminEnvironmentsNameRouteHandler)
+  .openapi(
+    getApiAdminEnvironmentsProjectProjectIdRoute,
+    getApiAdminEnvironmentsProjectProjectIdRouteHandler,
+  )
+  .openapi(putApiAdminEnvironmentsSortOrderRoute, putApiAdminEnvironmentsSortOrderRouteHandler)
+  .openapi(postApiAdminEnvironmentsNameOnRoute, postApiAdminEnvironmentsNameOnRouteHandler)
+  .openapi(postApiAdminEnvironmentsNameOffRoute, postApiAdminEnvironmentsNameOffRouteHandler)
+  .openapi(postApiAdminSplashIdRoute, postApiAdminSplashIdRouteHandler)
+  .openapi(postApiAdminConstraintsValidateRoute, postApiAdminConstraintsValidateRouteHandler)
+  .openapi(getApiAdminInviteLinkTokensRoute, getApiAdminInviteLinkTokensRouteHandler)
+  .openapi(postApiAdminInviteLinkTokensRoute, postApiAdminInviteLinkTokensRouteHandler)
+  .openapi(getApiAdminInviteLinkTokensTokenRoute, getApiAdminInviteLinkTokensTokenRouteHandler)
+  .openapi(putApiAdminInviteLinkTokensTokenRoute, putApiAdminInviteLinkTokensTokenRouteHandler)
+  .openapi(
+    getApiAdminInstanceAdminStatisticsCsvRoute,
+    getApiAdminInstanceAdminStatisticsCsvRouteHandler,
+  )
+  .openapi(getApiAdminInstanceAdminStatisticsRoute, getApiAdminInstanceAdminStatisticsRouteHandler)
+  .openapi(
+    postApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRoute,
+    postApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRoute,
+    deleteApiAdminProjectsProjectIdFeaturesFeatureNameFavoritesRouteHandler,
+  )
+  .openapi(
+    postApiAdminProjectsProjectIdFavoritesRoute,
+    postApiAdminProjectsProjectIdFavoritesRouteHandler,
+  )
+  .openapi(
+    deleteApiAdminProjectsProjectIdFavoritesRoute,
+    deleteApiAdminProjectsProjectIdFavoritesRouteHandler,
+  )
+  .openapi(postApiAdminSegmentsValidateRoute, postApiAdminSegmentsValidateRouteHandler)
+  .openapi(
+    getApiAdminSegmentsStrategiesStrategyIdRoute,
+    getApiAdminSegmentsStrategiesStrategyIdRouteHandler,
+  )
+  .openapi(postApiAdminSegmentsStrategiesRoute, postApiAdminSegmentsStrategiesRouteHandler)
+  .openapi(getApiAdminSegmentsIdStrategiesRoute, getApiAdminSegmentsIdStrategiesRouteHandler)
+  .openapi(deleteApiAdminSegmentsIdRoute, deleteApiAdminSegmentsIdRouteHandler)
+  .openapi(putApiAdminSegmentsIdRoute, putApiAdminSegmentsIdRouteHandler)
+  .openapi(getApiAdminSegmentsIdRoute, getApiAdminSegmentsIdRouteHandler)
+  .openapi(postApiAdminSegmentsRoute, postApiAdminSegmentsRouteHandler)
+  .openapi(getApiAdminSegmentsRoute, getApiAdminSegmentsRouteHandler)
+  .openapi(postApiAdminMaintenanceRoute, postApiAdminMaintenanceRouteHandler)
+  .openapi(getApiAdminMaintenanceRoute, getApiAdminMaintenanceRouteHandler)
+  .openapi(getApiAdminTelemetrySettingsRoute, getApiAdminTelemetrySettingsRouteHandler)
+  .openapi(getApiAdminSearchFeaturesRoute, getApiAdminSearchFeaturesRouteHandler)
+  .openapi(getApiAdminSearchEventsRoute, getApiAdminSearchEventsRouteHandler)
+  .openapi(getApiAdminFlagCreatorsRoute, getApiAdminFlagCreatorsRouteHandler)
+  .openapi(postApiAdminRecordUiErrorRoute, postApiAdminRecordUiErrorRouteHandler)
+  .openapi(getApiClientFeaturesFeatureNameRoute, getApiClientFeaturesFeatureNameRouteHandler)
+  .openapi(getApiClientFeaturesRoute, getApiClientFeaturesRouteHandler)
+  .openapi(postApiClientMetricsRoute, postApiClientMetricsRouteHandler)
+  .openapi(postApiClientMetricsBulkRoute, postApiClientMetricsBulkRouteHandler)
+  .openapi(postApiClientRegisterRoute, postApiClientRegisterRouteHandler)
+  .openapi(getApiFrontendRoute, getApiFrontendRouteHandler)
+  .openapi(postApiFrontendRoute, postApiFrontendRouteHandler)
+  .openapi(postApiFrontendClientMetricsRoute, postApiFrontendClientMetricsRouteHandler)
+  .openapi(postApiFrontendClientRegisterRoute, postApiFrontendClientRegisterRouteHandler)
+  .openapi(postEdgeValidateRoute, postEdgeValidateRouteHandler)
+  .openapi(postEdgeIssueTokenRoute, postEdgeIssueTokenRouteHandler)
 
 export default app

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/juit/3.0.0/openapi.yaml',
   output: './src/juit/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/juit/types.ts' },
   client: { output: './src/juit/client.ts', baseUrl: '/' },
   rpc: { output: './src/juit/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAnalystDataDeleteAnalystTypeAnalystDataIDRoute,
   getAnalystDataIndexAnalystTypeRoute,
   getAnalystDataViewAnalystTypeAnalystDataIDRoute,
@@ -8,24 +8,38 @@ import {
   postAnalystDataIndexMinimalRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAnalystDataAddAnalystTypeAnalystObjectUUIDAnalystObjectTypeRouteHandler: RouteHandler<
+  typeof postAnalystDataAddAnalystTypeAnalystObjectUUIDAnalystObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analystDataHandler = app
-  .openapi(postAnalystDataAddAnalystTypeAnalystObjectUUIDAnalystObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalystDataEditAnalystTypeAnalystDataIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnalystDataDeleteAnalystTypeAnalystDataIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalystDataIndexAnalystTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalystDataViewAnalystTypeAnalystDataIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalystDataIndexMinimalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnalystDataEditAnalystTypeAnalystDataIDRouteHandler: RouteHandler<
+  typeof postAnalystDataEditAnalystTypeAnalystDataIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnalystDataDeleteAnalystTypeAnalystDataIDRouteHandler: RouteHandler<
+  typeof deleteAnalystDataDeleteAnalystTypeAnalystDataIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalystDataIndexAnalystTypeRouteHandler: RouteHandler<
+  typeof getAnalystDataIndexAnalystTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalystDataViewAnalystTypeAnalystDataIDRouteHandler: RouteHandler<
+  typeof getAnalystDataViewAnalystTypeAnalystDataIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalystDataIndexMinimalRouteHandler: RouteHandler<
+  typeof postAnalystDataIndexMinimalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

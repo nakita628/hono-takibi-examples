@@ -1,169 +1,491 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetWorkMailServiceAssociateDelegateToResourceHandler,
-  xAmzTargetWorkMailServiceAssociateMemberToGroupHandler,
-  xAmzTargetWorkMailServiceAssumeImpersonationRoleHandler,
-  xAmzTargetWorkMailServiceCancelMailboxExportJobHandler,
-  xAmzTargetWorkMailServiceCreateAliasHandler,
-  xAmzTargetWorkMailServiceCreateAvailabilityConfigurationHandler,
-  xAmzTargetWorkMailServiceCreateGroupHandler,
-  xAmzTargetWorkMailServiceCreateImpersonationRoleHandler,
-  xAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleHandler,
-  xAmzTargetWorkMailServiceCreateOrganizationHandler,
-  xAmzTargetWorkMailServiceCreateResourceHandler,
-  xAmzTargetWorkMailServiceCreateUserHandler,
-  xAmzTargetWorkMailServiceDeleteAccessControlRuleHandler,
-  xAmzTargetWorkMailServiceDeleteAliasHandler,
-  xAmzTargetWorkMailServiceDeleteAvailabilityConfigurationHandler,
-  xAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationHandler,
-  xAmzTargetWorkMailServiceDeleteGroupHandler,
-  xAmzTargetWorkMailServiceDeleteImpersonationRoleHandler,
-  xAmzTargetWorkMailServiceDeleteMailboxPermissionsHandler,
-  xAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideHandler,
-  xAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleHandler,
-  xAmzTargetWorkMailServiceDeleteOrganizationHandler,
-  xAmzTargetWorkMailServiceDeleteResourceHandler,
-  xAmzTargetWorkMailServiceDeleteRetentionPolicyHandler,
-  xAmzTargetWorkMailServiceDeleteUserHandler,
-  xAmzTargetWorkMailServiceDeregisterFromWorkMailHandler,
-  xAmzTargetWorkMailServiceDeregisterMailDomainHandler,
-  xAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationHandler,
-  xAmzTargetWorkMailServiceDescribeGroupHandler,
-  xAmzTargetWorkMailServiceDescribeInboundDmarcSettingsHandler,
-  xAmzTargetWorkMailServiceDescribeMailboxExportJobHandler,
-  xAmzTargetWorkMailServiceDescribeOrganizationHandler,
-  xAmzTargetWorkMailServiceDescribeResourceHandler,
-  xAmzTargetWorkMailServiceDescribeUserHandler,
-  xAmzTargetWorkMailServiceDisassociateDelegateFromResourceHandler,
-  xAmzTargetWorkMailServiceDisassociateMemberFromGroupHandler,
-  xAmzTargetWorkMailServiceGetAccessControlEffectHandler,
-  xAmzTargetWorkMailServiceGetDefaultRetentionPolicyHandler,
-  xAmzTargetWorkMailServiceGetImpersonationRoleEffectHandler,
-  xAmzTargetWorkMailServiceGetImpersonationRoleHandler,
-  xAmzTargetWorkMailServiceGetMailboxDetailsHandler,
-  xAmzTargetWorkMailServiceGetMailDomainHandler,
-  xAmzTargetWorkMailServiceGetMobileDeviceAccessEffectHandler,
-  xAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideHandler,
-  xAmzTargetWorkMailServiceListAccessControlRulesHandler,
-  xAmzTargetWorkMailServiceListAliasesHandler,
-  xAmzTargetWorkMailServiceListAvailabilityConfigurationsHandler,
-  xAmzTargetWorkMailServiceListGroupMembersHandler,
-  xAmzTargetWorkMailServiceListGroupsHandler,
-  xAmzTargetWorkMailServiceListImpersonationRolesHandler,
-  xAmzTargetWorkMailServiceListMailboxExportJobsHandler,
-  xAmzTargetWorkMailServiceListMailboxPermissionsHandler,
-  xAmzTargetWorkMailServiceListMailDomainsHandler,
-  xAmzTargetWorkMailServiceListMobileDeviceAccessOverridesHandler,
-  xAmzTargetWorkMailServiceListMobileDeviceAccessRulesHandler,
-  xAmzTargetWorkMailServiceListOrganizationsHandler,
-  xAmzTargetWorkMailServiceListResourceDelegatesHandler,
-  xAmzTargetWorkMailServiceListResourcesHandler,
-  xAmzTargetWorkMailServiceListTagsForResourceHandler,
-  xAmzTargetWorkMailServiceListUsersHandler,
-  xAmzTargetWorkMailServicePutAccessControlRuleHandler,
-  xAmzTargetWorkMailServicePutEmailMonitoringConfigurationHandler,
-  xAmzTargetWorkMailServicePutInboundDmarcSettingsHandler,
-  xAmzTargetWorkMailServicePutMailboxPermissionsHandler,
-  xAmzTargetWorkMailServicePutMobileDeviceAccessOverrideHandler,
-  xAmzTargetWorkMailServicePutRetentionPolicyHandler,
-  xAmzTargetWorkMailServiceRegisterMailDomainHandler,
-  xAmzTargetWorkMailServiceRegisterToWorkMailHandler,
-  xAmzTargetWorkMailServiceResetPasswordHandler,
-  xAmzTargetWorkMailServiceStartMailboxExportJobHandler,
-  xAmzTargetWorkMailServiceTagResourceHandler,
-  xAmzTargetWorkMailServiceTestAvailabilityConfigurationHandler,
-  xAmzTargetWorkMailServiceUntagResourceHandler,
-  xAmzTargetWorkMailServiceUpdateAvailabilityConfigurationHandler,
-  xAmzTargetWorkMailServiceUpdateDefaultMailDomainHandler,
-  xAmzTargetWorkMailServiceUpdateImpersonationRoleHandler,
-  xAmzTargetWorkMailServiceUpdateMailboxQuotaHandler,
-  xAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleHandler,
-  xAmzTargetWorkMailServiceUpdatePrimaryEmailAddressHandler,
-  xAmzTargetWorkMailServiceUpdateResourceHandler,
+  postXAmzTargetWorkMailServiceAssociateDelegateToResourceRoute,
+  postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute,
+  postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute,
+  postXAmzTargetWorkMailServiceCancelMailboxExportJobRoute,
+  postXAmzTargetWorkMailServiceCreateAliasRoute,
+  postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute,
+  postXAmzTargetWorkMailServiceCreateGroupRoute,
+  postXAmzTargetWorkMailServiceCreateImpersonationRoleRoute,
+  postXAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleRoute,
+  postXAmzTargetWorkMailServiceCreateOrganizationRoute,
+  postXAmzTargetWorkMailServiceCreateResourceRoute,
+  postXAmzTargetWorkMailServiceCreateUserRoute,
+  postXAmzTargetWorkMailServiceDeleteAccessControlRuleRoute,
+  postXAmzTargetWorkMailServiceDeleteAliasRoute,
+  postXAmzTargetWorkMailServiceDeleteAvailabilityConfigurationRoute,
+  postXAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationRoute,
+  postXAmzTargetWorkMailServiceDeleteGroupRoute,
+  postXAmzTargetWorkMailServiceDeleteImpersonationRoleRoute,
+  postXAmzTargetWorkMailServiceDeleteMailboxPermissionsRoute,
+  postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideRoute,
+  postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleRoute,
+  postXAmzTargetWorkMailServiceDeleteOrganizationRoute,
+  postXAmzTargetWorkMailServiceDeleteResourceRoute,
+  postXAmzTargetWorkMailServiceDeleteRetentionPolicyRoute,
+  postXAmzTargetWorkMailServiceDeleteUserRoute,
+  postXAmzTargetWorkMailServiceDeregisterFromWorkMailRoute,
+  postXAmzTargetWorkMailServiceDeregisterMailDomainRoute,
+  postXAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationRoute,
+  postXAmzTargetWorkMailServiceDescribeGroupRoute,
+  postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute,
+  postXAmzTargetWorkMailServiceDescribeMailboxExportJobRoute,
+  postXAmzTargetWorkMailServiceDescribeOrganizationRoute,
+  postXAmzTargetWorkMailServiceDescribeResourceRoute,
+  postXAmzTargetWorkMailServiceDescribeUserRoute,
+  postXAmzTargetWorkMailServiceDisassociateDelegateFromResourceRoute,
+  postXAmzTargetWorkMailServiceDisassociateMemberFromGroupRoute,
+  postXAmzTargetWorkMailServiceGetAccessControlEffectRoute,
+  postXAmzTargetWorkMailServiceGetDefaultRetentionPolicyRoute,
+  postXAmzTargetWorkMailServiceGetImpersonationRoleEffectRoute,
+  postXAmzTargetWorkMailServiceGetImpersonationRoleRoute,
+  postXAmzTargetWorkMailServiceGetMailboxDetailsRoute,
+  postXAmzTargetWorkMailServiceGetMailDomainRoute,
+  postXAmzTargetWorkMailServiceGetMobileDeviceAccessEffectRoute,
+  postXAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideRoute,
+  postXAmzTargetWorkMailServiceListAccessControlRulesRoute,
+  postXAmzTargetWorkMailServiceListAliasesRoute,
+  postXAmzTargetWorkMailServiceListAvailabilityConfigurationsRoute,
+  postXAmzTargetWorkMailServiceListGroupMembersRoute,
+  postXAmzTargetWorkMailServiceListGroupsRoute,
+  postXAmzTargetWorkMailServiceListImpersonationRolesRoute,
+  postXAmzTargetWorkMailServiceListMailboxExportJobsRoute,
+  postXAmzTargetWorkMailServiceListMailboxPermissionsRoute,
+  postXAmzTargetWorkMailServiceListMailDomainsRoute,
+  postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute,
+  postXAmzTargetWorkMailServiceListMobileDeviceAccessRulesRoute,
+  postXAmzTargetWorkMailServiceListOrganizationsRoute,
+  postXAmzTargetWorkMailServiceListResourceDelegatesRoute,
+  postXAmzTargetWorkMailServiceListResourcesRoute,
+  postXAmzTargetWorkMailServiceListTagsForResourceRoute,
+  postXAmzTargetWorkMailServiceListUsersRoute,
+  postXAmzTargetWorkMailServicePutAccessControlRuleRoute,
+  postXAmzTargetWorkMailServicePutEmailMonitoringConfigurationRoute,
+  postXAmzTargetWorkMailServicePutInboundDmarcSettingsRoute,
+  postXAmzTargetWorkMailServicePutMailboxPermissionsRoute,
+  postXAmzTargetWorkMailServicePutMobileDeviceAccessOverrideRoute,
+  postXAmzTargetWorkMailServicePutRetentionPolicyRoute,
+  postXAmzTargetWorkMailServiceRegisterMailDomainRoute,
+  postXAmzTargetWorkMailServiceRegisterToWorkMailRoute,
+  postXAmzTargetWorkMailServiceResetPasswordRoute,
+  postXAmzTargetWorkMailServiceStartMailboxExportJobRoute,
+  postXAmzTargetWorkMailServiceTagResourceRoute,
+  postXAmzTargetWorkMailServiceTestAvailabilityConfigurationRoute,
+  postXAmzTargetWorkMailServiceUntagResourceRoute,
+  postXAmzTargetWorkMailServiceUpdateAvailabilityConfigurationRoute,
+  postXAmzTargetWorkMailServiceUpdateDefaultMailDomainRoute,
+  postXAmzTargetWorkMailServiceUpdateImpersonationRoleRoute,
+  postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute,
+  postXAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleRoute,
+  postXAmzTargetWorkMailServiceUpdatePrimaryEmailAddressRoute,
+  postXAmzTargetWorkMailServiceUpdateResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetWorkMailServiceAssociateDelegateToResourceRouteHandler,
+  postXAmzTargetWorkMailServiceAssociateMemberToGroupRouteHandler,
+  postXAmzTargetWorkMailServiceAssumeImpersonationRoleRouteHandler,
+  postXAmzTargetWorkMailServiceCancelMailboxExportJobRouteHandler,
+  postXAmzTargetWorkMailServiceCreateAliasRouteHandler,
+  postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceCreateGroupRouteHandler,
+  postXAmzTargetWorkMailServiceCreateImpersonationRoleRouteHandler,
+  postXAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleRouteHandler,
+  postXAmzTargetWorkMailServiceCreateOrganizationRouteHandler,
+  postXAmzTargetWorkMailServiceCreateResourceRouteHandler,
+  postXAmzTargetWorkMailServiceCreateUserRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteAccessControlRuleRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteAliasRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteAvailabilityConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteGroupRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteImpersonationRoleRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteMailboxPermissionsRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteOrganizationRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteResourceRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteRetentionPolicyRouteHandler,
+  postXAmzTargetWorkMailServiceDeleteUserRouteHandler,
+  postXAmzTargetWorkMailServiceDeregisterFromWorkMailRouteHandler,
+  postXAmzTargetWorkMailServiceDeregisterMailDomainRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeGroupRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeMailboxExportJobRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeOrganizationRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeResourceRouteHandler,
+  postXAmzTargetWorkMailServiceDescribeUserRouteHandler,
+  postXAmzTargetWorkMailServiceDisassociateDelegateFromResourceRouteHandler,
+  postXAmzTargetWorkMailServiceDisassociateMemberFromGroupRouteHandler,
+  postXAmzTargetWorkMailServiceGetAccessControlEffectRouteHandler,
+  postXAmzTargetWorkMailServiceGetDefaultRetentionPolicyRouteHandler,
+  postXAmzTargetWorkMailServiceGetImpersonationRoleEffectRouteHandler,
+  postXAmzTargetWorkMailServiceGetImpersonationRoleRouteHandler,
+  postXAmzTargetWorkMailServiceGetMailboxDetailsRouteHandler,
+  postXAmzTargetWorkMailServiceGetMailDomainRouteHandler,
+  postXAmzTargetWorkMailServiceGetMobileDeviceAccessEffectRouteHandler,
+  postXAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideRouteHandler,
+  postXAmzTargetWorkMailServiceListAccessControlRulesRouteHandler,
+  postXAmzTargetWorkMailServiceListAliasesRouteHandler,
+  postXAmzTargetWorkMailServiceListAvailabilityConfigurationsRouteHandler,
+  postXAmzTargetWorkMailServiceListGroupMembersRouteHandler,
+  postXAmzTargetWorkMailServiceListGroupsRouteHandler,
+  postXAmzTargetWorkMailServiceListImpersonationRolesRouteHandler,
+  postXAmzTargetWorkMailServiceListMailboxExportJobsRouteHandler,
+  postXAmzTargetWorkMailServiceListMailboxPermissionsRouteHandler,
+  postXAmzTargetWorkMailServiceListMailDomainsRouteHandler,
+  postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRouteHandler,
+  postXAmzTargetWorkMailServiceListMobileDeviceAccessRulesRouteHandler,
+  postXAmzTargetWorkMailServiceListOrganizationsRouteHandler,
+  postXAmzTargetWorkMailServiceListResourceDelegatesRouteHandler,
+  postXAmzTargetWorkMailServiceListResourcesRouteHandler,
+  postXAmzTargetWorkMailServiceListTagsForResourceRouteHandler,
+  postXAmzTargetWorkMailServiceListUsersRouteHandler,
+  postXAmzTargetWorkMailServicePutAccessControlRuleRouteHandler,
+  postXAmzTargetWorkMailServicePutEmailMonitoringConfigurationRouteHandler,
+  postXAmzTargetWorkMailServicePutInboundDmarcSettingsRouteHandler,
+  postXAmzTargetWorkMailServicePutMailboxPermissionsRouteHandler,
+  postXAmzTargetWorkMailServicePutMobileDeviceAccessOverrideRouteHandler,
+  postXAmzTargetWorkMailServicePutRetentionPolicyRouteHandler,
+  postXAmzTargetWorkMailServiceRegisterMailDomainRouteHandler,
+  postXAmzTargetWorkMailServiceRegisterToWorkMailRouteHandler,
+  postXAmzTargetWorkMailServiceResetPasswordRouteHandler,
+  postXAmzTargetWorkMailServiceStartMailboxExportJobRouteHandler,
+  postXAmzTargetWorkMailServiceTagResourceRouteHandler,
+  postXAmzTargetWorkMailServiceTestAvailabilityConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceUntagResourceRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateAvailabilityConfigurationRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateDefaultMailDomainRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateImpersonationRoleRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateMailboxQuotaRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleRouteHandler,
+  postXAmzTargetWorkMailServiceUpdatePrimaryEmailAddressRouteHandler,
+  postXAmzTargetWorkMailServiceUpdateResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetWorkMailServiceAssociateDelegateToResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceAssociateMemberToGroupHandler)
-  .route('/', xAmzTargetWorkMailServiceAssumeImpersonationRoleHandler)
-  .route('/', xAmzTargetWorkMailServiceCancelMailboxExportJobHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateAliasHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateAvailabilityConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateGroupHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateImpersonationRoleHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateOrganizationHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceCreateUserHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteAccessControlRuleHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteAliasHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteAvailabilityConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteGroupHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteImpersonationRoleHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteMailboxPermissionsHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteOrganizationHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteRetentionPolicyHandler)
-  .route('/', xAmzTargetWorkMailServiceDeleteUserHandler)
-  .route('/', xAmzTargetWorkMailServiceDeregisterFromWorkMailHandler)
-  .route('/', xAmzTargetWorkMailServiceDeregisterMailDomainHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeGroupHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeInboundDmarcSettingsHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeMailboxExportJobHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeOrganizationHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceDescribeUserHandler)
-  .route('/', xAmzTargetWorkMailServiceDisassociateDelegateFromResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceDisassociateMemberFromGroupHandler)
-  .route('/', xAmzTargetWorkMailServiceGetAccessControlEffectHandler)
-  .route('/', xAmzTargetWorkMailServiceGetDefaultRetentionPolicyHandler)
-  .route('/', xAmzTargetWorkMailServiceGetImpersonationRoleHandler)
-  .route('/', xAmzTargetWorkMailServiceGetImpersonationRoleEffectHandler)
-  .route('/', xAmzTargetWorkMailServiceGetMailDomainHandler)
-  .route('/', xAmzTargetWorkMailServiceGetMailboxDetailsHandler)
-  .route('/', xAmzTargetWorkMailServiceGetMobileDeviceAccessEffectHandler)
-  .route('/', xAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideHandler)
-  .route('/', xAmzTargetWorkMailServiceListAccessControlRulesHandler)
-  .route('/', xAmzTargetWorkMailServiceListAliasesHandler)
-  .route('/', xAmzTargetWorkMailServiceListAvailabilityConfigurationsHandler)
-  .route('/', xAmzTargetWorkMailServiceListGroupMembersHandler)
-  .route('/', xAmzTargetWorkMailServiceListGroupsHandler)
-  .route('/', xAmzTargetWorkMailServiceListImpersonationRolesHandler)
-  .route('/', xAmzTargetWorkMailServiceListMailDomainsHandler)
-  .route('/', xAmzTargetWorkMailServiceListMailboxExportJobsHandler)
-  .route('/', xAmzTargetWorkMailServiceListMailboxPermissionsHandler)
-  .route('/', xAmzTargetWorkMailServiceListMobileDeviceAccessOverridesHandler)
-  .route('/', xAmzTargetWorkMailServiceListMobileDeviceAccessRulesHandler)
-  .route('/', xAmzTargetWorkMailServiceListOrganizationsHandler)
-  .route('/', xAmzTargetWorkMailServiceListResourceDelegatesHandler)
-  .route('/', xAmzTargetWorkMailServiceListResourcesHandler)
-  .route('/', xAmzTargetWorkMailServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceListUsersHandler)
-  .route('/', xAmzTargetWorkMailServicePutAccessControlRuleHandler)
-  .route('/', xAmzTargetWorkMailServicePutEmailMonitoringConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServicePutInboundDmarcSettingsHandler)
-  .route('/', xAmzTargetWorkMailServicePutMailboxPermissionsHandler)
-  .route('/', xAmzTargetWorkMailServicePutMobileDeviceAccessOverrideHandler)
-  .route('/', xAmzTargetWorkMailServicePutRetentionPolicyHandler)
-  .route('/', xAmzTargetWorkMailServiceRegisterMailDomainHandler)
-  .route('/', xAmzTargetWorkMailServiceRegisterToWorkMailHandler)
-  .route('/', xAmzTargetWorkMailServiceResetPasswordHandler)
-  .route('/', xAmzTargetWorkMailServiceStartMailboxExportJobHandler)
-  .route('/', xAmzTargetWorkMailServiceTagResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceTestAvailabilityConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceUntagResourceHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateAvailabilityConfigurationHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateDefaultMailDomainHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateImpersonationRoleHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateMailboxQuotaHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdatePrimaryEmailAddressHandler)
-  .route('/', xAmzTargetWorkMailServiceUpdateResourceHandler)
+  .openapi(
+    postXAmzTargetWorkMailServiceAssociateDelegateToResourceRoute,
+    postXAmzTargetWorkMailServiceAssociateDelegateToResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute,
+    postXAmzTargetWorkMailServiceAssociateMemberToGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute,
+    postXAmzTargetWorkMailServiceAssumeImpersonationRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCancelMailboxExportJobRoute,
+    postXAmzTargetWorkMailServiceCancelMailboxExportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateAliasRoute,
+    postXAmzTargetWorkMailServiceCreateAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute,
+    postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateGroupRoute,
+    postXAmzTargetWorkMailServiceCreateGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateImpersonationRoleRoute,
+    postXAmzTargetWorkMailServiceCreateImpersonationRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleRoute,
+    postXAmzTargetWorkMailServiceCreateMobileDeviceAccessRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateOrganizationRoute,
+    postXAmzTargetWorkMailServiceCreateOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateResourceRoute,
+    postXAmzTargetWorkMailServiceCreateResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceCreateUserRoute,
+    postXAmzTargetWorkMailServiceCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteAccessControlRuleRoute,
+    postXAmzTargetWorkMailServiceDeleteAccessControlRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteAliasRoute,
+    postXAmzTargetWorkMailServiceDeleteAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteAvailabilityConfigurationRoute,
+    postXAmzTargetWorkMailServiceDeleteAvailabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationRoute,
+    postXAmzTargetWorkMailServiceDeleteEmailMonitoringConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteGroupRoute,
+    postXAmzTargetWorkMailServiceDeleteGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteImpersonationRoleRoute,
+    postXAmzTargetWorkMailServiceDeleteImpersonationRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteMailboxPermissionsRoute,
+    postXAmzTargetWorkMailServiceDeleteMailboxPermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideRoute,
+    postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleRoute,
+    postXAmzTargetWorkMailServiceDeleteMobileDeviceAccessRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteOrganizationRoute,
+    postXAmzTargetWorkMailServiceDeleteOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteResourceRoute,
+    postXAmzTargetWorkMailServiceDeleteResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteRetentionPolicyRoute,
+    postXAmzTargetWorkMailServiceDeleteRetentionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeleteUserRoute,
+    postXAmzTargetWorkMailServiceDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeregisterFromWorkMailRoute,
+    postXAmzTargetWorkMailServiceDeregisterFromWorkMailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDeregisterMailDomainRoute,
+    postXAmzTargetWorkMailServiceDeregisterMailDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationRoute,
+    postXAmzTargetWorkMailServiceDescribeEmailMonitoringConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeGroupRoute,
+    postXAmzTargetWorkMailServiceDescribeGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute,
+    postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeMailboxExportJobRoute,
+    postXAmzTargetWorkMailServiceDescribeMailboxExportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeOrganizationRoute,
+    postXAmzTargetWorkMailServiceDescribeOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeResourceRoute,
+    postXAmzTargetWorkMailServiceDescribeResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDescribeUserRoute,
+    postXAmzTargetWorkMailServiceDescribeUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDisassociateDelegateFromResourceRoute,
+    postXAmzTargetWorkMailServiceDisassociateDelegateFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceDisassociateMemberFromGroupRoute,
+    postXAmzTargetWorkMailServiceDisassociateMemberFromGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetAccessControlEffectRoute,
+    postXAmzTargetWorkMailServiceGetAccessControlEffectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetDefaultRetentionPolicyRoute,
+    postXAmzTargetWorkMailServiceGetDefaultRetentionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetImpersonationRoleRoute,
+    postXAmzTargetWorkMailServiceGetImpersonationRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetImpersonationRoleEffectRoute,
+    postXAmzTargetWorkMailServiceGetImpersonationRoleEffectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetMailDomainRoute,
+    postXAmzTargetWorkMailServiceGetMailDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetMailboxDetailsRoute,
+    postXAmzTargetWorkMailServiceGetMailboxDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetMobileDeviceAccessEffectRoute,
+    postXAmzTargetWorkMailServiceGetMobileDeviceAccessEffectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideRoute,
+    postXAmzTargetWorkMailServiceGetMobileDeviceAccessOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListAccessControlRulesRoute,
+    postXAmzTargetWorkMailServiceListAccessControlRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListAliasesRoute,
+    postXAmzTargetWorkMailServiceListAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListAvailabilityConfigurationsRoute,
+    postXAmzTargetWorkMailServiceListAvailabilityConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListGroupMembersRoute,
+    postXAmzTargetWorkMailServiceListGroupMembersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListGroupsRoute,
+    postXAmzTargetWorkMailServiceListGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListImpersonationRolesRoute,
+    postXAmzTargetWorkMailServiceListImpersonationRolesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListMailDomainsRoute,
+    postXAmzTargetWorkMailServiceListMailDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListMailboxExportJobsRoute,
+    postXAmzTargetWorkMailServiceListMailboxExportJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListMailboxPermissionsRoute,
+    postXAmzTargetWorkMailServiceListMailboxPermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute,
+    postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListMobileDeviceAccessRulesRoute,
+    postXAmzTargetWorkMailServiceListMobileDeviceAccessRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListOrganizationsRoute,
+    postXAmzTargetWorkMailServiceListOrganizationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListResourceDelegatesRoute,
+    postXAmzTargetWorkMailServiceListResourceDelegatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListResourcesRoute,
+    postXAmzTargetWorkMailServiceListResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListTagsForResourceRoute,
+    postXAmzTargetWorkMailServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceListUsersRoute,
+    postXAmzTargetWorkMailServiceListUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutAccessControlRuleRoute,
+    postXAmzTargetWorkMailServicePutAccessControlRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutEmailMonitoringConfigurationRoute,
+    postXAmzTargetWorkMailServicePutEmailMonitoringConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutInboundDmarcSettingsRoute,
+    postXAmzTargetWorkMailServicePutInboundDmarcSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutMailboxPermissionsRoute,
+    postXAmzTargetWorkMailServicePutMailboxPermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutMobileDeviceAccessOverrideRoute,
+    postXAmzTargetWorkMailServicePutMobileDeviceAccessOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServicePutRetentionPolicyRoute,
+    postXAmzTargetWorkMailServicePutRetentionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceRegisterMailDomainRoute,
+    postXAmzTargetWorkMailServiceRegisterMailDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceRegisterToWorkMailRoute,
+    postXAmzTargetWorkMailServiceRegisterToWorkMailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceResetPasswordRoute,
+    postXAmzTargetWorkMailServiceResetPasswordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceStartMailboxExportJobRoute,
+    postXAmzTargetWorkMailServiceStartMailboxExportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceTagResourceRoute,
+    postXAmzTargetWorkMailServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceTestAvailabilityConfigurationRoute,
+    postXAmzTargetWorkMailServiceTestAvailabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUntagResourceRoute,
+    postXAmzTargetWorkMailServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateAvailabilityConfigurationRoute,
+    postXAmzTargetWorkMailServiceUpdateAvailabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateDefaultMailDomainRoute,
+    postXAmzTargetWorkMailServiceUpdateDefaultMailDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateImpersonationRoleRoute,
+    postXAmzTargetWorkMailServiceUpdateImpersonationRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute,
+    postXAmzTargetWorkMailServiceUpdateMailboxQuotaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleRoute,
+    postXAmzTargetWorkMailServiceUpdateMobileDeviceAccessRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdatePrimaryEmailAddressRoute,
+    postXAmzTargetWorkMailServiceUpdatePrimaryEmailAddressRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkMailServiceUpdateResourceRoute,
+    postXAmzTargetWorkMailServiceUpdateResourceRouteHandler,
+  )
 
 export default app

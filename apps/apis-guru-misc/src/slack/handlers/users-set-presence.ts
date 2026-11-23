@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUsersSetPresenceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUsersSetPresenceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const usersSetPresenceHandler = app.openapi(postUsersSetPresenceRoute, (c) => {
+export const postUsersSetPresenceRouteHandler: RouteHandler<
+  typeof postUsersSetPresenceRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

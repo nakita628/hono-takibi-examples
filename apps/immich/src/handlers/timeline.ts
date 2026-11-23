@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTimelineBucketRoute, getTimelineBucketsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTimelineBucketRoute, getTimelineBucketsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimelineBucketRouteHandler: RouteHandler<typeof getTimelineBucketRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const timelineHandler = app
-  .openapi(getTimelineBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimelineBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTimelineBucketsRouteHandler: RouteHandler<typeof getTimelineBucketsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

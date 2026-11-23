@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/poly/v1/openapi.yaml',
   output: './src/poly/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/poly/types.ts' },
   client: { output: './src/poly/client.ts', baseUrl: '/' },
   rpc: { output: './src/poly/rpc.ts', parseResponse: true },

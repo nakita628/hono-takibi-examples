@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIntegrationsIdRoute,
   getIntegrationsIdRoute,
   getIntegrationsRoute,
@@ -9,27 +9,42 @@ import {
   putIntegrationsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsRouteHandler: RouteHandler<typeof getIntegrationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIntegrationsIdAttachSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIntegrationsIdDetachSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegrationsRouteHandler: RouteHandler<typeof postIntegrationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsIdRouteHandler: RouteHandler<typeof getIntegrationsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putIntegrationsIdRouteHandler: RouteHandler<typeof putIntegrationsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationsIdRouteHandler: RouteHandler<
+  typeof deleteIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIntegrationsIdAttachSourceIdRouteHandler: RouteHandler<
+  typeof putIntegrationsIdAttachSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIntegrationsIdDetachSourceIdRouteHandler: RouteHandler<
+  typeof putIntegrationsIdDetachSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

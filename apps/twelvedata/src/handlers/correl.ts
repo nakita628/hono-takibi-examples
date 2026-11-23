@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCorrelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCorrelRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const correlHandler = app.openapi(getCorrelRoute, (c) => {
+export const getCorrelRouteHandler: RouteHandler<typeof getCorrelRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

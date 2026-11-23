@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCreatorRolesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCreatorRolesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const creatorRolesHandler = app.openapi(getCreatorRolesRoute, (c) => {
+export const getCreatorRolesRouteHandler: RouteHandler<typeof getCreatorRolesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

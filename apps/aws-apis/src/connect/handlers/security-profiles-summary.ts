@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSecurityProfilesSummaryInstanceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSecurityProfilesSummaryInstanceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const securityProfilesSummaryHandler = app.openapi(
-  getSecurityProfilesSummaryInstanceIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getSecurityProfilesSummaryInstanceIdRouteHandler: RouteHandler<
+  typeof getSecurityProfilesSummaryInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

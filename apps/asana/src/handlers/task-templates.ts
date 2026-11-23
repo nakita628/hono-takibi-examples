@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTaskTemplatesTaskTemplateGidRoute,
   getTaskTemplatesRoute,
   getTaskTemplatesTaskTemplateGidRoute,
   postTaskTemplatesTaskTemplateGidInstantiateTaskRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaskTemplatesRouteHandler: RouteHandler<typeof getTaskTemplatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const taskTemplatesHandler = app
-  .openapi(getTaskTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskTemplatesTaskTemplateGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTaskTemplatesTaskTemplateGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaskTemplatesTaskTemplateGidInstantiateTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTaskTemplatesTaskTemplateGidRouteHandler: RouteHandler<
+  typeof getTaskTemplatesTaskTemplateGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTaskTemplatesTaskTemplateGidRouteHandler: RouteHandler<
+  typeof deleteTaskTemplatesTaskTemplateGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaskTemplatesTaskTemplateGidInstantiateTaskRouteHandler: RouteHandler<
+  typeof postTaskTemplatesTaskTemplateGidInstantiateTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

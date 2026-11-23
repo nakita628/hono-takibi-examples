@@ -10784,24 +10784,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/_alias': {
-      $get: {
-        input: {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: { [x: string]: IndicesGetAliasIndexAliases }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: { [x: string]: IndicesGetAliasIndexAliases }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $put: {
         input: {
           query: {
@@ -10833,42 +10852,80 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/_alias/:name': {
-      $get: {
-        input: { param: { name: CommonNames } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $get:
+        | {
+            input: { param: { name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: { [x: string]: IndicesGetAliasIndexAliases }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: { [x: string]: IndicesGetAliasIndexAliases }
-        outputFormat: 'json'
-        status: 200
-      }
-      $head: {
-        input: { param: { name: CommonNames } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+        | {
+            input: { param: { name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post: {
         input: { param: { name: CommonName } } & {
           query: {
@@ -28262,27 +28319,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $head: {
-        input: { param: { index: CommonIndices } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            cluster_manager_timeout?: CommonDuration | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            flat_settings?: boolean | undefined
-            ignore_unavailable?: boolean | undefined
-            include_defaults?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $head:
+        | {
+            input: { param: { index: CommonIndices } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                cluster_manager_timeout?: CommonDuration | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                flat_settings?: boolean | undefined
+                ignore_unavailable?: boolean | undefined
+                include_defaults?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { index: CommonIndices } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                cluster_manager_timeout?: CommonDuration | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                flat_settings?: boolean | undefined
+                ignore_unavailable?: boolean | undefined
+                include_defaults?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $put:
         | {
             input: { param: { index: CommonIndexName } } & {
@@ -28359,24 +28438,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/:index/_alias': {
-      $get: {
-        input: { param: { index: CommonIndices } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $get:
+        | {
+            input: { param: { index: CommonIndices } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: { [x: string]: IndicesGetAliasIndexAliases }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: { [x: string]: IndicesGetAliasIndexAliases }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { index: CommonIndices } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $put: {
         input: { param: { index: CommonIndices } } & {
           query: {
@@ -28425,42 +28523,80 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $get: {
-        input: { param: { index: CommonIndices; name: CommonNames } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $get:
+        | {
+            input: { param: { index: CommonIndices; name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: { [x: string]: IndicesGetAliasIndexAliases }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: { [x: string]: IndicesGetAliasIndexAliases }
-        outputFormat: 'json'
-        status: 200
-      }
-      $head: {
-        input: { param: { index: CommonIndices; name: CommonNames } } & {
-          query: {
-            allow_no_indices?: boolean | undefined
-            expand_wildcards?: CommonExpandWildcards | undefined
-            ignore_unavailable?: boolean | undefined
-            local?: boolean | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+        | {
+            input: { param: { index: CommonIndices; name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { index: CommonIndices; name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { index: CommonIndices; name: CommonNames } } & {
+              query: {
+                allow_no_indices?: boolean | undefined
+                expand_wildcards?: CommonExpandWildcards | undefined
+                ignore_unavailable?: boolean | undefined
+                local?: boolean | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post: {
         input: { param: { index: CommonIndices; name: CommonName } } & {
           query: {
@@ -29267,30 +29403,55 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 404
           }
-      $head: {
-        input: { param: { id: CommonId; index: CommonIndexName } } & {
-          query: {
-            _source?: CoreSearchSourceConfigParam | undefined
-            _source_excludes?: CommonFields | undefined
-            _source_includes?: CommonFields | undefined
-            preference?: string | undefined
-            realtime?: boolean | undefined
-            refresh?: CommonRefresh | undefined
-            routing?: CommonStringOrStringArray | undefined
-            stored_fields?: CommonFields | undefined
-            version?: CommonVersionNumber | undefined
-            version_type?: CommonVersionType | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $head:
+        | {
+            input: { param: { id: CommonId; index: CommonIndexName } } & {
+              query: {
+                _source?: CoreSearchSourceConfigParam | undefined
+                _source_excludes?: CommonFields | undefined
+                _source_includes?: CommonFields | undefined
+                preference?: string | undefined
+                realtime?: boolean | undefined
+                refresh?: CommonRefresh | undefined
+                routing?: CommonStringOrStringArray | undefined
+                stored_fields?: CommonFields | undefined
+                version?: CommonVersionNumber | undefined
+                version_type?: CommonVersionType | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: CommonId; index: CommonIndexName } } & {
+              query: {
+                _source?: CoreSearchSourceConfigParam | undefined
+                _source_excludes?: CommonFields | undefined
+                _source_includes?: CommonFields | undefined
+                preference?: string | undefined
+                realtime?: boolean | undefined
+                refresh?: CommonRefresh | undefined
+                routing?: CommonStringOrStringArray | undefined
+                stored_fields?: CommonFields | undefined
+                version?: CommonVersionNumber | undefined
+                version_type?: CommonVersionType | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post:
         | {
             input: { param: { id: CommonId; index: CommonIndexName } } & {
@@ -31082,29 +31243,53 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 404
           }
-      $head: {
-        input: { param: { id: CommonId; index: CommonIndexName } } & {
-          query: {
-            _source?: CoreSearchSourceConfigParam | undefined
-            _source_excludes?: CommonFields | undefined
-            _source_includes?: CommonFields | undefined
-            preference?: string | undefined
-            realtime?: boolean | undefined
-            refresh?: CommonRefresh | undefined
-            routing?: CommonStringOrStringArray | undefined
-            version?: CommonVersionNumber | undefined
-            version_type?: CommonVersionType | undefined
-            pretty?: boolean | undefined
-            human?: boolean | undefined
-            error_trace?: boolean | undefined
-            source?: string | undefined
-            filter_path?: CommonStringOrStringArray | undefined
+      $head:
+        | {
+            input: { param: { id: CommonId; index: CommonIndexName } } & {
+              query: {
+                _source?: CoreSearchSourceConfigParam | undefined
+                _source_excludes?: CommonFields | undefined
+                _source_includes?: CommonFields | undefined
+                preference?: string | undefined
+                realtime?: boolean | undefined
+                refresh?: CommonRefresh | undefined
+                routing?: CommonStringOrStringArray | undefined
+                version?: CommonVersionNumber | undefined
+                version_type?: CommonVersionType | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: CommonId; index: CommonIndexName } } & {
+              query: {
+                _source?: CoreSearchSourceConfigParam | undefined
+                _source_excludes?: CommonFields | undefined
+                _source_includes?: CommonFields | undefined
+                preference?: string | undefined
+                realtime?: boolean | undefined
+                refresh?: CommonRefresh | undefined
+                routing?: CommonStringOrStringArray | undefined
+                version?: CommonVersionNumber | undefined
+                version_type?: CommonVersionType | undefined
+                pretty?: boolean | undefined
+                human?: boolean | undefined
+                error_trace?: boolean | undefined
+                source?: string | undefined
+                filter_path?: CommonStringOrStringArray | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/:index/_split/:target': {

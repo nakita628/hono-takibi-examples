@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatabasePkRoute,
   getDatabaseAvailableIndexRoute,
   getDatabaseExportIndexRoute,
@@ -19,57 +19,98 @@ import {
   putDatabasePkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDatabaseIndexRouteHandler: RouteHandler<typeof getDatabaseIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const databaseHandler = app
-  .openapi(getDatabaseIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabaseIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabaseAvailableIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabaseExportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabaseImportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabaseTestConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabaseValidateParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatabasePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkFunctionNamesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkRelatedObjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkSchemasIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkSelectStarTableNameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkSelectStarTableNameSchemaNameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasePkTableTableNameSchemaNameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDatabaseIndexRouteHandler: RouteHandler<typeof postDatabaseIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabaseInfoRouteHandler: RouteHandler<typeof getDatabaseInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabaseAvailableIndexRouteHandler: RouteHandler<
+  typeof getDatabaseAvailableIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabaseExportIndexRouteHandler: RouteHandler<
+  typeof getDatabaseExportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabaseImportIndexRouteHandler: RouteHandler<
+  typeof postDatabaseImportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabaseTestConnectionRouteHandler: RouteHandler<
+  typeof postDatabaseTestConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabaseValidateParametersRouteHandler: RouteHandler<
+  typeof postDatabaseValidateParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasePkRouteHandler: RouteHandler<typeof deleteDatabasePkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkRouteHandler: RouteHandler<typeof getDatabasePkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatabasePkRouteHandler: RouteHandler<typeof putDatabasePkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkFunctionNamesIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkFunctionNamesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkRelatedObjectsIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkRelatedObjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkSchemasIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkSchemasIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkSelectStarTableNameIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkSelectStarTableNameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkSelectStarTableNameSchemaNameIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkSelectStarTableNameSchemaNameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasePkTableTableNameSchemaNameIndexRouteHandler: RouteHandler<
+  typeof getDatabasePkTableTableNameSchemaNameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

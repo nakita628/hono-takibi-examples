@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRepertoireRoute, putRepertoireRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRepertoireRoute, putRepertoireRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRepertoireRouteHandler: RouteHandler<typeof postRepertoireRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const repertoireHandler = app
-  .openapi(postRepertoireRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepertoireRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRepertoireRouteHandler: RouteHandler<typeof putRepertoireRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

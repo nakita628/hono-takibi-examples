@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBrandingThemesBrandingThemeIDPaymentServicesRoute,
   getBrandingThemesBrandingThemeIDRoute,
   getBrandingThemesRoute,
   postBrandingThemesBrandingThemeIDPaymentServicesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBrandingThemesRouteHandler: RouteHandler<typeof getBrandingThemesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const brandingThemesHandler = app
-  .openapi(getBrandingThemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrandingThemesBrandingThemeIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrandingThemesBrandingThemeIDPaymentServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBrandingThemesBrandingThemeIDPaymentServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBrandingThemesBrandingThemeIDRouteHandler: RouteHandler<
+  typeof getBrandingThemesBrandingThemeIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrandingThemesBrandingThemeIDPaymentServicesRouteHandler: RouteHandler<
+  typeof getBrandingThemesBrandingThemeIDPaymentServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBrandingThemesBrandingThemeIDPaymentServicesRouteHandler: RouteHandler<
+  typeof postBrandingThemesBrandingThemeIDPaymentServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

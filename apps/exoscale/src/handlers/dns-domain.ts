@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDnsDomainDomainIdRecordRecordIdRoute,
   deleteDnsDomainIdRoute,
   getDnsDomainDomainIdRecordRecordIdRoute,
@@ -12,36 +12,56 @@ import {
   putDnsDomainDomainIdRecordRecordIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDnsDomainDomainIdRecordRouteHandler: RouteHandler<
+  typeof getDnsDomainDomainIdRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dnsDomainHandler = app
-  .openapi(getDnsDomainDomainIdRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDnsDomainDomainIdRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDnsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDnsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDnsDomainDomainIdRecordRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDnsDomainDomainIdRecordRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDnsDomainDomainIdRecordRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDnsDomainIdZoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDnsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDnsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDnsDomainDomainIdRecordRouteHandler: RouteHandler<
+  typeof postDnsDomainDomainIdRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDnsDomainRouteHandler: RouteHandler<typeof getDnsDomainRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDnsDomainRouteHandler: RouteHandler<typeof postDnsDomainRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDnsDomainDomainIdRecordRecordIdRouteHandler: RouteHandler<
+  typeof getDnsDomainDomainIdRecordRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDnsDomainDomainIdRecordRecordIdRouteHandler: RouteHandler<
+  typeof putDnsDomainDomainIdRecordRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDnsDomainDomainIdRecordRecordIdRouteHandler: RouteHandler<
+  typeof deleteDnsDomainDomainIdRecordRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDnsDomainIdZoneRouteHandler: RouteHandler<typeof getDnsDomainIdZoneRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDnsDomainIdRouteHandler: RouteHandler<typeof deleteDnsDomainIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDnsDomainIdRouteHandler: RouteHandler<typeof getDnsDomainIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPrincipalsThingsXAmznPrincipalRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPrincipalsThingsXAmznPrincipalRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const principalsHandler = app.openapi(getPrincipalsThingsXAmznPrincipalRoute, (c) => {
+export const getPrincipalsThingsXAmznPrincipalRouteHandler: RouteHandler<
+  typeof getPrincipalsThingsXAmznPrincipalRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

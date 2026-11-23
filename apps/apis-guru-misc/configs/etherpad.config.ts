@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/etherpad.local/1.2.15/openapi.yaml',
   output: './src/etherpad/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/etherpad/types.ts' },
   client: { output: './src/etherpad/client.ts', baseUrl: '/' },
   rpc: { output: './src/etherpad/rpc.ts', parseResponse: true },

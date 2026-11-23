@@ -617,7 +617,7 @@ export const deleteMarketingTransactional202609SmtpTokensTokenIdRoute = createRo
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['transactional-email'] }],
 })
 

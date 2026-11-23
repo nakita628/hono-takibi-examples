@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getListingCarAuctionIdExtraRoute,
   getListingCarAuctionIdMediaRoute,
   getListingCarAuctionIdRoute,
@@ -26,78 +26,142 @@ import {
   getListingRvUkIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getListingCarAuctionIdRouteHandler: RouteHandler<
+  typeof getListingCarAuctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const listingHandler = app
-  .openapi(getListingCarAuctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarAuctionIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarAuctionIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarFsboIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarFsboIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarFsboIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarUkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarUkIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarUkIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingCarIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingHeavyEquipmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingHeavyEquipmentIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingHeavyEquipmentIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingMotorcycleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingMotorcycleIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingMotorcycleIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvUkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvUkIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvUkIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvIdExtraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListingRvIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getListingCarAuctionIdExtraRouteHandler: RouteHandler<
+  typeof getListingCarAuctionIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarAuctionIdMediaRouteHandler: RouteHandler<
+  typeof getListingCarAuctionIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarFsboIdRouteHandler: RouteHandler<
+  typeof getListingCarFsboIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarFsboIdExtraRouteHandler: RouteHandler<
+  typeof getListingCarFsboIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarFsboIdMediaRouteHandler: RouteHandler<
+  typeof getListingCarFsboIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarUkIdRouteHandler: RouteHandler<typeof getListingCarUkIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarUkIdExtraRouteHandler: RouteHandler<
+  typeof getListingCarUkIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarUkIdMediaRouteHandler: RouteHandler<
+  typeof getListingCarUkIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarIdRouteHandler: RouteHandler<typeof getListingCarIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarIdExtraRouteHandler: RouteHandler<
+  typeof getListingCarIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingCarIdMediaRouteHandler: RouteHandler<
+  typeof getListingCarIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingHeavyEquipmentIdRouteHandler: RouteHandler<
+  typeof getListingHeavyEquipmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingHeavyEquipmentIdExtraRouteHandler: RouteHandler<
+  typeof getListingHeavyEquipmentIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingHeavyEquipmentIdMediaRouteHandler: RouteHandler<
+  typeof getListingHeavyEquipmentIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingMotorcycleIdRouteHandler: RouteHandler<
+  typeof getListingMotorcycleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingMotorcycleIdExtraRouteHandler: RouteHandler<
+  typeof getListingMotorcycleIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingMotorcycleIdMediaRouteHandler: RouteHandler<
+  typeof getListingMotorcycleIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvUkIdRouteHandler: RouteHandler<typeof getListingRvUkIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvUkIdExtraRouteHandler: RouteHandler<
+  typeof getListingRvUkIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvUkIdMediaRouteHandler: RouteHandler<
+  typeof getListingRvUkIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvIdRouteHandler: RouteHandler<typeof getListingRvIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvIdExtraRouteHandler: RouteHandler<
+  typeof getListingRvIdExtraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListingRvIdMediaRouteHandler: RouteHandler<
+  typeof getListingRvIdMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

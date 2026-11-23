@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOnvifProbeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOnvifProbeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const onvifHandler = app.openapi(getOnvifProbeRoute, (c) => {
+export const getOnvifProbeRouteHandler: RouteHandler<typeof getOnvifProbeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

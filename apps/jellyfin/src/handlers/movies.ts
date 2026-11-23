@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMoviesItemIdSimilarRoute, getMoviesRecommendationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMoviesItemIdSimilarRoute, getMoviesRecommendationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMoviesItemIdSimilarRouteHandler: RouteHandler<
+  typeof getMoviesItemIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moviesHandler = app
-  .openapi(getMoviesItemIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMoviesRecommendationsRouteHandler: RouteHandler<
+  typeof getMoviesRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

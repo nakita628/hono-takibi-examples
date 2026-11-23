@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdvertisingEligibilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdvertisingEligibilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const advertisingEligibilityHandler = app.openapi(getAdvertisingEligibilityRoute, (c) => {
+export const getAdvertisingEligibilityRouteHandler: RouteHandler<
+  typeof getAdvertisingEligibilityRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

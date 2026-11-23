@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFoldersPathRoute, postFoldersPathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFoldersPathRoute, postFoldersPathRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFoldersPathRouteHandler: RouteHandler<typeof getFoldersPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const foldersHandler = app
-  .openapi(getFoldersPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFoldersPathRouteHandler: RouteHandler<typeof postFoldersPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

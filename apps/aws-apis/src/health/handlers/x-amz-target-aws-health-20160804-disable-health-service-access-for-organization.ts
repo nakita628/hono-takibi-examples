@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSHealth20160804DisableHealthServiceAccessForOrganizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSHealth20160804DisableHealthServiceAccessForOrganizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsHealth20160804DisableHealthServiceAccessForOrganizationHandler =
-  app.openapi(
-    postXAmzTargetAWSHealth20160804DisableHealthServiceAccessForOrganizationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSHealth20160804DisableHealthServiceAccessForOrganizationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSHealth20160804DisableHealthServiceAccessForOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

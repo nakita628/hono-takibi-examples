@@ -712,7 +712,7 @@ const ConnectorConfigurationSchema = z
   .openapi('ConnectorConfiguration')
 
 type DescribeConnectorResponseType = {
-  connectorConfiguration?: z.infer<typeof ConnectorConfigurationSchema> & unknown
+  connectorConfiguration?: z.infer<typeof ConnectorConfigurationSchema>
 }
 
 type ConnectorConfigurationsMapType = {
@@ -769,9 +769,9 @@ const ConnectorListSchema = z.array(ConnectorDetailSchema).openapi('ConnectorLis
 const NextTokenSchema = z.string().regex(/\S+/).max(2048).openapi('NextToken')
 
 type DescribeConnectorsResponseType = {
-  connectorConfigurations?: z.infer<typeof ConnectorConfigurationsMapSchema> & unknown
-  connectors?: z.infer<typeof ConnectorListSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  connectorConfigurations?: z.infer<typeof ConnectorConfigurationsMapSchema>
+  connectors?: z.infer<typeof ConnectorListSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const FlowArnSchema = z
@@ -2368,25 +2368,25 @@ const MetadataCatalogDetailsSchema = z
   .openapi('MetadataCatalogDetails')
 
 type DescribeFlowResponseType = {
-  flowArn?: z.infer<typeof FlowArnSchema> & unknown
-  description?: z.infer<typeof FlowDescriptionSchema> & unknown
-  flowName?: z.infer<typeof FlowNameSchema> & unknown
-  kmsArn?: z.infer<typeof KMSArnSchema> & unknown
-  flowStatus?: z.infer<typeof FlowStatusSchema> & unknown
-  flowStatusMessage?: z.infer<typeof FlowStatusMessageSchema> & unknown
-  sourceFlowConfig?: z.infer<typeof SourceFlowConfigSchema> & unknown
-  destinationFlowConfigList?: z.infer<typeof DestinationFlowConfigListSchema> & unknown
-  lastRunExecutionDetails?: z.infer<typeof ExecutionDetailsSchema> & unknown
-  triggerConfig?: z.infer<typeof TriggerConfigSchema> & unknown
-  tasks?: z.infer<typeof TasksSchema> & unknown
-  createdAt?: z.infer<typeof DateSchema> & unknown
-  lastUpdatedAt?: z.infer<typeof DateSchema> & unknown
-  createdBy?: z.infer<typeof CreatedBySchema> & unknown
-  lastUpdatedBy?: z.infer<typeof UpdatedBySchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
-  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema> & unknown
-  lastRunMetadataCatalogDetails?: z.infer<typeof MetadataCatalogDetailsSchema> & unknown
-  schemaVersion?: z.infer<typeof LongSchema> & unknown
+  flowArn?: z.infer<typeof FlowArnSchema>
+  description?: z.infer<typeof FlowDescriptionSchema>
+  flowName?: z.infer<typeof FlowNameSchema>
+  kmsArn?: z.infer<typeof KMSArnSchema>
+  flowStatus?: z.infer<typeof FlowStatusSchema>
+  flowStatusMessage?: z.infer<typeof FlowStatusMessageSchema>
+  sourceFlowConfig?: z.infer<typeof SourceFlowConfigSchema>
+  destinationFlowConfigList?: z.infer<typeof DestinationFlowConfigListSchema>
+  lastRunExecutionDetails?: z.infer<typeof ExecutionDetailsSchema>
+  triggerConfig?: z.infer<typeof TriggerConfigSchema>
+  tasks?: z.infer<typeof TasksSchema>
+  createdAt?: z.infer<typeof DateSchema>
+  lastUpdatedAt?: z.infer<typeof DateSchema>
+  createdBy?: z.infer<typeof CreatedBySchema>
+  lastUpdatedBy?: z.infer<typeof UpdatedBySchema>
+  tags?: z.infer<typeof TagMapSchema>
+  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema>
+  lastRunMetadataCatalogDetails?: z.infer<typeof MetadataCatalogDetailsSchema>
+  schemaVersion?: z.infer<typeof LongSchema>
 }
 
 const ClientTokenSchema = z
@@ -2397,27 +2397,27 @@ const ClientTokenSchema = z
   .openapi('ClientToken')
 
 type CreateFlowRequestType = {
-  flowName: z.infer<typeof FlowNameSchema> & unknown
-  description?: z.infer<typeof FlowDescriptionSchema> & unknown
-  kmsArn?: z.infer<typeof KMSArnSchema> & unknown
-  triggerConfig: z.infer<typeof TriggerConfigSchema> & unknown
-  sourceFlowConfig: z.infer<typeof SourceFlowConfigSchema> & unknown
-  destinationFlowConfigList: z.infer<typeof DestinationFlowConfigListSchema> & unknown
-  tasks: z.infer<typeof TasksSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
-  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema> & unknown
-  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
+  flowName: z.infer<typeof FlowNameSchema>
+  description?: z.infer<typeof FlowDescriptionSchema>
+  kmsArn?: z.infer<typeof KMSArnSchema>
+  triggerConfig: z.infer<typeof TriggerConfigSchema>
+  sourceFlowConfig: z.infer<typeof SourceFlowConfigSchema>
+  destinationFlowConfigList: z.infer<typeof DestinationFlowConfigListSchema>
+  tasks: z.infer<typeof TasksSchema>
+  tags?: z.infer<typeof TagMapSchema>
+  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema>
+  clientToken?: z.infer<typeof ClientTokenSchema>
 }
 
 type UpdateFlowRequestType = {
-  flowName: z.infer<typeof FlowNameSchema> & unknown
-  description?: z.infer<typeof FlowDescriptionSchema> & unknown
-  triggerConfig: z.infer<typeof TriggerConfigSchema> & unknown
+  flowName: z.infer<typeof FlowNameSchema>
+  description?: z.infer<typeof FlowDescriptionSchema>
+  triggerConfig: z.infer<typeof TriggerConfigSchema>
   sourceFlowConfig: z.infer<typeof SourceFlowConfigSchema>
-  destinationFlowConfigList: z.infer<typeof DestinationFlowConfigListSchema> & unknown
-  tasks: z.infer<typeof TasksSchema> & unknown
-  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema> & unknown
-  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
+  destinationFlowConfigList: z.infer<typeof DestinationFlowConfigListSchema>
+  tasks: z.infer<typeof TasksSchema>
+  metadataCatalogConfig?: z.infer<typeof MetadataCatalogConfigSchema>
+  clientToken?: z.infer<typeof ClientTokenSchema>
 }
 
 const ConnectorProfileArnSchema = z

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postFulfillmentEndpointPvtOrderFormsSimulationRoute,
   postFulfillmentEndpointPvtOrdersOrderIdCancelRoute,
   postFulfillmentEndpointPvtOrdersRoute,
   postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFulfillmentEndpointPvtOrderFormsSimulationRouteHandler: RouteHandler<
+  typeof postFulfillmentEndpointPvtOrderFormsSimulationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fulfillmentEndpointHandler = app
-  .openapi(postFulfillmentEndpointPvtOrderFormsSimulationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFulfillmentEndpointPvtOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFulfillmentEndpointPvtOrdersOrderIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFulfillmentEndpointPvtOrdersRouteHandler: RouteHandler<
+  typeof postFulfillmentEndpointPvtOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFulfillmentEndpointPvtOrdersOrderIdCancelRouteHandler: RouteHandler<
+  typeof postFulfillmentEndpointPvtOrdersOrderIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRouteHandler: RouteHandler<
+  typeof postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

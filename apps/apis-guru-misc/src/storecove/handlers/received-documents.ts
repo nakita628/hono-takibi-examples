@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReceivedDocumentsGuidFormatRoute, postReceivedDocumentsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReceivedDocumentsGuidFormatRoute, postReceivedDocumentsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postReceivedDocumentsRouteHandler: RouteHandler<
+  typeof postReceivedDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const receivedDocumentsHandler = app
-  .openapi(postReceivedDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReceivedDocumentsGuidFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReceivedDocumentsGuidFormatRouteHandler: RouteHandler<
+  typeof getReceivedDocumentsGuidFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

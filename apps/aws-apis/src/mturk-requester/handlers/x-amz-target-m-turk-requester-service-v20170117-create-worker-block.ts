@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockHandler = app.openapi(
-  postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRouteHandler: RouteHandler<
+  typeof postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

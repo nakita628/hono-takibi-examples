@@ -287,19 +287,19 @@ export function useImmutableGetCatalog<TError = unknown>(options?: {
 }
 
 export function getGetFontFontstackStartEndKey(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
 ) {
-  return ['font', '/font/:fontstack/:start-:end', args] as const
+  return ['font', '/font/:fontstack/:start-{end}', args] as const
 }
 
 export function useGetFontFontstackStartEnd<TError = unknown>(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
           >
         >
       >,
@@ -322,27 +322,28 @@ export function useGetFontFontstackStartEnd<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.font[':fontstack'][':start-:end'].$get(args, clientOptions)),
+      async () =>
+        parseResponse(client.font[':fontstack'][':start-{end}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFontFontstackStartEnd<TError = unknown>(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
           >
         >
       >,
@@ -365,14 +366,15 @@ export function useImmutableGetFontFontstackStartEnd<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+            Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.font[':fontstack'][':start-:end'].$get(args, clientOptions)),
+      async () =>
+        parseResponse(client.font[':fontstack'][':start-{end}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -2685,20 +2687,20 @@ export function useImmutableGetStyleStyleId<TError = unknown>(
 }
 
 export function getGetStyleStyleIdZXYFormatKey(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
 ) {
-  return ['style', '/style/:style_id/:z/:x/:y.:format', args] as const
+  return ['style', '/style/:style_id/:z/:x/:y.{format}', args] as const
 }
 
 export function useGetStyleStyleIdZXYFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>
+              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>
             >
           >
         >
@@ -2723,7 +2725,7 @@ export function useGetStyleStyleIdZXYFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>
+              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>
             >
           >
         >
@@ -2733,7 +2735,7 @@ export function useGetStyleStyleIdZXYFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.style[':style_id'][':z'][':x'][':y.:format'].$get(args, clientOptions),
+          client.style[':style_id'][':z'][':x'][':y.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2741,14 +2743,14 @@ export function useGetStyleStyleIdZXYFormat<TError = unknown>(
 }
 
 export function useImmutableGetStyleStyleIdZXYFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>
+              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>
             >
           >
         >
@@ -2773,7 +2775,7 @@ export function useImmutableGetStyleStyleIdZXYFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>
+              ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>
             >
           >
         >
@@ -2783,7 +2785,7 @@ export function useImmutableGetStyleStyleIdZXYFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.style[':style_id'][':z'][':x'][':y.:format'].$get(args, clientOptions),
+          client.style[':style_id'][':z'][':x'][':y.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2792,15 +2794,15 @@ export function useImmutableGetStyleStyleIdZXYFormat<TError = unknown>(
 
 export function getGetStyleStyleIdStaticCameraSizeFormatKey(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
 ) {
-  return ['style', '/style/:style_id/static/:camera/:size.:format', args] as const
+  return ['style', '/style/:style_id/static/:camera/:size.{format}', args] as const
 }
 
 export function useGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -2809,7 +2811,7 @@ export function useGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+                (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
               >
             >
           >
@@ -2836,7 +2838,7 @@ export function useGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+                (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
               >
             >
           >
@@ -2847,7 +2849,7 @@ export function useGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.style[':style_id'].static[':camera'][':size.:format'].$get(args, clientOptions),
+          client.style[':style_id'].static[':camera'][':size.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2856,7 +2858,7 @@ export function useGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
 
 export function useImmutableGetStyleStyleIdStaticCameraSizeFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -2865,7 +2867,7 @@ export function useImmutableGetStyleStyleIdStaticCameraSizeFormat<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+                (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
               >
             >
           >
@@ -2892,7 +2894,7 @@ export function useImmutableGetStyleStyleIdStaticCameraSizeFormat<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+                (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
               >
             >
           >
@@ -2903,7 +2905,7 @@ export function useImmutableGetStyleStyleIdStaticCameraSizeFormat<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client.style[':style_id'].static[':camera'][':size.:format'].$get(args, clientOptions),
+          client.style[':style_id'].static[':camera'][':size.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2911,7 +2913,7 @@ export function useImmutableGetStyleStyleIdStaticCameraSizeFormat<TError = unkno
 }
 
 export function getPostStyleStyleIdStaticCameraSizeFormatKey() {
-  return ['style', '/style/:style_id/static/:camera/:size.:format', 'POST'] as const
+  return ['style', '/style/:style_id/static/:camera/:size.{format}', 'POST'] as const
 }
 
 export function usePostStyleStyleIdStaticCameraSizeFormat<TError = unknown>(options?: {
@@ -2921,7 +2923,7 @@ export function usePostStyleStyleIdStaticCameraSizeFormat<TError = unknown>(opti
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+              (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
             >
           >
         >
@@ -2930,7 +2932,7 @@ export function usePostStyleStyleIdStaticCameraSizeFormat<TError = unknown>(opti
     TError,
     Key,
     InferRequestType<
-      (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+      (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -2948,12 +2950,12 @@ export function usePostStyleStyleIdStaticCameraSizeFormat<TError = unknown>(opti
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+            (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.style[':style_id'].static[':camera'][':size.:format'].$post(arg, clientOptions),
+          client.style[':style_id'].static[':camera'][':size.{format}'].$post(arg, clientOptions),
         ),
       restMutationOptions,
     ),

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rawg.io/v1.0/openapi.yaml',
   output: './src/rawg-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rawg-io/types.ts' },
   client: { output: './src/rawg-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/rawg-io/rpc.ts', parseResponse: true },

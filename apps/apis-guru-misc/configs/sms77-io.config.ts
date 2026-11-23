@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sms77.io/1.0.0/openapi.yaml',
   output: './src/sms77-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sms77-io/types.ts' },
   client: { output: './src/sms77-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/sms77-io/rpc.ts', parseResponse: true },

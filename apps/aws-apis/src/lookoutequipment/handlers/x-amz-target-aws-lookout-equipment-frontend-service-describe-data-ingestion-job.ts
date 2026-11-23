@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeDataIngestionJobHandler =
-  app.openapi(
-    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCmsPages202609LandingPagesFoldersObjectIdRoute,
   deleteCmsPages202609LandingPagesObjectIdRoute,
   deleteCmsPages202609SitePagesObjectIdRoute,
@@ -68,204 +68,398 @@ import {
   putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCmsPages202609LandingPagesRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cmsHandler = app
-  .openapi(getCmsPages202609LandingPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesAbTestCreateVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesAbTestEndRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesAbTestRerunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesFoldersObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsPages202609LandingPagesFoldersObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsPages202609LandingPagesFoldersObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesFoldersObjectIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesMultiLanguageAttachToLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesMultiLanguageCreateLanguageVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesMultiLanguageDetachFromLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCmsPages202609LandingPagesMultiLanguageSetNewLangPrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesMultiLanguageUpdateLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsPages202609LandingPagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsPages202609LandingPagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsPages202609LandingPagesObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesObjectIdDraftPushLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesObjectIdDraftResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesObjectIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreToDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609SitePagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesAbTestCreateVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesAbTestEndRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesAbTestRerunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesMultiLanguageAttachToLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesMultiLanguageCreateLanguageVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesMultiLanguageDetachFromLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesMultiLanguageUpdateLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609SitePagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsPages202609SitePagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsPages202609SitePagesObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609SitePagesObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsPages202609SitePagesObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesObjectIdDraftPushLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesObjectIdDraftResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609SitePagesObjectIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsPages202609SitePagesObjectIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreToDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCmsPages202609LandingPagesRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesAbTestCreateVariationRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesAbTestCreateVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesAbTestEndRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesAbTestEndRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesAbTestRerunRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesAbTestRerunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesBatchArchiveRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesBatchCreateRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesBatchReadRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesBatchUpdateRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesCloneRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesFoldersRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersBatchArchiveRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersBatchCreateRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersBatchReadRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersBatchUpdateRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesFoldersObjectIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesFoldersObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsPages202609LandingPagesFoldersObjectIdRouteHandler: RouteHandler<
+  typeof deleteCmsPages202609LandingPagesFoldersObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsPages202609LandingPagesFoldersObjectIdRouteHandler: RouteHandler<
+  typeof patchCmsPages202609LandingPagesFoldersObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesFoldersObjectIdRevisionsRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesFoldersObjectIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRestoreRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesMultiLanguageAttachToLangGroupRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesMultiLanguageAttachToLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesMultiLanguageCreateLanguageVariationRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesMultiLanguageCreateLanguageVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesMultiLanguageDetachFromLangGroupRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesMultiLanguageDetachFromLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCmsPages202609LandingPagesMultiLanguageSetNewLangPrimaryRouteHandler: RouteHandler<
+  typeof putCmsPages202609LandingPagesMultiLanguageSetNewLangPrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesMultiLanguageUpdateLanguagesRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesMultiLanguageUpdateLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesScheduleRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesObjectIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsPages202609LandingPagesObjectIdRouteHandler: RouteHandler<
+  typeof deleteCmsPages202609LandingPagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsPages202609LandingPagesObjectIdRouteHandler: RouteHandler<
+  typeof patchCmsPages202609LandingPagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesObjectIdDraftRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsPages202609LandingPagesObjectIdDraftRouteHandler: RouteHandler<
+  typeof patchCmsPages202609LandingPagesObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesObjectIdDraftPushLiveRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesObjectIdDraftPushLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesObjectIdDraftResetRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesObjectIdDraftResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesObjectIdRevisionsRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesObjectIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreToDraftRouteHandler: RouteHandler<
+  typeof postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreToDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609SitePagesRouteHandler: RouteHandler<
+  typeof getCmsPages202609SitePagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesAbTestCreateVariationRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesAbTestCreateVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesAbTestEndRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesAbTestEndRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesAbTestRerunRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesAbTestRerunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesBatchArchiveRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesBatchCreateRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesBatchReadRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesBatchUpdateRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesCloneRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesMultiLanguageAttachToLangGroupRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesMultiLanguageAttachToLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesMultiLanguageCreateLanguageVariationRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesMultiLanguageCreateLanguageVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesMultiLanguageDetachFromLangGroupRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesMultiLanguageDetachFromLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRouteHandler: RouteHandler<
+  typeof putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesMultiLanguageUpdateLanguagesRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesMultiLanguageUpdateLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesScheduleRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609SitePagesObjectIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609SitePagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsPages202609SitePagesObjectIdRouteHandler: RouteHandler<
+  typeof deleteCmsPages202609SitePagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsPages202609SitePagesObjectIdRouteHandler: RouteHandler<
+  typeof patchCmsPages202609SitePagesObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609SitePagesObjectIdDraftRouteHandler: RouteHandler<
+  typeof getCmsPages202609SitePagesObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsPages202609SitePagesObjectIdDraftRouteHandler: RouteHandler<
+  typeof patchCmsPages202609SitePagesObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesObjectIdDraftPushLiveRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesObjectIdDraftPushLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesObjectIdDraftResetRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesObjectIdDraftResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609SitePagesObjectIdRevisionsRouteHandler: RouteHandler<
+  typeof getCmsPages202609SitePagesObjectIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsPages202609SitePagesObjectIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getCmsPages202609SitePagesObjectIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreToDraftRouteHandler: RouteHandler<
+  typeof postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreToDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

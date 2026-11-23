@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketObjectLockRoute, putBucketObjectLockRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBucketObjectLockRoute, putBucketObjectLockRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBucketObjectLockRouteHandler: RouteHandler<
+  typeof getBucketObjectLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketObjectLockHandler = app
-  .openapi(getBucketObjectLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketObjectLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBucketObjectLockRouteHandler: RouteHandler<
+  typeof putBucketObjectLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

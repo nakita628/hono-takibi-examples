@@ -1,15 +1,18 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getConflictRoute, getConflictSearchRoute, postConflictSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getConflictRoute, getConflictSearchRoute, postConflictSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConflictRouteHandler: RouteHandler<typeof getConflictRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const conflictHandler = app
-  .openapi(getConflictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConflictSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConflictSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConflictSearchRouteHandler: RouteHandler<typeof getConflictSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postConflictSearchRouteHandler: RouteHandler<typeof postConflictSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

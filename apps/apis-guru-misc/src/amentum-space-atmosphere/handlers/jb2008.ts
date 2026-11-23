@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJb2008Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJb2008Route } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const jb2008Handler = app.openapi(getJb2008Route, (c) => {
+export const getJb2008RouteHandler: RouteHandler<typeof getJb2008Route> = async (c) => {
   throw new Error('Not implemented')
-})
+}

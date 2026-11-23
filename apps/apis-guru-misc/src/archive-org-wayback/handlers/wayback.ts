@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWaybackV1AvailableRoute, postWaybackV1AvailableRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWaybackV1AvailableRoute, postWaybackV1AvailableRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWaybackV1AvailableRouteHandler: RouteHandler<
+  typeof getWaybackV1AvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const waybackHandler = app
-  .openapi(getWaybackV1AvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWaybackV1AvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWaybackV1AvailableRouteHandler: RouteHandler<
+  typeof postWaybackV1AvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

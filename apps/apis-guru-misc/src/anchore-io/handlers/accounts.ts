@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsAccountnameRoute,
   deleteAccountsAccountnameUsersUsernameCredentialsRoute,
   deleteAccountsAccountnameUsersUsernameRoute,
@@ -14,42 +14,70 @@ import {
   putAccountsAccountnameStateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountnameStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountnameUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountnameUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountnameUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountnameUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountnameUsersUsernameCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountnameUsersUsernameCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountnameUsersUsernameCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountsRouteHandler: RouteHandler<typeof postAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountnameRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountnameRouteHandler: RouteHandler<
+  typeof getAccountsAccountnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountnameStateRouteHandler: RouteHandler<
+  typeof putAccountsAccountnameStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountnameUsersRouteHandler: RouteHandler<
+  typeof getAccountsAccountnameUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountnameUsersRouteHandler: RouteHandler<
+  typeof postAccountsAccountnameUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountnameUsersUsernameRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountnameUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountnameUsersUsernameRouteHandler: RouteHandler<
+  typeof getAccountsAccountnameUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountnameUsersUsernameCredentialsRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountnameUsersUsernameCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountnameUsersUsernameCredentialsRouteHandler: RouteHandler<
+  typeof getAccountsAccountnameUsersUsernameCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountnameUsersUsernameCredentialsRouteHandler: RouteHandler<
+  typeof postAccountsAccountnameUsersUsernameCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

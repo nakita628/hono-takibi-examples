@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStatusDashboardsIdRoute,
   getStatusDashboardsIdServiceImpactsRoute,
   getStatusDashboardsRoute,
@@ -7,21 +7,32 @@ import {
   getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatusDashboardsRouteHandler: RouteHandler<
+  typeof getStatusDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statusDashboardsHandler = app
-  .openapi(getStatusDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusDashboardsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusDashboardsIdServiceImpactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusDashboardsUrlSlugsUrlSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatusDashboardsIdRouteHandler: RouteHandler<
+  typeof getStatusDashboardsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusDashboardsIdServiceImpactsRouteHandler: RouteHandler<
+  typeof getStatusDashboardsIdServiceImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusDashboardsUrlSlugsUrlSlugRouteHandler: RouteHandler<
+  typeof getStatusDashboardsUrlSlugsUrlSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRouteHandler: RouteHandler<
+  typeof getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postActionFlushArpRoute,
   postActionFlushLogsRoute,
   postActionFlushNetworkRoute,
@@ -7,21 +7,32 @@ import {
   postActionRestartdnsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postActionGravityRouteHandler: RouteHandler<typeof postActionGravityRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const actionHandler = app
-  .openapi(postActionGravityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRestartdnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionFlushLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionFlushArpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionFlushNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRestartdnsRouteHandler: RouteHandler<
+  typeof postActionRestartdnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionFlushLogsRouteHandler: RouteHandler<
+  typeof postActionFlushLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionFlushArpRouteHandler: RouteHandler<typeof postActionFlushArpRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionFlushNetworkRouteHandler: RouteHandler<
+  typeof postActionFlushNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

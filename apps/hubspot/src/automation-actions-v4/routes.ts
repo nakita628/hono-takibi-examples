@@ -1777,7 +1777,7 @@ export const deleteAutomationActions202609AppIdDefinitionIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -2168,7 +2168,7 @@ export const deleteAutomationActions202609AppIdDefinitionIdFunctionsFunctionType
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ developer_hapikey: [] }],
   },
 )
@@ -2476,7 +2476,7 @@ export const deleteAutomationActions202609AppIdDefinitionIdFunctionsFunctionType
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ developer_hapikey: [] }],
   })
 
@@ -2603,7 +2603,7 @@ export const postAutomationActions202609AppIdDefinitionIdRequiresObjectRoute = c
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -2802,7 +2802,7 @@ export const postAutomationActionsCallbacks202609CompleteRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['automation'] },
     { oauth2: ['workflows.write'] },
@@ -2840,7 +2840,7 @@ export const postAutomationActionsCallbacks202609CallbackIdCompleteRoute = creat
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['automation'] },
     { oauth2: ['workflows.write'] },

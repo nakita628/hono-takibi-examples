@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendVideoNoteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendVideoNoteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendVideoNoteHandler = app.openapi(postSendVideoNoteRoute, (c) => {
+export const postSendVideoNoteRouteHandler: RouteHandler<typeof postSendVideoNoteRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

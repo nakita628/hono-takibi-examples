@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMetastoreV1IndexServiceAddBlockRoute,
   postMetastoreV1IndexServiceGetBlockMetadataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMetastoreV1IndexServiceAddBlockRouteHandler: RouteHandler<
+  typeof postMetastoreV1IndexServiceAddBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metastoreV1IndexServiceHandler = app
-  .openapi(postMetastoreV1IndexServiceAddBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetastoreV1IndexServiceGetBlockMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetastoreV1IndexServiceGetBlockMetadataRouteHandler: RouteHandler<
+  typeof postMetastoreV1IndexServiceGetBlockMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

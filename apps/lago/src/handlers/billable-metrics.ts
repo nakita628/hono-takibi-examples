@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBillableMetricsCodeRoute,
   getBillableMetricsCodeRoute,
   getBillableMetricsRoute,
@@ -8,24 +8,38 @@ import {
   putBillableMetricsCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBillableMetricsRouteHandler: RouteHandler<
+  typeof postBillableMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billableMetricsHandler = app
-  .openapi(postBillableMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillableMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillableMetricsEvaluateExpressionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBillableMetricsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBillableMetricsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillableMetricsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBillableMetricsRouteHandler: RouteHandler<typeof getBillableMetricsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillableMetricsEvaluateExpressionRouteHandler: RouteHandler<
+  typeof postBillableMetricsEvaluateExpressionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBillableMetricsCodeRouteHandler: RouteHandler<
+  typeof putBillableMetricsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBillableMetricsCodeRouteHandler: RouteHandler<
+  typeof deleteBillableMetricsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillableMetricsCodeRouteHandler: RouteHandler<
+  typeof getBillableMetricsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

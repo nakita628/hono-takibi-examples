@@ -1,10 +1,6 @@
 type FieldName = string
 type FieldNameList = FieldName[]
 type BuildSuggestersResponse = { FieldNames?: FieldNameList | undefined }
-type BaseException = { [x: string]: unknown }
-type InternalException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
 type DomainName = string
 type BuildSuggestersRequest = { DomainName: DomainName }
 type DomainId = string
@@ -32,8 +28,6 @@ type DomainStatus = {
   Limits?: Limits | undefined
 }
 type CreateDomainResponse = { DomainStatus?: DomainStatus | undefined }
-type LimitExceededException = { [x: string]: unknown }
-type ResourceAlreadyExistsException = { [x: string]: unknown }
 type CreateDomainRequest = { DomainName: {} }
 type StandardName = string
 type AnalysisSchemeLanguage =
@@ -93,7 +87,6 @@ type OptionStatus = {
 }
 type AnalysisSchemeStatus = { Options: AnalysisScheme; Status: OptionStatus }
 type DefineAnalysisSchemeResponse = { AnalysisScheme: AnalysisSchemeStatus }
-type InvalidTypeException = { [x: string]: unknown }
 type DefineAnalysisSchemeRequest = { DomainName: DomainName; AnalysisScheme: AnalysisScheme }
 type ExpressionValue = string
 type ExpressionStatus = {
@@ -268,7 +261,6 @@ type DescribeAnalysisSchemesRequest = {
 type DescribeAvailabilityOptionsResponse = {
   AvailabilityOptions?: { Options: {}; Status: OptionStatus } | undefined
 }
-type DisabledOperationException = { [x: string]: unknown }
 type DescribeAvailabilityOptionsRequest = { DomainName: {}; Deployed?: {} | undefined }
 type DescribeDomainEndpointOptionsResponse = {
   DomainEndpointOptions?:
@@ -358,5809 +350,1090 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#Action=BuildSuggesters': {
-      $get:
-        | {
-            input: {
-              query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BuildSuggestersResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: BuildSuggestersResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'BuildSuggesters'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BuildSuggestersRequest }
-            output: BuildSuggestersResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BuildSuggestersRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BuildSuggestersRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BuildSuggestersRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'BuildSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BuildSuggestersRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: BuildSuggestersRequest }
+        output: BuildSuggestersResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateDomain': {
-      $get:
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateDomainResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: CreateDomainResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceAlreadyExistsException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'CreateDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: CreateDomainResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: ResourceAlreadyExistsException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'CreateDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDomainRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: CreateDomainRequest }
+        output: CreateDomainResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DefineAnalysisScheme': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            AnalysisScheme: {
+              AnalysisSchemeName: StandardName
+              AnalysisSchemeLanguage: AnalysisSchemeLanguage
+              AnalysisOptions?: AnalysisOptions | undefined
             }
-            output: DefineAnalysisSchemeResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'DefineAnalysisScheme'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DefineAnalysisSchemeResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisScheme: {
-                  AnalysisSchemeName: StandardName
-                  AnalysisSchemeLanguage: AnalysisSchemeLanguage
-                  AnalysisOptions?: AnalysisOptions | undefined
-                }
-                Action: 'DefineAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: DefineAnalysisSchemeResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'DefineAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineAnalysisSchemeRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: DefineAnalysisSchemeRequest }
+        output: DefineAnalysisSchemeResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DefineExpression': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DefineExpressionResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
+            Action: 'DefineExpression'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DefineExpressionResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Expression: { ExpressionName: StandardName; ExpressionValue: ExpressionValue }
-                Action: 'DefineExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: DefineExpressionResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'DefineExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineExpressionRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: DefineExpressionRequest }
+        output: DefineExpressionResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DefineIndexField': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            IndexField: {
+              IndexFieldName: {}
+              IndexFieldType: IndexFieldType
+              IntOptions?: IntOptions | undefined
+              DoubleOptions?: DoubleOptions | undefined
+              LiteralOptions?: LiteralOptions | undefined
+              TextOptions?: TextOptions | undefined
+              DateOptions?: DateOptions | undefined
+              LatLonOptions?: LatLonOptions | undefined
+              IntArrayOptions?: IntArrayOptions | undefined
+              DoubleArrayOptions?: DoubleArrayOptions | undefined
+              LiteralArrayOptions?: LiteralArrayOptions | undefined
+              TextArrayOptions?: TextArrayOptions | undefined
+              DateArrayOptions?: DateArrayOptions | undefined
             }
-            output: DefineIndexFieldResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'DefineIndexField'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DefineIndexFieldResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexField: {
-                  IndexFieldName: {}
-                  IndexFieldType: IndexFieldType
-                  IntOptions?: IntOptions | undefined
-                  DoubleOptions?: DoubleOptions | undefined
-                  LiteralOptions?: LiteralOptions | undefined
-                  TextOptions?: TextOptions | undefined
-                  DateOptions?: DateOptions | undefined
-                  LatLonOptions?: LatLonOptions | undefined
-                  IntArrayOptions?: IntArrayOptions | undefined
-                  DoubleArrayOptions?: DoubleArrayOptions | undefined
-                  LiteralArrayOptions?: LiteralArrayOptions | undefined
-                  TextArrayOptions?: TextArrayOptions | undefined
-                  DateArrayOptions?: DateArrayOptions | undefined
-                }
-                Action: 'DefineIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: DefineIndexFieldResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'DefineIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineIndexFieldRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: DefineIndexFieldRequest }
+        output: DefineIndexFieldResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DefineSuggester': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            Suggester: {
+              SuggesterName: StandardName
+              DocumentSuggesterOptions: DocumentSuggesterOptions
             }
-            output: DefineSuggesterResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'DefineSuggester'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DefineSuggesterResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Suggester: {
-                  SuggesterName: StandardName
-                  DocumentSuggesterOptions: DocumentSuggesterOptions
-                }
-                Action: 'DefineSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: DefineSuggesterResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'DefineSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DefineSuggesterRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: DefineSuggesterRequest }
+        output: DefineSuggesterResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteAnalysisScheme': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteAnalysisSchemeResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            AnalysisSchemeName: string
+            Action: 'DeleteAnalysisScheme'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteAnalysisSchemeResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeName: string
-                Action: 'DeleteAnalysisScheme'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: DeleteAnalysisSchemeResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DeleteAnalysisScheme'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnalysisSchemeRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: DeleteAnalysisSchemeRequest }
+        output: DeleteAnalysisSchemeResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteDomain': {
-      $get:
-        | {
-            input: {
-              query: { DomainName: string; Action: 'DeleteDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteDomainResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { DomainName: string; Action: 'DeleteDomain'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'DeleteDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DeleteDomainResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteDomain'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'DeleteDomain'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDomainRequest }
-            output: DeleteDomainResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDomainRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteDomain'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDomainRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DeleteDomainRequest }
+        output: DeleteDomainResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteExpression': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteExpressionResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            ExpressionName: string
+            Action: 'DeleteExpression'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteExpressionResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionName: string
-                Action: 'DeleteExpression'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: DeleteExpressionResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DeleteExpression'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteExpressionRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: DeleteExpressionRequest }
+        output: DeleteExpressionResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteIndexField': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteIndexFieldResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            IndexFieldName: string
+            Action: 'DeleteIndexField'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteIndexFieldResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                IndexFieldName: string
-                Action: 'DeleteIndexField'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: DeleteIndexFieldResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DeleteIndexField'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteIndexFieldRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: DeleteIndexFieldRequest }
+        output: DeleteIndexFieldResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteSuggester': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteSuggesterResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            SuggesterName: string
+            Action: 'DeleteSuggester'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteSuggesterResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterName: string
-                Action: 'DeleteSuggester'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: DeleteSuggesterResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DeleteSuggester'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSuggesterRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: DeleteSuggesterRequest }
+        output: DeleteSuggesterResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAnalysisSchemes': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeAnalysisSchemes'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAnalysisSchemesResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            AnalysisSchemeNames?: StandardName[] | undefined
+            Deployed?: boolean | undefined
+            Action: 'DescribeAnalysisSchemes'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeAnalysisSchemes'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeAnalysisSchemes'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeAnalysisSchemesResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeAnalysisSchemes'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AnalysisSchemeNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeAnalysisSchemes'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeAnalysisSchemes'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAnalysisSchemesRequest }
-            output: DescribeAnalysisSchemesResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeAnalysisSchemes'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAnalysisSchemesRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeAnalysisSchemes'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAnalysisSchemesRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeAnalysisSchemes'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAnalysisSchemesRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeAnalysisSchemesRequest }
+        output: DescribeAnalysisSchemesResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAvailabilityOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAvailabilityOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            Deployed?: boolean | undefined
+            Action: 'DescribeAvailabilityOptions'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeAvailabilityOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: DescribeAvailabilityOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'DescribeAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailabilityOptionsRequest }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: DescribeAvailabilityOptionsRequest }
+        output: DescribeAvailabilityOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeDomainEndpointOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeDomainEndpointOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            Deployed?: boolean | undefined
+            Action: 'DescribeDomainEndpointOptions'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeDomainEndpointOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: DescribeDomainEndpointOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'DescribeDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainEndpointOptionsRequest }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: DescribeDomainEndpointOptionsRequest }
+        output: DescribeDomainEndpointOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeDomains': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainNames?: DomainName[] | undefined
-                Action: 'DescribeDomains'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeDomainsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainNames?: DomainName[] | undefined
+            Action: 'DescribeDomains'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainNames?: DomainName[] | undefined
-                Action: 'DescribeDomains'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainNames?: DomainName[] | undefined
-                Action: 'DescribeDomains'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeDomainsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeDomains'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeDomains'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainsRequest }
-            output: DescribeDomainsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeDomains'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeDomains'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeDomainsRequest }
+        output: DescribeDomainsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeExpressions': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeExpressions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeExpressionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            ExpressionNames?: StandardName[] | undefined
+            Deployed?: boolean | undefined
+            Action: 'DescribeExpressions'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeExpressions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeExpressions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeExpressionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeExpressions'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ExpressionNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeExpressions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeExpressions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeExpressionsRequest }
-            output: DescribeExpressionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeExpressions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeExpressionsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeExpressions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeExpressionsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeExpressions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeExpressionsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeExpressionsRequest }
+        output: DescribeExpressionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeIndexFields': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                FieldNames?: DynamicFieldName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeIndexFields'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeIndexFieldsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            FieldNames?: DynamicFieldName[] | undefined
+            Deployed?: boolean | undefined
+            Action: 'DescribeIndexFields'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                FieldNames?: DynamicFieldName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeIndexFields'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                FieldNames?: DynamicFieldName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeIndexFields'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeIndexFieldsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeIndexFields'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                FieldNames?: DynamicFieldName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeIndexFields'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeIndexFields'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeIndexFieldsRequest }
-            output: DescribeIndexFieldsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeIndexFields'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeIndexFieldsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeIndexFields'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeIndexFieldsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeIndexFields'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeIndexFieldsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeIndexFieldsRequest }
+        output: DescribeIndexFieldsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeScalingParameters': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Action: 'DescribeScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeScalingParametersResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { DomainName: string; Action: 'DescribeScalingParameters'; Version: '2013-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Action: 'DescribeScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeScalingParametersResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeScalingParameters'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Action: 'DescribeScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Action: 'DescribeScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingParametersRequest }
-            output: DescribeScalingParametersResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingParametersRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingParametersRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingParametersRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeScalingParametersRequest }
+        output: DescribeScalingParametersResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeServiceAccessPolicies': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeServiceAccessPoliciesResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            Deployed?: boolean | undefined
+            Action: 'DescribeServiceAccessPolicies'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeServiceAccessPoliciesResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeServiceAccessPolicies'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                Deployed?: boolean | undefined
-                Action: 'DescribeServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeServiceAccessPoliciesRequest }
-            output: DescribeServiceAccessPoliciesResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeServiceAccessPoliciesRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeServiceAccessPoliciesRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeServiceAccessPoliciesRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeServiceAccessPoliciesRequest }
+        output: DescribeServiceAccessPoliciesResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeSuggesters': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeSuggesters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeSuggestersResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            SuggesterNames?: StandardName[] | undefined
+            Deployed?: boolean | undefined
+            Action: 'DescribeSuggesters'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeSuggesters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeSuggesters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeSuggestersResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeSuggesters'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                SuggesterNames?: StandardName[] | undefined
-                Deployed?: boolean | undefined
-                Action: 'DescribeSuggesters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSuggestersRequest }
-            output: DescribeSuggestersResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSuggestersRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSuggestersRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DescribeSuggesters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSuggestersRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeSuggestersRequest }
+        output: DescribeSuggestersResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=IndexDocuments': {
-      $get:
-        | {
-            input: {
-              query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: IndexDocumentsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: IndexDocumentsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { DomainName: string; Action: 'IndexDocuments'; Version: '2013-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: IndexDocumentsRequest }
-            output: IndexDocumentsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: IndexDocumentsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: IndexDocumentsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: IndexDocumentsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'IndexDocuments'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: IndexDocumentsRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: IndexDocumentsRequest }
+        output: IndexDocumentsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ListDomainNames': {
-      $get:
-        | {
-            input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListDomainNamesResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: ListDomainNamesResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListDomainNamesResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ListDomainNames'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: ListDomainNamesResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateAvailabilityOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UpdateAvailabilityOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            MultiAZ: boolean
+            Action: 'UpdateAvailabilityOptions'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateAvailabilityOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                MultiAZ: boolean
-                Action: 'UpdateAvailabilityOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 486
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: UpdateAvailabilityOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: { query: { Action: 'UpdateAvailabilityOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAvailabilityOptionsRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 486
-          }
+        } & { json: UpdateAvailabilityOptionsRequest }
+        output: UpdateAvailabilityOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateDomainEndpointOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            DomainEndpointOptions: {
+              EnforceHTTPS?: {} | undefined
+              TLSSecurityPolicy?: {} | undefined
             }
-            output: UpdateDomainEndpointOptionsResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateDomainEndpointOptions'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateDomainEndpointOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                DomainEndpointOptions: {
-                  EnforceHTTPS?: {} | undefined
-                  TLSSecurityPolicy?: {} | undefined
-                }
-                Action: 'UpdateDomainEndpointOptions'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 486
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: UpdateDomainEndpointOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: DisabledOperationException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: { query: { Action: 'UpdateDomainEndpointOptions'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDomainEndpointOptionsRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 486
-          }
+        } & { json: UpdateDomainEndpointOptionsRequest }
+        output: UpdateDomainEndpointOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateScalingParameters': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            ScalingParameters: {
+              DesiredInstanceType?: {} | undefined
+              DesiredReplicationCount?: {} | undefined
+              DesiredPartitionCount?: {} | undefined
             }
-            output: UpdateScalingParametersResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateScalingParameters'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateScalingParametersResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                ScalingParameters: {
-                  DesiredInstanceType?: {} | undefined
-                  DesiredReplicationCount?: {} | undefined
-                  DesiredPartitionCount?: {} | undefined
-                }
-                Action: 'UpdateScalingParameters'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: UpdateScalingParametersResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'UpdateScalingParameters'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateScalingParametersRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: UpdateScalingParametersRequest }
+        output: UpdateScalingParametersResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateServiceAccessPolicies': {
-      $get:
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UpdateServiceAccessPoliciesResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            DomainName: string
+            AccessPolicies: string
+            Action: 'UpdateServiceAccessPolicies'
+            Version: '2013-01-01'
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateServiceAccessPoliciesResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                DomainName: string
-                AccessPolicies: string
-                Action: 'UpdateServiceAccessPolicies'
-                Version: '2013-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: UpdateServiceAccessPoliciesResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: BaseException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: InternalException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: InvalidTypeException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'UpdateServiceAccessPolicies'; Version: '2013-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceAccessPoliciesRequest }
-            output: ValidationException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: UpdateServiceAccessPoliciesRequest }
+        output: UpdateServiceAccessPoliciesResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   },
   '/'

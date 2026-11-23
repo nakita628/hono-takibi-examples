@@ -52,19 +52,19 @@ export function useImmutableGetApi<TError = unknown>(options?: {
 }
 
 export function getGetApiProjectsIdFormatKey(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
 ) {
-  return ['api', '/api/projects/:id:.format', args] as const
+  return ['api', '/api/projects/:id{.format}', args] as const
 }
 
 export function useGetApiProjectsIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+            Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
           >
         >
       >,
@@ -87,27 +87,27 @@ export function useGetApiProjectsIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+            Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api.projects[':id:.format'].$get(args, clientOptions)),
+      async () => parseResponse(client.api.projects[':id{.format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiProjectsIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+            Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
           >
         >
       >,
@@ -130,32 +130,34 @@ export function useImmutableGetApiProjectsIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+            Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api.projects[':id:.format'].$get(args, clientOptions)),
+      async () => parseResponse(client.api.projects[':id{.format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiProjectsFormatKey(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
 ) {
-  return ['api', '/api/projects:.format', args] as const
+  return ['api', '/api/projects{.format}', args] as const
 }
 
 export function useGetApiProjectsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>
+          >
         >
       >,
       TError
@@ -176,25 +178,29 @@ export function useGetApiProjectsFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>
+          >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['projects:.format'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['projects{.format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiProjectsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>
+          >
         >
       >,
       TError
@@ -215,13 +221,15 @@ export function useImmutableGetApiProjectsFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>
+          >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['projects:.format'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['projects{.format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

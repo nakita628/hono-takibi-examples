@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSksClusterDeprecatedResourcesIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSksClusterDeprecatedResourcesIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sksClusterDeprecatedResourcesHandler = app.openapi(
-  getSksClusterDeprecatedResourcesIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getSksClusterDeprecatedResourcesIdRouteHandler: RouteHandler<
+  typeof getSksClusterDeprecatedResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/traccar.org/5.6/openapi.yaml',
   output: './src/traccar-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/traccar-org/types.ts' },
   client: { output: './src/traccar-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/traccar-org/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute,
   deleteDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute,
   getDevicesSerialApplianceDhcpSubnetsRoute,
@@ -119,357 +119,704 @@ import {
   putDevicesSerialWirelessRadioSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDevicesSerialRouteHandler: RouteHandler<typeof getDevicesSerialRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const devicesHandler = app
-  .openapi(getDevicesSerialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialApplianceDhcpSubnetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialApplianceInterfacesPortsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialApplianceInterfacesPortsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialAppliancePerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialAppliancePrefixesDelegatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialAppliancePrefixesDelegatedVlanAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialApplianceRadioSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialApplianceRadioSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialApplianceUplinksSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialApplianceUplinksSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialApplianceVmxAuthenticationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialBlinkLedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsRecentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsZonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraClipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraCustomAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraCustomAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialCameraGenerateSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraQualityAndRetentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraQualityAndRetentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraSenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraSenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraSenseObjectDetectionModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraVideoSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraVideoSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraVideoLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraWirelessProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraWirelessProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularGeolocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCellularSimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularSimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialCellularUplinksBandsMasksUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCellularGatewayLanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularGatewayLanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCellularGatewayPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularGatewayPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialCertificatesCertificateSerialRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsArpTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsArpTableArpTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsCableTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsCableTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsLedsBlinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsLedsBlinkLedsBlinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsMacTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsMacTableMacTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsMulticastRoutingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsMulticastRoutingMulticastRoutingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsPingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsPingDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsPingDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsPortsCycleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsPortsCycleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsPortsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsPortsStatusJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsPowerUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsPowerUsageJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsRouteDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsRouteDetailsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsRoutingTableLookupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsRoutingTableLookupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsRoutingTableSummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsRoutingTableSummariesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsThroughputTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsThroughputTestThroughputTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialLiveToolsWakeOnLanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLiveToolsWakeOnLanWakeOnLanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLldpCdpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialLossAndLatencyHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialRebootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSensorCommandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialSensorCommandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSensorCommandsCommandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSensorRelationshipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSensorRelationshipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialSwitchPortsCycleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortsStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortsStatusesPacketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortsPortIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSwitchPortsPortIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchRoutingInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialSwitchRoutingInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchRoutingStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialSwitchRoutingStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchWarmSpareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialSwitchWarmSpareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessAlternateManagementInterfaceIpv6Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessBluetoothSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessBluetoothSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessConnectionStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessElectronicShelfLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessElectronicShelfLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessLatencyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessRadioOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessRadioOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessRadioSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessRadioSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialWirelessZigbeeEnrollmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialWirelessZigbeeEnrollmentsEnrollmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDevicesSerialRouteHandler: RouteHandler<typeof putDevicesSerialRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialApplianceDhcpSubnetsRouteHandler: RouteHandler<
+  typeof getDevicesSerialApplianceDhcpSubnetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialApplianceInterfacesPortsUpdateRouteHandler: RouteHandler<
+  typeof postDevicesSerialApplianceInterfacesPortsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialApplianceInterfacesPortsNumberRouteHandler: RouteHandler<
+  typeof putDevicesSerialApplianceInterfacesPortsNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialAppliancePerformanceRouteHandler: RouteHandler<
+  typeof getDevicesSerialAppliancePerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialAppliancePrefixesDelegatedRouteHandler: RouteHandler<
+  typeof getDevicesSerialAppliancePrefixesDelegatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialAppliancePrefixesDelegatedVlanAssignmentsRouteHandler: RouteHandler<
+  typeof getDevicesSerialAppliancePrefixesDelegatedVlanAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialApplianceRadioSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialApplianceRadioSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialApplianceRadioSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialApplianceRadioSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialApplianceUplinksSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialApplianceUplinksSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialApplianceUplinksSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialApplianceUplinksSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialApplianceVmxAuthenticationTokenRouteHandler: RouteHandler<
+  typeof postDevicesSerialApplianceVmxAuthenticationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialBlinkLedsRouteHandler: RouteHandler<
+  typeof postDevicesSerialBlinkLedsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsLiveRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsOverviewRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsRecentRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsRecentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsZonesRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsZonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraClipRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraClipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraCustomAnalyticsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraCustomAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraCustomAnalyticsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraCustomAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialCameraGenerateSnapshotRouteHandler: RouteHandler<
+  typeof postDevicesSerialCameraGenerateSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraQualityAndRetentionRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraQualityAndRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraQualityAndRetentionRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraQualityAndRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraSenseRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraSenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraSenseRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraSenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraSenseObjectDetectionModelsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraSenseObjectDetectionModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraVideoSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraVideoSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraVideoSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraVideoSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraVideoLinkRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraVideoLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraWirelessProfilesRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraWirelessProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraWirelessProfilesRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraWirelessProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularGeolocationsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularGeolocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCellularSimsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCellularSimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularSimsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularSimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialCellularUplinksBandsMasksUpdateRouteHandler: RouteHandler<
+  typeof postDevicesSerialCellularUplinksBandsMasksUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCellularGatewayLanRouteHandler: RouteHandler<
+  typeof getDevicesSerialCellularGatewayLanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularGatewayLanRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularGatewayLanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCellularGatewayPortForwardingRulesRouteHandler: RouteHandler<
+  typeof getDevicesSerialCellularGatewayPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularGatewayPortForwardingRulesRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularGatewayPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialCertificatesCertificateSerialRevokeRouteHandler: RouteHandler<
+  typeof postDevicesSerialCertificatesCertificateSerialRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialClientsRouteHandler: RouteHandler<
+  typeof getDevicesSerialClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsArpTableRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsArpTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsArpTableArpTableIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsArpTableArpTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsCableTestRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsCableTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsCableTestIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsCableTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsLedsBlinkRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsLedsBlinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsLedsBlinkLedsBlinkIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsLedsBlinkLedsBlinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsMacTableRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsMacTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsMacTableMacTableIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsMacTableMacTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsMulticastRoutingRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsMulticastRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsMulticastRoutingMulticastRoutingIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsMulticastRoutingMulticastRoutingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsPingRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsPingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsPingIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsPingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsPingDeviceRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsPingDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsPingDeviceIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsPingDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsPortsCycleRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsPortsCycleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsPortsCycleIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsPortsCycleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsPortsStatusRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsPortsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsPortsStatusJobIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsPortsStatusJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsPowerUsageRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsPowerUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsPowerUsageJobIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsPowerUsageJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsRouteDetailsRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsRouteDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsRouteDetailsJobIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsRouteDetailsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsRoutingTableLookupsRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsRoutingTableLookupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsRoutingTableLookupsIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsRoutingTableLookupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsRoutingTableSummariesRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsRoutingTableSummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsRoutingTableSummariesIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsRoutingTableSummariesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsThroughputTestRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsThroughputTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsThroughputTestThroughputTestIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsThroughputTestThroughputTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialLiveToolsWakeOnLanRouteHandler: RouteHandler<
+  typeof postDevicesSerialLiveToolsWakeOnLanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLiveToolsWakeOnLanWakeOnLanIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialLiveToolsWakeOnLanWakeOnLanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLldpCdpRouteHandler: RouteHandler<
+  typeof getDevicesSerialLldpCdpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialLossAndLatencyHistoryRouteHandler: RouteHandler<
+  typeof getDevicesSerialLossAndLatencyHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialManagementInterfaceRouteHandler: RouteHandler<
+  typeof getDevicesSerialManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialManagementInterfaceRouteHandler: RouteHandler<
+  typeof putDevicesSerialManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialRebootRouteHandler: RouteHandler<
+  typeof postDevicesSerialRebootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSensorCommandsRouteHandler: RouteHandler<
+  typeof getDevicesSerialSensorCommandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialSensorCommandsRouteHandler: RouteHandler<
+  typeof postDevicesSerialSensorCommandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSensorCommandsCommandIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialSensorCommandsCommandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSensorRelationshipsRouteHandler: RouteHandler<
+  typeof getDevicesSerialSensorRelationshipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSensorRelationshipsRouteHandler: RouteHandler<
+  typeof putDevicesSerialSensorRelationshipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortsRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialSwitchPortsCycleRouteHandler: RouteHandler<
+  typeof postDevicesSerialSwitchPortsCycleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortsStatusesRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortsStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortsStatusesPacketsRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortsStatusesPacketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortsPortIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortsPortIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSwitchPortsPortIdRouteHandler: RouteHandler<
+  typeof putDevicesSerialSwitchPortsPortIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchRoutingInterfacesRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchRoutingInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialSwitchRoutingInterfacesRouteHandler: RouteHandler<
+  typeof postDevicesSerialSwitchRoutingInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSwitchRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof putDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDevicesSerialSwitchRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof deleteDevicesSerialSwitchRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRouteHandler: RouteHandler<
+  typeof putDevicesSerialSwitchRoutingInterfacesInterfaceIdDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchRoutingStaticRoutesRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchRoutingStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialSwitchRoutingStaticRoutesRouteHandler: RouteHandler<
+  typeof postDevicesSerialSwitchRoutingStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof putDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof deleteDevicesSerialSwitchRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchWarmSpareRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchWarmSpareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialSwitchWarmSpareRouteHandler: RouteHandler<
+  typeof putDevicesSerialSwitchWarmSpareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessAlternateManagementInterfaceIpv6RouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessAlternateManagementInterfaceIpv6Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessBluetoothSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessBluetoothSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessBluetoothSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessBluetoothSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessConnectionStatsRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessConnectionStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessElectronicShelfLabelRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessElectronicShelfLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessElectronicShelfLabelRouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessElectronicShelfLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessLatencyStatsRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessLatencyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessRadioOverridesRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessRadioOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessRadioOverridesRouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessRadioOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessRadioSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessRadioSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessRadioSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessRadioSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessStatusRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialWirelessZigbeeEnrollmentsRouteHandler: RouteHandler<
+  typeof postDevicesSerialWirelessZigbeeEnrollmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialWirelessZigbeeEnrollmentsEnrollmentIdRouteHandler: RouteHandler<
+  typeof getDevicesSerialWirelessZigbeeEnrollmentsEnrollmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIndexPhpAppsFilesApiV1ThumbnailXYFileRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIndexPhpAppsFilesApiV1ThumbnailXYFileRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const indexPhpHandler = app.openapi(getIndexPhpAppsFilesApiV1ThumbnailXYFileRoute, (c) => {
+export const getIndexPhpAppsFilesApiV1ThumbnailXYFileRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsFilesApiV1ThumbnailXYFileRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFineTunesFineTuneIdEventsRoute,
   getFineTunesFineTuneIdRoute,
   getFineTunesRoute,
@@ -7,21 +7,28 @@ import {
   postFineTunesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFineTunesRouteHandler: RouteHandler<typeof getFineTunesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fineTunesHandler = app
-  .openapi(getFineTunesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTunesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTunesFineTuneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTunesFineTuneIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTunesFineTuneIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFineTunesRouteHandler: RouteHandler<typeof postFineTunesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTunesFineTuneIdRouteHandler: RouteHandler<
+  typeof getFineTunesFineTuneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTunesFineTuneIdCancelRouteHandler: RouteHandler<
+  typeof postFineTunesFineTuneIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTunesFineTuneIdEventsRouteHandler: RouteHandler<
+  typeof getFineTunesFineTuneIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

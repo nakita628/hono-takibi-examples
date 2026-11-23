@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKGuestGuestSpaceIdV1GuestsJsonRoute,
   deleteKGuestGuestSpaceIdV1PluginJsonRoute,
   deleteKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute,
@@ -209,627 +209,1230 @@ import {
   putKV1SpaceThreadJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKGuestGuestSpaceIdV1AppJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const kHandler = app
-  .openapi(getKGuestGuestSpaceIdV1AppJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1AppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1AppMoveJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1AppsStatisticsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1BulkRequestJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1FieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1FieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1FileJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1FileJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1FormJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1GuestsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1GuestsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PluginAppsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PluginsRequiredJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1PreviewAppJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppDeployJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1PreviewAppDeployJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1PreviewAppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewAppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewAppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewFieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewFieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewFormJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1PreviewRecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1PreviewRecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordAssigneesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1RecordCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1RecordCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordCommentsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordsAclEvaluateJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1RecordsStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1SearchJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKGuestGuestSpaceIdV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1SpaceBodyJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1SpaceGuestsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1SpaceMembersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1SpaceMembersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1SpaceThreadJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKGuestGuestSpaceIdV1SpaceThreadJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1SpaceThreadCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKGuestGuestSpaceIdV1SpacesStatisticsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestGuestSpaceIdV1TemplateSpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKGuestV1SearchJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1AppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1AppMoveJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1AppsStatisticsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1BulkRequestJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1FieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1FieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1FileJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1FileJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1FormJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1GuestsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1GuestsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PluginJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PluginAppsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PluginsRequiredJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1PreviewAppJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppActionsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppAdminNotesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppCustomizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppDeployJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1PreviewAppDeployJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppFormFieldsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppFormLayoutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppNotificationsGeneralJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppNotificationsPerRecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppNotificationsReminderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1PreviewAppPluginsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppReportsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppSettingsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewAppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewAppViewsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewFieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewFieldAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewFormJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1PreviewRecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1PreviewRecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordAclJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordAssigneesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1RecordAsyncTokenJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1RecordCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1RecordCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordCommentsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordsAclEvaluateJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1RecordsCursorJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1RecordsStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1SearchJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1SpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1SpaceBodyJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1SpaceMembersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1SpaceMembersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1SpaceThreadJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKV1SpaceThreadJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1SpaceThreadCommentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKV1SpacesStatisticsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKV1TemplateSpaceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getKGuestGuestSpaceIdV1AppAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1AppAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1AppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppActionsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppCustomizeJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1AppMoveJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1AppMoveJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppPluginsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppReportsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppSettingsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppStatusJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppViewsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppViewsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1AppsStatisticsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1AppsStatisticsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1BulkRequestJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1BulkRequestJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1FieldAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1FieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1FieldAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1FieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1FileJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1FileJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1FileJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1FileJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1FormJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1FormJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1GuestsJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1GuestsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1GuestsJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1GuestsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1PluginJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1PluginJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1PluginJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1PluginJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PluginJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PluginJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PluginAppsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PluginAppsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PluginsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PluginsRequiredJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PluginsRequiredJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1PreviewAppJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1PreviewAppJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppActionsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppActionsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppDeployJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppDeployJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1PreviewAppDeployJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1PreviewAppDeployJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppPluginsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1PreviewAppPluginsJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1PreviewAppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppReportsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppReportsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppSettingsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppSettingsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppStatusJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppStatusJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewAppViewsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewAppViewsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewAppViewsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewAppViewsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewFieldAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewFieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewFieldAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewFieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewFormJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewFormJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1PreviewRecordAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1PreviewRecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1PreviewRecordAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1PreviewRecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1RecordJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1RecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordAclJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordAclJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordAssigneesJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordAssigneesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1RecordCommentJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1RecordCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1RecordCommentJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1RecordCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordCommentsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordCommentsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordStatusJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1RecordsJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1RecordsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1RecordsJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1RecordsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordsAclEvaluateJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordsAclEvaluateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1RecordsStatusJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1RecordsStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1SearchJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1SearchJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKGuestGuestSpaceIdV1SpaceJsonRouteHandler: RouteHandler<
+  typeof deleteKGuestGuestSpaceIdV1SpaceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1SpaceJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1SpaceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1SpaceJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1SpaceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1SpaceBodyJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1SpaceBodyJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1SpaceGuestsJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1SpaceGuestsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1SpaceMembersJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1SpaceMembersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1SpaceMembersJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1SpaceMembersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1SpaceThreadJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1SpaceThreadJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKGuestGuestSpaceIdV1SpaceThreadJsonRouteHandler: RouteHandler<
+  typeof putKGuestGuestSpaceIdV1SpaceThreadJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1SpaceThreadCommentJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1SpaceThreadCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKGuestGuestSpaceIdV1SpacesStatisticsJsonRouteHandler: RouteHandler<
+  typeof getKGuestGuestSpaceIdV1SpacesStatisticsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestGuestSpaceIdV1TemplateSpaceJsonRouteHandler: RouteHandler<
+  typeof postKGuestGuestSpaceIdV1TemplateSpaceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKGuestV1SearchJsonRouteHandler: RouteHandler<
+  typeof postKGuestV1SearchJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppJsonRouteHandler: RouteHandler<typeof getKV1AppJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppAclJsonRouteHandler: RouteHandler<typeof getKV1AppAclJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1AppAclJsonRouteHandler: RouteHandler<typeof putKV1AppAclJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppActionsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof getKV1AppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppCustomizeJsonRouteHandler: RouteHandler<
+  typeof getKV1AppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof getKV1AppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1AppMoveJsonRouteHandler: RouteHandler<typeof postKV1AppMoveJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof getKV1AppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof getKV1AppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof getKV1AppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppPluginsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppReportsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppSettingsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppStatusJsonRouteHandler: RouteHandler<
+  typeof getKV1AppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppViewsJsonRouteHandler: RouteHandler<typeof getKV1AppViewsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppsJsonRouteHandler: RouteHandler<typeof getKV1AppsJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1AppsStatisticsJsonRouteHandler: RouteHandler<
+  typeof getKV1AppsStatisticsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1BulkRequestJsonRouteHandler: RouteHandler<
+  typeof postKV1BulkRequestJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1FieldAclJsonRouteHandler: RouteHandler<typeof getKV1FieldAclJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1FieldAclJsonRouteHandler: RouteHandler<typeof putKV1FieldAclJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1FileJsonRouteHandler: RouteHandler<typeof getKV1FileJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1FileJsonRouteHandler: RouteHandler<typeof postKV1FileJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1FormJsonRouteHandler: RouteHandler<typeof getKV1FormJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1GuestsJsonRouteHandler: RouteHandler<
+  typeof deleteKV1GuestsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1GuestsJsonRouteHandler: RouteHandler<typeof postKV1GuestsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1PluginJsonRouteHandler: RouteHandler<
+  typeof deleteKV1PluginJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1PluginJsonRouteHandler: RouteHandler<typeof postKV1PluginJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PluginJsonRouteHandler: RouteHandler<typeof putKV1PluginJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PluginAppsJsonRouteHandler: RouteHandler<
+  typeof getKV1PluginAppsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PluginsJsonRouteHandler: RouteHandler<typeof getKV1PluginsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PluginsRequiredJsonRouteHandler: RouteHandler<
+  typeof getKV1PluginsRequiredJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1PreviewAppJsonRouteHandler: RouteHandler<
+  typeof postKV1PreviewAppJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppAclJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppAclJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppActionsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppActionsJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppActionsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppAdminNotesJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppAdminNotesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppCustomizeJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppCustomizeJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppCustomizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppDeployJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppDeployJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1PreviewAppDeployJsonRouteHandler: RouteHandler<
+  typeof postKV1PreviewAppDeployJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof deleteKV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof postKV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppFormFieldsJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppFormFieldsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppFormLayoutJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppFormLayoutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppNotificationsGeneralJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppNotificationsGeneralJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppNotificationsPerRecordJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppNotificationsPerRecordJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppNotificationsReminderJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppNotificationsReminderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppPluginsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1PreviewAppPluginsJsonRouteHandler: RouteHandler<
+  typeof postKV1PreviewAppPluginsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppReportsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppReportsJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppReportsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppSettingsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppSettingsJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppSettingsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppStatusJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppStatusJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewAppViewsJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewAppViewsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewAppViewsJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewAppViewsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewFieldAclJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewFieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewFieldAclJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewFieldAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewFormJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewFormJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1PreviewRecordAclJsonRouteHandler: RouteHandler<
+  typeof getKV1PreviewRecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1PreviewRecordAclJsonRouteHandler: RouteHandler<
+  typeof putKV1PreviewRecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordJsonRouteHandler: RouteHandler<typeof getKV1RecordJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1RecordJsonRouteHandler: RouteHandler<typeof postKV1RecordJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordJsonRouteHandler: RouteHandler<typeof putKV1RecordJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordAclJsonRouteHandler: RouteHandler<
+  typeof getKV1RecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordAclJsonRouteHandler: RouteHandler<
+  typeof putKV1RecordAclJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordAssigneesJsonRouteHandler: RouteHandler<
+  typeof putKV1RecordAssigneesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1RecordAsyncTokenJsonRouteHandler: RouteHandler<
+  typeof postKV1RecordAsyncTokenJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1RecordCommentJsonRouteHandler: RouteHandler<
+  typeof deleteKV1RecordCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1RecordCommentJsonRouteHandler: RouteHandler<
+  typeof postKV1RecordCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordCommentsJsonRouteHandler: RouteHandler<
+  typeof getKV1RecordCommentsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordStatusJsonRouteHandler: RouteHandler<
+  typeof putKV1RecordStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1RecordsJsonRouteHandler: RouteHandler<
+  typeof deleteKV1RecordsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordsJsonRouteHandler: RouteHandler<typeof getKV1RecordsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1RecordsJsonRouteHandler: RouteHandler<typeof postKV1RecordsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordsJsonRouteHandler: RouteHandler<typeof putKV1RecordsJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordsAclEvaluateJsonRouteHandler: RouteHandler<
+  typeof getKV1RecordsAclEvaluateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof deleteKV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof getKV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1RecordsCursorJsonRouteHandler: RouteHandler<
+  typeof postKV1RecordsCursorJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1RecordsStatusJsonRouteHandler: RouteHandler<
+  typeof putKV1RecordsStatusJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1SearchJsonRouteHandler: RouteHandler<typeof postKV1SearchJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKV1SpaceJsonRouteHandler: RouteHandler<typeof deleteKV1SpaceJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1SpaceJsonRouteHandler: RouteHandler<typeof getKV1SpaceJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1SpaceJsonRouteHandler: RouteHandler<typeof putKV1SpaceJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1SpaceBodyJsonRouteHandler: RouteHandler<
+  typeof putKV1SpaceBodyJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1SpaceMembersJsonRouteHandler: RouteHandler<
+  typeof getKV1SpaceMembersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1SpaceMembersJsonRouteHandler: RouteHandler<
+  typeof putKV1SpaceMembersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1SpaceThreadJsonRouteHandler: RouteHandler<
+  typeof postKV1SpaceThreadJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKV1SpaceThreadJsonRouteHandler: RouteHandler<
+  typeof putKV1SpaceThreadJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1SpaceThreadCommentJsonRouteHandler: RouteHandler<
+  typeof postKV1SpaceThreadCommentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKV1SpacesStatisticsJsonRouteHandler: RouteHandler<
+  typeof getKV1SpacesStatisticsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKV1TemplateSpaceJsonRouteHandler: RouteHandler<
+  typeof postKV1TemplateSpaceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

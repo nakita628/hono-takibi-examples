@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/StoredValueService-v46.json',
   output: './src/StoredValueService-v46/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/StoredValueService-v46/types.ts' },
   client: { output: './src/StoredValueService-v46/client.ts', baseUrl: '/' },
   rpc: { output: './src/StoredValueService-v46/rpc.ts', parseResponse: true },

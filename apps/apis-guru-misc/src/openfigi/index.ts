@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { mappingHandler } from './handlers'
+import { getMappingValuesKeyRoute, postMappingRoute } from './routes'
+import { getMappingValuesKeyRouteHandler, postMappingRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', mappingHandler)
+export const api = app
+  .openapi(postMappingRoute, postMappingRouteHandler)
+  .openapi(getMappingValuesKeyRoute, getMappingValuesKeyRouteHandler)
 
 export default app

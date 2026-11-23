@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/kms/2014-11-01/openapi.yaml',
   output: './src/kms/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kms/types.ts' },
   client: { output: './src/kms/client.ts', baseUrl: '/' },
   rpc: { output: './src/kms/rpc.ts', parseResponse: true },

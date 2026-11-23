@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/ably/open-specs/main/definitions/platform-v1.yaml',
   output: './src/platform/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/platform/types.ts' },
   client: { output: './src/platform/client.ts', baseUrl: '/' },
   rpc: { output: './src/platform/rpc.ts', parseResponse: true },

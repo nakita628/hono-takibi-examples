@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityServiceListTagsForResourceHandler = app.openapi(
-  postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOauthClientsRotateSecretRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOauthClientsRotateSecretRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const oauthClientsRotateSecretHandler = app.openapi(
-  postOauthClientsRotateSecretRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postOauthClientsRotateSecretRouteHandler: RouteHandler<
+  typeof postOauthClientsRotateSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

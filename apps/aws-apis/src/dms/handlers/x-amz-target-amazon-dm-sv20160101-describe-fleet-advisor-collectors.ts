@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorCollectorsHandler = app.openapi(
-  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

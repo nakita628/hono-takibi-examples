@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDefaultVocabularySummaryInstanceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDefaultVocabularySummaryInstanceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const defaultVocabularySummaryHandler = app.openapi(
-  postDefaultVocabularySummaryInstanceIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDefaultVocabularySummaryInstanceIdRouteHandler: RouteHandler<
+  typeof postDefaultVocabularySummaryInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

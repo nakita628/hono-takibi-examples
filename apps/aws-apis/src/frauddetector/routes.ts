@@ -546,8 +546,8 @@ const ModelVersionDetailListSchema = z
   .openapi('ModelVersionDetailList')
 
 type DescribeModelVersionsResultType = {
-  modelVersionDetails?: z.infer<typeof ModelVersionDetailListSchema> & unknown
-  nextToken?: z.infer<typeof StringSchema> & unknown
+  modelVersionDetails?: z.infer<typeof ModelVersionDetailListSchema>
+  nextToken?: z.infer<typeof StringSchema>
 }
 
 const IdentifierSchema = z
@@ -763,21 +763,21 @@ const ListOfEvaluatedExternalModelsSchema = z
   .openapi('ListOfEvaluatedExternalModels')
 
 type GetEventPredictionMetadataResultType = {
-  eventId?: z.infer<typeof IdentifierSchema> & unknown
-  eventTypeName?: z.infer<typeof IdentifierSchema> & unknown
-  entityId?: z.infer<typeof StringSchema> & unknown
-  entityType?: z.infer<typeof StringSchema> & unknown
-  eventTimestamp?: z.infer<typeof TimeSchema> & unknown
-  detectorId?: z.infer<typeof IdentifierSchema> & unknown
-  detectorVersionId?: z.infer<typeof WholeNumberVersionStringSchema> & unknown
-  detectorVersionStatus?: z.infer<typeof StringSchema> & unknown
-  eventVariables?: z.infer<typeof ListOfEventVariableSummariesSchema> & unknown
-  rules?: z.infer<typeof EvaluatedRuleListSchema> & unknown
-  ruleExecutionMode?: z.infer<typeof RuleExecutionModeSchema> & unknown
-  outcomes?: z.infer<typeof ListOfStringsSchema> & unknown
-  evaluatedModelVersions?: z.infer<typeof ListOfEvaluatedModelVersionsSchema> & unknown
-  evaluatedExternalModels?: z.infer<typeof ListOfEvaluatedExternalModelsSchema> & unknown
-  predictionTimestamp?: z.infer<typeof TimeSchema> & unknown
+  eventId?: z.infer<typeof IdentifierSchema>
+  eventTypeName?: z.infer<typeof IdentifierSchema>
+  entityId?: z.infer<typeof StringSchema>
+  entityType?: z.infer<typeof StringSchema>
+  eventTimestamp?: z.infer<typeof TimeSchema>
+  detectorId?: z.infer<typeof IdentifierSchema>
+  detectorVersionId?: z.infer<typeof WholeNumberVersionStringSchema>
+  detectorVersionStatus?: z.infer<typeof StringSchema>
+  eventVariables?: z.infer<typeof ListOfEventVariableSummariesSchema>
+  rules?: z.infer<typeof EvaluatedRuleListSchema>
+  ruleExecutionMode?: z.infer<typeof RuleExecutionModeSchema>
+  outcomes?: z.infer<typeof ListOfStringsSchema>
+  evaluatedModelVersions?: z.infer<typeof ListOfEvaluatedModelVersionsSchema>
+  evaluatedExternalModels?: z.infer<typeof ListOfEvaluatedExternalModelsSchema>
+  predictionTimestamp?: z.infer<typeof TimeSchema>
 }
 
 const IntegerSchema = z.int().openapi('Integer')

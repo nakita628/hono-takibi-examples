@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDescribeUsageLimitsRoute, postActionDescribeUsageLimitsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDescribeUsageLimitsRoute,
+  postActionDescribeUsageLimitsRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeUsageLimitsRouteHandler: RouteHandler<
+  typeof getActionDescribeUsageLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeUsageLimitsHandler = app
-  .openapi(getActionDescribeUsageLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeUsageLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeUsageLimitsRouteHandler: RouteHandler<
+  typeof postActionDescribeUsageLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

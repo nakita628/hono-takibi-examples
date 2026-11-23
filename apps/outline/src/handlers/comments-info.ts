@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCommentsInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCommentsInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const commentsInfoHandler = app.openapi(postCommentsInfoRoute, (c) => {
+export const postCommentsInfoRouteHandler: RouteHandler<typeof postCommentsInfoRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

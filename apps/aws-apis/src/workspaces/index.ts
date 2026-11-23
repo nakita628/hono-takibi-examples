@@ -1,139 +1,401 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetWorkspacesServiceAssociateConnectionAliasHandler,
-  xAmzTargetWorkspacesServiceAssociateIpGroupsHandler,
-  xAmzTargetWorkspacesServiceAuthorizeIpRulesHandler,
-  xAmzTargetWorkspacesServiceCopyWorkspaceImageHandler,
-  xAmzTargetWorkspacesServiceCreateConnectClientAddInHandler,
-  xAmzTargetWorkspacesServiceCreateConnectionAliasHandler,
-  xAmzTargetWorkspacesServiceCreateIpGroupHandler,
-  xAmzTargetWorkspacesServiceCreateStandbyWorkspacesHandler,
-  xAmzTargetWorkspacesServiceCreateTagsHandler,
-  xAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageHandler,
-  xAmzTargetWorkspacesServiceCreateWorkspaceBundleHandler,
-  xAmzTargetWorkspacesServiceCreateWorkspaceImageHandler,
-  xAmzTargetWorkspacesServiceCreateWorkspacesHandler,
-  xAmzTargetWorkspacesServiceDeleteClientBrandingHandler,
-  xAmzTargetWorkspacesServiceDeleteConnectClientAddInHandler,
-  xAmzTargetWorkspacesServiceDeleteConnectionAliasHandler,
-  xAmzTargetWorkspacesServiceDeleteIpGroupHandler,
-  xAmzTargetWorkspacesServiceDeleteTagsHandler,
-  xAmzTargetWorkspacesServiceDeleteWorkspaceBundleHandler,
-  xAmzTargetWorkspacesServiceDeleteWorkspaceImageHandler,
-  xAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryHandler,
-  xAmzTargetWorkspacesServiceDescribeAccountHandler,
-  xAmzTargetWorkspacesServiceDescribeAccountModificationsHandler,
-  xAmzTargetWorkspacesServiceDescribeClientBrandingHandler,
-  xAmzTargetWorkspacesServiceDescribeClientPropertiesHandler,
-  xAmzTargetWorkspacesServiceDescribeConnectClientAddInsHandler,
-  xAmzTargetWorkspacesServiceDescribeConnectionAliasesHandler,
-  xAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsHandler,
-  xAmzTargetWorkspacesServiceDescribeIpGroupsHandler,
-  xAmzTargetWorkspacesServiceDescribeTagsHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspaceBundlesHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspaceImagesHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspacesHandler,
-  xAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsHandler,
-  xAmzTargetWorkspacesServiceDisassociateConnectionAliasHandler,
-  xAmzTargetWorkspacesServiceDisassociateIpGroupsHandler,
-  xAmzTargetWorkspacesServiceImportClientBrandingHandler,
-  xAmzTargetWorkspacesServiceImportWorkspaceImageHandler,
-  xAmzTargetWorkspacesServiceListAvailableManagementCidrRangesHandler,
-  xAmzTargetWorkspacesServiceMigrateWorkspaceHandler,
-  xAmzTargetWorkspacesServiceModifyAccountHandler,
-  xAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesHandler,
-  xAmzTargetWorkspacesServiceModifyClientPropertiesHandler,
-  xAmzTargetWorkspacesServiceModifySamlPropertiesHandler,
-  xAmzTargetWorkspacesServiceModifySelfservicePermissionsHandler,
-  xAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesHandler,
-  xAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesHandler,
-  xAmzTargetWorkspacesServiceModifyWorkspacePropertiesHandler,
-  xAmzTargetWorkspacesServiceModifyWorkspaceStateHandler,
-  xAmzTargetWorkspacesServiceRebootWorkspacesHandler,
-  xAmzTargetWorkspacesServiceRebuildWorkspacesHandler,
-  xAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryHandler,
-  xAmzTargetWorkspacesServiceRestoreWorkspaceHandler,
-  xAmzTargetWorkspacesServiceRevokeIpRulesHandler,
-  xAmzTargetWorkspacesServiceStartWorkspacesHandler,
-  xAmzTargetWorkspacesServiceStopWorkspacesHandler,
-  xAmzTargetWorkspacesServiceTerminateWorkspacesHandler,
-  xAmzTargetWorkspacesServiceUpdateConnectClientAddInHandler,
-  xAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionHandler,
-  xAmzTargetWorkspacesServiceUpdateRulesOfIpGroupHandler,
-  xAmzTargetWorkspacesServiceUpdateWorkspaceBundleHandler,
-  xAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionHandler,
+  postXAmzTargetWorkspacesServiceAssociateConnectionAliasRoute,
+  postXAmzTargetWorkspacesServiceAssociateIpGroupsRoute,
+  postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute,
+  postXAmzTargetWorkspacesServiceCopyWorkspaceImageRoute,
+  postXAmzTargetWorkspacesServiceCreateConnectClientAddInRoute,
+  postXAmzTargetWorkspacesServiceCreateConnectionAliasRoute,
+  postXAmzTargetWorkspacesServiceCreateIpGroupRoute,
+  postXAmzTargetWorkspacesServiceCreateStandbyWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceCreateTagsRoute,
+  postXAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageRoute,
+  postXAmzTargetWorkspacesServiceCreateWorkspaceBundleRoute,
+  postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute,
+  postXAmzTargetWorkspacesServiceCreateWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceDeleteClientBrandingRoute,
+  postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute,
+  postXAmzTargetWorkspacesServiceDeleteConnectionAliasRoute,
+  postXAmzTargetWorkspacesServiceDeleteIpGroupRoute,
+  postXAmzTargetWorkspacesServiceDeleteTagsRoute,
+  postXAmzTargetWorkspacesServiceDeleteWorkspaceBundleRoute,
+  postXAmzTargetWorkspacesServiceDeleteWorkspaceImageRoute,
+  postXAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryRoute,
+  postXAmzTargetWorkspacesServiceDescribeAccountModificationsRoute,
+  postXAmzTargetWorkspacesServiceDescribeAccountRoute,
+  postXAmzTargetWorkspacesServiceDescribeClientBrandingRoute,
+  postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute,
+  postXAmzTargetWorkspacesServiceDescribeConnectClientAddInsRoute,
+  postXAmzTargetWorkspacesServiceDescribeConnectionAliasesRoute,
+  postXAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsRoute,
+  postXAmzTargetWorkspacesServiceDescribeIpGroupsRoute,
+  postXAmzTargetWorkspacesServiceDescribeTagsRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceBundlesRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceImagesRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsRoute,
+  postXAmzTargetWorkspacesServiceDescribeWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute,
+  postXAmzTargetWorkspacesServiceDisassociateIpGroupsRoute,
+  postXAmzTargetWorkspacesServiceImportClientBrandingRoute,
+  postXAmzTargetWorkspacesServiceImportWorkspaceImageRoute,
+  postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute,
+  postXAmzTargetWorkspacesServiceMigrateWorkspaceRoute,
+  postXAmzTargetWorkspacesServiceModifyAccountRoute,
+  postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifyClientPropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifySamlPropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifyWorkspacePropertiesRoute,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceStateRoute,
+  postXAmzTargetWorkspacesServiceRebootWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceRebuildWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryRoute,
+  postXAmzTargetWorkspacesServiceRestoreWorkspaceRoute,
+  postXAmzTargetWorkspacesServiceRevokeIpRulesRoute,
+  postXAmzTargetWorkspacesServiceStartWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceStopWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceTerminateWorkspacesRoute,
+  postXAmzTargetWorkspacesServiceUpdateConnectClientAddInRoute,
+  postXAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionRoute,
+  postXAmzTargetWorkspacesServiceUpdateRulesOfIpGroupRoute,
+  postXAmzTargetWorkspacesServiceUpdateWorkspaceBundleRoute,
+  postXAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionRoute,
+} from './routes'
+import {
+  postXAmzTargetWorkspacesServiceAssociateConnectionAliasRouteHandler,
+  postXAmzTargetWorkspacesServiceAssociateIpGroupsRouteHandler,
+  postXAmzTargetWorkspacesServiceAuthorizeIpRulesRouteHandler,
+  postXAmzTargetWorkspacesServiceCopyWorkspaceImageRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateConnectClientAddInRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateConnectionAliasRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateIpGroupRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateStandbyWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateTagsRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateWorkspaceBundleRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateWorkspaceImageRouteHandler,
+  postXAmzTargetWorkspacesServiceCreateWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteClientBrandingRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteConnectionAliasRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteIpGroupRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteTagsRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteWorkspaceBundleRouteHandler,
+  postXAmzTargetWorkspacesServiceDeleteWorkspaceImageRouteHandler,
+  postXAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeAccountModificationsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeAccountRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeClientBrandingRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeClientPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeConnectClientAddInsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeConnectionAliasesRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeIpGroupsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeTagsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceBundlesRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceImagesRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsRouteHandler,
+  postXAmzTargetWorkspacesServiceDescribeWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRouteHandler,
+  postXAmzTargetWorkspacesServiceDisassociateIpGroupsRouteHandler,
+  postXAmzTargetWorkspacesServiceImportClientBrandingRouteHandler,
+  postXAmzTargetWorkspacesServiceImportWorkspaceImageRouteHandler,
+  postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRouteHandler,
+  postXAmzTargetWorkspacesServiceMigrateWorkspaceRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyAccountRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyClientPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifySamlPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyWorkspacePropertiesRouteHandler,
+  postXAmzTargetWorkspacesServiceModifyWorkspaceStateRouteHandler,
+  postXAmzTargetWorkspacesServiceRebootWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceRebuildWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryRouteHandler,
+  postXAmzTargetWorkspacesServiceRestoreWorkspaceRouteHandler,
+  postXAmzTargetWorkspacesServiceRevokeIpRulesRouteHandler,
+  postXAmzTargetWorkspacesServiceStartWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceStopWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceTerminateWorkspacesRouteHandler,
+  postXAmzTargetWorkspacesServiceUpdateConnectClientAddInRouteHandler,
+  postXAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionRouteHandler,
+  postXAmzTargetWorkspacesServiceUpdateRulesOfIpGroupRouteHandler,
+  postXAmzTargetWorkspacesServiceUpdateWorkspaceBundleRouteHandler,
+  postXAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetWorkspacesServiceAssociateConnectionAliasHandler)
-  .route('/', xAmzTargetWorkspacesServiceAssociateIpGroupsHandler)
-  .route('/', xAmzTargetWorkspacesServiceAuthorizeIpRulesHandler)
-  .route('/', xAmzTargetWorkspacesServiceCopyWorkspaceImageHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateConnectClientAddInHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateConnectionAliasHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateIpGroupHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateStandbyWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateTagsHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateWorkspaceBundleHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateWorkspaceImageHandler)
-  .route('/', xAmzTargetWorkspacesServiceCreateWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteClientBrandingHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteConnectClientAddInHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteConnectionAliasHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteIpGroupHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteTagsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteWorkspaceBundleHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeleteWorkspaceImageHandler)
-  .route('/', xAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeAccountHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeAccountModificationsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeClientBrandingHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeClientPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeConnectClientAddInsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeConnectionAliasesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeIpGroupsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeTagsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspaceBundlesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspaceImagesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusHandler)
-  .route('/', xAmzTargetWorkspacesServiceDisassociateConnectionAliasHandler)
-  .route('/', xAmzTargetWorkspacesServiceDisassociateIpGroupsHandler)
-  .route('/', xAmzTargetWorkspacesServiceImportClientBrandingHandler)
-  .route('/', xAmzTargetWorkspacesServiceImportWorkspaceImageHandler)
-  .route('/', xAmzTargetWorkspacesServiceListAvailableManagementCidrRangesHandler)
-  .route('/', xAmzTargetWorkspacesServiceMigrateWorkspaceHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyAccountHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyClientPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifySamlPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifySelfservicePermissionsHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyWorkspacePropertiesHandler)
-  .route('/', xAmzTargetWorkspacesServiceModifyWorkspaceStateHandler)
-  .route('/', xAmzTargetWorkspacesServiceRebootWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceRebuildWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryHandler)
-  .route('/', xAmzTargetWorkspacesServiceRestoreWorkspaceHandler)
-  .route('/', xAmzTargetWorkspacesServiceRevokeIpRulesHandler)
-  .route('/', xAmzTargetWorkspacesServiceStartWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceStopWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceTerminateWorkspacesHandler)
-  .route('/', xAmzTargetWorkspacesServiceUpdateConnectClientAddInHandler)
-  .route('/', xAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionHandler)
-  .route('/', xAmzTargetWorkspacesServiceUpdateRulesOfIpGroupHandler)
-  .route('/', xAmzTargetWorkspacesServiceUpdateWorkspaceBundleHandler)
-  .route('/', xAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionHandler)
+  .openapi(
+    postXAmzTargetWorkspacesServiceAssociateConnectionAliasRoute,
+    postXAmzTargetWorkspacesServiceAssociateConnectionAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceAssociateIpGroupsRoute,
+    postXAmzTargetWorkspacesServiceAssociateIpGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute,
+    postXAmzTargetWorkspacesServiceAuthorizeIpRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCopyWorkspaceImageRoute,
+    postXAmzTargetWorkspacesServiceCopyWorkspaceImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateConnectClientAddInRoute,
+    postXAmzTargetWorkspacesServiceCreateConnectClientAddInRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateConnectionAliasRoute,
+    postXAmzTargetWorkspacesServiceCreateConnectionAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateIpGroupRoute,
+    postXAmzTargetWorkspacesServiceCreateIpGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateStandbyWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceCreateStandbyWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateTagsRoute,
+    postXAmzTargetWorkspacesServiceCreateTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageRoute,
+    postXAmzTargetWorkspacesServiceCreateUpdatedWorkspaceImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateWorkspaceBundleRoute,
+    postXAmzTargetWorkspacesServiceCreateWorkspaceBundleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute,
+    postXAmzTargetWorkspacesServiceCreateWorkspaceImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceCreateWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceCreateWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteClientBrandingRoute,
+    postXAmzTargetWorkspacesServiceDeleteClientBrandingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute,
+    postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteConnectionAliasRoute,
+    postXAmzTargetWorkspacesServiceDeleteConnectionAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteIpGroupRoute,
+    postXAmzTargetWorkspacesServiceDeleteIpGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteTagsRoute,
+    postXAmzTargetWorkspacesServiceDeleteTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteWorkspaceBundleRoute,
+    postXAmzTargetWorkspacesServiceDeleteWorkspaceBundleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeleteWorkspaceImageRoute,
+    postXAmzTargetWorkspacesServiceDeleteWorkspaceImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryRoute,
+    postXAmzTargetWorkspacesServiceDeregisterWorkspaceDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeAccountRoute,
+    postXAmzTargetWorkspacesServiceDescribeAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeAccountModificationsRoute,
+    postXAmzTargetWorkspacesServiceDescribeAccountModificationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeClientBrandingRoute,
+    postXAmzTargetWorkspacesServiceDescribeClientBrandingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute,
+    postXAmzTargetWorkspacesServiceDescribeClientPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeConnectClientAddInsRoute,
+    postXAmzTargetWorkspacesServiceDescribeConnectClientAddInsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsRoute,
+    postXAmzTargetWorkspacesServiceDescribeConnectionAliasPermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeConnectionAliasesRoute,
+    postXAmzTargetWorkspacesServiceDescribeConnectionAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeIpGroupsRoute,
+    postXAmzTargetWorkspacesServiceDescribeIpGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeTagsRoute,
+    postXAmzTargetWorkspacesServiceDescribeTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceBundlesRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceBundlesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceDirectoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceImagePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceImagesRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspaceSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusRoute,
+    postXAmzTargetWorkspacesServiceDescribeWorkspacesConnectionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute,
+    postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceDisassociateIpGroupsRoute,
+    postXAmzTargetWorkspacesServiceDisassociateIpGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceImportClientBrandingRoute,
+    postXAmzTargetWorkspacesServiceImportClientBrandingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceImportWorkspaceImageRoute,
+    postXAmzTargetWorkspacesServiceImportWorkspaceImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute,
+    postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceMigrateWorkspaceRoute,
+    postXAmzTargetWorkspacesServiceMigrateWorkspaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyAccountRoute,
+    postXAmzTargetWorkspacesServiceModifyAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyClientPropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifyClientPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifySamlPropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifySamlPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute,
+    postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifyWorkspaceAccessPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifyWorkspaceCreationPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyWorkspacePropertiesRoute,
+    postXAmzTargetWorkspacesServiceModifyWorkspacePropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceModifyWorkspaceStateRoute,
+    postXAmzTargetWorkspacesServiceModifyWorkspaceStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceRebootWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceRebootWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceRebuildWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceRebuildWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryRoute,
+    postXAmzTargetWorkspacesServiceRegisterWorkspaceDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceRestoreWorkspaceRoute,
+    postXAmzTargetWorkspacesServiceRestoreWorkspaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceRevokeIpRulesRoute,
+    postXAmzTargetWorkspacesServiceRevokeIpRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceStartWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceStartWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceStopWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceStopWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceTerminateWorkspacesRoute,
+    postXAmzTargetWorkspacesServiceTerminateWorkspacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceUpdateConnectClientAddInRoute,
+    postXAmzTargetWorkspacesServiceUpdateConnectClientAddInRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionRoute,
+    postXAmzTargetWorkspacesServiceUpdateConnectionAliasPermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceUpdateRulesOfIpGroupRoute,
+    postXAmzTargetWorkspacesServiceUpdateRulesOfIpGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceUpdateWorkspaceBundleRoute,
+    postXAmzTargetWorkspacesServiceUpdateWorkspaceBundleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionRoute,
+    postXAmzTargetWorkspacesServiceUpdateWorkspaceImagePermissionRouteHandler,
+  )
 
 export default app

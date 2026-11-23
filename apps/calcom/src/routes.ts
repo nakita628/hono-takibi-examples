@@ -6012,28 +6012,10 @@ const ReassignBookingOutput_2024_08_13Schema: z.ZodType<ReassignBookingOutput_20
             }
             return val
           }, Schema)
-        })()
-          .openapi({
-            oneOf: [
-              {
-                type: 'object',
-                properties: {
-                  status: { type: 'string', example: 'success', enum: ['success', 'error'] },
-                  data: {
-                    oneOf: [{}],
-                    description:
-                      'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
-                    allOf: [{}],
-                  },
-                },
-                required: ['status', 'data'],
-              },
-            ],
-          })
-          .openapi({
-            description:
-              'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
-          }),
+        })().openapi({
+          description:
+            'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
+        }),
       })
       .openapi({ required: ['status', 'data'] }),
   )

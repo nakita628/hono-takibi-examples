@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInstallationInstallationIDServerPublicKeyRoute,
   getInstallationItemIdRoute,
   getInstallationRoute,
   postInstallationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInstallationRouteHandler: RouteHandler<typeof postInstallationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const installationHandler = app
-  .openapi(postInstallationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstallationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstallationItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstallationInstallationIDServerPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInstallationRouteHandler: RouteHandler<typeof getInstallationRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstallationItemIdRouteHandler: RouteHandler<
+  typeof getInstallationItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstallationInstallationIDServerPublicKeyRouteHandler: RouteHandler<
+  typeof getInstallationInstallationIDServerPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

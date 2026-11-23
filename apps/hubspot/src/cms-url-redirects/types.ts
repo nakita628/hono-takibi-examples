@@ -122,12 +122,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { id: bigint } }; output: Error; outputFormat: 'text'; status: 200 }
-      $delete: {
-        input: { param: { id: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { id: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: bigint } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/cms/url-redirects/2026-09/:urlRedirectId': {
@@ -144,12 +141,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { urlRedirectId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { urlRedirectId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { urlRedirectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { urlRedirectId: string } } & { json: UrlMapping }

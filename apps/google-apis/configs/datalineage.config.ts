@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/datalineage/v1/openapi.yaml',
   output: './src/datalineage/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/datalineage/types.ts' },
   client: { output: './src/datalineage/client.ts', baseUrl: '/' },
   rpc: { output: './src/datalineage/rpc.ts', parseResponse: true },

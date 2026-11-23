@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAdminTsdbCleanTombstonesRoute,
   postAdminTsdbDeleteSeriesRoute,
   postAdminTsdbSnapshotRoute,
@@ -8,24 +8,38 @@ import {
   putAdminTsdbSnapshotRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putAdminTsdbDeleteSeriesRouteHandler: RouteHandler<
+  typeof putAdminTsdbDeleteSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(putAdminTsdbDeleteSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminTsdbDeleteSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminTsdbCleanTombstonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminTsdbCleanTombstonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminTsdbSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminTsdbSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminTsdbDeleteSeriesRouteHandler: RouteHandler<
+  typeof postAdminTsdbDeleteSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminTsdbCleanTombstonesRouteHandler: RouteHandler<
+  typeof putAdminTsdbCleanTombstonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminTsdbCleanTombstonesRouteHandler: RouteHandler<
+  typeof postAdminTsdbCleanTombstonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminTsdbSnapshotRouteHandler: RouteHandler<
+  typeof putAdminTsdbSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminTsdbSnapshotRouteHandler: RouteHandler<
+  typeof postAdminTsdbSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

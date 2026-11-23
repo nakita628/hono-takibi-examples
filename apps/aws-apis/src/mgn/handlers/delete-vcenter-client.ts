@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteVcenterClientRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteVcenterClientRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteVcenterClientHandler = app.openapi(postDeleteVcenterClientRoute, (c) => {
+export const postDeleteVcenterClientRouteHandler: RouteHandler<
+  typeof postDeleteVcenterClientRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

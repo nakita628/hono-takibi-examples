@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSetIdentityFeedbackForwardingEnabledRoute,
   postActionSetIdentityFeedbackForwardingEnabledRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetIdentityFeedbackForwardingEnabledRouteHandler: RouteHandler<
+  typeof getActionSetIdentityFeedbackForwardingEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetIdentityFeedbackForwardingEnabledHandler = app
-  .openapi(getActionSetIdentityFeedbackForwardingEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetIdentityFeedbackForwardingEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetIdentityFeedbackForwardingEnabledRouteHandler: RouteHandler<
+  typeof postActionSetIdentityFeedbackForwardingEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

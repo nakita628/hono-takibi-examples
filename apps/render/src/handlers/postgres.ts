@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePostgresPostgresIdCredentialsUsernameRoute,
   deletePostgresPostgresIdRoute,
   getPostgresPostgresIdConnectionInfoRoute,
@@ -23,69 +23,124 @@ import {
   postPostgresRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPostgresRouteHandler: RouteHandler<typeof getPostgresRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const postgresHandler = app
-  .openapi(getPostgresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPostgresPostgresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePostgresPostgresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdConnectionInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdRecoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdRecoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdFailoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostgresPostgresIdCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePostgresPostgresIdCredentialsUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdQueryProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdQueryTopQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdQuerySizesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostgresPostgresIdQueryTableScansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPostgresRouteHandler: RouteHandler<typeof postPostgresRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPostgresPostgresIdRouteHandler: RouteHandler<
+  typeof patchPostgresPostgresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePostgresPostgresIdRouteHandler: RouteHandler<
+  typeof deletePostgresPostgresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdConnectionInfoRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdConnectionInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdRecoveryRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdRecoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdRecoveryRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdRecoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdSuspendRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdResumeRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdRestartRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdFailoverRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdFailoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdExportRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdExportRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdCredentialsRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostgresPostgresIdCredentialsRouteHandler: RouteHandler<
+  typeof postPostgresPostgresIdCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePostgresPostgresIdCredentialsUsernameRouteHandler: RouteHandler<
+  typeof deletePostgresPostgresIdCredentialsUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdQueryProcessesRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdQueryProcessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdQueryTopQueriesRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdQueryTopQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdQuerySizesRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdQuerySizesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostgresPostgresIdQueryTableScansRouteHandler: RouteHandler<
+  typeof getPostgresPostgresIdQueryTableScansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

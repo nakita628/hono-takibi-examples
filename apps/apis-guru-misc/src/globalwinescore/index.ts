@@ -1,8 +1,14 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { globalwinescoresHandler } from './handlers'
+import { getGlobalwinescoresIndexRoute, getGlobalwinescoresLatestIndexRoute } from './routes'
+import {
+  getGlobalwinescoresIndexRouteHandler,
+  getGlobalwinescoresLatestIndexRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', globalwinescoresHandler)
+export const api = app
+  .openapi(getGlobalwinescoresIndexRoute, getGlobalwinescoresIndexRouteHandler)
+  .openapi(getGlobalwinescoresLatestIndexRoute, getGlobalwinescoresLatestIndexRouteHandler)
 
 export default app

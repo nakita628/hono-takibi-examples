@@ -4,70 +4,73 @@ import { client } from './client'
 
 export async function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.iconsets.v3['categories?platform=:platform&language=:language'].$get(args, options),
+    client.api.iconsets.v3['categories?platform={platform}&language={language}'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguage(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.iconsets.v3[
-      'category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language'
+      'category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}'
     ].$get(args, options),
   )
 }
 
 export async function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguage(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.iconsets.v3[
-      'latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language'
+      'latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}'
     ].$get(args, options),
   )
 }
 
 export async function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmount(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.iconsets.v3[
-      'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+      'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
     ].$get(args, options),
   )
 }
 
 export async function getApiIconsetsV3TotalSinceSince(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api.iconsets.v3['total?since=:since'].$get(args, options))
+  return await parseResponse(client.api.iconsets.v3['total?since={since}'].$get(args, options))
 }
 
 export async function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmount(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.iconsets.v4[
-      'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+      'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
     ].$get(args, options),
   )
 }

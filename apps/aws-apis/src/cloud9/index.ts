@@ -1,35 +1,89 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsCloud9WorkspaceManagementServiceCreateEnvironmentEc2Handler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceCreateEnvironmentMembershipHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceDeleteEnvironmentHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentsHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentStatusHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceListEnvironmentsHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceListTagsForResourceHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceTagResourceHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceUntagResourceHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceUpdateEnvironmentHandler,
-  xAmzTargetAwsCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentMembershipRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentsRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentStatusRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceListEnvironmentsRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceListTagsForResourceRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUntagResourceRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2RouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentMembershipRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentsRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentStatusRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceListEnvironmentsRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceListTagsForResourceRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUntagResourceRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRouteHandler,
+  postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceCreateEnvironmentEc2Handler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceCreateEnvironmentMembershipHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceDeleteEnvironmentHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentStatusHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceDescribeEnvironmentsHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceListEnvironmentsHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceTagResourceHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceUntagResourceHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceUpdateEnvironmentHandler)
-  .route('/', xAmzTargetAwsCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipHandler)
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2RouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentMembershipRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentMembershipRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDeleteEnvironmentMembershipRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentMembershipsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentStatusRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentsRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceDescribeEnvironmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceListEnvironmentsRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceListEnvironmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceListTagsForResourceRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUntagResourceRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute,
+    postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRouteHandler,
+  )
 
 export default app

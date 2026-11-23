@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putRevokeSubUserKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putRevokeSubUserKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const revokeSubUserKeyHandler = app.openapi(putRevokeSubUserKeyRoute, (c) => {
+export const putRevokeSubUserKeyRouteHandler: RouteHandler<
+  typeof putRevokeSubUserKeyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

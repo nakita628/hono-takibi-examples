@@ -1,8 +1,47 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { companiesHandler } from './handlers'
+import {
+  getCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataBankAccountsAccountIdBankTransactionsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdOptionsBankAccountsAccountIdBankTransactionsRoute,
+  patchCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsAccountIdRoute,
+  postCompaniesCompanyIdConnectionsConnectionIdPushBankAccountsAccountIdBankTransactionsRoute,
+  putCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRoute,
+} from './routes'
+import {
+  getCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataBankAccountsAccountIdBankTransactionsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdOptionsBankAccountsAccountIdBankTransactionsRouteHandler,
+  patchCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsAccountIdRouteHandler,
+  postCompaniesCompanyIdConnectionsConnectionIdPushBankAccountsAccountIdBankTransactionsRouteHandler,
+  putCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', companiesHandler)
+export const api = app
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRouteHandler,
+  )
+  .openapi(
+    putCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRoute,
+    putCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsRouteHandler,
+  )
+  .openapi(
+    patchCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsAccountIdRoute,
+    patchCompaniesCompanyIdConnectionsConnectionIdConnectionInfoBankFeedAccountsAccountIdRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataBankAccountsAccountIdBankTransactionsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataBankAccountsAccountIdBankTransactionsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdOptionsBankAccountsAccountIdBankTransactionsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdOptionsBankAccountsAccountIdBankTransactionsRouteHandler,
+  )
+  .openapi(
+    postCompaniesCompanyIdConnectionsConnectionIdPushBankAccountsAccountIdBankTransactionsRoute,
+    postCompaniesCompanyIdConnectionsConnectionIdPushBankAccountsAccountIdBankTransactionsRouteHandler,
+  )
 
 export default app

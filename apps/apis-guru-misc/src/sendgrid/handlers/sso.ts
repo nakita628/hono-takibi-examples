@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSsoCertificatesCertIdRoute,
   deleteSsoIntegrationsIdRoute,
   getSsoCertificatesCertIdRoute,
@@ -14,42 +14,74 @@ import {
   postSsoTeammatesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSsoCertificatesRouteHandler: RouteHandler<
+  typeof postSsoCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ssoHandler = app
-  .openapi(postSsoCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSsoCertificatesCertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoCertificatesCertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSsoCertificatesCertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSsoIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSsoIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSsoIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoIntegrationsIntegrationIdCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSsoTeammatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSsoTeammatesUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSsoCertificatesCertIdRouteHandler: RouteHandler<
+  typeof deleteSsoCertificatesCertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoCertificatesCertIdRouteHandler: RouteHandler<
+  typeof getSsoCertificatesCertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSsoCertificatesCertIdRouteHandler: RouteHandler<
+  typeof patchSsoCertificatesCertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoIntegrationsRouteHandler: RouteHandler<typeof getSsoIntegrationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSsoIntegrationsRouteHandler: RouteHandler<
+  typeof postSsoIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSsoIntegrationsIdRouteHandler: RouteHandler<
+  typeof deleteSsoIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoIntegrationsIdRouteHandler: RouteHandler<
+  typeof getSsoIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSsoIntegrationsIdRouteHandler: RouteHandler<
+  typeof patchSsoIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoIntegrationsIntegrationIdCertificatesRouteHandler: RouteHandler<
+  typeof getSsoIntegrationsIntegrationIdCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSsoTeammatesRouteHandler: RouteHandler<typeof postSsoTeammatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSsoTeammatesUsernameRouteHandler: RouteHandler<
+  typeof patchSsoTeammatesUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

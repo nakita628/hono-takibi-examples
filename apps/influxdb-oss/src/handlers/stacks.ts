@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStacksStackIdRoute,
   getStacksRoute,
   getStacksStackIdRoute,
@@ -8,24 +8,34 @@ import {
   postStacksStackIdUninstallRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStacksRouteHandler: RouteHandler<typeof getStacksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stacksHandler = app
-  .openapi(getStacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStacksStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStacksStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStacksStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksStackIdUninstallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStacksRouteHandler: RouteHandler<typeof postStacksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStacksStackIdRouteHandler: RouteHandler<typeof getStacksStackIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStacksStackIdRouteHandler: RouteHandler<typeof patchStacksStackIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStacksStackIdRouteHandler: RouteHandler<
+  typeof deleteStacksStackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksStackIdUninstallRouteHandler: RouteHandler<
+  typeof postStacksStackIdUninstallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta1NameRoute,
   deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
   deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
@@ -64,210 +64,370 @@ import {
   putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsProjectIdZonesZoneServerconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameServerConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameCheckAutopilotCompatibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameCompleteIpRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameCompleteUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetAutoscalingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetLegacyAbacRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetLoggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetMaintenancePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetManagementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetMasterAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetMonitoringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetNetworkPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetResourceLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameSetSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameStartIpRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameUpdateMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentWellKnownOpenidConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAggregatedUsableSubnetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentJwksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentNodePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentNodePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler: RouteHandler<
+  typeof deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler: RouteHandler<
+  typeof putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler: RouteHandler<
+  typeof deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneOperationsRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ProjectsProjectIdZonesZoneServerconfigRouteHandler: RouteHandler<
+  typeof getV1beta1ProjectsProjectIdZonesZoneServerconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1NameRouteHandler: RouteHandler<typeof deleteV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameRouteHandler: RouteHandler<typeof getV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1NameRouteHandler: RouteHandler<typeof putV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameServerConfigRouteHandler: RouteHandler<
+  typeof getV1beta1NameServerConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameCancelRouteHandler: RouteHandler<
+  typeof postV1beta1NameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameCheckAutopilotCompatibilityRouteHandler: RouteHandler<
+  typeof getV1beta1NameCheckAutopilotCompatibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameCompleteIpRotationRouteHandler: RouteHandler<
+  typeof postV1beta1NameCompleteIpRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameCompleteUpgradeRouteHandler: RouteHandler<
+  typeof postV1beta1NameCompleteUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameRollbackRouteHandler: RouteHandler<
+  typeof postV1beta1NameRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetAddonsRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetAutoscalingRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetAutoscalingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetLegacyAbacRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetLegacyAbacRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetLocationsRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetLoggingRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetLoggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetMaintenancePolicyRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetMaintenancePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetManagementRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetMasterAuthRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetMasterAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetMonitoringRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetMonitoringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetNetworkPolicyRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetNetworkPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetResourceLabelsRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetResourceLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameSetSizeRouteHandler: RouteHandler<
+  typeof postV1beta1NameSetSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameStartIpRotationRouteHandler: RouteHandler<
+  typeof postV1beta1NameStartIpRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameUpdateMasterRouteHandler: RouteHandler<
+  typeof postV1beta1NameUpdateMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentWellKnownOpenidConfigurationRouteHandler: RouteHandler<
+  typeof getV1beta1ParentWellKnownOpenidConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAggregatedUsableSubnetworksRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAggregatedUsableSubnetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentClustersRouteHandler: RouteHandler<
+  typeof getV1beta1ParentClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentClustersRouteHandler: RouteHandler<
+  typeof postV1beta1ParentClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentJwksRouteHandler: RouteHandler<
+  typeof getV1beta1ParentJwksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentLocationsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentNodePoolsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentNodePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentNodePoolsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentNodePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentOperationsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -14,19 +14,19 @@ export function getRecordsFormatKey() {
 }
 
 export function getGetRecordsFormatKey(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records.:format', '/records.:format', keyArgs] as const
+  return ['records.{format}', '/records.{format}', keyArgs] as const
 }
 
 export function useGetRecordsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
         >
       >,
       TError
@@ -43,25 +43,25 @@ export function useGetRecordsFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['records.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['records.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetRecordsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
         >
       >,
       TError
@@ -78,33 +78,33 @@ export function useImmutableGetRecordsFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['records.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['records.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetRecordsRecordIdFormatKey(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records', '/records/:record_id.:format', keyArgs] as const
+  return ['records', '/records/:record_id.{format}', keyArgs] as const
 }
 
 export function useGetRecordsRecordIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
           >
         >
       >,
@@ -127,27 +127,27 @@ export function useGetRecordsRecordIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.records[':record_id.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.records[':record_id.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetRecordsRecordIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
           >
         >
       >,
@@ -170,35 +170,35 @@ export function useImmutableGetRecordsRecordIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.records[':record_id.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.records[':record_id.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetRecordsRecordIdMoreLikeThisFormatKey(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records', '/records/:record_id/more_like_this.:format', keyArgs] as const
+  return ['records', '/records/:record_id/more_like_this.{format}', keyArgs] as const
 }
 
 export function useGetRecordsRecordIdMoreLikeThisFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+              ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
             >
           >
         >
@@ -223,7 +223,7 @@ export function useGetRecordsRecordIdMoreLikeThisFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+              ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
             >
           >
         >
@@ -233,7 +233,7 @@ export function useGetRecordsRecordIdMoreLikeThisFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.records[':record_id']['more_like_this.:format'].$get(args, clientOptions),
+          client.records[':record_id']['more_like_this.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -241,14 +241,14 @@ export function useGetRecordsRecordIdMoreLikeThisFormat<TError = unknown>(
 }
 
 export function useImmutableGetRecordsRecordIdMoreLikeThisFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+              ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
             >
           >
         >
@@ -273,7 +273,7 @@ export function useImmutableGetRecordsRecordIdMoreLikeThisFormat<TError = unknow
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+              ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
             >
           >
         >
@@ -283,7 +283,7 @@ export function useImmutableGetRecordsRecordIdMoreLikeThisFormat<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.records[':record_id']['more_like_this.:format'].$get(args, clientOptions),
+          client.records[':record_id']['more_like_this.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

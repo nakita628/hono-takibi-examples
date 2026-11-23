@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMetricsEnvironmentsEnvironmentNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMetricsEnvironmentsEnvironmentNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metricsHandler = app.openapi(postMetricsEnvironmentsEnvironmentNameRoute, (c) => {
+export const postMetricsEnvironmentsEnvironmentNameRouteHandler: RouteHandler<
+  typeof postMetricsEnvironmentsEnvironmentNameRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

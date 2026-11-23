@@ -5150,7 +5150,7 @@ export const getAdminRequestsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'List of received requests', content: {} } },
+  responses: { 200: { description: 'List of received requests' } },
 })
 
 export const deleteAdminRequestsRoute = createRoute({
@@ -5373,7 +5373,7 @@ export const postAdminRequestsFindRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Matching request details', content: {} } },
+  responses: { 200: { description: 'Matching request details' } },
 })
 
 export const postAdminRequestsRemoveRoute = createRoute({
@@ -5475,7 +5475,7 @@ export const postAdminRequestsRemoveRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Removed request details', content: {} } },
+  responses: { 200: { description: 'Removed request details' } },
 })
 
 export const postAdminRequestsRemoveByMetadataRoute = createRoute({
@@ -5526,7 +5526,7 @@ export const postAdminRequestsRemoveByMetadataRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'Removed request details', content: {} } },
+  responses: { 200: { description: 'Removed request details' } },
 })
 
 export const postAdminRequestsResetRoute = createRoute({
@@ -5544,7 +5544,7 @@ export const getAdminRequestsUnmatchedRoute = createRoute({
   tags: ['Requests'],
   summary: 'Find unmatched requests',
   description: "Get details of logged requests that weren't matched by any stub mapping",
-  responses: { 200: { description: 'Unmatched request details', content: {} } },
+  responses: { 200: { description: 'Unmatched request details' } },
 })
 
 export const getAdminRequestsUnmatchedNearMissesRoute = createRoute({
@@ -5662,7 +5662,7 @@ export const getAdminRequestsRequestIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} }, 404: { description: 'Request not found' } },
+  responses: { 200: { description: 'OK' }, 404: { description: 'Request not found' } },
 })
 
 export const deleteAdminRequestsRequestIdRoute = createRoute({

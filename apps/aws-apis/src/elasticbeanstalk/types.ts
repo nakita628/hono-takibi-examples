@@ -1,4 +1,3 @@
-type InsufficientPrivilegesException = { [x: string]: unknown }
 type AbortEnvironmentUpdateMessage = {
   EnvironmentId?: {} | undefined
   EnvironmentName?: {} | undefined
@@ -9,8 +8,6 @@ type ApplyEnvironmentManagedActionResult = {
   ActionType?: {} | undefined
   Status?: {} | undefined
 }
-type ElasticBeanstalkServiceException = { [x: string]: unknown }
-type ManagedActionInvalidStateException = { [x: string]: unknown }
 type ApplyEnvironmentManagedActionRequest = {
   EnvironmentName?: {} | undefined
   EnvironmentId?: {} | undefined
@@ -24,7 +21,6 @@ type CheckDNSAvailabilityResultMessage = {
 type CheckDNSAvailabilityMessage = { CNAMEPrefix: {} }
 type VersionLabel = string
 type EnvironmentDescriptionsMessage = { Environments?: {} | undefined; NextToken?: {} | undefined }
-type TooManyEnvironmentsException = { [x: string]: unknown }
 type ComposeEnvironmentsMessage = {
   ApplicationName?: {} | undefined
   GroupName?: {} | undefined
@@ -67,7 +63,6 @@ type ApplicationDescriptionMessage = {
       }
     | undefined
 }
-type TooManyApplicationsException = { [x: string]: unknown }
 type CreateApplicationMessage = {
   ApplicationName: {}
   Description?: {} | undefined
@@ -110,9 +105,6 @@ type ApplicationVersionDescriptionMessage = {
       }
     | undefined
 }
-type TooManyApplicationVersionsException = { [x: string]: unknown }
-type S3LocationNotInServiceRegionException = { [x: string]: unknown }
-type CodeBuildNotInServiceRegionException = { [x: string]: unknown }
 type CreateApplicationVersionMessage = {
   ApplicationName: {}
   VersionLabel: {}
@@ -150,8 +142,6 @@ type ConfigurationSettingsDescription = {
   DateUpdated?: {} | undefined
   OptionSettings?: {} | undefined
 }
-type TooManyBucketsException = { [x: string]: unknown }
-type TooManyConfigurationTemplatesException = { [x: string]: unknown }
 type CreateConfigurationTemplateMessage = {
   ApplicationName: {}
   TemplateName: {}
@@ -238,7 +228,6 @@ type CreatePlatformVersionResult = {
     | undefined
   Builder?: { ARN?: {} | undefined } | undefined
 }
-type TooManyPlatformsException = { [x: string]: unknown }
 type CreatePlatformVersionRequest = {
   PlatformName: {}
   PlatformVersion: {}
@@ -248,10 +237,7 @@ type CreatePlatformVersionRequest = {
   Tags?: {} | undefined
 }
 type CreateStorageLocationResultMessage = { S3Bucket?: {} | undefined }
-type S3SubscriptionRequiredException = { [x: string]: unknown }
-type OperationInProgressException = { [x: string]: unknown }
 type DeleteApplicationMessage = { ApplicationName: {}; TerminateEnvByForce?: {} | undefined }
-type SourceBundleDeletionException = { [x: string]: unknown }
 type DeleteApplicationVersionMessage = {
   ApplicationName: {}
   VersionLabel: {}
@@ -277,7 +263,6 @@ type DeletePlatformVersionResult = {
       }
     | undefined
 }
-type PlatformVersionStillReferencedException = { [x: string]: unknown }
 type DeletePlatformVersionRequest = { PlatformArn?: {} | undefined }
 type DescribeAccountAttributesResult = {
   ResourceQuotas?:
@@ -377,7 +362,6 @@ type DescribeEnvironmentHealthResult = {
     | undefined
   RefreshedAt?: {} | undefined
 }
-type InvalidRequestException = { [x: string]: unknown }
 type DescribeEnvironmentHealthRequest = {
   EnvironmentName?: {} | undefined
   EnvironmentId?: {} | undefined
@@ -528,8 +512,6 @@ type ResourceTagsDescriptionMessage = {
   ResourceArn?: {} | undefined
   ResourceTags?: {} | undefined
 }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ResourceTypeNotSupportedException = { [x: string]: unknown }
 type ListTagsForResourceMessage = { ResourceArn: {} }
 type RebuildEnvironmentMessage = {
   EnvironmentId?: {} | undefined
@@ -625,7 +607,6 @@ type UpdateEnvironmentMessage = {
   OptionsToRemove?: {} | undefined
 }
 type TagKey = string
-type TooManyTagsException = { [x: string]: unknown }
 type UpdateTagsForResourceMessage = {
   ResourceArn: {}
   TagsToAdd?: {} | undefined
@@ -642,298 +623,132 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#Action=AbortEnvironmentUpdate': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'AbortEnvironmentUpdate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            Action: 'AbortEnvironmentUpdate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'AbortEnvironmentUpdate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'AbortEnvironmentUpdate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AbortEnvironmentUpdateMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'AbortEnvironmentUpdate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'AbortEnvironmentUpdate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AbortEnvironmentUpdateMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: AbortEnvironmentUpdateMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=ApplyEnvironmentManagedAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                ActionId: string
-                Action: 'ApplyEnvironmentManagedAction'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ApplyEnvironmentManagedActionResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName?: string | undefined
+            EnvironmentId?: string | undefined
+            ActionId: string
+            Action: 'ApplyEnvironmentManagedAction'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                ActionId: string
-                Action: 'ApplyEnvironmentManagedAction'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                ActionId: string
-                Action: 'ApplyEnvironmentManagedAction'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ManagedActionInvalidStateException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ApplyEnvironmentManagedActionResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ApplyEnvironmentManagedAction'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ApplyEnvironmentManagedAction'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ApplyEnvironmentManagedActionRequest }
-            output: ApplyEnvironmentManagedActionResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ApplyEnvironmentManagedAction'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ApplyEnvironmentManagedActionRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ApplyEnvironmentManagedAction'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ApplyEnvironmentManagedActionRequest }
-            output: ManagedActionInvalidStateException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ApplyEnvironmentManagedActionRequest }
+        output: ApplyEnvironmentManagedActionResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=AssociateEnvironmentOperationsRole': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName: string
-                OperationsRole: string
-                Action: 'AssociateEnvironmentOperationsRole'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName: string
+            OperationsRole: string
+            Action: 'AssociateEnvironmentOperationsRole'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName: string
-                OperationsRole: string
-                Action: 'AssociateEnvironmentOperationsRole'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'AssociateEnvironmentOperationsRole'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateEnvironmentOperationsRoleMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'AssociateEnvironmentOperationsRole'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'AssociateEnvironmentOperationsRole'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateEnvironmentOperationsRoleMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: AssociateEnvironmentOperationsRoleMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=CheckDNSAvailability': {
@@ -974,1642 +789,486 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=ComposeEnvironments': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                GroupName?: string | undefined
-                VersionLabels?: VersionLabel[] | undefined
-                Action: 'ComposeEnvironments'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnvironmentDescriptionsMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName?: string | undefined
+            GroupName?: string | undefined
+            VersionLabels?: VersionLabel[] | undefined
+            Action: 'ComposeEnvironments'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                GroupName?: string | undefined
-                VersionLabels?: VersionLabel[] | undefined
-                Action: 'ComposeEnvironments'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyEnvironmentsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                GroupName?: string | undefined
-                VersionLabels?: VersionLabel[] | undefined
-                Action: 'ComposeEnvironments'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: EnvironmentDescriptionsMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ComposeEnvironments'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ComposeEnvironments'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ComposeEnvironmentsMessage }
-            output: EnvironmentDescriptionsMessage
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ComposeEnvironments'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ComposeEnvironmentsMessage }
-            output: TooManyEnvironmentsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ComposeEnvironments'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ComposeEnvironmentsMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ComposeEnvironmentsMessage }
+        output: EnvironmentDescriptionsMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateApplication': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                Description?: string | undefined
-                ResourceLifecycleConfig?:
-                  | {
-                      ServiceRole?: {} | undefined
-                      VersionLifecycleConfig?:
-                        | {
-                            MaxCountRule?:
-                              | {
-                                  Enabled: {}
-                                  MaxCount?: {} | undefined
-                                  DeleteSourceFromS3?: {} | undefined
-                                }
-                              | undefined
-                            MaxAgeRule?:
-                              | {
-                                  Enabled: {}
-                                  MaxAgeInDays?: {} | undefined
-                                  DeleteSourceFromS3?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplication'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ApplicationDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            Description?: string | undefined
+            ResourceLifecycleConfig?:
+              | {
+                  ServiceRole?: {} | undefined
+                  VersionLifecycleConfig?:
+                    | {
+                        MaxCountRule?:
+                          | {
+                              Enabled: {}
+                              MaxCount?: {} | undefined
+                              DeleteSourceFromS3?: {} | undefined
+                            }
+                          | undefined
+                        MaxAgeRule?:
+                          | {
+                              Enabled: {}
+                              MaxAgeInDays?: {} | undefined
+                              DeleteSourceFromS3?: {} | undefined
+                            }
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            Tags?: Tag[] | undefined
+            Action: 'CreateApplication'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                Description?: string | undefined
-                ResourceLifecycleConfig?:
-                  | {
-                      ServiceRole?: {} | undefined
-                      VersionLifecycleConfig?:
-                        | {
-                            MaxCountRule?:
-                              | {
-                                  Enabled: {}
-                                  MaxCount?: {} | undefined
-                                  DeleteSourceFromS3?: {} | undefined
-                                }
-                              | undefined
-                            MaxAgeRule?:
-                              | {
-                                  Enabled: {}
-                                  MaxAgeInDays?: {} | undefined
-                                  DeleteSourceFromS3?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplication'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyApplicationsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'CreateApplication'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationMessage }
-            output: ApplicationDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+        }
+        output: ApplicationDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateApplication'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'CreateApplication'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationMessage }
-            output: TooManyApplicationsException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: CreateApplicationMessage }
+        output: ApplicationDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateApplicationVersion': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ApplicationVersionDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            VersionLabel: string
+            Description?: string | undefined
+            SourceBuildInformation?:
+              | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
+              | undefined
+            SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
+            BuildConfiguration?:
+              | {
+                  ArtifactName?: {} | undefined
+                  CodeBuildServiceRole: {}
+                  ComputeType?: {} | undefined
+                  Image: {}
+                  TimeoutInMinutes?: {} | undefined
+                }
+              | undefined
+            AutoCreateApplication?: boolean | undefined
+            Process?: boolean | undefined
+            Tags?: Tag[] | undefined
+            Action: 'CreateApplicationVersion'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyApplicationsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyApplicationVersionsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ApplicationVersionDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: S3LocationNotInServiceRegionException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                Description?: string | undefined
-                SourceBuildInformation?:
-                  | { SourceType: {}; SourceRepository: {}; SourceLocation: {} }
-                  | undefined
-                SourceBundle?: { S3Bucket?: {} | undefined; S3Key?: {} | undefined } | undefined
-                BuildConfiguration?:
-                  | {
-                      ArtifactName?: {} | undefined
-                      CodeBuildServiceRole: {}
-                      ComputeType?: {} | undefined
-                      Image: {}
-                      TimeoutInMinutes?: {} | undefined
-                    }
-                  | undefined
-                AutoCreateApplication?: boolean | undefined
-                Process?: boolean | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CodeBuildNotInServiceRegionException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: ApplicationVersionDescriptionMessage
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: TooManyApplicationsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: TooManyApplicationVersionsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: S3LocationNotInServiceRegionException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'CreateApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateApplicationVersionMessage }
-            output: CodeBuildNotInServiceRegionException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: CreateApplicationVersionMessage }
+        output: ApplicationVersionDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateConfigurationTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                SourceConfiguration?:
-                  | { ApplicationName?: {} | undefined; TemplateName?: {} | undefined }
-                  | undefined
-                EnvironmentId?: string | undefined
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSettingsDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TemplateName: string
+            SolutionStackName?: string | undefined
+            PlatformArn?: string | undefined
+            SourceConfiguration?:
+              | { ApplicationName?: {} | undefined; TemplateName?: {} | undefined }
+              | undefined
+            EnvironmentId?: string | undefined
+            Description?: string | undefined
+            OptionSettings?: ConfigurationOptionSetting[] | undefined
+            Tags?: Tag[] | undefined
+            Action: 'CreateConfigurationTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                SourceConfiguration?:
-                  | { ApplicationName?: {} | undefined; TemplateName?: {} | undefined }
-                  | undefined
-                EnvironmentId?: string | undefined
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                SourceConfiguration?:
-                  | { ApplicationName?: {} | undefined; TemplateName?: {} | undefined }
-                  | undefined
-                EnvironmentId?: string | undefined
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ConfigurationSettingsDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateConfigurationTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                SourceConfiguration?:
-                  | { ApplicationName?: {} | undefined; TemplateName?: {} | undefined }
-                  | undefined
-                EnvironmentId?: string | undefined
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyConfigurationTemplatesException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationTemplateMessage }
-            output: ConfigurationSettingsDescription
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationTemplateMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationTemplateMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationTemplateMessage }
-            output: TooManyConfigurationTemplatesException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreateConfigurationTemplateMessage }
+        output: ConfigurationSettingsDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateEnvironment': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                CNAMEPrefix?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                Tags?: Tag[] | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                OperationsRole?: string | undefined
-                Action: 'CreateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            EnvironmentName?: string | undefined
+            GroupName?: string | undefined
+            Description?: string | undefined
+            CNAMEPrefix?: string | undefined
+            Tier?:
+              | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
+              | undefined
+            Tags?: Tag[] | undefined
+            VersionLabel?: string | undefined
+            TemplateName?: string | undefined
+            SolutionStackName?: string | undefined
+            PlatformArn?: string | undefined
+            OptionSettings?: ConfigurationOptionSetting[] | undefined
+            OptionsToRemove?: OptionSpecification[] | undefined
+            OperationsRole?: string | undefined
+            Action: 'CreateEnvironment'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                CNAMEPrefix?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                Tags?: Tag[] | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                OperationsRole?: string | undefined
-                Action: 'CreateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyEnvironmentsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                CNAMEPrefix?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                Tags?: Tag[] | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                OperationsRole?: string | undefined
-                Action: 'CreateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateEnvironment'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'CreateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEnvironmentMessage }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEnvironmentMessage }
-            output: TooManyEnvironmentsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEnvironmentMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: CreateEnvironmentMessage }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreatePlatformVersion': {
-      $get:
-        | {
-            input: {
-              query: {
-                PlatformName: string
-                PlatformVersion: string
-                PlatformDefinitionBundle: { S3Bucket?: {} | undefined; S3Key?: {} | undefined }
-                EnvironmentName?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreatePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreatePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            PlatformName: string
+            PlatformVersion: string
+            PlatformDefinitionBundle: { S3Bucket?: {} | undefined; S3Key?: {} | undefined }
+            EnvironmentName?: string | undefined
+            OptionSettings?: ConfigurationOptionSetting[] | undefined
+            Tags?: Tag[] | undefined
+            Action: 'CreatePlatformVersion'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                PlatformName: string
-                PlatformVersion: string
-                PlatformDefinitionBundle: { S3Bucket?: {} | undefined; S3Key?: {} | undefined }
-                EnvironmentName?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreatePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                PlatformName: string
-                PlatformVersion: string
-                PlatformDefinitionBundle: { S3Bucket?: {} | undefined; S3Key?: {} | undefined }
-                EnvironmentName?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreatePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreatePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreatePlatformVersion'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                PlatformName: string
-                PlatformVersion: string
-                PlatformDefinitionBundle: { S3Bucket?: {} | undefined; S3Key?: {} | undefined }
-                EnvironmentName?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                Tags?: Tag[] | undefined
-                Action: 'CreatePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyPlatformsException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreatePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePlatformVersionRequest }
-            output: CreatePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreatePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePlatformVersionRequest }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreatePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePlatformVersionRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreatePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePlatformVersionRequest }
-            output: TooManyPlatformsException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreatePlatformVersionRequest }
+        output: CreatePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateStorageLocation': {
-      $get:
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateStorageLocationResultMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: CreateStorageLocationResultMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: S3SubscriptionRequiredException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateStorageLocationResultMessage
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: S3SubscriptionRequiredException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateStorageLocation'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 482
-          }
+        }
+        output: CreateStorageLocationResultMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteApplication': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TerminateEnvByForce?: boolean | undefined
-                Action: 'DeleteApplication'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TerminateEnvByForce?: boolean | undefined
+            Action: 'DeleteApplication'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TerminateEnvByForce?: boolean | undefined
-                Action: 'DeleteApplication'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteApplication'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteApplication'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteApplication'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationMessage }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteApplicationMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteApplicationVersion': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                DeleteSourceBundle?: boolean | undefined
-                Action: 'DeleteApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            VersionLabel: string
+            DeleteSourceBundle?: boolean | undefined
+            Action: 'DeleteApplicationVersion'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                DeleteSourceBundle?: boolean | undefined
-                Action: 'DeleteApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SourceBundleDeletionException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                DeleteSourceBundle?: boolean | undefined
-                Action: 'DeleteApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                DeleteSourceBundle?: boolean | undefined
-                Action: 'DeleteApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                VersionLabel: string
-                DeleteSourceBundle?: boolean | undefined
-                Action: 'DeleteApplicationVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: S3LocationNotInServiceRegionException
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationVersionMessage }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationVersionMessage }
-            output: SourceBundleDeletionException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationVersionMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationVersionMessage }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteApplicationVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteApplicationVersionMessage }
-            output: S3LocationNotInServiceRegionException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: DeleteApplicationVersionMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteConfigurationTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                Action: 'DeleteConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TemplateName: string
+            Action: 'DeleteConfigurationTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                Action: 'DeleteConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationTemplateMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteConfigurationTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationTemplateMessage }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteConfigurationTemplateMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteEnvironmentConfiguration': {
@@ -2655,267 +1314,79 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=DeletePlatformVersion': {
-      $get:
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DeletePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeletePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            PlatformArn?: string | undefined
+            Action: 'DeletePlatformVersion'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DeletePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DeletePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeletePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DeletePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DeletePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PlatformVersionStillReferencedException
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePlatformVersionRequest }
-            output: DeletePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePlatformVersionRequest }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePlatformVersionRequest }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePlatformVersionRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeletePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePlatformVersionRequest }
-            output: PlatformVersionStillReferencedException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: DeletePlatformVersionRequest }
+        output: DeletePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAccountAttributes': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAccountAttributesResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeAccountAttributesResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAccountAttributesResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeAccountAttributes'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeAccountAttributesResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeApplicationVersions': {
@@ -3004,577 +1475,271 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=DescribeConfigurationOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                Options?: OptionSpecification[] | undefined
-                Action: 'DescribeConfigurationOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationOptionsDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName?: string | undefined
+            TemplateName?: string | undefined
+            EnvironmentName?: string | undefined
+            SolutionStackName?: string | undefined
+            PlatformArn?: string | undefined
+            Options?: OptionSpecification[] | undefined
+            Action: 'DescribeConfigurationOptions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                Options?: OptionSpecification[] | undefined
-                Action: 'DescribeConfigurationOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeConfigurationOptions'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationOptionsMessage }
-            output: ConfigurationOptionsDescription
-            outputFormat: 'text'
-            status: 200
+        }
+        output: ConfigurationOptionsDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeConfigurationOptions'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeConfigurationOptions'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationOptionsMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeConfigurationOptionsMessage }
+        output: ConfigurationOptionsDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeConfigurationSettings': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'DescribeConfigurationSettings'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSettingsDescriptions
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TemplateName?: string | undefined
+            EnvironmentName?: string | undefined
+            Action: 'DescribeConfigurationSettings'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'DescribeConfigurationSettings'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeConfigurationSettings'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationSettingsMessage }
-            output: ConfigurationSettingsDescriptions
-            outputFormat: 'text'
-            status: 200
+        }
+        output: ConfigurationSettingsDescriptions
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeConfigurationSettings'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeConfigurationSettings'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationSettingsMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeConfigurationSettingsMessage }
+        output: ConfigurationSettingsDescriptions
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeEnvironmentHealth': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: EnvironmentHealthAttribute[] | undefined
-                Action: 'DescribeEnvironmentHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeEnvironmentHealthResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName?: string | undefined
+            EnvironmentId?: string | undefined
+            AttributeNames?: EnvironmentHealthAttribute[] | undefined
+            Action: 'DescribeEnvironmentHealth'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: EnvironmentHealthAttribute[] | undefined
-                Action: 'DescribeEnvironmentHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: EnvironmentHealthAttribute[] | undefined
-                Action: 'DescribeEnvironmentHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeEnvironmentHealthResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeEnvironmentHealth'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeEnvironmentHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentHealthRequest }
-            output: DescribeEnvironmentHealthResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeEnvironmentHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentHealthRequest }
-            output: InvalidRequestException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeEnvironmentHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentHealthRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeEnvironmentHealthRequest }
+        output: DescribeEnvironmentHealthResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeEnvironmentManagedActionHistory': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                NextToken?: string | undefined
-                MaxItems?: number | undefined
-                Action: 'DescribeEnvironmentManagedActionHistory'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeEnvironmentManagedActionHistoryResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            NextToken?: string | undefined
+            MaxItems?: number | undefined
+            Action: 'DescribeEnvironmentManagedActionHistory'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                NextToken?: string | undefined
-                MaxItems?: number | undefined
-                Action: 'DescribeEnvironmentManagedActionHistory'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxItems?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeEnvironmentManagedActionHistory'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentManagedActionHistoryRequest }
-            output: DescribeEnvironmentManagedActionHistoryResult
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DescribeEnvironmentManagedActionHistoryResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxItems?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeEnvironmentManagedActionHistory'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                MaxItems?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeEnvironmentManagedActionHistory'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentManagedActionHistoryRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
+        } & { json: DescribeEnvironmentManagedActionHistoryRequest }
+        output: DescribeEnvironmentManagedActionHistoryResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeEnvironmentManagedActions': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                Status?: 'Scheduled' | 'Pending' | 'Running' | 'Unknown' | undefined
-                Action: 'DescribeEnvironmentManagedActions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeEnvironmentManagedActionsResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName?: string | undefined
+            EnvironmentId?: string | undefined
+            Status?: 'Scheduled' | 'Pending' | 'Running' | 'Unknown' | undefined
+            Action: 'DescribeEnvironmentManagedActions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                Status?: 'Scheduled' | 'Pending' | 'Running' | 'Unknown' | undefined
-                Action: 'DescribeEnvironmentManagedActions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DescribeEnvironmentManagedActions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentManagedActionsRequest }
-            output: DescribeEnvironmentManagedActionsResult
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DescribeEnvironmentManagedActionsResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeEnvironmentManagedActions'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DescribeEnvironmentManagedActions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentManagedActionsRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeEnvironmentManagedActionsRequest }
+        output: DescribeEnvironmentManagedActionsResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeEnvironmentResources': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'DescribeEnvironmentResources'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnvironmentResourceDescriptionsMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            Action: 'DescribeEnvironmentResources'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'DescribeEnvironmentResources'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeEnvironmentResources'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentResourcesMessage }
-            output: EnvironmentResourceDescriptionsMessage
-            outputFormat: 'text'
-            status: 200
+        }
+        output: EnvironmentResourceDescriptionsMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeEnvironmentResources'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeEnvironmentResources'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEnvironmentResourcesMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeEnvironmentResourcesMessage }
+        output: EnvironmentResourceDescriptionsMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeEnvironments': {
@@ -3685,335 +1850,131 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=DescribeInstancesHealth': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: InstancesHealthAttribute[] | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeInstancesHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeInstancesHealthResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName?: string | undefined
+            EnvironmentId?: string | undefined
+            AttributeNames?: InstancesHealthAttribute[] | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeInstancesHealth'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: InstancesHealthAttribute[] | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeInstancesHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName?: string | undefined
-                EnvironmentId?: string | undefined
-                AttributeNames?: InstancesHealthAttribute[] | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeInstancesHealth'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeInstancesHealthResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeInstancesHealth'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeInstancesHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancesHealthRequest }
-            output: DescribeInstancesHealthResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeInstancesHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancesHealthRequest }
-            output: InvalidRequestException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeInstancesHealth'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancesHealthRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeInstancesHealthRequest }
+        output: DescribeInstancesHealthResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribePlatformVersion': {
-      $get:
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DescribePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            PlatformArn?: string | undefined
+            Action: 'DescribePlatformVersion'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DescribePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                PlatformArn?: string | undefined
-                Action: 'DescribePlatformVersion'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribePlatformVersion'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePlatformVersionRequest }
-            output: DescribePlatformVersionResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePlatformVersionRequest }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribePlatformVersion'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePlatformVersionRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribePlatformVersionRequest }
+        output: DescribePlatformVersionResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DisassociateEnvironmentOperationsRole': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentName: string
-                Action: 'DisassociateEnvironmentOperationsRole'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentName: string
+            Action: 'DisassociateEnvironmentOperationsRole'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentName: string
-                Action: 'DisassociateEnvironmentOperationsRole'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DisassociateEnvironmentOperationsRole'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateEnvironmentOperationsRoleMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'DisassociateEnvironmentOperationsRole'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DisassociateEnvironmentOperationsRole'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateEnvironmentOperationsRoleMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DisassociateEnvironmentOperationsRoleMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=ListAvailableSolutionStacks': {
@@ -4102,373 +2063,132 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=ListPlatformVersions': {
-      $get:
-        | {
-            input: {
-              query: {
-                Filters?: PlatformFilter[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListPlatformVersionsResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Filters?: PlatformFilter[] | undefined
+            MaxRecords?: number | undefined
+            NextToken?: string | undefined
+            Action: 'ListPlatformVersions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Filters?: PlatformFilter[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Filters?: PlatformFilter[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ListPlatformVersionsResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'ListPlatformVersions'
+            Version: '2010-12-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPlatformVersionsRequest }
-            output: ListPlatformVersionsResult
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPlatformVersionsRequest }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'ListPlatformVersions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPlatformVersionsRequest }
-            output: ElasticBeanstalkServiceException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ListPlatformVersionsRequest }
+        output: ListPlatformVersionsResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ListTagsForResource': {
-      $get:
-        | {
-            input: {
-              query: { ResourceArn: string; Action: 'ListTagsForResource'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceTagsDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { ResourceArn: string; Action: 'ListTagsForResource'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { ResourceArn: string; Action: 'ListTagsForResource'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: ResourceTagsDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ListTagsForResource'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { ResourceArn: string; Action: 'ListTagsForResource'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { ResourceArn: string; Action: 'ListTagsForResource'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceTypeNotSupportedException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'ListTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceMessage }
-            output: ResourceTagsDescriptionMessage
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ListTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ListTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceMessage }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'ListTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceMessage }
-            output: ResourceTypeNotSupportedException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: ListTagsForResourceMessage }
+        output: ResourceTagsDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=RebuildEnvironment': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'RebuildEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            Action: 'RebuildEnvironment'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                Action: 'RebuildEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'RebuildEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RebuildEnvironmentMessage }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'RebuildEnvironment'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'RebuildEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RebuildEnvironmentMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: RebuildEnvironmentMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=RequestEnvironmentInfo': {
@@ -4644,90 +2364,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=TerminateEnvironment': {
-      $get:
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                TerminateResources?: boolean | undefined
-                ForceTerminate?: boolean | undefined
-                Action: 'TerminateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            TerminateResources?: boolean | undefined
+            ForceTerminate?: boolean | undefined
+            Action: 'TerminateEnvironment'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                TerminateResources?: boolean | undefined
-                ForceTerminate?: boolean | undefined
-                Action: 'TerminateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'TerminateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateEnvironmentMessage }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
+        }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'TerminateEnvironment'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'TerminateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateEnvironmentMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: TerminateEnvironmentMessage }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateApplication': {
@@ -4773,130 +2450,67 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=UpdateApplicationResourceLifecycle': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                ResourceLifecycleConfig: {
-                  ServiceRole?: {} | undefined
-                  VersionLifecycleConfig?:
-                    | {
-                        MaxCountRule?:
-                          | {
-                              Enabled: {}
-                              MaxCount?: {} | undefined
-                              DeleteSourceFromS3?: {} | undefined
-                            }
-                          | undefined
-                        MaxAgeRule?:
-                          | {
-                              Enabled: {}
-                              MaxAgeInDays?: {} | undefined
-                              DeleteSourceFromS3?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                Action: 'UpdateApplicationResourceLifecycle'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            ResourceLifecycleConfig: {
+              ServiceRole?: {} | undefined
+              VersionLifecycleConfig?:
+                | {
+                    MaxCountRule?:
+                      | {
+                          Enabled: {}
+                          MaxCount?: {} | undefined
+                          DeleteSourceFromS3?: {} | undefined
+                        }
+                      | undefined
+                    MaxAgeRule?:
+                      | {
+                          Enabled: {}
+                          MaxAgeInDays?: {} | undefined
+                          DeleteSourceFromS3?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ApplicationResourceLifecycleDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateApplicationResourceLifecycle'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                ResourceLifecycleConfig: {
-                  ServiceRole?: {} | undefined
-                  VersionLifecycleConfig?:
-                    | {
-                        MaxCountRule?:
-                          | {
-                              Enabled: {}
-                              MaxCount?: {} | undefined
-                              DeleteSourceFromS3?: {} | undefined
-                            }
-                          | undefined
-                        MaxAgeRule?:
-                          | {
-                              Enabled: {}
-                              MaxAgeInDays?: {} | undefined
-                              DeleteSourceFromS3?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                Action: 'UpdateApplicationResourceLifecycle'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'UpdateApplicationResourceLifecycle'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateApplicationResourceLifecycleMessage }
-            output: ApplicationResourceLifecycleDescriptionMessage
-            outputFormat: 'text'
-            status: 200
+        }
+        output: ApplicationResourceLifecycleDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateApplicationResourceLifecycle'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'UpdateApplicationResourceLifecycle'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateApplicationResourceLifecycleMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: UpdateApplicationResourceLifecycleMessage }
+        output: ApplicationResourceLifecycleDescriptionMessage
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateApplicationVersion': {
@@ -4943,665 +2557,189 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=UpdateConfigurationTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSettingsDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TemplateName: string
+            Description?: string | undefined
+            OptionSettings?: ConfigurationOptionSetting[] | undefined
+            OptionsToRemove?: OptionSpecification[] | undefined
+            Action: 'UpdateConfigurationTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName: string
-                Description?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateConfigurationTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ConfigurationSettingsDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateConfigurationTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationTemplateMessage }
-            output: ConfigurationSettingsDescription
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationTemplateMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateConfigurationTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationTemplateMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: UpdateConfigurationTemplateMessage }
+        output: ConfigurationSettingsDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateEnvironment': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName?: string | undefined
+            EnvironmentId?: string | undefined
+            EnvironmentName?: string | undefined
+            GroupName?: string | undefined
+            Description?: string | undefined
+            Tier?:
+              | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
+              | undefined
+            VersionLabel?: string | undefined
+            TemplateName?: string | undefined
+            SolutionStackName?: string | undefined
+            PlatformArn?: string | undefined
+            OptionSettings?: ConfigurationOptionSetting[] | undefined
+            OptionsToRemove?: OptionSpecification[] | undefined
+            Action: 'UpdateEnvironment'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName?: string | undefined
-                EnvironmentId?: string | undefined
-                EnvironmentName?: string | undefined
-                GroupName?: string | undefined
-                Description?: string | undefined
-                Tier?:
-                  | { Name?: {} | undefined; Type?: {} | undefined; Version?: {} | undefined }
-                  | undefined
-                VersionLabel?: string | undefined
-                TemplateName?: string | undefined
-                SolutionStackName?: string | undefined
-                PlatformArn?: string | undefined
-                OptionSettings?: ConfigurationOptionSetting[] | undefined
-                OptionsToRemove?: OptionSpecification[] | undefined
-                Action: 'UpdateEnvironment'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateEnvironment'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEnvironmentMessage }
-            output: EnvironmentDescription
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEnvironmentMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateEnvironment'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEnvironmentMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: UpdateEnvironmentMessage }
+        output: EnvironmentDescription
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateTagsForResource': {
-      $get:
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ResourceArn: string
+            TagsToAdd?: Tag[] | undefined
+            TagsToRemove?: TagKey[] | undefined
+            Action: 'UpdateTagsForResource'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyTagsException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                ResourceArn: string
-                TagsToAdd?: Tag[] | undefined
-                TagsToRemove?: TagKey[] | undefined
-                Action: 'UpdateTagsForResource'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceTypeNotSupportedException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: OperationInProgressException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: TooManyTagsException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: ResourceNotFoundException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateTagsForResource'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTagsForResourceMessage }
-            output: ResourceTypeNotSupportedException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: UpdateTagsForResourceMessage }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=ValidateConfigurationSettings': {
-      $get:
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                OptionSettings: ConfigurationOptionSetting[]
-                Action: 'ValidateConfigurationSettings'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSettingsValidationMessages
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ApplicationName: string
+            TemplateName?: string | undefined
+            EnvironmentName?: string | undefined
+            OptionSettings: ConfigurationOptionSetting[]
+            Action: 'ValidateConfigurationSettings'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                OptionSettings: ConfigurationOptionSetting[]
-                Action: 'ValidateConfigurationSettings'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ApplicationName: string
-                TemplateName?: string | undefined
-                EnvironmentName?: string | undefined
-                OptionSettings: ConfigurationOptionSetting[]
-                Action: 'ValidateConfigurationSettings'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ConfigurationSettingsValidationMessages
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ValidateConfigurationSettings'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ValidateConfigurationSettings'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ValidateConfigurationSettingsMessage }
-            output: ConfigurationSettingsValidationMessages
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ValidateConfigurationSettings'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ValidateConfigurationSettingsMessage }
-            output: InsufficientPrivilegesException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ValidateConfigurationSettings'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ValidateConfigurationSettingsMessage }
-            output: TooManyBucketsException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ValidateConfigurationSettingsMessage }
+        output: ConfigurationSettingsValidationMessages
+        outputFormat: 'text'
+        status: 200
+      }
     }
   },
   '/'

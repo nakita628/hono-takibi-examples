@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMerchantsMerchantIdPaymentsAppsRoute,
   getMerchantsMerchantIdStoresStoreIdPaymentsAppsRoute,
   postMerchantsMerchantIdGeneratePaymentsAppBoardingTokenRoute,
@@ -7,21 +7,32 @@ import {
   postMerchantsMerchantIdStoresStoreIdGeneratePaymentsAppBoardingTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMerchantsMerchantIdGeneratePaymentsAppBoardingTokenRouteHandler: RouteHandler<
+  typeof postMerchantsMerchantIdGeneratePaymentsAppBoardingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const merchantsHandler = app
-  .openapi(postMerchantsMerchantIdGeneratePaymentsAppBoardingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantsMerchantIdPaymentsAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantsMerchantIdPaymentsAppsInstallationIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantsMerchantIdStoresStoreIdGeneratePaymentsAppBoardingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantsMerchantIdStoresStoreIdPaymentsAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMerchantsMerchantIdPaymentsAppsRouteHandler: RouteHandler<
+  typeof getMerchantsMerchantIdPaymentsAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantsMerchantIdPaymentsAppsInstallationIdRevokeRouteHandler: RouteHandler<
+  typeof postMerchantsMerchantIdPaymentsAppsInstallationIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantsMerchantIdStoresStoreIdGeneratePaymentsAppBoardingTokenRouteHandler: RouteHandler<
+  typeof postMerchantsMerchantIdStoresStoreIdGeneratePaymentsAppBoardingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantsMerchantIdStoresStoreIdPaymentsAppsRouteHandler: RouteHandler<
+  typeof getMerchantsMerchantIdStoresStoreIdPaymentsAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

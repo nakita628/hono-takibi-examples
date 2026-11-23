@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisBatchV1NamespacesNamespaceCronjobsNameRoute,
   deleteApisBatchV1NamespacesNamespaceCronjobsRoute,
   deleteApisBatchV1NamespacesNamespaceJobsNameRoute,
@@ -31,93 +31,176 @@ import {
   putApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisBatchV1IndexRouteHandler: RouteHandler<
+  typeof getApisBatchV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisBatchV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1CronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1JobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisBatchV1NamespacesNamespaceCronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceCronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisBatchV1NamespacesNamespaceCronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisBatchV1NamespacesNamespaceCronjobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceCronjobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisBatchV1NamespacesNamespaceCronjobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisBatchV1NamespacesNamespaceCronjobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisBatchV1NamespacesNamespaceJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisBatchV1NamespacesNamespaceJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisBatchV1NamespacesNamespaceJobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceJobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisBatchV1NamespacesNamespaceJobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisBatchV1NamespacesNamespaceJobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1NamespacesNamespaceJobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisBatchV1NamespacesNamespaceJobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisBatchV1NamespacesNamespaceJobsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchCronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchNamespacesNamespaceCronjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchNamespacesNamespaceCronjobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchNamespacesNamespaceJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisBatchV1WatchNamespacesNamespaceJobsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApisBatchV1CronjobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1CronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1JobsRouteHandler: RouteHandler<typeof getApisBatchV1JobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisBatchV1NamespacesNamespaceCronjobsRouteHandler: RouteHandler<
+  typeof deleteApisBatchV1NamespacesNamespaceCronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceCronjobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceCronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisBatchV1NamespacesNamespaceCronjobsRouteHandler: RouteHandler<
+  typeof postApisBatchV1NamespacesNamespaceCronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler: RouteHandler<
+  typeof deleteApisBatchV1NamespacesNamespaceCronjobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceCronjobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler: RouteHandler<
+  typeof patchApisBatchV1NamespacesNamespaceCronjobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler: RouteHandler<
+  typeof putApisBatchV1NamespacesNamespaceCronjobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler: RouteHandler<
+  typeof patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler: RouteHandler<
+  typeof putApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisBatchV1NamespacesNamespaceJobsRouteHandler: RouteHandler<
+  typeof deleteApisBatchV1NamespacesNamespaceJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceJobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisBatchV1NamespacesNamespaceJobsRouteHandler: RouteHandler<
+  typeof postApisBatchV1NamespacesNamespaceJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisBatchV1NamespacesNamespaceJobsNameRouteHandler: RouteHandler<
+  typeof deleteApisBatchV1NamespacesNamespaceJobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceJobsNameRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceJobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisBatchV1NamespacesNamespaceJobsNameRouteHandler: RouteHandler<
+  typeof patchApisBatchV1NamespacesNamespaceJobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisBatchV1NamespacesNamespaceJobsNameRouteHandler: RouteHandler<
+  typeof putApisBatchV1NamespacesNamespaceJobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler: RouteHandler<
+  typeof getApisBatchV1NamespacesNamespaceJobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler: RouteHandler<
+  typeof patchApisBatchV1NamespacesNamespaceJobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler: RouteHandler<
+  typeof putApisBatchV1NamespacesNamespaceJobsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchCronjobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchCronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchJobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchNamespacesNamespaceCronjobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchNamespacesNamespaceCronjobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchNamespacesNamespaceCronjobsNameRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchNamespacesNamespaceCronjobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchNamespacesNamespaceJobsRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchNamespacesNamespaceJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisBatchV1WatchNamespacesNamespaceJobsNameRouteHandler: RouteHandler<
+  typeof getApisBatchV1WatchNamespacesNamespaceJobsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/spoonacular.com/1.1/openapi.yaml',
   output: './src/spoonacular/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/spoonacular/types.ts' },
   client: { output: './src/spoonacular/client.ts', baseUrl: '/' },
   rpc: { output: './src/spoonacular/rpc.ts', parseResponse: true },

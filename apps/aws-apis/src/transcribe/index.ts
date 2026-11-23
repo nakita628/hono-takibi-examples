@@ -1,87 +1,245 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetTranscribeCreateCallAnalyticsCategoryHandler,
-  xAmzTargetTranscribeCreateLanguageModelHandler,
-  xAmzTargetTranscribeCreateMedicalVocabularyHandler,
-  xAmzTargetTranscribeCreateVocabularyFilterHandler,
-  xAmzTargetTranscribeCreateVocabularyHandler,
-  xAmzTargetTranscribeDeleteCallAnalyticsCategoryHandler,
-  xAmzTargetTranscribeDeleteCallAnalyticsJobHandler,
-  xAmzTargetTranscribeDeleteLanguageModelHandler,
-  xAmzTargetTranscribeDeleteMedicalTranscriptionJobHandler,
-  xAmzTargetTranscribeDeleteMedicalVocabularyHandler,
-  xAmzTargetTranscribeDeleteTranscriptionJobHandler,
-  xAmzTargetTranscribeDeleteVocabularyFilterHandler,
-  xAmzTargetTranscribeDeleteVocabularyHandler,
-  xAmzTargetTranscribeDescribeLanguageModelHandler,
-  xAmzTargetTranscribeGetCallAnalyticsCategoryHandler,
-  xAmzTargetTranscribeGetCallAnalyticsJobHandler,
-  xAmzTargetTranscribeGetMedicalTranscriptionJobHandler,
-  xAmzTargetTranscribeGetMedicalVocabularyHandler,
-  xAmzTargetTranscribeGetTranscriptionJobHandler,
-  xAmzTargetTranscribeGetVocabularyFilterHandler,
-  xAmzTargetTranscribeGetVocabularyHandler,
-  xAmzTargetTranscribeListCallAnalyticsCategoriesHandler,
-  xAmzTargetTranscribeListCallAnalyticsJobsHandler,
-  xAmzTargetTranscribeListLanguageModelsHandler,
-  xAmzTargetTranscribeListMedicalTranscriptionJobsHandler,
-  xAmzTargetTranscribeListMedicalVocabulariesHandler,
-  xAmzTargetTranscribeListTagsForResourceHandler,
-  xAmzTargetTranscribeListTranscriptionJobsHandler,
-  xAmzTargetTranscribeListVocabulariesHandler,
-  xAmzTargetTranscribeListVocabularyFiltersHandler,
-  xAmzTargetTranscribeStartCallAnalyticsJobHandler,
-  xAmzTargetTranscribeStartMedicalTranscriptionJobHandler,
-  xAmzTargetTranscribeStartTranscriptionJobHandler,
-  xAmzTargetTranscribeTagResourceHandler,
-  xAmzTargetTranscribeUntagResourceHandler,
-  xAmzTargetTranscribeUpdateCallAnalyticsCategoryHandler,
-  xAmzTargetTranscribeUpdateMedicalVocabularyHandler,
-  xAmzTargetTranscribeUpdateVocabularyFilterHandler,
-  xAmzTargetTranscribeUpdateVocabularyHandler,
+  postXAmzTargetTranscribeCreateCallAnalyticsCategoryRoute,
+  postXAmzTargetTranscribeCreateLanguageModelRoute,
+  postXAmzTargetTranscribeCreateMedicalVocabularyRoute,
+  postXAmzTargetTranscribeCreateVocabularyFilterRoute,
+  postXAmzTargetTranscribeCreateVocabularyRoute,
+  postXAmzTargetTranscribeDeleteCallAnalyticsCategoryRoute,
+  postXAmzTargetTranscribeDeleteCallAnalyticsJobRoute,
+  postXAmzTargetTranscribeDeleteLanguageModelRoute,
+  postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute,
+  postXAmzTargetTranscribeDeleteMedicalVocabularyRoute,
+  postXAmzTargetTranscribeDeleteTranscriptionJobRoute,
+  postXAmzTargetTranscribeDeleteVocabularyFilterRoute,
+  postXAmzTargetTranscribeDeleteVocabularyRoute,
+  postXAmzTargetTranscribeDescribeLanguageModelRoute,
+  postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute,
+  postXAmzTargetTranscribeGetCallAnalyticsJobRoute,
+  postXAmzTargetTranscribeGetMedicalTranscriptionJobRoute,
+  postXAmzTargetTranscribeGetMedicalVocabularyRoute,
+  postXAmzTargetTranscribeGetTranscriptionJobRoute,
+  postXAmzTargetTranscribeGetVocabularyFilterRoute,
+  postXAmzTargetTranscribeGetVocabularyRoute,
+  postXAmzTargetTranscribeListCallAnalyticsCategoriesRoute,
+  postXAmzTargetTranscribeListCallAnalyticsJobsRoute,
+  postXAmzTargetTranscribeListLanguageModelsRoute,
+  postXAmzTargetTranscribeListMedicalTranscriptionJobsRoute,
+  postXAmzTargetTranscribeListMedicalVocabulariesRoute,
+  postXAmzTargetTranscribeListTagsForResourceRoute,
+  postXAmzTargetTranscribeListTranscriptionJobsRoute,
+  postXAmzTargetTranscribeListVocabulariesRoute,
+  postXAmzTargetTranscribeListVocabularyFiltersRoute,
+  postXAmzTargetTranscribeStartCallAnalyticsJobRoute,
+  postXAmzTargetTranscribeStartMedicalTranscriptionJobRoute,
+  postXAmzTargetTranscribeStartTranscriptionJobRoute,
+  postXAmzTargetTranscribeTagResourceRoute,
+  postXAmzTargetTranscribeUntagResourceRoute,
+  postXAmzTargetTranscribeUpdateCallAnalyticsCategoryRoute,
+  postXAmzTargetTranscribeUpdateMedicalVocabularyRoute,
+  postXAmzTargetTranscribeUpdateVocabularyFilterRoute,
+  postXAmzTargetTranscribeUpdateVocabularyRoute,
+} from './routes'
+import {
+  postXAmzTargetTranscribeCreateCallAnalyticsCategoryRouteHandler,
+  postXAmzTargetTranscribeCreateLanguageModelRouteHandler,
+  postXAmzTargetTranscribeCreateMedicalVocabularyRouteHandler,
+  postXAmzTargetTranscribeCreateVocabularyFilterRouteHandler,
+  postXAmzTargetTranscribeCreateVocabularyRouteHandler,
+  postXAmzTargetTranscribeDeleteCallAnalyticsCategoryRouteHandler,
+  postXAmzTargetTranscribeDeleteCallAnalyticsJobRouteHandler,
+  postXAmzTargetTranscribeDeleteLanguageModelRouteHandler,
+  postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeDeleteMedicalVocabularyRouteHandler,
+  postXAmzTargetTranscribeDeleteTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeDeleteVocabularyFilterRouteHandler,
+  postXAmzTargetTranscribeDeleteVocabularyRouteHandler,
+  postXAmzTargetTranscribeDescribeLanguageModelRouteHandler,
+  postXAmzTargetTranscribeGetCallAnalyticsCategoryRouteHandler,
+  postXAmzTargetTranscribeGetCallAnalyticsJobRouteHandler,
+  postXAmzTargetTranscribeGetMedicalTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeGetMedicalVocabularyRouteHandler,
+  postXAmzTargetTranscribeGetTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeGetVocabularyFilterRouteHandler,
+  postXAmzTargetTranscribeGetVocabularyRouteHandler,
+  postXAmzTargetTranscribeListCallAnalyticsCategoriesRouteHandler,
+  postXAmzTargetTranscribeListCallAnalyticsJobsRouteHandler,
+  postXAmzTargetTranscribeListLanguageModelsRouteHandler,
+  postXAmzTargetTranscribeListMedicalTranscriptionJobsRouteHandler,
+  postXAmzTargetTranscribeListMedicalVocabulariesRouteHandler,
+  postXAmzTargetTranscribeListTagsForResourceRouteHandler,
+  postXAmzTargetTranscribeListTranscriptionJobsRouteHandler,
+  postXAmzTargetTranscribeListVocabulariesRouteHandler,
+  postXAmzTargetTranscribeListVocabularyFiltersRouteHandler,
+  postXAmzTargetTranscribeStartCallAnalyticsJobRouteHandler,
+  postXAmzTargetTranscribeStartMedicalTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeStartTranscriptionJobRouteHandler,
+  postXAmzTargetTranscribeTagResourceRouteHandler,
+  postXAmzTargetTranscribeUntagResourceRouteHandler,
+  postXAmzTargetTranscribeUpdateCallAnalyticsCategoryRouteHandler,
+  postXAmzTargetTranscribeUpdateMedicalVocabularyRouteHandler,
+  postXAmzTargetTranscribeUpdateVocabularyFilterRouteHandler,
+  postXAmzTargetTranscribeUpdateVocabularyRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetTranscribeCreateCallAnalyticsCategoryHandler)
-  .route('/', xAmzTargetTranscribeCreateLanguageModelHandler)
-  .route('/', xAmzTargetTranscribeCreateMedicalVocabularyHandler)
-  .route('/', xAmzTargetTranscribeCreateVocabularyHandler)
-  .route('/', xAmzTargetTranscribeCreateVocabularyFilterHandler)
-  .route('/', xAmzTargetTranscribeDeleteCallAnalyticsCategoryHandler)
-  .route('/', xAmzTargetTranscribeDeleteCallAnalyticsJobHandler)
-  .route('/', xAmzTargetTranscribeDeleteLanguageModelHandler)
-  .route('/', xAmzTargetTranscribeDeleteMedicalTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeDeleteMedicalVocabularyHandler)
-  .route('/', xAmzTargetTranscribeDeleteTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeDeleteVocabularyHandler)
-  .route('/', xAmzTargetTranscribeDeleteVocabularyFilterHandler)
-  .route('/', xAmzTargetTranscribeDescribeLanguageModelHandler)
-  .route('/', xAmzTargetTranscribeGetCallAnalyticsCategoryHandler)
-  .route('/', xAmzTargetTranscribeGetCallAnalyticsJobHandler)
-  .route('/', xAmzTargetTranscribeGetMedicalTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeGetMedicalVocabularyHandler)
-  .route('/', xAmzTargetTranscribeGetTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeGetVocabularyHandler)
-  .route('/', xAmzTargetTranscribeGetVocabularyFilterHandler)
-  .route('/', xAmzTargetTranscribeListCallAnalyticsCategoriesHandler)
-  .route('/', xAmzTargetTranscribeListCallAnalyticsJobsHandler)
-  .route('/', xAmzTargetTranscribeListLanguageModelsHandler)
-  .route('/', xAmzTargetTranscribeListMedicalTranscriptionJobsHandler)
-  .route('/', xAmzTargetTranscribeListMedicalVocabulariesHandler)
-  .route('/', xAmzTargetTranscribeListTagsForResourceHandler)
-  .route('/', xAmzTargetTranscribeListTranscriptionJobsHandler)
-  .route('/', xAmzTargetTranscribeListVocabulariesHandler)
-  .route('/', xAmzTargetTranscribeListVocabularyFiltersHandler)
-  .route('/', xAmzTargetTranscribeStartCallAnalyticsJobHandler)
-  .route('/', xAmzTargetTranscribeStartMedicalTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeStartTranscriptionJobHandler)
-  .route('/', xAmzTargetTranscribeTagResourceHandler)
-  .route('/', xAmzTargetTranscribeUntagResourceHandler)
-  .route('/', xAmzTargetTranscribeUpdateCallAnalyticsCategoryHandler)
-  .route('/', xAmzTargetTranscribeUpdateMedicalVocabularyHandler)
-  .route('/', xAmzTargetTranscribeUpdateVocabularyHandler)
-  .route('/', xAmzTargetTranscribeUpdateVocabularyFilterHandler)
+  .openapi(
+    postXAmzTargetTranscribeCreateCallAnalyticsCategoryRoute,
+    postXAmzTargetTranscribeCreateCallAnalyticsCategoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeCreateLanguageModelRoute,
+    postXAmzTargetTranscribeCreateLanguageModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeCreateMedicalVocabularyRoute,
+    postXAmzTargetTranscribeCreateMedicalVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeCreateVocabularyRoute,
+    postXAmzTargetTranscribeCreateVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeCreateVocabularyFilterRoute,
+    postXAmzTargetTranscribeCreateVocabularyFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteCallAnalyticsCategoryRoute,
+    postXAmzTargetTranscribeDeleteCallAnalyticsCategoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteCallAnalyticsJobRoute,
+    postXAmzTargetTranscribeDeleteCallAnalyticsJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteLanguageModelRoute,
+    postXAmzTargetTranscribeDeleteLanguageModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute,
+    postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteMedicalVocabularyRoute,
+    postXAmzTargetTranscribeDeleteMedicalVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteTranscriptionJobRoute,
+    postXAmzTargetTranscribeDeleteTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteVocabularyRoute,
+    postXAmzTargetTranscribeDeleteVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDeleteVocabularyFilterRoute,
+    postXAmzTargetTranscribeDeleteVocabularyFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeDescribeLanguageModelRoute,
+    postXAmzTargetTranscribeDescribeLanguageModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute,
+    postXAmzTargetTranscribeGetCallAnalyticsCategoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetCallAnalyticsJobRoute,
+    postXAmzTargetTranscribeGetCallAnalyticsJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetMedicalTranscriptionJobRoute,
+    postXAmzTargetTranscribeGetMedicalTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetMedicalVocabularyRoute,
+    postXAmzTargetTranscribeGetMedicalVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetTranscriptionJobRoute,
+    postXAmzTargetTranscribeGetTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetVocabularyRoute,
+    postXAmzTargetTranscribeGetVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeGetVocabularyFilterRoute,
+    postXAmzTargetTranscribeGetVocabularyFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListCallAnalyticsCategoriesRoute,
+    postXAmzTargetTranscribeListCallAnalyticsCategoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListCallAnalyticsJobsRoute,
+    postXAmzTargetTranscribeListCallAnalyticsJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListLanguageModelsRoute,
+    postXAmzTargetTranscribeListLanguageModelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListMedicalTranscriptionJobsRoute,
+    postXAmzTargetTranscribeListMedicalTranscriptionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListMedicalVocabulariesRoute,
+    postXAmzTargetTranscribeListMedicalVocabulariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListTagsForResourceRoute,
+    postXAmzTargetTranscribeListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListTranscriptionJobsRoute,
+    postXAmzTargetTranscribeListTranscriptionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListVocabulariesRoute,
+    postXAmzTargetTranscribeListVocabulariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeListVocabularyFiltersRoute,
+    postXAmzTargetTranscribeListVocabularyFiltersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeStartCallAnalyticsJobRoute,
+    postXAmzTargetTranscribeStartCallAnalyticsJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeStartMedicalTranscriptionJobRoute,
+    postXAmzTargetTranscribeStartMedicalTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeStartTranscriptionJobRoute,
+    postXAmzTargetTranscribeStartTranscriptionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeTagResourceRoute,
+    postXAmzTargetTranscribeTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeUntagResourceRoute,
+    postXAmzTargetTranscribeUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeUpdateCallAnalyticsCategoryRoute,
+    postXAmzTargetTranscribeUpdateCallAnalyticsCategoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeUpdateMedicalVocabularyRoute,
+    postXAmzTargetTranscribeUpdateMedicalVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeUpdateVocabularyRoute,
+    postXAmzTargetTranscribeUpdateVocabularyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTranscribeUpdateVocabularyFilterRoute,
+    postXAmzTargetTranscribeUpdateVocabularyFilterRouteHandler,
+  )
 
 export default app

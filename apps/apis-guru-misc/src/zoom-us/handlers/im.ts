@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteImChatMessagesMessageIdRoute,
   deleteImGroupsGroupIdMembersMemberIdRoute,
   deleteImGroupsGroupIdRoute,
@@ -17,51 +17,88 @@ import {
   putImChatMessagesMessageIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postImChatMessagesRouteHandler: RouteHandler<typeof postImChatMessagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const imHandler = app
-  .openapi(postImChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImChatMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putImChatMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImChatSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImChatSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchImGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImGroupsGroupIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImGroupsGroupIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImGroupsGroupIdMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImUsersMeChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImUsersUserIdChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteImChatMessagesMessageIdRouteHandler: RouteHandler<
+  typeof deleteImChatMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putImChatMessagesMessageIdRouteHandler: RouteHandler<
+  typeof putImChatMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImChatSessionsRouteHandler: RouteHandler<typeof getImChatSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getImChatSessionsSessionIdRouteHandler: RouteHandler<
+  typeof getImChatSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImGroupsRouteHandler: RouteHandler<typeof getImGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImGroupsRouteHandler: RouteHandler<typeof postImGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteImGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteImGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImGroupsGroupIdRouteHandler: RouteHandler<typeof getImGroupsGroupIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchImGroupsGroupIdRouteHandler: RouteHandler<
+  typeof patchImGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImGroupsGroupIdMembersRouteHandler: RouteHandler<
+  typeof getImGroupsGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImGroupsGroupIdMembersRouteHandler: RouteHandler<
+  typeof postImGroupsGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteImGroupsGroupIdMembersMemberIdRouteHandler: RouteHandler<
+  typeof deleteImGroupsGroupIdMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImUsersMeChatMessagesRouteHandler: RouteHandler<
+  typeof postImUsersMeChatMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImUsersUserIdChatMessagesRouteHandler: RouteHandler<
+  typeof getImUsersUserIdChatMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

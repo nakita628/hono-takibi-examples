@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/doubleclickbidmanager/v1.1/openapi.yaml',
   output: './src/doubleclickbidmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/doubleclickbidmanager/types.ts' },
   client: { output: './src/doubleclickbidmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/doubleclickbidmanager/rpc.ts', parseResponse: true },

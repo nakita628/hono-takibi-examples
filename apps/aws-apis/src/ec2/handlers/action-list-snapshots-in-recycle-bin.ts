@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionListSnapshotsInRecycleBinRoute,
   postActionListSnapshotsInRecycleBinRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionListSnapshotsInRecycleBinRouteHandler: RouteHandler<
+  typeof getActionListSnapshotsInRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionListSnapshotsInRecycleBinHandler = app
-  .openapi(getActionListSnapshotsInRecycleBinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionListSnapshotsInRecycleBinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionListSnapshotsInRecycleBinRouteHandler: RouteHandler<
+  typeof postActionListSnapshotsInRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

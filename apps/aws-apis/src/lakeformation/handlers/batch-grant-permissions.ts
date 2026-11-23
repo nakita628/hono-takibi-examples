@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBatchGrantPermissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBatchGrantPermissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const batchGrantPermissionsHandler = app.openapi(postBatchGrantPermissionsRoute, (c) => {
+export const postBatchGrantPermissionsRouteHandler: RouteHandler<
+  typeof postBatchGrantPermissionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmExtensionsCalling202609TranscriptsTranscriptIdRoute,
   getCrmExtensionsCalling202609TranscriptsTranscriptIdRoute,
   postCrmExtensionsCalling202609InboundCallRoute,
   postCrmExtensionsCalling202609TranscriptsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCrmExtensionsCalling202609InboundCallRouteHandler: RouteHandler<
+  typeof postCrmExtensionsCalling202609InboundCallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(postCrmExtensionsCalling202609InboundCallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmExtensionsCalling202609TranscriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmExtensionsCalling202609TranscriptsTranscriptIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmExtensionsCalling202609TranscriptsTranscriptIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmExtensionsCalling202609TranscriptsRouteHandler: RouteHandler<
+  typeof postCrmExtensionsCalling202609TranscriptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmExtensionsCalling202609TranscriptsTranscriptIdRouteHandler: RouteHandler<
+  typeof getCrmExtensionsCalling202609TranscriptsTranscriptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmExtensionsCalling202609TranscriptsTranscriptIdRouteHandler: RouteHandler<
+  typeof deleteCrmExtensionsCalling202609TranscriptsTranscriptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

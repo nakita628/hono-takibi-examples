@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDmSv20160101RemoveTagsFromResourceHandler = app.openapi(
-  postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

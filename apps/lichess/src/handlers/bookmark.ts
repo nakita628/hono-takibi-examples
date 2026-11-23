@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBookmarkGameIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBookmarkGameIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bookmarkHandler = app.openapi(postBookmarkGameIdRoute, (c) => {
+export const postBookmarkGameIdRouteHandler: RouteHandler<typeof postBookmarkGameIdRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

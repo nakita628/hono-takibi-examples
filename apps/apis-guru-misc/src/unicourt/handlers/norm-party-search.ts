@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNormPartySearchNormPartySearchIdRoute, getNormPartySearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNormPartySearchNormPartySearchIdRoute, getNormPartySearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNormPartySearchRouteHandler: RouteHandler<typeof getNormPartySearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const normPartySearchHandler = app
-  .openapi(getNormPartySearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNormPartySearchNormPartySearchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNormPartySearchNormPartySearchIdRouteHandler: RouteHandler<
+  typeof getNormPartySearchNormPartySearchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

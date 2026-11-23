@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceCreateTransitVirtualInterfaceHandler = app.openapi(
-  postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

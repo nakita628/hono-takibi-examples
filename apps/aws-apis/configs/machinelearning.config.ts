@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/machinelearning/2014-12-12/openapi.yaml',
   output: './src/machinelearning/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/machinelearning/types.ts' },
   client: { output: './src/machinelearning/client.ts', baseUrl: '/' },
   rpc: { output: './src/machinelearning/rpc.ts', parseResponse: true },

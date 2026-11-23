@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAnimalRoute, getAnimalSearchRoute, postAnimalSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAnimalRoute, getAnimalSearchRoute, postAnimalSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnimalRouteHandler: RouteHandler<typeof getAnimalRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const animalHandler = app
-  .openapi(getAnimalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimalSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnimalSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnimalSearchRouteHandler: RouteHandler<typeof getAnimalSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnimalSearchRouteHandler: RouteHandler<typeof postAnimalSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

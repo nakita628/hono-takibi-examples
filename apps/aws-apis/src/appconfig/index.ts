@@ -1,21 +1,221 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  applicationsHandler,
-  deployementstrategiesHandler,
-  deploymentstrategiesHandler,
-  extensionassociationsHandler,
-  extensionsHandler,
-  tagsHandler,
+  deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
+  deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+  deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
+  deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+  deleteApplicationsApplicationIdRoute,
+  deleteDeployementstrategiesDeploymentStrategyIdRoute,
+  deleteExtensionassociationsExtensionAssociationIdRoute,
+  deleteExtensionsExtensionIdentifierRoute,
+  deleteTagsResourceArnTagKeysRoute,
+  getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRoute,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRoute,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+  getApplicationsApplicationIdConfigurationprofilesRoute,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+  getApplicationsApplicationIdEnvironmentsRoute,
+  getApplicationsApplicationIdRoute,
+  getApplicationsRoute,
+  getDeploymentstrategiesDeploymentStrategyIdRoute,
+  getDeploymentstrategiesRoute,
+  getExtensionassociationsExtensionAssociationIdRoute,
+  getExtensionassociationsRoute,
+  getExtensionsExtensionIdentifierRoute,
+  getExtensionsRoute,
+  getTagsResourceArnRoute,
+  patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+  patchApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+  patchApplicationsApplicationIdRoute,
+  patchDeploymentstrategiesDeploymentStrategyIdRoute,
+  patchExtensionassociationsExtensionAssociationIdRoute,
+  patchExtensionsExtensionIdentifierRoute,
+  postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRoute,
+  postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRoute,
+  postApplicationsApplicationIdConfigurationprofilesRoute,
+  postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute,
+  postApplicationsApplicationIdEnvironmentsRoute,
+  postApplicationsRoute,
+  postDeploymentstrategiesRoute,
+  postExtensionassociationsRoute,
+  postExtensionsRoute,
+  postTagsResourceArnRoute,
+} from './routes'
+import {
+  deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler,
+  deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler,
+  deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  deleteApplicationsApplicationIdRouteHandler,
+  deleteDeployementstrategiesDeploymentStrategyIdRouteHandler,
+  deleteExtensionassociationsExtensionAssociationIdRouteHandler,
+  deleteExtensionsExtensionIdentifierRouteHandler,
+  deleteTagsResourceArnTagKeysRouteHandler,
+  getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRouteHandler,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRouteHandler,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler,
+  getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  getApplicationsApplicationIdConfigurationprofilesRouteHandler,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler,
+  getApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  getApplicationsApplicationIdEnvironmentsRouteHandler,
+  getApplicationsApplicationIdRouteHandler,
+  getApplicationsRouteHandler,
+  getDeploymentstrategiesDeploymentStrategyIdRouteHandler,
+  getDeploymentstrategiesRouteHandler,
+  getExtensionassociationsExtensionAssociationIdRouteHandler,
+  getExtensionassociationsRouteHandler,
+  getExtensionsExtensionIdentifierRouteHandler,
+  getExtensionsRouteHandler,
+  getTagsResourceArnRouteHandler,
+  patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  patchApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  patchApplicationsApplicationIdRouteHandler,
+  patchDeploymentstrategiesDeploymentStrategyIdRouteHandler,
+  patchExtensionassociationsExtensionAssociationIdRouteHandler,
+  patchExtensionsExtensionIdentifierRouteHandler,
+  postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRouteHandler,
+  postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRouteHandler,
+  postApplicationsApplicationIdConfigurationprofilesRouteHandler,
+  postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler,
+  postApplicationsApplicationIdEnvironmentsRouteHandler,
+  postApplicationsRouteHandler,
+  postDeploymentstrategiesRouteHandler,
+  postExtensionassociationsRouteHandler,
+  postExtensionsRouteHandler,
+  postTagsResourceArnRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', applicationsHandler)
-  .route('/', deploymentstrategiesHandler)
-  .route('/', extensionsHandler)
-  .route('/', extensionassociationsHandler)
-  .route('/', deployementstrategiesHandler)
-  .route('/', tagsHandler)
+  .openapi(postApplicationsRoute, postApplicationsRouteHandler)
+  .openapi(getApplicationsRoute, getApplicationsRouteHandler)
+  .openapi(
+    postApplicationsApplicationIdConfigurationprofilesRoute,
+    postApplicationsApplicationIdConfigurationprofilesRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdConfigurationprofilesRoute,
+    getApplicationsApplicationIdConfigurationprofilesRouteHandler,
+  )
+  .openapi(postDeploymentstrategiesRoute, postDeploymentstrategiesRouteHandler)
+  .openapi(getDeploymentstrategiesRoute, getDeploymentstrategiesRouteHandler)
+  .openapi(
+    postApplicationsApplicationIdEnvironmentsRoute,
+    postApplicationsApplicationIdEnvironmentsRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdEnvironmentsRoute,
+    getApplicationsApplicationIdEnvironmentsRouteHandler,
+  )
+  .openapi(postExtensionsRoute, postExtensionsRouteHandler)
+  .openapi(getExtensionsRoute, getExtensionsRouteHandler)
+  .openapi(postExtensionassociationsRoute, postExtensionassociationsRouteHandler)
+  .openapi(getExtensionassociationsRoute, getExtensionassociationsRouteHandler)
+  .openapi(
+    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRoute,
+    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRouteHandler,
+  )
+  .openapi(deleteApplicationsApplicationIdRoute, deleteApplicationsApplicationIdRouteHandler)
+  .openapi(getApplicationsApplicationIdRoute, getApplicationsApplicationIdRouteHandler)
+  .openapi(patchApplicationsApplicationIdRoute, patchApplicationsApplicationIdRouteHandler)
+  .openapi(
+    deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+    deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  )
+  .openapi(
+    patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
+    patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler,
+  )
+  .openapi(
+    deleteDeployementstrategiesDeploymentStrategyIdRoute,
+    deleteDeployementstrategiesDeploymentStrategyIdRouteHandler,
+  )
+  .openapi(
+    deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+    deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  )
+  .openapi(
+    patchApplicationsApplicationIdEnvironmentsEnvironmentIdRoute,
+    patchApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler,
+  )
+  .openapi(
+    deleteExtensionsExtensionIdentifierRoute,
+    deleteExtensionsExtensionIdentifierRouteHandler,
+  )
+  .openapi(getExtensionsExtensionIdentifierRoute, getExtensionsExtensionIdentifierRouteHandler)
+  .openapi(patchExtensionsExtensionIdentifierRoute, patchExtensionsExtensionIdentifierRouteHandler)
+  .openapi(
+    deleteExtensionassociationsExtensionAssociationIdRoute,
+    deleteExtensionassociationsExtensionAssociationIdRouteHandler,
+  )
+  .openapi(
+    getExtensionassociationsExtensionAssociationIdRoute,
+    getExtensionassociationsExtensionAssociationIdRouteHandler,
+  )
+  .openapi(
+    patchExtensionassociationsExtensionAssociationIdRoute,
+    patchExtensionassociationsExtensionAssociationIdRouteHandler,
+  )
+  .openapi(
+    deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
+    deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRoute,
+    getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler,
+  )
+  .openapi(
+    deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
+    deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler,
+  )
+  .openapi(
+    getDeploymentstrategiesDeploymentStrategyIdRoute,
+    getDeploymentstrategiesDeploymentStrategyIdRouteHandler,
+  )
+  .openapi(
+    patchDeploymentstrategiesDeploymentStrategyIdRoute,
+    patchDeploymentstrategiesDeploymentStrategyIdRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute,
+    getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler,
+  )
+  .openapi(
+    postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute,
+    postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler,
+  )
+  .openapi(
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRoute,
+    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRouteHandler,
+  )
+  .openapi(getTagsResourceArnRoute, getTagsResourceArnRouteHandler)
+  .openapi(postTagsResourceArnRoute, postTagsResourceArnRouteHandler)
+  .openapi(deleteTagsResourceArnTagKeysRoute, deleteTagsResourceArnTagKeysRouteHandler)
+  .openapi(
+    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRoute,
+    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRouteHandler,
+  )
 
 export default app

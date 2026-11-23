@@ -1555,21 +1555,20 @@ const DestinationDescriptionListSchema: z.ZodType<DestinationDescriptionListType
   .openapi('DestinationDescriptionList')
 
 type DeliveryStreamDescriptionType = {
-  DeliveryStreamName: z.infer<typeof DeliveryStreamNameSchema> & unknown
-  DeliveryStreamARN: z.infer<typeof DeliveryStreamARNSchema> & unknown
-  DeliveryStreamStatus: z.infer<typeof DeliveryStreamStatusSchema> & unknown
-  FailureDescription?: z.infer<typeof FailureDescriptionSchema> & unknown
+  DeliveryStreamName: z.infer<typeof DeliveryStreamNameSchema>
+  DeliveryStreamARN: z.infer<typeof DeliveryStreamARNSchema>
+  DeliveryStreamStatus: z.infer<typeof DeliveryStreamStatusSchema>
+  FailureDescription?: z.infer<typeof FailureDescriptionSchema>
   DeliveryStreamEncryptionConfiguration?: z.infer<
     typeof DeliveryStreamEncryptionConfigurationSchema
-  > &
-    unknown
-  DeliveryStreamType: z.infer<typeof DeliveryStreamTypeSchema> & unknown
-  VersionId: z.infer<typeof DeliveryStreamVersionIdSchema> & unknown
-  CreateTimestamp?: z.infer<typeof TimestampSchema> & unknown
-  LastUpdateTimestamp?: z.infer<typeof TimestampSchema> & unknown
-  Source?: z.infer<typeof SourceDescriptionSchema> & unknown
-  Destinations: z.infer<typeof DestinationDescriptionListSchema> & unknown
-  HasMoreDestinations: z.infer<typeof BooleanObjectSchema> & unknown
+  >
+  DeliveryStreamType: z.infer<typeof DeliveryStreamTypeSchema>
+  VersionId: z.infer<typeof DeliveryStreamVersionIdSchema>
+  CreateTimestamp?: z.infer<typeof TimestampSchema>
+  LastUpdateTimestamp?: z.infer<typeof TimestampSchema>
+  Source?: z.infer<typeof SourceDescriptionSchema>
+  Destinations: z.infer<typeof DestinationDescriptionListSchema>
+  HasMoreDestinations: z.infer<typeof BooleanObjectSchema>
 }
 
 const DeliveryStreamDescriptionSchema: z.ZodType<DeliveryStreamDescriptionType> = z
@@ -1631,7 +1630,7 @@ const DeliveryStreamDescriptionSchema: z.ZodType<DeliveryStreamDescriptionType> 
   .openapi('DeliveryStreamDescription')
 
 type DescribeDeliveryStreamOutputType = {
-  DeliveryStreamDescription: z.infer<typeof DeliveryStreamDescriptionSchema> & unknown
+  DeliveryStreamDescription: z.infer<typeof DeliveryStreamDescriptionSchema>
 }
 
 const CreateDeliveryStreamOutputSchema = z

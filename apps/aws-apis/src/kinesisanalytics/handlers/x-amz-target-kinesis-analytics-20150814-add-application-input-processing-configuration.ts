@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationHandler =
-  app.openapi(
-    postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

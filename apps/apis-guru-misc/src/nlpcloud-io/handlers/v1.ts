@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1EnCoreWebSmIndexRoute,
   getV1EnCoreWebSmVersionRoute,
   postV1EnCoreWebSmDependenciesRoute,
@@ -7,21 +7,32 @@ import {
   postV1EnCoreWebSmSentenceDependenciesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1EnCoreWebSmIndexRouteHandler: RouteHandler<
+  typeof getV1EnCoreWebSmIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1EnCoreWebSmIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EnCoreWebSmDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EnCoreWebSmEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EnCoreWebSmSentenceDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EnCoreWebSmVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1EnCoreWebSmDependenciesRouteHandler: RouteHandler<
+  typeof postV1EnCoreWebSmDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EnCoreWebSmEntitiesRouteHandler: RouteHandler<
+  typeof postV1EnCoreWebSmEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EnCoreWebSmSentenceDependenciesRouteHandler: RouteHandler<
+  typeof postV1EnCoreWebSmSentenceDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EnCoreWebSmVersionRouteHandler: RouteHandler<
+  typeof getV1EnCoreWebSmVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

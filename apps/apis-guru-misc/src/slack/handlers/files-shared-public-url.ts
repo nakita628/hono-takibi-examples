@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFilesSharedPublicURLRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFilesSharedPublicURLRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const filesSharedPublicUrlHandler = app.openapi(postFilesSharedPublicURLRoute, (c) => {
+export const postFilesSharedPublicURLRouteHandler: RouteHandler<
+  typeof postFilesSharedPublicURLRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

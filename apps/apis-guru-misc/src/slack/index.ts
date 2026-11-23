@@ -1,357 +1,566 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  adminAppsApprovedListHandler,
-  adminAppsApproveHandler,
-  adminAppsRequestsListHandler,
-  adminAppsRestrictedListHandler,
-  adminAppsRestrictHandler,
-  adminConversationsArchiveHandler,
-  adminConversationsConvertToPrivateHandler,
-  adminConversationsCreateHandler,
-  adminConversationsDeleteHandler,
-  adminConversationsDisconnectSharedHandler,
-  adminConversationsEkmListOriginalConnectedChannelInfoHandler,
-  adminConversationsGetConversationPrefsHandler,
-  adminConversationsGetTeamsHandler,
-  adminConversationsInviteHandler,
-  adminConversationsRenameHandler,
-  adminConversationsRestrictAccessAddGroupHandler,
-  adminConversationsRestrictAccessListGroupsHandler,
-  adminConversationsRestrictAccessRemoveGroupHandler,
-  adminConversationsSearchHandler,
-  adminConversationsSetConversationPrefsHandler,
-  adminConversationsSetTeamsHandler,
-  adminConversationsUnarchiveHandler,
-  adminEmojiAddAliasHandler,
-  adminEmojiAddHandler,
-  adminEmojiListHandler,
-  adminEmojiRemoveHandler,
-  adminEmojiRenameHandler,
-  adminInviteRequestsApprovedListHandler,
-  adminInviteRequestsApproveHandler,
-  adminInviteRequestsDeniedListHandler,
-  adminInviteRequestsDenyHandler,
-  adminInviteRequestsListHandler,
-  adminTeamsAdminsListHandler,
-  adminTeamsCreateHandler,
-  adminTeamsListHandler,
-  adminTeamsOwnersListHandler,
-  adminTeamsSettingsInfoHandler,
-  adminTeamsSettingsSetDefaultChannelsHandler,
-  adminTeamsSettingsSetDescriptionHandler,
-  adminTeamsSettingsSetDiscoverabilityHandler,
-  adminTeamsSettingsSetIconHandler,
-  adminTeamsSettingsSetNameHandler,
-  adminUsergroupsAddChannelsHandler,
-  adminUsergroupsAddTeamsHandler,
-  adminUsergroupsListChannelsHandler,
-  adminUsergroupsRemoveChannelsHandler,
-  adminUsersAssignHandler,
-  adminUsersInviteHandler,
-  adminUsersListHandler,
-  adminUsersRemoveHandler,
-  adminUsersSessionInvalidateHandler,
-  adminUsersSessionResetHandler,
-  adminUsersSetAdminHandler,
-  adminUsersSetExpirationHandler,
-  adminUsersSetOwnerHandler,
-  adminUsersSetRegularHandler,
-  apiTestHandler,
-  appsEventAuthorizationsListHandler,
-  appsPermissionsInfoHandler,
-  appsPermissionsRequestHandler,
-  appsPermissionsResourcesListHandler,
-  appsPermissionsScopesListHandler,
-  appsPermissionsUsersListHandler,
-  appsPermissionsUsersRequestHandler,
-  appsUninstallHandler,
-  authRevokeHandler,
-  authTestHandler,
-  botsInfoHandler,
-  callsAddHandler,
-  callsEndHandler,
-  callsInfoHandler,
-  callsParticipantsAddHandler,
-  callsParticipantsRemoveHandler,
-  callsUpdateHandler,
-  chatDeleteHandler,
-  chatDeleteScheduledMessageHandler,
-  chatGetPermalinkHandler,
-  chatMeMessageHandler,
-  chatPostEphemeralHandler,
-  chatPostMessageHandler,
-  chatScheduledMessagesListHandler,
-  chatScheduleMessageHandler,
-  chatUnfurlHandler,
-  chatUpdateHandler,
-  conversationsArchiveHandler,
-  conversationsCloseHandler,
-  conversationsCreateHandler,
-  conversationsHistoryHandler,
-  conversationsInfoHandler,
-  conversationsInviteHandler,
-  conversationsJoinHandler,
-  conversationsKickHandler,
-  conversationsLeaveHandler,
-  conversationsListHandler,
-  conversationsMarkHandler,
-  conversationsMembersHandler,
-  conversationsOpenHandler,
-  conversationsRenameHandler,
-  conversationsRepliesHandler,
-  conversationsSetPurposeHandler,
-  conversationsSetTopicHandler,
-  conversationsUnarchiveHandler,
-  dialogOpenHandler,
-  dndEndDndHandler,
-  dndEndSnoozeHandler,
-  dndInfoHandler,
-  dndSetSnoozeHandler,
-  dndTeamInfoHandler,
-  emojiListHandler,
-  filesCommentsDeleteHandler,
-  filesDeleteHandler,
-  filesInfoHandler,
-  filesListHandler,
-  filesRemoteAddHandler,
-  filesRemoteInfoHandler,
-  filesRemoteListHandler,
-  filesRemoteRemoveHandler,
-  filesRemoteShareHandler,
-  filesRemoteUpdateHandler,
-  filesRevokePublicUrlHandler,
-  filesSharedPublicUrlHandler,
-  filesUploadHandler,
-  migrationExchangeHandler,
-  oauthAccessHandler,
-  oauthTokenHandler,
-  oauthV2AccessHandler,
-  pinsAddHandler,
-  pinsListHandler,
-  pinsRemoveHandler,
-  reactionsAddHandler,
-  reactionsGetHandler,
-  reactionsListHandler,
-  reactionsRemoveHandler,
-  remindersAddHandler,
-  remindersCompleteHandler,
-  remindersDeleteHandler,
-  remindersInfoHandler,
-  remindersListHandler,
-  rtmConnectHandler,
-  searchMessagesHandler,
-  starsAddHandler,
-  starsListHandler,
-  starsRemoveHandler,
-  teamAccessLogsHandler,
-  teamBillableInfoHandler,
-  teamInfoHandler,
-  teamIntegrationLogsHandler,
-  teamProfileGetHandler,
-  usergroupsCreateHandler,
-  usergroupsDisableHandler,
-  usergroupsEnableHandler,
-  usergroupsListHandler,
-  usergroupsUpdateHandler,
-  usergroupsUsersListHandler,
-  usergroupsUsersUpdateHandler,
-  usersConversationsHandler,
-  usersDeletePhotoHandler,
-  usersGetPresenceHandler,
-  usersIdentityHandler,
-  usersInfoHandler,
-  usersListHandler,
-  usersLookupByEmailHandler,
-  usersProfileGetHandler,
-  usersProfileSetHandler,
-  usersSetActiveHandler,
-  usersSetPhotoHandler,
-  usersSetPresenceHandler,
-  viewsOpenHandler,
-  viewsPublishHandler,
-  viewsPushHandler,
-  viewsUpdateHandler,
-  workflowsStepCompletedHandler,
-  workflowsStepFailedHandler,
-  workflowsUpdateStepHandler,
+  getAdminAppsApprovedListRoute,
+  getAdminAppsRequestsListRoute,
+  getAdminAppsRestrictedListRoute,
+  getAdminConversationsEkmListOriginalConnectedChannelInfoRoute,
+  getAdminConversationsGetConversationPrefsRoute,
+  getAdminConversationsGetTeamsRoute,
+  getAdminConversationsRestrictAccessListGroupsRoute,
+  getAdminConversationsSearchRoute,
+  getAdminEmojiListRoute,
+  getAdminInviteRequestsApprovedListRoute,
+  getAdminInviteRequestsDeniedListRoute,
+  getAdminInviteRequestsListRoute,
+  getAdminTeamsAdminsListRoute,
+  getAdminTeamsListRoute,
+  getAdminTeamsOwnersListRoute,
+  getAdminTeamsSettingsInfoRoute,
+  getAdminUsergroupsListChannelsRoute,
+  getAdminUsersListRoute,
+  getApiTestRoute,
+  getAppsEventAuthorizationsListRoute,
+  getAppsPermissionsInfoRoute,
+  getAppsPermissionsRequestRoute,
+  getAppsPermissionsResourcesListRoute,
+  getAppsPermissionsScopesListRoute,
+  getAppsPermissionsUsersListRoute,
+  getAppsPermissionsUsersRequestRoute,
+  getAppsUninstallRoute,
+  getAuthRevokeRoute,
+  getAuthTestRoute,
+  getBotsInfoRoute,
+  getCallsInfoRoute,
+  getChatGetPermalinkRoute,
+  getChatScheduledMessagesListRoute,
+  getConversationsHistoryRoute,
+  getConversationsInfoRoute,
+  getConversationsListRoute,
+  getConversationsMembersRoute,
+  getConversationsRepliesRoute,
+  getDialogOpenRoute,
+  getDndInfoRoute,
+  getDndTeamInfoRoute,
+  getEmojiListRoute,
+  getFilesInfoRoute,
+  getFilesListRoute,
+  getFilesRemoteInfoRoute,
+  getFilesRemoteListRoute,
+  getFilesRemoteShareRoute,
+  getMigrationExchangeRoute,
+  getOauthAccessRoute,
+  getOauthTokenRoute,
+  getOauthV2AccessRoute,
+  getPinsListRoute,
+  getReactionsGetRoute,
+  getReactionsListRoute,
+  getRemindersInfoRoute,
+  getRemindersListRoute,
+  getRtmConnectRoute,
+  getSearchMessagesRoute,
+  getStarsListRoute,
+  getTeamAccessLogsRoute,
+  getTeamBillableInfoRoute,
+  getTeamInfoRoute,
+  getTeamIntegrationLogsRoute,
+  getTeamProfileGetRoute,
+  getUsergroupsListRoute,
+  getUsergroupsUsersListRoute,
+  getUsersConversationsRoute,
+  getUsersGetPresenceRoute,
+  getUsersIdentityRoute,
+  getUsersInfoRoute,
+  getUsersListRoute,
+  getUsersLookupByEmailRoute,
+  getUsersProfileGetRoute,
+  getViewsOpenRoute,
+  getViewsPublishRoute,
+  getViewsPushRoute,
+  getViewsUpdateRoute,
+  getWorkflowsStepCompletedRoute,
+  getWorkflowsStepFailedRoute,
+  getWorkflowsUpdateStepRoute,
+  postAdminAppsApproveRoute,
+  postAdminAppsRestrictRoute,
+  postAdminConversationsArchiveRoute,
+  postAdminConversationsConvertToPrivateRoute,
+  postAdminConversationsCreateRoute,
+  postAdminConversationsDeleteRoute,
+  postAdminConversationsDisconnectSharedRoute,
+  postAdminConversationsInviteRoute,
+  postAdminConversationsRenameRoute,
+  postAdminConversationsRestrictAccessAddGroupRoute,
+  postAdminConversationsRestrictAccessRemoveGroupRoute,
+  postAdminConversationsSetConversationPrefsRoute,
+  postAdminConversationsSetTeamsRoute,
+  postAdminConversationsUnarchiveRoute,
+  postAdminEmojiAddAliasRoute,
+  postAdminEmojiAddRoute,
+  postAdminEmojiRemoveRoute,
+  postAdminEmojiRenameRoute,
+  postAdminInviteRequestsApproveRoute,
+  postAdminInviteRequestsDenyRoute,
+  postAdminTeamsCreateRoute,
+  postAdminTeamsSettingsSetDefaultChannelsRoute,
+  postAdminTeamsSettingsSetDescriptionRoute,
+  postAdminTeamsSettingsSetDiscoverabilityRoute,
+  postAdminTeamsSettingsSetIconRoute,
+  postAdminTeamsSettingsSetNameRoute,
+  postAdminUsergroupsAddChannelsRoute,
+  postAdminUsergroupsAddTeamsRoute,
+  postAdminUsergroupsRemoveChannelsRoute,
+  postAdminUsersAssignRoute,
+  postAdminUsersInviteRoute,
+  postAdminUsersRemoveRoute,
+  postAdminUsersSessionInvalidateRoute,
+  postAdminUsersSessionResetRoute,
+  postAdminUsersSetAdminRoute,
+  postAdminUsersSetExpirationRoute,
+  postAdminUsersSetOwnerRoute,
+  postAdminUsersSetRegularRoute,
+  postCallsAddRoute,
+  postCallsEndRoute,
+  postCallsParticipantsAddRoute,
+  postCallsParticipantsRemoveRoute,
+  postCallsUpdateRoute,
+  postChatDeleteRoute,
+  postChatDeleteScheduledMessageRoute,
+  postChatMeMessageRoute,
+  postChatPostEphemeralRoute,
+  postChatPostMessageRoute,
+  postChatScheduleMessageRoute,
+  postChatUnfurlRoute,
+  postChatUpdateRoute,
+  postConversationsArchiveRoute,
+  postConversationsCloseRoute,
+  postConversationsCreateRoute,
+  postConversationsInviteRoute,
+  postConversationsJoinRoute,
+  postConversationsKickRoute,
+  postConversationsLeaveRoute,
+  postConversationsMarkRoute,
+  postConversationsOpenRoute,
+  postConversationsRenameRoute,
+  postConversationsSetPurposeRoute,
+  postConversationsSetTopicRoute,
+  postConversationsUnarchiveRoute,
+  postDndEndDndRoute,
+  postDndEndSnoozeRoute,
+  postDndSetSnoozeRoute,
+  postFilesCommentsDeleteRoute,
+  postFilesDeleteRoute,
+  postFilesRemoteAddRoute,
+  postFilesRemoteRemoveRoute,
+  postFilesRemoteUpdateRoute,
+  postFilesRevokePublicURLRoute,
+  postFilesSharedPublicURLRoute,
+  postFilesUploadRoute,
+  postPinsAddRoute,
+  postPinsRemoveRoute,
+  postReactionsAddRoute,
+  postReactionsRemoveRoute,
+  postRemindersAddRoute,
+  postRemindersCompleteRoute,
+  postRemindersDeleteRoute,
+  postStarsAddRoute,
+  postStarsRemoveRoute,
+  postUsergroupsCreateRoute,
+  postUsergroupsDisableRoute,
+  postUsergroupsEnableRoute,
+  postUsergroupsUpdateRoute,
+  postUsergroupsUsersUpdateRoute,
+  postUsersDeletePhotoRoute,
+  postUsersProfileSetRoute,
+  postUsersSetActiveRoute,
+  postUsersSetPhotoRoute,
+  postUsersSetPresenceRoute,
+} from './routes'
+import {
+  getAdminAppsApprovedListRouteHandler,
+  getAdminAppsRequestsListRouteHandler,
+  getAdminAppsRestrictedListRouteHandler,
+  getAdminConversationsEkmListOriginalConnectedChannelInfoRouteHandler,
+  getAdminConversationsGetConversationPrefsRouteHandler,
+  getAdminConversationsGetTeamsRouteHandler,
+  getAdminConversationsRestrictAccessListGroupsRouteHandler,
+  getAdminConversationsSearchRouteHandler,
+  getAdminEmojiListRouteHandler,
+  getAdminInviteRequestsApprovedListRouteHandler,
+  getAdminInviteRequestsDeniedListRouteHandler,
+  getAdminInviteRequestsListRouteHandler,
+  getAdminTeamsAdminsListRouteHandler,
+  getAdminTeamsListRouteHandler,
+  getAdminTeamsOwnersListRouteHandler,
+  getAdminTeamsSettingsInfoRouteHandler,
+  getAdminUsergroupsListChannelsRouteHandler,
+  getAdminUsersListRouteHandler,
+  getApiTestRouteHandler,
+  getAppsEventAuthorizationsListRouteHandler,
+  getAppsPermissionsInfoRouteHandler,
+  getAppsPermissionsRequestRouteHandler,
+  getAppsPermissionsResourcesListRouteHandler,
+  getAppsPermissionsScopesListRouteHandler,
+  getAppsPermissionsUsersListRouteHandler,
+  getAppsPermissionsUsersRequestRouteHandler,
+  getAppsUninstallRouteHandler,
+  getAuthRevokeRouteHandler,
+  getAuthTestRouteHandler,
+  getBotsInfoRouteHandler,
+  getCallsInfoRouteHandler,
+  getChatGetPermalinkRouteHandler,
+  getChatScheduledMessagesListRouteHandler,
+  getConversationsHistoryRouteHandler,
+  getConversationsInfoRouteHandler,
+  getConversationsListRouteHandler,
+  getConversationsMembersRouteHandler,
+  getConversationsRepliesRouteHandler,
+  getDialogOpenRouteHandler,
+  getDndInfoRouteHandler,
+  getDndTeamInfoRouteHandler,
+  getEmojiListRouteHandler,
+  getFilesInfoRouteHandler,
+  getFilesListRouteHandler,
+  getFilesRemoteInfoRouteHandler,
+  getFilesRemoteListRouteHandler,
+  getFilesRemoteShareRouteHandler,
+  getMigrationExchangeRouteHandler,
+  getOauthAccessRouteHandler,
+  getOauthTokenRouteHandler,
+  getOauthV2AccessRouteHandler,
+  getPinsListRouteHandler,
+  getReactionsGetRouteHandler,
+  getReactionsListRouteHandler,
+  getRemindersInfoRouteHandler,
+  getRemindersListRouteHandler,
+  getRtmConnectRouteHandler,
+  getSearchMessagesRouteHandler,
+  getStarsListRouteHandler,
+  getTeamAccessLogsRouteHandler,
+  getTeamBillableInfoRouteHandler,
+  getTeamInfoRouteHandler,
+  getTeamIntegrationLogsRouteHandler,
+  getTeamProfileGetRouteHandler,
+  getUsergroupsListRouteHandler,
+  getUsergroupsUsersListRouteHandler,
+  getUsersConversationsRouteHandler,
+  getUsersGetPresenceRouteHandler,
+  getUsersIdentityRouteHandler,
+  getUsersInfoRouteHandler,
+  getUsersListRouteHandler,
+  getUsersLookupByEmailRouteHandler,
+  getUsersProfileGetRouteHandler,
+  getViewsOpenRouteHandler,
+  getViewsPublishRouteHandler,
+  getViewsPushRouteHandler,
+  getViewsUpdateRouteHandler,
+  getWorkflowsStepCompletedRouteHandler,
+  getWorkflowsStepFailedRouteHandler,
+  getWorkflowsUpdateStepRouteHandler,
+  postAdminAppsApproveRouteHandler,
+  postAdminAppsRestrictRouteHandler,
+  postAdminConversationsArchiveRouteHandler,
+  postAdminConversationsConvertToPrivateRouteHandler,
+  postAdminConversationsCreateRouteHandler,
+  postAdminConversationsDeleteRouteHandler,
+  postAdminConversationsDisconnectSharedRouteHandler,
+  postAdminConversationsInviteRouteHandler,
+  postAdminConversationsRenameRouteHandler,
+  postAdminConversationsRestrictAccessAddGroupRouteHandler,
+  postAdminConversationsRestrictAccessRemoveGroupRouteHandler,
+  postAdminConversationsSetConversationPrefsRouteHandler,
+  postAdminConversationsSetTeamsRouteHandler,
+  postAdminConversationsUnarchiveRouteHandler,
+  postAdminEmojiAddAliasRouteHandler,
+  postAdminEmojiAddRouteHandler,
+  postAdminEmojiRemoveRouteHandler,
+  postAdminEmojiRenameRouteHandler,
+  postAdminInviteRequestsApproveRouteHandler,
+  postAdminInviteRequestsDenyRouteHandler,
+  postAdminTeamsCreateRouteHandler,
+  postAdminTeamsSettingsSetDefaultChannelsRouteHandler,
+  postAdminTeamsSettingsSetDescriptionRouteHandler,
+  postAdminTeamsSettingsSetDiscoverabilityRouteHandler,
+  postAdminTeamsSettingsSetIconRouteHandler,
+  postAdminTeamsSettingsSetNameRouteHandler,
+  postAdminUsergroupsAddChannelsRouteHandler,
+  postAdminUsergroupsAddTeamsRouteHandler,
+  postAdminUsergroupsRemoveChannelsRouteHandler,
+  postAdminUsersAssignRouteHandler,
+  postAdminUsersInviteRouteHandler,
+  postAdminUsersRemoveRouteHandler,
+  postAdminUsersSessionInvalidateRouteHandler,
+  postAdminUsersSessionResetRouteHandler,
+  postAdminUsersSetAdminRouteHandler,
+  postAdminUsersSetExpirationRouteHandler,
+  postAdminUsersSetOwnerRouteHandler,
+  postAdminUsersSetRegularRouteHandler,
+  postCallsAddRouteHandler,
+  postCallsEndRouteHandler,
+  postCallsParticipantsAddRouteHandler,
+  postCallsParticipantsRemoveRouteHandler,
+  postCallsUpdateRouteHandler,
+  postChatDeleteRouteHandler,
+  postChatDeleteScheduledMessageRouteHandler,
+  postChatMeMessageRouteHandler,
+  postChatPostEphemeralRouteHandler,
+  postChatPostMessageRouteHandler,
+  postChatScheduleMessageRouteHandler,
+  postChatUnfurlRouteHandler,
+  postChatUpdateRouteHandler,
+  postConversationsArchiveRouteHandler,
+  postConversationsCloseRouteHandler,
+  postConversationsCreateRouteHandler,
+  postConversationsInviteRouteHandler,
+  postConversationsJoinRouteHandler,
+  postConversationsKickRouteHandler,
+  postConversationsLeaveRouteHandler,
+  postConversationsMarkRouteHandler,
+  postConversationsOpenRouteHandler,
+  postConversationsRenameRouteHandler,
+  postConversationsSetPurposeRouteHandler,
+  postConversationsSetTopicRouteHandler,
+  postConversationsUnarchiveRouteHandler,
+  postDndEndDndRouteHandler,
+  postDndEndSnoozeRouteHandler,
+  postDndSetSnoozeRouteHandler,
+  postFilesCommentsDeleteRouteHandler,
+  postFilesDeleteRouteHandler,
+  postFilesRemoteAddRouteHandler,
+  postFilesRemoteRemoveRouteHandler,
+  postFilesRemoteUpdateRouteHandler,
+  postFilesRevokePublicURLRouteHandler,
+  postFilesSharedPublicURLRouteHandler,
+  postFilesUploadRouteHandler,
+  postPinsAddRouteHandler,
+  postPinsRemoveRouteHandler,
+  postReactionsAddRouteHandler,
+  postReactionsRemoveRouteHandler,
+  postRemindersAddRouteHandler,
+  postRemindersCompleteRouteHandler,
+  postRemindersDeleteRouteHandler,
+  postStarsAddRouteHandler,
+  postStarsRemoveRouteHandler,
+  postUsergroupsCreateRouteHandler,
+  postUsergroupsDisableRouteHandler,
+  postUsergroupsEnableRouteHandler,
+  postUsergroupsUpdateRouteHandler,
+  postUsergroupsUsersUpdateRouteHandler,
+  postUsersDeletePhotoRouteHandler,
+  postUsersProfileSetRouteHandler,
+  postUsersSetActiveRouteHandler,
+  postUsersSetPhotoRouteHandler,
+  postUsersSetPresenceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', adminAppsApproveHandler)
-  .route('/', adminAppsApprovedListHandler)
-  .route('/', adminAppsRequestsListHandler)
-  .route('/', adminAppsRestrictHandler)
-  .route('/', adminAppsRestrictedListHandler)
-  .route('/', adminConversationsArchiveHandler)
-  .route('/', adminConversationsConvertToPrivateHandler)
-  .route('/', adminConversationsCreateHandler)
-  .route('/', adminConversationsDeleteHandler)
-  .route('/', adminConversationsDisconnectSharedHandler)
-  .route('/', adminConversationsEkmListOriginalConnectedChannelInfoHandler)
-  .route('/', adminConversationsGetConversationPrefsHandler)
-  .route('/', adminConversationsGetTeamsHandler)
-  .route('/', adminConversationsInviteHandler)
-  .route('/', adminConversationsRenameHandler)
-  .route('/', adminConversationsRestrictAccessAddGroupHandler)
-  .route('/', adminConversationsRestrictAccessListGroupsHandler)
-  .route('/', adminConversationsRestrictAccessRemoveGroupHandler)
-  .route('/', adminConversationsSearchHandler)
-  .route('/', adminConversationsSetConversationPrefsHandler)
-  .route('/', adminConversationsSetTeamsHandler)
-  .route('/', adminConversationsUnarchiveHandler)
-  .route('/', adminEmojiAddHandler)
-  .route('/', adminEmojiAddAliasHandler)
-  .route('/', adminEmojiListHandler)
-  .route('/', adminEmojiRemoveHandler)
-  .route('/', adminEmojiRenameHandler)
-  .route('/', adminInviteRequestsApproveHandler)
-  .route('/', adminInviteRequestsApprovedListHandler)
-  .route('/', adminInviteRequestsDeniedListHandler)
-  .route('/', adminInviteRequestsDenyHandler)
-  .route('/', adminInviteRequestsListHandler)
-  .route('/', adminTeamsAdminsListHandler)
-  .route('/', adminTeamsCreateHandler)
-  .route('/', adminTeamsListHandler)
-  .route('/', adminTeamsOwnersListHandler)
-  .route('/', adminTeamsSettingsInfoHandler)
-  .route('/', adminTeamsSettingsSetDefaultChannelsHandler)
-  .route('/', adminTeamsSettingsSetDescriptionHandler)
-  .route('/', adminTeamsSettingsSetDiscoverabilityHandler)
-  .route('/', adminTeamsSettingsSetIconHandler)
-  .route('/', adminTeamsSettingsSetNameHandler)
-  .route('/', adminUsergroupsAddChannelsHandler)
-  .route('/', adminUsergroupsAddTeamsHandler)
-  .route('/', adminUsergroupsListChannelsHandler)
-  .route('/', adminUsergroupsRemoveChannelsHandler)
-  .route('/', adminUsersAssignHandler)
-  .route('/', adminUsersInviteHandler)
-  .route('/', adminUsersListHandler)
-  .route('/', adminUsersRemoveHandler)
-  .route('/', adminUsersSessionInvalidateHandler)
-  .route('/', adminUsersSessionResetHandler)
-  .route('/', adminUsersSetAdminHandler)
-  .route('/', adminUsersSetExpirationHandler)
-  .route('/', adminUsersSetOwnerHandler)
-  .route('/', adminUsersSetRegularHandler)
-  .route('/', apiTestHandler)
-  .route('/', appsEventAuthorizationsListHandler)
-  .route('/', appsPermissionsInfoHandler)
-  .route('/', appsPermissionsRequestHandler)
-  .route('/', appsPermissionsResourcesListHandler)
-  .route('/', appsPermissionsScopesListHandler)
-  .route('/', appsPermissionsUsersListHandler)
-  .route('/', appsPermissionsUsersRequestHandler)
-  .route('/', appsUninstallHandler)
-  .route('/', authRevokeHandler)
-  .route('/', authTestHandler)
-  .route('/', botsInfoHandler)
-  .route('/', callsAddHandler)
-  .route('/', callsEndHandler)
-  .route('/', callsInfoHandler)
-  .route('/', callsParticipantsAddHandler)
-  .route('/', callsParticipantsRemoveHandler)
-  .route('/', callsUpdateHandler)
-  .route('/', chatDeleteHandler)
-  .route('/', chatDeleteScheduledMessageHandler)
-  .route('/', chatGetPermalinkHandler)
-  .route('/', chatMeMessageHandler)
-  .route('/', chatPostEphemeralHandler)
-  .route('/', chatPostMessageHandler)
-  .route('/', chatScheduleMessageHandler)
-  .route('/', chatScheduledMessagesListHandler)
-  .route('/', chatUnfurlHandler)
-  .route('/', chatUpdateHandler)
-  .route('/', conversationsArchiveHandler)
-  .route('/', conversationsCloseHandler)
-  .route('/', conversationsCreateHandler)
-  .route('/', conversationsHistoryHandler)
-  .route('/', conversationsInfoHandler)
-  .route('/', conversationsInviteHandler)
-  .route('/', conversationsJoinHandler)
-  .route('/', conversationsKickHandler)
-  .route('/', conversationsLeaveHandler)
-  .route('/', conversationsListHandler)
-  .route('/', conversationsMarkHandler)
-  .route('/', conversationsMembersHandler)
-  .route('/', conversationsOpenHandler)
-  .route('/', conversationsRenameHandler)
-  .route('/', conversationsRepliesHandler)
-  .route('/', conversationsSetPurposeHandler)
-  .route('/', conversationsSetTopicHandler)
-  .route('/', conversationsUnarchiveHandler)
-  .route('/', dialogOpenHandler)
-  .route('/', dndEndDndHandler)
-  .route('/', dndEndSnoozeHandler)
-  .route('/', dndInfoHandler)
-  .route('/', dndSetSnoozeHandler)
-  .route('/', dndTeamInfoHandler)
-  .route('/', emojiListHandler)
-  .route('/', filesCommentsDeleteHandler)
-  .route('/', filesDeleteHandler)
-  .route('/', filesInfoHandler)
-  .route('/', filesListHandler)
-  .route('/', filesRemoteAddHandler)
-  .route('/', filesRemoteInfoHandler)
-  .route('/', filesRemoteListHandler)
-  .route('/', filesRemoteRemoveHandler)
-  .route('/', filesRemoteShareHandler)
-  .route('/', filesRemoteUpdateHandler)
-  .route('/', filesRevokePublicUrlHandler)
-  .route('/', filesSharedPublicUrlHandler)
-  .route('/', filesUploadHandler)
-  .route('/', migrationExchangeHandler)
-  .route('/', oauthAccessHandler)
-  .route('/', oauthTokenHandler)
-  .route('/', oauthV2AccessHandler)
-  .route('/', pinsAddHandler)
-  .route('/', pinsListHandler)
-  .route('/', pinsRemoveHandler)
-  .route('/', reactionsAddHandler)
-  .route('/', reactionsGetHandler)
-  .route('/', reactionsListHandler)
-  .route('/', reactionsRemoveHandler)
-  .route('/', remindersAddHandler)
-  .route('/', remindersCompleteHandler)
-  .route('/', remindersDeleteHandler)
-  .route('/', remindersInfoHandler)
-  .route('/', remindersListHandler)
-  .route('/', rtmConnectHandler)
-  .route('/', searchMessagesHandler)
-  .route('/', starsAddHandler)
-  .route('/', starsListHandler)
-  .route('/', starsRemoveHandler)
-  .route('/', teamAccessLogsHandler)
-  .route('/', teamBillableInfoHandler)
-  .route('/', teamInfoHandler)
-  .route('/', teamIntegrationLogsHandler)
-  .route('/', teamProfileGetHandler)
-  .route('/', usergroupsCreateHandler)
-  .route('/', usergroupsDisableHandler)
-  .route('/', usergroupsEnableHandler)
-  .route('/', usergroupsListHandler)
-  .route('/', usergroupsUpdateHandler)
-  .route('/', usergroupsUsersListHandler)
-  .route('/', usergroupsUsersUpdateHandler)
-  .route('/', usersConversationsHandler)
-  .route('/', usersDeletePhotoHandler)
-  .route('/', usersGetPresenceHandler)
-  .route('/', usersIdentityHandler)
-  .route('/', usersInfoHandler)
-  .route('/', usersListHandler)
-  .route('/', usersLookupByEmailHandler)
-  .route('/', usersProfileGetHandler)
-  .route('/', usersProfileSetHandler)
-  .route('/', usersSetActiveHandler)
-  .route('/', usersSetPhotoHandler)
-  .route('/', usersSetPresenceHandler)
-  .route('/', viewsOpenHandler)
-  .route('/', viewsPublishHandler)
-  .route('/', viewsPushHandler)
-  .route('/', viewsUpdateHandler)
-  .route('/', workflowsStepCompletedHandler)
-  .route('/', workflowsStepFailedHandler)
-  .route('/', workflowsUpdateStepHandler)
+  .openapi(postAdminAppsApproveRoute, postAdminAppsApproveRouteHandler)
+  .openapi(getAdminAppsApprovedListRoute, getAdminAppsApprovedListRouteHandler)
+  .openapi(getAdminAppsRequestsListRoute, getAdminAppsRequestsListRouteHandler)
+  .openapi(postAdminAppsRestrictRoute, postAdminAppsRestrictRouteHandler)
+  .openapi(getAdminAppsRestrictedListRoute, getAdminAppsRestrictedListRouteHandler)
+  .openapi(postAdminConversationsArchiveRoute, postAdminConversationsArchiveRouteHandler)
+  .openapi(
+    postAdminConversationsConvertToPrivateRoute,
+    postAdminConversationsConvertToPrivateRouteHandler,
+  )
+  .openapi(postAdminConversationsCreateRoute, postAdminConversationsCreateRouteHandler)
+  .openapi(postAdminConversationsDeleteRoute, postAdminConversationsDeleteRouteHandler)
+  .openapi(
+    postAdminConversationsDisconnectSharedRoute,
+    postAdminConversationsDisconnectSharedRouteHandler,
+  )
+  .openapi(
+    getAdminConversationsEkmListOriginalConnectedChannelInfoRoute,
+    getAdminConversationsEkmListOriginalConnectedChannelInfoRouteHandler,
+  )
+  .openapi(
+    getAdminConversationsGetConversationPrefsRoute,
+    getAdminConversationsGetConversationPrefsRouteHandler,
+  )
+  .openapi(getAdminConversationsGetTeamsRoute, getAdminConversationsGetTeamsRouteHandler)
+  .openapi(postAdminConversationsInviteRoute, postAdminConversationsInviteRouteHandler)
+  .openapi(postAdminConversationsRenameRoute, postAdminConversationsRenameRouteHandler)
+  .openapi(
+    postAdminConversationsRestrictAccessAddGroupRoute,
+    postAdminConversationsRestrictAccessAddGroupRouteHandler,
+  )
+  .openapi(
+    getAdminConversationsRestrictAccessListGroupsRoute,
+    getAdminConversationsRestrictAccessListGroupsRouteHandler,
+  )
+  .openapi(
+    postAdminConversationsRestrictAccessRemoveGroupRoute,
+    postAdminConversationsRestrictAccessRemoveGroupRouteHandler,
+  )
+  .openapi(getAdminConversationsSearchRoute, getAdminConversationsSearchRouteHandler)
+  .openapi(
+    postAdminConversationsSetConversationPrefsRoute,
+    postAdminConversationsSetConversationPrefsRouteHandler,
+  )
+  .openapi(postAdminConversationsSetTeamsRoute, postAdminConversationsSetTeamsRouteHandler)
+  .openapi(postAdminConversationsUnarchiveRoute, postAdminConversationsUnarchiveRouteHandler)
+  .openapi(postAdminEmojiAddRoute, postAdminEmojiAddRouteHandler)
+  .openapi(postAdminEmojiAddAliasRoute, postAdminEmojiAddAliasRouteHandler)
+  .openapi(getAdminEmojiListRoute, getAdminEmojiListRouteHandler)
+  .openapi(postAdminEmojiRemoveRoute, postAdminEmojiRemoveRouteHandler)
+  .openapi(postAdminEmojiRenameRoute, postAdminEmojiRenameRouteHandler)
+  .openapi(postAdminInviteRequestsApproveRoute, postAdminInviteRequestsApproveRouteHandler)
+  .openapi(getAdminInviteRequestsApprovedListRoute, getAdminInviteRequestsApprovedListRouteHandler)
+  .openapi(getAdminInviteRequestsDeniedListRoute, getAdminInviteRequestsDeniedListRouteHandler)
+  .openapi(postAdminInviteRequestsDenyRoute, postAdminInviteRequestsDenyRouteHandler)
+  .openapi(getAdminInviteRequestsListRoute, getAdminInviteRequestsListRouteHandler)
+  .openapi(getAdminTeamsAdminsListRoute, getAdminTeamsAdminsListRouteHandler)
+  .openapi(postAdminTeamsCreateRoute, postAdminTeamsCreateRouteHandler)
+  .openapi(getAdminTeamsListRoute, getAdminTeamsListRouteHandler)
+  .openapi(getAdminTeamsOwnersListRoute, getAdminTeamsOwnersListRouteHandler)
+  .openapi(getAdminTeamsSettingsInfoRoute, getAdminTeamsSettingsInfoRouteHandler)
+  .openapi(
+    postAdminTeamsSettingsSetDefaultChannelsRoute,
+    postAdminTeamsSettingsSetDefaultChannelsRouteHandler,
+  )
+  .openapi(
+    postAdminTeamsSettingsSetDescriptionRoute,
+    postAdminTeamsSettingsSetDescriptionRouteHandler,
+  )
+  .openapi(
+    postAdminTeamsSettingsSetDiscoverabilityRoute,
+    postAdminTeamsSettingsSetDiscoverabilityRouteHandler,
+  )
+  .openapi(postAdminTeamsSettingsSetIconRoute, postAdminTeamsSettingsSetIconRouteHandler)
+  .openapi(postAdminTeamsSettingsSetNameRoute, postAdminTeamsSettingsSetNameRouteHandler)
+  .openapi(postAdminUsergroupsAddChannelsRoute, postAdminUsergroupsAddChannelsRouteHandler)
+  .openapi(postAdminUsergroupsAddTeamsRoute, postAdminUsergroupsAddTeamsRouteHandler)
+  .openapi(getAdminUsergroupsListChannelsRoute, getAdminUsergroupsListChannelsRouteHandler)
+  .openapi(postAdminUsergroupsRemoveChannelsRoute, postAdminUsergroupsRemoveChannelsRouteHandler)
+  .openapi(postAdminUsersAssignRoute, postAdminUsersAssignRouteHandler)
+  .openapi(postAdminUsersInviteRoute, postAdminUsersInviteRouteHandler)
+  .openapi(getAdminUsersListRoute, getAdminUsersListRouteHandler)
+  .openapi(postAdminUsersRemoveRoute, postAdminUsersRemoveRouteHandler)
+  .openapi(postAdminUsersSessionInvalidateRoute, postAdminUsersSessionInvalidateRouteHandler)
+  .openapi(postAdminUsersSessionResetRoute, postAdminUsersSessionResetRouteHandler)
+  .openapi(postAdminUsersSetAdminRoute, postAdminUsersSetAdminRouteHandler)
+  .openapi(postAdminUsersSetExpirationRoute, postAdminUsersSetExpirationRouteHandler)
+  .openapi(postAdminUsersSetOwnerRoute, postAdminUsersSetOwnerRouteHandler)
+  .openapi(postAdminUsersSetRegularRoute, postAdminUsersSetRegularRouteHandler)
+  .openapi(getApiTestRoute, getApiTestRouteHandler)
+  .openapi(getAppsEventAuthorizationsListRoute, getAppsEventAuthorizationsListRouteHandler)
+  .openapi(getAppsPermissionsInfoRoute, getAppsPermissionsInfoRouteHandler)
+  .openapi(getAppsPermissionsRequestRoute, getAppsPermissionsRequestRouteHandler)
+  .openapi(getAppsPermissionsResourcesListRoute, getAppsPermissionsResourcesListRouteHandler)
+  .openapi(getAppsPermissionsScopesListRoute, getAppsPermissionsScopesListRouteHandler)
+  .openapi(getAppsPermissionsUsersListRoute, getAppsPermissionsUsersListRouteHandler)
+  .openapi(getAppsPermissionsUsersRequestRoute, getAppsPermissionsUsersRequestRouteHandler)
+  .openapi(getAppsUninstallRoute, getAppsUninstallRouteHandler)
+  .openapi(getAuthRevokeRoute, getAuthRevokeRouteHandler)
+  .openapi(getAuthTestRoute, getAuthTestRouteHandler)
+  .openapi(getBotsInfoRoute, getBotsInfoRouteHandler)
+  .openapi(postCallsAddRoute, postCallsAddRouteHandler)
+  .openapi(postCallsEndRoute, postCallsEndRouteHandler)
+  .openapi(getCallsInfoRoute, getCallsInfoRouteHandler)
+  .openapi(postCallsParticipantsAddRoute, postCallsParticipantsAddRouteHandler)
+  .openapi(postCallsParticipantsRemoveRoute, postCallsParticipantsRemoveRouteHandler)
+  .openapi(postCallsUpdateRoute, postCallsUpdateRouteHandler)
+  .openapi(postChatDeleteRoute, postChatDeleteRouteHandler)
+  .openapi(postChatDeleteScheduledMessageRoute, postChatDeleteScheduledMessageRouteHandler)
+  .openapi(getChatGetPermalinkRoute, getChatGetPermalinkRouteHandler)
+  .openapi(postChatMeMessageRoute, postChatMeMessageRouteHandler)
+  .openapi(postChatPostEphemeralRoute, postChatPostEphemeralRouteHandler)
+  .openapi(postChatPostMessageRoute, postChatPostMessageRouteHandler)
+  .openapi(postChatScheduleMessageRoute, postChatScheduleMessageRouteHandler)
+  .openapi(getChatScheduledMessagesListRoute, getChatScheduledMessagesListRouteHandler)
+  .openapi(postChatUnfurlRoute, postChatUnfurlRouteHandler)
+  .openapi(postChatUpdateRoute, postChatUpdateRouteHandler)
+  .openapi(postConversationsArchiveRoute, postConversationsArchiveRouteHandler)
+  .openapi(postConversationsCloseRoute, postConversationsCloseRouteHandler)
+  .openapi(postConversationsCreateRoute, postConversationsCreateRouteHandler)
+  .openapi(getConversationsHistoryRoute, getConversationsHistoryRouteHandler)
+  .openapi(getConversationsInfoRoute, getConversationsInfoRouteHandler)
+  .openapi(postConversationsInviteRoute, postConversationsInviteRouteHandler)
+  .openapi(postConversationsJoinRoute, postConversationsJoinRouteHandler)
+  .openapi(postConversationsKickRoute, postConversationsKickRouteHandler)
+  .openapi(postConversationsLeaveRoute, postConversationsLeaveRouteHandler)
+  .openapi(getConversationsListRoute, getConversationsListRouteHandler)
+  .openapi(postConversationsMarkRoute, postConversationsMarkRouteHandler)
+  .openapi(getConversationsMembersRoute, getConversationsMembersRouteHandler)
+  .openapi(postConversationsOpenRoute, postConversationsOpenRouteHandler)
+  .openapi(postConversationsRenameRoute, postConversationsRenameRouteHandler)
+  .openapi(getConversationsRepliesRoute, getConversationsRepliesRouteHandler)
+  .openapi(postConversationsSetPurposeRoute, postConversationsSetPurposeRouteHandler)
+  .openapi(postConversationsSetTopicRoute, postConversationsSetTopicRouteHandler)
+  .openapi(postConversationsUnarchiveRoute, postConversationsUnarchiveRouteHandler)
+  .openapi(getDialogOpenRoute, getDialogOpenRouteHandler)
+  .openapi(postDndEndDndRoute, postDndEndDndRouteHandler)
+  .openapi(postDndEndSnoozeRoute, postDndEndSnoozeRouteHandler)
+  .openapi(getDndInfoRoute, getDndInfoRouteHandler)
+  .openapi(postDndSetSnoozeRoute, postDndSetSnoozeRouteHandler)
+  .openapi(getDndTeamInfoRoute, getDndTeamInfoRouteHandler)
+  .openapi(getEmojiListRoute, getEmojiListRouteHandler)
+  .openapi(postFilesCommentsDeleteRoute, postFilesCommentsDeleteRouteHandler)
+  .openapi(postFilesDeleteRoute, postFilesDeleteRouteHandler)
+  .openapi(getFilesInfoRoute, getFilesInfoRouteHandler)
+  .openapi(getFilesListRoute, getFilesListRouteHandler)
+  .openapi(postFilesRemoteAddRoute, postFilesRemoteAddRouteHandler)
+  .openapi(getFilesRemoteInfoRoute, getFilesRemoteInfoRouteHandler)
+  .openapi(getFilesRemoteListRoute, getFilesRemoteListRouteHandler)
+  .openapi(postFilesRemoteRemoveRoute, postFilesRemoteRemoveRouteHandler)
+  .openapi(getFilesRemoteShareRoute, getFilesRemoteShareRouteHandler)
+  .openapi(postFilesRemoteUpdateRoute, postFilesRemoteUpdateRouteHandler)
+  .openapi(postFilesRevokePublicURLRoute, postFilesRevokePublicURLRouteHandler)
+  .openapi(postFilesSharedPublicURLRoute, postFilesSharedPublicURLRouteHandler)
+  .openapi(postFilesUploadRoute, postFilesUploadRouteHandler)
+  .openapi(getMigrationExchangeRoute, getMigrationExchangeRouteHandler)
+  .openapi(getOauthAccessRoute, getOauthAccessRouteHandler)
+  .openapi(getOauthTokenRoute, getOauthTokenRouteHandler)
+  .openapi(getOauthV2AccessRoute, getOauthV2AccessRouteHandler)
+  .openapi(postPinsAddRoute, postPinsAddRouteHandler)
+  .openapi(getPinsListRoute, getPinsListRouteHandler)
+  .openapi(postPinsRemoveRoute, postPinsRemoveRouteHandler)
+  .openapi(postReactionsAddRoute, postReactionsAddRouteHandler)
+  .openapi(getReactionsGetRoute, getReactionsGetRouteHandler)
+  .openapi(getReactionsListRoute, getReactionsListRouteHandler)
+  .openapi(postReactionsRemoveRoute, postReactionsRemoveRouteHandler)
+  .openapi(postRemindersAddRoute, postRemindersAddRouteHandler)
+  .openapi(postRemindersCompleteRoute, postRemindersCompleteRouteHandler)
+  .openapi(postRemindersDeleteRoute, postRemindersDeleteRouteHandler)
+  .openapi(getRemindersInfoRoute, getRemindersInfoRouteHandler)
+  .openapi(getRemindersListRoute, getRemindersListRouteHandler)
+  .openapi(getRtmConnectRoute, getRtmConnectRouteHandler)
+  .openapi(getSearchMessagesRoute, getSearchMessagesRouteHandler)
+  .openapi(postStarsAddRoute, postStarsAddRouteHandler)
+  .openapi(getStarsListRoute, getStarsListRouteHandler)
+  .openapi(postStarsRemoveRoute, postStarsRemoveRouteHandler)
+  .openapi(getTeamAccessLogsRoute, getTeamAccessLogsRouteHandler)
+  .openapi(getTeamBillableInfoRoute, getTeamBillableInfoRouteHandler)
+  .openapi(getTeamInfoRoute, getTeamInfoRouteHandler)
+  .openapi(getTeamIntegrationLogsRoute, getTeamIntegrationLogsRouteHandler)
+  .openapi(getTeamProfileGetRoute, getTeamProfileGetRouteHandler)
+  .openapi(postUsergroupsCreateRoute, postUsergroupsCreateRouteHandler)
+  .openapi(postUsergroupsDisableRoute, postUsergroupsDisableRouteHandler)
+  .openapi(postUsergroupsEnableRoute, postUsergroupsEnableRouteHandler)
+  .openapi(getUsergroupsListRoute, getUsergroupsListRouteHandler)
+  .openapi(postUsergroupsUpdateRoute, postUsergroupsUpdateRouteHandler)
+  .openapi(getUsergroupsUsersListRoute, getUsergroupsUsersListRouteHandler)
+  .openapi(postUsergroupsUsersUpdateRoute, postUsergroupsUsersUpdateRouteHandler)
+  .openapi(getUsersConversationsRoute, getUsersConversationsRouteHandler)
+  .openapi(postUsersDeletePhotoRoute, postUsersDeletePhotoRouteHandler)
+  .openapi(getUsersGetPresenceRoute, getUsersGetPresenceRouteHandler)
+  .openapi(getUsersIdentityRoute, getUsersIdentityRouteHandler)
+  .openapi(getUsersInfoRoute, getUsersInfoRouteHandler)
+  .openapi(getUsersListRoute, getUsersListRouteHandler)
+  .openapi(getUsersLookupByEmailRoute, getUsersLookupByEmailRouteHandler)
+  .openapi(getUsersProfileGetRoute, getUsersProfileGetRouteHandler)
+  .openapi(postUsersProfileSetRoute, postUsersProfileSetRouteHandler)
+  .openapi(postUsersSetActiveRoute, postUsersSetActiveRouteHandler)
+  .openapi(postUsersSetPhotoRoute, postUsersSetPhotoRouteHandler)
+  .openapi(postUsersSetPresenceRoute, postUsersSetPresenceRouteHandler)
+  .openapi(getViewsOpenRoute, getViewsOpenRouteHandler)
+  .openapi(getViewsPublishRoute, getViewsPublishRouteHandler)
+  .openapi(getViewsPushRoute, getViewsPushRouteHandler)
+  .openapi(getViewsUpdateRoute, getViewsUpdateRouteHandler)
+  .openapi(getWorkflowsStepCompletedRoute, getWorkflowsStepCompletedRouteHandler)
+  .openapi(getWorkflowsStepFailedRoute, getWorkflowsStepFailedRouteHandler)
+  .openapi(getWorkflowsUpdateStepRoute, getWorkflowsUpdateStepRouteHandler)
 
 export default app

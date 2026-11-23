@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConvertWeightRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConvertWeightRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const convertWeightHandler = app.openapi(postConvertWeightRoute, (c) => {
+export const postConvertWeightRouteHandler: RouteHandler<typeof postConvertWeightRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

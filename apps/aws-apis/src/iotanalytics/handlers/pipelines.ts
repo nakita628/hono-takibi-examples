@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePipelinesPipelineNameReprocessingReprocessingIdRoute,
   deletePipelinesPipelineNameRoute,
   getPipelinesPipelineNameRoute,
@@ -9,27 +9,40 @@ import {
   putPipelinesPipelineNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePipelinesPipelineNameReprocessingReprocessingIdRouteHandler: RouteHandler<
+  typeof deletePipelinesPipelineNameReprocessingReprocessingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pipelinesHandler = app
-  .openapi(deletePipelinesPipelineNameReprocessingReprocessingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePipelinesPipelineNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPipelinesPipelineNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPipelinesPipelineNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPipelinesPipelineNameReprocessingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPipelinesRouteHandler: RouteHandler<typeof postPipelinesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPipelinesRouteHandler: RouteHandler<typeof getPipelinesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePipelinesPipelineNameRouteHandler: RouteHandler<
+  typeof deletePipelinesPipelineNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPipelinesPipelineNameRouteHandler: RouteHandler<
+  typeof getPipelinesPipelineNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPipelinesPipelineNameRouteHandler: RouteHandler<
+  typeof putPipelinesPipelineNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPipelinesPipelineNameReprocessingRouteHandler: RouteHandler<
+  typeof postPipelinesPipelineNameReprocessingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

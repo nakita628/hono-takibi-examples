@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/neowsapp.com/1.0/openapi.yaml',
   output: './src/neowsapp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/neowsapp/types.ts' },
   client: { output: './src/neowsapp/client.ts', baseUrl: '/' },
   rpc: { output: './src/neowsapp/rpc.ts', parseResponse: true },

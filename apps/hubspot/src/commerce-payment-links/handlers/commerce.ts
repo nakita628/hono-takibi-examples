@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute,
   getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute,
   getCommercePaymentLinks202609PaymentLinksRoute,
@@ -7,21 +7,32 @@ import {
   postCommercePaymentLinks202609PaymentLinksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommercePaymentLinks202609PaymentLinksRouteHandler: RouteHandler<
+  typeof getCommercePaymentLinks202609PaymentLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const commerceHandler = app
-  .openapi(getCommercePaymentLinks202609PaymentLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommercePaymentLinks202609PaymentLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCommercePaymentLinks202609PaymentLinksRouteHandler: RouteHandler<
+  typeof postCommercePaymentLinks202609PaymentLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRouteHandler: RouteHandler<
+  typeof getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRouteHandler: RouteHandler<
+  typeof deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCommercePaymentLinks202609PaymentLinksPaymentLinkIdRouteHandler: RouteHandler<
+  typeof patchCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

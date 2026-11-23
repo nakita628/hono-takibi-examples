@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/betfair.com/1.0.1423/openapi.yaml',
   output: './src/betfair/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/betfair/types.ts' },
   client: { output: './src/betfair/client.ts', baseUrl: '/' },
   rpc: { output: './src/betfair/rpc.ts', parseResponse: true },

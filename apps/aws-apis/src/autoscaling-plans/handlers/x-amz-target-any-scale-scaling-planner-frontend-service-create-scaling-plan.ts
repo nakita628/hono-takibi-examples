@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanHandler = app.openapi(
-  postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRouteHandler: RouteHandler<
+  typeof postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorHandler = app.openapi(
-  postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRouteHandler: RouteHandler<
+  typeof postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

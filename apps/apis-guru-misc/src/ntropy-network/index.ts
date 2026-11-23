@@ -1,8 +1,14 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { classifierHandler } from './handlers'
+import { getClassifierBusinessBatchIdRoute, getClassifierConsumerBatchIdRoute } from './routes'
+import {
+  getClassifierBusinessBatchIdRouteHandler,
+  getClassifierConsumerBatchIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', classifierHandler)
+export const api = app
+  .openapi(getClassifierBusinessBatchIdRoute, getClassifierBusinessBatchIdRouteHandler)
+  .openapi(getClassifierConsumerBatchIdRoute, getClassifierConsumerBatchIdRouteHandler)
 
 export default app

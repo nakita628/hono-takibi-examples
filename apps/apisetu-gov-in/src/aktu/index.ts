@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { dgcerHandler, dgmstHandler } from './handlers'
+import { postDgcerCertificateRoute, postDgmstCertificateRoute } from './routes'
+import { postDgcerCertificateRouteHandler, postDgmstCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', dgcerHandler).route('/', dgmstHandler)
+export const api = app
+  .openapi(postDgcerCertificateRoute, postDgcerCertificateRouteHandler)
+  .openapi(postDgmstCertificateRoute, postDgmstCertificateRouteHandler)
 
 export default app

@@ -37273,7 +37273,6 @@ const IntervalsResponseResponse = {
 
 const MarketMoversResponseValueResponse = {
   description: '',
-  content: {},
   headers: z.object({
     volume: z
       .preprocess(

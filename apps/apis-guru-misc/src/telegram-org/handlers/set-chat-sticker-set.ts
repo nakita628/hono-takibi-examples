@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSetChatStickerSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSetChatStickerSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const setChatStickerSetHandler = app.openapi(postSetChatStickerSetRoute, (c) => {
+export const postSetChatStickerSetRouteHandler: RouteHandler<
+  typeof postSetChatStickerSetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

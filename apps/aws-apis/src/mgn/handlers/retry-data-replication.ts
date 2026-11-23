@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRetryDataReplicationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRetryDataReplicationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const retryDataReplicationHandler = app.openapi(postRetryDataReplicationRoute, (c) => {
+export const postRetryDataReplicationRouteHandler: RouteHandler<
+  typeof postRetryDataReplicationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

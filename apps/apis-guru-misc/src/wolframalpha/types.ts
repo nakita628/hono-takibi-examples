@@ -3,6 +3,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   {
     '/api/v1/cloud-plugin': {
       $get:
+        | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 200 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 400 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 403 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 500 }
@@ -11,6 +12,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/v1/llm-api': {
       $get:
+        | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 200 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 400 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 403 }
         | { input: { query: { input: string } }; output: {}; outputFormat: string; status: 500 }

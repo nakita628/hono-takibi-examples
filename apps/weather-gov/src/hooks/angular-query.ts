@@ -1196,27 +1196,29 @@ export function injectGlossary<
 }
 
 export function getGridpointsWfoXYQueryKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y', args] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}', args] as const
 }
 
 export function getGridpointsWfoXYQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
         >
       >
     >,
@@ -1227,7 +1229,7 @@ export function getGridpointsWfoXYQueryOptions<
     queryKey: getGridpointsWfoXYQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].$get(args, {
+        client.gridpoints[':wfo'][':x,{y}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1239,19 +1241,21 @@ export function getGridpointsWfoXYQueryOptions<
 export function injectGridpointsWfoXY<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
             >
           >
         >,
@@ -1272,30 +1276,30 @@ export function injectGridpointsWfoXY<
 }
 
 export function getGridpointsWfoXYForecastQueryKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast', keyArgs] as const
 }
 
 export function getGridpointsWfoXYForecastQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
         >
       >
     >,
@@ -1306,7 +1310,7 @@ export function getGridpointsWfoXYForecastQueryOptions<
     queryKey: getGridpointsWfoXYForecastQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].forecast.$get(args, {
+        client.gridpoints[':wfo'][':x,{y}'].forecast.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1319,20 +1323,20 @@ export function injectGridpointsWfoXYForecast<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
             >
           >
         >,
@@ -1356,10 +1360,12 @@ export function injectGridpointsWfoXYForecast<
 }
 
 export function getGridpointsWfoXYForecastHourlyQueryKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast/hourly', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast/hourly', keyArgs] as const
 }
 
 export function getGridpointsWfoXYForecastHourlyQueryOptions<
@@ -1367,14 +1373,16 @@ export function getGridpointsWfoXYForecastHourlyQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+          ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
         >
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
@@ -1382,7 +1390,7 @@ export function getGridpointsWfoXYForecastHourlyQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+            ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
           >
         >
       >
@@ -1394,7 +1402,7 @@ export function getGridpointsWfoXYForecastHourlyQueryOptions<
     queryKey: getGridpointsWfoXYForecastHourlyQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(args, {
+        client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1408,7 +1416,7 @@ export function injectGridpointsWfoXYForecastHourly<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+          ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
         >
       >
     >
@@ -1416,7 +1424,7 @@ export function injectGridpointsWfoXYForecastHourly<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -1426,7 +1434,7 @@ export function injectGridpointsWfoXYForecastHourly<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']
+                  (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
                 >
               >
             >
@@ -1452,29 +1460,29 @@ export function injectGridpointsWfoXYForecastHourly<
 }
 
 export function getGridpointsWfoXYStationsQueryKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/stations', args] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/stations', args] as const
 }
 
 export function getGridpointsWfoXYStationsQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
         >
       >
     >,
@@ -1485,7 +1493,7 @@ export function getGridpointsWfoXYStationsQueryOptions<
     queryKey: getGridpointsWfoXYStationsQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].stations.$get(args, {
+        client.gridpoints[':wfo'][':x,{y}'].stations.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1498,20 +1506,20 @@ export function injectGridpointsWfoXYStations<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: () => InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+              Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
             >
           >
         >,
@@ -3136,29 +3144,29 @@ export function injectOfficesOfficeIdWeatherstoriesDownloadImageId<
 }
 
 export function getPointsLatitudeLongitudeQueryKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude', args] as const
+  return ['points', '/points/:latitude,{longitude}', args] as const
 }
 
 export function getPointsLatitudeLongitudeQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
         >
       >
     >,
@@ -3169,7 +3177,7 @@ export function getPointsLatitudeLongitudeQueryOptions<
     queryKey: getPointsLatitudeLongitudeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.points[':latitude,:longitude'].$get(args, {
+        client.points[':latitude,{longitude}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3182,20 +3190,20 @@ export function injectPointsLatitudeLongitude<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: () => InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+              Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
             >
           >
         >,
@@ -3219,29 +3227,29 @@ export function injectPointsLatitudeLongitude<
 }
 
 export function getPointsLatitudeLongitudeRadioQueryKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude/radio', args] as const
+  return ['points', '/points/:latitude,{longitude}/radio', args] as const
 }
 
 export function getPointsLatitudeLongitudeRadioQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
         >
       >
     >,
@@ -3252,7 +3260,7 @@ export function getPointsLatitudeLongitudeRadioQueryOptions<
     queryKey: getPointsLatitudeLongitudeRadioQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.points[':latitude,:longitude'].radio.$get(args, {
+        client.points[':latitude,{longitude}'].radio.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3265,20 +3273,20 @@ export function injectPointsLatitudeLongitudeRadio<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: () => InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+              Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
             >
           >
         >,
@@ -3302,29 +3310,29 @@ export function injectPointsLatitudeLongitudeRadio<
 }
 
 export function getPointsLatitudeLongitudeStationsQueryKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude/stations', args] as const
+  return ['points', '/points/:latitude,{longitude}/stations', args] as const
 }
 
 export function getPointsLatitudeLongitudeStationsQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
         >
       >
     >,
@@ -3335,7 +3343,7 @@ export function getPointsLatitudeLongitudeStationsQueryOptions<
     queryKey: getPointsLatitudeLongitudeStationsQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.points[':latitude,:longitude'].stations.$get(args, {
+        client.points[':latitude,{longitude}'].stations.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3348,13 +3356,13 @@ export function injectPointsLatitudeLongitudeStations<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: () => InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -3362,7 +3370,7 @@ export function injectPointsLatitudeLongitudeStations<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+                ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
               >
             >
           >

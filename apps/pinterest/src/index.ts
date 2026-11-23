@@ -1,53 +1,1511 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  adAccountsHandler,
-  advancedAuctionHandler,
-  boardsHandler,
-  businessAccessHandler,
-  businessesHandler,
-  catalogsHandler,
-  collaborativeCatalogsHandler,
-  integrationsHandler,
-  mediaHandler,
-  mediaLibraryHandler,
-  merchantHandler,
-  notificationsHandler,
-  oauthHandler,
-  overlayAssignmentRulesHandler,
-  overlaysHandler,
-  pinsHandler,
-  resourcesHandler,
-  searchHandler,
-  termsHandler,
-  trendsHandler,
-  userAccountHandler,
-  usersHandler,
+  deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+  deleteAdAccountsAdAccountIdCampaignAdPreviewRoute,
+  deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute,
+  deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute,
+  deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute,
+  deleteAdAccountsAdAccountIdPromotionsPromotionIdRoute,
+  deleteAdAccountsAdAccountIdSandboxRoute,
+  deleteBoardsBoardIdRoute,
+  deleteBoardsBoardIdSectionsSectionIdRoute,
+  deleteBusinessesBusinessIdAssetGroupsRoute,
+  deleteBusinessesBusinessIdInvitesRoute,
+  deleteBusinessesBusinessIdMembersAssetsAccessRoute,
+  deleteBusinessesBusinessIdMembersRoute,
+  deleteBusinessesBusinessIdPartnersAssetsRoute,
+  deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
+  deleteBusinessesBusinessIdPartnersRoute,
+  deleteCatalogsCatalogIdCountryLocaleMappingRoute,
+  deleteCatalogsCatalogIdLocalStoresRoute,
+  deleteCatalogsFeedsFeedIdRoute,
+  deleteCatalogsProductGroupsMultipleRoute,
+  deleteCatalogsProductGroupsProductGroupIdRoute,
+  deleteCatalogsSupplementalFeedsFeedIdRoute,
+  deleteIntegrationsCommerceExternalBusinessIdRoute,
+  deleteMediaLibraryBusinessesBusinessIdAssetsRoute,
+  deleteOverlayAssignmentRulesIdRoute,
+  deleteOverlaysIdRoute,
+  deletePinsPinIdRoute,
+  deleteUserAccountWebsitesRoute,
+  getAdAccountsAdAccountIdAbTestsAbTestIdRoute,
+  getAdAccountsAdAccountIdAbTestsRoute,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRoute,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRoute,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRoute,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdRoute,
+  getAdAccountsAdAccountIdAdGroupsAnalyticsRoute,
+  getAdAccountsAdAccountIdAdGroupsRoute,
+  getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRoute,
+  getAdAccountsAdAccountIdAdsAdIdRoute,
+  getAdAccountsAdAccountIdAdsAnalyticsRoute,
+  getAdAccountsAdAccountIdAdsCreditDiscountsRoute,
+  getAdAccountsAdAccountIdAdsRoute,
+  getAdAccountsAdAccountIdAdsTargetingAnalyticsRoute,
+  getAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+  getAdAccountsAdAccountIdAllowedDomainsRoute,
+  getAdAccountsAdAccountIdAnalyticsRoute,
+  getAdAccountsAdAccountIdAudienceInsightsRoute,
+  getAdAccountsAdAccountIdAudiencesAudienceIdRoute,
+  getAdAccountsAdAccountIdAudiencesRoute,
+  getAdAccountsAdAccountIdAudiencesSharedAccountsRoute,
+  getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRoute,
+  getAdAccountsAdAccountIdBillingInvoicesRoute,
+  getAdAccountsAdAccountIdBillingProfilesRoute,
+  getAdAccountsAdAccountIdBulkBulkRequestIdRoute,
+  getAdAccountsAdAccountIdCampaignAdPreviewRoute,
+  getAdAccountsAdAccountIdCampaignsAnalyticsRoute,
+  getAdAccountsAdAccountIdCampaignsCampaignIdRoute,
+  getAdAccountsAdAccountIdCampaignsRoute,
+  getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRoute,
+  getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute,
+  getAdAccountsAdAccountIdConversionDeletionRequestsRoute,
+  getAdAccountsAdAccountIdConversionEqsRoute,
+  getAdAccountsAdAccountIdConversionTagsConversionTagIdRoute,
+  getAdAccountsAdAccountIdConversionTagsOcpmEligibleRoute,
+  getAdAccountsAdAccountIdConversionTagsPageVisitRoute,
+  getAdAccountsAdAccountIdConversionTagsRoute,
+  getAdAccountsAdAccountIdCustomerListsCustomerListIdRoute,
+  getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRoute,
+  getAdAccountsAdAccountIdCustomerListsRoute,
+  getAdAccountsAdAccountIdCustomerSegmentsRoute,
+  getAdAccountsAdAccountIdInsightsAudiencesRoute,
+  getAdAccountsAdAccountIdKeywordsMetricsRoute,
+  getAdAccountsAdAccountIdKeywordsRoute,
+  getAdAccountsAdAccountIdLabelsRoute,
+  getAdAccountsAdAccountIdLeadFormsLeadFormIdRoute,
+  getAdAccountsAdAccountIdLeadFormsRoute,
+  getAdAccountsAdAccountIdLeadsExportLeadsExportIdRoute,
+  getAdAccountsAdAccountIdLeadsSubscriptionsRoute,
+  getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute,
+  getAdAccountsAdAccountIdMmmReportsRoute,
+  getAdAccountsAdAccountIdOrderLinesOrderLineIdRoute,
+  getAdAccountsAdAccountIdOrderLinesRoute,
+  getAdAccountsAdAccountIdPinsAnalyticsRoute,
+  getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRoute,
+  getAdAccountsAdAccountIdProductGroupPromotionsRoute,
+  getAdAccountsAdAccountIdProductGroupsAnalyticsRoute,
+  getAdAccountsAdAccountIdPromotionAppliedEntitiesRoute,
+  getAdAccountsAdAccountIdPromotionsPromotionIdRoute,
+  getAdAccountsAdAccountIdPromotionsRoute,
+  getAdAccountsAdAccountIdPublisherBlocklistsRoute,
+  getAdAccountsAdAccountIdReportsBrandCategorySkuRoute,
+  getAdAccountsAdAccountIdReportsRoute,
+  getAdAccountsAdAccountIdRoute,
+  getAdAccountsAdAccountIdSchedulesRoute,
+  getAdAccountsAdAccountIdSsioAccountsRoute,
+  getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRoute,
+  getAdAccountsAdAccountIdSsioInsertionOrdersStatusRoute,
+  getAdAccountsAdAccountIdSsioOrderLinesRoute,
+  getAdAccountsAdAccountIdTargetingAnalyticsRoute,
+  getAdAccountsAdAccountIdTargetingTemplatesRoute,
+  getAdAccountsAdAccountIdTemplatesRoute,
+  getAdAccountsAdAccountIdTermsOfServiceRoute,
+  getAdAccountsEntityHistoryRoute,
+  getAdAccountsRoute,
+  getBoardsBoardIdPinsRoute,
+  getBoardsBoardIdRoute,
+  getBoardsBoardIdSectionsRoute,
+  getBoardsBoardIdSectionsSectionIdPinsRoute,
+  getBoardsRoute,
+  getBusinessesBusinessIdAdAccountRequestsRoute,
+  getBusinessesBusinessIdAnalyticsAggregatedTimelineRoute,
+  getBusinessesBusinessIdAnalyticsRoute,
+  getBusinessesBusinessIdAssetsAssetIdMembersRoute,
+  getBusinessesBusinessIdAssetsAssetIdPartnersRoute,
+  getBusinessesBusinessIdAssetsRoute,
+  getBusinessesBusinessIdAudiencesRoute,
+  getBusinessesBusinessIdAudiencesSharedAccountsRoute,
+  getBusinessesBusinessIdInvitesRoute,
+  getBusinessesBusinessIdMembersMemberIdAssetsRoute,
+  getBusinessesBusinessIdMembersRoute,
+  getBusinessesBusinessIdPartnersPartnerIdAssetsRoute,
+  getBusinessesBusinessIdPartnersRoute,
+  getBusinessesBusinessIdRmnContractsContractIdRoute,
+  getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRoute,
+  getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRoute,
+  getBusinessesEmployersRoute,
+  getCatalogsAvailableFilterValuesRoute,
+  getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute,
+  getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsRoute,
+  getCatalogsCatalogIdCountryLocaleMappingRoute,
+  getCatalogsCatalogIdLocalStoresRoute,
+  getCatalogsCatalogIdSupplementalItemsBatchBatchIdRoute,
+  getCatalogsFeedsFeedIdProcessingResultsRoute,
+  getCatalogsFeedsFeedIdRoute,
+  getCatalogsFeedsRoute,
+  getCatalogsItemsBatchBatchIdRoute,
+  getCatalogsProcessingResultsProcessingResultIdItemIssuesRoute,
+  getCatalogsProductGroupsProductGroupIdProductCountsRoute,
+  getCatalogsProductGroupsProductGroupIdProductsRoute,
+  getCatalogsProductGroupsProductGroupIdRoute,
+  getCatalogsProductGroupsRoute,
+  getCatalogsReportsRoute,
+  getCatalogsReportsStatsRoute,
+  getCatalogsRoute,
+  getCatalogsSupplementalFeedsFeedIdRoute,
+  getCatalogsSupplementalFeedsRoute,
+  getIntegrationsCommerceExternalBusinessIdRoute,
+  getIntegrationsIdRoute,
+  getIntegrationsRoute,
+  getMediaLibraryBusinessesBusinessIdAssetsAssetIdRoute,
+  getMediaLibraryBusinessesBusinessIdAssetsRoute,
+  getMediaMediaIdRoute,
+  getMediaRoute,
+  getMerchantMerchantIdStatusRoute,
+  getOverlayAssignmentRulesIdRoute,
+  getOverlayAssignmentRulesRoute,
+  getOverlaysIdRoute,
+  getOverlaysRoute,
+  getPinsAnalyticsRoute,
+  getPinsPinIdAnalyticsRoute,
+  getPinsPinIdProductTagsRoute,
+  getPinsPinIdRoute,
+  getPinsRoute,
+  getResourcesAdAccountCountriesRoute,
+  getResourcesDeliveryMetricsRoute,
+  getResourcesLeadFormQuestionsRoute,
+  getResourcesMetricsReadyStateRoute,
+  getResourcesTargetingInterestsInterestIdRoute,
+  getResourcesTargetingTargetingTypeRoute,
+  getSearchBoardsRoute,
+  getSearchPartnerPinsRoute,
+  getSearchPinsRoute,
+  getTermsRelatedRoute,
+  getTermsSuggestedRoute,
+  getTrendsEditorialArticlesRoute,
+  getTrendsKeywordsRegionTopTrendTypeRoute,
+  getTrendsProductCategoriesDetailsRoute,
+  getTrendsProductCategoriesTrendingRoute,
+  getTrendsTopicsFeaturedRoute,
+  getUserAccountAnalyticsRoute,
+  getUserAccountAnalyticsTopPinsRoute,
+  getUserAccountAnalyticsTopVideoPinsRoute,
+  getUserAccountBusinessesRoute,
+  getUserAccountFollowersRoute,
+  getUserAccountFollowingBoardsRoute,
+  getUserAccountFollowingRoute,
+  getUserAccountRoute,
+  getUserAccountWebsitesRoute,
+  getUserAccountWebsitesVerificationRoute,
+  getUsersUsernameInterestsFollowRoute,
+  patchAdAccountsAdAccountIdAbTestsRoute,
+  patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute,
+  patchAdAccountsAdAccountIdAdGroupsRoute,
+  patchAdAccountsAdAccountIdAdsRoute,
+  patchAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+  patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRoute,
+  patchAdAccountsAdAccountIdAudiencesAudienceIdRoute,
+  patchAdAccountsAdAccountIdAudiencesBusinessesSharedRoute,
+  patchAdAccountsAdAccountIdCampaignsRoute,
+  patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute,
+  patchAdAccountsAdAccountIdCustomerListsCustomerListIdRoute,
+  patchAdAccountsAdAccountIdCustomerSegmentsRoute,
+  patchAdAccountsAdAccountIdKeywordsRoute,
+  patchAdAccountsAdAccountIdLabelsRoute,
+  patchAdAccountsAdAccountIdLeadFormsRoute,
+  patchAdAccountsAdAccountIdProductGroupPromotionsRoute,
+  patchAdAccountsAdAccountIdPromotionsRoute,
+  patchAdAccountsAdAccountIdPublisherBlocklistsRoute,
+  patchAdAccountsAdAccountIdSchedulesRoute,
+  patchAdAccountsAdAccountIdSsioInsertionOrdersRoute,
+  patchAdAccountsAdAccountIdTargetingTemplatesRoute,
+  patchBoardsBoardIdRoute,
+  patchBoardsBoardIdSectionsSectionIdRoute,
+  patchBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsBrandAccountIdRoute,
+  patchBusinessesBusinessIdAssetGroupsRoute,
+  patchBusinessesBusinessIdAudiencesAdAccountsSharedRoute,
+  patchBusinessesBusinessIdAudiencesBusinessesSharedRoute,
+  patchBusinessesBusinessIdMembersAssetsAccessRoute,
+  patchBusinessesBusinessIdMembersRoute,
+  patchBusinessesBusinessIdPartnersAssetsRoute,
+  patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
+  patchBusinessesBusinessIdRmnContractsContractIdProcessRoute,
+  patchBusinessesBusinessIdSystemUsersSystemUserIdRoute,
+  patchBusinessesInvitesRoute,
+  patchCatalogsCatalogIdLocalStoresRoute,
+  patchCatalogsCatalogIdRoute,
+  patchCatalogsFeedsFeedIdRoute,
+  patchCatalogsProductGroupsProductGroupIdRoute,
+  patchCatalogsSupplementalFeedsFeedIdRoute,
+  patchIntegrationsCommerceExternalBusinessIdRoute,
+  patchMediaLibraryBusinessesBusinessIdAssetsRoute,
+  patchOverlayAssignmentRulesIdRoute,
+  patchOverlaysIdRoute,
+  patchPinsPinIdRoute,
+  postAdAccountsAdAccountIdAbTestsRoute,
+  postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRoute,
+  postAdAccountsAdAccountIdAdGroupsAudienceSizingRoute,
+  postAdAccountsAdAccountIdAdGroupsRoute,
+  postAdAccountsAdAccountIdAdPreviewsRoute,
+  postAdAccountsAdAccountIdAdsCreditRedeemRoute,
+  postAdAccountsAdAccountIdAdsRoute,
+  postAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+  postAdAccountsAdAccountIdAudiencesRoute,
+  postAdAccountsAdAccountIdBidFloorRoute,
+  postAdAccountsAdAccountIdBulkDownloadRoute,
+  postAdAccountsAdAccountIdBulkUpsertRoute,
+  postAdAccountsAdAccountIdCampaignAdPreviewRoute,
+  postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRoute,
+  postAdAccountsAdAccountIdCampaignsRoute,
+  postAdAccountsAdAccountIdConversionDeletionRequestsRoute,
+  postAdAccountsAdAccountIdConversionSegmentsRoute,
+  postAdAccountsAdAccountIdConversionTagsRoute,
+  postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRoute,
+  postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRoute,
+  postAdAccountsAdAccountIdCustomerListsRoute,
+  postAdAccountsAdAccountIdCustomerSegmentsRoute,
+  postAdAccountsAdAccountIdEventsRoute,
+  postAdAccountsAdAccountIdKeywordsRoute,
+  postAdAccountsAdAccountIdLabelsLabelIdApplyRoute,
+  postAdAccountsAdAccountIdLabelsLabelIdRemoveRoute,
+  postAdAccountsAdAccountIdLabelsRoute,
+  postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRoute,
+  postAdAccountsAdAccountIdLeadFormsRoute,
+  postAdAccountsAdAccountIdLeadsExportRoute,
+  postAdAccountsAdAccountIdLeadsSubscriptionsRoute,
+  postAdAccountsAdAccountIdMmmReportsRoute,
+  postAdAccountsAdAccountIdMsotEventsRoute,
+  postAdAccountsAdAccountIdProductGroupPromotionsRoute,
+  postAdAccountsAdAccountIdPromotionsRoute,
+  postAdAccountsAdAccountIdReportsBrandCategorySkuRoute,
+  postAdAccountsAdAccountIdReportsRoute,
+  postAdAccountsAdAccountIdSchedulesRoute,
+  postAdAccountsAdAccountIdSsioInsertionOrdersRoute,
+  postAdAccountsAdAccountIdTargetingTemplatesRoute,
+  postAdAccountsAdAccountIdTemplatesTemplateIdReportsRoute,
+  postAdAccountsRoute,
+  postAdvancedAuctionItemsGetRoute,
+  postAdvancedAuctionItemsSubmitRoute,
+  postBoardsBoardIdSectionsRoute,
+  postBoardsRoute,
+  postBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsRoute,
+  postBusinessAccessBusinessRmnInvitesBusinessRelationshipInviteIdAuthProcessActionRoute,
+  postBusinessesBusinessIdAdAccountRequestsAcceptRoute,
+  postBusinessesBusinessIdAdAccountRequestsRejectRoute,
+  postBusinessesBusinessIdAssetGroupsRoute,
+  postBusinessesBusinessIdInvitesAssetsAccessRoute,
+  postBusinessesBusinessIdInvitesRoute,
+  postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRoute,
+  postBusinessesBusinessIdRequestsAssetsAccessRoute,
+  postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute,
+  postCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsReviewRoute,
+  postCatalogsCatalogIdAutoLocalizationConfigsRoute,
+  postCatalogsCatalogIdLocalInventoryItemsBatchRoute,
+  postCatalogsCatalogIdLocalInventoryItemsQueryRoute,
+  postCatalogsCatalogIdLocalStoresRoute,
+  postCatalogsFeedsFeedIdIngestRoute,
+  postCatalogsFeedsRoute,
+  postCatalogsItemsBatchRoute,
+  postCatalogsItemsRoute,
+  postCatalogsProductGroupsMultipleRoute,
+  postCatalogsProductGroupsRoute,
+  postCatalogsProductsGetByProductGroupFiltersRoute,
+  postCatalogsReportsRoute,
+  postCatalogsRoute,
+  postCatalogsSupplementalFeedsRoute,
+  postCollaborativeCatalogsRoute,
+  postIntegrationsCommerceRoute,
+  postIntegrationsLogsRoute,
+  postMediaLibraryBusinessesBusinessIdAssetsRoute,
+  postMediaRoute,
+  postNotificationsRoute,
+  postOauthConversionTokenRoute,
+  postOauthTokenRevokeRoute,
+  postOauthTokenRoute,
+  postOverlayAssignmentRulesRoute,
+  postOverlaysRoute,
+  postPinsPinIdProductTagsBulkDeleteRoute,
+  postPinsPinIdProductTagsRoute,
+  postPinsPinIdSaveRoute,
+  postPinsRoute,
+  postUserAccountFollowingUsernameRoute,
+  postUserAccountWebsitesRoute,
+  putCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute,
+  putCatalogsCatalogIdCountryLocaleMappingRoute,
+} from './routes'
+import {
+  deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  deleteAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler,
+  deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler,
+  deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler,
+  deleteAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler,
+  deleteAdAccountsAdAccountIdSandboxRouteHandler,
+  deleteBoardsBoardIdRouteHandler,
+  deleteBoardsBoardIdSectionsSectionIdRouteHandler,
+  deleteBusinessesBusinessIdAssetGroupsRouteHandler,
+  deleteBusinessesBusinessIdInvitesRouteHandler,
+  deleteBusinessesBusinessIdMembersAssetsAccessRouteHandler,
+  deleteBusinessesBusinessIdMembersRouteHandler,
+  deleteBusinessesBusinessIdPartnersAssetsRouteHandler,
+  deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler,
+  deleteBusinessesBusinessIdPartnersRouteHandler,
+  deleteCatalogsCatalogIdCountryLocaleMappingRouteHandler,
+  deleteCatalogsCatalogIdLocalStoresRouteHandler,
+  deleteCatalogsFeedsFeedIdRouteHandler,
+  deleteCatalogsProductGroupsMultipleRouteHandler,
+  deleteCatalogsProductGroupsProductGroupIdRouteHandler,
+  deleteCatalogsSupplementalFeedsFeedIdRouteHandler,
+  deleteIntegrationsCommerceExternalBusinessIdRouteHandler,
+  deleteMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  deleteOverlayAssignmentRulesIdRouteHandler,
+  deleteOverlaysIdRouteHandler,
+  deletePinsPinIdRouteHandler,
+  deleteUserAccountWebsitesRouteHandler,
+  getAdAccountsAdAccountIdAbTestsAbTestIdRouteHandler,
+  getAdAccountsAdAccountIdAbTestsRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAdGroupIdRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsRouteHandler,
+  getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdAdsAdIdRouteHandler,
+  getAdAccountsAdAccountIdAdsAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdAdsCreditDiscountsRouteHandler,
+  getAdAccountsAdAccountIdAdsRouteHandler,
+  getAdAccountsAdAccountIdAdsTargetingAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  getAdAccountsAdAccountIdAllowedDomainsRouteHandler,
+  getAdAccountsAdAccountIdAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdAudienceInsightsRouteHandler,
+  getAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler,
+  getAdAccountsAdAccountIdAudiencesRouteHandler,
+  getAdAccountsAdAccountIdAudiencesSharedAccountsRouteHandler,
+  getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRouteHandler,
+  getAdAccountsAdAccountIdBillingInvoicesRouteHandler,
+  getAdAccountsAdAccountIdBillingProfilesRouteHandler,
+  getAdAccountsAdAccountIdBulkBulkRequestIdRouteHandler,
+  getAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  getAdAccountsAdAccountIdCampaignsAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdCampaignsCampaignIdRouteHandler,
+  getAdAccountsAdAccountIdCampaignsRouteHandler,
+  getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler,
+  getAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler,
+  getAdAccountsAdAccountIdConversionEqsRouteHandler,
+  getAdAccountsAdAccountIdConversionTagsConversionTagIdRouteHandler,
+  getAdAccountsAdAccountIdConversionTagsOcpmEligibleRouteHandler,
+  getAdAccountsAdAccountIdConversionTagsPageVisitRouteHandler,
+  getAdAccountsAdAccountIdConversionTagsRouteHandler,
+  getAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler,
+  getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRouteHandler,
+  getAdAccountsAdAccountIdCustomerListsRouteHandler,
+  getAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  getAdAccountsAdAccountIdInsightsAudiencesRouteHandler,
+  getAdAccountsAdAccountIdKeywordsMetricsRouteHandler,
+  getAdAccountsAdAccountIdKeywordsRouteHandler,
+  getAdAccountsAdAccountIdLabelsRouteHandler,
+  getAdAccountsAdAccountIdLeadFormsLeadFormIdRouteHandler,
+  getAdAccountsAdAccountIdLeadFormsRouteHandler,
+  getAdAccountsAdAccountIdLeadsExportLeadsExportIdRouteHandler,
+  getAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler,
+  getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler,
+  getAdAccountsAdAccountIdMmmReportsRouteHandler,
+  getAdAccountsAdAccountIdOrderLinesOrderLineIdRouteHandler,
+  getAdAccountsAdAccountIdOrderLinesRouteHandler,
+  getAdAccountsAdAccountIdPinsAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRouteHandler,
+  getAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  getAdAccountsAdAccountIdProductGroupsAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdPromotionAppliedEntitiesRouteHandler,
+  getAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler,
+  getAdAccountsAdAccountIdPromotionsRouteHandler,
+  getAdAccountsAdAccountIdPublisherBlocklistsRouteHandler,
+  getAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler,
+  getAdAccountsAdAccountIdReportsRouteHandler,
+  getAdAccountsAdAccountIdRouteHandler,
+  getAdAccountsAdAccountIdSchedulesRouteHandler,
+  getAdAccountsAdAccountIdSsioAccountsRouteHandler,
+  getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRouteHandler,
+  getAdAccountsAdAccountIdSsioInsertionOrdersStatusRouteHandler,
+  getAdAccountsAdAccountIdSsioOrderLinesRouteHandler,
+  getAdAccountsAdAccountIdTargetingAnalyticsRouteHandler,
+  getAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  getAdAccountsAdAccountIdTemplatesRouteHandler,
+  getAdAccountsAdAccountIdTermsOfServiceRouteHandler,
+  getAdAccountsEntityHistoryRouteHandler,
+  getAdAccountsRouteHandler,
+  getBoardsBoardIdPinsRouteHandler,
+  getBoardsBoardIdRouteHandler,
+  getBoardsBoardIdSectionsRouteHandler,
+  getBoardsBoardIdSectionsSectionIdPinsRouteHandler,
+  getBoardsRouteHandler,
+  getBusinessesBusinessIdAdAccountRequestsRouteHandler,
+  getBusinessesBusinessIdAnalyticsAggregatedTimelineRouteHandler,
+  getBusinessesBusinessIdAnalyticsRouteHandler,
+  getBusinessesBusinessIdAssetsAssetIdMembersRouteHandler,
+  getBusinessesBusinessIdAssetsAssetIdPartnersRouteHandler,
+  getBusinessesBusinessIdAssetsRouteHandler,
+  getBusinessesBusinessIdAudiencesRouteHandler,
+  getBusinessesBusinessIdAudiencesSharedAccountsRouteHandler,
+  getBusinessesBusinessIdInvitesRouteHandler,
+  getBusinessesBusinessIdMembersMemberIdAssetsRouteHandler,
+  getBusinessesBusinessIdMembersRouteHandler,
+  getBusinessesBusinessIdPartnersPartnerIdAssetsRouteHandler,
+  getBusinessesBusinessIdPartnersRouteHandler,
+  getBusinessesBusinessIdRmnContractsContractIdRouteHandler,
+  getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRouteHandler,
+  getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRouteHandler,
+  getBusinessesEmployersRouteHandler,
+  getCatalogsAvailableFilterValuesRouteHandler,
+  getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRouteHandler,
+  getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsRouteHandler,
+  getCatalogsCatalogIdCountryLocaleMappingRouteHandler,
+  getCatalogsCatalogIdLocalStoresRouteHandler,
+  getCatalogsCatalogIdSupplementalItemsBatchBatchIdRouteHandler,
+  getCatalogsFeedsFeedIdProcessingResultsRouteHandler,
+  getCatalogsFeedsFeedIdRouteHandler,
+  getCatalogsFeedsRouteHandler,
+  getCatalogsItemsBatchBatchIdRouteHandler,
+  getCatalogsProcessingResultsProcessingResultIdItemIssuesRouteHandler,
+  getCatalogsProductGroupsProductGroupIdProductCountsRouteHandler,
+  getCatalogsProductGroupsProductGroupIdProductsRouteHandler,
+  getCatalogsProductGroupsProductGroupIdRouteHandler,
+  getCatalogsProductGroupsRouteHandler,
+  getCatalogsReportsRouteHandler,
+  getCatalogsReportsStatsRouteHandler,
+  getCatalogsRouteHandler,
+  getCatalogsSupplementalFeedsFeedIdRouteHandler,
+  getCatalogsSupplementalFeedsRouteHandler,
+  getIntegrationsCommerceExternalBusinessIdRouteHandler,
+  getIntegrationsIdRouteHandler,
+  getIntegrationsRouteHandler,
+  getMediaLibraryBusinessesBusinessIdAssetsAssetIdRouteHandler,
+  getMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  getMediaMediaIdRouteHandler,
+  getMediaRouteHandler,
+  getMerchantMerchantIdStatusRouteHandler,
+  getOverlayAssignmentRulesIdRouteHandler,
+  getOverlayAssignmentRulesRouteHandler,
+  getOverlaysIdRouteHandler,
+  getOverlaysRouteHandler,
+  getPinsAnalyticsRouteHandler,
+  getPinsPinIdAnalyticsRouteHandler,
+  getPinsPinIdProductTagsRouteHandler,
+  getPinsPinIdRouteHandler,
+  getPinsRouteHandler,
+  getResourcesAdAccountCountriesRouteHandler,
+  getResourcesDeliveryMetricsRouteHandler,
+  getResourcesLeadFormQuestionsRouteHandler,
+  getResourcesMetricsReadyStateRouteHandler,
+  getResourcesTargetingInterestsInterestIdRouteHandler,
+  getResourcesTargetingTargetingTypeRouteHandler,
+  getSearchBoardsRouteHandler,
+  getSearchPartnerPinsRouteHandler,
+  getSearchPinsRouteHandler,
+  getTermsRelatedRouteHandler,
+  getTermsSuggestedRouteHandler,
+  getTrendsEditorialArticlesRouteHandler,
+  getTrendsKeywordsRegionTopTrendTypeRouteHandler,
+  getTrendsProductCategoriesDetailsRouteHandler,
+  getTrendsProductCategoriesTrendingRouteHandler,
+  getTrendsTopicsFeaturedRouteHandler,
+  getUserAccountAnalyticsRouteHandler,
+  getUserAccountAnalyticsTopPinsRouteHandler,
+  getUserAccountAnalyticsTopVideoPinsRouteHandler,
+  getUserAccountBusinessesRouteHandler,
+  getUserAccountFollowersRouteHandler,
+  getUserAccountFollowingBoardsRouteHandler,
+  getUserAccountFollowingRouteHandler,
+  getUserAccountRouteHandler,
+  getUserAccountWebsitesRouteHandler,
+  getUserAccountWebsitesVerificationRouteHandler,
+  getUsersUsernameInterestsFollowRouteHandler,
+  patchAdAccountsAdAccountIdAbTestsRouteHandler,
+  patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler,
+  patchAdAccountsAdAccountIdAdGroupsRouteHandler,
+  patchAdAccountsAdAccountIdAdsRouteHandler,
+  patchAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRouteHandler,
+  patchAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler,
+  patchAdAccountsAdAccountIdAudiencesBusinessesSharedRouteHandler,
+  patchAdAccountsAdAccountIdCampaignsRouteHandler,
+  patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler,
+  patchAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler,
+  patchAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  patchAdAccountsAdAccountIdKeywordsRouteHandler,
+  patchAdAccountsAdAccountIdLabelsRouteHandler,
+  patchAdAccountsAdAccountIdLeadFormsRouteHandler,
+  patchAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  patchAdAccountsAdAccountIdPromotionsRouteHandler,
+  patchAdAccountsAdAccountIdPublisherBlocklistsRouteHandler,
+  patchAdAccountsAdAccountIdSchedulesRouteHandler,
+  patchAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler,
+  patchAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  patchBoardsBoardIdRouteHandler,
+  patchBoardsBoardIdSectionsSectionIdRouteHandler,
+  patchBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsBrandAccountIdRouteHandler,
+  patchBusinessesBusinessIdAssetGroupsRouteHandler,
+  patchBusinessesBusinessIdAudiencesAdAccountsSharedRouteHandler,
+  patchBusinessesBusinessIdAudiencesBusinessesSharedRouteHandler,
+  patchBusinessesBusinessIdMembersAssetsAccessRouteHandler,
+  patchBusinessesBusinessIdMembersRouteHandler,
+  patchBusinessesBusinessIdPartnersAssetsRouteHandler,
+  patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler,
+  patchBusinessesBusinessIdRmnContractsContractIdProcessRouteHandler,
+  patchBusinessesBusinessIdSystemUsersSystemUserIdRouteHandler,
+  patchBusinessesInvitesRouteHandler,
+  patchCatalogsCatalogIdLocalStoresRouteHandler,
+  patchCatalogsCatalogIdRouteHandler,
+  patchCatalogsFeedsFeedIdRouteHandler,
+  patchCatalogsProductGroupsProductGroupIdRouteHandler,
+  patchCatalogsSupplementalFeedsFeedIdRouteHandler,
+  patchIntegrationsCommerceExternalBusinessIdRouteHandler,
+  patchMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  patchOverlayAssignmentRulesIdRouteHandler,
+  patchOverlaysIdRouteHandler,
+  patchPinsPinIdRouteHandler,
+  postAdAccountsAdAccountIdAbTestsRouteHandler,
+  postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRouteHandler,
+  postAdAccountsAdAccountIdAdGroupsAudienceSizingRouteHandler,
+  postAdAccountsAdAccountIdAdGroupsRouteHandler,
+  postAdAccountsAdAccountIdAdPreviewsRouteHandler,
+  postAdAccountsAdAccountIdAdsCreditRedeemRouteHandler,
+  postAdAccountsAdAccountIdAdsRouteHandler,
+  postAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  postAdAccountsAdAccountIdAudiencesRouteHandler,
+  postAdAccountsAdAccountIdBidFloorRouteHandler,
+  postAdAccountsAdAccountIdBulkDownloadRouteHandler,
+  postAdAccountsAdAccountIdBulkUpsertRouteHandler,
+  postAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRouteHandler,
+  postAdAccountsAdAccountIdCampaignsRouteHandler,
+  postAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler,
+  postAdAccountsAdAccountIdConversionSegmentsRouteHandler,
+  postAdAccountsAdAccountIdConversionTagsRouteHandler,
+  postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRouteHandler,
+  postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRouteHandler,
+  postAdAccountsAdAccountIdCustomerListsRouteHandler,
+  postAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  postAdAccountsAdAccountIdEventsRouteHandler,
+  postAdAccountsAdAccountIdKeywordsRouteHandler,
+  postAdAccountsAdAccountIdLabelsLabelIdApplyRouteHandler,
+  postAdAccountsAdAccountIdLabelsLabelIdRemoveRouteHandler,
+  postAdAccountsAdAccountIdLabelsRouteHandler,
+  postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRouteHandler,
+  postAdAccountsAdAccountIdLeadFormsRouteHandler,
+  postAdAccountsAdAccountIdLeadsExportRouteHandler,
+  postAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler,
+  postAdAccountsAdAccountIdMmmReportsRouteHandler,
+  postAdAccountsAdAccountIdMsotEventsRouteHandler,
+  postAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  postAdAccountsAdAccountIdPromotionsRouteHandler,
+  postAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler,
+  postAdAccountsAdAccountIdReportsRouteHandler,
+  postAdAccountsAdAccountIdSchedulesRouteHandler,
+  postAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler,
+  postAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  postAdAccountsAdAccountIdTemplatesTemplateIdReportsRouteHandler,
+  postAdAccountsRouteHandler,
+  postAdvancedAuctionItemsGetRouteHandler,
+  postAdvancedAuctionItemsSubmitRouteHandler,
+  postBoardsBoardIdSectionsRouteHandler,
+  postBoardsRouteHandler,
+  postBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsRouteHandler,
+  postBusinessAccessBusinessRmnInvitesBusinessRelationshipInviteIdAuthProcessActionRouteHandler,
+  postBusinessesBusinessIdAdAccountRequestsAcceptRouteHandler,
+  postBusinessesBusinessIdAdAccountRequestsRejectRouteHandler,
+  postBusinessesBusinessIdAssetGroupsRouteHandler,
+  postBusinessesBusinessIdInvitesAssetsAccessRouteHandler,
+  postBusinessesBusinessIdInvitesRouteHandler,
+  postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRouteHandler,
+  postBusinessesBusinessIdRequestsAssetsAccessRouteHandler,
+  postBusinessesBusinessIdRmnPartnersPartnerIdInviteRouteHandler,
+  postCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsReviewRouteHandler,
+  postCatalogsCatalogIdAutoLocalizationConfigsRouteHandler,
+  postCatalogsCatalogIdLocalInventoryItemsBatchRouteHandler,
+  postCatalogsCatalogIdLocalInventoryItemsQueryRouteHandler,
+  postCatalogsCatalogIdLocalStoresRouteHandler,
+  postCatalogsFeedsFeedIdIngestRouteHandler,
+  postCatalogsFeedsRouteHandler,
+  postCatalogsItemsBatchRouteHandler,
+  postCatalogsItemsRouteHandler,
+  postCatalogsProductGroupsMultipleRouteHandler,
+  postCatalogsProductGroupsRouteHandler,
+  postCatalogsProductsGetByProductGroupFiltersRouteHandler,
+  postCatalogsReportsRouteHandler,
+  postCatalogsRouteHandler,
+  postCatalogsSupplementalFeedsRouteHandler,
+  postCollaborativeCatalogsRouteHandler,
+  postIntegrationsCommerceRouteHandler,
+  postIntegrationsLogsRouteHandler,
+  postMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  postMediaRouteHandler,
+  postNotificationsRouteHandler,
+  postOauthConversionTokenRouteHandler,
+  postOauthTokenRevokeRouteHandler,
+  postOauthTokenRouteHandler,
+  postOverlayAssignmentRulesRouteHandler,
+  postOverlaysRouteHandler,
+  postPinsPinIdProductTagsBulkDeleteRouteHandler,
+  postPinsPinIdProductTagsRouteHandler,
+  postPinsPinIdSaveRouteHandler,
+  postPinsRouteHandler,
+  postUserAccountFollowingUsernameRouteHandler,
+  postUserAccountWebsitesRouteHandler,
+  putCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRouteHandler,
+  putCatalogsCatalogIdCountryLocaleMappingRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', adAccountsHandler)
-  .route('/', advancedAuctionHandler)
-  .route('/', boardsHandler)
-  .route('/', businessAccessHandler)
-  .route('/', businessesHandler)
-  .route('/', catalogsHandler)
-  .route('/', collaborativeCatalogsHandler)
-  .route('/', integrationsHandler)
-  .route('/', mediaHandler)
-  .route('/', mediaLibraryHandler)
-  .route('/', merchantHandler)
-  .route('/', notificationsHandler)
-  .route('/', oauthHandler)
-  .route('/', overlayAssignmentRulesHandler)
-  .route('/', overlaysHandler)
-  .route('/', pinsHandler)
-  .route('/', resourcesHandler)
-  .route('/', searchHandler)
-  .route('/', termsHandler)
-  .route('/', trendsHandler)
-  .route('/', userAccountHandler)
-  .route('/', usersHandler)
+  .openapi(getAdAccountsRoute, getAdAccountsRouteHandler)
+  .openapi(postAdAccountsRoute, postAdAccountsRouteHandler)
+  .openapi(getAdAccountsEntityHistoryRoute, getAdAccountsEntityHistoryRouteHandler)
+  .openapi(getAdAccountsAdAccountIdRoute, getAdAccountsAdAccountIdRouteHandler)
+  .openapi(patchAdAccountsAdAccountIdAbTestsRoute, patchAdAccountsAdAccountIdAbTestsRouteHandler)
+  .openapi(getAdAccountsAdAccountIdAbTestsRoute, getAdAccountsAdAccountIdAbTestsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdAbTestsRoute, postAdAccountsAdAccountIdAbTestsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdAbTestsAbTestIdRoute,
+    getAdAccountsAdAccountIdAbTestsAbTestIdRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdAdGroupsRoute, getAdAccountsAdAccountIdAdGroupsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdAdGroupsRoute, postAdAccountsAdAccountIdAdGroupsRouteHandler)
+  .openapi(patchAdAccountsAdAccountIdAdGroupsRoute, patchAdAccountsAdAccountIdAdGroupsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAnalyticsRoute,
+    getAdAccountsAdAccountIdAdGroupsAnalyticsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdAdGroupsAudienceSizingRoute,
+    postAdAccountsAdAccountIdAdGroupsAudienceSizingRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRoute,
+    getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdRoute,
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRoute,
+    postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRoute,
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRoute,
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRoute,
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute,
+    getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute,
+    patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdAdPreviewsRoute,
+    postAdAccountsAdAccountIdAdPreviewsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdAdsRoute, getAdAccountsAdAccountIdAdsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdAdsRoute, postAdAccountsAdAccountIdAdsRouteHandler)
+  .openapi(patchAdAccountsAdAccountIdAdsRoute, patchAdAccountsAdAccountIdAdsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdAdsAnalyticsRoute,
+    getAdAccountsAdAccountIdAdsAnalyticsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdsTargetingAnalyticsRoute,
+    getAdAccountsAdAccountIdAdsTargetingAnalyticsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdAdsAdIdRoute, getAdAccountsAdAccountIdAdsAdIdRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdAdsCreditDiscountsRoute,
+    getAdAccountsAdAccountIdAdsCreditDiscountsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdAdsCreditRedeemRoute,
+    postAdAccountsAdAccountIdAdsCreditRedeemRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+    getAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+    postAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+    patchAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
+    deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAllowedDomainsRoute,
+    getAdAccountsAdAccountIdAllowedDomainsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdAnalyticsRoute, getAdAccountsAdAccountIdAnalyticsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdAudienceInsightsRoute,
+    getAdAccountsAdAccountIdAudienceInsightsRouteHandler,
+  )
+  .openapi(postAdAccountsAdAccountIdAudiencesRoute, postAdAccountsAdAccountIdAudiencesRouteHandler)
+  .openapi(getAdAccountsAdAccountIdAudiencesRoute, getAdAccountsAdAccountIdAudiencesRouteHandler)
+  .openapi(
+    patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRoute,
+    patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdAudiencesBusinessesSharedRoute,
+    patchAdAccountsAdAccountIdAudiencesBusinessesSharedRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAudiencesSharedAccountsRoute,
+    getAdAccountsAdAccountIdAudiencesSharedAccountsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdAudiencesAudienceIdRoute,
+    patchAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdAudiencesAudienceIdRoute,
+    getAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler,
+  )
+  .openapi(postAdAccountsAdAccountIdBidFloorRoute, postAdAccountsAdAccountIdBidFloorRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRoute,
+    getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdBillingInvoicesRoute,
+    getAdAccountsAdAccountIdBillingInvoicesRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdBillingProfilesRoute,
+    getAdAccountsAdAccountIdBillingProfilesRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdBulkDownloadRoute,
+    postAdAccountsAdAccountIdBulkDownloadRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdBulkUpsertRoute,
+    postAdAccountsAdAccountIdBulkUpsertRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdBulkBulkRequestIdRoute,
+    getAdAccountsAdAccountIdBulkBulkRequestIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCampaignAdPreviewRoute,
+    postAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCampaignAdPreviewRoute,
+    getAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdCampaignAdPreviewRoute,
+    deleteAdAccountsAdAccountIdCampaignAdPreviewRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdCampaignsRoute, getAdAccountsAdAccountIdCampaignsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdCampaignsRoute, postAdAccountsAdAccountIdCampaignsRouteHandler)
+  .openapi(
+    patchAdAccountsAdAccountIdCampaignsRoute,
+    patchAdAccountsAdAccountIdCampaignsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCampaignsAnalyticsRoute,
+    getAdAccountsAdAccountIdCampaignsAnalyticsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRoute,
+    postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRoute,
+    getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCampaignsCampaignIdRoute,
+    getAdAccountsAdAccountIdCampaignsCampaignIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionDeletionRequestsRoute,
+    getAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdConversionDeletionRequestsRoute,
+    postAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute,
+    getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute,
+    deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionEqsRoute,
+    getAdAccountsAdAccountIdConversionEqsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdConversionSegmentsRoute,
+    postAdAccountsAdAccountIdConversionSegmentsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute,
+    patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute,
+    deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdConversionTagsRoute,
+    postAdAccountsAdAccountIdConversionTagsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionTagsRoute,
+    getAdAccountsAdAccountIdConversionTagsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionTagsOcpmEligibleRoute,
+    getAdAccountsAdAccountIdConversionTagsOcpmEligibleRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionTagsPageVisitRoute,
+    getAdAccountsAdAccountIdConversionTagsPageVisitRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdConversionTagsConversionTagIdRoute,
+    getAdAccountsAdAccountIdConversionTagsConversionTagIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCustomerListsRoute,
+    getAdAccountsAdAccountIdCustomerListsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCustomerListsRoute,
+    postAdAccountsAdAccountIdCustomerListsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCustomerListsCustomerListIdRoute,
+    getAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdCustomerListsCustomerListIdRoute,
+    patchAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRoute,
+    postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRoute,
+    getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRoute,
+    postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdCustomerSegmentsRoute,
+    getAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdCustomerSegmentsRoute,
+    postAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdCustomerSegmentsRoute,
+    patchAdAccountsAdAccountIdCustomerSegmentsRouteHandler,
+  )
+  .openapi(postAdAccountsAdAccountIdEventsRoute, postAdAccountsAdAccountIdEventsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdInsightsAudiencesRoute,
+    getAdAccountsAdAccountIdInsightsAudiencesRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdKeywordsRoute, getAdAccountsAdAccountIdKeywordsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdKeywordsRoute, postAdAccountsAdAccountIdKeywordsRouteHandler)
+  .openapi(patchAdAccountsAdAccountIdKeywordsRoute, patchAdAccountsAdAccountIdKeywordsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdKeywordsMetricsRoute,
+    getAdAccountsAdAccountIdKeywordsMetricsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdLabelsRoute, getAdAccountsAdAccountIdLabelsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdLabelsRoute, postAdAccountsAdAccountIdLabelsRouteHandler)
+  .openapi(patchAdAccountsAdAccountIdLabelsRoute, patchAdAccountsAdAccountIdLabelsRouteHandler)
+  .openapi(
+    postAdAccountsAdAccountIdLabelsLabelIdApplyRoute,
+    postAdAccountsAdAccountIdLabelsLabelIdApplyRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdLabelsLabelIdRemoveRoute,
+    postAdAccountsAdAccountIdLabelsLabelIdRemoveRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdLeadFormsRoute, getAdAccountsAdAccountIdLeadFormsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdLeadFormsRoute, postAdAccountsAdAccountIdLeadFormsRouteHandler)
+  .openapi(
+    patchAdAccountsAdAccountIdLeadFormsRoute,
+    patchAdAccountsAdAccountIdLeadFormsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdLeadFormsLeadFormIdRoute,
+    getAdAccountsAdAccountIdLeadFormsLeadFormIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRoute,
+    postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdLeadsSubscriptionsRoute,
+    getAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdLeadsSubscriptionsRoute,
+    postAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute,
+    getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute,
+    deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdLeadsExportRoute,
+    postAdAccountsAdAccountIdLeadsExportRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdLeadsExportLeadsExportIdRoute,
+    getAdAccountsAdAccountIdLeadsExportLeadsExportIdRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdMmmReportsRoute, getAdAccountsAdAccountIdMmmReportsRouteHandler)
+  .openapi(
+    postAdAccountsAdAccountIdMmmReportsRoute,
+    postAdAccountsAdAccountIdMmmReportsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdMsotEventsRoute,
+    postAdAccountsAdAccountIdMsotEventsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdOrderLinesRoute, getAdAccountsAdAccountIdOrderLinesRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdOrderLinesOrderLineIdRoute,
+    getAdAccountsAdAccountIdOrderLinesOrderLineIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdPinsAnalyticsRoute,
+    getAdAccountsAdAccountIdPinsAnalyticsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdProductGroupPromotionsRoute,
+    postAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdProductGroupPromotionsRoute,
+    patchAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdProductGroupPromotionsRoute,
+    getAdAccountsAdAccountIdProductGroupPromotionsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRoute,
+    getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdProductGroupsAnalyticsRoute,
+    getAdAccountsAdAccountIdProductGroupsAnalyticsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdPromotionAppliedEntitiesRoute,
+    getAdAccountsAdAccountIdPromotionAppliedEntitiesRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdPromotionsRoute, getAdAccountsAdAccountIdPromotionsRouteHandler)
+  .openapi(
+    postAdAccountsAdAccountIdPromotionsRoute,
+    postAdAccountsAdAccountIdPromotionsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdPromotionsRoute,
+    patchAdAccountsAdAccountIdPromotionsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdPromotionsPromotionIdRoute,
+    getAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler,
+  )
+  .openapi(
+    deleteAdAccountsAdAccountIdPromotionsPromotionIdRoute,
+    deleteAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdPublisherBlocklistsRoute,
+    getAdAccountsAdAccountIdPublisherBlocklistsRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdPublisherBlocklistsRoute,
+    patchAdAccountsAdAccountIdPublisherBlocklistsRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdReportsRoute, getAdAccountsAdAccountIdReportsRouteHandler)
+  .openapi(postAdAccountsAdAccountIdReportsRoute, postAdAccountsAdAccountIdReportsRouteHandler)
+  .openapi(
+    getAdAccountsAdAccountIdReportsBrandCategorySkuRoute,
+    getAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdReportsBrandCategorySkuRoute,
+    postAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler,
+  )
+  .openapi(deleteAdAccountsAdAccountIdSandboxRoute, deleteAdAccountsAdAccountIdSandboxRouteHandler)
+  .openapi(getAdAccountsAdAccountIdSchedulesRoute, getAdAccountsAdAccountIdSchedulesRouteHandler)
+  .openapi(postAdAccountsAdAccountIdSchedulesRoute, postAdAccountsAdAccountIdSchedulesRouteHandler)
+  .openapi(
+    patchAdAccountsAdAccountIdSchedulesRoute,
+    patchAdAccountsAdAccountIdSchedulesRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdSsioAccountsRoute,
+    getAdAccountsAdAccountIdSsioAccountsRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdSsioInsertionOrdersRoute,
+    postAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdSsioInsertionOrdersRoute,
+    patchAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdSsioInsertionOrdersStatusRoute,
+    getAdAccountsAdAccountIdSsioInsertionOrdersStatusRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRoute,
+    getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdSsioOrderLinesRoute,
+    getAdAccountsAdAccountIdSsioOrderLinesRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdTargetingAnalyticsRoute,
+    getAdAccountsAdAccountIdTargetingAnalyticsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdTargetingTemplatesRoute,
+    getAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  )
+  .openapi(
+    postAdAccountsAdAccountIdTargetingTemplatesRoute,
+    postAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  )
+  .openapi(
+    patchAdAccountsAdAccountIdTargetingTemplatesRoute,
+    patchAdAccountsAdAccountIdTargetingTemplatesRouteHandler,
+  )
+  .openapi(getAdAccountsAdAccountIdTemplatesRoute, getAdAccountsAdAccountIdTemplatesRouteHandler)
+  .openapi(
+    postAdAccountsAdAccountIdTemplatesTemplateIdReportsRoute,
+    postAdAccountsAdAccountIdTemplatesTemplateIdReportsRouteHandler,
+  )
+  .openapi(
+    getAdAccountsAdAccountIdTermsOfServiceRoute,
+    getAdAccountsAdAccountIdTermsOfServiceRouteHandler,
+  )
+  .openapi(postAdvancedAuctionItemsGetRoute, postAdvancedAuctionItemsGetRouteHandler)
+  .openapi(postAdvancedAuctionItemsSubmitRoute, postAdvancedAuctionItemsSubmitRouteHandler)
+  .openapi(postBoardsRoute, postBoardsRouteHandler)
+  .openapi(getBoardsRoute, getBoardsRouteHandler)
+  .openapi(getBoardsBoardIdRoute, getBoardsBoardIdRouteHandler)
+  .openapi(deleteBoardsBoardIdRoute, deleteBoardsBoardIdRouteHandler)
+  .openapi(patchBoardsBoardIdRoute, patchBoardsBoardIdRouteHandler)
+  .openapi(getBoardsBoardIdPinsRoute, getBoardsBoardIdPinsRouteHandler)
+  .openapi(getBoardsBoardIdSectionsRoute, getBoardsBoardIdSectionsRouteHandler)
+  .openapi(postBoardsBoardIdSectionsRoute, postBoardsBoardIdSectionsRouteHandler)
+  .openapi(
+    deleteBoardsBoardIdSectionsSectionIdRoute,
+    deleteBoardsBoardIdSectionsSectionIdRouteHandler,
+  )
+  .openapi(
+    patchBoardsBoardIdSectionsSectionIdRoute,
+    patchBoardsBoardIdSectionsSectionIdRouteHandler,
+  )
+  .openapi(
+    getBoardsBoardIdSectionsSectionIdPinsRoute,
+    getBoardsBoardIdSectionsSectionIdPinsRouteHandler,
+  )
+  .openapi(
+    postBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsRoute,
+    postBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsRouteHandler,
+  )
+  .openapi(
+    patchBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsBrandAccountIdRoute,
+    patchBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccountsBrandAccountIdRouteHandler,
+  )
+  .openapi(
+    postBusinessAccessBusinessRmnInvitesBusinessRelationshipInviteIdAuthProcessActionRoute,
+    postBusinessAccessBusinessRmnInvitesBusinessRelationshipInviteIdAuthProcessActionRouteHandler,
+  )
+  .openapi(getBusinessesEmployersRoute, getBusinessesEmployersRouteHandler)
+  .openapi(patchBusinessesInvitesRoute, patchBusinessesInvitesRouteHandler)
+  .openapi(
+    getBusinessesBusinessIdAdAccountRequestsRoute,
+    getBusinessesBusinessIdAdAccountRequestsRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdAdAccountRequestsAcceptRoute,
+    postBusinessesBusinessIdAdAccountRequestsAcceptRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdAdAccountRequestsRejectRoute,
+    postBusinessesBusinessIdAdAccountRequestsRejectRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdAnalyticsRoute, getBusinessesBusinessIdAnalyticsRouteHandler)
+  .openapi(
+    getBusinessesBusinessIdAnalyticsAggregatedTimelineRoute,
+    getBusinessesBusinessIdAnalyticsAggregatedTimelineRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdAssetGroupsRoute,
+    postBusinessesBusinessIdAssetGroupsRouteHandler,
+  )
+  .openapi(
+    patchBusinessesBusinessIdAssetGroupsRoute,
+    patchBusinessesBusinessIdAssetGroupsRouteHandler,
+  )
+  .openapi(
+    deleteBusinessesBusinessIdAssetGroupsRoute,
+    deleteBusinessesBusinessIdAssetGroupsRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdAssetsRoute, getBusinessesBusinessIdAssetsRouteHandler)
+  .openapi(
+    getBusinessesBusinessIdAssetsAssetIdMembersRoute,
+    getBusinessesBusinessIdAssetsAssetIdMembersRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdAssetsAssetIdPartnersRoute,
+    getBusinessesBusinessIdAssetsAssetIdPartnersRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdAudiencesRoute, getBusinessesBusinessIdAudiencesRouteHandler)
+  .openapi(
+    patchBusinessesBusinessIdAudiencesAdAccountsSharedRoute,
+    patchBusinessesBusinessIdAudiencesAdAccountsSharedRouteHandler,
+  )
+  .openapi(
+    patchBusinessesBusinessIdAudiencesBusinessesSharedRoute,
+    patchBusinessesBusinessIdAudiencesBusinessesSharedRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdAudiencesSharedAccountsRoute,
+    getBusinessesBusinessIdAudiencesSharedAccountsRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdInvitesRoute, getBusinessesBusinessIdInvitesRouteHandler)
+  .openapi(postBusinessesBusinessIdInvitesRoute, postBusinessesBusinessIdInvitesRouteHandler)
+  .openapi(deleteBusinessesBusinessIdInvitesRoute, deleteBusinessesBusinessIdInvitesRouteHandler)
+  .openapi(
+    postBusinessesBusinessIdInvitesAssetsAccessRoute,
+    postBusinessesBusinessIdInvitesAssetsAccessRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdMembersRoute, getBusinessesBusinessIdMembersRouteHandler)
+  .openapi(deleteBusinessesBusinessIdMembersRoute, deleteBusinessesBusinessIdMembersRouteHandler)
+  .openapi(patchBusinessesBusinessIdMembersRoute, patchBusinessesBusinessIdMembersRouteHandler)
+  .openapi(
+    patchBusinessesBusinessIdMembersAssetsAccessRoute,
+    patchBusinessesBusinessIdMembersAssetsAccessRouteHandler,
+  )
+  .openapi(
+    deleteBusinessesBusinessIdMembersAssetsAccessRoute,
+    deleteBusinessesBusinessIdMembersAssetsAccessRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdMembersMemberIdAssetsRoute,
+    getBusinessesBusinessIdMembersMemberIdAssetsRouteHandler,
+  )
+  .openapi(getBusinessesBusinessIdPartnersRoute, getBusinessesBusinessIdPartnersRouteHandler)
+  .openapi(deleteBusinessesBusinessIdPartnersRoute, deleteBusinessesBusinessIdPartnersRouteHandler)
+  .openapi(
+    patchBusinessesBusinessIdPartnersAssetsRoute,
+    patchBusinessesBusinessIdPartnersAssetsRouteHandler,
+  )
+  .openapi(
+    deleteBusinessesBusinessIdPartnersAssetsRoute,
+    deleteBusinessesBusinessIdPartnersAssetsRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRoute,
+    postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRouteHandler,
+  )
+  .openapi(
+    patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
+    patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler,
+  )
+  .openapi(
+    deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
+    deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdPartnersPartnerIdAssetsRoute,
+    getBusinessesBusinessIdPartnersPartnerIdAssetsRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdRequestsAssetsAccessRoute,
+    postBusinessesBusinessIdRequestsAssetsAccessRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdRmnContractsContractIdRoute,
+    getBusinessesBusinessIdRmnContractsContractIdRouteHandler,
+  )
+  .openapi(
+    patchBusinessesBusinessIdRmnContractsContractIdProcessRoute,
+    patchBusinessesBusinessIdRmnContractsContractIdProcessRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRoute,
+    getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRouteHandler,
+  )
+  .openapi(
+    getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRoute,
+    getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRouteHandler,
+  )
+  .openapi(
+    postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute,
+    postBusinessesBusinessIdRmnPartnersPartnerIdInviteRouteHandler,
+  )
+  .openapi(
+    patchBusinessesBusinessIdSystemUsersSystemUserIdRoute,
+    patchBusinessesBusinessIdSystemUsersSystemUserIdRouteHandler,
+  )
+  .openapi(getCatalogsRoute, getCatalogsRouteHandler)
+  .openapi(postCatalogsRoute, postCatalogsRouteHandler)
+  .openapi(getCatalogsAvailableFilterValuesRoute, getCatalogsAvailableFilterValuesRouteHandler)
+  .openapi(getCatalogsFeedsRoute, getCatalogsFeedsRouteHandler)
+  .openapi(postCatalogsFeedsRoute, postCatalogsFeedsRouteHandler)
+  .openapi(getCatalogsFeedsFeedIdRoute, getCatalogsFeedsFeedIdRouteHandler)
+  .openapi(patchCatalogsFeedsFeedIdRoute, patchCatalogsFeedsFeedIdRouteHandler)
+  .openapi(deleteCatalogsFeedsFeedIdRoute, deleteCatalogsFeedsFeedIdRouteHandler)
+  .openapi(postCatalogsFeedsFeedIdIngestRoute, postCatalogsFeedsFeedIdIngestRouteHandler)
+  .openapi(
+    getCatalogsFeedsFeedIdProcessingResultsRoute,
+    getCatalogsFeedsFeedIdProcessingResultsRouteHandler,
+  )
+  .openapi(postCatalogsItemsRoute, postCatalogsItemsRouteHandler)
+  .openapi(postCatalogsItemsBatchRoute, postCatalogsItemsBatchRouteHandler)
+  .openapi(getCatalogsItemsBatchBatchIdRoute, getCatalogsItemsBatchBatchIdRouteHandler)
+  .openapi(
+    getCatalogsProcessingResultsProcessingResultIdItemIssuesRoute,
+    getCatalogsProcessingResultsProcessingResultIdItemIssuesRouteHandler,
+  )
+  .openapi(getCatalogsProductGroupsRoute, getCatalogsProductGroupsRouteHandler)
+  .openapi(postCatalogsProductGroupsRoute, postCatalogsProductGroupsRouteHandler)
+  .openapi(
+    deleteCatalogsProductGroupsMultipleRoute,
+    deleteCatalogsProductGroupsMultipleRouteHandler,
+  )
+  .openapi(postCatalogsProductGroupsMultipleRoute, postCatalogsProductGroupsMultipleRouteHandler)
+  .openapi(
+    getCatalogsProductGroupsProductGroupIdRoute,
+    getCatalogsProductGroupsProductGroupIdRouteHandler,
+  )
+  .openapi(
+    patchCatalogsProductGroupsProductGroupIdRoute,
+    patchCatalogsProductGroupsProductGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteCatalogsProductGroupsProductGroupIdRoute,
+    deleteCatalogsProductGroupsProductGroupIdRouteHandler,
+  )
+  .openapi(
+    getCatalogsProductGroupsProductGroupIdProductCountsRoute,
+    getCatalogsProductGroupsProductGroupIdProductCountsRouteHandler,
+  )
+  .openapi(
+    getCatalogsProductGroupsProductGroupIdProductsRoute,
+    getCatalogsProductGroupsProductGroupIdProductsRouteHandler,
+  )
+  .openapi(
+    postCatalogsProductsGetByProductGroupFiltersRoute,
+    postCatalogsProductsGetByProductGroupFiltersRouteHandler,
+  )
+  .openapi(getCatalogsReportsRoute, getCatalogsReportsRouteHandler)
+  .openapi(postCatalogsReportsRoute, postCatalogsReportsRouteHandler)
+  .openapi(getCatalogsReportsStatsRoute, getCatalogsReportsStatsRouteHandler)
+  .openapi(getCatalogsSupplementalFeedsRoute, getCatalogsSupplementalFeedsRouteHandler)
+  .openapi(postCatalogsSupplementalFeedsRoute, postCatalogsSupplementalFeedsRouteHandler)
+  .openapi(getCatalogsSupplementalFeedsFeedIdRoute, getCatalogsSupplementalFeedsFeedIdRouteHandler)
+  .openapi(
+    patchCatalogsSupplementalFeedsFeedIdRoute,
+    patchCatalogsSupplementalFeedsFeedIdRouteHandler,
+  )
+  .openapi(
+    deleteCatalogsSupplementalFeedsFeedIdRoute,
+    deleteCatalogsSupplementalFeedsFeedIdRouteHandler,
+  )
+  .openapi(patchCatalogsCatalogIdRoute, patchCatalogsCatalogIdRouteHandler)
+  .openapi(
+    postCatalogsCatalogIdAutoLocalizationConfigsRoute,
+    postCatalogsCatalogIdAutoLocalizationConfigsRouteHandler,
+  )
+  .openapi(
+    getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute,
+    getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRouteHandler,
+  )
+  .openapi(
+    putCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute,
+    putCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRouteHandler,
+  )
+  .openapi(
+    getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsRoute,
+    getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsRouteHandler,
+  )
+  .openapi(
+    postCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsReviewRoute,
+    postCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsReviewRouteHandler,
+  )
+  .openapi(
+    getCatalogsCatalogIdCountryLocaleMappingRoute,
+    getCatalogsCatalogIdCountryLocaleMappingRouteHandler,
+  )
+  .openapi(
+    putCatalogsCatalogIdCountryLocaleMappingRoute,
+    putCatalogsCatalogIdCountryLocaleMappingRouteHandler,
+  )
+  .openapi(
+    deleteCatalogsCatalogIdCountryLocaleMappingRoute,
+    deleteCatalogsCatalogIdCountryLocaleMappingRouteHandler,
+  )
+  .openapi(
+    postCatalogsCatalogIdLocalInventoryItemsBatchRoute,
+    postCatalogsCatalogIdLocalInventoryItemsBatchRouteHandler,
+  )
+  .openapi(
+    postCatalogsCatalogIdLocalInventoryItemsQueryRoute,
+    postCatalogsCatalogIdLocalInventoryItemsQueryRouteHandler,
+  )
+  .openapi(getCatalogsCatalogIdLocalStoresRoute, getCatalogsCatalogIdLocalStoresRouteHandler)
+  .openapi(postCatalogsCatalogIdLocalStoresRoute, postCatalogsCatalogIdLocalStoresRouteHandler)
+  .openapi(patchCatalogsCatalogIdLocalStoresRoute, patchCatalogsCatalogIdLocalStoresRouteHandler)
+  .openapi(deleteCatalogsCatalogIdLocalStoresRoute, deleteCatalogsCatalogIdLocalStoresRouteHandler)
+  .openapi(
+    getCatalogsCatalogIdSupplementalItemsBatchBatchIdRoute,
+    getCatalogsCatalogIdSupplementalItemsBatchBatchIdRouteHandler,
+  )
+  .openapi(postCollaborativeCatalogsRoute, postCollaborativeCatalogsRouteHandler)
+  .openapi(getIntegrationsRoute, getIntegrationsRouteHandler)
+  .openapi(postIntegrationsCommerceRoute, postIntegrationsCommerceRouteHandler)
+  .openapi(
+    getIntegrationsCommerceExternalBusinessIdRoute,
+    getIntegrationsCommerceExternalBusinessIdRouteHandler,
+  )
+  .openapi(
+    patchIntegrationsCommerceExternalBusinessIdRoute,
+    patchIntegrationsCommerceExternalBusinessIdRouteHandler,
+  )
+  .openapi(
+    deleteIntegrationsCommerceExternalBusinessIdRoute,
+    deleteIntegrationsCommerceExternalBusinessIdRouteHandler,
+  )
+  .openapi(postIntegrationsLogsRoute, postIntegrationsLogsRouteHandler)
+  .openapi(getIntegrationsIdRoute, getIntegrationsIdRouteHandler)
+  .openapi(getMediaRoute, getMediaRouteHandler)
+  .openapi(postMediaRoute, postMediaRouteHandler)
+  .openapi(getMediaMediaIdRoute, getMediaMediaIdRouteHandler)
+  .openapi(
+    getMediaLibraryBusinessesBusinessIdAssetsRoute,
+    getMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  )
+  .openapi(
+    postMediaLibraryBusinessesBusinessIdAssetsRoute,
+    postMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  )
+  .openapi(
+    patchMediaLibraryBusinessesBusinessIdAssetsRoute,
+    patchMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  )
+  .openapi(
+    deleteMediaLibraryBusinessesBusinessIdAssetsRoute,
+    deleteMediaLibraryBusinessesBusinessIdAssetsRouteHandler,
+  )
+  .openapi(
+    getMediaLibraryBusinessesBusinessIdAssetsAssetIdRoute,
+    getMediaLibraryBusinessesBusinessIdAssetsAssetIdRouteHandler,
+  )
+  .openapi(getMerchantMerchantIdStatusRoute, getMerchantMerchantIdStatusRouteHandler)
+  .openapi(postNotificationsRoute, postNotificationsRouteHandler)
+  .openapi(postOauthConversionTokenRoute, postOauthConversionTokenRouteHandler)
+  .openapi(postOauthTokenRoute, postOauthTokenRouteHandler)
+  .openapi(postOauthTokenRevokeRoute, postOauthTokenRevokeRouteHandler)
+  .openapi(getOverlayAssignmentRulesRoute, getOverlayAssignmentRulesRouteHandler)
+  .openapi(postOverlayAssignmentRulesRoute, postOverlayAssignmentRulesRouteHandler)
+  .openapi(getOverlayAssignmentRulesIdRoute, getOverlayAssignmentRulesIdRouteHandler)
+  .openapi(patchOverlayAssignmentRulesIdRoute, patchOverlayAssignmentRulesIdRouteHandler)
+  .openapi(deleteOverlayAssignmentRulesIdRoute, deleteOverlayAssignmentRulesIdRouteHandler)
+  .openapi(getOverlaysRoute, getOverlaysRouteHandler)
+  .openapi(postOverlaysRoute, postOverlaysRouteHandler)
+  .openapi(getOverlaysIdRoute, getOverlaysIdRouteHandler)
+  .openapi(patchOverlaysIdRoute, patchOverlaysIdRouteHandler)
+  .openapi(deleteOverlaysIdRoute, deleteOverlaysIdRouteHandler)
+  .openapi(postPinsRoute, postPinsRouteHandler)
+  .openapi(getPinsRoute, getPinsRouteHandler)
+  .openapi(getPinsAnalyticsRoute, getPinsAnalyticsRouteHandler)
+  .openapi(getPinsPinIdRoute, getPinsPinIdRouteHandler)
+  .openapi(patchPinsPinIdRoute, patchPinsPinIdRouteHandler)
+  .openapi(deletePinsPinIdRoute, deletePinsPinIdRouteHandler)
+  .openapi(getPinsPinIdAnalyticsRoute, getPinsPinIdAnalyticsRouteHandler)
+  .openapi(postPinsPinIdProductTagsRoute, postPinsPinIdProductTagsRouteHandler)
+  .openapi(getPinsPinIdProductTagsRoute, getPinsPinIdProductTagsRouteHandler)
+  .openapi(postPinsPinIdProductTagsBulkDeleteRoute, postPinsPinIdProductTagsBulkDeleteRouteHandler)
+  .openapi(postPinsPinIdSaveRoute, postPinsPinIdSaveRouteHandler)
+  .openapi(getResourcesAdAccountCountriesRoute, getResourcesAdAccountCountriesRouteHandler)
+  .openapi(getResourcesDeliveryMetricsRoute, getResourcesDeliveryMetricsRouteHandler)
+  .openapi(getResourcesLeadFormQuestionsRoute, getResourcesLeadFormQuestionsRouteHandler)
+  .openapi(getResourcesMetricsReadyStateRoute, getResourcesMetricsReadyStateRouteHandler)
+  .openapi(
+    getResourcesTargetingInterestsInterestIdRoute,
+    getResourcesTargetingInterestsInterestIdRouteHandler,
+  )
+  .openapi(getResourcesTargetingTargetingTypeRoute, getResourcesTargetingTargetingTypeRouteHandler)
+  .openapi(getSearchBoardsRoute, getSearchBoardsRouteHandler)
+  .openapi(getSearchPartnerPinsRoute, getSearchPartnerPinsRouteHandler)
+  .openapi(getSearchPinsRoute, getSearchPinsRouteHandler)
+  .openapi(getTermsRelatedRoute, getTermsRelatedRouteHandler)
+  .openapi(getTermsSuggestedRoute, getTermsSuggestedRouteHandler)
+  .openapi(getTrendsEditorialArticlesRoute, getTrendsEditorialArticlesRouteHandler)
+  .openapi(
+    getTrendsKeywordsRegionTopTrendTypeRoute,
+    getTrendsKeywordsRegionTopTrendTypeRouteHandler,
+  )
+  .openapi(getTrendsProductCategoriesDetailsRoute, getTrendsProductCategoriesDetailsRouteHandler)
+  .openapi(getTrendsProductCategoriesTrendingRoute, getTrendsProductCategoriesTrendingRouteHandler)
+  .openapi(getTrendsTopicsFeaturedRoute, getTrendsTopicsFeaturedRouteHandler)
+  .openapi(getUserAccountRoute, getUserAccountRouteHandler)
+  .openapi(getUserAccountAnalyticsRoute, getUserAccountAnalyticsRouteHandler)
+  .openapi(getUserAccountAnalyticsTopPinsRoute, getUserAccountAnalyticsTopPinsRouteHandler)
+  .openapi(
+    getUserAccountAnalyticsTopVideoPinsRoute,
+    getUserAccountAnalyticsTopVideoPinsRouteHandler,
+  )
+  .openapi(getUserAccountBusinessesRoute, getUserAccountBusinessesRouteHandler)
+  .openapi(getUserAccountFollowersRoute, getUserAccountFollowersRouteHandler)
+  .openapi(getUserAccountFollowingRoute, getUserAccountFollowingRouteHandler)
+  .openapi(getUserAccountFollowingBoardsRoute, getUserAccountFollowingBoardsRouteHandler)
+  .openapi(postUserAccountFollowingUsernameRoute, postUserAccountFollowingUsernameRouteHandler)
+  .openapi(getUserAccountWebsitesRoute, getUserAccountWebsitesRouteHandler)
+  .openapi(postUserAccountWebsitesRoute, postUserAccountWebsitesRouteHandler)
+  .openapi(deleteUserAccountWebsitesRoute, deleteUserAccountWebsitesRouteHandler)
+  .openapi(getUserAccountWebsitesVerificationRoute, getUserAccountWebsitesVerificationRouteHandler)
+  .openapi(getUsersUsernameInterestsFollowRoute, getUsersUsernameInterestsFollowRouteHandler)
 
 export default app

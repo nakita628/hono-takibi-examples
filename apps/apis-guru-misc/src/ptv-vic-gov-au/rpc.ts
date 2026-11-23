@@ -117,10 +117,12 @@ export async function getV3Outlets(
 }
 
 export async function getV3OutletsLocationLatitudeLongitude(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.v3.outlets.location[':latitude,:longitude'].$get(args, options))
+  return await parseResponse(
+    client.v3.outlets.location[':latitude,{longitude}'].$get(args, options),
+  )
 }
 
 export async function getV3PatternRunRunRefRouteTypeRouteType(
@@ -197,10 +199,10 @@ export async function getV3SearchSearchTerm(
 }
 
 export async function getV3StopsLocationLatitudeLongitude(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.v3.stops.location[':latitude,:longitude'].$get(args, options))
+  return await parseResponse(client.v3.stops.location[':latitude,{longitude}'].$get(args, options))
 }
 
 export async function getV3StopsRouteRouteIdRouteTypeRouteType(

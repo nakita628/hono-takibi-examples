@@ -6983,7 +6983,6 @@ const BankAccountErrorResponse = {
 
 const PostBankAccountResponse = {
   description: 'Returns a bank_account object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -7085,7 +7084,6 @@ const BillingGroupErrorResponse = {
 
 const PostBillingGroupResponse = {
   description: 'Returns a billing group object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -7279,7 +7277,6 @@ const AllBookletsResponse = {
 
 const PostBookletResponse = {
   description: 'Returns a booklet object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -7762,7 +7759,6 @@ const AllChecksResponse = {
 
 const PostCheckResponse = {
   description: 'Returns a check object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8176,7 +8172,6 @@ const AllLettersResponse = {
 
 const PostLetterResponse = {
   description: 'Returns a letter object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8327,7 +8322,6 @@ const AllPostcardsResponse = {
 
 const PostPostcardResponse = {
   description: 'Returns a postcard object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8337,7 +8331,6 @@ const PostPostcardResponse = {
 
 const PostResourceProofResponse = {
   description: 'Returns a resource proof object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8540,7 +8533,6 @@ const AllSelfMailersResponse = {
 
 const PostSelfMailerResponse = {
   description: 'Returns a self_mailer object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8742,7 +8734,6 @@ const AllSnapPacksResponse = {
 
 const PostSnapPackResponse = {
   description: 'Returns a snap_pack object',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -8762,7 +8753,6 @@ const TemplateErrorResponse = {
 
 const PostTemplateVersionResponse = {
   description: 'Returns the template version with the given template and version ids.',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -9885,7 +9875,7 @@ export const getAccountsRoute = createRoute({
   summary: 'Get Lob Credits Balance',
   description: "Returns the account's current balance of Lob Credits.",
   operationId: 'get_lob_credits_balance',
-  responses: { 200: { description: 'Returns a lob_credits_balance object.', content: {} } },
+  responses: { 200: { description: 'Returns a lob_credits_balance object.' } },
 })
 
 export const getAddressesRoute = createRoute({
@@ -10390,7 +10380,7 @@ export const getBankAccountsBankIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a bank account object', content: {} },
+    200: { description: 'Returns a bank account object' },
     default: BankAccountErrorResponse,
   },
 })
@@ -10621,7 +10611,7 @@ export const getBillingGroupsBgIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a billing_group object.', content: {} },
+    200: { description: 'Returns a billing_group object.' },
     default: BillingGroupListErrorResponse,
   },
 })
@@ -10854,7 +10844,7 @@ export const getBillingGroupsRoute = createRoute({
       ),
   },
   responses: {
-    200: { description: 'Returns a list of billing_groups.', content: {} },
+    200: { description: 'Returns a list of billing_groups.' },
     default: BillingGroupListErrorResponse,
   },
 })
@@ -10918,10 +10908,7 @@ export const getBookletsBookletIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a booklet object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a booklet object' }, default: MailpieceErrorResponse },
 })
 
 export const deleteBookletsBookletIdRoute = createRoute({
@@ -11625,7 +11612,7 @@ export const getBuckslipsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a list of buckslip objects', content: {} },
+    200: { description: 'Returns a list of buckslip objects' },
     default: BuckslipErrorResponse,
   },
 })
@@ -11669,7 +11656,7 @@ export const postBuckslipsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Buckslip created successfully', content: {} },
+    200: { description: 'Buckslip created successfully' },
     default: BuckslipErrorResponse,
   },
 })
@@ -11695,10 +11682,7 @@ export const getBuckslipsBuckslipIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a buckslip object', content: {} },
-    default: BuckslipErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a buckslip object' }, default: BuckslipErrorResponse },
 })
 
 export const deleteBuckslipsBuckslipIdRoute = createRoute({
@@ -11827,10 +11811,7 @@ export const patchBuckslipsBuckslipIdRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Returns a buckslip object', content: {} },
-    default: BuckslipErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a buckslip object' }, default: BuckslipErrorResponse },
 })
 
 export const getBuckslipsBuckslipIdOrdersRoute = createRoute({
@@ -11855,10 +11836,7 @@ export const getBuckslipsBuckslipIdOrdersRoute = createRoute({
     query: z.object({ limit: LimitParamsSchema, offset: OffsetParamsSchema }),
   },
   responses: {
-    200: {
-      description: 'Returns the buckslip orders associated with the given buckslip id',
-      content: {},
-    },
+    200: { description: 'Returns the buckslip orders associated with the given buckslip id' },
     default: BuckslipOrderErrorResponse,
   },
 })
@@ -11930,7 +11908,7 @@ export const postBuckslipsBuckslipIdOrdersRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Buckslip order created successfully', content: {} },
+    200: { description: 'Buckslip order created successfully' },
     default: BuckslipErrorResponse,
   },
 })
@@ -12320,7 +12298,7 @@ export const postCampaignsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Campaign created successfully', content: {} },
+    200: { description: 'Campaign created successfully' },
     default: CampaignsErrorResponse,
   },
 })
@@ -12346,10 +12324,7 @@ export const getCampaignsCmpIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a campaign object', content: {} },
-    default: CampaignsErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a campaign object' }, default: CampaignsErrorResponse },
 })
 
 export const deleteCampaignsCmpIdRoute = createRoute({
@@ -12550,10 +12525,7 @@ export const patchCampaignsCmpIdRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Returns a campaign object', content: {} },
-    default: CampaignsErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a campaign object' }, default: CampaignsErrorResponse },
 })
 
 export const postCampaignsCmpIdSendRoute = createRoute({
@@ -12577,10 +12549,7 @@ export const postCampaignsCmpIdSendRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a campaign object', content: {} },
-    default: CampaignsErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a campaign object' }, default: CampaignsErrorResponse },
 })
 
 export const getCardsRoute = createRoute({
@@ -12599,7 +12568,7 @@ export const getCardsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a list of card objects', content: {} },
+    200: { description: 'Returns a list of card objects' },
     default: MailpieceErrorResponse,
   },
 })
@@ -12645,10 +12614,7 @@ export const postCardsRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Card created successfully', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Card created successfully' }, default: MailpieceErrorResponse },
 })
 
 export const getCardsCardIdRoute = createRoute({
@@ -12672,10 +12638,7 @@ export const getCardsCardIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a card object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a card object' }, default: MailpieceErrorResponse },
 })
 
 export const postCardsCardIdRoute = createRoute({
@@ -12780,10 +12743,7 @@ export const postCardsCardIdRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Returns a card object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a card object' }, default: MailpieceErrorResponse },
 })
 
 export const deleteCardsCardIdRoute = createRoute({
@@ -12832,7 +12792,7 @@ export const getCardsCardIdOrdersRoute = createRoute({
     query: z.object({ limit: LimitParamsSchema, offset: OffsetParamsSchema }),
   },
   responses: {
-    200: { description: 'Returns the card orders associated with the given card id', content: {} },
+    200: { description: 'Returns the card orders associated with the given card id' },
     default: CardOrderErrorResponse,
   },
 })
@@ -12900,7 +12860,7 @@ export const postCardsCardIdOrdersRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Card order created successfully', content: {} },
+    200: { description: 'Card order created successfully' },
     default: MailpieceErrorResponse,
   },
 })
@@ -13738,10 +13698,7 @@ export const getChecksChkIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a check object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a check object' }, default: MailpieceErrorResponse },
 })
 
 export const deleteChecksChkIdRoute = createRoute({
@@ -14040,7 +13997,7 @@ export const postCreativesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Creative created successfully', content: {} },
+    200: { description: 'Creative created successfully' },
     default: CreativesErrorResponse,
   },
 })
@@ -14066,10 +14023,7 @@ export const getCreativesCrvIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a creative object', content: {} },
-    default: CreativesErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a creative object' }, default: CreativesErrorResponse },
 })
 
 export const patchCreativesCrvIdRoute = createRoute({
@@ -14110,10 +14064,7 @@ export const patchCreativesCrvIdRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Returns a creative object', content: {} },
-    default: CreativesErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a creative object' }, default: CreativesErrorResponse },
 })
 
 export const postIdentityValidationRoute = createRoute({
@@ -14290,10 +14241,7 @@ export const postInformedDeliveryCampaignsRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'Creative created successfully', content: {} },
-    422: Writeable_422Response,
-  },
+  responses: { 200: { description: 'Creative created successfully' }, 422: Writeable_422Response },
 })
 
 export const getInformedDeliveryCampaignsUspsCampaignIdRoute = createRoute({
@@ -14318,7 +14266,7 @@ export const getInformedDeliveryCampaignsUspsCampaignIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a informed delivery campaign object', content: {} },
+    200: { description: 'Returns a informed delivery campaign object' },
     404: _404Response,
   },
 })
@@ -14448,7 +14396,7 @@ export const patchInformedDeliveryCampaignsUspsCampaignIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Returns an Informed Delivery campaign object', content: {} },
+    200: { description: 'Returns an Informed Delivery campaign object' },
     404: _404Response,
     422: Writeable_422Response,
   },
@@ -14581,10 +14529,7 @@ export const getLettersLtrIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a letter object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a letter object' }, default: MailpieceErrorResponse },
 })
 
 export const deleteLettersLtrIdRoute = createRoute({
@@ -15464,10 +15409,7 @@ export const getPostcardsPscIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a postcard object', content: {} },
-    default: MailpieceErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a postcard object' }, default: MailpieceErrorResponse },
 })
 
 export const deletePostcardsPscIdRoute = createRoute({
@@ -16336,9 +16278,7 @@ export const getQrCodeAnalyticsRoute = createRoute({
         }),
       ),
   },
-  responses: {
-    200: { description: 'Returns a list of QR Codes and their analytics.', content: {} },
-  },
+  responses: { 200: { description: 'Returns a list of QR Codes and their analytics.' } },
 })
 
 export const getDomainsDomainIdRoute = createRoute({
@@ -16733,7 +16673,7 @@ export const getResourceProofsResPrfIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a resource proof object', content: {} },
+    200: { description: 'Returns a resource proof object' },
     default: MailpieceErrorResponse,
   },
 })
@@ -16768,7 +16708,7 @@ export const patchResourceProofsResPrfIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Returns an updated resource proof object', content: {} },
+    200: { description: 'Returns an updated resource proof object' },
     default: MailpieceErrorResponse,
   },
 })
@@ -16823,7 +16763,7 @@ export const getSelfMailersSfmIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a self_mailer object', content: {} },
+    200: { description: 'Returns a self_mailer object' },
     default: MailpieceErrorResponse,
   },
 })
@@ -17506,7 +17446,7 @@ export const getSnapPacksSnapPackIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns a snap_pack object', content: {} },
+    200: { description: 'Returns a snap_pack object' },
     default: MailpieceErrorResponse,
   },
 })
@@ -17935,10 +17875,7 @@ export const getTemplatesTmplIdVersionsVrsnIdRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: 'Returns the template version with the given template and version ids.',
-      content: {},
-    },
+    200: { description: 'Returns the template version with the given template and version ids.' },
     default: TemplateErrorResponse,
   },
 })
@@ -18225,10 +18162,7 @@ export const getTemplatesTmplIdRoute = createRoute({
       }),
     }),
   },
-  responses: {
-    200: { description: 'Returns a template object', content: {} },
-    default: TemplateErrorResponse,
-  },
+  responses: { 200: { description: 'Returns a template object' }, default: TemplateErrorResponse },
 })
 
 export const postTemplatesTmplIdRoute = createRoute({
@@ -18272,7 +18206,6 @@ export const postTemplatesTmplIdRoute = createRoute({
   responses: {
     200: {
       description: 'Returns the updated template object',
-      content: {},
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
         'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -18481,7 +18414,6 @@ export const postTemplatesRoute = createRoute({
   responses: {
     200: {
       description: 'Returns a template object',
-      content: {},
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
         'ratelimit-remaining': RatelimitRemainingHeaderSchema,
@@ -18526,7 +18458,7 @@ export const postUploadsRoute = createRoute({
     body: { content: { 'application/json': { schema: UploadWritableSchema } }, required: true },
   },
   responses: {
-    201: { description: 'Upload created successfully', content: {} },
+    201: { description: 'Upload created successfully' },
     422: UploadValidationErrorResponse,
   },
 })
@@ -18553,7 +18485,7 @@ export const getUploadsUplIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returns an upload object', content: {} },
+    200: { description: 'Returns an upload object' },
     404: UploadNotFoundResponse,
     422: UploadValidationErrorResponse,
   },
@@ -18606,7 +18538,7 @@ export const patchUploadsUplIdRoute = createRoute({
     body: { content: { 'application/json': { schema: UploadUpdatableSchema } }, required: true },
   },
   responses: {
-    200: { description: 'Returns an upload object', content: {} },
+    200: { description: 'Returns an upload object' },
     404: UploadNotFoundResponse,
     422: UploadValidationErrorResponse,
   },

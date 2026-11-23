@@ -4,21 +4,21 @@ import { client } from './client'
 
 export async function getCargoGetRouteOriginDestinationFromDateProductCode(
   args: InferRequestType<
-    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.cargo.getRoute[':origin-:destination'][':fromDate'][':productCode'].$get(args, options),
+    client.cargo.getRoute[':origin-{destination}'][':fromDate'][':productCode'].$get(args, options),
   )
 }
 
 export async function getCargoShipmentTrackingAWBPrefixAWBNumber(
-  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>,
+  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.cargo.shipmentTracking[':aWBPrefix-:aWBNumber'].$get(args, options),
+    client.cargo.shipmentTracking[':aWBPrefix-{aWBNumber}'].$get(args, options),
   )
 }
 
@@ -112,12 +112,12 @@ export async function getReferencesAirlinesAirlineCode(
 
 export async function getReferencesAirportsNearestLatitudeLongitude(
   args: InferRequestType<
-    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.references.airports.nearest[':latitude,:longitude'].$get(args, options),
+    client.references.airports.nearest[':latitude,{longitude}'].$get(args, options),
   )
 }
 

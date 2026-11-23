@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShield20160616DescribeAttackStatisticsHandler = app.openapi(
-  postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShield20160616DescribeAttackStatisticsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

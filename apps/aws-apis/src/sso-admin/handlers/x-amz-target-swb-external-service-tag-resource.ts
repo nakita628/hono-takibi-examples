@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSWBExternalServiceTagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSWBExternalServiceTagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSwbExternalServiceTagResourceHandler = app.openapi(
-  postXAmzTargetSWBExternalServiceTagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSWBExternalServiceTagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetSWBExternalServiceTagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

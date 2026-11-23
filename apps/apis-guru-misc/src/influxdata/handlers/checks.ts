@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChecksCheckIDLabelsLabelIDRoute,
   deleteChecksCheckIDRoute,
   getChecksCheckIDLabelsRoute,
@@ -12,36 +12,58 @@ import {
   putChecksCheckIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChecksRouteHandler: RouteHandler<typeof getChecksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const checksHandler = app
-  .openapi(getChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChecksCheckIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecksCheckIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChecksCheckIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChecksCheckIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecksCheckIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChecksCheckIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChecksCheckIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecksCheckIDQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChecksRouteHandler: RouteHandler<typeof postChecksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChecksCheckIDRouteHandler: RouteHandler<
+  typeof deleteChecksCheckIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecksCheckIDRouteHandler: RouteHandler<typeof getChecksCheckIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChecksCheckIDRouteHandler: RouteHandler<typeof patchChecksCheckIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putChecksCheckIDRouteHandler: RouteHandler<typeof putChecksCheckIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecksCheckIDLabelsRouteHandler: RouteHandler<
+  typeof getChecksCheckIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChecksCheckIDLabelsRouteHandler: RouteHandler<
+  typeof postChecksCheckIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChecksCheckIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteChecksCheckIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecksCheckIDQueryRouteHandler: RouteHandler<
+  typeof getChecksCheckIDQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

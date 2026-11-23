@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueStartMlEvaluationTaskRunHandler = app.openapi(
-  postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueStartMLEvaluationTaskRunRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

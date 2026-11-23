@@ -10,46 +10,279 @@ const DateTimeSchema = z
   })
   .openapi('DateTime')
 
+const TransferTransferAccountCurrencySchema = z
+  .string()
+  .openapi({
+    description:
+      'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
+    examples: ['GBP', 'USD', 'EUR'],
+    title: 'Currency',
+    'x-internal': true,
+  })
+  .openapi('TransferTransferAccountCurrency')
+
+const AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItemsSchema = z
+  .object({
+    agedOutstandingAmounts: z
+      .array(
+        z
+          .object({
+            amount: z.number().exactOptional().openapi({ description: 'The amount outstanding.' }),
+            details: z
+              .array(
+                z
+                  .object({
+                    amount: z
+                      .number()
+                      .exactOptional()
+                      .openapi({ description: 'The amount outstanding.' }),
+                    name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Name of data type with outstanding amount for given period.',
+                      }),
+                  })
+                  .openapi({ title: 'Amounts outstanding by data type', required: [] }),
+              )
+              .exactOptional()
+              .openapi({ description: 'Array of details.' }),
+            fromDate: DateTimeSchema.exactOptional().openapi({
+              description: 'Start date of period.',
+            }),
+            toDate: DateTimeSchema.exactOptional().openapi({ description: 'End date of period.' }),
+          })
+          .openapi({ title: 'Aged outstanding amount', required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Array of outstanding amounts by period.' }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional(),
+  })
+  .openapi({ title: 'Aged currency outstanding', required: [] })
+  .openapi('AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems')
+
+const AgedCreditorReportAgedCreditorSchema = z
+  .object({
+    agedCurrencyOutstanding: z
+      .array(AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItemsSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of aged creditors by currency.' }),
+    supplierId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Supplier ID of the aged creditor.',
+        example: 'f594cefb-7750-4c3a-bab2-b5322026dee9',
+      }),
+    supplierName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Supplier name of the aged creditor.', example: 'John Doe' }),
+  })
+  .openapi({ title: 'Aged creditor', required: [] })
+  .openapi('AgedCreditorReportAgedCreditor')
+
 type AgedCreditorReportType = {
-  data?: {
-    agedCurrencyOutstanding?: {
-      agedOutstandingAmounts?: {
-        amount?: number
-        details?: { amount?: number; name?: string }[]
-        fromDate?: z.infer<typeof DateTimeSchema>
-        toDate?: z.infer<typeof DateTimeSchema>
-      }[]
-      currency?: string
-    }[]
-    supplierId?: string
-    supplierName?: string
-  }[]
+  data?: z.infer<typeof AgedCreditorReportAgedCreditorSchema>[]
   generated?: z.infer<typeof DateTimeSchema>
   reportDate?: z.infer<typeof DateTimeSchema>
 }
 
+const AgedDebtorReportAgedDebtorSchema = z
+  .object({
+    agedCurrencyOutstanding: z
+      .array(AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItemsSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of aged debtors by currency.' }),
+    customerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Customer ID of the aged debtor.',
+        example: 'f594cefb-7750-4c3a-bab2-b5322026dee9',
+      }),
+    customerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Customer name of the aged debtor.', example: 'John Doe' }),
+  })
+  .openapi({ title: 'Aged debtor', required: [] })
+  .openapi('AgedDebtorReportAgedDebtor')
+
 type AgedDebtorReportType = {
-  data?: {
-    agedCurrencyOutstanding?: {
-      agedOutstandingAmounts?: {
-        amount?: number
-        details?: { amount?: number; name?: string }[]
-        fromDate?: z.infer<typeof DateTimeSchema>
-        toDate?: z.infer<typeof DateTimeSchema>
-      }[]
-      currency?: string
-    }[]
-    customerId?: string
-    customerName?: string
-  }[]
+  data?: z.infer<typeof AgedDebtorReportAgedDebtorSchema>[]
   generated?: z.infer<typeof DateTimeSchema>
   reportDate?: z.infer<typeof DateTimeSchema>
 }
+
+const BillPaymentBillPaymentLineLinkCurrencyRateSchema = z
+  .number()
+  .nullable()
+  .openapi({
+    description:
+      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
+    title: 'Currency rate',
+  })
+  .openapi('BillPaymentBillPaymentLineLinkCurrencyRate')
+
+const AccountAccountRefSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: "'id' from the Accounts data type." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "'name' from the Accounts data type." }),
+  })
+  .openapi({
+    description:
+      'Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.',
+    title: 'Account reference',
+    required: [],
+  })
+  .openapi('AccountAccountRef')
+
+const ItemItemRefSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Unique identifier for the item in the accounting platform.' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the item in the accounting platform.' }),
+  })
+  .openapi({ required: ['id'], title: 'Item reference' })
+  .openapi('ItemItemRef')
+
+const TaxRateTaxRateRefSchema = z
+  .object({
+    effectiveTaxRate: z.number().exactOptional().openapi({ description: 'Applicable tax rate.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for the tax rate in the accounting platform.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
+  })
+  .openapi({
+    description:
+      'Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.\n\nFound on:\n\n- Bill line items\n- Bill Credit Note line items\n- Credit Note line items\n- Direct incomes line items\n- Invoice line items\n- Items',
+    title: 'Tax rate reference',
+    required: [],
+  })
+  .openapi('TaxRateTaxRateRef')
+
+const TrackingCategoryTrackingCategoryRefSchema = z
+  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
+  .openapi({
+    deprecated: true,
+    description: 'References a category against which the item is tracked.',
+    required: ['id'],
+  })
+  .openapi('TrackingCategoryTrackingCategoryRef')
+
+const CustomerCustomerRefSchema = z
+  .object({
+    companyName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '`customerName` from the Customer data type' }),
+    id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('CustomerCustomerRef')
+
+const BillCreditNoteBillCreditNoteLineItemTrackingBilledToTypeSchema = z
+  .enum(['Unknown', 'NotApplicable', 'Customer', 'Project'])
+  .openapi('BillCreditNoteBillCreditNoteLineItemTrackingBilledToType')
 
 const ProjectRefSchema = z
   .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
   .openapi({ required: ['id'], 'x-internal': true })
   .openapi('ProjectRef')
+
+const BillCreditNoteBillCreditNoteLineItemTrackingSchema = z
+  .object({
+    categoryRefs: z.array(TrackingCategoryTrackingCategoryRefSchema),
+    customerRef: CustomerCustomerRefSchema.exactOptional(),
+    isBilledTo: BillCreditNoteBillCreditNoteLineItemTrackingBilledToTypeSchema,
+    isRebilledTo: BillCreditNoteBillCreditNoteLineItemTrackingBilledToTypeSchema,
+    projectRef: ProjectRefSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Categories, and a project and customer, against which the item is tracked.',
+    required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
+    title: 'Tracking',
+    'x-stoplight': { id: '2158cacd7b329' },
+  })
+  .openapi('BillCreditNoteBillCreditNoteLineItemTracking')
+
+const BillCreditNoteBillCreditNoteLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional(),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Friendly name of each line item. For example, the goods or service for which credit has been received.',
+      }),
+    discountAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Value of any discounts applied.' }),
+    discountPercentage: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Percentage rate of any discount applied to the line item.' }),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description: 'Reference to the item the line is linked to.',
+    }),
+    quantity: z
+      .number()
+      .openapi({
+        description: 'Number of units of the goods or service for which credit has been received.',
+      }),
+    subTotal: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount of credit associated with the line item, including discounts but excluding tax.',
+      }),
+    taxAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of tax associated with the line item.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional(),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line item, including discounts and tax.' }),
+    tracking: BillCreditNoteBillCreditNoteLineItemTrackingSchema.exactOptional(),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Reference to the tracking categories to which the line item is linked.',
+      }),
+    unitAmount: z.number().openapi({ description: 'Unit price of the goods or service.' }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('BillCreditNoteBillCreditNoteLineItem')
 
 const MetadataSchema = z
   .object({
@@ -65,22 +298,112 @@ const MetadataSchema = z
   .openapi({ 'x-internal': true, required: [] })
   .openapi('Metadata')
 
-const ModifiedDatesSchema = z
+const BillAllOf0PaymentAllocationsItemsPaymentAllocationPaymentSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'The account that the allocated payment is made from or to.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency the payment has been made in.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    id: z.string().exactOptional().openapi({ description: 'Identifier of the allocated payment.' }),
+    note: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Notes attached to the allocated payment.' }),
+    paidOnDate: DateTimeSchema.exactOptional().openapi({
+      description: 'The date the payment was paid.',
+    }),
+    reference: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Reference to the allocated payment.' }),
+    totalAmount: z.number().exactOptional().openapi({ description: 'Total amount that was paid.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment')
+
+const BillAllOf0PaymentAllocationsItemsSchema = z
+  .object({
+    allocation: z
+      .object({
+        allocatedOnDate: DateTimeSchema.exactOptional().openapi({
+          description: 'The date the payment was allocated.',
+        }),
+        currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+          description: 'The currency of the transaction.',
+        }),
+        currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+        totalAmount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'The total amount that has been allocated.' }),
+      })
+      .openapi({ required: [] }),
+    payment: BillAllOf0PaymentAllocationsItemsPaymentAllocationPaymentSchema,
+  })
+  .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' })
+  .openapi('BillAllOf0PaymentAllocationsItems')
+
+const BillCreditNoteBillCreditNoteStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Submitted', 'Paid', 'Void', 'PartiallyPaid'])
+  .openapi({ description: 'Current state of the bill credit note' })
+  .openapi('BillCreditNoteBillCreditNoteStatus')
+
+const BillAllOf0SupplementalDataSchema = z
+  .object({
+    content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
+    required: [],
+  })
+  .openapi('BillAllOf0SupplementalData')
+
+const SupplierSupplierRefSchema = z
+  .object({
+    id: z.string().min(1).openapi({ description: "The supplier's unique ID" }),
+    supplierName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The supplier's name" }),
+  })
+  .openapi({
+    description: 'Reference to the supplier the record relates to.',
+    required: ['id'],
+    title: 'Supplier reference',
+  })
+  .openapi('SupplierSupplierRef')
+
+const BillAllOf0WithholdingTaxItemsSchema = z
+  .object({ amount: z.number(), name: z.string().min(1) })
+  .openapi({ required: ['amount', 'name'] })
+  .openapi('BillAllOf0WithholdingTaxItems')
+
+const ModifiedDatesAllOf0Schema = z
   .object({
     modifiedDate: DateTimeSchema.exactOptional().openapi({
       description: 'The date on which this record was last modified in Codat.',
     }),
   })
   .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] })
-  .and(
-    z
-      .object({
-        sourceModifiedDate: DateTimeSchema.exactOptional().openapi({
-          description: 'The date on which this record was last modified in the originating system',
-        }),
-      })
-      .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] }),
-  )
+  .openapi('ModifiedDatesAllOf0')
+
+const ModifiedDatesAllOf1Schema = z
+  .object({
+    sourceModifiedDate: DateTimeSchema.exactOptional().openapi({
+      description: 'The date on which this record was last modified in the originating system',
+    }),
+  })
+  .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] })
+  .openapi('ModifiedDatesAllOf1')
+
+const ModifiedDatesSchema = ModifiedDatesAllOf0Schema.and(ModifiedDatesAllOf1Schema)
   .openapi({ 'x-internal': true })
   .openapi('ModifiedDates')
 
@@ -94,24 +417,10 @@ const BillCreditNoteSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Friendly reference for the bill credit note.' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency of the bill credit note.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the bill credit note.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     discountPercentage: z
       .number()
       .exactOptional()
@@ -127,175 +436,7 @@ const BillCreditNoteSchema = z
       description: 'Date the bill credit note was issued by the supplier.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Friendly name of each line item. For example, the goods or service for which credit has been received.',
-              }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Value of any discounts applied.' }),
-            discountPercentage: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Percentage rate of any discount applied to the line item.',
-              }),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description: 'Reference to the item the line is linked to.',
-              }),
-            quantity: z
-              .number()
-              .openapi({
-                description:
-                  'Number of units of the goods or service for which credit has been received.',
-              }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Amount of credit associated with the line item, including discounts but excluding tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax associated with the line item.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.\n\nFound on:\n\n- Bill line items\n- Bill Credit Note line items\n- Credit Note line items\n- Direct incomes line items\n- Invoice line items\n- Items',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Total amount of the line item, including discounts and tax.',
-              }),
-            tracking: z
-              .object({
-                categoryRefs: z.array(
-                  z
-                    .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                    .openapi({
-                      deprecated: true,
-                      description: 'References a category against which the item is tracked.',
-                      required: ['id'],
-                    }),
-                ),
-                customerRef: z
-                  .object({
-                    companyName: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: '`customerName` from the Customer data type' }),
-                    id: z
-                      .string()
-                      .min(1)
-                      .openapi({ description: '`id` from the Customers data type' }),
-                  })
-                  .exactOptional()
-                  .openapi({ required: ['id'] }),
-                isBilledTo: z.enum(['Unknown', 'NotApplicable', 'Customer', 'Project']),
-                isRebilledTo: z.enum(['Unknown', 'NotApplicable', 'Customer', 'Project']),
-                projectRef: ProjectRefSchema.exactOptional(),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Categories, and a project and customer, against which the item is tracked.',
-                required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
-                title: 'Tracking',
-                'x-stoplight': { id: '2158cacd7b329' },
-              }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                deprecated: true,
-                description:
-                  'Reference to the tracking categories to which the line item is linked.',
-              }),
-            unitAmount: z.number().openapi({ description: 'Unit price of the goods or service.' }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
+      .array(BillCreditNoteBillCreditNoteLineItemSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of line ' }),
@@ -306,101 +447,7 @@ const BillCreditNoteSchema = z
       .exactOptional()
       .openapi({ description: 'Any additional information about the bill credit note.' }),
     paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
+      .array(BillAllOf0PaymentAllocationsItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of payment allocations.' }),
@@ -408,41 +455,15 @@ const BillCreditNoteSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Amount of the bill credit note that is still outstanding.' }),
-    status: z
-      .enum(['Unknown', 'Draft', 'Submitted', 'Paid', 'Void', 'PartiallyPaid'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the bill credit note' }),
+    status: BillCreditNoteBillCreditNoteStatusSchema.exactOptional(),
     subTotal: z
       .number()
       .exactOptional()
       .openapi({
         description: 'Total amount of the bill credit note, including discounts but excluding tax.',
       }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
-    supplierRef: z
-      .object({
-        id: z.string().min(1).openapi({ description: "The supplier's unique ID" }),
-        supplierName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The supplier's name" }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the supplier the record relates to.',
-        required: ['id'],
-        title: 'Supplier reference',
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
+    supplierRef: SupplierSupplierRefSchema.exactOptional(),
     totalAmount: z
       .number()
       .exactOptional()
@@ -458,14 +479,7 @@ const BillCreditNoteSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Amount of tax included in the bill credit note.' }),
-    withholdingTax: z
-      .array(
-        z
-          .object({ amount: z.number(), name: z.string().min(1) })
-          .openapi({ required: ['amount', 'name'] }),
-      )
-      .nullable()
-      .exactOptional(),
+    withholdingTax: z.array(BillAllOf0WithholdingTaxItemsSchema).nullable().exactOptional(),
   })
   .openapi({ required: [] })
   .and(
@@ -642,6 +656,89 @@ type BillCreditNotesType = { results?: z.infer<typeof BillCreditNoteSchema>[] } 
   typeof PagingInfoSchema
 >
 
+const BillBillLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Friendly name of the goods or services received.' }),
+    discountAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numerical value of any discounts applied.\n\nDo not use to apply discounts in Oracle NetSuite—see Oracle NetSuite integration reference.',
+      }),
+    discountPercentage: z.number().nullable().exactOptional(),
+    isDirectCost: z.boolean().exactOptional(),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description:
+        'Reference to the product, service type, or inventory item to which the line item is linked.',
+    }),
+    quantity: z.number().openapi({ description: 'Number of units of goods or services received.' }),
+    subTotal: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of the line, inclusive of discounts but exclusive of tax.' }),
+    taxAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of tax for the line.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line, including tax.' }),
+    tracking: BillCreditNoteBillCreditNoteLineItemTrackingSchema.exactOptional(),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Collection of categories against which this item is tracked.',
+      }),
+    unitAmount: z.number().openapi({ description: 'Price of each unit of goods or services.' }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('BillBillLineItem')
+
+const PurchaseOrderPurchaseOrderRefSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier for the purchase order, unique for the company in the accounting platform.',
+      }),
+    purchaseOrderNumber: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Friendly reference for the purchase order, commonly generated by the accounting platform.',
+      }),
+  })
+  .openapi({ title: 'Purchase order Reference', required: [] })
+  .openapi('PurchaseOrderPurchaseOrderRef')
+
+const BillBillStatusSchema = z
+  .enum(['Unknown', 'Open', 'PartiallyPaid', 'Paid', 'Void', 'Draft'])
+  .openapi({ description: 'Current state of the bill.' })
+  .openapi('BillBillStatus')
+
 const BillSchema = z
   .object({
     amountDue: z
@@ -649,26 +746,8 @@ const BillSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Amount outstanding on the bill.' }),
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      })
-      .nullable()
-      .exactOptional(),
-    currencyRate: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
+    currency: TransferTransferAccountCurrencySchema.nullable().exactOptional(),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     dueDate: DateTimeSchema.exactOptional().openapi({
       description: 'Date the supplier is due to be paid.',
     }),
@@ -682,164 +761,7 @@ const BillSchema = z
       description: 'Date of the bill as recorded in the accounting platform.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Friendly name of the goods or services received.' }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Numerical value of any discounts applied.\n\nDo not use to apply discounts in Oracle NetSuite—see Oracle NetSuite integration reference.',
-              }),
-            discountPercentage: z.number().nullable().exactOptional(),
-            isDirectCost: z.boolean().exactOptional(),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description:
-                  'Reference to the product, service type, or inventory item to which the line item is linked.',
-              }),
-            quantity: z
-              .number()
-              .openapi({ description: 'Number of units of goods or services received.' }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Amount of the line, inclusive of discounts but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax for the line.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Total amount of the line, including tax.' }),
-            tracking: z
-              .object({
-                categoryRefs: z.array(
-                  z
-                    .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                    .openapi({
-                      deprecated: true,
-                      description: 'References a category against which the item is tracked.',
-                      required: ['id'],
-                    }),
-                ),
-                customerRef: z
-                  .object({
-                    companyName: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: '`customerName` from the Customer data type' }),
-                    id: z
-                      .string()
-                      .min(1)
-                      .openapi({ description: '`id` from the Customers data type' }),
-                  })
-                  .exactOptional()
-                  .openapi({ required: ['id'] }),
-                isBilledTo: z.enum(['Unknown', 'NotApplicable', 'Customer', 'Project']),
-                isRebilledTo: z.enum(['Unknown', 'NotApplicable', 'Customer', 'Project']),
-                projectRef: ProjectRefSchema.exactOptional(),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Categories, and a project and customer, against which the item is tracked.',
-                required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
-                title: 'Tracking',
-                'x-stoplight': { id: '2158cacd7b329' },
-              }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                deprecated: true,
-                description: 'Collection of categories against which this item is tracked.',
-              }),
-            unitAmount: z
-              .number()
-              .openapi({ description: 'Price of each unit of goods or services.' }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
+      .array(BillBillLineItemSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'Array of Bill line items.' }),
@@ -852,179 +774,29 @@ const BillSchema = z
         description: 'Any private, company notes about the bill, such as payment information.',
       }),
     paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
+      .array(BillAllOf0PaymentAllocationsItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of payment allocations.' }),
-    purchaseOrderRefs: z
-      .array(
-        z
-          .strictObject({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Identifier for the purchase order, unique for the company in the accounting platform.',
-              }),
-            purchaseOrderNumber: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Friendly reference for the purchase order, commonly generated by the accounting platform.',
-              }),
-          })
-          .openapi({ title: 'Purchase order Reference', required: [] }),
-      )
-      .nullable()
-      .exactOptional(),
+    purchaseOrderRefs: z.array(PurchaseOrderPurchaseOrderRefSchema).nullable().exactOptional(),
     reference: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'User-friendly reference for the bill.' }),
-    status: z
-      .enum(['Unknown', 'Open', 'PartiallyPaid', 'Paid', 'Void', 'Draft'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the bill.' }),
+    status: BillBillStatusSchema.exactOptional(),
     subTotal: z
       .number()
       .exactOptional()
       .openapi({ description: 'Total amount of the bill, excluding any taxes.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
-    supplierRef: z
-      .object({
-        id: z.string().min(1).openapi({ description: "The supplier's unique ID" }),
-        supplierName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The supplier's name" }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the supplier the record relates to.',
-        required: ['id'],
-        title: 'Supplier reference',
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
+    supplierRef: SupplierSupplierRefSchema.exactOptional(),
     taxAmount: z.number().exactOptional().openapi({ description: 'Amount of tax on the bill.' }),
     totalAmount: z
       .number()
       .exactOptional()
       .openapi({ description: 'Amount of the bill, including tax.' }),
-    withholdingTax: z
-      .array(
-        z
-          .object({ amount: z.number(), name: z.string().min(1) })
-          .openapi({ required: ['amount', 'name'] }),
-      )
-      .nullable()
-      .exactOptional(),
+    withholdingTax: z.array(BillAllOf0WithholdingTaxItemsSchema).nullable().exactOptional(),
   })
   .openapi({ required: [] })
   .and(
@@ -1062,31 +834,95 @@ const BillSchema = z
 
 type BillsType = { results?: z.infer<typeof BillSchema>[] } & z.infer<typeof PagingInfoSchema>
 
-type CompanyDatasetType = {
-  accountingPlatformRef?: string | null
-  addresses?:
-    | {
-        city?: string | null
-        country?: string | null
-        line1?: string | null
-        line2?: string | null
-        postalCode?: string | null
-        region?: string | null
-        type: CompanyDatasetType
-      }[]
-    | null
-  baseCurrency?: string | null
-  companyLegalName?: string | null
-  companyName?: string | null
-  createdDate?: z.infer<typeof DateTimeSchema>
-  financialYearStartDate?: z.infer<typeof DateTimeSchema>
-  ledgerLockDate?: z.infer<typeof DateTimeSchema>
-  phoneNumbers?: { number: string | null; type: CompanyDatasetType }[] | null
-  registrationNumber?: string | null
-  sourceUrls?: { [key: string]: string | null } | null
-  taxNumber?: string | null
-  webLinks?: { type?: 'Website' | 'Social' | 'Unknown'; url?: string }[] | null
-}
+const CreditNoteCreditNoteLineItemTrackingBilledToTypeSchema = z
+  .enum(['Unknown', 'NotApplicable', 'Project'])
+  .openapi('CreditNoteCreditNoteLineItemTrackingBilledToType')
+
+const CreditNoteCreditNoteLineItemTrackingSchema = z
+  .object({
+    categoryRefs: z.array(TrackingCategoryTrackingCategoryRefSchema),
+    customerRef: CustomerCustomerRefSchema.exactOptional(),
+    isBilledTo: CreditNoteCreditNoteLineItemTrackingBilledToTypeSchema,
+    isRebilledTo: CreditNoteCreditNoteLineItemTrackingBilledToTypeSchema,
+    projectRef: ProjectRefSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Categories, and a project and customer, against which the item is tracked.',
+    required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
+    title: 'Tracking',
+  })
+  .openapi('CreditNoteCreditNoteLineItemTracking')
+
+const CreditNoteCreditNoteLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Friendly name of each line item. For example, the goods or service for which credit has been issued.',
+      }),
+    discountAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Value of any discounts applied.' }),
+    discountPercentage: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Percentage rate of any discount applied to the line item.' }),
+    isDirectIncome: z.boolean().exactOptional(),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description: 'Reference to the item the line is linked to.',
+    }),
+    quantity: z
+      .number()
+      .openapi({
+        description: 'Number of units of the goods or service for which credit has been issued.',
+      }),
+    subTotal: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount of credit associated with the line item, including discounts but excluding tax.',
+      }),
+    taxAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of tax associated with the line item.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line item, including discounts and tax.' }),
+    tracking: CreditNoteCreditNoteLineItemTrackingSchema.exactOptional(),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Reference to the tracking categories to which the line item is linked.',
+      }),
+    unitAmount: z.number().openapi({ description: 'Unit price of the goods or service.' }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('CreditNoteCreditNoteLineItem')
+
+const CreditNoteCreditNoteStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Submitted', 'Paid', 'Void', 'PartiallyPaid'])
+  .openapi('CreditNoteCreditNoteStatus')
 
 const CreditNoteSchema = z
   .object({
@@ -1100,38 +936,13 @@ const CreditNoteSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Friendly reference for the credit note.' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency of the credit note.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
-    customerRef: z
-      .object({
-        companyName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`customerName` from the Customer data type' }),
-        id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
-      })
-      .exactOptional()
-      .openapi({
-        required: ['id'],
-        description: 'Reference to the customer the credit note has been issued to.',
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the credit note.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    customerRef: CustomerCustomerRefSchema.exactOptional().openapi({
+      description: 'Reference to the customer the credit note has been issued to.',
+    }),
     discountPercentage: z
       .number()
       .exactOptional()
@@ -1148,176 +959,7 @@ const CreditNoteSchema = z
     issueDate: DateTimeSchema.exactOptional().openapi({
       description: 'Date of the credit note as recorded in the accounting system.',
     }),
-    lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Friendly name of each line item. For example, the goods or service for which credit has been issued.',
-              }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Value of any discounts applied.' }),
-            discountPercentage: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Percentage rate of any discount applied to the line item.',
-              }),
-            isDirectIncome: z.boolean().exactOptional(),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description: 'Reference to the item the line is linked to.',
-              }),
-            quantity: z
-              .number()
-              .openapi({
-                description:
-                  'Number of units of the goods or service for which credit has been issued.',
-              }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Amount of credit associated with the line item, including discounts but excluding tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax associated with the line item.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Total amount of the line item, including discounts and tax.',
-              }),
-            tracking: z
-              .object({
-                categoryRefs: z.array(
-                  z
-                    .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                    .openapi({
-                      deprecated: true,
-                      description: 'References a category against which the item is tracked.',
-                      required: ['id'],
-                    }),
-                ),
-                customerRef: z
-                  .object({
-                    companyName: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: '`customerName` from the Customer data type' }),
-                    id: z
-                      .string()
-                      .min(1)
-                      .openapi({ description: '`id` from the Customers data type' }),
-                  })
-                  .exactOptional()
-                  .openapi({ required: ['id'] }),
-                isBilledTo: z.enum(['Unknown', 'NotApplicable', 'Project']),
-                isRebilledTo: z.enum(['Unknown', 'NotApplicable', 'Project']),
-                projectRef: ProjectRefSchema.exactOptional(),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Categories, and a project and customer, against which the item is tracked.',
-                required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
-                title: 'Tracking',
-              }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                deprecated: true,
-                description:
-                  'Reference to the tracking categories to which the line item is linked.',
-              }),
-            unitAmount: z.number().openapi({ description: 'Unit price of the goods or service.' }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
-      .nullable()
-      .exactOptional(),
+    lineItems: z.array(CreditNoteCreditNoteLineItemSchema).nullable().exactOptional(),
     metadata: MetadataSchema.exactOptional(),
     note: z
       .string()
@@ -1328,101 +970,7 @@ const CreditNoteSchema = z
           'Any additional information about the credit note. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when a credit note is emailed from the accounting platform to the customer.',
       }),
     paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
+      .array(BillAllOf0PaymentAllocationsItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of payment allocations.' }),
@@ -1430,24 +978,14 @@ const CreditNoteSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Unused balance of totalAmount originally raised.' }),
-    status: z
-      .enum(['Unknown', 'Draft', 'Submitted', 'Paid', 'Void', 'PartiallyPaid'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the credit note.' }),
+    status: CreditNoteCreditNoteStatusSchema.exactOptional().openapi({
+      description: 'Current state of the credit note.',
+    }),
     subTotal: z
       .number()
       .exactOptional()
       .openapi({ description: 'Value of the credit note, including discounts and excluding tax.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     totalAmount: z
       .number()
       .exactOptional()
@@ -1463,14 +1001,7 @@ const CreditNoteSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Any tax applied to the credit note amount.' }),
-    withholdingTax: z
-      .array(
-        z
-          .object({ amount: z.number(), name: z.string().min(1) })
-          .openapi({ required: ['amount', 'name'] }),
-      )
-      .nullable()
-      .exactOptional(),
+    withholdingTax: z.array(BillAllOf0WithholdingTaxItemsSchema).nullable().exactOptional(),
   })
   .openapi({ required: [] })
   .and(
@@ -1576,33 +1107,113 @@ type CreditNotesType = { results?: z.infer<typeof CreditNoteSchema>[] } & z.infe
   typeof PagingInfoSchema
 >
 
-const DirectCostSchema = z
+const TransferAllOf0ContactRefSchema = z
+  .object({ dataType: z.string().nullable().exactOptional(), id: z.string().min(1) })
+  .openapi({
+    description: 'The customer or supplier for the transfer, if available.',
+    required: ['id'],
+  })
+  .openapi('TransferAllOf0ContactRef')
+
+const DirectCostTrackingInvoiceToSchema = z
   .object({
-    contactRef: z
-      .object({ dataType: z.string().nullable().exactOptional(), id: z.string().min(1) })
-      .exactOptional()
-      .openapi({
-        description: 'A customer or supplier associated with the direct cost.',
-        required: ['id'],
-      }),
-    currency: z
+    dataType: z.string().exactOptional().openapi({ description: "Name of the 'dataType'." }),
+    id: z
       .string()
       .exactOptional()
-      .openapi({
-        description: 'Currency of the direct cost.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
+      .openapi({ description: "'id' of the underlying record or data type." }),
+  })
+  .openapi({
+    description:
+      'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
+    required: [],
+  })
+  .openapi('DirectCostTrackingInvoiceTo')
+
+const DirectCostTrackingSchema = z
+  .strictObject({
+    invoiceTo: DirectCostTrackingInvoiceToSchema.exactOptional(),
+    recordRefs: z.array(DirectCostTrackingInvoiceToSchema),
+  })
+  .openapi({ required: ['recordRefs'], title: 'Invoiceable tracking' })
+  .openapi('DirectCostTracking')
+
+const DirectCostDirectCostLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Friendly name of the goods or services.' }),
+    discountAmount: z
       .number()
       .nullable()
       .exactOptional()
+      .openapi({ description: 'Discount amount for the line before tax.' }),
+    discountPercentage: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Discount percentage for the line before tax.' }),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description:
+        'Reference to the product, service type, or inventory item to which the direct cost is linked.',
+    }),
+    quantity: z
+      .number()
       .openapi({
         description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
+          'Number of units of goods or services received.\n\nNote: If the platform does not provide this information, the quantity will be mapped as 1.',
       }),
+    subTotal: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of the line, inclusive of discounts but exclusive of tax.' }),
+    taxAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of tax for the line.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line, including tax.' }),
+    tracking: DirectCostTrackingSchema.exactOptional(),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Collection of categories against which this direct cost is tracked.',
+      }),
+    unitAmount: z
+      .number()
+      .openapi({
+        description:
+          'Price of each unit of goods or services.\nNote: If the platform does not provide this information, the unit amount will be mapped to the total amount.',
+      }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('DirectCostDirectCostLineItem')
+
+const DirectCostSchema = z
+  .object({
+    contactRef: TransferAllOf0ContactRefSchema.exactOptional().openapi({
+      description: 'A customer or supplier associated with the direct cost.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the direct cost.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     id: z
       .string()
       .exactOptional()
@@ -1612,173 +1223,7 @@ const DirectCostSchema = z
         'Date of the direct cost as recorded in the accounting platform.Date of the direct cost as recorded in the accounting platform.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Friendly name of the goods or services.' }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Discount amount for the line before tax.' }),
-            discountPercentage: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Discount percentage for the line before tax.' }),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description:
-                  'Reference to the product, service type, or inventory item to which the direct cost is linked.',
-              }),
-            quantity: z
-              .number()
-              .openapi({
-                description:
-                  'Number of units of goods or services received.\n\nNote: If the platform does not provide this information, the quantity will be mapped as 1.',
-              }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Amount of the line, inclusive of discounts but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax for the line.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Total amount of the line, including tax.' }),
-            tracking: z
-              .strictObject({
-                invoiceTo: z
-                  .object({
-                    dataType: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "Name of the 'dataType'." }),
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' of the underlying record or data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
-                    required: [],
-                  }),
-                recordRefs: z.array(
-                  z
-                    .object({
-                      dataType: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: "Name of the 'dataType'." }),
-                      id: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: "'id' of the underlying record or data type." }),
-                    })
-                    .openapi({
-                      description:
-                        'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
-                      required: [],
-                    }),
-                ),
-              })
-              .exactOptional()
-              .openapi({ required: ['recordRefs'], title: 'Invoiceable tracking' }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                deprecated: true,
-                description: 'Collection of categories against which this direct cost is tracked.',
-              }),
-            unitAmount: z
-              .number()
-              .openapi({
-                description:
-                  'Price of each unit of goods or services.\nNote: If the platform does not provide this information, the unit amount will be mapped to the total amount.',
-              }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
+      .array(DirectCostDirectCostLineItemSchema)
       .exactOptional()
       .openapi({ description: 'An array of line items.' }),
     metadata: MetadataSchema.exactOptional(),
@@ -1788,101 +1233,7 @@ const DirectCostSchema = z
       .exactOptional()
       .openapi({ description: 'A note attached to the direct cost.' }),
     paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
+      .array(BillAllOf0PaymentAllocationsItemsSchema)
       .exactOptional()
       .openapi({ description: 'An array of payment allocations.' }),
     reference: z
@@ -1894,16 +1245,7 @@ const DirectCostSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'The total amount of the direct costs, excluding any taxes.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     taxAmount: z
       .number()
       .exactOptional()
@@ -1975,6 +1317,76 @@ type DirectCostsType = { results?: z.infer<typeof DirectCostSchema>[] } & z.infe
   typeof PagingInfoSchema
 >
 
+const InvoiceInvoiceLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Friendly name of the goods or services provided.' }),
+    discountAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Numerical value of any discounts applied.' }),
+    discountPercentage: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
+      }),
+    isDirectIncome: z.boolean().exactOptional(),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description: 'Reference to the item the line is linked to.',
+    }),
+    quantity: z.number().openapi({ description: 'Number of units of goods or services provided.' }),
+    subTotal: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of the line, inclusive of discounts but exclusive of tax.' }),
+    taxAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount of tax for the line.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total amount of the line, including tax. When pushing invoices to Xero, the total amount is exclusive of tax to allow automatic calculations if a tax rate or tax amount is not specified.',
+      }),
+    tracking: CreditNoteCreditNoteLineItemTrackingSchema.exactOptional(),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Reference to the tracking categories to which the line item is linked.',
+      }),
+    unitAmount: z.number().openapi({ description: 'Price of each unit of goods or services.' }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('InvoiceInvoiceLineItem')
+
+const InvoiceInvoiceStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Submitted', 'PartiallyPaid', 'Paid', 'Void'])
+  .openapi({
+    description:
+      "Current state of the invoice:\n\n- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.\n- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).\n- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).\n- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).\n- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.",
+  })
+  .openapi('InvoiceInvoiceStatus')
+
 const InvoiceSchema = z
   .object({
     additionalTaxAmount: z.number().exactOptional(),
@@ -1983,38 +1395,13 @@ const InvoiceSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Amount outstanding on the invoice.' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency of the invoice.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
-    customerRef: z
-      .object({
-        companyName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`customerName` from the Customer data type' }),
-        id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
-      })
-      .exactOptional()
-      .openapi({
-        required: ['id'],
-        description: 'Reference to the customer the invoice has been issued to.',
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the invoice.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    customerRef: CustomerCustomerRefSchema.exactOptional().openapi({
+      description: 'Reference to the customer the invoice has been issued to.',
+    }),
     discountPercentage: z
       .number()
       .nullable()
@@ -2045,170 +1432,7 @@ const InvoiceSchema = z
       description: 'Date of the invoice as recorded in the accounting system.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Friendly name of the goods or services provided.' }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Numerical value of any discounts applied.' }),
-            discountPercentage: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
-              }),
-            isDirectIncome: z.boolean().exactOptional(),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description: 'Reference to the item the line is linked to.',
-              }),
-            quantity: z
-              .number()
-              .openapi({ description: 'Number of units of goods or services provided.' }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Amount of the line, inclusive of discounts but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax for the line.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Total amount of the line, including tax. When pushing invoices to Xero, the total amount is exclusive of tax to allow automatic calculations if a tax rate or tax amount is not specified.',
-              }),
-            tracking: z
-              .object({
-                categoryRefs: z.array(
-                  z
-                    .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                    .openapi({
-                      deprecated: true,
-                      description: 'References a category against which the item is tracked.',
-                      required: ['id'],
-                    }),
-                ),
-                customerRef: z
-                  .object({
-                    companyName: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: '`customerName` from the Customer data type' }),
-                    id: z
-                      .string()
-                      .min(1)
-                      .openapi({ description: '`id` from the Customers data type' }),
-                  })
-                  .exactOptional()
-                  .openapi({ required: ['id'] }),
-                isBilledTo: z.enum(['Unknown', 'NotApplicable', 'Project']),
-                isRebilledTo: z.enum(['Unknown', 'NotApplicable', 'Project']),
-                projectRef: ProjectRefSchema.exactOptional(),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Categories, and a project and customer, against which the item is tracked.',
-                required: ['categoryRefs', 'isBilledTo', 'isRebilledTo'],
-                title: 'Tracking',
-              }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                deprecated: true,
-                description:
-                  'Reference to the tracking categories to which the line item is linked.',
-              }),
-            unitAmount: z
-              .number()
-              .openapi({ description: 'Price of each unit of goods or services.' }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
+      .array(InvoiceInvoiceLineItemSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of line items.' }),
@@ -2226,101 +1450,7 @@ const InvoiceSchema = z
         'Date the invoice was marked as paid in the accounting system. If this field is not available from the accounting software, it is calculated by Codat using associated payments.',
     }),
     paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
+      .array(BillAllOf0PaymentAllocationsItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of payment allocations.' }),
@@ -2329,28 +1459,13 @@ const InvoiceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'List of references to related Sales orders.' }),
-    status: z
-      .enum(['Unknown', 'Draft', 'Submitted', 'PartiallyPaid', 'Paid', 'Void'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Current state of the invoice:\n\n- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.\n- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).\n- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).\n- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).\n- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.",
-      }),
+    status: InvoiceInvoiceStatusSchema.exactOptional(),
     subTotal: z
       .number()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Total amount of the invoice excluding any taxes.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     totalAmount: z
       .number()
       .exactOptional()
@@ -2364,14 +1479,7 @@ const InvoiceSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Amount of tax on the invoice.' }),
-    withholdingTax: z
-      .array(
-        z
-          .object({ amount: z.number(), name: z.string().min(1) })
-          .openapi({ required: ['amount', 'name'] }),
-      )
-      .nullable()
-      .exactOptional(),
+    withholdingTax: z.array(BillAllOf0WithholdingTaxItemsSchema).nullable().exactOptional(),
   })
   .openapi({ required: [] })
   .and(
@@ -2409,6 +1517,56 @@ const InvoiceSchema = z
 
 type InvoicesType = { results?: z.infer<typeof InvoiceSchema>[] } & z.infer<typeof PagingInfoSchema>
 
+const SalesOrderSalesOrderLineItemTrackingSchema = z
+  .object({ recordRefs: z.array(DirectCostTrackingInvoiceToSchema).nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SalesOrderSalesOrderLineItemTracking')
+
+const JournalEntryJournalLineSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional(),
+    currency: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Currency for the journal line item.' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the journal line item.' }),
+    netAmount: z
+      .number()
+      .openapi({
+        description:
+          'Amount for the journal line. Debit entries are considered positive, and credit entries are considered negative.',
+      }),
+    tracking: SalesOrderSalesOrderLineItemTrackingSchema.exactOptional().openapi({
+      description:
+        'List of record refs associated with the tracking information for the line (eg to a Tracking Category, or customer etc.)',
+    }),
+  })
+  .openapi({ required: ['netAmount'] })
+  .openapi('JournalEntryJournalLine')
+
+const JournalJournalRefSchema = z
+  .strictObject({
+    id: z.string().min(1).openapi({ description: 'GUID of the underlying journal.' }),
+    name: z
+      .string()
+      .max(256)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of journal' }),
+  })
+  .openapi({
+    description:
+      'Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).',
+    required: ['id'],
+    title: 'Journal reference',
+  })
+  .openapi('JournalJournalRef')
+
 const JournalEntrySchema = z
   .object({
     createdOn: DateTimeSchema.exactOptional().openapi({
@@ -2427,125 +1585,18 @@ const JournalEntrySchema = z
           'Unique identifier of the journal entry for the company in the accounting platform.',
       }),
     journalLines: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.',
-                title: 'Account reference',
-                required: [],
-              }),
-            currency: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Currency for the journal line item.' }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Description of the journal line item.' }),
-            netAmount: z
-              .number()
-              .openapi({
-                description:
-                  'Amount for the journal line. Debit entries are considered positive, and credit entries are considered negative.',
-              }),
-            tracking: z
-              .object({
-                recordRefs: z
-                  .array(
-                    z
-                      .object({
-                        dataType: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "Name of the 'dataType'." }),
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "'id' of the underlying record or data type." }),
-                      })
-                      .openapi({
-                        description:
-                          'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
-                        required: [],
-                      }),
-                  )
-                  .nullable()
-                  .exactOptional(),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'List of record refs associated with the tracking information for the line (eg to a Tracking Category, or customer etc.)',
-                required: [],
-              }),
-          })
-          .openapi({ required: ['netAmount'] }),
-      )
+      .array(JournalEntryJournalLineSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of journal lines.' }),
-    journalRef: z
-      .strictObject({
-        id: z.string().min(1).openapi({ description: 'GUID of the underlying journal.' }),
-        name: z
-          .string()
-          .max(256)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Name of journal' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).',
-        required: ['id'],
-        title: 'Journal reference',
-      }),
+    journalRef: JournalJournalRefSchema.exactOptional(),
     metadata: MetadataSchema.exactOptional(),
     postedOn: DateTimeSchema.exactOptional().openapi({
       description:
         'Date on which the journal entry was posted to the accounting platform, and had an impact on the general ledger. This may be different from the creation date.\n\nFor example, a user creates a journal entry on Monday and saves it as draft, which has no impact on the general ledger. On Thursday, they return to the entry and post it.\n\nThe **createdOn** date shows as Monday.\nThe **postedOn** date shows as Thursday.\nJournal entries can also be backdated, so the **postedOn** date may be earlier than the **createdOn** date.',
     }),
-    recordRef: z
-      .object({
-        dataType: z.string().exactOptional().openapi({ description: "Name of the 'dataType'." }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'id' of the underlying record or data type." }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
-        required: [],
-      }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    recordRef: DirectCostTrackingInvoiceToSchema.exactOptional(),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     updatedOn: DateTimeSchema.exactOptional().openapi({
       description: 'Date on which the journal was last updated in the accounting platform.',
     }),
@@ -2576,217 +1627,148 @@ type ReportLineType = {
   value: number
 }
 
-const CompanyDatasetSchema: z.ZodType<CompanyDatasetType> = z
-  .lazy(() =>
-    z
-      .object({
-        accountingPlatformRef: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Identifier or reference for the company in the accounting platform.',
-          }),
-        addresses: z
-          .array(
-            z
-              .object({
-                city: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'City of the customer address.' }),
-                country: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Country of the customer address.' }),
-                line1: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Line 1 of the customer address.' }),
-                line2: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Line 2 of the customer address.' }),
-                postalCode: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Postal code or zip code.' }),
-                region: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Region of the customer address.' }),
-                type: z.lazy(() => CompanyDatasetSchema),
-              })
-              .openapi({ required: ['type'] }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'An array of Addresses.' }),
-        baseCurrency: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Currency set in the accounting platform of the linked company. Used by the currency rate.',
-          }),
-        companyLegalName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Registered legal name of the linked company.' }),
-        companyName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Name of the linked company.' }),
-        createdDate: DateTimeSchema.exactOptional().openapi({
-          description: 'Date the linked company was created in the accounting platform.',
-        }),
-        financialYearStartDate: DateTimeSchema.exactOptional().openapi({
-          description: 'Start date of the financial year for the company.',
-        }),
-        ledgerLockDate: DateTimeSchema.exactOptional().openapi({
-          description:
-            'If set in the accounting platform, the date (in the ISO 8601 date/time format) after which accounting transactions cannot be edited. Commonly used when books are closed at year-end.',
-        }),
-        phoneNumbers: z
-          .array(
-            z
-              .object({
-                number: z
-                  .string()
-                  .nullable()
-                  .openapi({
-                    description: 'A phone number.',
-                    examples: ['+44 25691 154789', '(877) 492-8687', '01224 658 999'],
-                  }),
-                type: z.lazy(() => CompanyDatasetSchema),
-              })
-              .openapi({ required: ['number', 'type'], title: 'Phone', 'x-internal': true }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'An array of phone numbers.' }),
-        registrationNumber: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Registration number given to the linked company by the companies authority in the country of origin. In the UK this is Companies House.',
-          }),
-        sourceUrls: z
-          .record(z.string(), z.string().nullable())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'URL addresses for the accounting source.\n\nFor example, for Xero integrations two URLs are returned. These have many potential use cases, such as [deep linking](https://developer.xero.com/documentation/api-guides/deep-link-xero).',
-          }),
-        taxNumber: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Company tax number.' }),
-        webLinks: z
-          .array(
-            z
-              .object({
-                type: z
-                  .enum(['Website', 'Social', 'Unknown'])
-                  .exactOptional()
-                  .openapi({ description: 'The type of the weblink.' }),
-                url: z
-                  .url()
-                  .exactOptional()
-                  .openapi({ description: 'The full URL for the weblink.' }),
-              })
-              .openapi({
-                description: 'Weblink associated with the company.',
-                examples: [{ type: 'Website', url: 'https://codat.io' }],
-                title: 'Weblink',
-                required: [],
-              }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'An array of weblinks.' }),
-      })
+const SalesOrderSalesOrderInvoiceStatusSchema = z
+  .enum(['Unknown', 'PartiallyInvoiced', 'Invoiced', 'NotInvoiced'])
+  .openapi({
+    description:
+      'If the sales order is converted to an invoice, or will be in future, the invoicingStatus field indicates the current stage of the invoicing process.',
+  })
+  .openapi('SalesOrderSalesOrderInvoiceStatus')
+
+const SalesOrderSalesOrderLineItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the goods or services that have been ordered.' }),
+    discountAmount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Value of any discounts applied.' }),
+    discountPercentage: z
+      .number()
+      .exactOptional()
       .openapi({
-        description:
-          '> View the coverage for company info in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=cashFlowStatement" target="_blank">Data coverage explorer</a>.\n\nCompany info provides standard details about a linked company such as their address, phone number, and company registration.\n\n> **Company information or companies?**\n> \n> Company information is standard information that is held in the accounting platform about a company. `Companies` is an endpoint that lists businesses in the Codat system that have linked and shared their data sources.',
-        examples: [
-          {
-            accountingPlatformRef: '4444e827-401b-4925-92cb-d79086bf3b6b',
-            addresses: [
-              {
-                city: 'London',
-                country: 'United Kingdom',
-                line1: 'Warner House',
-                line2: "98 Theobald's Road",
-                postalcode: 'WC1X 8WB',
-                region: '',
-                type: 'Billing',
-              },
-              {
-                city: 'San Pablo',
-                country: '',
-                line1: '123 Sierra Way',
-                line2: '',
-                postalCode: '87999',
-                region: 'CA',
-                type: 'Unknown',
-              },
-            ],
-            baseCurrency: 'USD',
-            companyLegalName: 'ACME Corporation Ltd.',
-            companyName: 'ACME Corporation',
-            createdDate: '2020-02-03T16:42:02Z',
-            financialYearStartDate: '2019-04-01T00:00:00Z',
-            ledgerLockDate: '2019-03-04T12:08:01.881Z',
-            phoneNumbers: [{ number: '010 1234 5678', type: 'Landline' }],
-            registrationNumber: '1234567890',
-            sourceUrls: {
-              url1: 'https://go.xero.com/organisationlogin/default.aspx?shortcode=!rxs0Q',
-              url2: 'https://reporting.xero.com/!rxs0Q',
-            },
-            taxNumber: 'GB 123456789',
-            webLinks: [{ type: 'Website', url: 'https://www.wbsl.com/' }],
-          },
-        ],
-        title: 'Company information',
+        description: 'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
+      }),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description: 'Reference to the product or inventory item to which the line item is linked.',
+    }),
+    quantity: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Number of units that have been ordered.' }),
+    subTotal: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Amount of the line, inclusive of discounts but exclusive of tax.' }),
+    taxAmount: z.number().exactOptional().openapi({ description: 'Amount of tax for the line.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line, inclusive of discounts and tax.' }),
+    tracking: SalesOrderSalesOrderLineItemTrackingSchema.exactOptional(),
+    unitAmount: z.number().exactOptional().openapi({ description: 'Price of each unit.' }),
+  })
+  .openapi({ title: 'Invoice line item', required: [] })
+  .openapi('SalesOrderSalesOrderLineItem')
+
+const CompanyDatasetAddressesItemsAddressTypeSchema = z
+  .enum(['Unknown', 'Billing', 'Delivery'])
+  .openapi({ description: 'The type of the address' })
+  .openapi('CompanyDatasetAddressesItemsAddressType')
+
+const CompanyDatasetAddressesItemsSchema = z
+  .object({
+    city: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'City of the customer address.' }),
+    country: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Country of the customer address.' }),
+    line1: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Line 1 of the customer address.' }),
+    line2: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Line 2 of the customer address.' }),
+    postalCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Postal code or zip code.' }),
+    region: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Region of the customer address.' }),
+    type: CompanyDatasetAddressesItemsAddressTypeSchema,
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CompanyDatasetAddressesItems')
+
+const SalesOrderAllOf0ShipToSchema = z
+  .object({
+    address: CompanyDatasetAddressesItemsSchema.exactOptional().openapi({
+      description: 'Delivery address for any goods that have been ordered.',
+    }),
+    contact: z
+      .object({
+        email: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Email address of the contact at the delivery address.' }),
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Name of the contact at the delivery address.' }),
+        phone: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Phone number of the contact at the delivery address.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Details of the named contact at the delivery address.',
         required: [],
       }),
-  )
-  .openapi('CompanyDataset')
+  })
+  .openapi({
+    description: 'Delivery details for any goods that have been ordered.',
+    title: 'Ship to',
+    required: [],
+  })
+  .openapi('SalesOrderAllOf0ShipTo')
+
+const SalesOrderSalesOrderStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Open', 'Closed', 'Void'])
+  .openapi({ description: 'Current state of the sales order.' })
+  .openapi('SalesOrderSalesOrderStatus')
 
 const SalesOrderSchema = z
   .object({
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency of the sales order.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the sales order.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     customerPurchaseOrderNumber: z
       .string()
       .nullable()
@@ -2795,21 +1777,10 @@ const SalesOrderSchema = z
         description:
           "A customer-supplied identifier for the purchase order in the customer's system.",
       }),
-    customerRef: z
-      .object({
-        companyName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`customerName` from the Customer data type' }),
-        id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
-      })
-      .exactOptional()
-      .openapi({
-        required: ['id'],
-        description:
-          'The customer that the sales order is recorded against in the accounting system.',
-      }),
+    customerRef: CustomerCustomerRefSchema.exactOptional().openapi({
+      description:
+        'The customer that the sales order is recorded against in the accounting system.',
+    }),
     expectedDeliveryDate: DateTimeSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Expected delivery date for any goods that have been ordered.' }),
@@ -2820,149 +1791,12 @@ const SalesOrderSchema = z
         description:
           'Identifier for the sales order, unique for the company in the accounting platform.',
       }),
-    invoicingStatus: z
-      .enum(['Unknown', 'PartiallyInvoiced', 'Invoiced', 'NotInvoiced'])
-      .exactOptional()
-      .openapi({
-        description:
-          'If the sales order is converted to an invoice, or will be in future, the invoicingStatus field indicates the current stage of the invoicing process.',
-      }),
+    invoicingStatus: SalesOrderSalesOrderInvoiceStatusSchema.exactOptional(),
     issueDate: DateTimeSchema.exactOptional().openapi({
       description: 'Date of the sales order as recorded in the accounting platform.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Description of the goods or services that have been ordered.',
-              }),
-            discountAmount: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Value of any discounts applied.' }),
-            discountPercentage: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
-              }),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description:
-                  'Reference to the product or inventory item to which the line item is linked.',
-              }),
-            quantity: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Number of units that have been ordered.' }),
-            subTotal: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description: 'Amount of the line, inclusive of discounts but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax for the line.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description: 'Total amount of the line, inclusive of discounts and tax.',
-              }),
-            tracking: z
-              .object({
-                recordRefs: z
-                  .array(
-                    z
-                      .object({
-                        dataType: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "Name of the 'dataType'." }),
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "'id' of the underlying record or data type." }),
-                      })
-                      .openapi({
-                        description:
-                          'Links to the underlying record or data type.\n\nFound on:\n\n- Journal entries\n- Account transactions\n- Invoices\n- Transfers',
-                        required: [],
-                      }),
-                  )
-                  .nullable()
-                  .exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-            unitAmount: z.number().exactOptional().openapi({ description: 'Price of each unit.' }),
-          })
-          .openapi({ title: 'Invoice line item', required: [] }),
-      )
+      .array(SalesOrderSalesOrderLineItemSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of line items.' }),
@@ -2980,46 +1814,8 @@ const SalesOrderSchema = z
         description:
           'Friendly reference for the sales order, commonly generated by the accounting platform.',
       }),
-    shipTo: z
-      .object({
-        address: z
-          .lazy(() => CompanyDatasetSchema)
-          .exactOptional()
-          .openapi({ description: 'Delivery address for any goods that have been ordered.' }),
-        contact: z
-          .object({
-            email: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Email address of the contact at the delivery address.' }),
-            name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Name of the contact at the delivery address.' }),
-            phone: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Phone number of the contact at the delivery address.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Details of the named contact at the delivery address.',
-            required: [],
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Delivery details for any goods that have been ordered.',
-        title: 'Ship to',
-        required: [],
-      }),
-    status: z
-      .enum(['Unknown', 'Draft', 'Open', 'Closed', 'Void'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the sales order.' }),
+    shipTo: SalesOrderAllOf0ShipToSchema.exactOptional(),
+    status: SalesOrderSalesOrderStatusSchema.exactOptional(),
     subTotal: z
       .number()
       .exactOptional()
@@ -3102,43 +1898,75 @@ type SalesOrdersType = { results?: z.infer<typeof SalesOrderSchema>[] } & z.infe
   typeof PagingInfoSchema
 >
 
+const TrackingCategoryStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({
+    description: 'Current state of the tracking category.',
+    title: 'Tracking category status',
+  })
+  .openapi('TrackingCategoryStatus')
+
 type TrackingCategoryTreeType = {
   hasChildren?: boolean
   id?: string | null
   name?: string | null
   parentId?: string | null
-  status?: 'Unknown' | 'Active' | 'Archived'
+  status?: z.infer<typeof TrackingCategoryStatusSchema>
   subCategories?: TrackingCategoryTreeType[] | null
 } & z.infer<typeof ModifiedDatesSchema>
 
-type PushOptionPropertyType = {
+const PushOptionPushOptionTypeSchema = z
+  .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
+  .openapi({ title: 'Option Type' })
+  .openapi('PushOptionPushOptionType')
+
+const PushOptionPushOptionChoiceSchema = z
+  .object({
+    description: z.string().exactOptional(),
+    displayName: z.string().exactOptional(),
+    required: z.boolean().exactOptional(),
+    type: PushOptionPushOptionTypeSchema.exactOptional(),
+    value: z.string().min(1).exactOptional().openapi({ description: 'Allowed value for field.' }),
+  })
+  .openapi({ title: 'Push Option Choice', required: [] })
+  .openapi('PushOptionPushOptionChoice')
+
+const PushOptionPushFieldValidationSchema = z
+  .strictObject({
+    details: z.string().min(1),
+    field: z.string().exactOptional(),
+    ref: z.url().nullable().exactOptional(),
+  })
+  .openapi({ required: ['details'], title: 'Push field validation' })
+  .openapi('PushOptionPushFieldValidation')
+
+const PushOptionPushValidationInfoSchema = z
+  .strictObject({
+    information: z.array(PushOptionPushFieldValidationSchema).nullable().exactOptional(),
+    warnings: z.array(PushOptionPushFieldValidationSchema).nullable().exactOptional(),
+  })
+  .openapi({ title: 'Push validation info', required: [] })
+  .openapi('PushOptionPushValidationInfo')
+
+type PushOptionPushOptionPropertyType = {
   description: string
   displayName: string
-  options?:
-    | {
-        description?: string
-        displayName?: string
-        required?: boolean
-        type?:
-          | 'Array'
-          | 'Object'
-          | 'String'
-          | 'Number'
-          | 'Boolean'
-          | 'DateTime'
-          | 'File'
-          | 'MultiPart'
-        value?: string
-      }[]
-    | null
-  properties?: { [key: string]: PushOptionPropertyType } | null
+  options?: z.infer<typeof PushOptionPushOptionChoiceSchema>[] | null
+  properties?: { [key: string]: PushOptionPushOptionPropertyType } | null
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?: {
-    information?: { details: string; field?: string; ref?: string | null }[] | null
-    warnings?: { details: string; field?: string; ref?: string | null }[] | null
-  }
+  type: z.infer<typeof PushOptionPushOptionTypeSchema>
+  validation?: z.infer<typeof PushOptionPushValidationInfoSchema>
 }
+
+const AccountAccountStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived', 'Pending'])
+  .openapi({ description: 'Status of the account', title: 'Account status' })
+  .openapi('AccountAccountStatus')
+
+const AccountAccountTypeSchema = z
+  .enum(['Unknown', 'Asset', 'Expense', 'Income', 'Liability', 'Equity'])
+  .openapi({ description: 'Type of account', title: 'Account type' })
+  .openapi('AccountAccountType')
 
 const ValidDataTypeLinksSchema = z
   .object({
@@ -3163,16 +1991,7 @@ const ValidDataTypeLinksSchema = z
 
 const AccountSchema = z
   .object({
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional(),
     currentBalance: z
       .number()
       .nullable()
@@ -3217,14 +2036,8 @@ const AccountSchema = z
         description:
           "Reference given to each nominal account for a business. It ensures money is allocated to the correct account. This code isn't a unique identifier in the Codat system.",
       }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived', 'Pending'])
-      .exactOptional()
-      .openapi({ description: 'Status of the account', title: 'Account status' }),
-    type: z
-      .enum(['Unknown', 'Asset', 'Expense', 'Income', 'Liability', 'Equity'])
-      .exactOptional()
-      .openapi({ description: 'Type of account', title: 'Account type' }),
+    status: AccountAccountStatusSchema.exactOptional(),
+    type: AccountAccountTypeSchema.exactOptional(),
     validDatatypeLinks: z
       .array(ValidDataTypeLinksSchema)
       .nullable()
@@ -3258,44 +2071,49 @@ const AccountSchema = z
   })
   .openapi('Account')
 
-const AccountTransactionSchema = z
+const BankAccountBankAccountRefSchema = z
   .object({
-    bankAccountRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "Bank account 'id' for the account transaction." }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "bank account 'name' for the account transaction." }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the bank account the account transaction is recorded against.',
-        title: 'Bank account reference',
-        required: [],
-      }),
-    currency: z
+    id: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
+      .openapi({ description: "Bank account 'id' for the account transaction." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "bank account 'name' for the account transaction." }),
+  })
+  .openapi({
+    description: 'Links to the Account transactions data type.',
+    title: 'Bank account reference',
+    required: [],
+  })
+  .openapi('BankAccountBankAccountRef')
+
+const AccountTransactionAccountTransactionLineSchema = z
+  .object({
+    amount: z
       .number()
+      .exactOptional()
+      .openapi({ description: 'Amount in the bill payment currency.' }),
+    description: z
+      .string()
       .nullable()
       .exactOptional()
-      .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
-      }),
+      .openapi({ description: 'Description of the account transaction.' }),
+    recordRef: DirectCostTrackingInvoiceToSchema.exactOptional().openapi({
+      description: 'Links an account transaction line to the underlying record that created it.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountTransactionAccountTransactionLine')
+
+const AccountTransactionSchema = z
+  .object({
+    bankAccountRef: BankAccountBankAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the bank account the account transaction is recorded against.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional(),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     date: DateTimeSchema.exactOptional().openapi({
       description: 'The date the account transaction was recorded in the platform.',
     }),
@@ -3304,38 +2122,7 @@ const AccountTransactionSchema = z
       .exactOptional()
       .openapi({ description: 'Identifier of the direct cost (unique to the company).' }),
     lines: z
-      .array(
-        z
-          .object({
-            amount: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Amount in the bill payment currency.' }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Description of the account transaction.' }),
-            recordRef: z
-              .object({
-                dataType: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "Name of the 'dataType'." }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' of the underlying record or data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Links an account transaction line to the underlying record that created it.',
-                required: [],
-              }),
-          })
-          .openapi({ required: [] }),
-      )
+      .array(AccountTransactionAccountTransactionLineSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'Array of account transaction lines.' }),
@@ -3387,84 +2174,7 @@ const AccountsSchema = z
 const AgedCreditorReportSchema: z.ZodType<AgedCreditorReportType> = z
   .object({
     data: z
-      .array(
-        z
-          .object({
-            agedCurrencyOutstanding: z
-              .array(
-                z
-                  .object({
-                    agedOutstandingAmounts: z
-                      .array(
-                        z
-                          .object({
-                            amount: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The amount outstanding.' }),
-                            details: z
-                              .array(
-                                z
-                                  .object({
-                                    amount: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({ description: 'The amount outstanding.' }),
-                                    name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'Name of data type with outstanding amount for given period.',
-                                      }),
-                                  })
-                                  .openapi({
-                                    title: 'Amounts outstanding by data type',
-                                    required: [],
-                                  }),
-                              )
-                              .exactOptional()
-                              .openapi({ description: 'Array of details.' }),
-                            fromDate: DateTimeSchema.exactOptional().openapi({
-                              description: 'Start date of period.',
-                            }),
-                            toDate: DateTimeSchema.exactOptional().openapi({
-                              description: 'End date of period.',
-                            }),
-                          })
-                          .openapi({ title: 'Aged outstanding amount', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({ description: 'Array of outstanding amounts by period.' }),
-                    currency: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-                        examples: ['GBP', 'USD', 'EUR'],
-                        title: 'Currency',
-                        'x-internal': true,
-                      }),
-                  })
-                  .openapi({ title: 'Aged currency outstanding', required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Array of aged creditors by currency.' }),
-            supplierId: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Supplier ID of the aged creditor.',
-                example: 'f594cefb-7750-4c3a-bab2-b5322026dee9',
-              }),
-            supplierName: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Supplier name of the aged creditor.', example: 'John Doe' }),
-          })
-          .openapi({ title: 'Aged creditor', required: [] }),
-      )
+      .array(AgedCreditorReportAgedCreditorSchema)
       .exactOptional()
       .openapi({ description: 'Array of aged creditor.' }),
     generated: DateTimeSchema.exactOptional().openapi({
@@ -3510,84 +2220,7 @@ const AgedCreditorReportSchema: z.ZodType<AgedCreditorReportType> = z
 const AgedDebtorReportSchema: z.ZodType<AgedDebtorReportType> = z
   .object({
     data: z
-      .array(
-        z
-          .object({
-            agedCurrencyOutstanding: z
-              .array(
-                z
-                  .object({
-                    agedOutstandingAmounts: z
-                      .array(
-                        z
-                          .object({
-                            amount: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The amount outstanding.' }),
-                            details: z
-                              .array(
-                                z
-                                  .object({
-                                    amount: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({ description: 'The amount outstanding.' }),
-                                    name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'Name of data type with outstanding amount for given period.',
-                                      }),
-                                  })
-                                  .openapi({
-                                    title: 'Amounts outstanding by data type',
-                                    required: [],
-                                  }),
-                              )
-                              .exactOptional()
-                              .openapi({ description: 'Array of details.' }),
-                            fromDate: DateTimeSchema.exactOptional().openapi({
-                              description: 'Start date of period.',
-                            }),
-                            toDate: DateTimeSchema.exactOptional().openapi({
-                              description: 'End date of period.',
-                            }),
-                          })
-                          .openapi({ title: 'Aged outstanding amount', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({ description: 'Array of outstanding amounts by period.' }),
-                    currency: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-                        examples: ['GBP', 'USD', 'EUR'],
-                        title: 'Currency',
-                        'x-internal': true,
-                      }),
-                  })
-                  .openapi({ title: 'Aged currency outstanding', required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Array of aged debtors by currency.' }),
-            customerId: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Customer ID of the aged debtor.',
-                example: 'f594cefb-7750-4c3a-bab2-b5322026dee9',
-              }),
-            customerName: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Customer name of the aged debtor.', example: 'John Doe' }),
-          })
-          .openapi({ title: 'Aged debtor', required: [] }),
-      )
+      .array(AgedDebtorReportAgedDebtorSchema)
       .exactOptional()
       .openapi({ description: 'Array of aged debtors.' }),
     generated: DateTimeSchema.exactOptional().openapi({
@@ -3712,16 +2345,33 @@ const ReportLineSchema: z.ZodType<ReportLineType> = z
   )
   .openapi('ReportLine')
 
+const BalanceSheetBalanceSheetSchema = z
+  .object({
+    assets: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLines for assets. For example, fixed and current assets.',
+    }),
+    date: DateTimeSchema.exactOptional().openapi({
+      description: "Point in time when a snapshot of a company's financial position is taken.",
+    }),
+    equity: ReportLineSchema.exactOptional().openapi({
+      description:
+        'ReportLines for equities. For example, retained and current year earnings. See below.',
+    }),
+    liabilities: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLines for liabilities. For example, current liabilities.',
+    }),
+    netAssets: z
+      .number()
+      .openapi({ description: 'Value of net assets for a company in their base currency.' }),
+  })
+  .openapi({ required: ['netAssets'] })
+  .openapi('BalanceSheetBalanceSheet')
+
 const BalanceSheetSchema = z
   .strictObject({
-    currency: z
-      .string()
-      .openapi({
-        description: 'Currency of the balance sheet.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
+    currency: TransferTransferAccountCurrencySchema.openapi({
+      description: 'Currency of the balance sheet.',
+    }),
     earliestAvailableMonth: DateTimeSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Earliest available monthly report data.' }),
@@ -3729,31 +2379,7 @@ const BalanceSheetSchema = z
       .exactOptional()
       .openapi({ description: 'Most recent available monthly report data.' }),
     reports: z
-      .array(
-        z
-          .object({
-            assets: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLines for assets. For example, fixed and current assets.',
-            }),
-            date: DateTimeSchema.exactOptional().openapi({
-              description:
-                "Point in time when a snapshot of a company's financial position is taken.",
-            }),
-            equity: ReportLineSchema.exactOptional().openapi({
-              description:
-                'ReportLines for equities. For example, retained and current year earnings. See below.',
-            }),
-            liabilities: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLines for liabilities. For example, current liabilities.',
-            }),
-            netAssets: z
-              .number()
-              .openapi({
-                description: 'Value of net assets for a company in their base currency.',
-              }),
-          })
-          .openapi({ required: ['netAssets'] }),
-      )
+      .array(BalanceSheetBalanceSheetSchema)
       .openapi({ description: 'An array of balance sheet reports.' }),
   })
   .openapi({
@@ -3801,15 +2427,9 @@ const BankAccountSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Balance of the bank account.' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Base currency of the bank account.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Base currency of the bank account.',
+    }),
     iBan: z
       .string()
       .nullable()
@@ -3862,82 +2482,79 @@ const BankAccountSchema = z
   })
   .openapi('BankAccount')
 
-const BankAccountTransactionsSchema = z
-  .object({
-    results: z
-      .array(
-        z
-          .object({
-            amount: z.number().exactOptional(),
-            balance: z.number().exactOptional(),
-            clearedOnDate: DateTimeSchema.exactOptional(),
-            counterparty: z.string().nullable().exactOptional(),
-            description: z.string().nullable().exactOptional(),
-            id: z.string().exactOptional(),
-            reconciled: z.boolean().exactOptional(),
-            reference: z.string().nullable().exactOptional(),
-            transactionType: z
-              .enum([
-                'Unknown',
-                'Credit',
-                'Debit',
-                'Int',
-                'Div',
-                'Fee',
-                'SerChg',
-                'Dep',
-                'Atm',
-                'Pos',
-                'Xfer',
-                'Check',
-                'Payment',
-                'Cash',
-                'DirectDep',
-                'DirectDebit',
-                'RepeatPmt',
-                'Other',
-              ])
-              .exactOptional()
-              .openapi({
-                description: 'Type of transaction for the bank statement line',
-                title: 'Bank transaction type',
-              }),
-          })
-          .openapi({ required: [] })
-          .and(
-            z
-              .looseObject({})
-              .openapi({
-                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-              }),
-          )
-          .superRefine((val, ctx) => {
-            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-              if (!Object.hasOwn(val, 'amount')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'balance')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'date')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'reconciled')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'transactionType')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-            }
-          })
-          .and(ModifiedDatesSchema)
-          .openapi({
-            required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-            title: 'Bank transaction line',
-          }),
-      )
-      .exactOptional(),
+const BankTransactionsBankTransactionTypeSchema = z
+  .enum([
+    'Unknown',
+    'Credit',
+    'Debit',
+    'Int',
+    'Div',
+    'Fee',
+    'SerChg',
+    'Dep',
+    'Atm',
+    'Pos',
+    'Xfer',
+    'Check',
+    'Payment',
+    'Cash',
+    'DirectDep',
+    'DirectDebit',
+    'RepeatPmt',
+    'Other',
+  ])
+  .openapi({
+    description: 'Type of transaction for the bank statement line',
+    title: 'Bank transaction type',
   })
+  .openapi('BankTransactionsBankTransactionType')
+
+const BankTransactionsBankTransactionLineSchema = z
+  .object({
+    amount: z.number().exactOptional(),
+    balance: z.number().exactOptional(),
+    clearedOnDate: DateTimeSchema.exactOptional(),
+    counterparty: z.string().nullable().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    id: z.string().exactOptional(),
+    reconciled: z.boolean().exactOptional(),
+    reference: z.string().nullable().exactOptional(),
+    transactionType: BankTransactionsBankTransactionTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'reconciled')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transactionType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(ModifiedDatesSchema)
+  .openapi({
+    required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
+    title: 'Bank transaction line',
+  })
+  .openapi('BankTransactionsBankTransactionLine')
+
+const BankAccountTransactionsSchema = z
+  .object({ results: z.array(BankTransactionsBankTransactionLineSchema).exactOptional() })
   .openapi({ required: [] })
   .and(PagingInfoSchema)
   .openapi({ 'x-internal': true })
@@ -3961,25 +2578,11 @@ const BankStatementAccountSchema = z
     iban: z.string().nullable().exactOptional(),
     id: z.string().exactOptional(),
     institution: z.string().nullable().exactOptional(),
-    modifiedDate: z
-      .object({
-        modifiedDate: DateTimeSchema.exactOptional().openapi({
-          description: 'The date on which this record was last modified in Codat.',
-        }),
-      })
-      .exactOptional()
-      .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] }),
+    modifiedDate: ModifiedDatesAllOf0Schema.exactOptional(),
     nominalCode: z.string().nullable().exactOptional(),
     overdraftLimit: z.number().nullable().exactOptional(),
     sortCode: z.string().nullable().exactOptional(),
-    sourceModifiedDate: z
-      .object({
-        sourceModifiedDate: DateTimeSchema.exactOptional().openapi({
-          description: 'The date on which this record was last modified in the originating system',
-        }),
-      })
-      .exactOptional()
-      .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] }),
+    sourceModifiedDate: ModifiedDatesAllOf1Schema.exactOptional(),
     toDate: DateTimeSchema.exactOptional(),
   })
   .openapi({ title: 'Bank statement account', required: [] })
@@ -3988,80 +2591,7 @@ const BankStatementAccountSchema = z
 const BankTransactionsSchema = z
   .object({
     accountId: z.string().nullable().exactOptional(),
-    transactions: z
-      .array(
-        z
-          .object({
-            amount: z.number().exactOptional(),
-            balance: z.number().exactOptional(),
-            clearedOnDate: DateTimeSchema.exactOptional(),
-            counterparty: z.string().nullable().exactOptional(),
-            description: z.string().nullable().exactOptional(),
-            id: z.string().exactOptional(),
-            reconciled: z.boolean().exactOptional(),
-            reference: z.string().nullable().exactOptional(),
-            transactionType: z
-              .enum([
-                'Unknown',
-                'Credit',
-                'Debit',
-                'Int',
-                'Div',
-                'Fee',
-                'SerChg',
-                'Dep',
-                'Atm',
-                'Pos',
-                'Xfer',
-                'Check',
-                'Payment',
-                'Cash',
-                'DirectDep',
-                'DirectDebit',
-                'RepeatPmt',
-                'Other',
-              ])
-              .exactOptional()
-              .openapi({
-                description: 'Type of transaction for the bank statement line',
-                title: 'Bank transaction type',
-              }),
-          })
-          .openapi({ required: [] })
-          .and(
-            z
-              .looseObject({})
-              .openapi({
-                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-              }),
-          )
-          .superRefine((val, ctx) => {
-            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-              if (!Object.hasOwn(val, 'amount')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'balance')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'date')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'reconciled')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'transactionType')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-            }
-          })
-          .and(ModifiedDatesSchema)
-          .openapi({
-            required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-            title: 'Bank transaction line',
-          }),
-      )
-      .nullable()
-      .exactOptional(),
+    transactions: z.array(BankTransactionsBankTransactionLineSchema).nullable().exactOptional(),
   })
   .openapi({
     description:
@@ -4085,44 +2615,77 @@ const BillCreditNotesSchema: z.ZodType<BillCreditNotesType> = z
   .openapi({ 'x-internal': true })
   .openapi('BillCreditNotes')
 
-const BillPaymentSchema = z
+const BillPaymentBillPaymentLineLinkTypeSchema = z
+  .enum([
+    'Unknown',
+    'Unlinked',
+    'Bill',
+    'Other',
+    'CreditNote',
+    'BillPayment',
+    'PaymentOnAccount',
+    'Refund',
+    'ManualJournal',
+    'Discount',
+  ])
+  .openapi({ description: 'Types of links to bill payment lines.' })
+  .openapi('BillPaymentBillPaymentLineLinkType')
+
+const BillPaymentBillPaymentLineLinkSchema = z
   .object({
-    accountRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'id' from the Accounts data type." }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'name' from the Accounts data type." }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Account the payment is linked to in the accounting platform.',
-        title: 'Account reference',
-        required: [],
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
+    amount: z
       .number()
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
+          'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.\n\n- A negative link amount reduces the outstanding amount on the accounts payable account.\n- A positive link amount increases the outstanding amount on the accounts payable account.',
       }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the transaction represented by the link.' }),
+    type: BillPaymentBillPaymentLineLinkTypeSchema,
+  })
+  .openapi({ required: ['type'] })
+  .openapi('BillPaymentBillPaymentLineLink')
+
+const BillPaymentBillPaymentLineSchema = z
+  .object({
+    allocatedOnDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        'AllocatedOnDate must be specified and be later than the issue date of the bill.',
+    }),
+    amount: z.number().openapi({ description: 'Amount in the bill payment currency.' }),
+    links: z.array(BillPaymentBillPaymentLineLinkSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: ['amount'] })
+  .openapi('BillPaymentBillPaymentLine')
+
+const PaymentMethodPaymentMethodRefSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '`id` from the Payment Methods data type' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '`name` from the Payment Methods data type' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethodPaymentMethodRef')
+
+const BillPaymentSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Account the payment is linked to in the accounting platform.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional(),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     date: DateTimeSchema.exactOptional().openapi({
       description: 'Date the bill payment was recorded in the accounting software.',
     }),
@@ -4134,65 +2697,7 @@ const BillPaymentSchema = z
           'Identifier for the bill payment, unique for the company in the accounting platform.',
       }),
     lines: z
-      .array(
-        z
-          .object({
-            allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-              description:
-                'AllocatedOnDate must be specified and be later than the issue date of the bill.',
-            }),
-            amount: z.number().openapi({ description: 'Amount in the bill payment currency.' }),
-            links: z
-              .array(
-                z
-                  .object({
-                    amount: z
-                      .number()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.\n\n- A negative link amount reduces the outstanding amount on the accounts payable account.\n- A positive link amount increases the outstanding amount on the accounts payable account.',
-                      }),
-                    currencyRate: z
-                      .number()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                        title: 'Currency rate',
-                      }),
-                    id: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Unique identifier of the transaction represented by the link.',
-                      }),
-                    type: z
-                      .enum([
-                        'Unknown',
-                        'Unlinked',
-                        'Bill',
-                        'Other',
-                        'CreditNote',
-                        'BillPayment',
-                        'PaymentOnAccount',
-                        'Refund',
-                        'ManualJournal',
-                        'Discount',
-                      ])
-                      .openapi({ description: 'Types of links to bill payment lines.' }),
-                  })
-                  .openapi({ required: ['type'] }),
-              )
-              .nullable()
-              .exactOptional(),
-          })
-          .openapi({ required: ['amount'] }),
-      )
+      .array(BillPaymentBillPaymentLineSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of bill payment lines.' }),
@@ -4202,54 +2707,16 @@ const BillPaymentSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Additional information associated with the payment.' }),
-    paymentMethodRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '`id` from the Payment Methods data type' }),
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`name` from the Payment Methods data type' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The Payment Method to which the payment is linked in the accounting platform.',
-        required: [],
-      }),
+    paymentMethodRef: PaymentMethodPaymentMethodRefSchema.exactOptional().openapi({
+      description: 'The Payment Method to which the payment is linked in the accounting platform.',
+    }),
     reference: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Additional information associated with the payment.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
-    supplierRef: z
-      .object({
-        id: z.string().min(1).openapi({ description: "The supplier's unique ID" }),
-        supplierName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The supplier's name" }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the supplier the record relates to.',
-        required: ['id'],
-        title: 'Supplier reference',
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
+    supplierRef: SupplierSupplierRefSchema.exactOptional(),
     totalAmount: z
       .number()
       .exactOptional()
@@ -4419,48 +2886,49 @@ const BillsSchema: z.ZodType<BillsType> = z
   .openapi({ 'x-internal': true })
   .openapi('Bills')
 
+const CashFlowStatementReportBasisSchema = z
+  .enum(['Unknown', 'Accrual', 'Cash'])
+  .openapi({
+    description: 'Accounting method used when aggregating the report data. In this case, `Cash`.',
+    title: 'Report basis',
+  })
+  .openapi('CashFlowStatementReportBasis')
+
+const CashFlowStatementReportInputSchema = z
+  .enum(['Unknown', 'Indirect', 'Direct'])
+  .openapi({ description: 'Accounting method used to prepare the cash flow statement.' })
+  .openapi('CashFlowStatementReportInput')
+
+const CashFlowStatementCashFlowStatementSchema = z
+  .object({
+    cashPayments: ReportLineSchema.exactOptional().openapi({
+      description:
+        'ReportLines for cash payments to suppliers for the purchase of goods or services.',
+    }),
+    cashReceipts: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLines for cash receipts from the sale of goods.',
+    }),
+    fromDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Start date for the reporting period.',
+    }),
+    toDate: DateTimeSchema.exactOptional().openapi({
+      description: 'End date for the reporting period.',
+    }),
+  })
+  .openapi({ title: 'Cash flow statement', required: [] })
+  .openapi('CashFlowStatementCashFlowStatement')
+
 const CashFlowStatementSchema = z
   .object({
-    currency: z
-      .string()
-      .openapi({
-        description: 'Currency of all values in the cash flow statement.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
+    currency: TransferTransferAccountCurrencySchema.openapi({
+      description: 'Currency of all values in the cash flow statement.',
+    }),
     earliestAvailableMonth: DateTimeSchema.nullable().exactOptional(),
     mostRecentAvailableMonth: DateTimeSchema.nullable().exactOptional(),
-    reportBasis: z
-      .enum(['Unknown', 'Accrual', 'Cash'])
-      .openapi({
-        description:
-          'Accounting method used when aggregating the report data. In this case, `Cash`.',
-        title: 'Report basis',
-      }),
-    reportInput: z
-      .enum(['Unknown', 'Indirect', 'Direct'])
-      .openapi({ description: 'Accounting method used to prepare the cash flow statement.' }),
+    reportBasis: CashFlowStatementReportBasisSchema,
+    reportInput: CashFlowStatementReportInputSchema,
     reports: z
-      .array(
-        z
-          .object({
-            cashPayments: ReportLineSchema.exactOptional().openapi({
-              description:
-                'ReportLines for cash payments to suppliers for the purchase of goods or services.',
-            }),
-            cashReceipts: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLines for cash receipts from the sale of goods.',
-            }),
-            fromDate: DateTimeSchema.exactOptional().openapi({
-              description: 'Start date for the reporting period.',
-            }),
-            toDate: DateTimeSchema.exactOptional().openapi({
-              description: 'End date for the reporting period.',
-            }),
-          })
-          .openapi({ title: 'Cash flow statement', required: [] }),
-      )
+      .array(CashFlowStatementCashFlowStatementSchema)
       .openapi({ description: 'Array of cash flow statements.' }),
   })
   .openapi({
@@ -4470,6 +2938,161 @@ const CashFlowStatementSchema = z
     title: 'Cash flow statement',
   })
   .openapi('CashFlowStatement')
+
+const CompanyDatasetPhoneNumbersItemsPhoneNumberTypeSchema = z
+  .enum(['Primary', 'Landline', 'Mobile', 'Fax', 'Unknown'])
+  .openapi({ description: 'The type of phone number' })
+  .openapi('CompanyDatasetPhoneNumbersItemsPhoneNumberType')
+
+const CompanyDatasetPhoneNumbersItemsSchema = z
+  .object({
+    number: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'A phone number.',
+        examples: ['+44 25691 154789', '(877) 492-8687', '01224 658 999'],
+      }),
+    type: CompanyDatasetPhoneNumbersItemsPhoneNumberTypeSchema,
+  })
+  .openapi({ required: ['number', 'type'], title: 'Phone', 'x-internal': true })
+  .openapi('CompanyDatasetPhoneNumbersItems')
+
+const CompanyDatasetSchema = z
+  .object({
+    accountingPlatformRef: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier or reference for the company in the accounting platform.',
+      }),
+    addresses: z
+      .array(CompanyDatasetAddressesItemsSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An array of Addresses.' }),
+    baseCurrency: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Currency set in the accounting platform of the linked company. Used by the currency rate.',
+      }),
+    companyLegalName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Registered legal name of the linked company.' }),
+    companyName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the linked company.' }),
+    createdDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Date the linked company was created in the accounting platform.',
+    }),
+    financialYearStartDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Start date of the financial year for the company.',
+    }),
+    ledgerLockDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        'If set in the accounting platform, the date (in the ISO 8601 date/time format) after which accounting transactions cannot be edited. Commonly used when books are closed at year-end.',
+    }),
+    phoneNumbers: z
+      .array(CompanyDatasetPhoneNumbersItemsSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An array of phone numbers.' }),
+    registrationNumber: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Registration number given to the linked company by the companies authority in the country of origin. In the UK this is Companies House.',
+      }),
+    sourceUrls: z
+      .record(z.string(), z.string().nullable())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL addresses for the accounting source.\n\nFor example, for Xero integrations two URLs are returned. These have many potential use cases, such as [deep linking](https://developer.xero.com/documentation/api-guides/deep-link-xero).',
+      }),
+    taxNumber: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Company tax number.' }),
+    webLinks: z
+      .array(
+        z
+          .object({
+            type: z
+              .enum(['Website', 'Social', 'Unknown'])
+              .exactOptional()
+              .openapi({ description: 'The type of the weblink.' }),
+            url: z.url().exactOptional().openapi({ description: 'The full URL for the weblink.' }),
+          })
+          .openapi({
+            description: 'Weblink associated with the company.',
+            examples: [{ type: 'Website', url: 'https://codat.io' }],
+            title: 'Weblink',
+            required: [],
+          }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An array of weblinks.' }),
+  })
+  .openapi({
+    description:
+      '> View the coverage for company info in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=cashFlowStatement" target="_blank">Data coverage explorer</a>.\n\nCompany info provides standard details about a linked company such as their address, phone number, and company registration.\n\n> **Company information or companies?**\n> \n> Company information is standard information that is held in the accounting platform about a company. `Companies` is an endpoint that lists businesses in the Codat system that have linked and shared their data sources.',
+    examples: [
+      {
+        accountingPlatformRef: '4444e827-401b-4925-92cb-d79086bf3b6b',
+        addresses: [
+          {
+            city: 'London',
+            country: 'United Kingdom',
+            line1: 'Warner House',
+            line2: "98 Theobald's Road",
+            postalcode: 'WC1X 8WB',
+            region: '',
+            type: 'Billing',
+          },
+          {
+            city: 'San Pablo',
+            country: '',
+            line1: '123 Sierra Way',
+            line2: '',
+            postalCode: '87999',
+            region: 'CA',
+            type: 'Unknown',
+          },
+        ],
+        baseCurrency: 'USD',
+        companyLegalName: 'ACME Corporation Ltd.',
+        companyName: 'ACME Corporation',
+        createdDate: '2020-02-03T16:42:02Z',
+        financialYearStartDate: '2019-04-01T00:00:00Z',
+        ledgerLockDate: '2019-03-04T12:08:01.881Z',
+        phoneNumbers: [{ number: '010 1234 5678', type: 'Landline' }],
+        registrationNumber: '1234567890',
+        sourceUrls: {
+          url1: 'https://go.xero.com/organisationlogin/default.aspx?shortcode=!rxs0Q',
+          url2: 'https://reporting.xero.com/!rxs0Q',
+        },
+        taxNumber: 'GB 123456789',
+        webLinks: [{ type: 'Website', url: 'https://www.wbsl.com/' }],
+      },
+    ],
+    title: 'Company information',
+    required: [],
+  })
+  .openapi('CompanyDataset')
 
 const DataTypeSchema = z
   .enum([
@@ -4519,29 +3142,58 @@ const DataTypeSchema = z
   .openapi({ description: 'Available Data types', examples: ['invoices'], 'x-internal': true })
   .openapi('DataType')
 
+const PushOperationSummaryPushOperationRefSchema = z
+  .strictObject({
+    dataType: DataTypeSchema.nullable().exactOptional(),
+    id: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Push operation reference', 'x-internal': true, required: [] })
+  .openapi('PushOperationSummaryPushOperationRef')
+
+const PushOperationSummaryPushChangeTypeSchema = z
+  .enum(['Unknown', 'Created', 'Modified', 'Deleted', 'AttachmentUploaded'])
+  .openapi({ title: 'Push change type' })
+  .openapi('PushOperationSummaryPushChangeType')
+
+const PushOperationSummaryPushOperationChangeSchema = z
+  .object({
+    attachmentId: z.string().nullable().exactOptional(),
+    recordRef: PushOperationSummaryPushOperationRefSchema.exactOptional(),
+    type: PushOperationSummaryPushChangeTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PushOperationSummaryPushOperationChange')
+
+const PushOperationSummaryPushOperationStatusSchema = z
+  .enum(['Pending', 'Failed', 'Success', 'TimedOut'])
+  .openapi({ description: 'The status of the push operation.', title: 'Push operation status' })
+  .openapi('PushOperationSummaryPushOperationStatus')
+
+const PushOperationSummaryValidationItemSchema = z
+  .strictObject({
+    itemId: z.string().nullable().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    validatorName: z.string().nullable().exactOptional(),
+  })
+  .openapi({ title: 'Validation item', required: [] })
+  .openapi('PushOperationSummaryValidationItem')
+
+const PushOperationSummaryValidationSchema = z
+  .object({
+    errors: z.array(PushOperationSummaryValidationItemSchema).nullable().exactOptional(),
+    warnings: z.array(PushOperationSummaryValidationItemSchema).nullable().exactOptional(),
+  })
+  .openapi({
+    description:
+      'A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.',
+    title: 'Validation',
+    required: [],
+  })
+  .openapi('PushOperationSummaryValidation')
+
 const PushOperationSummarySchema = z
   .object({
-    changes: z
-      .array(
-        z
-          .object({
-            attachmentId: z.string().nullable().exactOptional(),
-            recordRef: z
-              .strictObject({
-                dataType: DataTypeSchema.nullable().exactOptional(),
-                id: z.string().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ title: 'Push operation reference', 'x-internal': true, required: [] }),
-            type: z
-              .enum(['Unknown', 'Created', 'Modified', 'Deleted', 'AttachmentUploaded'])
-              .exactOptional()
-              .openapi({ title: 'Push change type' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .nullable()
-      .exactOptional(),
+    changes: z.array(PushOperationSummaryPushOperationChangeSchema).nullable().exactOptional(),
     companyId: z
       .uuid()
       .openapi({
@@ -4570,49 +3222,11 @@ const PushOperationSummarySchema = z
     requestedOnUtc: DateTimeSchema.openapi({
       description: 'The datetime when the push was requested.',
     }),
-    status: z
-      .enum(['Pending', 'Failed', 'Success', 'TimedOut'])
-      .openapi({
-        description: 'The status of the push operation.',
-        title: 'Push operation status',
-      }),
+    status: PushOperationSummaryPushOperationStatusSchema,
     statusCode: z.int(),
     timeoutInMinutes: z.int32().nullable().exactOptional(),
     timeoutInSeconds: z.int32().nullable().exactOptional().openapi({ deprecated: true }),
-    validation: z
-      .object({
-        errors: z
-          .array(
-            z
-              .strictObject({
-                itemId: z.string().nullable().exactOptional(),
-                message: z.string().nullable().exactOptional(),
-                validatorName: z.string().nullable().exactOptional(),
-              })
-              .openapi({ title: 'Validation item', required: [] }),
-          )
-          .nullable()
-          .exactOptional(),
-        warnings: z
-          .array(
-            z
-              .strictObject({
-                itemId: z.string().nullable().exactOptional(),
-                message: z.string().nullable().exactOptional(),
-                validatorName: z.string().nullable().exactOptional(),
-              })
-              .openapi({ title: 'Validation item', required: [] }),
-          )
-          .nullable()
-          .exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.',
-        title: 'Validation',
-        required: [],
-      }),
+    validation: PushOperationSummaryValidationSchema.exactOptional(),
   })
   .openapi({
     required: [
@@ -4676,10 +3290,41 @@ const CreateCreditNoteResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateCreditNoteResponse')
 
+const CustomerCustomerStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({ description: 'Status of customer.' })
+  .openapi('CustomerCustomerStatus')
+
+const CustomerContactSchema = z
+  .object({
+    address: CompanyDatasetAddressesItemsSchema.exactOptional().openapi({
+      description: 'An object of Address information.',
+    }),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Email of a contact for a customer.' }),
+    modifiedDate: DateTimeSchema.exactOptional(),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of a contact for a customer.' }),
+    phone: z
+      .array(CompanyDatasetPhoneNumbersItemsSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An array of Phone numbers.' }),
+    status: CustomerCustomerStatusSchema,
+  })
+  .openapi({ required: ['status'] })
+  .openapi('CustomerContact')
+
 const CustomerSchema = z
   .object({
     addresses: z
-      .array(z.lazy(() => CompanyDatasetSchema))
+      .array(CompanyDatasetAddressesItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of Addresses.' }),
@@ -4689,35 +3334,7 @@ const CustomerSchema = z
       .exactOptional()
       .openapi({ description: 'Name of the main contact for the identified customer.' }),
     contacts: z
-      .array(
-        z
-          .object({
-            address: z
-              .lazy(() => CompanyDatasetSchema)
-              .exactOptional()
-              .openapi({ description: 'An object of Address information.' }),
-            email: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Email of a contact for a customer.' }),
-            modifiedDate: DateTimeSchema.exactOptional(),
-            name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Name of a contact for a customer.' }),
-            phone: z
-              .array(z.lazy(() => CompanyDatasetSchema))
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'An array of Phone numbers.' }),
-            status: z
-              .enum(['Unknown', 'Active', 'Archived'])
-              .openapi({ description: 'Status of customer.' }),
-          })
-          .openapi({ required: ['status'] }),
-      )
+      .array(CustomerContactSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of Contacts.' }),
@@ -4729,15 +3346,9 @@ const CustomerSchema = z
         description:
           'Name of the customer as recorded in the accounting system, typically the company name.',
       }),
-    defaultCurrency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Default currency the transactional data of the customer is recorded in.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
+    defaultCurrency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Default currency the transactional data of the customer is recorded in.',
+    }),
     emailAddress: z
       .string()
       .nullable()
@@ -4764,20 +3375,10 @@ const CustomerSchema = z
         description:
           'Company number. In the UK, this is typically the Companies House company registration number.',
       }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the customer.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    status: CustomerCustomerStatusSchema.exactOptional().openapi({
+      description: 'Current state of the customer.',
+    }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     taxNumber: z
       .string()
       .nullable()
@@ -4816,33 +3417,85 @@ const CreateDirectCostResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateDirectCostResponse')
 
-const DirectIncomeSchema = z
+const DirectIncomeDirectIncomeLineItemSchema = z
   .object({
-    contactRef: z
-      .object({ dataType: z.string().nullable().exactOptional(), id: z.string().min(1) })
-      .exactOptional()
-      .openapi({
-        description: 'A customer or supplier associated with the direct income.',
-        required: ['id'],
-      }),
-    currency: z
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
       .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A user-friendly name of the goods or services.' }),
+    discountAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Discount amount for the line before tax.' }),
+    discountPercentage: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Discount percentage for the line before tax.' }),
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description:
+        'Reference to the product, service type, or inventory item to which the direct cost is linked.',
+    }),
+    quantity: z
+      .number()
+      .openapi({
+        description:
+          'The number of units of goods or services received.\n\nNote: If the platform does not provide this information, the quantity will be mapped as 1.',
+      }),
+    subTotal: z
+      .number()
+      .nullable()
       .exactOptional()
       .openapi({
-        description: 'The currency of the direct income.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
+        description: 'The amount of the line, inclusive of discounts, but exclusive of tax.',
       }),
-    currencyRate: z
+    taxAmount: z
       .number()
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
+          'The amount of tax for the line.\nNote: If the platform does not provide this information, the quantity will be mapped as 0.00.',
       }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The total amount of the line, including tax.' }),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'An array of categories against which this direct cost is tracked.',
+      }),
+    unitAmount: z
+      .number()
+      .openapi({
+        description:
+          'The price of each unit of goods or services.\nNote: If the platform does not provide this information, the unit amount will be mapped to the total amount.',
+      }),
+  })
+  .openapi({ required: ['unitAmount', 'quantity'] })
+  .openapi('DirectIncomeDirectIncomeLineItem')
+
+const DirectIncomeSchema = z
+  .object({
+    contactRef: TransferAllOf0ContactRefSchema.exactOptional().openapi({
+      description: 'A customer or supplier associated with the direct income.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'The currency of the direct income.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     id: z
       .string()
       .exactOptional()
@@ -4851,237 +3504,12 @@ const DirectIncomeSchema = z
       description: 'The date of the direct income as recorded in the accounting platform.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'A user-friendly name of the goods or services.' }),
-            discountAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Discount amount for the line before tax.' }),
-            discountPercentage: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Discount percentage for the line before tax.' }),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description:
-                  'Reference to the product, service type, or inventory item to which the direct cost is linked.',
-              }),
-            quantity: z
-              .number()
-              .openapi({
-                description:
-                  'The number of units of goods or services received.\n\nNote: If the platform does not provide this information, the quantity will be mapped as 1.',
-              }),
-            subTotal: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The amount of the line, inclusive of discounts, but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The amount of tax for the line.\nNote: If the platform does not provide this information, the quantity will be mapped as 0.00.',
-              }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'The total amount of the line, including tax.' }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'An array of categories against which this direct cost is tracked.',
-              }),
-            unitAmount: z
-              .number()
-              .openapi({
-                description:
-                  'The price of each unit of goods or services.\nNote: If the platform does not provide this information, the unit amount will be mapped to the total amount.',
-              }),
-          })
-          .openapi({ required: ['unitAmount', 'quantity'] }),
-      )
+      .array(DirectIncomeDirectIncomeLineItemSchema)
       .exactOptional()
       .openapi({ description: 'An array of line items.' }),
     metadata: MetadataSchema.exactOptional(),
     note: z.string().nullable().exactOptional(),
-    paymentAllocations: z
-      .array(
-        z
-          .object({
-            allocation: z
-              .object({
-                allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was allocated.',
-                }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The currency of the transaction.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The total amount that has been allocated.' }),
-              })
-              .openapi({ required: [] }),
-            payment: z
-              .object({
-                accountRef: z
-                  .object({
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'id' from the Accounts data type." }),
-                    name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: "'name' from the Accounts data type." }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'The account that the allocated payment is made from or to.',
-                    title: 'Account reference',
-                    required: [],
-                  }),
-                currency: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Currency the payment has been made in.',
-                    examples: ['GBP', 'USD', 'EUR'],
-                    title: 'Currency',
-                    'x-internal': true,
-                  }),
-                currencyRate: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                    title: 'Currency rate',
-                  }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Identifier of the allocated payment.' }),
-                note: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Notes attached to the allocated payment.' }),
-                paidOnDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date the payment was paid.',
-                }),
-                reference: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Reference to the allocated payment.' }),
-                totalAmount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Total amount that was paid.' }),
-              })
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: ['payment', 'allocation'], title: 'Payment allocation' }),
-      )
-      .exactOptional(),
+    paymentAllocations: z.array(BillAllOf0PaymentAllocationsItemsSchema).exactOptional(),
     reference: z
       .string()
       .nullable()
@@ -5091,16 +3519,7 @@ const DirectIncomeSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'The total amount of the direct incomes, excluding any taxes.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     taxAmount: z
       .number()
       .exactOptional()
@@ -5182,66 +3601,67 @@ const CreateInvoiceResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateInvoiceResponse')
 
+const ItemBillItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference of the account to which the item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Short description of the product or service that has been bought by the customer.',
+      }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference of the tax rate to which the item is linked.',
+    }),
+    unitPrice: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unit price of the product or service.' }),
+  })
+  .openapi({ description: 'Item details that are only for bills.', required: [] })
+  .openapi('ItemBillItem')
+
+const ItemInvoiceItemSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference of the account to which the item is linked.',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Short description of the product or service that has been bought by the customer.',
+      }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional(),
+    unitPrice: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unit price of the product or service.' }),
+  })
+  .openapi({ description: 'Item details that are only for bills.', required: [] })
+  .openapi('ItemInvoiceItem')
+
+const ItemItemStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({
+    description:
+      "Current state of the item, either:\n\n- `Active`: Available for use\n- `Archived`: Unavailable\n- `Unknown`\n\nDue to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.",
+  })
+  .openapi('ItemItemStatus')
+
+const ItemItemTypeSchema = z.any().openapi('ItemItemType')
+
 const ItemSchema = z
   .object({
-    billItem: z
-      .object({
-        accountRef: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'id' from the Accounts data type." }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'name' from the Accounts data type." }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference of the account to which the item is linked.',
-            title: 'Account reference',
-            required: [],
-          }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Short description of the product or service that has been bought by the customer.',
-          }),
-        taxRateRef: z
-          .object({
-            effectiveTaxRate: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Applicable tax rate.' }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Unique identifier for the tax rate in the accounting platform.',
-              }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference of the tax rate to which the item is linked.',
-            title: 'Tax rate reference',
-            required: [],
-          }),
-        unitPrice: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Unit price of the product or service.' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Item details that are only for bills.', required: [] }),
+    billItem: ItemBillItemSchema.exactOptional(),
     code: z
       .string()
       .nullable()
@@ -5254,65 +3674,7 @@ const ItemSchema = z
         description:
           'Identifier for the item that is unique to a company in the accounting platform.',
       }),
-    invoiceItem: z
-      .object({
-        accountRef: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'id' from the Accounts data type." }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'name' from the Accounts data type." }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference of the account to which the item is linked.',
-            title: 'Account reference',
-            required: [],
-          }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Short description of the product or service that has been bought by the customer.',
-          }),
-        taxRateRef: z
-          .object({
-            effectiveTaxRate: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Applicable tax rate.' }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Unique identifier for the tax rate in the accounting platform.',
-              }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.\n\nFound on:\n\n- Bill line items\n- Bill Credit Note line items\n- Credit Note line items\n- Direct incomes line items\n- Invoice line items\n- Items',
-            title: 'Tax rate reference',
-            required: [],
-          }),
-        unitPrice: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Unit price of the product or service.' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Item details that are only for bills.', required: [] }),
+    invoiceItem: ItemInvoiceItemSchema.exactOptional(),
     isBillItem: z
       .boolean()
       .exactOptional()
@@ -5321,20 +3683,14 @@ const ItemSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether you can use this item for invoices.' }),
-    itemStatus: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Current state of the item, either:\n\n- `Active`: Available for use\n- `Archived`: Unavailable\n- `Unknown`\n\nDue to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.",
-      }),
+    itemStatus: ItemItemStatusSchema.exactOptional(),
     metadata: MetadataSchema.exactOptional(),
     name: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Name of the item in the accounting platform.' }),
-    type: z.any().exactOptional(),
+    type: ItemItemTypeSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .and(
@@ -5379,57 +3735,69 @@ const CreateJournalEntryResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateJournalEntryResponse')
 
-const PaymentSchema = z
-  .object({
-    accountRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'id' from the Accounts data type." }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'name' from the Accounts data type." }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Account the payment is recorded against in the accounting platform.',
-        title: 'Account reference',
-        required: [],
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ISO currency code recorded for the payment in the accounting platform.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    currencyRate: z
+const PaymentPaymentLinkTypeSchema = z
+  .enum([
+    'Unknown',
+    'Unlinked',
+    'Invoice',
+    'CreditNote',
+    'Other',
+    'Refund',
+    'Payment',
+    'PaymentOnAccount',
+    'ManualJournal',
+    'Discount',
+  ])
+  .openapi({
+    description:
+      'Types of payment line links, either:  \n`Unknown`  \n`Unlinked` - Not used  \n`Invoice` - ID refers to the invoice  \n`CreditNote` - ID refers to the credit note  \n`Refund` - ID refers to the sibling payment  \n`Payment` - ID refers to the sibling payment  \n`PaymentOnAccount` - ID refers to the customer  \n`Other` - ID refers to the customer  \n`Manual Journal`  \n`Discount` - ID refers to the payment',
+    title: 'Payment Link Type',
+  })
+  .openapi('PaymentPaymentLinkType')
+
+const PaymentPaymentLineLinkSchema = z
+  .strictObject({
+    amount: z
       .number()
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
+          'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  \nA negative link amount _reduces_ the outstanding amount on the accounts receivable account.  \nA positive link amount _increases_ the outstanding amount on the accounts receivable account.',
       }),
-    customerRef: z
-      .object({
-        companyName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`customerName` from the Customer data type' }),
-        id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
-      })
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    id: z
+      .string()
       .exactOptional()
-      .openapi({
-        required: ['id'],
-        description: 'Customer the payment is recorded against in the accounting platform.',
-      }),
+      .openapi({ description: 'Unique identifier of the transaction represented by the link.' }),
+    type: PaymentPaymentLinkTypeSchema,
+  })
+  .openapi({ required: ['type'], title: 'Payment Line Link' })
+  .openapi('PaymentPaymentLineLink')
+
+const PaymentPaymentLineSchema = z
+  .object({
+    allocatedOnDate: DateTimeSchema.exactOptional().openapi({
+      description: 'The date the payment was allocated.',
+    }),
+    amount: z.number().openapi({ description: 'Amount in the payment currency.' }),
+    links: z.array(PaymentPaymentLineLinkSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: ['amount'], title: 'Payment Line' })
+  .openapi('PaymentPaymentLine')
+
+const PaymentSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Account the payment is recorded against in the accounting platform.',
+    }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'ISO currency code recorded for the payment in the accounting platform.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
+    customerRef: CustomerCustomerRefSchema.exactOptional().openapi({
+      description: 'Customer the payment is recorded against in the accounting platform.',
+    }),
     date: DateTimeSchema.exactOptional().openapi({
       description: 'Date the payment was recorded in the accounting software.',
     }),
@@ -5441,67 +3809,7 @@ const PaymentSchema = z
           'Identifier for the payment, unique to the company in the accounting platform.',
       }),
     lines: z
-      .array(
-        z
-          .object({
-            allocatedOnDate: DateTimeSchema.exactOptional().openapi({
-              description: 'The date the payment was allocated.',
-            }),
-            amount: z.number().openapi({ description: 'Amount in the payment currency.' }),
-            links: z
-              .array(
-                z
-                  .strictObject({
-                    amount: z
-                      .number()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  \nA negative link amount _reduces_ the outstanding amount on the accounts receivable account.  \nA positive link amount _increases_ the outstanding amount on the accounts receivable account.',
-                      }),
-                    currencyRate: z
-                      .number()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-                        title: 'Currency rate',
-                      }),
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Unique identifier of the transaction represented by the link.',
-                      }),
-                    type: z
-                      .enum([
-                        'Unknown',
-                        'Unlinked',
-                        'Invoice',
-                        'CreditNote',
-                        'Other',
-                        'Refund',
-                        'Payment',
-                        'PaymentOnAccount',
-                        'ManualJournal',
-                        'Discount',
-                      ])
-                      .openapi({
-                        description:
-                          'Types of payment line links, either:  \n`Unknown`  \n`Unlinked` - Not used  \n`Invoice` - ID refers to the invoice  \n`CreditNote` - ID refers to the credit note  \n`Refund` - ID refers to the sibling payment  \n`Payment` - ID refers to the sibling payment  \n`PaymentOnAccount` - ID refers to the customer  \n`Other` - ID refers to the customer  \n`Manual Journal`  \n`Discount` - ID refers to the payment',
-                        title: 'Payment Link Type',
-                      }),
-                  })
-                  .openapi({ required: ['type'], title: 'Payment Line Link' }),
-              )
-              .nullable()
-              .exactOptional(),
-          })
-          .openapi({ required: ['amount'], title: 'Payment Line' }),
-      )
+      .array(PaymentPaymentLineSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of payment lines.' }),
@@ -5511,39 +3819,15 @@ const PaymentSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Any additional information associated with the payment.' }),
-    paymentMethodRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '`id` from the Payment Methods data type' }),
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: '`name` from the Payment Methods data type' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The Payment Method to which the payment is linked in the accounting platform.',
-        required: [],
-      }),
+    paymentMethodRef: PaymentMethodPaymentMethodRefSchema.exactOptional().openapi({
+      description: 'The Payment Method to which the payment is linked in the accounting platform.',
+    }),
     reference: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Friendly reference for the payment.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     totalAmount: z
       .number()
       .exactOptional()
@@ -5577,26 +3861,68 @@ const CreatePaymentResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreatePaymentResponse')
 
-const PurchaseOrderSchema = z
+const PurchaseOrderPurchaseOrderLineItemSchema = z
   .object({
-    currency: z
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'Reference to the account to which the line item is linked.',
+    }),
+    description: z
       .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the goods / services that have been ordered.' }),
+    discountAmount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Value of any discounts applied.' }),
+    discountPercentage: z
+      .number()
       .exactOptional()
       .openapi({
-        description: 'Currency of the purchase order.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
+        description: 'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
       }),
-    currencyRate: z
+    itemRef: ItemItemRefSchema.exactOptional().openapi({
+      description: 'Reference to the product or inventory item to which the line item is linked.',
+    }),
+    quantity: z
       .number()
+      .exactOptional()
+      .openapi({ description: 'Number of units that have been ordered.' }),
+    subTotal: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Amount of the line, inclusive of discounts but exclusive of tax.' }),
+    taxAmount: z.number().exactOptional().openapi({ description: 'Amount of tax for the line.' }),
+    taxRateRef: TaxRateTaxRateRefSchema.exactOptional().openapi({
+      description: 'Reference to the tax rate to which the line item is linked.',
+    }),
+    totalAmount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total amount of the line, inclusive of discounts and tax.' }),
+    trackingCategoryRefs: z
+      .array(TrackingCategoryTrackingCategoryRefSchema)
       .nullable()
       .exactOptional()
       .openapi({
-        description:
-          'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-        title: 'Currency rate',
+        description: 'Reference to the tracking categories to which the line item is linked.',
       }),
+    unitAmount: z.number().exactOptional().openapi({ description: 'Price of each unit.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PurchaseOrderPurchaseOrderLineItem')
+
+const PurchaseOrderPurchaseOrderStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Open', 'Closed', 'Void'])
+  .openapi({ description: 'Current state of the purchase order' })
+  .openapi('PurchaseOrderPurchaseOrderStatus')
+
+const PurchaseOrderSchema = z
+  .object({
+    currency: TransferTransferAccountCurrencySchema.exactOptional().openapi({
+      description: 'Currency of the purchase order.',
+    }),
+    currencyRate: BillPaymentBillPaymentLineLinkCurrencyRateSchema.exactOptional(),
     deliveryDate: DateTimeSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Actual delivery date for any goods that have been ordered.' }),
@@ -5614,128 +3940,7 @@ const PurchaseOrderSchema = z
       description: 'Date of the purchase order as recorded in the accounting platform.',
     }),
     lineItems: z
-      .array(
-        z
-          .object({
-            accountRef: z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'id' from the Accounts data type." }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "'name' from the Accounts data type." }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the account to which the line item is linked.',
-                title: 'Account reference',
-                required: [],
-              }),
-            description: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Description of the goods / services that have been ordered.',
-              }),
-            discountAmount: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Value of any discounts applied.' }),
-            discountPercentage: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Percentage rate (from 0 to 100) of any discounts applied to the unit amount.',
-              }),
-            itemRef: z
-              .object({
-                id: z
-                  .string()
-                  .min(1)
-                  .openapi({
-                    description: 'Unique identifier for the item in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the item in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                required: ['id'],
-                title: 'Item reference',
-                description:
-                  'Reference to the product or inventory item to which the line item is linked.',
-              }),
-            quantity: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Number of units that have been ordered.' }),
-            subTotal: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description: 'Amount of the line, inclusive of discounts but exclusive of tax.',
-              }),
-            taxAmount: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Amount of tax for the line.' }),
-            taxRateRef: z
-              .object({
-                effectiveTaxRate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Applicable tax rate.' }),
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier for the tax rate in the accounting platform.',
-                  }),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax rate in the accounting platform.' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Reference to the tax rate to which the line item is linked.',
-                title: 'Tax rate reference',
-                required: [],
-              }),
-            totalAmount: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description: 'Total amount of the line, inclusive of discounts and tax.',
-              }),
-            trackingCategoryRefs: z
-              .array(
-                z
-                  .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-                  .openapi({
-                    deprecated: true,
-                    description: 'References a category against which the item is tracked.',
-                    required: ['id'],
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Reference to the tracking categories to which the line item is linked.',
-              }),
-            unitAmount: z.number().exactOptional().openapi({ description: 'Price of each unit.' }),
-          })
-          .openapi({ required: [] }),
-      )
+      .array(PurchaseOrderPurchaseOrderLineItemSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'Array of line items.' }),
@@ -5756,68 +3961,19 @@ const PurchaseOrderSchema = z
         description:
           'Friendly reference for the purchase order, commonly generated by the accounting platform.',
       }),
-    shipTo: z
-      .object({
-        address: z
-          .lazy(() => CompanyDatasetSchema)
-          .exactOptional()
-          .openapi({ description: 'Delivery address for any goods that have been ordered.' }),
-        contact: z
-          .object({
-            email: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Email address of the contact at the delivery address.' }),
-            name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Name of the contact at the delivery address.' }),
-            phone: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Phone number of the contact at the delivery address.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Details of the named contact at the delivery address.',
-            required: [],
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Delivery details for any goods that have been ordered.',
-        title: 'Ship to',
-        required: [],
-      }),
-    status: z
-      .enum(['Unknown', 'Draft', 'Open', 'Closed', 'Void'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the purchase order' }),
+    shipTo: SalesOrderAllOf0ShipToSchema.exactOptional().openapi({
+      description: 'Delivery details for any goods that have been ordered.',
+    }),
+    status: PurchaseOrderPurchaseOrderStatusSchema.exactOptional(),
     subTotal: z
       .number()
       .exactOptional()
       .openapi({
         description: 'Total amount of the purchase order, including discounts but excluding tax.',
       }),
-    supplierRef: z
-      .object({
-        id: z.string().min(1).openapi({ description: "The supplier's unique ID" }),
-        supplierName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The supplier's name" }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Supplier that the purchase order is recorded against in the accounting system.',
-        required: ['id'],
-        title: 'Supplier reference',
-      }),
+    supplierRef: SupplierSupplierRefSchema.exactOptional().openapi({
+      description: 'Supplier that the purchase order is recorded against in the accounting system.',
+    }),
     totalAmount: z
       .number()
       .exactOptional()
@@ -5902,10 +4058,15 @@ const CreatePurchaseOrderResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreatePurchaseOrderResponse')
 
+const SupplierSupplierStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({ description: 'Status of the supplier.' })
+  .openapi('SupplierSupplierStatus')
+
 const SupplierSchema = z
   .object({
     addresses: z
-      .array(z.lazy(() => CompanyDatasetSchema))
+      .array(CompanyDatasetAddressesItemsSchema)
       .nullable()
       .exactOptional()
       .openapi({ description: 'An array of Addresses.' }),
@@ -5950,20 +4111,8 @@ const SupplierSchema = z
         description:
           'Company number of the supplier. In the UK, this is typically the company registration number issued by Companies House.',
       }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({ description: 'Status of the supplier.' }),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
+    status: SupplierSupplierStatusSchema.exactOptional(),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
     supplierName: z
       .string()
       .nullable()
@@ -6036,15 +4185,23 @@ const CreateSupplierResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateSupplierResponse')
 
+const TransferTransferAccountSchema = z
+  .object({
+    accountRef: AccountAccountRefSchema.exactOptional().openapi({
+      description: 'The account that the transfer is moving from or to.',
+    }),
+    amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The amount transferred between accounts.' }),
+    currency: TransferTransferAccountCurrencySchema.exactOptional(),
+  })
+  .openapi({ description: '', title: 'Transfer account', required: [] })
+  .openapi('TransferTransferAccount')
+
 const TransferSchema = z
   .object({
-    contactRef: z
-      .object({ dataType: z.string().nullable().exactOptional(), id: z.string().min(1) })
-      .exactOptional()
-      .openapi({
-        description: 'The customer or supplier for the transfer, if available.',
-        required: ['id'],
-      }),
+    contactRef: TransferAllOf0ContactRefSchema.exactOptional(),
     date: DateTimeSchema.exactOptional().openapi({
       description: 'The day on which the transfer was made.',
     }),
@@ -6054,108 +4211,17 @@ const TransferSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Description of the transfer.' }),
-    from: z
-      .object({
-        accountRef: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'id' from the Accounts data type." }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'name' from the Accounts data type." }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'The account that the transfer is moving from or to.',
-            title: 'Account reference',
-            required: [],
-          }),
-        amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'The amount transferred between accounts.' }),
-        currency: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-            examples: ['GBP', 'USD', 'EUR'],
-            title: 'Currency',
-            'x-internal': true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The details of the accounts the transfer is moving from.',
-        title: 'Transfer account',
-        required: [],
-      }),
+    from: TransferTransferAccountSchema.exactOptional().openapi({
+      description: 'The details of the accounts the transfer is moving from.',
+    }),
     id: z.string().exactOptional().openapi({ description: 'Unique identifier for the transfer.' }),
     metadata: MetadataSchema.exactOptional(),
-    supplementalData: z
-      .object({
-        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-        required: [],
-      }),
-    to: z
-      .object({
-        accountRef: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'id' from the Accounts data type." }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "'name' from the Accounts data type." }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'The account that the transfer is moving from or to.',
-            title: 'Account reference',
-            required: [],
-          }),
-        amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'The amount transferred between accounts.' }),
-        currency: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-            examples: ['GBP', 'USD', 'EUR'],
-            title: 'Currency',
-            'x-internal': true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The details of the accounts the transfer is moving to.',
-        title: 'Transfer account',
-        required: [],
-      }),
+    supplementalData: BillAllOf0SupplementalDataSchema.exactOptional(),
+    to: TransferTransferAccountSchema.exactOptional().openapi({
+      description: 'The details of the accounts the transfer is moving to.',
+    }),
     trackingCategoryRefs: z
-      .array(
-        z
-          .object({ id: z.string().min(1), name: z.string().nullable().exactOptional() })
-          .openapi({
-            deprecated: true,
-            description: 'References a category against which the item is tracked.',
-            required: ['id'],
-          }),
-      )
+      .array(TrackingCategoryTrackingCategoryRefSchema)
       .nullable()
       .exactOptional()
       .openapi({
@@ -6274,6 +4340,11 @@ const ItemsSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Items')
 
+const JournalJournalStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({ description: 'Current journal status.' })
+  .openapi('JournalJournalStatus')
+
 const JournalSchema = z
   .object({
     createdOn: DateTimeSchema.exactOptional().openapi({ description: 'Journal creation date.' }),
@@ -6307,10 +4378,7 @@ const JournalSchema = z
         description:
           'Parent journal ID.\nIf the journal is a parent journal, this value is not present.',
       }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({ description: 'Current journal status.' }),
+    status: JournalJournalStatusSchema.exactOptional(),
     type: z
       .string()
       .nullable()
@@ -6340,6 +4408,16 @@ const JournalsSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Journals')
 
+const PaymentMethodPaymentMethodStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({ description: 'Status of the Payment Method.' })
+  .openapi('PaymentMethodPaymentMethodStatus')
+
+const PaymentMethodPaymentMethodTypeSchema = z
+  .enum(['Unknown', 'Cash', 'Check', 'CreditCard', 'DebitCard', 'BankTransfer', 'Other'])
+  .openapi({ description: 'Method of payment.' })
+  .openapi('PaymentMethodPaymentMethodType')
+
 const PaymentMethodSchema = z
   .object({
     id: z
@@ -6352,14 +4430,8 @@ const PaymentMethodSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Name of the payment method.' }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({ description: 'Status of the Payment Method.' }),
-    type: z
-      .enum(['Unknown', 'Cash', 'Check', 'CreditCard', 'DebitCard', 'BankTransfer', 'Other'])
-      .exactOptional()
-      .openapi({ description: 'Method of payment.' }),
+    status: PaymentMethodPaymentMethodStatusSchema.exactOptional(),
+    type: PaymentMethodPaymentMethodTypeSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .and(ModifiedDatesSchema)
@@ -6387,6 +4459,50 @@ const PaymentsSchema: z.ZodType<PaymentsType> = z
   )
   .openapi('Payments')
 
+const ProfitAndLossReportReportBasisSchema = z
+  .enum(['Unknown', 'Accrual', 'Cash'])
+  .openapi({ description: 'The basis of a report.' })
+  .openapi('ProfitAndLossReportReportBasis')
+
+const ProfitAndLossReportProfitAndLossReportSchema = z
+  .strictObject({
+    costOfSales: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLine items for cost of sales in the given date range.',
+    }),
+    expenses: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLine items for expenses in the given date range.',
+    }),
+    fromDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Date from which the report data begins.',
+    }),
+    grossProfit: z
+      .number()
+      .openapi({ description: 'Gross profit of the company in the given date range.' }),
+    income: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLine items for income in the given date range.',
+    }),
+    netOperatingProfit: z
+      .number()
+      .openapi({ description: 'Net operating profit of the company in the given date range.' }),
+    netOtherIncome: z
+      .number()
+      .openapi({ description: 'Net other income of the company in the given date range.' }),
+    netProfit: z
+      .number()
+      .openapi({ description: 'Net profit of the company in the given date range.' }),
+    otherExpenses: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLine items for other expenses in the given date range.',
+    }),
+    otherIncome: ReportLineSchema.exactOptional().openapi({
+      description: 'ReportLine items for other income in the given date range.',
+    }),
+    toDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Date on which the report data ends.',
+    }),
+  })
+  .openapi({ required: ['grossProfit', 'netOperatingProfit', 'netOtherIncome', 'netProfit'] })
+  .openapi('ProfitAndLossReportProfitAndLossReport')
+
 const ProfitAndLossReportSchema = z
   .object({
     currency: z
@@ -6402,53 +4518,9 @@ const ProfitAndLossReportSchema = z
     mostRecentAvailableMonth: DateTimeSchema.exactOptional().openapi({
       description: 'Most recent available monthly report data.',
     }),
-    reportBasis: z
-      .enum(['Unknown', 'Accrual', 'Cash'])
-      .openapi({ description: 'The basis of a report.' }),
+    reportBasis: ProfitAndLossReportReportBasisSchema,
     reports: z
-      .array(
-        z
-          .strictObject({
-            costOfSales: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLine items for cost of sales in the given date range.',
-            }),
-            expenses: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLine items for expenses in the given date range.',
-            }),
-            fromDate: DateTimeSchema.exactOptional().openapi({
-              description: 'Date from which the report data begins.',
-            }),
-            grossProfit: z
-              .number()
-              .openapi({ description: 'Gross profit of the company in the given date range.' }),
-            income: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLine items for income in the given date range.',
-            }),
-            netOperatingProfit: z
-              .number()
-              .openapi({
-                description: 'Net operating profit of the company in the given date range.',
-              }),
-            netOtherIncome: z
-              .number()
-              .openapi({ description: 'Net other income of the company in the given date range.' }),
-            netProfit: z
-              .number()
-              .openapi({ description: 'Net profit of the company in the given date range.' }),
-            otherExpenses: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLine items for other expenses in the given date range.',
-            }),
-            otherIncome: ReportLineSchema.exactOptional().openapi({
-              description: 'ReportLine items for other income in the given date range.',
-            }),
-            toDate: DateTimeSchema.exactOptional().openapi({
-              description: 'Date on which the report data ends.',
-            }),
-          })
-          .openapi({
-            required: ['grossProfit', 'netOperatingProfit', 'netOtherIncome', 'netProfit'],
-          }),
-      )
+      .array(ProfitAndLossReportProfitAndLossReportSchema)
       .openapi({ description: 'An array of profit and loss reports.' }),
   })
   .openapi({
@@ -6466,153 +4538,37 @@ const PurchaseOrdersSchema = z
   .openapi({ 'x-internal': true })
   .openapi('PurchaseOrders')
 
-const PushOptionPropertySchema: z.ZodType<PushOptionPropertyType> = z
+const PushOptionPushOptionPropertySchema: z.ZodType<PushOptionPushOptionPropertyType> = z
   .lazy(() =>
     z
       .object({
         description: z.string().min(1),
         displayName: z.string().min(1),
-        options: z
-          .array(
-            z
-              .object({
-                description: z.string().exactOptional(),
-                displayName: z.string().exactOptional(),
-                required: z.boolean().exactOptional(),
-                type: z
-                  .enum([
-                    'Array',
-                    'Object',
-                    'String',
-                    'Number',
-                    'Boolean',
-                    'DateTime',
-                    'File',
-                    'MultiPart',
-                  ])
-                  .exactOptional()
-                  .openapi({ title: 'Option Type' }),
-                value: z
-                  .string()
-                  .min(1)
-                  .exactOptional()
-                  .openapi({ description: 'Allowed value for field.' }),
-              })
-              .openapi({ title: 'Push Option Choice', required: [] }),
-          )
+        options: z.array(PushOptionPushOptionChoiceSchema).nullable().exactOptional(),
+        properties: z
+          .record(z.string(), PushOptionPushOptionPropertySchema)
           .nullable()
           .exactOptional(),
-        properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
         required: z.boolean(),
-        type: z
-          .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
-          .openapi({ title: 'Option Type' }),
-        validation: z
-          .strictObject({
-            information: z
-              .array(
-                z
-                  .strictObject({
-                    details: z.string().min(1),
-                    field: z.string().exactOptional(),
-                    ref: z.url().nullable().exactOptional(),
-                  })
-                  .openapi({ required: ['details'], title: 'Push field validation' }),
-              )
-              .nullable()
-              .exactOptional(),
-            warnings: z
-              .array(
-                z
-                  .strictObject({
-                    details: z.string().min(1),
-                    field: z.string().exactOptional(),
-                    ref: z.url().nullable().exactOptional(),
-                  })
-                  .openapi({ required: ['details'], title: 'Push field validation' }),
-              )
-              .nullable()
-              .exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ title: 'Push validation info', required: [] }),
+        type: PushOptionPushOptionTypeSchema,
+        validation: PushOptionPushValidationInfoSchema.exactOptional(),
       })
       .openapi({
         required: ['description', 'displayName', 'required', 'type'],
         title: 'Push Option Property',
       }),
   )
-  .openapi('PushOptionProperty')
+  .openapi('PushOptionPushOptionProperty')
 
 const PushOptionSchema = z
   .object({
     description: z.string().exactOptional(),
     displayName: z.string().min(1),
-    options: z
-      .array(
-        z
-          .object({
-            description: z.string().exactOptional(),
-            displayName: z.string().exactOptional(),
-            required: z.boolean().exactOptional(),
-            type: z
-              .enum([
-                'Array',
-                'Object',
-                'String',
-                'Number',
-                'Boolean',
-                'DateTime',
-                'File',
-                'MultiPart',
-              ])
-              .exactOptional()
-              .openapi({ title: 'Option Type' }),
-            value: z
-              .string()
-              .min(1)
-              .exactOptional()
-              .openapi({ description: 'Allowed value for field.' }),
-          })
-          .openapi({ title: 'Push Option Choice', required: [] }),
-      )
-      .nullable()
-      .exactOptional(),
-    properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
+    options: z.array(PushOptionPushOptionChoiceSchema).nullable().exactOptional(),
+    properties: z.record(z.string(), PushOptionPushOptionPropertySchema).nullable().exactOptional(),
     required: z.boolean(),
-    type: z
-      .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
-      .openapi({ title: 'Option Type' }),
-    validation: z
-      .strictObject({
-        information: z
-          .array(
-            z
-              .strictObject({
-                details: z.string().min(1),
-                field: z.string().exactOptional(),
-                ref: z.url().nullable().exactOptional(),
-              })
-              .openapi({ required: ['details'], title: 'Push field validation' }),
-          )
-          .nullable()
-          .exactOptional(),
-        warnings: z
-          .array(
-            z
-              .strictObject({
-                details: z.string().min(1),
-                field: z.string().exactOptional(),
-                ref: z.url().nullable().exactOptional(),
-              })
-              .openapi({ required: ['details'], title: 'Push field validation' }),
-          )
-          .nullable()
-          .exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ title: 'Push validation info', required: [] }),
+    type: PushOptionPushOptionTypeSchema,
+    validation: PushOptionPushValidationInfoSchema.nullable().exactOptional(),
   })
   .openapi({
     required: ['displayName', 'required', 'type'],
@@ -6635,6 +4591,42 @@ const SuppliersSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Suppliers')
 
+const TaxRateTaxRateComponentSchema = z
+  .strictObject({
+    isCompound: z
+      .boolean()
+      .openapi({
+        description:
+          'A flag to indicate with the tax is calculated using the principle of compounding. ',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the tax rate component.' }),
+    rate: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The rate of the tax rate component, usually a percentage.' }),
+  })
+  .openapi({
+    description:
+      'A tax rate can be made up of multiple sub taxes, often called components of the tax.',
+    required: ['isCompound'],
+    title: 'Tax Rate Component',
+  })
+  .openapi('TaxRateTaxRateComponent')
+
+const TaxRateTaxRateStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({
+    description:
+      'Status of the tax rate in the accounting platform.  \n- `Active` - An active tax rate in use by a company.  \n- `Archived` - A tax rate that has been archived or is inactive in the accounting platform.  \n- `Unknown` - Where the status of the tax rate cannot be determined from the underlying platform.',
+    title: 'Tax rate status',
+  })
+  .openapi('TaxRateTaxRateStatus')
+
 const TaxRateSchema = z
   .object({
     code: z
@@ -6642,38 +4634,7 @@ const TaxRateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Code for the tax rate from the accounting platform.' }),
-    components: z
-      .array(
-        z
-          .strictObject({
-            isCompound: z
-              .boolean()
-              .openapi({
-                description:
-                  'A flag to indicate with the tax is calculated using the principle of compounding. ',
-              }),
-            name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Name of the tax rate component.' }),
-            rate: z
-              .number()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'The rate of the tax rate component, usually a percentage.',
-              }),
-          })
-          .openapi({
-            description:
-              'A tax rate can be made up of multiple sub taxes, often called components of the tax.',
-            required: ['isCompound'],
-            title: 'Tax Rate Component',
-          }),
-      )
-      .nullable()
-      .exactOptional(),
+    components: z.array(TaxRateTaxRateComponentSchema).nullable().exactOptional(),
     effectiveTaxRate: z
       .number()
       .nullable()
@@ -6692,14 +4653,7 @@ const TaxRateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Codat-augmented name of the tax rate in the accounting platform.' }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Status of the tax rate in the accounting platform.  \n- `Active` - An active tax rate in use by a company.  \n- `Archived` - A tax rate that has been archived or is inactive in the accounting platform.  \n- `Unknown` - Where the status of the tax rate cannot be determined from the underlying platform.',
-        title: 'Tax rate status',
-      }),
+    status: TaxRateTaxRateStatusSchema.exactOptional(),
     totalTaxRate: z
       .number()
       .nullable()
@@ -6744,13 +4698,7 @@ const TrackingCategorySchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: "The identifier for this item's immediate parent" }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({
-        description: 'Current state of the tracking category.',
-        title: 'Tracking category status',
-      }),
+    status: TrackingCategoryStatusSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .and(ModifiedDatesSchema)
@@ -6804,13 +4752,7 @@ const TrackingCategoryTreeSchema: z.ZodType<TrackingCategoryTreeType> = z
           .nullable()
           .exactOptional()
           .openapi({ description: "The identifier for this item's immediate parent" }),
-        status: z
-          .enum(['Unknown', 'Active', 'Archived'])
-          .exactOptional()
-          .openapi({
-            description: 'Current state of the tracking category.',
-            title: 'Tracking category status',
-          }),
+        status: TrackingCategoryStatusSchema.exactOptional(),
         subCategories: z
           .array(TrackingCategoryTreeSchema)
           .nullable()

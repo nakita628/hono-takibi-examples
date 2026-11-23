@@ -696,13 +696,13 @@ Responses are paged, so you should provide `page` and `pageSize` query parameter
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|balance|object|true|none|An object containing bank balance data.|
+|balance|[AccountBalanceAccountBalanceAmounts](#schemaaccountbalanceaccountbalanceamounts)|true|none|An object containing bank balance data.|
 |currency|string|true|none|The currency code for the account.|
 |holder|string \| null|false|none|The name of the person or company who holds the account.|
 |id|string|true|none|The ID of the account from the provider.|
-|identifiers|object|true|none|An object containing bank account identification information.|
+|identifiers|[AccountAccountIdentifiers](#schemaaccountaccountidentifiers)|true|none|An object containing bank account identification information.|
 |informalName|string \| null|false|none|The friendly name of the account, chosen by the holder. This may not have been set by the account holder and therefore is not always available.|
-|institution|object|true|none|The bank or other financial institution providing the account.|
+|institution|[AccountAccountInstitution](#schemaaccountaccountinstitution)|true|none|The bank or other financial institution providing the account.|
 |name|string|true|none|The name of the account according to the provider.|
 |type|[AccountType](#schemaaccounttype)|true|none|The type of transactions and balances on the account.  <br>For Credit accounts, positive balances are liabilities, and positive transactions **reduce** liabilities.  <br>For Debit accounts, positive balances are assets, and positive transactions **increase** assets.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -781,7 +781,7 @@ Responses are paged, so you should provide `page` and `pageSize` query parameter
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |accountId|string|true|none|The unique identifier of the account.|
-|balance|object|true|none|Depending on the data provided by the underlying bank, not all balances are always available.|
+|balance|[AccountBalanceAccountBalanceAmounts](#schemaaccountbalanceaccountbalanceamounts)|true|none|Depending on the data provided by the underlying bank, not all balances are always available.|
 |date|[DateTime](#schemadatetime)|true|none|Date of the balance.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -1149,13 +1149,13 @@ View the coverage for banking transactions in the [Data Coverage Explorer](https
 |accountId|string|true|none|The unique identifier of the bank account.|
 |amount|number|false|none|The amount of the bank transaction.|
 |authorizedDate|[DateTime](#schemadatetime)|false|none|The date the bank transaction was authorized.|
-|code|string|false|none|Code to identify the underlying transaction.|
+|code|[TransactionTransactionCode](#schematransactiontransactioncode)|false|none|Code to identify the underlying transaction.|
 |currency|string|true|none|The currency of the bank transaction.|
 |description|string \| null|false|none|The description of the bank transaction.|
 |id|string|true|none|The unique identifier of the bank transaction.|
 |merchantName|string \| null|false|none|The name of the merchant.|
 |postedDate|[DateTime](#schemadatetime)|false|none|The date the bank transaction was cleared.|
-|transactionCategoryRef|object|false|none|An object of bank transaction category reference data.|
+|transactionCategoryRef|[TransactionCategoryTransactionCategoryRef](#schematransactioncategorytransactioncategoryref)|false|none|An object of bank transaction category reference data.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -1252,7 +1252,7 @@ Responses are paged, so you should provide `page` and `pageSize` query parameter
 |id|string|true|none|The unique identifier of the bank transaction category.|
 |name|string|true|none|The name of the bank transaction category.|
 |parentId|string \| null|false|none|The unique identifier of the parent bank transaction category.|
-|status|string|false|none|none|
+|status|[TransactionCategoryTransactionCategoryStatus](#schematransactioncategorytransactioncategorystatus)|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -1313,3 +1313,156 @@ Responses are paged, so you should provide `page` and `pageSize` query parameter
 |pageNumber|integer|true|none|none|
 |pageSize|integer|true|none|none|
 |totalResults|integer|true|none|none|
+
+<h2 id="tocS_AccountBalanceAccountBalanceAmounts">AccountBalanceAccountBalanceAmounts</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountbalanceaccountbalanceamounts"></a>
+<a id="schema_AccountBalanceAccountBalanceAmounts"></a>
+<a id="tocSaccountbalanceaccountbalanceamounts"></a>
+<a id="tocsaccountbalanceaccountbalanceamounts"></a>
+
+```json
+{
+  "available": 0,
+  "current": 0,
+  "limit": 0
+}
+```
+
+Depending on the data provided by the underlying bank, not all balances are always available.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|number \| null|false|none|The balance available in the account, including any pending transactions. This doesn't include additional funds available from any overdrafts.|
+|current|number|false|none|The balance of the account only including cleared transactions.|
+|limit|number \| null|false|none|The minimum allowed balance for the account. For example, a $100.00 overdraft would show as a limit of `-100.00`.|
+
+<h2 id="tocS_AccountAccountIdentifiers">AccountAccountIdentifiers</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccountidentifiers"></a>
+<a id="schema_AccountAccountIdentifiers"></a>
+<a id="tocSaccountaccountidentifiers"></a>
+<a id="tocsaccountaccountidentifiers"></a>
+
+```json
+{
+  "bankCode": "string",
+  "bic": "string",
+  "iban": "string",
+  "maskedAccountNumber": "string",
+  "number": "string",
+  "subtype": "string",
+  "type": "Account"
+}
+```
+
+An object containing bank account identification information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bankCode|string \| null|false|none|The local (usually national) routing number for the account.<br><br>This is known by different names in different countries:<br>* BSB code (Australia)<br>* routing number (Canada, USA)<br>* sort code (UK)|
+|bic|string \| null|false|none|The ISO 9362 code (commonly called SWIFT code, SWIFT-BIC or BIC) for the account.|
+|iban|string \| null|false|none|The international bank account number (IBAN) for the account, if known.|
+|maskedAccountNumber|string \| null|false|none|A portion of the actual account `number` to help account identification where number is tokenised (Plaid only)|
+|number|string \| null|false|none|The account number for the account. When combined with the`bankCode`, this is usually enough to uniquely identify an account within a jurisdiction.|
+|subtype|string \| null|false|none|Detailed account category|
+|type|[AccountAccountIdentifierType](#schemaaccountaccountidentifiertype)|true|none|Type of account|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Account|
+|type|Card|
+|type|Credit|
+|type|Depository|
+|type|Investment|
+|type|Loan|
+|type|Other|
+
+<h2 id="tocS_AccountAccountInstitution">AccountAccountInstitution</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccountinstitution"></a>
+<a id="schema_AccountAccountInstitution"></a>
+<a id="tocSaccountaccountinstitution"></a>
+<a id="tocsaccountaccountinstitution"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+The bank or other financial institution providing the account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The institution's ID, according to the provider.|
+|name|string|false|none|The institution's name, according to the underlying provider.|
+
+<h2 id="tocS_AccountAccountIdentifierType">AccountAccountIdentifierType</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccountidentifiertype"></a>
+<a id="schema_AccountAccountIdentifierType"></a>
+<a id="tocSaccountaccountidentifiertype"></a>
+<a id="tocsaccountaccountidentifiertype"></a>
+
+```json
+"Account"
+```
+
+Type of account
+
+<h2 id="tocS_TransactionTransactionCode">TransactionTransactionCode</h2>
+<!-- backwards compatibility -->
+<a id="schematransactiontransactioncode"></a>
+<a id="schema_TransactionTransactionCode"></a>
+<a id="tocStransactiontransactioncode"></a>
+<a id="tocstransactiontransactioncode"></a>
+
+```json
+"Unknown"
+```
+
+Code to identify the underlying transaction.
+
+<h2 id="tocS_TransactionCategoryTransactionCategoryRef">TransactionCategoryTransactionCategoryRef</h2>
+<!-- backwards compatibility -->
+<a id="schematransactioncategorytransactioncategoryref"></a>
+<a id="schema_TransactionCategoryTransactionCategoryRef"></a>
+<a id="tocStransactioncategorytransactioncategoryref"></a>
+<a id="tocstransactioncategorytransactioncategoryref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+An object of bank transaction category reference data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique category reference id for the bank transaction.|
+|name|string \| null|false|none|The category name reference for the bank transaction.|
+
+<h2 id="tocS_TransactionCategoryTransactionCategoryStatus">TransactionCategoryTransactionCategoryStatus</h2>
+<!-- backwards compatibility -->
+<a id="schematransactioncategorytransactioncategorystatus"></a>
+<a id="schema_TransactionCategoryTransactionCategoryStatus"></a>
+<a id="tocStransactioncategorytransactioncategorystatus"></a>
+<a id="tocstransactioncategorytransactioncategorystatus"></a>
+
+```json
+"Unknown"
+```

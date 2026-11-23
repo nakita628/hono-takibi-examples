@@ -1,210 +1,551 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAws242ServiceCatalogServiceAcceptPortfolioShareHandler,
-  xAmzTargetAws242ServiceCatalogServiceAssociateBudgetWithResourceHandler,
-  xAmzTargetAws242ServiceCatalogServiceAssociatePrincipalWithPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceAssociateProductWithPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceAssociateTagOptionWithResourceHandler,
-  xAmzTargetAws242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceCopyProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateConstraintHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreatePortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreatePortfolioShareHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateProvisionedProductPlanHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceCreateTagOptionHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteConstraintHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeletePortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeletePortfolioShareHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteProvisionedProductPlanHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceDeleteTagOptionHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeConstraintHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeCopyProductStatusHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribePortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribePortfolioSharesHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribePortfolioShareStatusHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProductAsAdminHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProductViewHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProvisionedProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProvisionedProductPlanHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeProvisioningParametersHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeRecordHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeServiceActionExecutionParametersHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceDescribeTagOptionHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisableAwsOrganizationsAccessHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisassociateBudgetFromResourceHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisassociatePrincipalFromPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisassociateProductFromPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceDisassociateTagOptionFromResourceHandler,
-  xAmzTargetAws242ServiceCatalogServiceEnableAwsOrganizationsAccessHandler,
-  xAmzTargetAws242ServiceCatalogServiceExecuteProvisionedProductPlanHandler,
-  xAmzTargetAws242ServiceCatalogServiceExecuteProvisionedProductServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceGetAwsOrganizationsAccessStatusHandler,
-  xAmzTargetAws242ServiceCatalogServiceGetProvisionedProductOutputsHandler,
-  xAmzTargetAws242ServiceCatalogServiceImportAsProvisionedProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceListAcceptedPortfolioSharesHandler,
-  xAmzTargetAws242ServiceCatalogServiceListBudgetsForResourceHandler,
-  xAmzTargetAws242ServiceCatalogServiceListConstraintsForPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceListLaunchPathsHandler,
-  xAmzTargetAws242ServiceCatalogServiceListOrganizationPortfolioAccessHandler,
-  xAmzTargetAws242ServiceCatalogServiceListPortfolioAccessHandler,
-  xAmzTargetAws242ServiceCatalogServiceListPortfoliosForProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceListPortfoliosHandler,
-  xAmzTargetAws242ServiceCatalogServiceListPrincipalsForPortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceListProvisionedProductPlansHandler,
-  xAmzTargetAws242ServiceCatalogServiceListProvisioningArtifactsForServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceListProvisioningArtifactsHandler,
-  xAmzTargetAws242ServiceCatalogServiceListRecordHistoryHandler,
-  xAmzTargetAws242ServiceCatalogServiceListResourcesForTagOptionHandler,
-  xAmzTargetAws242ServiceCatalogServiceListServiceActionsForProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceListServiceActionsHandler,
-  xAmzTargetAws242ServiceCatalogServiceListStackInstancesForProvisionedProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceListTagOptionsHandler,
-  xAmzTargetAws242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultHandler,
-  xAmzTargetAws242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultHandler,
-  xAmzTargetAws242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultHandler,
-  xAmzTargetAws242ServiceCatalogServiceProvisionProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceRejectPortfolioShareHandler,
-  xAmzTargetAws242ServiceCatalogServiceScanProvisionedProductsHandler,
-  xAmzTargetAws242ServiceCatalogServiceSearchProductsAsAdminHandler,
-  xAmzTargetAws242ServiceCatalogServiceSearchProductsHandler,
-  xAmzTargetAws242ServiceCatalogServiceSearchProvisionedProductsHandler,
-  xAmzTargetAws242ServiceCatalogServiceTerminateProvisionedProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateConstraintHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdatePortfolioHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdatePortfolioShareHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateProvisionedProductHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateProvisionedProductPropertiesHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateProvisioningArtifactHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateServiceActionHandler,
-  xAmzTargetAws242ServiceCatalogServiceUpdateTagOptionHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAcceptPortfolioShareRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateBudgetWithResourceRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociatePrincipalWithPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateProductWithPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateTagOptionWithResourceRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCopyProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateConstraintRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioShareRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProvisionedProductPlanRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateTagOptionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioShareRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisionedProductPlanRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteTagOptionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeConstraintRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioSharesRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioShareStatusRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductAsAdminRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductViewRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductPlanRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningParametersRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeRecordRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionExecutionParametersRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeTagOptionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisableAWSOrganizationsAccessRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateBudgetFromResourceRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociatePrincipalFromPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateProductFromPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateTagOptionFromResourceRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceEnableAWSOrganizationsAccessRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductPlanRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceGetAWSOrganizationsAccessStatusRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceGetProvisionedProductOutputsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListAcceptedPortfolioSharesRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListBudgetsForResourceRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListConstraintsForPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListLaunchPathsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListOrganizationPortfolioAccessRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfolioAccessRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosForProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListPrincipalsForPortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisionedProductPlansRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsForServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListRecordHistoryRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListResourcesForTagOptionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsForProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListStackInstancesForProvisionedProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceListTagOptionsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceProvisionProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceRejectPortfolioShareRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceScanProvisionedProductsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProductsAsAdminRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProductsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProvisionedProductsRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceTerminateProvisionedProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateConstraintRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioShareRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductPropertiesRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisioningArtifactRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateServiceActionRoute,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateTagOptionRoute,
+} from './routes'
+import {
+  postXAmzTargetAWS242ServiceCatalogServiceAcceptPortfolioShareRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateBudgetWithResourceRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociatePrincipalWithPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateProductWithPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceAssociateTagOptionWithResourceRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCopyProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateConstraintRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioShareRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProvisionedProductPlanRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceCreateTagOptionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioShareRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisionedProductPlanRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDeleteTagOptionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeConstraintRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioSharesRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioShareStatusRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductAsAdminRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProductViewRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductPlanRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningParametersRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeRecordRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionExecutionParametersRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDescribeTagOptionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisableAWSOrganizationsAccessRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateBudgetFromResourceRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociatePrincipalFromPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateProductFromPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceDisassociateTagOptionFromResourceRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceEnableAWSOrganizationsAccessRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductPlanRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceGetAWSOrganizationsAccessStatusRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceGetProvisionedProductOutputsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListAcceptedPortfolioSharesRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListBudgetsForResourceRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListConstraintsForPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListLaunchPathsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListOrganizationPortfolioAccessRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfolioAccessRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosForProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListPrincipalsForPortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisionedProductPlansRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsForServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListRecordHistoryRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListResourcesForTagOptionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsForProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListStackInstancesForProvisionedProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceListTagOptionsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceProvisionProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceRejectPortfolioShareRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceScanProvisionedProductsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProductsAsAdminRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProductsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceSearchProvisionedProductsRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceTerminateProvisionedProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateConstraintRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioShareRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductPropertiesRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisioningArtifactRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateServiceActionRouteHandler,
+  postXAmzTargetAWS242ServiceCatalogServiceUpdateTagOptionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAws242ServiceCatalogServiceAcceptPortfolioShareHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceAssociateBudgetWithResourceHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceAssociatePrincipalWithPortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceAssociateProductWithPortfolioHandler)
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAcceptPortfolioShareRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAcceptPortfolioShareRouteHandler,
   )
-  .route('/', xAmzTargetAws242ServiceCatalogServiceAssociateTagOptionWithResourceHandler)
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateBudgetWithResourceRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateBudgetWithResourceRouteHandler,
   )
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAssociatePrincipalWithPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAssociatePrincipalWithPortfolioRouteHandler,
   )
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCopyProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateConstraintHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreatePortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreatePortfolioShareHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateProvisionedProductPlanHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateProvisioningArtifactHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceCreateTagOptionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteConstraintHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeletePortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeletePortfolioShareHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteProvisionedProductPlanHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteProvisioningArtifactHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDeleteTagOptionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeConstraintHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeCopyProductStatusHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribePortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribePortfolioShareStatusHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribePortfolioSharesHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProductAsAdminHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProductViewHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProvisionedProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProvisionedProductPlanHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProvisioningArtifactHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeProvisioningParametersHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeRecordHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeServiceActionExecutionParametersHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDescribeTagOptionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDisableAwsOrganizationsAccessHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDisassociateBudgetFromResourceHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDisassociatePrincipalFromPortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDisassociateProductFromPortfolioHandler)
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateProductWithPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateProductWithPortfolioRouteHandler,
   )
-  .route('/', xAmzTargetAws242ServiceCatalogServiceDisassociateTagOptionFromResourceHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceEnableAwsOrganizationsAccessHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceExecuteProvisionedProductPlanHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceExecuteProvisionedProductServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceGetAwsOrganizationsAccessStatusHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceGetProvisionedProductOutputsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceImportAsProvisionedProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListAcceptedPortfolioSharesHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListBudgetsForResourceHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListConstraintsForPortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListLaunchPathsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListOrganizationPortfolioAccessHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListPortfolioAccessHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListPortfoliosHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListPortfoliosForProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListPrincipalsForPortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListProvisionedProductPlansHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListProvisioningArtifactsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListProvisioningArtifactsForServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListRecordHistoryHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListResourcesForTagOptionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListServiceActionsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListServiceActionsForProvisioningArtifactHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListStackInstancesForProvisionedProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceListTagOptionsHandler)
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateServiceActionWithProvisioningArtifactRouteHandler,
   )
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateTagOptionWithResourceRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceAssociateTagOptionWithResourceRouteHandler,
   )
-  .route(
-    '/',
-    xAmzTargetAws242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultHandler,
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceBatchAssociateServiceActionWithProvisioningArtifactRouteHandler,
   )
-  .route('/', xAmzTargetAws242ServiceCatalogServiceProvisionProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceRejectPortfolioShareHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceScanProvisionedProductsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceSearchProductsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceSearchProductsAsAdminHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceSearchProvisionedProductsHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceTerminateProvisionedProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateConstraintHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdatePortfolioHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdatePortfolioShareHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateProvisionedProductHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateProvisionedProductPropertiesHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateProvisioningArtifactHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateServiceActionHandler)
-  .route('/', xAmzTargetAws242ServiceCatalogServiceUpdateTagOptionHandler)
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceBatchDisassociateServiceActionFromProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCopyProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCopyProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateConstraintRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateConstraintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioShareRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreatePortfolioShareRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProvisionedProductPlanRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProvisionedProductPlanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceCreateTagOptionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceCreateTagOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioShareRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeletePortfolioShareRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisionedProductPlanRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisionedProductPlanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteTagOptionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDeleteTagOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeConstraintRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeConstraintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioShareStatusRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioShareStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioSharesRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribePortfolioSharesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductAsAdminRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductAsAdminRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductViewRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProductViewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductPlanRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisionedProductPlanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningParametersRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeProvisioningParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeRecordRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeRecordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionExecutionParametersRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeServiceActionExecutionParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeTagOptionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDescribeTagOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisableAWSOrganizationsAccessRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisableAWSOrganizationsAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateBudgetFromResourceRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateBudgetFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociatePrincipalFromPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociatePrincipalFromPortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateProductFromPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateProductFromPortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateServiceActionFromProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateTagOptionFromResourceRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceDisassociateTagOptionFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceEnableAWSOrganizationsAccessRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceEnableAWSOrganizationsAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductPlanRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductPlanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceExecuteProvisionedProductServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceGetAWSOrganizationsAccessStatusRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceGetAWSOrganizationsAccessStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceGetProvisionedProductOutputsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceGetProvisionedProductOutputsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListAcceptedPortfolioSharesRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListAcceptedPortfolioSharesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListBudgetsForResourceRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListBudgetsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListConstraintsForPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListConstraintsForPortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListLaunchPathsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListLaunchPathsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListOrganizationPortfolioAccessRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListOrganizationPortfolioAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfolioAccessRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfolioAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosForProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListPortfoliosForProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListPrincipalsForPortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListPrincipalsForPortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisionedProductPlansRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisionedProductPlansRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsForServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListProvisioningArtifactsForServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListRecordHistoryRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListRecordHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListResourcesForTagOptionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListResourcesForTagOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsForProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListServiceActionsForProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListStackInstancesForProvisionedProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListStackInstancesForProvisionedProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceListTagOptionsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceListTagOptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyProvisionProductEngineWorkflowResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyTerminateProvisionedProductEngineWorkflowResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceNotifyUpdateProvisionedProductEngineWorkflowResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceProvisionProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceProvisionProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceRejectPortfolioShareRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceRejectPortfolioShareRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceScanProvisionedProductsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceScanProvisionedProductsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProductsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProductsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProductsAsAdminRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProductsAsAdminRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProvisionedProductsRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceSearchProvisionedProductsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceTerminateProvisionedProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceTerminateProvisionedProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateConstraintRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateConstraintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioShareRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdatePortfolioShareRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductPropertiesRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisionedProductPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisioningArtifactRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateProvisioningArtifactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateServiceActionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateServiceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateTagOptionRoute,
+    postXAmzTargetAWS242ServiceCatalogServiceUpdateTagOptionRouteHandler,
+  )
 
 export default app

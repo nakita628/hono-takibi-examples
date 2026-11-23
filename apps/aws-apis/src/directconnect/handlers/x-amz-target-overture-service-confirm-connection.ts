@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceConfirmConnectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceConfirmConnectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceConfirmConnectionHandler = app.openapi(
-  postXAmzTargetOvertureServiceConfirmConnectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceConfirmConnectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceConfirmConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

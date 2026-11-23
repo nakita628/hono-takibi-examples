@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSendBulkTemplatedEmailRoute,
   postActionSendBulkTemplatedEmailRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSendBulkTemplatedEmailRouteHandler: RouteHandler<
+  typeof getActionSendBulkTemplatedEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSendBulkTemplatedEmailHandler = app
-  .openapi(getActionSendBulkTemplatedEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSendBulkTemplatedEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSendBulkTemplatedEmailRouteHandler: RouteHandler<
+  typeof postActionSendBulkTemplatedEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRoleAliasesRoleAliasRoute,
   getRoleAliasesRoleAliasRoute,
   getRoleAliasesRoute,
@@ -7,21 +7,30 @@ import {
   putRoleAliasesRoleAliasRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRoleAliasesRoleAliasRouteHandler: RouteHandler<
+  typeof postRoleAliasesRoleAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const roleAliasesHandler = app
-  .openapi(postRoleAliasesRoleAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRoleAliasesRoleAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoleAliasesRoleAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRoleAliasesRoleAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoleAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteRoleAliasesRoleAliasRouteHandler: RouteHandler<
+  typeof deleteRoleAliasesRoleAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleAliasesRoleAliasRouteHandler: RouteHandler<
+  typeof getRoleAliasesRoleAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRoleAliasesRoleAliasRouteHandler: RouteHandler<
+  typeof putRoleAliasesRoleAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleAliasesRouteHandler: RouteHandler<typeof getRoleAliasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

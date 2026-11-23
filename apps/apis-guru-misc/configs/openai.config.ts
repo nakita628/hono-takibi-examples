@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openai.com/1.2.0/openapi.yaml',
   output: './src/openai/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openai/types.ts' },
   client: { output: './src/openai/client.ts', baseUrl: '/' },
   rpc: { output: './src/openai/rpc.ts', parseResponse: true },

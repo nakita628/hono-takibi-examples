@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCancelSimulationJobBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCancelSimulationJobBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cancelSimulationJobBatchHandler = app.openapi(
-  postCancelSimulationJobBatchRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postCancelSimulationJobBatchRouteHandler: RouteHandler<
+  typeof postCancelSimulationJobBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -79,7 +79,12 @@ type VideoAIUsageSet = 1 | 2 | 3 | 4
 type VideoCategorySet = number
 type VideoLicenceSet = number
 type VideoLanguageSet = string
+type VideoStateConstantId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15
+type VideoId = {}
+type VideoUuid = {}
+type VideoShortUUID = {}
 type LiveSchedule = { startAt?: string | undefined }
+type VideoName = string
 type Thumbnail = {
   fileUrl?: string | undefined
   width?: number | undefined
@@ -97,6 +102,7 @@ type VideoRecommendationScopeConstant = {
   id?: VideoRecommendationScopeSet | undefined
   label?: string | undefined
 }
+type VideoState = { id?: VideoStateConstantId | undefined; label?: string | undefined }
 type AccountSummary = {
   id?: number | undefined
   name?: string | undefined
@@ -114,9 +120,9 @@ type VideoChannelSummary = {
   avatars?: ActorImage[] | undefined
 }
 type Video = {
-  id?: {} | undefined
-  uuid?: {} | undefined
-  shortUUID?: {} | undefined
+  id?: VideoId | undefined
+  uuid?: VideoUuid | undefined
+  shortUUID?: VideoShortUUID | undefined
   isLive?: boolean | undefined
   liveSchedules?: LiveSchedule[] | undefined
   createdAt?: string | undefined
@@ -131,7 +137,7 @@ type Video = {
   duration?: number | undefined
   aspectRatio?: (number | null) | undefined
   isLocal?: boolean | undefined
-  name?: string | undefined
+  name?: VideoName | undefined
   thumbnailPath?: (string | null) | undefined
   previewPath?: (string | null) | undefined
   thumbnails?: Thumbnail[] | undefined
@@ -147,12 +153,7 @@ type Video = {
   commercialContent?: VideoCommercialContentConstant | undefined
   recommendationScope?: VideoRecommendationScopeConstant | undefined
   waitTranscoding?: (boolean | null) | undefined
-  state?:
-    | {
-        id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | undefined
-        label?: string | undefined
-      }
-    | undefined
+  state?: VideoState | undefined
   scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
   blacklisted?: (boolean | null) | undefined
   blacklistedReason?: (string | null) | undefined
@@ -550,6 +551,7 @@ type AddUser = {
 type AddUserResponse = {
   user?: { id?: Id | undefined; account?: { id?: Id | undefined } | undefined } | undefined
 }
+type UserEmail = string
 type NSFWPolicy = 'display' | 'warn' | 'do_not_list'
 type NotificationSettingValue = number
 type UserNotificationSettings = {
@@ -598,7 +600,7 @@ type VideoChannel = {
 type User = {
   id?: Id | undefined
   username?: Username | undefined
-  email?: string | undefined
+  email?: UserEmail | undefined
   emailVerified?: boolean | undefined
   nsfwPolicy?: NSFWPolicy | undefined
   nsfwFlagsDisplayed?: NSFWFlag | undefined
@@ -639,7 +641,7 @@ type User = {
 type UserWithStats = {
   id?: Id | undefined
   username?: Username | undefined
-  email?: string | undefined
+  email?: UserEmail | undefined
   emailVerified?: boolean | undefined
   nsfwPolicy?: NSFWPolicy | undefined
   nsfwFlagsDisplayed?: NSFWFlag | undefined
@@ -752,40 +754,50 @@ type UpdateMe = {
   noAccountSetupWarningModal?: boolean | undefined
   noWelcomeModal?: boolean | undefined
 }
+type VideoCommentUrl = string
+type VideoCommentText = string
+type VideoCommentHeldForReview = boolean
+type VideoCommentInReplyToCommentId = {}
+type VideoCommentCreatedAt = string
+type VideoCommentUpdatedAt = string
 type VideoInfo = {
-  id?: Id | undefined
-  uuid?: unknown | undefined
-  name?: unknown | undefined
-  state?: unknown | undefined
+  id?: VideoId | undefined
+  uuid?: VideoUuid | undefined
+  name?: VideoName | undefined
+  state?: VideoState | undefined
 }
 type VideoCommentForOwnerOrAdmin = {
   id?: Id | undefined
-  url?: unknown | undefined
-  text?: unknown | undefined
-  heldForReview?: unknown | undefined
+  url?: VideoCommentUrl | undefined
+  text?: VideoCommentText | undefined
+  heldForReview?: VideoCommentHeldForReview | undefined
   threadId?: Id | undefined
-  inReplyToCommentId?: unknown | undefined
-  createdAt?: unknown | undefined
-  updatedAt?: unknown | undefined
+  inReplyToCommentId?: VideoCommentInReplyToCommentId | undefined
+  createdAt?: VideoCommentCreatedAt | undefined
+  updatedAt?: VideoCommentUpdatedAt | undefined
   account?: Account | undefined
   video?: VideoInfo | undefined
   automaticTags?: string[] | undefined
 }
+type VideoImportStateConstantId = 1 | 2 | 3 | 4 | 5 | 6
+type VideoImportTargetUrl = string
+type VideoImportMagnetUri = string
+type VideoImportTorrentfile = File
 type VideoImport = {
   id?: Id | undefined
-  targetUrl?: string | undefined
-  magnetUri?: string | undefined
-  torrentfile?: File | undefined
+  targetUrl?: VideoImportTargetUrl | undefined
+  magnetUri?: VideoImportMagnetUri | undefined
+  torrentfile?: VideoImportTorrentfile | undefined
   torrentName?: string | undefined
-  state?: { id?: 1 | 2 | 3 | 4 | 5 | 6 | undefined; label?: string | undefined } | undefined
+  state?: { id?: VideoImportStateConstantId | undefined; label?: string | undefined } | undefined
   error?: string | undefined
   createdAt?: string | undefined
   updatedAt?: string | undefined
   video?:
     | {
-        id?: {} | undefined
-        uuid?: {} | undefined
-        shortUUID?: {} | undefined
+        id?: VideoId | undefined
+        uuid?: VideoUuid | undefined
+        shortUUID?: VideoShortUUID | undefined
         isLive?: boolean | undefined
         liveSchedules?: LiveSchedule[] | undefined
         createdAt?: string | undefined
@@ -800,7 +812,7 @@ type VideoImport = {
         duration?: number | undefined
         aspectRatio?: (number | null) | undefined
         isLocal?: boolean | undefined
-        name?: string | undefined
+        name?: VideoName | undefined
         thumbnailPath?: (string | null) | undefined
         previewPath?: (string | null) | undefined
         thumbnails?: Thumbnail[] | undefined
@@ -816,12 +828,7 @@ type VideoImport = {
         commercialContent?: VideoCommercialContentConstant | undefined
         recommendationScope?: VideoRecommendationScopeConstant | undefined
         waitTranscoding?: (boolean | null) | undefined
-        state?:
-          | {
-              id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | undefined
-              label?: string | undefined
-            }
-          | undefined
+        state?: VideoState | undefined
         scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
         blacklisted?: (boolean | null) | undefined
         blacklistedReason?: (string | null) | undefined
@@ -910,10 +917,10 @@ type Notification = {
   read?: boolean | undefined
   video?:
     | {
-        id?: Id | undefined
-        uuid?: unknown | undefined
-        name?: unknown | undefined
-        state?: unknown | undefined
+        id?: VideoId | undefined
+        uuid?: VideoUuid | undefined
+        name?: VideoName | undefined
+        state?: VideoState | undefined
         channel?: ActorInfo | undefined
       }
     | undefined
@@ -922,14 +929,14 @@ type Notification = {
         id?: Id | undefined
         video?:
           | {
-              id?: Id | undefined
-              uuid?: unknown | undefined
-              name?: unknown | undefined
-              state?: unknown | undefined
+              id?: VideoId | undefined
+              uuid?: VideoUuid | undefined
+              name?: VideoName | undefined
+              state?: VideoState | undefined
             }
           | undefined
         torrentName?: (string | null) | undefined
-        magnetUri?: unknown | undefined
+        magnetUri?: VideoImportMagnetUri | undefined
         targetUri?: (string | null) | undefined
       } | null)
     | undefined
@@ -947,10 +954,10 @@ type Notification = {
         id?: Id | undefined
         video?:
           | {
-              id?: Id | undefined
-              uuid?: unknown | undefined
-              name?: unknown | undefined
-              state?: unknown | undefined
+              id?: VideoId | undefined
+              uuid?: VideoUuid | undefined
+              name?: VideoName | undefined
+              state?: VideoState | undefined
             }
           | undefined
       } | null)
@@ -960,10 +967,10 @@ type Notification = {
         id?: Id | undefined
         video?:
           | {
-              id?: Id | undefined
-              uuid?: unknown | undefined
-              name?: unknown | undefined
-              state?: unknown | undefined
+              id?: VideoId | undefined
+              uuid?: VideoUuid | undefined
+              name?: VideoName | undefined
+              state?: VideoState | undefined
             }
           | undefined
       } | null)
@@ -1073,11 +1080,16 @@ type VideoStudioCreateTask = (
 )[]
 type VideoUploadResponse = {
   video?:
-    | { id?: Id | undefined; uuid?: unknown | undefined; shortUUID?: ShortUUID | undefined }
+    | {
+        id?: VideoId | undefined
+        uuid?: VideoUuid | undefined
+        shortUUID?: VideoShortUUID | undefined
+      }
     | undefined
 }
 type VideoScheduledUpdate = { privacy?: VideoPrivacySet | undefined; updateAt: string }
-type AddVideoPasswords = Password[]
+type VideoPasswordPassword = string
+type AddVideoPasswords = VideoPasswordPassword[]
 type VideoCommentsPolicyConstant = {
   id?: VideoCommentsPolicySet | undefined
   label?: string | undefined
@@ -1111,9 +1123,9 @@ type VideoStreamingPlaylists = {
   redundancies?: { baseUrl?: string | undefined }[] | undefined
 }
 type VideoDetails = {
-  id?: {} | undefined
-  uuid?: {} | undefined
-  shortUUID?: {} | undefined
+  id?: VideoId | undefined
+  uuid?: VideoUuid | undefined
+  shortUUID?: VideoShortUUID | undefined
   isLive?: boolean | undefined
   liveSchedules?: LiveSchedule[] | undefined
   createdAt?: string | undefined
@@ -1128,7 +1140,7 @@ type VideoDetails = {
   duration?: number | undefined
   aspectRatio?: (number | null) | undefined
   isLocal?: boolean | undefined
-  name?: string | undefined
+  name?: VideoName | undefined
   thumbnailPath?: (string | null) | undefined
   previewPath?: (string | null) | undefined
   thumbnails?: Thumbnail[] | undefined
@@ -1144,12 +1156,7 @@ type VideoDetails = {
   commercialContent?: VideoCommercialContentConstant | undefined
   recommendationScope?: VideoRecommendationScopeConstant | undefined
   waitTranscoding?: (boolean | null) | undefined
-  state?:
-    | {
-        id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | undefined
-        label?: string | undefined
-      }
-    | undefined
+  state?: VideoState | undefined
   scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
   blacklisted?: (boolean | null) | undefined
   blacklistedReason?: (string | null) | undefined
@@ -1428,7 +1435,7 @@ type VideoChapters = {
 type VideoEmbedPrivacy = 1 | 2 | 3 | 4
 type VideoPassword = {
   id?: Id | undefined
-  password?: string | undefined
+  password?: VideoPasswordPassword | undefined
   videoId?: Id | undefined
 }
 type VideoPasswordList = { total?: number | undefined; data?: VideoPassword[] | undefined }
@@ -1506,6 +1513,7 @@ type ChannelActivityListResponse = {
     | undefined
 }
 type VideoPlaylistTypeSet = 1 | 2
+type VideoPlaylistShortUUID = {}
 type VideoPlaylistPrivacySet = 1 | 2 | 3
 type VideoPlaylistPrivacyConstant = {
   id?: VideoPlaylistPrivacySet | undefined
@@ -1518,7 +1526,7 @@ type VideoPlaylistTypeConstant = {
 type VideoPlaylist = {
   id?: Id | undefined
   uuid?: UUIDv4 | undefined
-  shortUUID?: {} | undefined
+  shortUUID?: VideoPlaylistShortUUID | undefined
   createdAt?: string | undefined
   updatedAt?: string | undefined
   description?: string | undefined
@@ -1574,16 +1582,16 @@ type VideoChannelSyncList = {
 type VideoRating = { video: Video; rating: 'like' | 'dislike' | 'none' }
 type VideoComment = {
   id?: Id | undefined
-  url?: string | undefined
-  text?: string | undefined
+  url?: VideoCommentUrl | undefined
+  text?: VideoCommentText | undefined
   threadId?: Id | undefined
-  inReplyToCommentId?: {} | undefined
-  videoId?: Id | undefined
-  createdAt?: string | undefined
-  updatedAt?: string | undefined
+  inReplyToCommentId?: VideoCommentInReplyToCommentId | undefined
+  videoId?: VideoId | undefined
+  createdAt?: VideoCommentCreatedAt | undefined
+  updatedAt?: VideoCommentUpdatedAt | undefined
   deletedAt?: (string | null) | undefined
   isDeleted?: boolean | undefined
-  heldForReview?: boolean | undefined
+  heldForReview?: VideoCommentHeldForReview | undefined
   totalRepliesFromVideoAuthor?: number | undefined
   totalReplies?: number | undefined
   account?: Account | undefined
@@ -2022,7 +2030,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/feeds/video-comments.:format': {
+    '/feeds/video-comments.{format}': {
       $get:
         | {
             input: {
@@ -2170,7 +2178,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/feeds/videos.:format': {
+    '/feeds/videos.{format}': {
       $get:
         | {
             input: {
@@ -2328,7 +2336,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/feeds/subscriptions.:format': {
+    '/feeds/subscriptions.{format}': {
       $get:
         | {
             input: {
@@ -2540,7 +2548,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             hasWebVideoFiles?: boolean | undefined
             host?: string | undefined
             autoTagOneOf?: string | string[] | undefined
-            stateOneOf?: Id | Id[] | undefined
+            stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
             privacyOneOf?: VideoPrivacySet | undefined
             excludeAlreadyWatched?: boolean | undefined
             search?: string | undefined
@@ -3267,7 +3275,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             targetUrl?: string | undefined
             videoChannelSyncId?: number | undefined
             search?: string | undefined
-            stateOneOf?: Id[] | undefined
+            stateOneOf?: VideoImportStateConstantId[] | undefined
           }
         }
         output: VideoImportsList
@@ -3331,7 +3339,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             hasWebVideoFiles?: boolean | undefined
             host?: string | undefined
             autoTagOneOf?: string | string[] | undefined
-            stateOneOf?: Id | Id[] | undefined
+            stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
             privacyOneOf?: VideoPrivacySet | undefined
             excludeAlreadyWatched?: boolean | undefined
             search?: string | undefined
@@ -3405,7 +3413,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             hasWebVideoFiles?: boolean | undefined
             host?: string | undefined
             autoTagOneOf?: string | string[] | undefined
-            stateOneOf?: Id | Id[] | undefined
+            stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
             privacyOneOf?: VideoPrivacySet | undefined
             excludeAlreadyWatched?: boolean | undefined
             search?: string | undefined
@@ -4194,7 +4202,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             hasWebVideoFiles?: boolean | undefined
             host?: string | undefined
             autoTagOneOf?: string | string[] | undefined
-            stateOneOf?: Id | Id[] | undefined
+            stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
             privacyOneOf?: VideoPrivacySet | undefined
             excludeAlreadyWatched?: boolean | undefined
             search?: string | undefined
@@ -5511,7 +5519,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             hasWebVideoFiles?: boolean | undefined
             host?: string | undefined
             autoTagOneOf?: string | string[] | undefined
-            stateOneOf?: Id | Id[] | undefined
+            stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
             privacyOneOf?: VideoPrivacySet | undefined
             excludeAlreadyWatched?: boolean | undefined
             search?: string | undefined
@@ -5771,7 +5779,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {
           videoPlaylist?:
-            | { id?: Id | undefined; uuid?: UUIDv4 | undefined; shortUUID?: ShortUUID | undefined }
+            | {
+                id?: Id | undefined
+                uuid?: UUIDv4 | undefined
+                shortUUID?: VideoPlaylistShortUUID | undefined
+              }
             | undefined
         }
         outputFormat: 'json'
@@ -5831,7 +5843,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post: {
         input: { param: { playlistId: Id } } & {
           json: {
-            videoId: unknown | Id
+            videoId: VideoUuid | VideoId
             startTimestamp?: number | undefined
             stopTimestamp?: number | undefined
           }
@@ -5876,7 +5888,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/v1/users/me/video-playlists/videos-exist': {
       $get: {
-        input: { query: { videoIds: Id[] } }
+        input: { query: { videoIds: VideoId[] } }
         output: {
           videoId?:
             | {
@@ -6205,7 +6217,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 hasWebVideoFiles?: boolean | undefined
                 host?: string | undefined
                 autoTagOneOf?: string | string[] | undefined
-                stateOneOf?: Id | Id[] | undefined
+                stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
                 privacyOneOf?: VideoPrivacySet | undefined
                 excludeAlreadyWatched?: boolean | undefined
                 startDate?: string | undefined
@@ -6258,7 +6270,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 hasWebVideoFiles?: boolean | undefined
                 host?: string | undefined
                 autoTagOneOf?: string | string[] | undefined
-                stateOneOf?: Id | Id[] | undefined
+                stateOneOf?: VideoStateConstantId | VideoStateConstantId[] | undefined
                 privacyOneOf?: VideoPrivacySet | undefined
                 excludeAlreadyWatched?: boolean | undefined
                 startDate?: string | undefined
@@ -6624,10 +6636,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         status: 200
       }
       $post:
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/api/v1/server/redundancy/videos/:redundancyId': {

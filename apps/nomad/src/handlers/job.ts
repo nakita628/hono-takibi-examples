@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteJobJobNameRoute,
   getJobJobNameAllocationsRoute,
   getJobJobNameDeploymentRoute,
@@ -19,57 +19,100 @@ import {
   postJobJobNameStableRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteJobJobNameRouteHandler: RouteHandler<typeof deleteJobJobNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const jobHandler = app
-  .openapi(deleteJobJobNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameDispatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameEvaluateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameEvaluationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNamePeriodicForceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNamePlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameRevertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameScaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameScaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobJobNameStableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getJobJobNameRouteHandler: RouteHandler<typeof getJobJobNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameRouteHandler: RouteHandler<typeof postJobJobNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameAllocationsRouteHandler: RouteHandler<
+  typeof getJobJobNameAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameDeploymentRouteHandler: RouteHandler<
+  typeof getJobJobNameDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameDeploymentsRouteHandler: RouteHandler<
+  typeof getJobJobNameDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameDispatchRouteHandler: RouteHandler<
+  typeof postJobJobNameDispatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameEvaluateRouteHandler: RouteHandler<
+  typeof postJobJobNameEvaluateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameEvaluationsRouteHandler: RouteHandler<
+  typeof getJobJobNameEvaluationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNamePeriodicForceRouteHandler: RouteHandler<
+  typeof postJobJobNamePeriodicForceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNamePlanRouteHandler: RouteHandler<typeof postJobJobNamePlanRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameRevertRouteHandler: RouteHandler<
+  typeof postJobJobNameRevertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameScaleRouteHandler: RouteHandler<typeof getJobJobNameScaleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameScaleRouteHandler: RouteHandler<
+  typeof postJobJobNameScaleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postJobJobNameStableRouteHandler: RouteHandler<
+  typeof postJobJobNameStableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameSummaryRouteHandler: RouteHandler<
+  typeof getJobJobNameSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobNameVersionsRouteHandler: RouteHandler<
+  typeof getJobJobNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

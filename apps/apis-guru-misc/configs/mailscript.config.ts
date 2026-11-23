@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mailscript.com/0.4.0/openapi.yaml',
   output: './src/mailscript/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mailscript/types.ts' },
   client: { output: './src/mailscript/client.ts', baseUrl: '/' },
   rpc: { output: './src/mailscript/rpc.ts', parseResponse: true },

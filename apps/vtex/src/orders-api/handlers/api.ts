@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiOrdersFeedConfigRoute,
   deleteApiOrdersHookConfigRoute,
   getApiCheckoutPvtConfigurationWindowToChangeSellerRoute,
@@ -30,90 +30,170 @@ import {
   putApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberTrackingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiCheckoutPvtConfigurationWindowToChangeSellerRouteHandler: RouteHandler<
+  typeof getApiCheckoutPvtConfigurationWindowToChangeSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiCheckoutPvtConfigurationWindowToChangeSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPvtConfigurationWindowToChangeSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtAdminReportsCompletedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtAdminReportsInprogressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtFeedOrdersStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtOrdersOrderIdConversationMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdInteractionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberTrackingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsPvtOrdersOrderIdPaymentTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdPaymentsPaymentIdPaymentNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOmsPvtOrdersOrderIdStartHandlingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsUserOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOmsUserOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOrdersExpressionsJsonataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOrdersFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOrdersFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiOrdersFeedConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOrdersFeedConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOrdersFeedConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiOrdersHookConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOrdersHookConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOrdersHookConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiCheckoutPvtConfigurationWindowToChangeSellerRouteHandler: RouteHandler<
+  typeof postApiCheckoutPvtConfigurationWindowToChangeSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtAdminReportsCompletedRouteHandler: RouteHandler<
+  typeof getApiOmsPvtAdminReportsCompletedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtAdminReportsInprogressRouteHandler: RouteHandler<
+  typeof getApiOmsPvtAdminReportsInprogressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtFeedOrdersStatusRouteHandler: RouteHandler<
+  typeof getApiOmsPvtFeedOrdersStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtOrdersRouteHandler: RouteHandler<typeof getApiOmsPvtOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtOrdersOrderIdRouteHandler: RouteHandler<
+  typeof getApiOmsPvtOrdersOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdCancelRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdChangesRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtOrdersOrderIdConversationMessageRouteHandler: RouteHandler<
+  typeof getApiOmsPvtOrdersOrderIdConversationMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdInteractionsRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdInteractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdInvoiceRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberRouteHandler: RouteHandler<
+  typeof patchApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberTrackingRouteHandler: RouteHandler<
+  typeof putApiOmsPvtOrdersOrderIdInvoiceInvoiceNumberTrackingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsPvtOrdersOrderIdPaymentTransactionRouteHandler: RouteHandler<
+  typeof getApiOmsPvtOrdersOrderIdPaymentTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdPaymentsPaymentIdPaymentNotificationRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdPaymentsPaymentIdPaymentNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOmsPvtOrdersOrderIdStartHandlingRouteHandler: RouteHandler<
+  typeof postApiOmsPvtOrdersOrderIdStartHandlingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsUserOrdersRouteHandler: RouteHandler<
+  typeof getApiOmsUserOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOmsUserOrdersOrderIdRouteHandler: RouteHandler<
+  typeof getApiOmsUserOrdersOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOrdersExpressionsJsonataRouteHandler: RouteHandler<
+  typeof postApiOrdersExpressionsJsonataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOrdersFeedRouteHandler: RouteHandler<typeof getApiOrdersFeedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOrdersFeedRouteHandler: RouteHandler<typeof postApiOrdersFeedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiOrdersFeedConfigRouteHandler: RouteHandler<
+  typeof deleteApiOrdersFeedConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOrdersFeedConfigRouteHandler: RouteHandler<
+  typeof getApiOrdersFeedConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOrdersFeedConfigRouteHandler: RouteHandler<
+  typeof postApiOrdersFeedConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiOrdersHookConfigRouteHandler: RouteHandler<
+  typeof deleteApiOrdersHookConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOrdersHookConfigRouteHandler: RouteHandler<
+  typeof getApiOrdersHookConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOrdersHookConfigRouteHandler: RouteHandler<
+  typeof postApiOrdersHookConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

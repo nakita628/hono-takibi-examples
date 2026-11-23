@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMetadataDatasetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMetadataDatasetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metadataHandler = app.openapi(getMetadataDatasetsRoute, (c) => {
+export const getMetadataDatasetsRouteHandler: RouteHandler<
+  typeof getMetadataDatasetsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

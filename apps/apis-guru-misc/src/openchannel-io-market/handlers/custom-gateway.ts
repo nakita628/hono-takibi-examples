@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postCustomGatewayPaymentOwnershipIdRoute,
   postCustomGatewayRefundOwnershipIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCustomGatewayPaymentOwnershipIdRouteHandler: RouteHandler<
+  typeof postCustomGatewayPaymentOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const customGatewayHandler = app
-  .openapi(postCustomGatewayPaymentOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomGatewayRefundOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCustomGatewayRefundOwnershipIdRouteHandler: RouteHandler<
+  typeof postCustomGatewayRefundOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

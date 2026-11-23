@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/parliament.uk/oralquestions/v1/openapi.yaml',
   output: './src/oralquestions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/oralquestions/types.ts' },
   client: { output: './src/oralquestions/client.ts', baseUrl: '/' },
   rpc: { output: './src/oralquestions/rpc.ts', parseResponse: true },

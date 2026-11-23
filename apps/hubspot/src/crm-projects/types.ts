@@ -282,12 +282,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/objects/2026-09/projects/batch/archive': {
-      $post: {
-        input: { json: BatchInputSimplePublicObjectId }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchInputSimplePublicObjectId }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchInputSimplePublicObjectId }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/objects/2026-09/projects/batch/create': {
@@ -441,12 +448,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { projectId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { projectId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { projectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { projectId: string } } & {
@@ -517,12 +526,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/objects/2026-09/:objectType/gdpr-delete': {
-      $post: {
-        input: { param: { objectType: string } } & { json: PublicGdprDeleteInput }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { objectType: string } } & { json: PublicGdprDeleteInput }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string } } & { json: PublicGdprDeleteInput }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/objects/2026-09/:objectType/:objectId/associations/:toObjectType/:toObjectId': {
@@ -553,14 +569,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: {
-          param: { objectId: string; objectType: string; toObjectId: string; toObjectType: string }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

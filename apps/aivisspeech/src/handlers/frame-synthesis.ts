@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFrameSynthesisRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFrameSynthesisRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const frameSynthesisHandler = app.openapi(postFrameSynthesisRoute, (c) => {
+export const postFrameSynthesisRouteHandler: RouteHandler<typeof postFrameSynthesisRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

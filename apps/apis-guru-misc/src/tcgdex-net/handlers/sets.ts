@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSetsRoute, getSetsSetCardLocalIdRoute, getSetsSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSetsRoute, getSetsSetCardLocalIdRoute, getSetsSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSetsRouteHandler: RouteHandler<typeof getSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const setsHandler = app
-  .openapi(getSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetsSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetsSetCardLocalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSetsSetRouteHandler: RouteHandler<typeof getSetsSetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetsSetCardLocalIdRouteHandler: RouteHandler<
+  typeof getSetsSetCardLocalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

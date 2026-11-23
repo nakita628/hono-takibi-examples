@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminConversationsDisconnectSharedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminConversationsDisconnectSharedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminConversationsDisconnectSharedHandler = app.openapi(
-  postAdminConversationsDisconnectSharedRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postAdminConversationsDisconnectSharedRouteHandler: RouteHandler<
+  typeof postAdminConversationsDisconnectSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

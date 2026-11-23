@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHubBusinessGroupsIdMenusRoute,
   getHubMenusAllRoute,
   getHubMenusRoute,
@@ -10,30 +10,44 @@ import {
   postHubSpacesSpaceIdPayslipsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHubBusinessGroupsIdMenusRouteHandler: RouteHandler<
+  typeof getHubBusinessGroupsIdMenusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hubHandler = app
-  .openapi(getHubBusinessGroupsIdMenusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHubDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHubMenusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHubMenusAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHubPayslipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHubSpacesSpaceIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHubSpacesSpaceIdMenusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHubSpacesSpaceIdPayslipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHubDocumentsRouteHandler: RouteHandler<typeof postHubDocumentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHubMenusRouteHandler: RouteHandler<typeof getHubMenusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHubMenusAllRouteHandler: RouteHandler<typeof getHubMenusAllRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHubPayslipsRouteHandler: RouteHandler<typeof postHubPayslipsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHubSpacesSpaceIdDocumentsRouteHandler: RouteHandler<
+  typeof postHubSpacesSpaceIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHubSpacesSpaceIdMenusRouteHandler: RouteHandler<
+  typeof getHubSpacesSpaceIdMenusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHubSpacesSpaceIdPayslipsRouteHandler: RouteHandler<
+  typeof postHubSpacesSpaceIdPayslipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

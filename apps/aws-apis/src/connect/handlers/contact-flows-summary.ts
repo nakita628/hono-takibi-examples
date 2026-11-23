@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getContactFlowsSummaryInstanceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getContactFlowsSummaryInstanceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const contactFlowsSummaryHandler = app.openapi(
-  getContactFlowsSummaryInstanceIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getContactFlowsSummaryInstanceIdRouteHandler: RouteHandler<
+  typeof getContactFlowsSummaryInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

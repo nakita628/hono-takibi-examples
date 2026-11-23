@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChatkitThreadsThreadIdRoute,
   getChatkitThreadsRoute,
   getChatkitThreadsThreadIdItemsRoute,
@@ -8,24 +8,38 @@ import {
   postChatkitSessionsSessionIdCancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChatkitSessionsSessionIdCancelRouteHandler: RouteHandler<
+  typeof postChatkitSessionsSessionIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chatkitHandler = app
-  .openapi(postChatkitSessionsSessionIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChatkitSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatkitThreadsThreadIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatkitThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChatkitThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatkitThreadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChatkitSessionsRouteHandler: RouteHandler<
+  typeof postChatkitSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatkitThreadsThreadIdItemsRouteHandler: RouteHandler<
+  typeof getChatkitThreadsThreadIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatkitThreadsThreadIdRouteHandler: RouteHandler<
+  typeof getChatkitThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChatkitThreadsThreadIdRouteHandler: RouteHandler<
+  typeof deleteChatkitThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatkitThreadsRouteHandler: RouteHandler<typeof getChatkitThreadsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

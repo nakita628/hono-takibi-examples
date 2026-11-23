@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postReversalRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postReversalRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const reversalHandler = app.openapi(postReversalRoute, (c) => {
+export const postReversalRouteHandler: RouteHandler<typeof postReversalRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

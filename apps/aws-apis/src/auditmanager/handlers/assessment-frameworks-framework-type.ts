@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAssessmentFrameworksFrameworkTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAssessmentFrameworksFrameworkTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const assessmentFrameworksFrameworkTypeHandler = app.openapi(
-  getAssessmentFrameworksFrameworkTypeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAssessmentFrameworksFrameworkTypeRouteHandler: RouteHandler<
+  typeof getAssessmentFrameworksFrameworkTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

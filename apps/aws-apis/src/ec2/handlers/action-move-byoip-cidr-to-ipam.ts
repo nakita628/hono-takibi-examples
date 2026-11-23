@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionMoveByoipCidrToIpamRoute, postActionMoveByoipCidrToIpamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionMoveByoipCidrToIpamRoute,
+  postActionMoveByoipCidrToIpamRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionMoveByoipCidrToIpamRouteHandler: RouteHandler<
+  typeof getActionMoveByoipCidrToIpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionMoveByoipCidrToIpamHandler = app
-  .openapi(getActionMoveByoipCidrToIpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionMoveByoipCidrToIpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionMoveByoipCidrToIpamRouteHandler: RouteHandler<
+  typeof postActionMoveByoipCidrToIpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

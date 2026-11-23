@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSearchFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSearchFormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const searchHandler = app.openapi(getSearchFormatRoute, (c) => {
+export const getSearchFormatRouteHandler: RouteHandler<typeof getSearchFormatRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

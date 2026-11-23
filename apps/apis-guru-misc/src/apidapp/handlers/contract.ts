@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getContractIdRoute,
   optionsContractIdRoute,
   optionsContractRoute,
@@ -7,21 +7,24 @@ import {
   postContractRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const optionsContractRouteHandler: RouteHandler<typeof optionsContractRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contractHandler = app
-  .openapi(optionsContractRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContractRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContractIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsContractIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContractIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postContractRouteHandler: RouteHandler<typeof postContractRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContractIdRouteHandler: RouteHandler<typeof getContractIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsContractIdRouteHandler: RouteHandler<typeof optionsContractIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postContractIdRouteHandler: RouteHandler<typeof postContractIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

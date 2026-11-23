@@ -9679,13 +9679,13 @@ export async function getApiV4ProjectsProjectIdPackagesNugetV2Packages(
 
 export async function getApiV4ProjectsProjectIdPackagesNugetV2PackagesIdPackageNameVersionPackageVersion(
   args: InferRequestType<
-    (typeof client.api.v4.projects)[':project_id']['packages']['nuget']['v2']["Packages(Id=':package_name',Version=':package_version')"]['$get']
+    (typeof client.api.v4.projects)[':project_id']['packages']['nuget']['v2']["Packages(Id='{package_name}',Version='{package_version}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.projects[':project_id'].packages.nuget.v2[
-      "Packages(Id=':package_name',Version=':package_version')"
+      "Packages(Id='{package_name}',Version='{package_version}')"
     ].$get(args, options),
   )
 }
@@ -14455,27 +14455,27 @@ export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionInRelea
 
 export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionComponentDebianInstallerBinaryArchitecturePackages(
   args: InferRequestType<
-    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-:architecture']['Packages']['$get']
+    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-{architecture}']['Packages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.groups[':id']['-'].packages.debian.dists[':distribution'][':component'][
       'debian-installer'
-    ]['binary-:architecture'].Packages.$get(args, options),
+    ]['binary-{architecture}'].Packages.$get(args, options),
   )
 }
 
 export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionComponentDebianInstallerBinaryArchitectureByHashSHA256FileSha256(
   args: InferRequestType<
-    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-:architecture']['by-hash']['SHA256'][':file_sha256']['$get']
+    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-{architecture}']['by-hash']['SHA256'][':file_sha256']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.groups[':id']['-'].packages.debian.dists[':distribution'][':component'][
       'debian-installer'
-    ]['binary-:architecture']['by-hash'].SHA256[':file_sha256'].$get(args, options),
+    ]['binary-{architecture}']['by-hash'].SHA256[':file_sha256'].$get(args, options),
   )
 }
 
@@ -14507,26 +14507,26 @@ export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionCompone
 
 export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionComponentBinaryArchitecturePackages(
   args: InferRequestType<
-    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['binary-:architecture']['Packages']['$get']
+    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['binary-{architecture}']['Packages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.groups[':id']['-'].packages.debian.dists[':distribution'][':component'][
-      'binary-:architecture'
+      'binary-{architecture}'
     ].Packages.$get(args, options),
   )
 }
 
 export async function getApiV4GroupsIdDashPackagesDebianDistsDistributionComponentBinaryArchitectureByHashSHA256FileSha256(
   args: InferRequestType<
-    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['binary-:architecture']['by-hash']['SHA256'][':file_sha256']['$get']
+    (typeof client.api.v4.groups)[':id']['-']['packages']['debian']['dists'][':distribution'][':component']['binary-{architecture}']['by-hash']['SHA256'][':file_sha256']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.groups[':id']['-'].packages.debian.dists[':distribution'][':component'][
-      'binary-:architecture'
+      'binary-{architecture}'
     ]['by-hash'].SHA256[':file_sha256'].$get(args, options),
   )
 }
@@ -14588,27 +14588,27 @@ export async function getApiV4ProjectsIdPackagesDebianDistsDistributionInRelease
 
 export async function getApiV4ProjectsIdPackagesDebianDistsDistributionComponentDebianInstallerBinaryArchitecturePackages(
   args: InferRequestType<
-    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-:architecture']['Packages']['$get']
+    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-{architecture}']['Packages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.projects[':id'].packages.debian.dists[':distribution'][':component'][
       'debian-installer'
-    ]['binary-:architecture'].Packages.$get(args, options),
+    ]['binary-{architecture}'].Packages.$get(args, options),
   )
 }
 
 export async function getApiV4ProjectsIdPackagesDebianDistsDistributionComponentDebianInstallerBinaryArchitectureByHashSHA256FileSha256(
   args: InferRequestType<
-    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-:architecture']['by-hash']['SHA256'][':file_sha256']['$get']
+    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['debian-installer']['binary-{architecture}']['by-hash']['SHA256'][':file_sha256']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.projects[':id'].packages.debian.dists[':distribution'][':component'][
       'debian-installer'
-    ]['binary-:architecture']['by-hash'].SHA256[':file_sha256'].$get(args, options),
+    ]['binary-{architecture}']['by-hash'].SHA256[':file_sha256'].$get(args, options),
   )
 }
 
@@ -14640,26 +14640,26 @@ export async function getApiV4ProjectsIdPackagesDebianDistsDistributionComponent
 
 export async function getApiV4ProjectsIdPackagesDebianDistsDistributionComponentBinaryArchitecturePackages(
   args: InferRequestType<
-    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['binary-:architecture']['Packages']['$get']
+    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['binary-{architecture}']['Packages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.projects[':id'].packages.debian.dists[':distribution'][':component'][
-      'binary-:architecture'
+      'binary-{architecture}'
     ].Packages.$get(args, options),
   )
 }
 
 export async function getApiV4ProjectsIdPackagesDebianDistsDistributionComponentBinaryArchitectureByHashSHA256FileSha256(
   args: InferRequestType<
-    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['binary-:architecture']['by-hash']['SHA256'][':file_sha256']['$get']
+    (typeof client.api.v4.projects)[':id']['packages']['debian']['dists'][':distribution'][':component']['binary-{architecture}']['by-hash']['SHA256'][':file_sha256']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.api.v4.projects[':id'].packages.debian.dists[':distribution'][':component'][
-      'binary-:architecture'
+      'binary-{architecture}'
     ]['by-hash'].SHA256[':file_sha256'].$get(args, options),
   )
 }

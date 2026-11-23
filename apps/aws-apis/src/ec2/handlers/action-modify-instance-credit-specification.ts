@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionModifyInstanceCreditSpecificationRoute,
   postActionModifyInstanceCreditSpecificationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyInstanceCreditSpecificationRouteHandler: RouteHandler<
+  typeof getActionModifyInstanceCreditSpecificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyInstanceCreditSpecificationHandler = app
-  .openapi(getActionModifyInstanceCreditSpecificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyInstanceCreditSpecificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyInstanceCreditSpecificationRouteHandler: RouteHandler<
+  typeof postActionModifyInstanceCreditSpecificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

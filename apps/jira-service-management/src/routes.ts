@@ -7315,7 +7315,7 @@ export const postRestServicedeskapiServicedeskServiceDeskIdAttachTemporaryFileRo
     },
   },
   responses: {
-    201: { description: 'Returns if the file(s) were attached.', content: {} },
+    201: { description: 'Returns if the file(s) were attached.' },
     400: {
       description:
         'Returned if the attachments are not valid, or exceed the maximum configured attachment size.',
@@ -7652,7 +7652,7 @@ export const postRestServicedeskapiServicedeskServiceDeskIdCustomerInviteRoute =
     },
   },
   responses: {
-    201: { description: 'Returns the customer details.', content: {} },
+    201: { description: 'Returns the customer details.' },
     400: {
       description:
         'Returned if the request is invalid, either because the display name is empty, or email address is empty or incorrectly formed or already exists in the database if `strictConflictStatusCode=false` or if `strictConflictStatusCode=false` parameter is not provided.',

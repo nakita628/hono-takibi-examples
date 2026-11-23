@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWorkerFeaturesIndexRoute, getWorkerFeaturesUserIdIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWorkerFeaturesIndexRoute, getWorkerFeaturesUserIdIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkerFeaturesIndexRouteHandler: RouteHandler<
+  typeof getWorkerFeaturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workerFeaturesHandler = app
-  .openapi(getWorkerFeaturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkerFeaturesUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkerFeaturesUserIdIndexRouteHandler: RouteHandler<
+  typeof getWorkerFeaturesUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

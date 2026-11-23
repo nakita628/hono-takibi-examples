@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionHandler =
-  app.openapi(
-    postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

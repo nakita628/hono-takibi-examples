@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEmployersEffectiveDateRoute,
   getEmployersEffectiveDateSummaryRoute,
   getEmployersRoute,
@@ -9,27 +9,40 @@ import {
   postEmployersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEmployersRouteHandler: RouteHandler<typeof getEmployersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const employersHandler = app
-  .openapi(getEmployersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployersSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployersTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployersTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployersEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployersEffectiveDateSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEmployersRouteHandler: RouteHandler<typeof postEmployersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployersSummaryRouteHandler: RouteHandler<
+  typeof getEmployersSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployersTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployersTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployersTagsRouteHandler: RouteHandler<typeof getEmployersTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployersEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployersEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployersEffectiveDateSummaryRouteHandler: RouteHandler<
+  typeof getEmployersEffectiveDateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

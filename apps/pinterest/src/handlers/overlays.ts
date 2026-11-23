@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOverlaysIdRoute,
   getOverlaysIdRoute,
   getOverlaysRoute,
@@ -7,21 +7,24 @@ import {
   postOverlaysRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOverlaysRouteHandler: RouteHandler<typeof getOverlaysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const overlaysHandler = app
-  .openapi(getOverlaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOverlaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOverlaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOverlaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOverlaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOverlaysRouteHandler: RouteHandler<typeof postOverlaysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOverlaysIdRouteHandler: RouteHandler<typeof getOverlaysIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOverlaysIdRouteHandler: RouteHandler<typeof patchOverlaysIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOverlaysIdRouteHandler: RouteHandler<typeof deleteOverlaysIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

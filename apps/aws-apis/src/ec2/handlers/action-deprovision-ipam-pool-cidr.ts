@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeprovisionIpamPoolCidrRoute,
   postActionDeprovisionIpamPoolCidrRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeprovisionIpamPoolCidrRouteHandler: RouteHandler<
+  typeof getActionDeprovisionIpamPoolCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeprovisionIpamPoolCidrHandler = app
-  .openapi(getActionDeprovisionIpamPoolCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeprovisionIpamPoolCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeprovisionIpamPoolCidrRouteHandler: RouteHandler<
+  typeof postActionDeprovisionIpamPoolCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

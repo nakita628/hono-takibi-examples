@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIntegrationsIndexRoute,
   getIntegrationsJiraCloudProjectsIndexRoute,
   getIntegrationsJiraCloudProjectsProjectIdIssueTypesIndexRoute,
@@ -11,39 +11,56 @@ import {
   getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsJiraCloudProjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsJiraCloudProjectsProjectIdIssueTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsJiraServerProjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsJiraServerProjectsProjectIdIssueTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIntegrationsJiraCloudProjectsIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraCloudProjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraCloudProjectsProjectIdIssueTypesIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraCloudProjectsProjectIdIssueTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraCloudProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraServerProjectsIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraServerProjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraServerProjectsProjectIdIssueTypesIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraServerProjectsProjectIdIssueTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdPrioritiesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsJiraServerProjectsProjectIdIssueTypesIssueTypeIdStatusIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDocumentsArchiveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDocumentsArchiveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const documentsArchiveHandler = app.openapi(postDocumentsArchiveRoute, (c) => {
+export const postDocumentsArchiveRouteHandler: RouteHandler<
+  typeof postDocumentsArchiveRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

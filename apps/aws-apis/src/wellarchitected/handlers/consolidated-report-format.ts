@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getConsolidatedReportFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getConsolidatedReportFormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const consolidatedReportFormatHandler = app.openapi(
-  getConsolidatedReportFormatRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getConsolidatedReportFormatRouteHandler: RouteHandler<
+  typeof getConsolidatedReportFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

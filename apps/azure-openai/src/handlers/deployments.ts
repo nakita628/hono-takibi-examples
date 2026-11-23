@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeploymentsDeploymentIdChatCompletionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeploymentsDeploymentIdChatCompletionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deploymentsHandler = app.openapi(
-  postDeploymentsDeploymentIdChatCompletionsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDeploymentsDeploymentIdChatCompletionsRouteHandler: RouteHandler<
+  typeof postDeploymentsDeploymentIdChatCompletionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

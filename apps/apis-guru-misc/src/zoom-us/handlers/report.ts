@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReportActivitiesRoute,
   getReportCloudRecordingRoute,
   getReportDailyRoute,
@@ -16,48 +16,82 @@ import {
   getReportWebinarsWebinarIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReportActivitiesRouteHandler: RouteHandler<
+  typeof getReportActivitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportHandler = app
-  .openapi(getReportActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportCloudRecordingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportDailyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportMeetingsMeetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportMeetingsMeetingIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportMeetingsMeetingIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportOperationlogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportTelephoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportUsersUserIdMeetingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportWebinarsWebinarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportWebinarsWebinarIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportWebinarsWebinarIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportWebinarsWebinarIdQaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReportCloudRecordingRouteHandler: RouteHandler<
+  typeof getReportCloudRecordingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportDailyRouteHandler: RouteHandler<typeof getReportDailyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportMeetingsMeetingIdRouteHandler: RouteHandler<
+  typeof getReportMeetingsMeetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportMeetingsMeetingIdParticipantsRouteHandler: RouteHandler<
+  typeof getReportMeetingsMeetingIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportMeetingsMeetingIdPollsRouteHandler: RouteHandler<
+  typeof getReportMeetingsMeetingIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportOperationlogsRouteHandler: RouteHandler<
+  typeof getReportOperationlogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportTelephoneRouteHandler: RouteHandler<typeof getReportTelephoneRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportUsersRouteHandler: RouteHandler<typeof getReportUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportUsersUserIdMeetingsRouteHandler: RouteHandler<
+  typeof getReportUsersUserIdMeetingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportWebinarsWebinarIdRouteHandler: RouteHandler<
+  typeof getReportWebinarsWebinarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportWebinarsWebinarIdParticipantsRouteHandler: RouteHandler<
+  typeof getReportWebinarsWebinarIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportWebinarsWebinarIdPollsRouteHandler: RouteHandler<
+  typeof getReportWebinarsWebinarIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportWebinarsWebinarIdQaRouteHandler: RouteHandler<
+  typeof getReportWebinarsWebinarIdQaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

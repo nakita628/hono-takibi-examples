@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFfmpegPresetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFfmpegPresetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ffmpegHandler = app.openapi(getFfmpegPresetsRoute, (c) => {
+export const getFfmpegPresetsRouteHandler: RouteHandler<typeof getFfmpegPresetsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

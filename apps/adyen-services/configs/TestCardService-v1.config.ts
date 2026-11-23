@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/TestCardService-v1.json',
   output: './src/TestCardService-v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/TestCardService-v1/types.ts' },
   client: { output: './src/TestCardService-v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/TestCardService-v1/rpc.ts', parseResponse: true },

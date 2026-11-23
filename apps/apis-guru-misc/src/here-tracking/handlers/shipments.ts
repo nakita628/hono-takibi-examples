@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShipmentsV4PlansRoute,
   deleteShipmentsV4PlansShipmentPlanIdRoute,
   deleteShipmentsV4Route,
@@ -21,63 +21,112 @@ import {
   postShipmentsV4Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteShipmentsV4RouteHandler: RouteHandler<typeof deleteShipmentsV4Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const shipmentsHandler = app
-  .openapi(deleteShipmentsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShipmentsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShipmentsV4PlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4PlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShipmentsV4PlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShipmentsV4PlansShipmentPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4PlansShipmentPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchShipmentsV4PlansShipmentPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4PlansShipmentPlanIdSegmentPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchShipmentsV4PlansShipmentPlanIdSegmentPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShipmentsV4ShipmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4ShipmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchShipmentsV4ShipmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4ShipmentIdSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchShipmentsV4ShipmentIdSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShipmentsV4TrackingIdSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getShipmentsV4RouteHandler: RouteHandler<typeof getShipmentsV4Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShipmentsV4RouteHandler: RouteHandler<typeof postShipmentsV4Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4HealthRouteHandler: RouteHandler<
+  typeof getShipmentsV4HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShipmentsV4PlansRouteHandler: RouteHandler<
+  typeof deleteShipmentsV4PlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4PlansRouteHandler: RouteHandler<
+  typeof getShipmentsV4PlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShipmentsV4PlansRouteHandler: RouteHandler<
+  typeof postShipmentsV4PlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShipmentsV4PlansShipmentPlanIdRouteHandler: RouteHandler<
+  typeof deleteShipmentsV4PlansShipmentPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4PlansShipmentPlanIdRouteHandler: RouteHandler<
+  typeof getShipmentsV4PlansShipmentPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchShipmentsV4PlansShipmentPlanIdRouteHandler: RouteHandler<
+  typeof patchShipmentsV4PlansShipmentPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4PlansShipmentPlanIdSegmentPlanIdRouteHandler: RouteHandler<
+  typeof getShipmentsV4PlansShipmentPlanIdSegmentPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchShipmentsV4PlansShipmentPlanIdSegmentPlanIdRouteHandler: RouteHandler<
+  typeof patchShipmentsV4PlansShipmentPlanIdSegmentPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4VersionRouteHandler: RouteHandler<
+  typeof getShipmentsV4VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShipmentsV4ShipmentIdRouteHandler: RouteHandler<
+  typeof deleteShipmentsV4ShipmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4ShipmentIdRouteHandler: RouteHandler<
+  typeof getShipmentsV4ShipmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchShipmentsV4ShipmentIdRouteHandler: RouteHandler<
+  typeof patchShipmentsV4ShipmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4ShipmentIdSegmentIdRouteHandler: RouteHandler<
+  typeof getShipmentsV4ShipmentIdSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchShipmentsV4ShipmentIdSegmentIdRouteHandler: RouteHandler<
+  typeof patchShipmentsV4ShipmentIdSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShipmentsV4TrackingIdSegmentsRouteHandler: RouteHandler<
+  typeof getShipmentsV4TrackingIdSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

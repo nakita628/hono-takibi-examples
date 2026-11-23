@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueStopSessionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueStopSessionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueStopSessionHandler = app.openapi(
-  postXAmzTargetAWSGlueStopSessionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueStopSessionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueStopSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

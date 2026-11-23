@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSreAgentMemoriesIdRoute,
   getSreAgentMemoriesRoute,
   putSreAgentMemoriesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSreAgentMemoriesRouteHandler: RouteHandler<
+  typeof getSreAgentMemoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sreAgentHandler = app
-  .openapi(getSreAgentMemoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSreAgentMemoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSreAgentMemoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSreAgentMemoriesIdRouteHandler: RouteHandler<
+  typeof putSreAgentMemoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSreAgentMemoriesIdRouteHandler: RouteHandler<
+  typeof deleteSreAgentMemoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDailyCongressionalRecordRoute,
   getDailyCongressionalRecordVolumeNumberIssueNumberArticlesRoute,
   getDailyCongressionalRecordVolumeNumberIssueNumberRoute,
   getDailyCongressionalRecordVolumeNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDailyCongressionalRecordRouteHandler: RouteHandler<
+  typeof getDailyCongressionalRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dailyCongressionalRecordHandler = app
-  .openapi(getDailyCongressionalRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDailyCongressionalRecordVolumeNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDailyCongressionalRecordVolumeNumberIssueNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDailyCongressionalRecordVolumeNumberIssueNumberArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDailyCongressionalRecordVolumeNumberRouteHandler: RouteHandler<
+  typeof getDailyCongressionalRecordVolumeNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDailyCongressionalRecordVolumeNumberIssueNumberRouteHandler: RouteHandler<
+  typeof getDailyCongressionalRecordVolumeNumberIssueNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDailyCongressionalRecordVolumeNumberIssueNumberArticlesRouteHandler: RouteHandler<
+  typeof getDailyCongressionalRecordVolumeNumberIssueNumberArticlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

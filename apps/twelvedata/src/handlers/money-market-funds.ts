@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMoneyMarketFundsListRoute, getMoneyMarketFundsWorldRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMoneyMarketFundsListRoute, getMoneyMarketFundsWorldRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMoneyMarketFundsListRouteHandler: RouteHandler<
+  typeof getMoneyMarketFundsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moneyMarketFundsHandler = app
-  .openapi(getMoneyMarketFundsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoneyMarketFundsWorldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMoneyMarketFundsWorldRouteHandler: RouteHandler<
+  typeof getMoneyMarketFundsWorldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

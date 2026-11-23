@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/gamelift/2015-10-01/openapi.yaml',
   output: './src/gamelift/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gamelift/types.ts' },
   client: { output: './src/gamelift/client.ts', baseUrl: '/' },
   rpc: { output: './src/gamelift/rpc.ts', parseResponse: true },

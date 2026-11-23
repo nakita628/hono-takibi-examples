@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsRemovePermissionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsRemovePermissionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsRemovePermissionHandler = app.openapi(
-  postXAmzTargetAWSEventsRemovePermissionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsRemovePermissionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsRemovePermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

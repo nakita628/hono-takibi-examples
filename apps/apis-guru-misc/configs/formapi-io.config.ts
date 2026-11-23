@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/formapi.io/v1/openapi.yaml',
   output: './src/formapi-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/formapi-io/types.ts' },
   client: { output: './src/formapi-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/formapi-io/rpc.ts', parseResponse: true },

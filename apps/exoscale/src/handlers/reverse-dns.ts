@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReverseDnsElasticIpIdRoute,
   deleteReverseDnsInstanceIdRoute,
   getReverseDnsElasticIpIdRoute,
@@ -8,24 +8,38 @@ import {
   postReverseDnsInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReverseDnsElasticIpIdRouteHandler: RouteHandler<
+  typeof getReverseDnsElasticIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reverseDnsHandler = app
-  .openapi(getReverseDnsElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReverseDnsElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReverseDnsElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReverseDnsInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReverseDnsInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReverseDnsInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postReverseDnsElasticIpIdRouteHandler: RouteHandler<
+  typeof postReverseDnsElasticIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReverseDnsElasticIpIdRouteHandler: RouteHandler<
+  typeof deleteReverseDnsElasticIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReverseDnsInstanceIdRouteHandler: RouteHandler<
+  typeof postReverseDnsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReverseDnsInstanceIdRouteHandler: RouteHandler<
+  typeof getReverseDnsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReverseDnsInstanceIdRouteHandler: RouteHandler<
+  typeof deleteReverseDnsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

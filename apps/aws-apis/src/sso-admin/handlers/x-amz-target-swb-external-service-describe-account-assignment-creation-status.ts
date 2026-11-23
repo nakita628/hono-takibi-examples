@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSwbExternalServiceDescribeAccountAssignmentCreationStatusHandler =
-  app.openapi(postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

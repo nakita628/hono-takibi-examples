@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPagespeedonlineV5RunPagespeedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPagespeedonlineV5RunPagespeedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pagespeedonlineHandler = app.openapi(getPagespeedonlineV5RunPagespeedRoute, (c) => {
+export const getPagespeedonlineV5RunPagespeedRouteHandler: RouteHandler<
+  typeof getPagespeedonlineV5RunPagespeedRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

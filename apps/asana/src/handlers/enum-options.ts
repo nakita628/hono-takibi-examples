@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putEnumOptionsEnumOptionGidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putEnumOptionsEnumOptionGidRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const enumOptionsHandler = app.openapi(putEnumOptionsEnumOptionGidRoute, (c) => {
+export const putEnumOptionsEnumOptionGidRouteHandler: RouteHandler<
+  typeof putEnumOptionsEnumOptionGidRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

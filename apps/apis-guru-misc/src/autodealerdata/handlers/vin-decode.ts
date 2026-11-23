@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getVinDecodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getVinDecodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vinDecodeHandler = app.openapi(getVinDecodeRoute, (c) => {
+export const getVinDecodeRouteHandler: RouteHandler<typeof getVinDecodeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/ecommerce/9.3.0/openapi.yaml',
   output: './src/ecommerce/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ecommerce/types.ts' },
   client: { output: './src/ecommerce/client.ts', baseUrl: '/' },
   rpc: { output: './src/ecommerce/rpc.ts', parseResponse: true },

@@ -1,40 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type ReportJournalsJournalType = {
-  id: bigint
-  deal_id: bigint | null
-  txn_date: string
-  txn_number: string | null
-  adjustment: boolean
-  approval_status: 'none' | 'in_progress' | 'approved'
-  create_user_id: bigint
-  last_approver_user_id: bigint | null
-  current_approver_user_ids: bigint[]
-  ref_number: string | null
-  deal_origin_name: string | null
-  created_at: string
-  updated_at: string
-  receipt_ids: bigint[]
-  debit: {
-    id: bigint | null
-    line_type: 'detail' | 'tax'
-    account_item_id: bigint
-    amount: bigint
-    net_amount: bigint | null
-    vat: bigint | null
-    tax_code: number | null
-    partner_id: bigint | null
-    item_id: bigint | null
-    section_id: bigint | null
-    segment_tag_1_id: bigint | null
-    segment_tag_2_id: bigint | null
-    segment_tag_3_id: bigint | null
-    memo_tag_ids: bigint[]
-    description: string | null
-  }[]
-  credit: ReportJournalsJournalType[]
-}
-
 type TrialPlSectionsResponseType = {
   trial_pl_sections: {
     company_id: bigint
@@ -8836,392 +8801,378 @@ const JournalsResponseSchema = z
   .openapi({ required: ['journals'] })
   .openapi('JournalsResponse')
 
-const ReportJournalsJournalSchema: z.ZodType<ReportJournalsJournalType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', description: '仕訳ID。' }),
-        deal_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description: '取引ID。取引に紐づかない仕訳 (振替伝票のみ等) では null。',
-          }),
-        txn_date: z.iso.date().openapi({ description: '発生日 (YYYY-MM-DD)。' }),
-        txn_number: z
-          .string()
-          .nullable()
-          .openapi({
-            description:
-              '仕訳番号。仕訳番号を使用しない設定の事業所では常に null。英数字形式があるため文字列。',
-          }),
-        adjustment: z.boolean().openapi({ description: '決算整理仕訳フラグ。' }),
-        approval_status: z
-          .enum(['none', 'in_progress', 'approved'])
-          .openapi({ description: '仕訳の承認ステータス' })
-          .openapi({ description: '承認ステータス。' }),
-        create_user_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', description: '作成者ユーザーID。' }),
-        last_approver_user_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description: '最終承認者ユーザーID。未承認は null。',
-          }),
-        current_approver_user_ids: z
-          .array(
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-          )
-          .openapi({
-            description:
-              '現在の承認待ちユーザーIDのリスト。承認済み・フローなしは空配列。会計のロールを持たないユーザーは含まない。',
-          }),
-        ref_number: z.string().nullable().openapi({ description: '管理番号 (ref_number)。' }),
-        deal_origin_name: z
-          .string()
-          .nullable()
-          .openapi({
-            description: '取引の登録元表示ラベル (「手動」「自動で経理」「freee請求書」など)。',
-          }),
-        created_at: z.iso.datetime({ offset: true }).openapi({ description: '仕訳の作成日時。' }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .openapi({ description: '仕訳の最終更新日時。' }),
-        receipt_ids: z
-          .array(
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-          )
-          .openapi({ description: '紐づく証憑IDのリスト。閲覧権限がない場合は空配列。' }),
-        debit: z
-          .array(
-            z
-              .strictObject({
-                id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: '明細行ID。消費税行では null。',
-                  }),
-                line_type: z
-                  .enum(['detail', 'tax'])
-                  .openapi({
-                    description:
-                      '仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
-                  })
-                  .openapi({
-                    description: '行種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
-                  }),
-                account_item_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .openapi({
-                    type: 'integer',
-                    format: 'int64',
-                    description: '勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。',
-                  }),
-                amount: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .openapi({
-                    type: 'integer',
-                    format: 'int64',
-                    description:
-                      '表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。',
-                  }),
-                net_amount: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description:
-                      '税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。',
-                  }),
-                vat: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: '消費税額。通常明細ではその明細の税額、消費税行では null。',
-                  }),
-                tax_code: z.int32().nullable().openapi({ description: '税区分コード。' }),
-                partner_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: '取引先ID。',
-                  }),
-                item_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: '品目ID。消費税行では null。',
-                  }),
-                section_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description:
-                      '部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。',
-                  }),
-                segment_tag_1_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: 'セグメント1タグID。消費税行では null。',
-                  }),
-                segment_tag_2_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: 'セグメント2タグID。消費税行では null。',
-                  }),
-                segment_tag_3_id: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .nullable()
-                  .openapi({
-                    type: ['integer', 'null'],
-                    format: 'int64',
-                    description: 'セグメント3タグID。消費税行では null。',
-                  }),
-                memo_tag_ids: z
-                  .array(
-                    z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .openapi({ type: 'integer', format: 'int64' }),
-                  )
-                  .openapi({
-                    description:
-                      'メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。',
-                  }),
-                description: z
-                  .string()
-                  .nullable()
-                  .openapi({
-                    description: '行の備考。逆仕訳の確認等で利用可能。消費税行では null。',
-                  }),
-              })
-              .openapi({
-                required: [
-                  'id',
-                  'line_type',
-                  'account_item_id',
-                  'amount',
-                  'net_amount',
-                  'vat',
-                  'tax_code',
-                  'partner_id',
-                  'item_id',
-                  'section_id',
-                  'segment_tag_1_id',
-                  'segment_tag_2_id',
-                  'segment_tag_3_id',
-                  'memo_tag_ids',
-                  'description',
-                ],
-                description:
-                  '仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。',
-              }),
-          )
-          .openapi({
-            description:
-              '借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
-          }),
-        credit: z
-          .array(z.lazy(() => ReportJournalsJournalSchema))
-          .openapi({
-            description:
-              '貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
-          }),
-      })
+const ReportJournalsJournalDebitItemsSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
       .openapi({
-        required: [
-          'id',
-          'deal_id',
-          'txn_date',
-          'txn_number',
-          'adjustment',
-          'approval_status',
-          'create_user_id',
-          'last_approver_user_id',
-          'current_approver_user_ids',
-          'ref_number',
-          'deal_origin_name',
-          'created_at',
-          'updated_at',
-          'receipt_ids',
-          'debit',
-          'credit',
-        ],
-        description: '仕訳 (Transaction) 単位のレスポンス。',
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '明細行ID。消費税行では null。',
       }),
-  )
+    line_type: z
+      .enum(['detail', 'tax'])
+      .openapi({
+        description: '仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
+      })
+      .openapi({ description: '行種別。detail は通常明細、tax は税抜経理事業所の消費税行。' }),
+    account_item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: '勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。',
+      }),
+    amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          '表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。',
+      }),
+    net_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。',
+      }),
+    vat: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '消費税額。通常明細ではその明細の税額、消費税行では null。',
+      }),
+    tax_code: z.int32().nullable().openapi({ description: '税区分コード。' }),
+    partner_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({ type: ['integer', 'null'], format: 'int64', description: '取引先ID。' }),
+    item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '品目ID。消費税行では null。',
+      }),
+    section_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。',
+      }),
+    segment_tag_1_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント1タグID。消費税行では null。',
+      }),
+    segment_tag_2_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント2タグID。消費税行では null。',
+      }),
+    segment_tag_3_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント3タグID。消費税行では null。',
+      }),
+    memo_tag_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .openapi({
+        description: 'メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: '行の備考。逆仕訳の確認等で利用可能。消費税行では null。' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'line_type',
+      'account_item_id',
+      'amount',
+      'net_amount',
+      'vat',
+      'tax_code',
+      'partner_id',
+      'item_id',
+      'section_id',
+      'segment_tag_1_id',
+      'segment_tag_2_id',
+      'segment_tag_3_id',
+      'memo_tag_ids',
+      'description',
+    ],
+    description:
+      '仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。',
+  })
+  .openapi('ReportJournalsJournalDebitItems')
+
+const ReportJournalsJournalSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: '仕訳ID。' }),
+    deal_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '取引ID。取引に紐づかない仕訳 (振替伝票のみ等) では null。',
+      }),
+    txn_date: z.iso.date().openapi({ description: '発生日 (YYYY-MM-DD)。' }),
+    txn_number: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          '仕訳番号。仕訳番号を使用しない設定の事業所では常に null。英数字形式があるため文字列。',
+      }),
+    adjustment: z.boolean().openapi({ description: '決算整理仕訳フラグ。' }),
+    approval_status: z
+      .enum(['none', 'in_progress', 'approved'])
+      .openapi({ description: '仕訳の承認ステータス' })
+      .openapi({ description: '承認ステータス。' }),
+    create_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: '作成者ユーザーID。' }),
+    last_approver_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '最終承認者ユーザーID。未承認は null。',
+      }),
+    current_approver_user_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .openapi({
+        description:
+          '現在の承認待ちユーザーIDのリスト。承認済み・フローなしは空配列。会計のロールを持たないユーザーは含まない。',
+      }),
+    ref_number: z.string().nullable().openapi({ description: '管理番号 (ref_number)。' }),
+    deal_origin_name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: '取引の登録元表示ラベル (「手動」「自動で経理」「freee請求書」など)。',
+      }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ description: '仕訳の作成日時。' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ description: '仕訳の最終更新日時。' }),
+    receipt_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .openapi({ description: '紐づく証憑IDのリスト。閲覧権限がない場合は空配列。' }),
+    debit: z
+      .array(ReportJournalsJournalDebitItemsSchema)
+      .openapi({
+        description:
+          '借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
+      }),
+    credit: z
+      .array(ReportJournalsJournalDebitItemsSchema)
+      .openapi({
+        description:
+          '貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'deal_id',
+      'txn_date',
+      'txn_number',
+      'adjustment',
+      'approval_status',
+      'create_user_id',
+      'last_approver_user_id',
+      'current_approver_user_ids',
+      'ref_number',
+      'deal_origin_name',
+      'created_at',
+      'updated_at',
+      'receipt_ids',
+      'debit',
+      'credit',
+    ],
+    description: '仕訳 (Transaction) 単位のレスポンス。',
+  })
   .openapi('ReportJournalsJournal')
 
 const ReportJournalsJournalLineSchema = z
@@ -48432,7 +48383,7 @@ export const deleteApi1PartnersIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '取引先の削除に成功しました。レスポンスボディはありません。', content: {} },
+    204: { description: '取引先の削除に成功しました。レスポンスボディはありません。' },
     400: {
       description:
         '削除に失敗しました。取引での参照が残っている、アーカイブ済み取引先が指定されているなどが考えられます。',
@@ -50528,7 +50479,7 @@ export const deleteApi1AccountItemsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -51912,10 +51863,7 @@ export const deleteApi1TagsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: {
-      description: 'メモタグの削除に成功しました。レスポンスボディはありません。',
-      content: {},
-    },
+    204: { description: 'メモタグの削除に成功しました。レスポンスボディはありません。' },
     400: {
       description:
         'リクエストパラメータが不正、または取引や配賦基準で使用中のメモタグのため削除できません。',
@@ -52482,7 +52430,7 @@ export const deleteApi1SectionsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '部門の削除に成功しました。レスポンスボディはありません。', content: {} },
+    204: { description: '部門の削除に成功しました。レスポンスボディはありません。' },
     400: {
       description:
         '部門が取引明細や設定などで使用されているため削除できません。エラーメッセージで利用箇所を確認してください。',
@@ -54600,7 +54548,7 @@ export const deleteApi1DealsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -55695,7 +55643,7 @@ export const deleteApi1DealsIdPaymentsPaymentIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -57114,7 +57062,7 @@ export const deleteApi1ManualJournalsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '削除成功（レスポンスボディなし）', content: {} },
+    204: { description: '削除成功（レスポンスボディなし）' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -58185,7 +58133,7 @@ export const deleteApi1ItemsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '品目の削除に成功しました。レスポンスボディはありません。', content: {} },
+    204: { description: '品目の削除に成功しました。レスポンスボディはありません。' },
     400: {
       description: 'リクエストパラメータが不正、または取引などで使用中の品目のため削除できません。',
       content: { 'application/json': { schema: BadRequestErrorSchema } },
@@ -59241,7 +59189,7 @@ export const deleteApi1WalletablesTypeIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -60790,7 +60738,7 @@ export const deleteApi1TransfersIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -61240,7 +61188,7 @@ export const deleteApi1WalletTxnsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -68598,7 +68546,7 @@ export const deleteApi1ReceiptsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -70564,7 +70512,7 @@ export const deleteApi1ExpenseApplicationsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -71116,7 +71064,7 @@ export const deleteApi1ExpenseApplicationsCurrenciesIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -72676,7 +72624,7 @@ export const deleteApi1ExpenseApplicationLineTemplatesIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -74527,7 +74475,7 @@ export const deleteApi1PaymentRequestsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -75599,7 +75547,7 @@ export const deleteApi1ApprovalRequestsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -77524,7 +77472,7 @@ export const deleteApi1PurchaseRequestsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: {} },
+    204: { description: '' },
     400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
     401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
     403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
@@ -78614,7 +78562,7 @@ export const deleteApi1SegmentsSegmentIdTagsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'セグメントタグを削除しました', content: {} },
+    204: { description: 'セグメントタグを削除しました' },
     400: {
       description: '使用中のセグメントタグなど、削除できない対象が指定されました',
       content: { 'application/json': { schema: BadRequestErrorSchema } },

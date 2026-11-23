@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/messages-olympus/1.4.0/openapi.yaml',
   output: './src/messages-olympus/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/messages-olympus/types.ts' },
   client: { output: './src/messages-olympus/client.ts', baseUrl: '/' },
   rpc: { output: './src/messages-olympus/rpc.ts', parseResponse: true },

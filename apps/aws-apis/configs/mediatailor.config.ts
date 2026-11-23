@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mediatailor/2018-04-23/openapi.yaml',
   output: './src/mediatailor/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mediatailor/types.ts' },
   client: { output: './src/mediatailor/client.ts', baseUrl: '/' },
   rpc: { output: './src/mediatailor/rpc.ts', parseResponse: true },

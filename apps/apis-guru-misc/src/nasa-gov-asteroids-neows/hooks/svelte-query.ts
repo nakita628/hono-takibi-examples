@@ -56,27 +56,29 @@ export function createApi<
 }
 
 export function getApiProjectsIdFormatQueryKey(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
 ) {
-  return ['api', '/api/projects/:id:.format', args] as const
+  return ['api', '/api/projects/:id{.format}', args] as const
 }
 
 export function getApiProjectsIdFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+          Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
         >
       >
     >,
@@ -87,7 +89,7 @@ export function getApiProjectsIdFormatQueryOptions<
     queryKey: getApiProjectsIdFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.projects[':id:.format'].$get(args, {
+        client.api.projects[':id{.format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -99,19 +101,21 @@ export function getApiProjectsIdFormatQueryOptions<
 export function createApiProjectsIdFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: () => InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.projects)[':id:.format']['$get']>>
+              Awaited<ReturnType<(typeof client.api.projects)[':id{.format}']['$get']>>
             >
           >
         >,
@@ -132,26 +136,26 @@ export function createApiProjectsIdFormat<
 }
 
 export function getApiProjectsFormatQueryKey(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
 ) {
-  return ['api', '/api/projects:.format', args] as const
+  return ['api', '/api/projects{.format}', args] as const
 }
 
 export function getApiProjectsFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>>
       >
     >,
     TError,
@@ -161,7 +165,7 @@ export function getApiProjectsFormatQueryOptions<
     queryKey: getApiProjectsFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api['projects:.format'].$get(args, {
+        client.api['projects{.format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -173,19 +177,19 @@ export function getApiProjectsFormatQueryOptions<
 export function createApiProjectsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: () => InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api)['projects:.format']['$get']>>
+              Awaited<ReturnType<(typeof client.api)['projects{.format}']['$get']>>
             >
           >
         >,

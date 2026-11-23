@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/codepipeline/2015-07-09/openapi.yaml',
   output: './src/codepipeline/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codepipeline/types.ts' },
   client: { output: './src/codepipeline/client.ts', baseUrl: '/' },
   rpc: { output: './src/codepipeline/rpc.ts', parseResponse: true },

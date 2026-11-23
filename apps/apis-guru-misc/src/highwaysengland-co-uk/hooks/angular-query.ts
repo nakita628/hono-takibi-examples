@@ -15,26 +15,26 @@ export function getVVersionKey() {
 }
 
 export function getVVersionAreasQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
 ) {
-  return ['v:version', '/v:version/areas', args] as const
+  return ['v{version}', '/v{version}/areas', args] as const
 }
 
 export function getVVersionAreasQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
       >
     >,
     TError,
@@ -44,7 +44,7 @@ export function getVVersionAreasQueryOptions<
     queryKey: getVVersionAreasQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].areas.$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['v{version}'].areas.$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -53,18 +53,20 @@ export function getVVersionAreasQueryOptions<
 export function injectVVersionAreas<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>
+            >
           >
         >,
         TError,
@@ -84,29 +86,29 @@ export function injectVVersionAreas<
 }
 
 export function getVVersionAreasAreaIdsQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
 ) {
-  return ['v:version', '/v:version/areas/:area_Ids', args] as const
+  return ['v{version}', '/v{version}/areas/:area_Ids', args] as const
 }
 
 export function getVVersionAreasAreaIdsQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+          Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
         >
       >
     >,
@@ -117,7 +119,7 @@ export function getVVersionAreasAreaIdsQueryOptions<
     queryKey: getVVersionAreasAreaIdsQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].areas[':area_Ids'].$get(args, {
+        client['v{version}'].areas[':area_Ids'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -130,20 +132,20 @@ export function injectVVersionAreasAreaIds<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
             >
           >
         >,
@@ -167,29 +169,29 @@ export function injectVVersionAreasAreaIds<
 }
 
 export function getVVersionQualityDailyQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
 ) {
-  return ['v:version', '/v:version/quality/daily', args] as const
+  return ['v{version}', '/v{version}/quality/daily', args] as const
 }
 
 export function getVVersionQualityDailyQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+          Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
         >
       >
     >,
@@ -200,7 +202,7 @@ export function getVVersionQualityDailyQueryOptions<
     queryKey: getVVersionQualityDailyQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].quality.daily.$get(args, {
+        client['v{version}'].quality.daily.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -213,20 +215,20 @@ export function injectVVersionQualityDaily<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
             >
           >
         >,
@@ -250,29 +252,29 @@ export function injectVVersionQualityDaily<
 }
 
 export function getVVersionQualityOverallQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
 ) {
-  return ['v:version', '/v:version/quality/overall', args] as const
+  return ['v{version}', '/v{version}/quality/overall', args] as const
 }
 
 export function getVVersionQualityOverallQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+          Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
         >
       >
     >,
@@ -283,7 +285,7 @@ export function getVVersionQualityOverallQueryOptions<
     queryKey: getVVersionQualityOverallQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].quality.overall.$get(args, {
+        client['v{version}'].quality.overall.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -296,20 +298,20 @@ export function injectVVersionQualityOverall<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
             >
           >
         >,
@@ -333,29 +335,29 @@ export function injectVVersionQualityOverall<
 }
 
 export function getVVersionReportsReportTypeQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
 ) {
-  return ['v:version', '/v:version/reports/:report_type', args] as const
+  return ['v{version}', '/v{version}/reports/:report_type', args] as const
 }
 
 export function getVVersionReportsReportTypeQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+          Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
         >
       >
     >,
@@ -366,7 +368,7 @@ export function getVVersionReportsReportTypeQueryOptions<
     queryKey: getVVersionReportsReportTypeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].reports[':report_type'].$get(args, {
+        client['v{version}'].reports[':report_type'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -379,20 +381,20 @@ export function injectVVersionReportsReportType<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
             >
           >
         >,
@@ -417,10 +419,10 @@ export function injectVVersionReportsReportType<
 
 export function getVVersionReportsStartDateToEndDateReportTypeQueryKey(
   args: InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
 ) {
-  return ['v:version', '/v:version/reports/:start_date/to/:end_date/:report_type', args] as const
+  return ['v{version}', '/v{version}/reports/:start_date/to/:end_date/:report_type', args] as const
 }
 
 export function getVVersionReportsStartDateToEndDateReportTypeQueryOptions<
@@ -429,7 +431,7 @@ export function getVVersionReportsStartDateToEndDateReportTypeQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+            (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
           >
         >
       >
@@ -438,7 +440,7 @@ export function getVVersionReportsStartDateToEndDateReportTypeQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -448,7 +450,7 @@ export function getVVersionReportsStartDateToEndDateReportTypeQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+              (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
             >
           >
         >
@@ -461,7 +463,7 @@ export function getVVersionReportsStartDateToEndDateReportTypeQueryOptions<
     queryKey: getVVersionReportsStartDateToEndDateReportTypeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].reports[':start_date'].to[':end_date'][':report_type'].$get(args, {
+        client['v{version}'].reports[':start_date'].to[':end_date'][':report_type'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -476,7 +478,7 @@ export function injectVVersionReportsStartDateToEndDateReportType<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+            (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
           >
         >
       >
@@ -485,7 +487,7 @@ export function injectVVersionReportsStartDateToEndDateReportType<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -495,7 +497,7 @@ export function injectVVersionReportsStartDateToEndDateReportType<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+                  (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
                 >
               >
             >
@@ -524,26 +526,26 @@ export function injectVVersionReportsStartDateToEndDateReportType<
 }
 
 export function getVVersionSitesQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
 ) {
-  return ['v:version', '/v:version/sites', args] as const
+  return ['v{version}', '/v{version}/sites', args] as const
 }
 
 export function getVVersionSitesQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
       >
     >,
     TError,
@@ -553,7 +555,7 @@ export function getVVersionSitesQueryOptions<
     queryKey: getVVersionSitesQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].sites.$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['v{version}'].sites.$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -562,18 +564,20 @@ export function getVVersionSitesQueryOptions<
 export function injectVVersionSites<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>
+            >
           >
         >,
         TError,
@@ -593,29 +597,29 @@ export function injectVVersionSites<
 }
 
 export function getVVersionSitesSiteIdsQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
 ) {
-  return ['v:version', '/v:version/sites/:site_Ids', args] as const
+  return ['v{version}', '/v{version}/sites/:site_Ids', args] as const
 }
 
 export function getVVersionSitesSiteIdsQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+          Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
         >
       >
     >,
@@ -626,7 +630,7 @@ export function getVVersionSitesSiteIdsQueryOptions<
     queryKey: getVVersionSitesSiteIdsQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].sites[':site_Ids'].$get(args, {
+        client['v{version}'].sites[':site_Ids'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -639,20 +643,20 @@ export function injectVVersionSitesSiteIds<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+        Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
             >
           >
         >,
@@ -676,26 +680,28 @@ export function injectVVersionSitesSiteIds<
 }
 
 export function getVVersionSitetypesQueryKey(
-  args: InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
 ) {
-  return ['v:version', '/v:version/sitetypes', args] as const
+  return ['v{version}', '/v{version}/sitetypes', args] as const
 }
 
 export function getVVersionSitetypesQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>>
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
+        >
       >
     >,
     TError,
@@ -705,7 +711,7 @@ export function getVVersionSitetypesQueryOptions<
     queryKey: getVVersionSitetypesQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].sitetypes.$get(args, {
+        client['v{version}'].sitetypes.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -717,19 +723,19 @@ export function getVVersionSitetypesQueryOptions<
 export function injectVVersionSitetypes<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: () => InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>
+              Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
             >
           >
         >,
@@ -751,10 +757,10 @@ export function injectVVersionSitetypes<
 
 export function getVVersionSitetypesSiteTypeIdSitesQueryKey(
   args: InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
 ) {
-  return ['v:version', '/v:version/sitetypes/:siteType_Id/sites', args] as const
+  return ['v{version}', '/v{version}/sitetypes/:siteType_Id/sites', args] as const
 }
 
 export function getVVersionSitetypesSiteTypeIdSitesQueryOptions<
@@ -762,7 +768,7 @@ export function getVVersionSitetypesSiteTypeIdSitesQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+          ReturnType<(typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']>
         >
       >
     >
@@ -770,7 +776,7 @@ export function getVVersionSitetypesSiteTypeIdSitesQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -779,7 +785,7 @@ export function getVVersionSitetypesSiteTypeIdSitesQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+            ReturnType<(typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']>
           >
         >
       >
@@ -791,7 +797,7 @@ export function getVVersionSitetypesSiteTypeIdSitesQueryOptions<
     queryKey: getVVersionSitetypesSiteTypeIdSitesQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v:version'].sitetypes[':siteType_Id'].sites.$get(args, {
+        client['v{version}'].sitetypes[':siteType_Id'].sites.$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -805,7 +811,7 @@ export function injectVVersionSitetypesSiteTypeIdSites<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+          ReturnType<(typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']>
         >
       >
     >
@@ -813,7 +819,7 @@ export function injectVVersionSitetypesSiteTypeIdSites<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -823,7 +829,7 @@ export function injectVVersionSitetypesSiteTypeIdSites<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+                  (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
                 >
               >
             >

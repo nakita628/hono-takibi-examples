@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRoute,
   deleteProjectsProjectNamePlacementsPlacementNameRoute,
   deleteProjectsProjectNameRoute,
@@ -15,45 +15,76 @@ import {
   putProjectsProjectNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRouteHandler: RouteHandler<
+  typeof putProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(putProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectNamePlacementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectNamePlacementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectNamePlacementsPlacementNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectNamePlacementsPlacementNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectNamePlacementsPlacementNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectNamePlacementsPlacementNameDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectNamePlacementsPlacementNameDevicesDeviceTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectNamePlacementsRouteHandler: RouteHandler<
+  typeof postProjectsProjectNamePlacementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectNamePlacementsRouteHandler: RouteHandler<
+  typeof getProjectsProjectNamePlacementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsRouteHandler: RouteHandler<typeof postProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsRouteHandler: RouteHandler<typeof getProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectNamePlacementsPlacementNameRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectNamePlacementsPlacementNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectNamePlacementsPlacementNameRouteHandler: RouteHandler<
+  typeof getProjectsProjectNamePlacementsPlacementNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectNamePlacementsPlacementNameRouteHandler: RouteHandler<
+  typeof putProjectsProjectNamePlacementsPlacementNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectNameRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectNameRouteHandler: RouteHandler<
+  typeof getProjectsProjectNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectNameRouteHandler: RouteHandler<
+  typeof putProjectsProjectNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectNamePlacementsPlacementNameDevicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectNamePlacementsPlacementNameDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiFacebookPostsByUriRoute,
   getApiHomeRoute,
   getApiMinistriesKeyMinisterRoute,
@@ -29,87 +29,142 @@ import {
   getApiThemesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiFacebookPostsByUriRouteHandler: RouteHandler<
+  typeof getApiFacebookPostsByUriRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiFacebookPostsByUriRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiHomeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMinistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMinistriesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMinistriesKeyMinisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNewslettersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNewslettersImagesGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNewslettersNewsletterKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNewslettersNewsletterKeyEditionsEditionKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNewslettersNewsletterKeyEditionsEditionKeyArticlesArticleKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsKeysIndexKindIndexKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsKeysReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsLatestIndexKindIndexKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsLatestMediaUriMediaTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiResourceLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSectorsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiServicesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSlidesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSlidesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiThemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiThemesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiHomeRouteHandler: RouteHandler<typeof getApiHomeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMinistriesRouteHandler: RouteHandler<typeof getApiMinistriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMinistriesKeyRouteHandler: RouteHandler<
+  typeof getApiMinistriesKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMinistriesKeyMinisterRouteHandler: RouteHandler<
+  typeof getApiMinistriesKeyMinisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNewslettersRouteHandler: RouteHandler<typeof getApiNewslettersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNewslettersImagesGuidRouteHandler: RouteHandler<
+  typeof getApiNewslettersImagesGuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNewslettersNewsletterKeyRouteHandler: RouteHandler<
+  typeof getApiNewslettersNewsletterKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNewslettersNewsletterKeyEditionsEditionKeyRouteHandler: RouteHandler<
+  typeof getApiNewslettersNewsletterKeyEditionsEditionKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNewslettersNewsletterKeyEditionsEditionKeyArticlesArticleKeyRouteHandler: RouteHandler<
+  typeof getApiNewslettersNewsletterKeyEditionsEditionKeyArticlesArticleKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsRouteHandler: RouteHandler<typeof getApiPostsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsKeysIndexKindIndexKeyRouteHandler: RouteHandler<
+  typeof getApiPostsKeysIndexKindIndexKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsKeysReferenceRouteHandler: RouteHandler<
+  typeof getApiPostsKeysReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsLatestIndexKindIndexKeyRouteHandler: RouteHandler<
+  typeof getApiPostsLatestIndexKindIndexKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsLatestMediaUriMediaTypeRouteHandler: RouteHandler<
+  typeof getApiPostsLatestMediaUriMediaTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsKeyRouteHandler: RouteHandler<typeof getApiPostsKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiResourceLinksRouteHandler: RouteHandler<
+  typeof getApiResourceLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSectorsRouteHandler: RouteHandler<typeof getApiSectorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSectorsKeyRouteHandler: RouteHandler<typeof getApiSectorsKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiServicesRouteHandler: RouteHandler<typeof getApiServicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiServicesKeyRouteHandler: RouteHandler<typeof getApiServicesKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSlidesRouteHandler: RouteHandler<typeof getApiSlidesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSlidesIdRouteHandler: RouteHandler<typeof getApiSlidesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsRouteHandler: RouteHandler<typeof getApiTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsKeyRouteHandler: RouteHandler<typeof getApiTagsKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiThemesRouteHandler: RouteHandler<typeof getApiThemesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiThemesKeyRouteHandler: RouteHandler<typeof getApiThemesKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

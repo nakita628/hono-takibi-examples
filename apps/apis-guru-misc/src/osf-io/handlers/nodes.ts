@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNodesNodeIdContributorsUserIdIndexRoute,
   deleteNodesNodeIdDraftRegistrationsDraftIdIndexRoute,
   deleteNodesNodeIdIndexRoute,
@@ -42,126 +42,238 @@ import {
   postNodesNodeIdForksIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNodesIndexRouteHandler: RouteHandler<typeof getNodesIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const nodesHandler = app
-  .openapi(getNodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNodesNodeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNodesNodeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdAddonsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdAddonsProviderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNodesNodeIdAddonsProviderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdAddonsProviderFoldersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdChildrenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesNodeIdChildrenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdCitationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdCitationStyleIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdCommentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesNodeIdCommentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdContributorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesNodeIdContributorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNodesNodeIdContributorsUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdContributorsUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNodesNodeIdContributorsUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdDraftRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesNodeIdDraftRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNodesNodeIdDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNodesNodeIdDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdFilesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdFilesProvidersProviderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdFilesProviderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdFilesProviderPathIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdForksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodesNodeIdForksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdIdentifiersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdInstitutionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdLinkedNodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdLogsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdPreprintsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdViewOnlyLinksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdViewOnlyLinksLinkIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodesNodeIdWikisIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNodesIndexRouteHandler: RouteHandler<typeof postNodesIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNodesNodeIdIndexRouteHandler: RouteHandler<
+  typeof deleteNodesNodeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNodesNodeIdIndexRouteHandler: RouteHandler<
+  typeof patchNodesNodeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdAddonsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdAddonsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdAddonsProviderIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdAddonsProviderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNodesNodeIdAddonsProviderIndexRouteHandler: RouteHandler<
+  typeof patchNodesNodeIdAddonsProviderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdAddonsProviderFoldersIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdAddonsProviderFoldersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdChildrenIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdChildrenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodesNodeIdChildrenIndexRouteHandler: RouteHandler<
+  typeof postNodesNodeIdChildrenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdCitationIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdCitationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdCitationStyleIdIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdCitationStyleIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdCommentsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdCommentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodesNodeIdCommentsIndexRouteHandler: RouteHandler<
+  typeof postNodesNodeIdCommentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdContributorsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdContributorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodesNodeIdContributorsIndexRouteHandler: RouteHandler<
+  typeof postNodesNodeIdContributorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNodesNodeIdContributorsUserIdIndexRouteHandler: RouteHandler<
+  typeof deleteNodesNodeIdContributorsUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdContributorsUserIdIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdContributorsUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNodesNodeIdContributorsUserIdIndexRouteHandler: RouteHandler<
+  typeof patchNodesNodeIdContributorsUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdDraftRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdDraftRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodesNodeIdDraftRegistrationsIndexRouteHandler: RouteHandler<
+  typeof postNodesNodeIdDraftRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNodesNodeIdDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof deleteNodesNodeIdDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNodesNodeIdDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof patchNodesNodeIdDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdFilesIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdFilesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdFilesProvidersProviderIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdFilesProvidersProviderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdFilesProviderIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdFilesProviderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdFilesProviderPathIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdFilesProviderPathIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdForksIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdForksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodesNodeIdForksIndexRouteHandler: RouteHandler<
+  typeof postNodesNodeIdForksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdIdentifiersIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdIdentifiersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdInstitutionsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdInstitutionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdLinkedNodesIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdLinkedNodesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdLogsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdLogsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdPreprintsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdPreprintsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdViewOnlyLinksIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdViewOnlyLinksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdViewOnlyLinksLinkIdIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdViewOnlyLinksLinkIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNodesNodeIdWikisIndexRouteHandler: RouteHandler<
+  typeof getNodesNodeIdWikisIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

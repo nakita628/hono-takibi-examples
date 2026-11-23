@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWebhooksDefaultSecretRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWebhooksDefaultSecretRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const webhooksHandler = app.openapi(getWebhooksDefaultSecretRoute, (c) => {
+export const getWebhooksDefaultSecretRouteHandler: RouteHandler<
+  typeof getWebhooksDefaultSecretRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

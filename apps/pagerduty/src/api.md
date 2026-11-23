@@ -459,7 +459,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |addons|[[AddonReference](#schemaaddonreference)]|true|none|none|
 
 Status Code **400**
@@ -7804,18 +7804,10 @@ Status Code **201**
 |» state|string|true|none|prepared -- the invocation exists and can be referenced, but is NOT available to a Runner <br> created -- the invocation exists and is waiting for a Runner <br> sent -- invocation sent to a Runner <br> queued -- invocation queued by a Runner <br> running -- invocation is being ran by a Runner <br> aborted -- invocation was aborted on a Runner <br> completed -- invocation completed on a Runner <br> error -- invocation encountered an error on a Runner unknown -- transient error encountered when fetching invocation state|
 |» action_id|string|true|none|none|
 |» metadata|object|true|none|none|
-|» » agent|[UserReference](#schemauserreference) \| object|true|none|none|
+|» » agent|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1) \| object|true|none|none|
 |» » » *oneOf*|[UserReference](#schemauserreference)|false|none|none|
-|» » » *oneOf*|object|false|none|none|
-|» » » id|string|true|none|none|
-|» » » type|string|true|none|none|
-|» » » *oneOf*|object|false|none|none|
-|» » » id|string|true|read-only|none|
-|» » » summary|string \| null|false|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.|
-|» » » type|string|true|read-only|A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.|
-|» » » self|string(url) \| null|false|read-only|the API show URL at which the object is accessible|
-|» » » html_url|string(url) \| null|false|read-only|a URL at which the entity is uniquely displayed in the Web app|
-|» » » type|string|true|none|none|
+|» » » *oneOf*|[AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1)|false|none|none|
+|» » » *oneOf*|[TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |» » » *oneOf*|object|false|none|none|
 |» » » id|string|true|none|none|
 |» » » type|string|true|none|none|
@@ -7845,7 +7837,6 @@ Status Code **201**
 |» state|completed|
 |» state|error|
 |» state|unknown|
-|» » » type|account_reference|
 
 Status Code **400**
 
@@ -12664,7 +12655,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |business_services|[[BusinessService](#schemabusinessservice)]|true|none|none|
 
 Status Code **400**
@@ -13750,7 +13741,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |subscribers|[[NotificationSubscriber](#schemanotificationsubscriber)]|false|none|none|
 |account_id|string|false|none|The ID of the account belonging to the subscriber entity|
 
@@ -21153,7 +21144,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |escalation_policies|[[EscalationPolicy](#schemaescalationpolicy)]|true|none|none|
 
 Status Code **400**
@@ -25211,7 +25202,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |orchestrations|[object]|false|none|none|
 |» id|string|false|read-only|ID of the Orchestration.|
 |» self|string(url)|false|read-only|The API show URL at which the object is accessible|
@@ -26252,7 +26243,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |integrations|[[OrchestrationIntegration](#schemaorchestrationintegration)]|false|none|none|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 
 Status Code **400**
 
@@ -27223,7 +27214,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |integrations|[[OrchestrationIntegration](#schemaorchestrationintegration)]|false|none|none|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 
 Status Code **400**
 
@@ -29503,22 +29494,7 @@ Scoped OAuth requires: `event_orchestrations.write`
 |» » » » » » regex|body|string|false|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
 |» » » » » » source|body|string|false|The path to the event field where the regex will be applied to extract a value.|
 |» » catch_all|body|object|false|none|
-|» » » actions|body|object|false|none|
-|» » » » severity|body|string|false|Set the severity of the resulting alert.|
-|» » » » event_action|body|string|false|Set whether the resulting alert status is trigger or resolve.|
-|» » » » variables|body|[object]|false|Populate variables from event payloads and use those variables in other event actions.|
-|» » » » » name|body|string|false|The name of the variable|
-|» » » » » path|body|string|false|Path to a field in an event, in dot-notation.|
-|» » » » » type|body|string|false|The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.|
-|» » » » » value|body|string|false|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
-|» » » » extractions|body|[object]|false|Dynamically extract values to set and modify new and existing PD-CEF fields.|
-|» » » » » *anyOf*|body|object|false|Use a template string & variables|
-|» » » » » target|body|string|false|The PD-CEF field that will be set with the value from the template.|
-|» » » » » template|body|string|false|A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.|
-|» » » » » *anyOf*|body|object|false|Use a regex to extract a value|
-|» » » » » target|body|string|false|The PD-CEF field that will be set with the value from the regex.|
-|» » » » » regex|body|string|false|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
-|» » » » » source|body|string|false|The path to the event field where the regex will be applied to extract a value.|
+|» » » actions|body|[OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions](#schemaorchestrationunroutedallof1orchestrationpathcatchallactions)|false|none|
 
 #### Enumerated Values
 
@@ -29533,13 +29509,6 @@ Scoped OAuth requires: `event_orchestrations.write`
 |» » » » » event_action|trigger|
 |» » » » » event_action|resolve|
 |» » » » » » type|regex|
-|» » » » severity|info|
-|» » » » severity|error|
-|» » » » severity|warning|
-|» » » » severity|critical|
-|» » » » event_action|trigger|
-|» » » » event_action|resolve|
-|» » » » » type|regex|
 
 > Example responses
 
@@ -29755,22 +29724,7 @@ Status Code **200**
 |» » » » » regex|string|false|none|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
 |» » » » » source|string|false|none|The path to the event field where the regex will be applied to extract a value.|
 |» catch_all|object|false|none|none|
-|» » actions|object|false|none|none|
-|» » » severity|string|false|none|Set the severity of the resulting alert.|
-|» » » event_action|string|false|none|Set whether the resulting alert status is trigger or resolve.|
-|» » » variables|[object]|false|none|Populate variables from event payloads and use those variables in other event actions.|
-|» » » » name|string|false|none|The name of the variable|
-|» » » » path|string|false|none|Path to a field in an event, in dot-notation.|
-|» » » » type|string|false|none|The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.|
-|» » » » value|string|false|none|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
-|» » » extractions|[object]|false|none|Dynamically extract values to set and modify new and existing PD-CEF fields.|
-|» » » » *anyOf*|object|false|none|Use a template string & variables|
-|» » » » target|string|false|none|The PD-CEF field that will be set with the value from the template.|
-|» » » » template|string|false|none|A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.|
-|» » » » *anyOf*|object|false|none|Use a regex to extract a value|
-|» » » » target|string|false|none|The PD-CEF field that will be set with the value from the regex.|
-|» » » » regex|string|false|none|A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.|
-|» » » » source|string|false|none|The path to the event field where the regex will be applied to extract a value.|
+|» » actions|[OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions](#schemaorchestrationunroutedallof1orchestrationpathcatchallactions)|false|none|none|
 |warnings|[[OrchestrationWarningIneligible](#schemaorchestrationwarningineligible)]|false|none|List of applicable warnings messages for each rule using a feature not available on your account plan.|
 |» *anyOf*|[OrchestrationWarningIneligible](#schemaorchestrationwarningineligible)|false|none|This rule is using a feature that is currently unavailable on the current account plan.|
 
@@ -29786,13 +29740,6 @@ Status Code **200**
 |» » » » event_action|trigger|
 |» » » » event_action|resolve|
 |» » » » » type|regex|
-|» » » severity|info|
-|» » » severity|error|
-|» » » severity|warning|
-|» » » severity|critical|
-|» » » event_action|trigger|
-|» » » event_action|resolve|
-|» » » » type|regex|
 
 Status Code **400**
 
@@ -35133,7 +35080,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |extension_schemas|[[ExtensionSchema](#schemaextensionschema)]|true|none|none|
 
 Status Code **400**
@@ -35508,7 +35455,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |extensions|[[Extension](#schemaextension)]|true|none|none|
 
 Status Code **400**
@@ -36689,7 +36636,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |incidents|[[Incident](#schemaincident)]|true|none|none|
 
 Status Code **400**
@@ -37087,7 +37034,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |incidents|[[Incident](#schemaincident)]|true|none|none|
 
 Status Code **400**
@@ -38316,7 +38263,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |alerts|[[Alert](#schemaalert)]|true|none|none|
 
 Status Code **400**
@@ -38571,7 +38518,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |alerts|[[Alert](#schemaalert)]|true|none|none|
 
 Status Code **400**
@@ -39856,7 +39803,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |log_entries|[[AcknowledgeLogEntry](#schemaacknowledgelogentry) \| [AnnotateLogEntry](#schemaannotatelogentry) \| [AssignLogEntry](#schemaassignlogentry) \| [DelegateLogEntry](#schemadelegatelogentry) \| [EscalateLogEntry](#schemaescalatelogentry) \| [ExhaustEscalationPathLogEntry](#schemaexhaustescalationpathlogentry) \| [NotifyLogEntry](#schemanotifylogentry) \| [ReachAckLimitLogEntry](#schemareachacklimitlogentry) \| [ReachTriggerLimitLogEntry](#schemareachtriggerlimitlogentry) \| [RepeatEscalationPathLogEntry](#schemarepeatescalationpathlogentry) \| [ResolveLogEntry](#schemaresolvelogentry) \| [SnoozeLogEntry](#schemasnoozelogentry) \| [TriggerLogEntry](#schematriggerlogentry) \| [UnacknowledgeLogEntry](#schemaunacknowledgelogentry) \| [UrgencyChangeLogEntry](#schemaurgencychangelogentry) \| [FieldValueChangeLogEntry](#schemafieldvaluechangelogentry) \| [CustomFieldValueChangeLogEntry](#schemacustomfieldvaluechangelogentry)]|true|none|none|
 |» *oneOf*|[AcknowledgeLogEntry](#schemaacknowledgelogentry)|false|none|none|
 |» *oneOf*|[AnnotateLogEntry](#schemaannotatelogentry)|false|none|none|
@@ -42838,7 +42785,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |subscribers|[[NotificationSubscriberWithContext](#schemanotificationsubscriberwithcontext)]|false|none|none|
 |account_id|string|false|none|The ID of the account belonging to the subscriber entity|
 
@@ -49098,7 +49045,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |incident_workflows|[[IncidentWorkflow](#schemaincidentworkflow)]|true|none|none|
 
 Status Code **400**
@@ -53868,28 +53815,12 @@ Status Code **200**
 |---|---|---|---|---|
 |license_allocations|[object]|false|none|none|
 |» user|[UserReference](#schemauserreference)|true|none|none|
-|» license|object|true|none|none|
-|» » id|string|true|none|Uniquely identifies the resource|
-|» » description|string|true|none|Description of the License. May include the names of add-ons associated with<br>the License, if there are any.<br>|
-|» » name|string|true|none|Name of the License.<br>|
-|» » valid_roles|[string]|true|none|The roles a User with this License can have|
-|» » role_group|string|false|none|Indicates whether this License is assignable to full or stakeholder Users|
-|» » type|string|false|none|Type of object|
-|» » self|string|false|none|API URL to access the License|
-|» » html_url|string|false|none|HTML URL to access the License|
-|» » summary|string|false|none|Summary of the License|
+|» license|[LicenseWithCountsAllOf0](#schemalicensewithcountsallof0)|true|none|none|
 |» allocated_at|string(date-time)|true|none|Indicates the date and time the License was allocated to the User|
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» » role_group|FullUser|
-|» » role_group|Stakeholder|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 
 Status Code **401**
 
@@ -54273,7 +54204,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |log_entries|[[AcknowledgeLogEntry](#schemaacknowledgelogentry) \| [AnnotateLogEntry](#schemaannotatelogentry) \| [AssignLogEntry](#schemaassignlogentry) \| [DelegateLogEntry](#schemadelegatelogentry) \| [EscalateLogEntry](#schemaescalatelogentry) \| [ExhaustEscalationPathLogEntry](#schemaexhaustescalationpathlogentry) \| [NotifyLogEntry](#schemanotifylogentry) \| [ReachAckLimitLogEntry](#schemareachacklimitlogentry) \| [ReachTriggerLimitLogEntry](#schemareachtriggerlimitlogentry) \| [RepeatEscalationPathLogEntry](#schemarepeatescalationpathlogentry) \| [ResolveLogEntry](#schemaresolvelogentry) \| [SnoozeLogEntry](#schemasnoozelogentry) \| [TriggerLogEntry](#schematriggerlogentry) \| [UnacknowledgeLogEntry](#schemaunacknowledgelogentry) \| [UrgencyChangeLogEntry](#schemaurgencychangelogentry)]|true|none|none|
 |» *oneOf*|[AcknowledgeLogEntry](#schemaacknowledgelogentry)|false|none|none|
 |» *oneOf*|[AnnotateLogEntry](#schemaannotatelogentry)|false|none|none|
@@ -54914,7 +54845,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |maintenance_windows|[[MaintenanceWindow](#schemamaintenancewindow)]|true|none|none|
 
 Status Code **400**
@@ -55908,7 +55839,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |notifications|[[Notification](#schemanotification)]|true|none|none|
 
 Status Code **400**
@@ -56440,7 +56371,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |oncalls|[[Oncall](#schemaoncall)]|true|none|none|
 
 Status Code **400**
@@ -56658,7 +56589,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |priorities|[[Priority](#schemapriority)]|true|none|none|
 
 Status Code **400**
@@ -57669,7 +57600,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |rulesets|[[Ruleset](#schemaruleset)]|false|none|none|
 
 Status Code **401**
@@ -58685,7 +58616,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |rules|[[EventRule](#schemaeventrule)]|false|none|The paginated list of rules of the Ruleset.|
 
 Status Code **401**
@@ -59878,7 +59809,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |schedules|[[Schedule](#schemaschedule)]|true|none|none|
 
 Status Code **400**
@@ -68253,7 +68184,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |services|[[Service](#schemaservice)]|true|none|none|
 
 Status Code **400**
@@ -70409,7 +70340,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |migrated_at|string(date-time)|false|read-only|The date/time the service's Event Rules were converted to a Service Orchestration. This property is only included if the `migrated_metadata` query parameter is provided.|
 |migrated_by|object|false|read-only|Reference to the user that converted the service's Event Rules to a Service Orchestration. This property is only included if the `migrated_metadata` query parameter is provided.|
 |» id|string|false|read-only|none|
@@ -74604,7 +74535,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -77278,7 +77209,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |status_pages|[[StatusPage](#schemastatuspage)]|false|none|none|
 
 Status Code **400**
@@ -77490,7 +77421,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |impacts|[[StatusPageImpact](#schemastatuspageimpact)]|false|none|none|
 
 Status Code **400**
@@ -77826,7 +77757,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |services|[[StatusPageService](#schemastatuspageservice)]|false|none|none|
 
 Status Code **400**
@@ -78192,7 +78123,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |severities|[[StatusPageSeverity](#schemastatuspageseverity)]|false|none|none|
 
 Status Code **400**
@@ -78554,7 +78485,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |statuses|[[StatusPageStatus](#schemastatuspagestatus)]|false|none|none|
 
 Status Code **400**
@@ -78913,7 +78844,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |posts|[[StatusPagePost](#schemastatuspagepost)]|false|none|none|
 
 Status Code **400**
@@ -79939,7 +79870,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |post_updates|[[StatusPagePostUpdate](#schemastatuspagepostupdate)]|false|none|none|
 
 Status Code **400**
@@ -81501,7 +81432,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |subscriptions|[[StatusPageSubscription](#schemastatuspagesubscription)]|false|none|none|
 
 Status Code **400**
@@ -82419,7 +82350,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |tags|[[Tag](#schematag)]|true|none|none|
 
 Status Code **401**
@@ -82568,7 +82499,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |tags|[[Tag](#schematag)]|true|none|none|
 
 Status Code **401**
@@ -83171,7 +83102,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |users|[[EntityReference](#schemaentityreference)]|false|none|none|
 |teams|[[EntityReference](#schemaentityreference)]|false|none|none|
 |escalation_policies|[[EntityReference](#schemaentityreference)]|false|none|none|
@@ -83352,7 +83283,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |teams|[[Team](#schemateam)]|true|none|none|
 
 Status Code **400**
@@ -85014,7 +84945,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |members|[object]|false|none|none|
 |» user|[UserReference](#schemauserreference)|false|none|none|
 |» role|string|false|none|none|
@@ -85208,7 +85139,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |subscriptions|[object]|true|none|none|
 |» subscription|[NotificationSubscription](#schemanotificationsubscription)|false|none|An object describing the relationship of a NotificationSubscriber and a NotificationSubscribable.|
 |» subscribable_name|string \| null|false|none|The name of the subscribable|
@@ -86165,7 +86096,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |templates|[[Template](#schematemplate)]|true|none|none|
 
 Status Code **400**
@@ -87557,7 +87488,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |users|[[User](#schemauser)]|true|none|none|
 
 Status Code **400**
@@ -90559,23 +90490,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|license|object|true|none|none|
-|» id|string|true|none|Uniquely identifies the resource|
-|» description|string|true|none|Description of the License. May include the names of add-ons associated with<br>the License, if there are any.<br>|
-|» name|string|true|none|Name of the License.<br>|
-|» valid_roles|[string]|true|none|The roles a User with this License can have|
-|» role_group|string|false|none|Indicates whether this License is assignable to full or stakeholder Users|
-|» type|string|false|none|Type of object|
-|» self|string|false|none|API URL to access the License|
-|» html_url|string|false|none|HTML URL to access the License|
-|» summary|string|false|none|Summary of the License|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» role_group|FullUser|
-|» role_group|Stakeholder|
+|license|[LicenseWithCountsAllOf0](#schemalicensewithcountsallof0)|true|none|none|
 
 Status Code **401**
 
@@ -91702,7 +91617,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |subscriptions|[object]|true|none|none|
 |» subscription|[NotificationSubscription](#schemanotificationsubscription)|false|none|An object describing the relationship of a NotificationSubscriber and a NotificationSubscribable.|
 |» subscribable_name|string \| null|false|none|The name of the subscribable|
@@ -95114,7 +95029,7 @@ Status Code **200**
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 |vendors|[[Vendor](#schemavendor)]|true|none|none|
 
 Status Code **400**
@@ -99965,7 +99880,7 @@ NotConfigured -- Runner has never connected to backend
 |creation_time|string(date-time)|true|none|The date/time|
 |modify_time|string(date-time)|true|none|The date/time|
 |last_run|string(date-time)|false|none|The date/time|
-|last_run_by|[UserReference](#schemauserreference) \| object|false|none|none|
+|last_run_by|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |only_invocable_on_unresolved_incidents|boolean|false|none|If true, the action can only be invoked against an unresolved incident.|
 |allow_invocation_manually|boolean|false|none|If true, the action can only be invoked manually by a user.|
 |allow_invocation_from_event_orchestration|boolean|false|none|If true, the action can only be invoked automatically by an Event Orchestration.|
@@ -100180,7 +100095,7 @@ NotConfigured -- Runner has never connected to backend
 |creation_time|string(date-time)|true|none|The date/time|
 |modify_time|string(date-time)|true|none|The date/time|
 |last_run|string(date-time)|false|none|The date/time|
-|last_run_by|[UserReference](#schemauserreference) \| object|false|none|none|
+|last_run_by|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |only_invocable_on_unresolved_incidents|boolean|false|none|If true, the action can only be invoked against an unresolved incident.|
 |allow_invocation_manually|boolean|false|none|If true, the action can only be invoked manually by a user.|
 |allow_invocation_from_event_orchestration|boolean|false|none|If true, the action can only be invoked automatically by an Event Orchestration.|
@@ -100429,7 +100344,7 @@ NotConfigured -- Runner has never connected to backend
 |creation_time|string(date-time)|true|none|The date/time|
 |modify_time|string(date-time)|true|none|The date/time|
 |last_run|string(date-time)|false|none|The date/time|
-|last_run_by|[UserReference](#schemauserreference) \| object|false|none|none|
+|last_run_by|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |only_invocable_on_unresolved_incidents|boolean|false|none|If true, the action can only be invoked against an unresolved incident.|
 |allow_invocation_manually|boolean|false|none|If true, the action can only be invoked manually by a user.|
 |allow_invocation_from_event_orchestration|boolean|false|none|If true, the action can only be invoked automatically by an Event Orchestration.|
@@ -100526,7 +100441,7 @@ NotConfigured -- Runner has never connected to backend
 |creation_time|string(date-time)|true|none|The date/time|
 |modify_time|string(date-time)|true|none|The date/time|
 |last_run|string(date-time)|false|none|The date/time|
-|last_run_by|[UserReference](#schemauserreference) \| object|false|none|none|
+|last_run_by|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |only_invocable_on_unresolved_incidents|boolean|false|none|If true, the action can only be invoked against an unresolved incident.|
 |allow_invocation_manually|boolean|false|none|If true, the action can only be invoked manually by a user.|
 |allow_invocation_from_event_orchestration|boolean|false|none|If true, the action can only be invoked automatically by an Event Orchestration.|
@@ -100770,7 +100685,7 @@ NotConfigured -- Runner has never connected to backend
 |creation_time|string(date-time)|true|none|The date/time|
 |modify_time|string(date-time)|true|none|The date/time|
 |last_run|string(date-time)|false|none|The date/time|
-|last_run_by|[UserReference](#schemauserreference) \| object|false|none|none|
+|last_run_by|[UserReference](#schemauserreference) \| [AutomationActionsAbstractActionAllOf1LastRunByOneOf1](#schemaautomationactionsabstractactionallof1lastrunbyoneof1) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|none|
 |only_invocable_on_unresolved_incidents|boolean|false|none|If true, the action can only be invoked against an unresolved incident.|
 |allow_invocation_manually|boolean|false|none|If true, the action can only be invoked manually by a user.|
 |allow_invocation_from_event_orchestration|boolean|false|none|If true, the action can only be invoked automatically by an Event Orchestration.|
@@ -106339,16 +106254,16 @@ A free-text note attached to a Post-Incident Review marker. Each note supplied w
 |---|---|---|---|---|
 |enabled|boolean|true|read-only|Whether the custom field is enabled.|
 |id|string|true|read-only|The ID of the resource.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |type|string|true|read-only|none|
 |self|string(url) \| null|true|read-only|The API show URL at which the object is accessible|
-|description|string \| null|false|none|A description of the data this field contains.|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
 |updated_at|string(date-time)|true|read-only|The date/time the custom field was last updated.|
 |created_at|string(date-time)|true|read-only|The date/time the custom field was created at.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
-|default_value|object \| null|false|none|none|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
+|default_value|[IncidentTypeCustomFieldsDefaultValue](#schemaincidenttypecustomfieldsdefaultvalue)|false|none|none|
 |incident_type|string|true|read-only|The id of the incident type the custom field is associated with.|
 |summary|string \| null|true|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.|
 |field_options|[[CustomFieldsEditableFieldOption](#schemacustomfieldseditablefieldoption)]|true|none|The options for the custom field.|
@@ -106415,16 +106330,16 @@ A free-text note attached to a Post-Incident Review marker. Each note supplied w
 |---|---|---|---|---|
 |enabled|boolean|true|read-only|Whether the custom field is enabled.|
 |id|string|true|read-only|The ID of the resource.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |type|string|true|read-only|none|
 |self|string(url) \| null|true|read-only|The API show URL at which the object is accessible|
-|description|string \| null|false|none|A description of the data this field contains.|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
 |updated_at|string(date-time)|true|read-only|The date/time the object was last updated.|
 |created_at|string(date-time)|true|read-only|The date/time the object was created at.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
-|default_value|object \| null|false|none|none|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
+|default_value|[IncidentTypeCustomFieldsDefaultValue](#schemaincidenttypecustomfieldsdefaultvalue)|false|none|none|
 |incident_type|string|true|read-only|The id of the incident type the custom field is associated with.|
 |summary|string \| null|true|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.|
 |field_options|[object]|false|none|The options for the custom field. Applies only to `single_value_fixed` and `multi_value_fixed` field types. Optionally included in response based on query parameter.|
@@ -107206,19 +107121,19 @@ Details of the custom field.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|created_at|string(date-time)|false|none|The date/time the object was created at.|
-|data_type|string|false|none|The kind of data the custom field is allowed to contain.|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|false|none|The human-readable name of the field. This must be unique across an account.|
-|enabled|boolean|false|none|Whether the field is enabled.|
+|created_at|[ServiceCustomFieldsFieldReadModelCreatedAt](#schemaservicecustomfieldsfieldreadmodelcreatedat)|false|none|The date/time the object was created at.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|false|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|false|none|The human-readable name of the field. This must be unique across an account.|
+|enabled|[CustomFieldsEditableFieldEnabled](#schemacustomfieldseditablefieldenabled)|false|none|Whether the field is enabled.|
 |field_options|[[ServiceCustomFieldsFieldOptionReadModel](#schemaservicecustomfieldsfieldoptionreadmodel)]|false|none|The options for the custom field. Applies only to `single_value_fixed` and `multi_value_fixed` field types. These options are returned only if the `include[]` parameter specifies `field_options`.|
-|field_type|string|false|none|The type of data this field contains. In combination with the `data_type` field.|
-|id|string|false|none|The ID of the resource.|
-|name|string|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|false|none|The type of data this field contains. In combination with the `data_type` field.|
+|id|[ServiceCustomFieldsFieldReadModelId](#schemaservicecustomfieldsfieldreadmodelid)|false|none|The ID of the resource.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |self|string(url) \| null|false|read-only|The API show URL at which the object is accessible|
 |summary|string \| null|false|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `display_name`.|
 |type|string|false|read-only|none|
-|updated_at|string(date-time)|false|none|The date/time the object was updated at.|
+|updated_at|[ServiceCustomFieldsFieldReadModelUpdatedAt](#schemaservicecustomfieldsfieldreadmodelupdatedat)|false|none|The date/time the object was updated at.|
 
 #### Enumerated Values
 
@@ -107270,13 +107185,13 @@ Details of the custom field to be created.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
-|enabled|boolean|false|none|Whether the field is enabled.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
+|enabled|[CustomFieldsEditableFieldEnabled](#schemacustomfieldseditablefieldenabled)|false|none|Whether the field is enabled.|
 |field_options|[[ServiceCustomFieldsFieldOptionUpdateModel](#schemaservicecustomfieldsfieldoptionupdatemodel)]|false|none|none|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 
 #### Enumerated Values
 
@@ -107325,9 +107240,9 @@ Details of the custom field to be updated.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|false|none|The human-readable name of the field. This must be unique across an account.|
-|enabled|boolean|false|none|Whether the field is enabled.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|false|none|The human-readable name of the field. This must be unique across an account.|
+|enabled|[CustomFieldsEditableFieldEnabled](#schemacustomfieldseditablefieldenabled)|false|none|Whether the field is enabled.|
 |field_options|[object]|false|none|List of field options to update, insert or delete. This field supports several behaviors:<br>  - Empty array: Deletes all field options<br>  - Omitting the `field_options` array entirely: Preserves all existing options<br>  - Not listing an existing option: Deletes that option (unless it's the current default value)<br>|
 
 #### Enumerated Values
@@ -107361,11 +107276,11 @@ Details of the custom field to be updated.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|created_at|string(date-time)|false|none|The date/time the object was created at.|
+|created_at|[ServiceCustomFieldsFieldReadModelCreatedAt](#schemaservicecustomfieldsfieldreadmodelcreatedat)|false|none|The date/time the object was created at.|
 |data|object|false|none|none|
-|id|string|false|none|The ID of the resource.|
+|id|[ServiceCustomFieldsFieldReadModelId](#schemaservicecustomfieldsfieldreadmodelid)|false|none|The ID of the resource.|
 |type|string|false|none|none|
-|updated_at|string(date-time)|false|none|The date/time the object was updated at.|
+|updated_at|[ServiceCustomFieldsFieldReadModelUpdatedAt](#schemaservicecustomfieldsfieldreadmodelupdatedat)|false|none|The date/time the object was updated at.|
 
 #### Enumerated Values
 
@@ -107423,14 +107338,14 @@ An option for a custom field. Can only be applied to fields with a `field_type` 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data_type|string|false|none|The kind of data the custom field is allowed to contain.|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|false|none|The human-readable name of the field. This must be unique across an account.|
-|field_type|string|false|none|The type of data this field contains. In combination with the `data_type` field.|
-|id|string|false|none|The ID of the resource.|
-|name|string|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|false|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|false|none|The human-readable name of the field. This must be unique across an account.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|false|none|The type of data this field contains. In combination with the `data_type` field.|
+|id|[ServiceCustomFieldsFieldReadModelId](#schemaservicecustomfieldsfieldreadmodelid)|false|none|The ID of the resource.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |type|string|false|none|Determines the type of the reference.|
-|value|object|false|none|none|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|false|none|none|
 
 #### Enumerated Values
 
@@ -107476,11 +107391,11 @@ Note: All updates succeed or none are applied.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|object|false|none|none|
-|id|string|true|none|The ID of the resource.|
-|value|object|true|none|none|
+|id|[ServiceCustomFieldsFieldReadModelId](#schemaservicecustomfieldsfieldreadmodelid)|true|none|The ID of the resource.|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|true|none|none|
 |*oneOf*|object|false|none|none|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
-|value|object|true|none|none|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|true|none|none|
 
 <h2 id="tocS_PriorityReference">PriorityReference</h2>
 <!-- backwards compatibility -->
@@ -108286,7 +108201,7 @@ Note: All updates succeed or none are applied.
 |offset|integer|false|read-only|Echoes offset pagination property.|
 |limit|integer|false|read-only|Echoes limit pagination property.|
 |more|boolean|false|read-only|Indicates if there are additional records to return|
-|total|integer \| null|false|read-only|The total number of records matching the given query.|
+|total|[PaginationTotal](#schemapaginationtotal)|false|read-only|The total number of records matching the given query.|
 
 <h2 id="tocS_CursorPagination">CursorPagination</h2>
 <!-- backwards compatibility -->
@@ -109109,8 +109024,8 @@ Note: All updates succeed or none are applied.
 |metadata|string|false|none|JSON-formatted string of metadata pertaining to the Action|
 |created_at|string(date-time)|false|none|The date-time at which this Action was created|
 |created_by_user_id|string|false|none|The obfuscated Id of the User who created this Action|
-|inputs|[object]|false|none|Inputs whose values used during Action execution|
-|outputs|[object]|false|read-only|Outputs whose values set during Action execution|
+|inputs|[[IncidentWorkflowActionAllOf1InputsItems](#schemaincidentworkflowactionallof1inputsitems)]|false|none|Inputs whose values used during Action execution|
+|outputs|[[IncidentWorkflowActionAllOf1OutputsItems](#schemaincidentworkflowactionallof1outputsitems)]|false|read-only|Outputs whose values set during Action execution|
 
 #### Enumerated Values
 
@@ -109412,10 +109327,10 @@ of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|read-only|Unique identifier for the allow list<br>(e.g. `AGIS47HYOV6BDODBTMQKMPQPHU`).<br>|
-|type|string|false|read-only|A string that determines the schema of the object.|
-|state|string|true|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
-|cidr_entries|[[CidrEntry](#schemacidrentry)]|true|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
-|targets|[[IpAllowListTarget](#schemaipallowlisttarget)]|true|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
+|type|[IpAllowListType](#schemaipallowlisttype)|false|read-only|A string that determines the schema of the object.|
+|state|[IpAllowListState](#schemaipallowliststate)|true|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
+|cidr_entries|[IpAllowListCidrEntries](#schemaipallowlistcidrentries)|true|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
+|targets|[IpAllowListTargets](#schemaipallowlisttargets)|true|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
 
 #### Enumerated Values
 
@@ -109490,10 +109405,10 @@ or `targets` array fully replaces the existing one.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|read-only|A string that determines the schema of the object.|
-|state|string|false|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
-|cidr_entries|[[CidrEntry](#schemacidrentry)]|false|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
-|targets|[[IpAllowListTarget](#schemaipallowlisttarget)]|false|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
+|type|[IpAllowListType](#schemaipallowlisttype)|false|read-only|A string that determines the schema of the object.|
+|state|[IpAllowListState](#schemaipallowliststate)|false|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
+|cidr_entries|[IpAllowListCidrEntries](#schemaipallowlistcidrentries)|false|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
+|targets|[IpAllowListTargets](#schemaipallowlisttargets)|false|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
 
 #### Enumerated Values
 
@@ -112105,8 +112020,8 @@ This rule includes invalid data for a feature item.
 |self|string(url) \| null|false|read-only|the API show URL at which the object is accessible|
 |html_url|string(url) \| null|false|read-only|a URL at which the entity is uniquely displayed in the Web app|
 |type|string|false|none|none|
-|created_by|[UserReference](#schemauserreference) \| object|false|none|User/Account object reference of the creator|
-|updated_by|[UserReference](#schemauserreference) \| object|false|none|User/Account object reference of the updator|
+|created_by|[UserReference](#schemauserreference) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|User/Account object reference of the creator|
+|updated_by|[UserReference](#schemauserreference) \| [TemplateAllOf1CreatedByOneOf1](#schematemplateallof1createdbyoneof1)|false|none|User/Account object reference of the updator|
 
 #### Enumerated Values
 
@@ -112245,13 +112160,13 @@ This rule includes invalid data for a feature item.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at|string(date-time)|true|read-only|The date/time the object was created at.|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
-|default_value|object \| null|false|none|none|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
+|default_value|[IncidentTypeCustomFieldsDefaultValue](#schemaincidenttypecustomfieldsdefaultvalue)|false|none|none|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
 |id|string|true|read-only|The ID of the resource.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |self|string(url) \| null|true|read-only|The API show URL at which the object is accessible|
 |summary|string \| null|true|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `display_name`.|
 |type|string|true|read-only|none|
@@ -112295,10 +112210,10 @@ This rule includes invalid data for a feature item.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|display_name|string|false|none|The human-readable name of the field. This must be unique across an account.|
-|description|string \| null|false|none|A description of the data this field contains.|
-|default_value|object \| null|false|none|none|
-|enabled|boolean|false|none|Whether the field is enabled.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|false|none|The human-readable name of the field. This must be unique across an account.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|default_value|[IncidentTypeCustomFieldsDefaultValue](#schemaincidenttypecustomfieldsdefaultvalue)|false|none|none|
+|enabled|[CustomFieldsEditableFieldEnabled](#schemacustomfieldseditablefieldenabled)|false|none|Whether the field is enabled.|
 
 #### Enumerated Values
 
@@ -112422,14 +112337,14 @@ This rule includes invalid data for a feature item.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at|string(date-time)|true|read-only|The date/time the object was created at.|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
-|default_value|object \| null|false|none|none|
-|description|string \| null|false|none|A description of the data this field contains.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
+|default_value|[IncidentTypeCustomFieldsDefaultValue](#schemaincidenttypecustomfieldsdefaultvalue)|false|none|none|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|false|none|A description of the data this field contains.|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
 |field_options|[[CustomFieldsFieldOption](#schemacustomfieldsfieldoption)]|false|none|The fixed list of value options that may be stored in this field.|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
 |id|string|true|read-only|The ID of the resource.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |self|string(url) \| null|true|read-only|The API show URL at which the object is accessible|
 |summary|string \| null|true|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `display_name`.|
 |type|string|true|read-only|none|
@@ -112478,13 +112393,13 @@ This rule includes invalid data for a feature item.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|Id of the field.|
-|name|string|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|true|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
 |type|string|true|none|Determines the type of the reference.|
-|display_name|string|true|none|The human-readable name of the field. This must be unique across an account.|
-|field_type|string|true|none|The type of data this field contains. In combination with the `data_type` field.|
-|data_type|string|true|none|The kind of data the custom field is allowed to contain.|
-|description|string \| null|true|none|A description of the data this field contains.|
-|value|object|true|none|none|
+|display_name|[CustomFieldsFieldValueDisplayName](#schemacustomfieldsfieldvaluedisplayname)|true|none|The human-readable name of the field. This must be unique across an account.|
+|field_type|[CustomFieldsFieldValueFieldType](#schemacustomfieldsfieldvaluefieldtype)|true|none|The type of data this field contains. In combination with the `data_type` field.|
+|data_type|[CustomFieldsFieldValueDataType](#schemacustomfieldsfieldvaluedatatype)|true|none|The kind of data the custom field is allowed to contain.|
+|description|[CustomFieldsFieldValueDescription](#schemacustomfieldsfieldvaluedescription)|true|none|A description of the data this field contains.|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|true|none|none|
 
 #### Enumerated Values
 
@@ -112523,11 +112438,11 @@ This rule includes invalid data for a feature item.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|object|false|none|none|
-|name|string|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
-|value|object|false|none|none|
+|name|[CustomFieldsFieldValueName](#schemacustomfieldsfieldvaluename)|false|none|The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|false|none|none|
 |*oneOf*|object|false|none|none|
 |id|string|false|none|The ID of the Field.|
-|value|object|false|none|none|
+|value|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0) \| [CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1) \| [CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2) \| [CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3) \| [CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4) \| [CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|false|none|none|
 
 <h2 id="tocS_FeatureEnablement">FeatureEnablement</h2>
 <!-- backwards compatibility -->
@@ -113038,7 +112953,7 @@ Attributes for Post Update creation/update
 |message|string|true|none|The message of the Post Update.|
 |status|object|true|none|Status Page Status|
 |severity|object|true|none|Status Page Severity|
-|impacted_services|[object]|true|none|Impacted services represent the status page services affected by a post update, and its impact.|
+|impacted_services|[[StatusPagePostUpdateRequestImpactedServicesItems](#schemastatuspagepostupdaterequestimpactedservicesitems)]|true|none|Impacted services represent the status page services affected by a post update, and its impact.|
 |update_frequency_ms|integer \| null|true|none|The frequency of the next Post Update in milliseconds.|
 |notify_subscribers|boolean|true|none|Determines if the subscribers should be notified of the Post Update.|
 |reported_at|string(date-time) \| null|false|none|The date and time the Post Update was reported.|
@@ -114504,3 +114419,969 @@ is cleared.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |override|object|true|none|none|
+
+<h2 id="tocS_TagAllOf0">TagAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schematagallof0"></a>
+<a id="schema_TagAllOf0"></a>
+<a id="tocStagallof0"></a>
+<a id="tocstagallof0"></a>
+
+```json
+{
+  "id": "string",
+  "summary": "string",
+  "type": "string",
+  "self": "http://example.com",
+  "html_url": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|read-only|none|
+|summary|string \| null|false|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.|
+|type|string|false|read-only|A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.|
+|self|string(url) \| null|false|read-only|the API show URL at which the object is accessible|
+|html_url|string(url) \| null|false|read-only|a URL at which the entity is uniquely displayed in the Web app|
+
+<h2 id="tocS_AutomationActionsAbstractActionAllOf1LastRunByOneOf1">AutomationActionsAbstractActionAllOf1LastRunByOneOf1</h2>
+<!-- backwards compatibility -->
+<a id="schemaautomationactionsabstractactionallof1lastrunbyoneof1"></a>
+<a id="schema_AutomationActionsAbstractActionAllOf1LastRunByOneOf1"></a>
+<a id="tocSautomationactionsabstractactionallof1lastrunbyoneof1"></a>
+<a id="tocsautomationactionsabstractactionallof1lastrunbyoneof1"></a>
+
+```json
+{
+  "id": "/5471da24-eecd-42e2-ac38-a32b2d907406/service/P000000",
+  "type": "event_orchestration_reference"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|type|string|true|none|none|
+
+<h2 id="tocS_TemplateAllOf1CreatedByOneOf1">TemplateAllOf1CreatedByOneOf1</h2>
+<!-- backwards compatibility -->
+<a id="schematemplateallof1createdbyoneof1"></a>
+<a id="schema_TemplateAllOf1CreatedByOneOf1"></a>
+<a id="tocStemplateallof1createdbyoneof1"></a>
+<a id="tocstemplateallof1createdbyoneof1"></a>
+
+```json
+{
+  "id": "string",
+  "summary": "string",
+  "type": "account_reference",
+  "self": "http://example.com",
+  "html_url": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|read-only|none|
+|summary|string \| null|false|read-only|A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.|
+|type|string|true|read-only|A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.|
+|self|string(url) \| null|false|read-only|the API show URL at which the object is accessible|
+|html_url|string(url) \| null|false|read-only|a URL at which the entity is uniquely displayed in the Web app|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|account_reference|
+
+<h2 id="tocS_EventRuleAllOf0">EventRuleAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventruleallof0"></a>
+<a id="schema_EventRuleAllOf0"></a>
+<a id="tocSeventruleallof0"></a>
+<a id="tocseventruleallof0"></a>
+
+```json
+{
+  "id": "string",
+  "self": "http://example.com",
+  "disabled": true,
+  "conditions": {
+    "operator": "and",
+    "subconditions": [
+      {
+        "operator": "exists",
+        "parameters": {
+          "path": "string",
+          "value": "string",
+          "options": {}
+        }
+      }
+    ]
+  },
+  "time_frame": {
+    "active_between": {
+      "start_time": 0,
+      "end_time": 0
+    },
+    "scheduled_weekly": {
+      "start_time": 0,
+      "duration": 0,
+      "timezone": "string",
+      "weekdays": [
+        0
+      ]
+    }
+  },
+  "variables": [
+    {
+      "type": "regex",
+      "name": "string",
+      "parameters": {
+        "value": "string",
+        "path": "string"
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|read-only|ID of the Event Rule.|
+|self|string(url)|false|read-only|the API show URL at which the object is accessible.|
+|disabled|boolean|false|none|Indicates whether the Event Rule is disabled and would therefore not be evaluated.|
+|conditions|object|false|none|Conditions evaluated to check if an event matches this Event Rule. Is always empty for the catch_all rule, though.|
+|time_frame|object|false|none|Time-based conditions for limiting when the rule is active.|
+|variables|[object]|false|none|[Early Access] Populate variables from event payloads and use those variables in other event actions.|
+
+<h2 id="tocS_CustomFieldsFieldValueName">CustomFieldsFieldValueName</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluename"></a>
+<a id="schema_CustomFieldsFieldValueName"></a>
+<a id="tocScustomfieldsfieldvaluename"></a>
+<a id="tocscustomfieldsfieldvaluename"></a>
+
+```json
+"string"
+```
+
+The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.
+
+<h2 id="tocS_CustomFieldsFieldValueDescription">CustomFieldsFieldValueDescription</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluedescription"></a>
+<a id="schema_CustomFieldsFieldValueDescription"></a>
+<a id="tocScustomfieldsfieldvaluedescription"></a>
+<a id="tocscustomfieldsfieldvaluedescription"></a>
+
+```json
+"string"
+```
+
+A description of the data this field contains.
+
+<h2 id="tocS_CustomFieldsFieldValueFieldType">CustomFieldsFieldValueFieldType</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluefieldtype"></a>
+<a id="schema_CustomFieldsFieldValueFieldType"></a>
+<a id="tocScustomfieldsfieldvaluefieldtype"></a>
+<a id="tocscustomfieldsfieldvaluefieldtype"></a>
+
+```json
+"single_value"
+```
+
+The type of data this field contains. In combination with the `data_type` field.
+
+<h2 id="tocS_CustomFieldsFieldValueDataType">CustomFieldsFieldValueDataType</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluedatatype"></a>
+<a id="schema_CustomFieldsFieldValueDataType"></a>
+<a id="tocScustomfieldsfieldvaluedatatype"></a>
+<a id="tocscustomfieldsfieldvaluedatatype"></a>
+
+```json
+"boolean"
+```
+
+The kind of data the custom field is allowed to contain.
+
+<h2 id="tocS_CustomFieldsFieldValueDisplayName">CustomFieldsFieldValueDisplayName</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluedisplayname"></a>
+<a id="schema_CustomFieldsFieldValueDisplayName"></a>
+<a id="tocScustomfieldsfieldvaluedisplayname"></a>
+<a id="tocscustomfieldsfieldvaluedisplayname"></a>
+
+```json
+"string"
+```
+
+The human-readable name of the field. This must be unique across an account.
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf0">CustomFieldsFieldValueValueOneOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof0"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf0"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof0"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof0"></a>
+
+```json
+{
+  "value": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|boolean \| null|false|none|none|
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf2">CustomFieldsFieldValueValueOneOf2</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof2"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf2"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof2"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof2"></a>
+
+```json
+{
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|integer \| null|false|none|none|
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf1">CustomFieldsFieldValueValueOneOf1</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof1"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf1"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof1"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof1"></a>
+
+```json
+{
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|number \| null|false|none|none|
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf3">CustomFieldsFieldValueValueOneOf3</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof3"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf3"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof3"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof3"></a>
+
+```json
+{
+  "value": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string \| null \| [string]|false|none|none|
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf4">CustomFieldsFieldValueValueOneOf4</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof4"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf4"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof4"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof4"></a>
+
+```json
+{
+  "value": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string(date-time) \| null|false|none|none|
+
+<h2 id="tocS_CustomFieldsFieldValueValueOneOf5">CustomFieldsFieldValueValueOneOf5</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldsfieldvaluevalueoneof5"></a>
+<a id="schema_CustomFieldsFieldValueValueOneOf5"></a>
+<a id="tocScustomfieldsfieldvaluevalueoneof5"></a>
+<a id="tocscustomfieldsfieldvaluevalueoneof5"></a>
+
+```json
+{
+  "value": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string(uri) \| null|false|none|none|
+
+<h2 id="tocS_IncidentTypeCustomFieldsDefaultValue">IncidentTypeCustomFieldsDefaultValue</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidenttypecustomfieldsdefaultvalue"></a>
+<a id="schema_IncidentTypeCustomFieldsDefaultValue"></a>
+<a id="tocSincidenttypecustomfieldsdefaultvalue"></a>
+<a id="tocsincidenttypecustomfieldsdefaultvalue"></a>
+
+```json
+{
+  "value": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf0](#schemacustomfieldsfieldvaluevalueoneof0)|false|none|none|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf2](#schemacustomfieldsfieldvaluevalueoneof2)|false|none|none|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf1](#schemacustomfieldsfieldvaluevalueoneof1)|false|none|none|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf3](#schemacustomfieldsfieldvaluevalueoneof3)|false|none|none|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf4](#schemacustomfieldsfieldvaluevalueoneof4)|false|none|none|
+|*oneOf*|[CustomFieldsFieldValueValueOneOf5](#schemacustomfieldsfieldvaluevalueoneof5)|false|none|none|
+
+<h2 id="tocS_CustomFieldsEditableFieldEnabled">CustomFieldsEditableFieldEnabled</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomfieldseditablefieldenabled"></a>
+<a id="schema_CustomFieldsEditableFieldEnabled"></a>
+<a id="tocScustomfieldseditablefieldenabled"></a>
+<a id="tocscustomfieldseditablefieldenabled"></a>
+
+```json
+true
+```
+
+Whether the field is enabled.
+
+<h2 id="tocS_ServiceCustomFieldsFieldReadModelCreatedAt">ServiceCustomFieldsFieldReadModelCreatedAt</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicecustomfieldsfieldreadmodelcreatedat"></a>
+<a id="schema_ServiceCustomFieldsFieldReadModelCreatedAt"></a>
+<a id="tocSservicecustomfieldsfieldreadmodelcreatedat"></a>
+<a id="tocsservicecustomfieldsfieldreadmodelcreatedat"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+The date/time the object was created at.
+
+<h2 id="tocS_ServiceCustomFieldsFieldReadModelId">ServiceCustomFieldsFieldReadModelId</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicecustomfieldsfieldreadmodelid"></a>
+<a id="schema_ServiceCustomFieldsFieldReadModelId"></a>
+<a id="tocSservicecustomfieldsfieldreadmodelid"></a>
+<a id="tocsservicecustomfieldsfieldreadmodelid"></a>
+
+```json
+"string"
+```
+
+The ID of the resource.
+
+<h2 id="tocS_ServiceCustomFieldsFieldReadModelUpdatedAt">ServiceCustomFieldsFieldReadModelUpdatedAt</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicecustomfieldsfieldreadmodelupdatedat"></a>
+<a id="schema_ServiceCustomFieldsFieldReadModelUpdatedAt"></a>
+<a id="tocSservicecustomfieldsfieldreadmodelupdatedat"></a>
+<a id="tocsservicecustomfieldsfieldreadmodelupdatedat"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+The date/time the object was updated at.
+
+<h2 id="tocS_IncidentWorkflowActionAllOf1InputsItems">IncidentWorkflowActionAllOf1InputsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentworkflowactionallof1inputsitems"></a>
+<a id="schema_IncidentWorkflowActionAllOf1InputsItems"></a>
+<a id="tocSincidentworkflowactionallof1inputsitems"></a>
+<a id="tocsincidentworkflowactionallof1inputsitems"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "type": "text",
+  "default_value": "string",
+  "is_required": true,
+  "is_hidden": true,
+  "advanced": true,
+  "metadata": "string",
+  "connection_type_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The name of the Input|
+|description|string|false|none|Describes what the purpose of the Input|
+|type|string|false|none|The data type of this Input|
+|default_value|string|false|none|Serialized form of the default value that the input will take|
+|is_required|boolean|false|none|Whether a value must be provided for this input|
+|is_hidden|boolean|false|none|If true then this input will not be shown to users when configuring this action|
+|advanced|boolean|false|none|none|
+|metadata|string|false|none|none|
+|connection_type_id|string|false|none|The configured value of the Input|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|text|
+|type|password|
+|type|integer|
+|type|decimal|
+|type|date|
+|type|dateTime|
+|type|boolean|
+|type|singleChoice|
+|type|multipleChoice|
+|type|json|
+|type|connection|
+|type|trigger|
+
+<h2 id="tocS_IncidentWorkflowActionAllOf1OutputsItems">IncidentWorkflowActionAllOf1OutputsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentworkflowactionallof1outputsitems"></a>
+<a id="schema_IncidentWorkflowActionAllOf1OutputsItems"></a>
+<a id="tocSincidentworkflowactionallof1outputsitems"></a>
+<a id="tocsincidentworkflowactionallof1outputsitems"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "type": "text"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The name of the Output|
+|description|string|false|none|none|
+|type|string|false|none|The data type produced by this Output|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|text|
+|type|password|
+|type|integer|
+|type|decimal|
+|type|date|
+|type|dateTime|
+|type|boolean|
+|type|singleChoice|
+|type|multipleChoice|
+|type|json|
+
+<h2 id="tocS_IpAllowListType">IpAllowListType</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowlisttype"></a>
+<a id="schema_IpAllowListType"></a>
+<a id="tocSipallowlisttype"></a>
+<a id="tocsipallowlisttype"></a>
+
+```json
+"ip_allow_list"
+```
+
+A string that determines the schema of the object.
+
+<h2 id="tocS_IpAllowListState">IpAllowListState</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowliststate"></a>
+<a id="schema_IpAllowListState"></a>
+<a id="tocSipallowliststate"></a>
+<a id="tocsipallowliststate"></a>
+
+```json
+"enabled"
+```
+
+Whether the allow list is enforced for the account. When `enabled`, only
+requests from IPs matching one of the `cidr_entries` are permitted to
+access the subdomain. When `disabled`, the allow list is stored but not
+enforced.
+
+<h2 id="tocS_IpAllowListCidrEntries">IpAllowListCidrEntries</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowlistcidrentries"></a>
+<a id="schema_IpAllowListCidrEntries"></a>
+<a id="tocSipallowlistcidrentries"></a>
+<a id="tocsipallowlistcidrentries"></a>
+
+```json
+[
+  {
+    "cidr": "192.168.1.0/24",
+    "description": "Office VPN"
+  }
+]
+```
+
+The CIDR ranges that are allowed when the allow list is `enabled`. Must
+be non-empty when `state` is `enabled`.
+
+<h2 id="tocS_IpAllowListTargets">IpAllowListTargets</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowlisttargets"></a>
+<a id="schema_IpAllowListTargets"></a>
+<a id="tocSipallowlisttargets"></a>
+<a id="tocsipallowlisttargets"></a>
+
+```json
+[
+  {
+    "type": "surface",
+    "value": "web"
+  }
+]
+```
+
+The surfaces the allow list is enforced on. Must be non-empty and must
+not contain duplicates.
+
+<h2 id="tocS_OrchestrationCacheVariableRecentValueAllOf0">OrchestrationCacheVariableRecentValueAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationcachevariablerecentvalueallof0"></a>
+<a id="schema_OrchestrationCacheVariableRecentValueAllOf0"></a>
+<a id="tocSorchestrationcachevariablerecentvalueallof0"></a>
+<a id="tocsorchestrationcachevariablerecentvalueallof0"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "disabled": true,
+  "created_at": "1970-01-01T00:00:00Z",
+  "created_by": {
+    "id": "string",
+    "type": "string",
+    "self": "http://example.com"
+  },
+  "updated_at": "1970-01-01T00:00:00Z",
+  "updated_by": {
+    "id": "string",
+    "type": "string",
+    "self": "http://example.com"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|read-only|none|
+|name|string|true|none|The name of the Cache Variable|
+|disabled|boolean|false|none|Indicates whether the Cache Variable is disabled and would therefore not be evaluated.|
+|created_at|string(date-time)|false|read-only|The date/time the object was created.|
+|created_by|object|false|read-only|Reference to the user that created the object.|
+|updated_at|string(date-time)|false|read-only|The date/time the object was last updated.|
+|updated_by|object|false|read-only|Reference to the user that last updated the object.|
+
+<h2 id="tocS_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0">OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof1orchestrationpathcatchallactionsallof0"></a>
+<a id="schema_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0"></a>
+<a id="tocSorchestrationglobalallof1orchestrationpathcatchallactionsallof0"></a>
+<a id="tocsorchestrationglobalallof1orchestrationpathcatchallactionsallof0"></a>
+
+```json
+{
+  "suppress": true,
+  "suspend": 0,
+  "drop_event": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|suppress|boolean|false|none|If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.|
+|suspend|integer|false|none|The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.|
+|drop_event|boolean|false|none|If true, this event will be dropped. Dropped events will not trigger or resolve an alert or an incident. Dropped events will not be evaluated against router rules.|
+
+<h2 id="tocS_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1">OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof1orchestrationpathcatchallactionsallof1"></a>
+<a id="schema_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1"></a>
+<a id="tocSorchestrationglobalallof1orchestrationpathcatchallactionsallof1"></a>
+<a id="tocsorchestrationglobalallof1orchestrationpathcatchallactionsallof1"></a>
+
+```json
+{
+  "priority": "P53ZZH5",
+  "escalation_policy": "PQOMK4S",
+  "annotate": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|priority|string|false|none|The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.|
+|escalation_policy|string|false|none|The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.|
+|annotate|string|false|none|Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
+
+<h2 id="tocS_OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions">OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationunroutedallof1orchestrationpathcatchallactions"></a>
+<a id="schema_OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions"></a>
+<a id="tocSorchestrationunroutedallof1orchestrationpathcatchallactions"></a>
+<a id="tocsorchestrationunroutedallof1orchestrationpathcatchallactions"></a>
+
+```json
+{
+  "severity": "info",
+  "event_action": "trigger",
+  "variables": [
+    {
+      "name": "server_name",
+      "path": "event.summary",
+      "type": "regex",
+      "value": "High CPU on (.*) server"
+    }
+  ],
+  "extractions": [
+    {
+      "target": "event.summary",
+      "template": "High CPU on {{hostname}} server"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|severity|string|false|none|Set the severity of the resulting alert.|
+|event_action|string|false|none|Set whether the resulting alert status is trigger or resolve.|
+|variables|[object]|false|none|Populate variables from event payloads and use those variables in other event actions.|
+|extractions|[object]|false|none|Dynamically extract values to set and modify new and existing PD-CEF fields.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|severity|info|
+|severity|error|
+|severity|warning|
+|severity|critical|
+|event_action|trigger|
+|event_action|resolve|
+
+<h2 id="tocS_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3">OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof1orchestrationpathcatchallactionsallof3"></a>
+<a id="schema_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3"></a>
+<a id="tocSorchestrationglobalallof1orchestrationpathcatchallactionsallof3"></a>
+<a id="tocsorchestrationglobalallof1orchestrationpathcatchallactionsallof3"></a>
+
+```json
+{
+  "automation_actions": [
+    {
+      "name": "string",
+      "url": "string",
+      "auto_send": false,
+      "headers": [
+        {
+          "key": "string",
+          "value": "string"
+        }
+      ],
+      "trigger_types": [
+        "alert_triggered"
+      ],
+      "parameters": [
+        {
+          "key": "string",
+          "value": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|automation_actions|[object]|false|none|Create a Webhoook associated with the resulting incident.|
+
+<h2 id="tocS_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4">OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof1orchestrationpathcatchallactionsallof4"></a>
+<a id="schema_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4"></a>
+<a id="tocSorchestrationglobalallof1orchestrationpathcatchallactionsallof4"></a>
+<a id="tocsorchestrationglobalallof1orchestrationpathcatchallactionsallof4"></a>
+
+```json
+{
+  "incident_type": "PT10C33"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|incident_type|string \| null|false|none|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
+
+<h2 id="tocS_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5">OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof1orchestrationpathcatchallactionsallof5"></a>
+<a id="schema_OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5"></a>
+<a id="tocSorchestrationglobalallof1orchestrationpathcatchallactionsallof5"></a>
+<a id="tocsorchestrationglobalallof1orchestrationpathcatchallactionsallof5"></a>
+
+```json
+{
+  "incident_custom_field_updates": [
+    {
+      "id": "PEXCK89",
+      "value": "High CPU on server"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|incident_custom_field_updates|[object]|false|none|Configure custom field updates for the incident.|
+
+<h2 id="tocS_OrchestrationGlobalAllOf0">OrchestrationGlobalAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaorchestrationglobalallof0"></a>
+<a id="schema_OrchestrationGlobalAllOf0"></a>
+<a id="tocSorchestrationglobalallof0"></a>
+<a id="tocsorchestrationglobalallof0"></a>
+
+```json
+{
+  "orchestration_path": {
+    "type": "service",
+    "parent": {
+      "id": "string",
+      "type": "string",
+      "self": "http://example.com"
+    },
+    "sets": [
+      {
+        "id": "start",
+        "rules": [
+          {
+            "id": "string",
+            "label": "string",
+            "conditions": [
+              {
+                "expression": "event.summary matches part 'my service error'"
+              }
+            ],
+            "actions": {},
+            "disabled": true
+          }
+        ]
+      }
+    ],
+    "catch_all": {
+      "actions": {}
+    },
+    "created_at": "1970-01-01T00:00:00Z",
+    "created_by": {
+      "id": "string",
+      "type": "string",
+      "self": "http://example.com"
+    },
+    "updated_at": "1970-01-01T00:00:00Z",
+    "updated_by": {
+      "id": "string",
+      "type": "string",
+      "self": "http://example.com"
+    },
+    "version": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|orchestration_path|object|true|none|none|
+
+<h2 id="tocS_ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0">ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaserviceorchestrationallof1orchestrationpathallof1catchallactionsallof0"></a>
+<a id="schema_ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0"></a>
+<a id="tocSserviceorchestrationallof1orchestrationpathallof1catchallactionsallof0"></a>
+<a id="tocsserviceorchestrationallof1orchestrationpathallof1catchallactionsallof0"></a>
+
+```json
+{
+  "suppress": true,
+  "suspend": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|suppress|boolean|false|none|If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.|
+|suspend|integer|false|none|The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.|
+
+<h2 id="tocS_ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3">ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3</h2>
+<!-- backwards compatibility -->
+<a id="schemaserviceorchestrationallof1orchestrationpathallof1catchallactionsallof3"></a>
+<a id="schema_ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3"></a>
+<a id="tocSserviceorchestrationallof1orchestrationpathallof1catchallactionsallof3"></a>
+<a id="tocsserviceorchestrationallof1orchestrationpathallof1catchallactionsallof3"></a>
+
+```json
+{
+  "pagerduty_automation_actions": [
+    {
+      "action_id": "string",
+      "trigger_types": [
+        "alert_triggered"
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pagerduty_automation_actions|[object]|false|none|Configure an Automation Action to be run for certain alert states.|
+
+<h2 id="tocS_StatusPagePostUpdateRequestImpactedServicesItems">StatusPagePostUpdateRequestImpactedServicesItems</h2>
+<!-- backwards compatibility -->
+<a id="schemastatuspagepostupdaterequestimpactedservicesitems"></a>
+<a id="schema_StatusPagePostUpdateRequestImpactedServicesItems"></a>
+<a id="tocSstatuspagepostupdaterequestimpactedservicesitems"></a>
+<a id="tocsstatuspagepostupdaterequestimpactedservicesitems"></a>
+
+```json
+{
+  "service": {
+    "id": "string",
+    "type": "string"
+  },
+  "impact": {
+    "id": "string",
+    "type": "string"
+  }
+}
+```
+
+A Status Page Service and the Impact it has in a Post Update, as sent in a request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|service|object|true|none|Status Page Service|
+|impact|object|true|none|Status Page Impact|
+
+<h2 id="tocS_PaginationTotal">PaginationTotal</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginationtotal"></a>
+<a id="schema_PaginationTotal"></a>
+<a id="tocSpaginationtotal"></a>
+<a id="tocspaginationtotal"></a>
+
+```json
+0
+```
+
+The total number of records matching the given query.
+
+<h2 id="tocS_LicenseWithCountsAllOf0">LicenseWithCountsAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemalicensewithcountsallof0"></a>
+<a id="schema_LicenseWithCountsAllOf0"></a>
+<a id="tocSlicensewithcountsallof0"></a>
+<a id="tocslicensewithcountsallof0"></a>
+
+```json
+{
+  "id": "string",
+  "description": "string",
+  "name": "string",
+  "valid_roles": [
+    "string"
+  ],
+  "role_group": "FullUser",
+  "type": "string",
+  "self": "string",
+  "html_url": "string",
+  "summary": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Uniquely identifies the resource|
+|description|string|true|none|Description of the License. May include the names of add-ons associated with<br>the License, if there are any.<br>|
+|name|string|true|none|Name of the License.<br>|
+|valid_roles|[string]|true|none|The roles a User with this License can have|
+|role_group|string|false|none|Indicates whether this License is assignable to full or stakeholder Users|
+|type|string|false|none|Type of object|
+|self|string|false|none|API URL to access the License|
+|html_url|string|false|none|HTML URL to access the License|
+|summary|string|false|none|Summary of the License|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|role_group|FullUser|
+|role_group|Stakeholder|

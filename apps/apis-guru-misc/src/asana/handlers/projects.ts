@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectGidRoute,
   getProjectsProjectGidCustomFieldSettingsRoute,
   getProjectsProjectGidProjectMembershipsRoute,
@@ -25,75 +25,136 @@ import {
   putProjectsProjectGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsRouteHandler: RouteHandler<typeof getProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidAddCustomFieldSettingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidAddFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidAddMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidCustomFieldSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidProjectBriefsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidProjectMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidProjectStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidProjectStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidRemoveCustomFieldSettingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidRemoveFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidRemoveMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidSaveAsTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGidSectionsInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidTaskCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGidTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectsRouteHandler: RouteHandler<typeof postProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGidRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGidRouteHandler: RouteHandler<
+  typeof putProjectsProjectGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidAddCustomFieldSettingRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidAddCustomFieldSettingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidAddFollowersRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidAddFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidAddMembersRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidAddMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidCustomFieldSettingsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidCustomFieldSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidDuplicateRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidProjectBriefsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidProjectBriefsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidProjectMembershipsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidProjectMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidProjectStatusesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidProjectStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidProjectStatusesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidProjectStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidRemoveCustomFieldSettingRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidRemoveCustomFieldSettingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidRemoveFollowersRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidRemoveFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidRemoveMembersRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidRemoveMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidSaveAsTemplateRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidSaveAsTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidSectionsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidSectionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGidSectionsInsertRouteHandler: RouteHandler<
+  typeof postProjectsProjectGidSectionsInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidTaskCountsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidTaskCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGidTasksRouteHandler: RouteHandler<
+  typeof getProjectsProjectGidTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

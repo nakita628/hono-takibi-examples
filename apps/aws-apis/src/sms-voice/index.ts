@@ -1,8 +1,50 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler } from './handlers'
+import {
+  deleteV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
+  deleteV1SmsVoiceConfigurationSetsConfigurationSetNameRoute,
+  getV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRoute,
+  getV1SmsVoiceConfigurationSetsRoute,
+  postV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRoute,
+  postV1SmsVoiceConfigurationSetsRoute,
+  postV1SmsVoiceVoiceMessageRoute,
+  putV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
+} from './routes'
+import {
+  deleteV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler,
+  deleteV1SmsVoiceConfigurationSetsConfigurationSetNameRouteHandler,
+  getV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler,
+  getV1SmsVoiceConfigurationSetsRouteHandler,
+  postV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler,
+  postV1SmsVoiceConfigurationSetsRouteHandler,
+  postV1SmsVoiceVoiceMessageRouteHandler,
+  putV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler)
+export const api = app
+  .openapi(postV1SmsVoiceConfigurationSetsRoute, postV1SmsVoiceConfigurationSetsRouteHandler)
+  .openapi(getV1SmsVoiceConfigurationSetsRoute, getV1SmsVoiceConfigurationSetsRouteHandler)
+  .openapi(
+    postV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRoute,
+    postV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler,
+  )
+  .openapi(
+    getV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRoute,
+    getV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler,
+  )
+  .openapi(
+    deleteV1SmsVoiceConfigurationSetsConfigurationSetNameRoute,
+    deleteV1SmsVoiceConfigurationSetsConfigurationSetNameRouteHandler,
+  )
+  .openapi(
+    deleteV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
+    deleteV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler,
+  )
+  .openapi(
+    putV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
+    putV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler,
+  )
+  .openapi(postV1SmsVoiceVoiceMessageRoute, postV1SmsVoiceVoiceMessageRouteHandler)
 
 export default app

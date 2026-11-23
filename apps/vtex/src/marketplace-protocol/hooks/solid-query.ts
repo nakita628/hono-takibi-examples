@@ -471,8 +471,8 @@ export function createPutAccountNameVtexcommercestableComBrApiOrderIntegrationOr
 
 export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersMutationKey() {
   return [
-    ':accountName.:environment.com.br',
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders',
+    ':accountName.{environment}.com.br',
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders',
     'POST',
   ] as const
 }
@@ -487,7 +487,7 @@ export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersMutatio
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+              (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
             >
           >
         >
@@ -495,18 +495,18 @@ export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersMutatio
     >,
     TError,
     InferRequestType<
-      (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+      (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+        (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
       >,
     ) {
       return parseResponse(
-        client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders.$post(args, options),
+        client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders.$post(args, options),
       )
     },
   })
@@ -525,7 +525,7 @@ export function createPostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+                    (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
                   >
                 >
               >
@@ -533,7 +533,7 @@ export function createPostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
           >,
           TError,
           InferRequestType<
-            (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+            (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
           >,
           TOnMutateResult
         >
@@ -561,8 +561,8 @@ export function createPostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
 
 export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillMutationKey() {
   return [
-    ':accountName.:environment.com.br',
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders/:orderId/fulfill',
+    ':accountName.{environment}.com.br',
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders/:orderId/fulfill',
     'POST',
   ] as const
 }
@@ -577,7 +577,7 @@ export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+              (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
             >
           >
         >
@@ -585,7 +585,7 @@ export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
     >,
     TError,
     InferRequestType<
-      (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+      (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
     >,
     TOnMutateResult
   >({
@@ -593,11 +593,11 @@ export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
       getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+        (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
       >,
     ) {
       return parseResponse(
-        client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders[
+        client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders[
           ':orderId'
         ].fulfill.$post(args, options),
       )
@@ -618,7 +618,7 @@ export function createPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrde
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+                    (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
                   >
                 >
               >
@@ -626,7 +626,7 @@ export function createPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrde
           >,
           TError,
           InferRequestType<
-            (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+            (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
           >,
           TOnMutateResult
         >

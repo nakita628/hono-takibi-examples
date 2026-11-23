@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSimbaApiServiceV20180301DeleteDataRepositoryAssociationHandler =
-  app.openapi(
-    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

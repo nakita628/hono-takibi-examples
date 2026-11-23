@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiMessageMessageAnnunciatorCurrentRoute,
   getApiMessageMessageAnnunciatorDateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiMessageMessageAnnunciatorCurrentRouteHandler: RouteHandler<
+  typeof getApiMessageMessageAnnunciatorCurrentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiMessageMessageAnnunciatorCurrentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMessageMessageAnnunciatorDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiMessageMessageAnnunciatorDateRouteHandler: RouteHandler<
+  typeof getApiMessageMessageAnnunciatorDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

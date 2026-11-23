@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTaxonomiesExportTaxonomyIdRoute,
   getTaxonomiesRoute,
   getTaxonomiesTaxonomyTagsTaxonomyIdRoute,
@@ -9,27 +9,42 @@ import {
   postTaxonomiesUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaxonomiesRouteHandler: RouteHandler<typeof getTaxonomiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const taxonomiesHandler = app
-  .openapi(getTaxonomiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaxonomiesViewTaxonomyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaxonomiesEnableTaxonomyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaxonomiesDisableTaxonomyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaxonomiesUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaxonomiesTaxonomyTagsTaxonomyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaxonomiesExportTaxonomyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTaxonomiesViewTaxonomyIdRouteHandler: RouteHandler<
+  typeof getTaxonomiesViewTaxonomyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaxonomiesEnableTaxonomyIdRouteHandler: RouteHandler<
+  typeof postTaxonomiesEnableTaxonomyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaxonomiesDisableTaxonomyIdRouteHandler: RouteHandler<
+  typeof postTaxonomiesDisableTaxonomyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaxonomiesUpdateRouteHandler: RouteHandler<
+  typeof postTaxonomiesUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaxonomiesTaxonomyTagsTaxonomyIdRouteHandler: RouteHandler<
+  typeof getTaxonomiesTaxonomyTagsTaxonomyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaxonomiesExportTaxonomyIdRouteHandler: RouteHandler<
+  typeof getTaxonomiesExportTaxonomyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

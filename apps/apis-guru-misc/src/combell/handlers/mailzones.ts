@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMailzonesDomainNameAliasesEmailAddressRoute,
   deleteMailzonesDomainNameCatchallEmailAddressRoute,
   deleteMailzonesDomainNameSmtpdomainsHostnameRoute,
@@ -12,36 +12,62 @@ import {
   putMailzonesDomainNameSmtpdomainsHostnameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMailzonesDomainNameRouteHandler: RouteHandler<
+  typeof getMailzonesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mailzonesHandler = app
-  .openapi(getMailzonesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMailzonesDomainNameAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMailzonesDomainNameAliasesEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMailzonesDomainNameAliasesEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMailzonesDomainNameAntispamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMailzonesDomainNameCatchallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMailzonesDomainNameCatchallEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMailzonesDomainNameSmtpdomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMailzonesDomainNameSmtpdomainsHostnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMailzonesDomainNameSmtpdomainsHostnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMailzonesDomainNameAliasesRouteHandler: RouteHandler<
+  typeof postMailzonesDomainNameAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMailzonesDomainNameAliasesEmailAddressRouteHandler: RouteHandler<
+  typeof deleteMailzonesDomainNameAliasesEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMailzonesDomainNameAliasesEmailAddressRouteHandler: RouteHandler<
+  typeof putMailzonesDomainNameAliasesEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMailzonesDomainNameAntispamRouteHandler: RouteHandler<
+  typeof putMailzonesDomainNameAntispamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMailzonesDomainNameCatchallRouteHandler: RouteHandler<
+  typeof postMailzonesDomainNameCatchallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMailzonesDomainNameCatchallEmailAddressRouteHandler: RouteHandler<
+  typeof deleteMailzonesDomainNameCatchallEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMailzonesDomainNameSmtpdomainsRouteHandler: RouteHandler<
+  typeof postMailzonesDomainNameSmtpdomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMailzonesDomainNameSmtpdomainsHostnameRouteHandler: RouteHandler<
+  typeof deleteMailzonesDomainNameSmtpdomainsHostnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMailzonesDomainNameSmtpdomainsHostnameRouteHandler: RouteHandler<
+  typeof putMailzonesDomainNameSmtpdomainsHostnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

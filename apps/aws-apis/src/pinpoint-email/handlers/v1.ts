@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
   deleteV1EmailConfigurationSetsConfigurationSetNameRoute,
   deleteV1EmailDedicatedIpPoolsPoolNameRoute,
@@ -44,141 +44,252 @@ import {
   putV1EmailIdentitiesEmailIdentityMailFromRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1EmailConfigurationSetsRouteHandler: RouteHandler<
+  typeof postV1EmailConfigurationSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1EmailConfigurationSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailConfigurationSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailDedicatedIpPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDedicatedIpPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailDeliverabilityDashboardTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailIdentitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailIdentitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1EmailConfigurationSetsConfigurationSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailConfigurationSetsConfigurationSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV1EmailDedicatedIpPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1EmailIdentitiesEmailIdentityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailIdentitiesEmailIdentityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardBlacklistReportBlacklistItemNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDedicatedIpsIPRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDedicatedIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailDeliverabilityDashboardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardTestReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardStatisticsReportDomainStartDateEndDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmailDeliverabilityDashboardTestReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV1EmailDeliverabilityDashboardDomainsSubscribedDomainCampaignsStartDateEndDateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1EmailTagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailAccountDedicatedIpsWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailAccountSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailConfigurationSetsConfigurationSetNameDeliveryOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailConfigurationSetsConfigurationSetNameReputationOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailConfigurationSetsConfigurationSetNameSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailConfigurationSetsConfigurationSetNameTrackingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailDedicatedIpsIPPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailDedicatedIpsIPWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailIdentitiesEmailIdentityDkimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailIdentitiesEmailIdentityFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EmailIdentitiesEmailIdentityMailFromRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailOutboundEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EmailTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1EmailTagsResourceArnTagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1EmailConfigurationSetsRouteHandler: RouteHandler<
+  typeof getV1EmailConfigurationSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler: RouteHandler<
+  typeof postV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRouteHandler: RouteHandler<
+  typeof getV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailDedicatedIpPoolsRouteHandler: RouteHandler<
+  typeof postV1EmailDedicatedIpPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDedicatedIpPoolsRouteHandler: RouteHandler<
+  typeof getV1EmailDedicatedIpPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailDeliverabilityDashboardTestRouteHandler: RouteHandler<
+  typeof postV1EmailDeliverabilityDashboardTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailIdentitiesRouteHandler: RouteHandler<
+  typeof postV1EmailIdentitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailIdentitiesRouteHandler: RouteHandler<
+  typeof getV1EmailIdentitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EmailConfigurationSetsConfigurationSetNameRouteHandler: RouteHandler<
+  typeof deleteV1EmailConfigurationSetsConfigurationSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailConfigurationSetsConfigurationSetNameRouteHandler: RouteHandler<
+  typeof getV1EmailConfigurationSetsConfigurationSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler: RouteHandler<
+  typeof deleteV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRouteHandler: RouteHandler<
+  typeof putV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEventDestinationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EmailDedicatedIpPoolsPoolNameRouteHandler: RouteHandler<
+  typeof deleteV1EmailDedicatedIpPoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EmailIdentitiesEmailIdentityRouteHandler: RouteHandler<
+  typeof deleteV1EmailIdentitiesEmailIdentityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailIdentitiesEmailIdentityRouteHandler: RouteHandler<
+  typeof getV1EmailIdentitiesEmailIdentityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailAccountRouteHandler: RouteHandler<typeof getV1EmailAccountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardBlacklistReportBlacklistItemNamesRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardBlacklistReportBlacklistItemNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDedicatedIpsIPRouteHandler: RouteHandler<
+  typeof getV1EmailDedicatedIpsIPRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDedicatedIpsRouteHandler: RouteHandler<
+  typeof getV1EmailDedicatedIpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailDeliverabilityDashboardRouteHandler: RouteHandler<
+  typeof putV1EmailDeliverabilityDashboardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardTestReportsReportIdRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardTestReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardStatisticsReportDomainStartDateEndDateRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardStatisticsReportDomainStartDateEndDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardTestReportsRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardTestReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailDeliverabilityDashboardDomainsSubscribedDomainCampaignsStartDateEndDateRouteHandler: RouteHandler<
+  typeof getV1EmailDeliverabilityDashboardDomainsSubscribedDomainCampaignsStartDateEndDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmailTagsResourceArnRouteHandler: RouteHandler<
+  typeof getV1EmailTagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailAccountDedicatedIpsWarmupRouteHandler: RouteHandler<
+  typeof putV1EmailAccountDedicatedIpsWarmupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailAccountSendingRouteHandler: RouteHandler<
+  typeof putV1EmailAccountSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailConfigurationSetsConfigurationSetNameDeliveryOptionsRouteHandler: RouteHandler<
+  typeof putV1EmailConfigurationSetsConfigurationSetNameDeliveryOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailConfigurationSetsConfigurationSetNameReputationOptionsRouteHandler: RouteHandler<
+  typeof putV1EmailConfigurationSetsConfigurationSetNameReputationOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailConfigurationSetsConfigurationSetNameSendingRouteHandler: RouteHandler<
+  typeof putV1EmailConfigurationSetsConfigurationSetNameSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailConfigurationSetsConfigurationSetNameTrackingOptionsRouteHandler: RouteHandler<
+  typeof putV1EmailConfigurationSetsConfigurationSetNameTrackingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailDedicatedIpsIPPoolRouteHandler: RouteHandler<
+  typeof putV1EmailDedicatedIpsIPPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailDedicatedIpsIPWarmupRouteHandler: RouteHandler<
+  typeof putV1EmailDedicatedIpsIPWarmupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailIdentitiesEmailIdentityDkimRouteHandler: RouteHandler<
+  typeof putV1EmailIdentitiesEmailIdentityDkimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailIdentitiesEmailIdentityFeedbackRouteHandler: RouteHandler<
+  typeof putV1EmailIdentitiesEmailIdentityFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EmailIdentitiesEmailIdentityMailFromRouteHandler: RouteHandler<
+  typeof putV1EmailIdentitiesEmailIdentityMailFromRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailOutboundEmailsRouteHandler: RouteHandler<
+  typeof postV1EmailOutboundEmailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EmailTagsRouteHandler: RouteHandler<typeof postV1EmailTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EmailTagsResourceArnTagKeysRouteHandler: RouteHandler<
+  typeof deleteV1EmailTagsResourceArnTagKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

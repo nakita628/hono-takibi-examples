@@ -1,8 +1,4907 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler } from './handlers'
+import {
+  deleteApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  deleteApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  deleteApiCircuitsCircuitGroupsIdIndexRoute,
+  deleteApiCircuitsCircuitGroupsIndexRoute,
+  deleteApiCircuitsCircuitsIdIndexRoute,
+  deleteApiCircuitsCircuitsIndexRoute,
+  deleteApiCircuitsCircuitTerminationsIdIndexRoute,
+  deleteApiCircuitsCircuitTerminationsIndexRoute,
+  deleteApiCircuitsCircuitTypesIdIndexRoute,
+  deleteApiCircuitsCircuitTypesIndexRoute,
+  deleteApiCircuitsProviderAccountsIdIndexRoute,
+  deleteApiCircuitsProviderAccountsIndexRoute,
+  deleteApiCircuitsProviderNetworksIdIndexRoute,
+  deleteApiCircuitsProviderNetworksIndexRoute,
+  deleteApiCircuitsProvidersIdIndexRoute,
+  deleteApiCircuitsProvidersIndexRoute,
+  deleteApiCircuitsVirtualCircuitsIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitsIndexRoute,
+  deleteApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  deleteApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  deleteApiCircuitsVirtualCircuitTypesIndexRoute,
+  deleteApiCoreDataSourcesIdIndexRoute,
+  deleteApiCoreDataSourcesIndexRoute,
+  deleteApiDcimCableBundlesIdIndexRoute,
+  deleteApiDcimCableBundlesIndexRoute,
+  deleteApiDcimCablesIdIndexRoute,
+  deleteApiDcimCablesIndexRoute,
+  deleteApiDcimConsolePortsIdIndexRoute,
+  deleteApiDcimConsolePortsIndexRoute,
+  deleteApiDcimConsolePortTemplatesIdIndexRoute,
+  deleteApiDcimConsolePortTemplatesIndexRoute,
+  deleteApiDcimConsoleServerPortsIdIndexRoute,
+  deleteApiDcimConsoleServerPortsIndexRoute,
+  deleteApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  deleteApiDcimConsoleServerPortTemplatesIndexRoute,
+  deleteApiDcimCoolingFeedsIdIndexRoute,
+  deleteApiDcimCoolingFeedsIndexRoute,
+  deleteApiDcimCoolingIntakesIdIndexRoute,
+  deleteApiDcimCoolingIntakesIndexRoute,
+  deleteApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  deleteApiDcimCoolingIntakeTemplatesIndexRoute,
+  deleteApiDcimCoolingOutflowsIdIndexRoute,
+  deleteApiDcimCoolingOutflowsIndexRoute,
+  deleteApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  deleteApiDcimCoolingOutflowTemplatesIndexRoute,
+  deleteApiDcimCoolingSourcesIdIndexRoute,
+  deleteApiDcimCoolingSourcesIndexRoute,
+  deleteApiDcimDeviceBaysIdIndexRoute,
+  deleteApiDcimDeviceBaysIndexRoute,
+  deleteApiDcimDeviceBayTemplatesIdIndexRoute,
+  deleteApiDcimDeviceBayTemplatesIndexRoute,
+  deleteApiDcimDeviceRolesIdIndexRoute,
+  deleteApiDcimDeviceRolesIndexRoute,
+  deleteApiDcimDevicesIdIndexRoute,
+  deleteApiDcimDevicesIndexRoute,
+  deleteApiDcimDeviceTypesIdIndexRoute,
+  deleteApiDcimDeviceTypesIndexRoute,
+  deleteApiDcimFrontPortsIdIndexRoute,
+  deleteApiDcimFrontPortsIndexRoute,
+  deleteApiDcimFrontPortTemplatesIdIndexRoute,
+  deleteApiDcimFrontPortTemplatesIndexRoute,
+  deleteApiDcimInterfacesIdIndexRoute,
+  deleteApiDcimInterfacesIndexRoute,
+  deleteApiDcimInterfaceTemplatesIdIndexRoute,
+  deleteApiDcimInterfaceTemplatesIndexRoute,
+  deleteApiDcimInventoryItemRolesIdIndexRoute,
+  deleteApiDcimInventoryItemRolesIndexRoute,
+  deleteApiDcimInventoryItemsIdIndexRoute,
+  deleteApiDcimInventoryItemsIndexRoute,
+  deleteApiDcimInventoryItemTemplatesIdIndexRoute,
+  deleteApiDcimInventoryItemTemplatesIndexRoute,
+  deleteApiDcimLocationsIdIndexRoute,
+  deleteApiDcimLocationsIndexRoute,
+  deleteApiDcimMacAddressesIdIndexRoute,
+  deleteApiDcimMacAddressesIndexRoute,
+  deleteApiDcimManufacturersIdIndexRoute,
+  deleteApiDcimManufacturersIndexRoute,
+  deleteApiDcimModuleBaysIdIndexRoute,
+  deleteApiDcimModuleBaysIndexRoute,
+  deleteApiDcimModuleBayTemplatesIdIndexRoute,
+  deleteApiDcimModuleBayTemplatesIndexRoute,
+  deleteApiDcimModuleBayTypesIdIndexRoute,
+  deleteApiDcimModuleBayTypesIndexRoute,
+  deleteApiDcimModulesIdIndexRoute,
+  deleteApiDcimModulesIndexRoute,
+  deleteApiDcimModuleTypeProfilesIdIndexRoute,
+  deleteApiDcimModuleTypeProfilesIndexRoute,
+  deleteApiDcimModuleTypesIdIndexRoute,
+  deleteApiDcimModuleTypesIndexRoute,
+  deleteApiDcimPlatformsIdIndexRoute,
+  deleteApiDcimPlatformsIndexRoute,
+  deleteApiDcimPowerFeedsIdIndexRoute,
+  deleteApiDcimPowerFeedsIndexRoute,
+  deleteApiDcimPowerOutletsIdIndexRoute,
+  deleteApiDcimPowerOutletsIndexRoute,
+  deleteApiDcimPowerOutletTemplatesIdIndexRoute,
+  deleteApiDcimPowerOutletTemplatesIndexRoute,
+  deleteApiDcimPowerPanelsIdIndexRoute,
+  deleteApiDcimPowerPanelsIndexRoute,
+  deleteApiDcimPowerPortsIdIndexRoute,
+  deleteApiDcimPowerPortsIndexRoute,
+  deleteApiDcimPowerPortTemplatesIdIndexRoute,
+  deleteApiDcimPowerPortTemplatesIndexRoute,
+  deleteApiDcimRackGroupsIdIndexRoute,
+  deleteApiDcimRackGroupsIndexRoute,
+  deleteApiDcimRackReservationsIdIndexRoute,
+  deleteApiDcimRackReservationsIndexRoute,
+  deleteApiDcimRackRolesIdIndexRoute,
+  deleteApiDcimRackRolesIndexRoute,
+  deleteApiDcimRacksIdIndexRoute,
+  deleteApiDcimRacksIndexRoute,
+  deleteApiDcimRackTypesIdIndexRoute,
+  deleteApiDcimRackTypesIndexRoute,
+  deleteApiDcimRearPortsIdIndexRoute,
+  deleteApiDcimRearPortsIndexRoute,
+  deleteApiDcimRearPortTemplatesIdIndexRoute,
+  deleteApiDcimRearPortTemplatesIndexRoute,
+  deleteApiDcimRegionsIdIndexRoute,
+  deleteApiDcimRegionsIndexRoute,
+  deleteApiDcimSiteGroupsIdIndexRoute,
+  deleteApiDcimSiteGroupsIndexRoute,
+  deleteApiDcimSitesIdIndexRoute,
+  deleteApiDcimSitesIndexRoute,
+  deleteApiDcimVirtualChassisIdIndexRoute,
+  deleteApiDcimVirtualChassisIndexRoute,
+  deleteApiDcimVirtualDeviceContextsIdIndexRoute,
+  deleteApiDcimVirtualDeviceContextsIndexRoute,
+  deleteApiExtrasBookmarksIdIndexRoute,
+  deleteApiExtrasBookmarksIndexRoute,
+  deleteApiExtrasConfigContextProfilesIdIndexRoute,
+  deleteApiExtrasConfigContextProfilesIndexRoute,
+  deleteApiExtrasConfigContextsIdIndexRoute,
+  deleteApiExtrasConfigContextsIndexRoute,
+  deleteApiExtrasConfigTemplatesIdIndexRoute,
+  deleteApiExtrasConfigTemplatesIndexRoute,
+  deleteApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  deleteApiExtrasCustomFieldChoiceSetsIndexRoute,
+  deleteApiExtrasCustomFieldsIdIndexRoute,
+  deleteApiExtrasCustomFieldsIndexRoute,
+  deleteApiExtrasCustomLinksIdIndexRoute,
+  deleteApiExtrasCustomLinksIndexRoute,
+  deleteApiExtrasDashboardIndexRoute,
+  deleteApiExtrasEventRulesIdIndexRoute,
+  deleteApiExtrasEventRulesIndexRoute,
+  deleteApiExtrasExportTemplatesIdIndexRoute,
+  deleteApiExtrasExportTemplatesIndexRoute,
+  deleteApiExtrasImageAttachmentsIdIndexRoute,
+  deleteApiExtrasImageAttachmentsIndexRoute,
+  deleteApiExtrasJournalEntriesIdIndexRoute,
+  deleteApiExtrasJournalEntriesIndexRoute,
+  deleteApiExtrasNotificationGroupsIdIndexRoute,
+  deleteApiExtrasNotificationGroupsIndexRoute,
+  deleteApiExtrasNotificationsIdIndexRoute,
+  deleteApiExtrasNotificationsIndexRoute,
+  deleteApiExtrasSavedFiltersIdIndexRoute,
+  deleteApiExtrasSavedFiltersIndexRoute,
+  deleteApiExtrasSubscriptionsIdIndexRoute,
+  deleteApiExtrasSubscriptionsIndexRoute,
+  deleteApiExtrasTableConfigsIdIndexRoute,
+  deleteApiExtrasTableConfigsIndexRoute,
+  deleteApiExtrasTagsIdIndexRoute,
+  deleteApiExtrasTagsIndexRoute,
+  deleteApiExtrasWebhooksIdIndexRoute,
+  deleteApiExtrasWebhooksIndexRoute,
+  deleteApiIpamAggregatesIdIndexRoute,
+  deleteApiIpamAggregatesIndexRoute,
+  deleteApiIpamAsnRangesIdIndexRoute,
+  deleteApiIpamAsnRangesIndexRoute,
+  deleteApiIpamAsnsIdIndexRoute,
+  deleteApiIpamAsnsIndexRoute,
+  deleteApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  deleteApiIpamFhrpGroupAssignmentsIndexRoute,
+  deleteApiIpamFhrpGroupsIdIndexRoute,
+  deleteApiIpamFhrpGroupsIndexRoute,
+  deleteApiIpamIpAddressesIdIndexRoute,
+  deleteApiIpamIpAddressesIndexRoute,
+  deleteApiIpamIpRangesIdIndexRoute,
+  deleteApiIpamIpRangesIndexRoute,
+  deleteApiIpamPrefixesIdIndexRoute,
+  deleteApiIpamPrefixesIndexRoute,
+  deleteApiIpamRirsIdIndexRoute,
+  deleteApiIpamRirsIndexRoute,
+  deleteApiIpamRolesIdIndexRoute,
+  deleteApiIpamRolesIndexRoute,
+  deleteApiIpamRouteTargetsIdIndexRoute,
+  deleteApiIpamRouteTargetsIndexRoute,
+  deleteApiIpamServicesIdIndexRoute,
+  deleteApiIpamServicesIndexRoute,
+  deleteApiIpamServiceTemplatesIdIndexRoute,
+  deleteApiIpamServiceTemplatesIndexRoute,
+  deleteApiIpamVlanGroupsIdIndexRoute,
+  deleteApiIpamVlanGroupsIndexRoute,
+  deleteApiIpamVlansIdIndexRoute,
+  deleteApiIpamVlansIndexRoute,
+  deleteApiIpamVlanTranslationPoliciesIdIndexRoute,
+  deleteApiIpamVlanTranslationPoliciesIndexRoute,
+  deleteApiIpamVlanTranslationRulesIdIndexRoute,
+  deleteApiIpamVlanTranslationRulesIndexRoute,
+  deleteApiIpamVrfsIdIndexRoute,
+  deleteApiIpamVrfsIndexRoute,
+  deleteApiTenancyContactAssignmentsIdIndexRoute,
+  deleteApiTenancyContactAssignmentsIndexRoute,
+  deleteApiTenancyContactGroupsIdIndexRoute,
+  deleteApiTenancyContactGroupsIndexRoute,
+  deleteApiTenancyContactRolesIdIndexRoute,
+  deleteApiTenancyContactRolesIndexRoute,
+  deleteApiTenancyContactsIdIndexRoute,
+  deleteApiTenancyContactsIndexRoute,
+  deleteApiTenancyTenantGroupsIdIndexRoute,
+  deleteApiTenancyTenantGroupsIndexRoute,
+  deleteApiTenancyTenantsIdIndexRoute,
+  deleteApiTenancyTenantsIndexRoute,
+  deleteApiUsersGroupsIdIndexRoute,
+  deleteApiUsersGroupsIndexRoute,
+  deleteApiUsersOwnerGroupsIdIndexRoute,
+  deleteApiUsersOwnerGroupsIndexRoute,
+  deleteApiUsersOwnersIdIndexRoute,
+  deleteApiUsersOwnersIndexRoute,
+  deleteApiUsersPermissionsIdIndexRoute,
+  deleteApiUsersPermissionsIndexRoute,
+  deleteApiUsersTokensIdIndexRoute,
+  deleteApiUsersTokensIndexRoute,
+  deleteApiUsersUsersIdIndexRoute,
+  deleteApiUsersUsersIndexRoute,
+  deleteApiVirtualizationClusterGroupsIdIndexRoute,
+  deleteApiVirtualizationClusterGroupsIndexRoute,
+  deleteApiVirtualizationClustersIdIndexRoute,
+  deleteApiVirtualizationClustersIndexRoute,
+  deleteApiVirtualizationClusterTypesIdIndexRoute,
+  deleteApiVirtualizationClusterTypesIndexRoute,
+  deleteApiVirtualizationInterfacesIdIndexRoute,
+  deleteApiVirtualizationInterfacesIndexRoute,
+  deleteApiVirtualizationVirtualDisksIdIndexRoute,
+  deleteApiVirtualizationVirtualDisksIndexRoute,
+  deleteApiVirtualizationVirtualMachinesIdIndexRoute,
+  deleteApiVirtualizationVirtualMachinesIndexRoute,
+  deleteApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  deleteApiVirtualizationVirtualMachineTypesIndexRoute,
+  deleteApiVpnIkePoliciesIdIndexRoute,
+  deleteApiVpnIkePoliciesIndexRoute,
+  deleteApiVpnIkeProposalsIdIndexRoute,
+  deleteApiVpnIkeProposalsIndexRoute,
+  deleteApiVpnIpsecPoliciesIdIndexRoute,
+  deleteApiVpnIpsecPoliciesIndexRoute,
+  deleteApiVpnIpsecProfilesIdIndexRoute,
+  deleteApiVpnIpsecProfilesIndexRoute,
+  deleteApiVpnIpsecProposalsIdIndexRoute,
+  deleteApiVpnIpsecProposalsIndexRoute,
+  deleteApiVpnL2vpnsIdIndexRoute,
+  deleteApiVpnL2vpnsIndexRoute,
+  deleteApiVpnL2vpnTerminationsIdIndexRoute,
+  deleteApiVpnL2vpnTerminationsIndexRoute,
+  deleteApiVpnTunnelGroupsIdIndexRoute,
+  deleteApiVpnTunnelGroupsIndexRoute,
+  deleteApiVpnTunnelsIdIndexRoute,
+  deleteApiVpnTunnelsIndexRoute,
+  deleteApiVpnTunnelTerminationsIdIndexRoute,
+  deleteApiVpnTunnelTerminationsIndexRoute,
+  deleteApiWirelessWirelessLanGroupsIdIndexRoute,
+  deleteApiWirelessWirelessLanGroupsIndexRoute,
+  deleteApiWirelessWirelessLansIdIndexRoute,
+  deleteApiWirelessWirelessLansIndexRoute,
+  deleteApiWirelessWirelessLinksIdIndexRoute,
+  deleteApiWirelessWirelessLinksIndexRoute,
+  getApiAuthenticationCheckIndexRoute,
+  getApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  getApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  getApiCircuitsCircuitGroupsIdIndexRoute,
+  getApiCircuitsCircuitGroupsIndexRoute,
+  getApiCircuitsCircuitsIdIndexRoute,
+  getApiCircuitsCircuitsIndexRoute,
+  getApiCircuitsCircuitTerminationsIdIndexRoute,
+  getApiCircuitsCircuitTerminationsIdPathsIndexRoute,
+  getApiCircuitsCircuitTerminationsIndexRoute,
+  getApiCircuitsCircuitTypesIdIndexRoute,
+  getApiCircuitsCircuitTypesIndexRoute,
+  getApiCircuitsProviderAccountsIdIndexRoute,
+  getApiCircuitsProviderAccountsIndexRoute,
+  getApiCircuitsProviderNetworksIdIndexRoute,
+  getApiCircuitsProviderNetworksIndexRoute,
+  getApiCircuitsProvidersIdIndexRoute,
+  getApiCircuitsProvidersIndexRoute,
+  getApiCircuitsVirtualCircuitsIdIndexRoute,
+  getApiCircuitsVirtualCircuitsIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRoute,
+  getApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  getApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  getApiCircuitsVirtualCircuitTypesIndexRoute,
+  getApiCoreBackgroundQueuesIndexRoute,
+  getApiCoreBackgroundQueuesNameIndexRoute,
+  getApiCoreBackgroundTasksIdIndexRoute,
+  getApiCoreBackgroundTasksIndexRoute,
+  getApiCoreBackgroundWorkersIndexRoute,
+  getApiCoreBackgroundWorkersNameIndexRoute,
+  getApiCoreDataFilesIdIndexRoute,
+  getApiCoreDataFilesIndexRoute,
+  getApiCoreDataSourcesIdIndexRoute,
+  getApiCoreDataSourcesIndexRoute,
+  getApiCoreJobsIdIndexRoute,
+  getApiCoreJobsIndexRoute,
+  getApiCoreObjectChangesIdIndexRoute,
+  getApiCoreObjectChangesIndexRoute,
+  getApiCoreObjectTypesIdIndexRoute,
+  getApiCoreObjectTypesIndexRoute,
+  getApiDcimCableBundlesIdIndexRoute,
+  getApiDcimCableBundlesIndexRoute,
+  getApiDcimCablesIdIndexRoute,
+  getApiDcimCablesIndexRoute,
+  getApiDcimCableTerminationsIdIndexRoute,
+  getApiDcimCableTerminationsIndexRoute,
+  getApiDcimConnectedDeviceIndexRoute,
+  getApiDcimConsolePortsIdIndexRoute,
+  getApiDcimConsolePortsIdTraceIndexRoute,
+  getApiDcimConsolePortsIndexRoute,
+  getApiDcimConsolePortTemplatesIdIndexRoute,
+  getApiDcimConsolePortTemplatesIndexRoute,
+  getApiDcimConsoleServerPortsIdIndexRoute,
+  getApiDcimConsoleServerPortsIdTraceIndexRoute,
+  getApiDcimConsoleServerPortsIndexRoute,
+  getApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  getApiDcimConsoleServerPortTemplatesIndexRoute,
+  getApiDcimCoolingFeedsIdIndexRoute,
+  getApiDcimCoolingFeedsIndexRoute,
+  getApiDcimCoolingIntakesIdIndexRoute,
+  getApiDcimCoolingIntakesIndexRoute,
+  getApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  getApiDcimCoolingIntakeTemplatesIndexRoute,
+  getApiDcimCoolingOutflowsIdIndexRoute,
+  getApiDcimCoolingOutflowsIndexRoute,
+  getApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  getApiDcimCoolingOutflowTemplatesIndexRoute,
+  getApiDcimCoolingSourcesIdIndexRoute,
+  getApiDcimCoolingSourcesIndexRoute,
+  getApiDcimDeviceBaysIdIndexRoute,
+  getApiDcimDeviceBaysIndexRoute,
+  getApiDcimDeviceBayTemplatesIdIndexRoute,
+  getApiDcimDeviceBayTemplatesIndexRoute,
+  getApiDcimDeviceRolesIdIndexRoute,
+  getApiDcimDeviceRolesIndexRoute,
+  getApiDcimDevicesIdIndexRoute,
+  getApiDcimDevicesIndexRoute,
+  getApiDcimDeviceTypesIdIndexRoute,
+  getApiDcimDeviceTypesIndexRoute,
+  getApiDcimFrontPortsIdIndexRoute,
+  getApiDcimFrontPortsIdPathsIndexRoute,
+  getApiDcimFrontPortsIndexRoute,
+  getApiDcimFrontPortTemplatesIdIndexRoute,
+  getApiDcimFrontPortTemplatesIndexRoute,
+  getApiDcimInterfacesIdIndexRoute,
+  getApiDcimInterfacesIdTraceIndexRoute,
+  getApiDcimInterfacesIndexRoute,
+  getApiDcimInterfaceTemplatesIdIndexRoute,
+  getApiDcimInterfaceTemplatesIndexRoute,
+  getApiDcimInventoryItemRolesIdIndexRoute,
+  getApiDcimInventoryItemRolesIndexRoute,
+  getApiDcimInventoryItemsIdIndexRoute,
+  getApiDcimInventoryItemsIndexRoute,
+  getApiDcimInventoryItemTemplatesIdIndexRoute,
+  getApiDcimInventoryItemTemplatesIndexRoute,
+  getApiDcimLocationsIdIndexRoute,
+  getApiDcimLocationsIndexRoute,
+  getApiDcimMacAddressesIdIndexRoute,
+  getApiDcimMacAddressesIndexRoute,
+  getApiDcimManufacturersIdIndexRoute,
+  getApiDcimManufacturersIndexRoute,
+  getApiDcimModuleBaysIdIndexRoute,
+  getApiDcimModuleBaysIndexRoute,
+  getApiDcimModuleBayTemplatesIdIndexRoute,
+  getApiDcimModuleBayTemplatesIndexRoute,
+  getApiDcimModuleBayTypesIdIndexRoute,
+  getApiDcimModuleBayTypesIndexRoute,
+  getApiDcimModulesIdIndexRoute,
+  getApiDcimModulesIndexRoute,
+  getApiDcimModuleTypeProfilesIdIndexRoute,
+  getApiDcimModuleTypeProfilesIndexRoute,
+  getApiDcimModuleTypesIdIndexRoute,
+  getApiDcimModuleTypesIndexRoute,
+  getApiDcimPlatformsIdIndexRoute,
+  getApiDcimPlatformsIndexRoute,
+  getApiDcimPowerFeedsIdIndexRoute,
+  getApiDcimPowerFeedsIdTraceIndexRoute,
+  getApiDcimPowerFeedsIndexRoute,
+  getApiDcimPowerOutletsIdIndexRoute,
+  getApiDcimPowerOutletsIdTraceIndexRoute,
+  getApiDcimPowerOutletsIndexRoute,
+  getApiDcimPowerOutletTemplatesIdIndexRoute,
+  getApiDcimPowerOutletTemplatesIndexRoute,
+  getApiDcimPowerPanelsIdIndexRoute,
+  getApiDcimPowerPanelsIndexRoute,
+  getApiDcimPowerPortsIdIndexRoute,
+  getApiDcimPowerPortsIdTraceIndexRoute,
+  getApiDcimPowerPortsIndexRoute,
+  getApiDcimPowerPortTemplatesIdIndexRoute,
+  getApiDcimPowerPortTemplatesIndexRoute,
+  getApiDcimRackGroupsIdIndexRoute,
+  getApiDcimRackGroupsIndexRoute,
+  getApiDcimRackReservationsIdIndexRoute,
+  getApiDcimRackReservationsIndexRoute,
+  getApiDcimRackRolesIdIndexRoute,
+  getApiDcimRackRolesIndexRoute,
+  getApiDcimRacksIdElevationIndexRoute,
+  getApiDcimRacksIdIndexRoute,
+  getApiDcimRacksIndexRoute,
+  getApiDcimRackTypesIdIndexRoute,
+  getApiDcimRackTypesIndexRoute,
+  getApiDcimRearPortsIdIndexRoute,
+  getApiDcimRearPortsIdPathsIndexRoute,
+  getApiDcimRearPortsIndexRoute,
+  getApiDcimRearPortTemplatesIdIndexRoute,
+  getApiDcimRearPortTemplatesIndexRoute,
+  getApiDcimRegionsIdIndexRoute,
+  getApiDcimRegionsIndexRoute,
+  getApiDcimSiteGroupsIdIndexRoute,
+  getApiDcimSiteGroupsIndexRoute,
+  getApiDcimSitesIdIndexRoute,
+  getApiDcimSitesIndexRoute,
+  getApiDcimVirtualChassisIdIndexRoute,
+  getApiDcimVirtualChassisIndexRoute,
+  getApiDcimVirtualDeviceContextsIdIndexRoute,
+  getApiDcimVirtualDeviceContextsIndexRoute,
+  getApiExtrasBookmarksIdIndexRoute,
+  getApiExtrasBookmarksIndexRoute,
+  getApiExtrasConfigContextProfilesIdIndexRoute,
+  getApiExtrasConfigContextProfilesIndexRoute,
+  getApiExtrasConfigContextsIdIndexRoute,
+  getApiExtrasConfigContextsIndexRoute,
+  getApiExtrasConfigTemplatesIdIndexRoute,
+  getApiExtrasConfigTemplatesIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  getApiExtrasCustomFieldChoiceSetsIndexRoute,
+  getApiExtrasCustomFieldsIdIndexRoute,
+  getApiExtrasCustomFieldsIndexRoute,
+  getApiExtrasCustomLinksIdIndexRoute,
+  getApiExtrasCustomLinksIndexRoute,
+  getApiExtrasDashboardIndexRoute,
+  getApiExtrasEventRulesIdIndexRoute,
+  getApiExtrasEventRulesIndexRoute,
+  getApiExtrasExportTemplatesIdIndexRoute,
+  getApiExtrasExportTemplatesIndexRoute,
+  getApiExtrasImageAttachmentsIdIndexRoute,
+  getApiExtrasImageAttachmentsIndexRoute,
+  getApiExtrasJournalEntriesIdIndexRoute,
+  getApiExtrasJournalEntriesIndexRoute,
+  getApiExtrasNotificationGroupsIdIndexRoute,
+  getApiExtrasNotificationGroupsIndexRoute,
+  getApiExtrasNotificationsIdIndexRoute,
+  getApiExtrasNotificationsIndexRoute,
+  getApiExtrasSavedFiltersIdIndexRoute,
+  getApiExtrasSavedFiltersIndexRoute,
+  getApiExtrasScriptsIdIndexRoute,
+  getApiExtrasScriptsIndexRoute,
+  getApiExtrasSubscriptionsIdIndexRoute,
+  getApiExtrasSubscriptionsIndexRoute,
+  getApiExtrasTableConfigsIdIndexRoute,
+  getApiExtrasTableConfigsIndexRoute,
+  getApiExtrasTaggedObjectsIdIndexRoute,
+  getApiExtrasTaggedObjectsIndexRoute,
+  getApiExtrasTagsIdIndexRoute,
+  getApiExtrasTagsIndexRoute,
+  getApiExtrasWebhooksIdIndexRoute,
+  getApiExtrasWebhooksIndexRoute,
+  getApiIpamAggregatesIdIndexRoute,
+  getApiIpamAggregatesIndexRoute,
+  getApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+  getApiIpamAsnRangesIdIndexRoute,
+  getApiIpamAsnRangesIndexRoute,
+  getApiIpamAsnsIdIndexRoute,
+  getApiIpamAsnsIndexRoute,
+  getApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  getApiIpamFhrpGroupAssignmentsIndexRoute,
+  getApiIpamFhrpGroupsIdIndexRoute,
+  getApiIpamFhrpGroupsIndexRoute,
+  getApiIpamIpAddressesIdIndexRoute,
+  getApiIpamIpAddressesIndexRoute,
+  getApiIpamIpRangesIdAvailableIpsIndexRoute,
+  getApiIpamIpRangesIdIndexRoute,
+  getApiIpamIpRangesIndexRoute,
+  getApiIpamPrefixesIdAvailableIpsIndexRoute,
+  getApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+  getApiIpamPrefixesIdIndexRoute,
+  getApiIpamPrefixesIndexRoute,
+  getApiIpamRirsIdIndexRoute,
+  getApiIpamRirsIndexRoute,
+  getApiIpamRolesIdIndexRoute,
+  getApiIpamRolesIndexRoute,
+  getApiIpamRouteTargetsIdIndexRoute,
+  getApiIpamRouteTargetsIndexRoute,
+  getApiIpamServicesIdIndexRoute,
+  getApiIpamServicesIndexRoute,
+  getApiIpamServiceTemplatesIdIndexRoute,
+  getApiIpamServiceTemplatesIndexRoute,
+  getApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+  getApiIpamVlanGroupsIdIndexRoute,
+  getApiIpamVlanGroupsIndexRoute,
+  getApiIpamVlansIdIndexRoute,
+  getApiIpamVlansIndexRoute,
+  getApiIpamVlanTranslationPoliciesIdIndexRoute,
+  getApiIpamVlanTranslationPoliciesIndexRoute,
+  getApiIpamVlanTranslationRulesIdIndexRoute,
+  getApiIpamVlanTranslationRulesIndexRoute,
+  getApiIpamVrfsIdIndexRoute,
+  getApiIpamVrfsIndexRoute,
+  getApiSchemaIndexRoute,
+  getApiStatusIndexRoute,
+  getApiTenancyContactAssignmentsIdIndexRoute,
+  getApiTenancyContactAssignmentsIndexRoute,
+  getApiTenancyContactGroupsIdIndexRoute,
+  getApiTenancyContactGroupsIndexRoute,
+  getApiTenancyContactRolesIdIndexRoute,
+  getApiTenancyContactRolesIndexRoute,
+  getApiTenancyContactsIdIndexRoute,
+  getApiTenancyContactsIndexRoute,
+  getApiTenancyTenantGroupsIdIndexRoute,
+  getApiTenancyTenantGroupsIndexRoute,
+  getApiTenancyTenantsIdIndexRoute,
+  getApiTenancyTenantsIndexRoute,
+  getApiUsersConfigIndexRoute,
+  getApiUsersGroupsIdIndexRoute,
+  getApiUsersGroupsIndexRoute,
+  getApiUsersOwnerGroupsIdIndexRoute,
+  getApiUsersOwnerGroupsIndexRoute,
+  getApiUsersOwnersIdIndexRoute,
+  getApiUsersOwnersIndexRoute,
+  getApiUsersPermissionsIdIndexRoute,
+  getApiUsersPermissionsIndexRoute,
+  getApiUsersTokensIdIndexRoute,
+  getApiUsersTokensIndexRoute,
+  getApiUsersUsersIdIndexRoute,
+  getApiUsersUsersIndexRoute,
+  getApiVirtualizationClusterGroupsIdIndexRoute,
+  getApiVirtualizationClusterGroupsIndexRoute,
+  getApiVirtualizationClustersIdIndexRoute,
+  getApiVirtualizationClustersIndexRoute,
+  getApiVirtualizationClusterTypesIdIndexRoute,
+  getApiVirtualizationClusterTypesIndexRoute,
+  getApiVirtualizationInterfacesIdIndexRoute,
+  getApiVirtualizationInterfacesIndexRoute,
+  getApiVirtualizationVirtualDisksIdIndexRoute,
+  getApiVirtualizationVirtualDisksIndexRoute,
+  getApiVirtualizationVirtualMachinesIdIndexRoute,
+  getApiVirtualizationVirtualMachinesIndexRoute,
+  getApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  getApiVirtualizationVirtualMachineTypesIndexRoute,
+  getApiVpnIkePoliciesIdIndexRoute,
+  getApiVpnIkePoliciesIndexRoute,
+  getApiVpnIkeProposalsIdIndexRoute,
+  getApiVpnIkeProposalsIndexRoute,
+  getApiVpnIpsecPoliciesIdIndexRoute,
+  getApiVpnIpsecPoliciesIndexRoute,
+  getApiVpnIpsecProfilesIdIndexRoute,
+  getApiVpnIpsecProfilesIndexRoute,
+  getApiVpnIpsecProposalsIdIndexRoute,
+  getApiVpnIpsecProposalsIndexRoute,
+  getApiVpnL2vpnsIdIndexRoute,
+  getApiVpnL2vpnsIndexRoute,
+  getApiVpnL2vpnTerminationsIdIndexRoute,
+  getApiVpnL2vpnTerminationsIndexRoute,
+  getApiVpnTunnelGroupsIdIndexRoute,
+  getApiVpnTunnelGroupsIndexRoute,
+  getApiVpnTunnelsIdIndexRoute,
+  getApiVpnTunnelsIndexRoute,
+  getApiVpnTunnelTerminationsIdIndexRoute,
+  getApiVpnTunnelTerminationsIndexRoute,
+  getApiWirelessWirelessLanGroupsIdIndexRoute,
+  getApiWirelessWirelessLanGroupsIndexRoute,
+  getApiWirelessWirelessLansIdIndexRoute,
+  getApiWirelessWirelessLansIndexRoute,
+  getApiWirelessWirelessLinksIdIndexRoute,
+  getApiWirelessWirelessLinksIndexRoute,
+  patchApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  patchApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  patchApiCircuitsCircuitGroupsIdIndexRoute,
+  patchApiCircuitsCircuitGroupsIndexRoute,
+  patchApiCircuitsCircuitsIdIndexRoute,
+  patchApiCircuitsCircuitsIndexRoute,
+  patchApiCircuitsCircuitTerminationsIdIndexRoute,
+  patchApiCircuitsCircuitTerminationsIndexRoute,
+  patchApiCircuitsCircuitTypesIdIndexRoute,
+  patchApiCircuitsCircuitTypesIndexRoute,
+  patchApiCircuitsProviderAccountsIdIndexRoute,
+  patchApiCircuitsProviderAccountsIndexRoute,
+  patchApiCircuitsProviderNetworksIdIndexRoute,
+  patchApiCircuitsProviderNetworksIndexRoute,
+  patchApiCircuitsProvidersIdIndexRoute,
+  patchApiCircuitsProvidersIndexRoute,
+  patchApiCircuitsVirtualCircuitsIdIndexRoute,
+  patchApiCircuitsVirtualCircuitsIndexRoute,
+  patchApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  patchApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  patchApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  patchApiCircuitsVirtualCircuitTypesIndexRoute,
+  patchApiCoreDataSourcesIdIndexRoute,
+  patchApiCoreDataSourcesIndexRoute,
+  patchApiDcimCableBundlesIdIndexRoute,
+  patchApiDcimCableBundlesIndexRoute,
+  patchApiDcimCablesIdIndexRoute,
+  patchApiDcimCablesIndexRoute,
+  patchApiDcimConsolePortsIdIndexRoute,
+  patchApiDcimConsolePortsIndexRoute,
+  patchApiDcimConsolePortTemplatesIdIndexRoute,
+  patchApiDcimConsolePortTemplatesIndexRoute,
+  patchApiDcimConsoleServerPortsIdIndexRoute,
+  patchApiDcimConsoleServerPortsIndexRoute,
+  patchApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  patchApiDcimConsoleServerPortTemplatesIndexRoute,
+  patchApiDcimCoolingFeedsIdIndexRoute,
+  patchApiDcimCoolingFeedsIndexRoute,
+  patchApiDcimCoolingIntakesIdIndexRoute,
+  patchApiDcimCoolingIntakesIndexRoute,
+  patchApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  patchApiDcimCoolingIntakeTemplatesIndexRoute,
+  patchApiDcimCoolingOutflowsIdIndexRoute,
+  patchApiDcimCoolingOutflowsIndexRoute,
+  patchApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  patchApiDcimCoolingOutflowTemplatesIndexRoute,
+  patchApiDcimCoolingSourcesIdIndexRoute,
+  patchApiDcimCoolingSourcesIndexRoute,
+  patchApiDcimDeviceBaysIdIndexRoute,
+  patchApiDcimDeviceBaysIndexRoute,
+  patchApiDcimDeviceBayTemplatesIdIndexRoute,
+  patchApiDcimDeviceBayTemplatesIndexRoute,
+  patchApiDcimDeviceRolesIdIndexRoute,
+  patchApiDcimDeviceRolesIndexRoute,
+  patchApiDcimDevicesIdIndexRoute,
+  patchApiDcimDevicesIndexRoute,
+  patchApiDcimDeviceTypesIdIndexRoute,
+  patchApiDcimDeviceTypesIndexRoute,
+  patchApiDcimFrontPortsIdIndexRoute,
+  patchApiDcimFrontPortsIndexRoute,
+  patchApiDcimFrontPortTemplatesIdIndexRoute,
+  patchApiDcimFrontPortTemplatesIndexRoute,
+  patchApiDcimInterfacesIdIndexRoute,
+  patchApiDcimInterfacesIndexRoute,
+  patchApiDcimInterfaceTemplatesIdIndexRoute,
+  patchApiDcimInterfaceTemplatesIndexRoute,
+  patchApiDcimInventoryItemRolesIdIndexRoute,
+  patchApiDcimInventoryItemRolesIndexRoute,
+  patchApiDcimInventoryItemsIdIndexRoute,
+  patchApiDcimInventoryItemsIndexRoute,
+  patchApiDcimInventoryItemTemplatesIdIndexRoute,
+  patchApiDcimInventoryItemTemplatesIndexRoute,
+  patchApiDcimLocationsIdIndexRoute,
+  patchApiDcimLocationsIndexRoute,
+  patchApiDcimMacAddressesIdIndexRoute,
+  patchApiDcimMacAddressesIndexRoute,
+  patchApiDcimManufacturersIdIndexRoute,
+  patchApiDcimManufacturersIndexRoute,
+  patchApiDcimModuleBaysIdIndexRoute,
+  patchApiDcimModuleBaysIndexRoute,
+  patchApiDcimModuleBayTemplatesIdIndexRoute,
+  patchApiDcimModuleBayTemplatesIndexRoute,
+  patchApiDcimModuleBayTypesIdIndexRoute,
+  patchApiDcimModuleBayTypesIndexRoute,
+  patchApiDcimModulesIdIndexRoute,
+  patchApiDcimModulesIndexRoute,
+  patchApiDcimModuleTypeProfilesIdIndexRoute,
+  patchApiDcimModuleTypeProfilesIndexRoute,
+  patchApiDcimModuleTypesIdIndexRoute,
+  patchApiDcimModuleTypesIndexRoute,
+  patchApiDcimPlatformsIdIndexRoute,
+  patchApiDcimPlatformsIndexRoute,
+  patchApiDcimPowerFeedsIdIndexRoute,
+  patchApiDcimPowerFeedsIndexRoute,
+  patchApiDcimPowerOutletsIdIndexRoute,
+  patchApiDcimPowerOutletsIndexRoute,
+  patchApiDcimPowerOutletTemplatesIdIndexRoute,
+  patchApiDcimPowerOutletTemplatesIndexRoute,
+  patchApiDcimPowerPanelsIdIndexRoute,
+  patchApiDcimPowerPanelsIndexRoute,
+  patchApiDcimPowerPortsIdIndexRoute,
+  patchApiDcimPowerPortsIndexRoute,
+  patchApiDcimPowerPortTemplatesIdIndexRoute,
+  patchApiDcimPowerPortTemplatesIndexRoute,
+  patchApiDcimRackGroupsIdIndexRoute,
+  patchApiDcimRackGroupsIndexRoute,
+  patchApiDcimRackReservationsIdIndexRoute,
+  patchApiDcimRackReservationsIndexRoute,
+  patchApiDcimRackRolesIdIndexRoute,
+  patchApiDcimRackRolesIndexRoute,
+  patchApiDcimRacksIdIndexRoute,
+  patchApiDcimRacksIndexRoute,
+  patchApiDcimRackTypesIdIndexRoute,
+  patchApiDcimRackTypesIndexRoute,
+  patchApiDcimRearPortsIdIndexRoute,
+  patchApiDcimRearPortsIndexRoute,
+  patchApiDcimRearPortTemplatesIdIndexRoute,
+  patchApiDcimRearPortTemplatesIndexRoute,
+  patchApiDcimRegionsIdIndexRoute,
+  patchApiDcimRegionsIndexRoute,
+  patchApiDcimSiteGroupsIdIndexRoute,
+  patchApiDcimSiteGroupsIndexRoute,
+  patchApiDcimSitesIdIndexRoute,
+  patchApiDcimSitesIndexRoute,
+  patchApiDcimVirtualChassisIdIndexRoute,
+  patchApiDcimVirtualChassisIndexRoute,
+  patchApiDcimVirtualDeviceContextsIdIndexRoute,
+  patchApiDcimVirtualDeviceContextsIndexRoute,
+  patchApiExtrasBookmarksIdIndexRoute,
+  patchApiExtrasBookmarksIndexRoute,
+  patchApiExtrasConfigContextProfilesIdIndexRoute,
+  patchApiExtrasConfigContextProfilesIndexRoute,
+  patchApiExtrasConfigContextsIdIndexRoute,
+  patchApiExtrasConfigContextsIndexRoute,
+  patchApiExtrasConfigTemplatesIdIndexRoute,
+  patchApiExtrasConfigTemplatesIndexRoute,
+  patchApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  patchApiExtrasCustomFieldChoiceSetsIndexRoute,
+  patchApiExtrasCustomFieldsIdIndexRoute,
+  patchApiExtrasCustomFieldsIndexRoute,
+  patchApiExtrasCustomLinksIdIndexRoute,
+  patchApiExtrasCustomLinksIndexRoute,
+  patchApiExtrasDashboardIndexRoute,
+  patchApiExtrasEventRulesIdIndexRoute,
+  patchApiExtrasEventRulesIndexRoute,
+  patchApiExtrasExportTemplatesIdIndexRoute,
+  patchApiExtrasExportTemplatesIndexRoute,
+  patchApiExtrasImageAttachmentsIdIndexRoute,
+  patchApiExtrasImageAttachmentsIndexRoute,
+  patchApiExtrasJournalEntriesIdIndexRoute,
+  patchApiExtrasJournalEntriesIndexRoute,
+  patchApiExtrasNotificationGroupsIdIndexRoute,
+  patchApiExtrasNotificationGroupsIndexRoute,
+  patchApiExtrasNotificationsIdIndexRoute,
+  patchApiExtrasNotificationsIndexRoute,
+  patchApiExtrasSavedFiltersIdIndexRoute,
+  patchApiExtrasSavedFiltersIndexRoute,
+  patchApiExtrasScriptsUploadIdIndexRoute,
+  patchApiExtrasSubscriptionsIdIndexRoute,
+  patchApiExtrasSubscriptionsIndexRoute,
+  patchApiExtrasTableConfigsIdIndexRoute,
+  patchApiExtrasTableConfigsIndexRoute,
+  patchApiExtrasTagsIdIndexRoute,
+  patchApiExtrasTagsIndexRoute,
+  patchApiExtrasWebhooksIdIndexRoute,
+  patchApiExtrasWebhooksIndexRoute,
+  patchApiIpamAggregatesIdIndexRoute,
+  patchApiIpamAggregatesIndexRoute,
+  patchApiIpamAsnRangesIdIndexRoute,
+  patchApiIpamAsnRangesIndexRoute,
+  patchApiIpamAsnsIdIndexRoute,
+  patchApiIpamAsnsIndexRoute,
+  patchApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  patchApiIpamFhrpGroupAssignmentsIndexRoute,
+  patchApiIpamFhrpGroupsIdIndexRoute,
+  patchApiIpamFhrpGroupsIndexRoute,
+  patchApiIpamIpAddressesIdIndexRoute,
+  patchApiIpamIpAddressesIndexRoute,
+  patchApiIpamIpRangesIdIndexRoute,
+  patchApiIpamIpRangesIndexRoute,
+  patchApiIpamPrefixesIdIndexRoute,
+  patchApiIpamPrefixesIndexRoute,
+  patchApiIpamRirsIdIndexRoute,
+  patchApiIpamRirsIndexRoute,
+  patchApiIpamRolesIdIndexRoute,
+  patchApiIpamRolesIndexRoute,
+  patchApiIpamRouteTargetsIdIndexRoute,
+  patchApiIpamRouteTargetsIndexRoute,
+  patchApiIpamServicesIdIndexRoute,
+  patchApiIpamServicesIndexRoute,
+  patchApiIpamServiceTemplatesIdIndexRoute,
+  patchApiIpamServiceTemplatesIndexRoute,
+  patchApiIpamVlanGroupsIdIndexRoute,
+  patchApiIpamVlanGroupsIndexRoute,
+  patchApiIpamVlansIdIndexRoute,
+  patchApiIpamVlansIndexRoute,
+  patchApiIpamVlanTranslationPoliciesIdIndexRoute,
+  patchApiIpamVlanTranslationPoliciesIndexRoute,
+  patchApiIpamVlanTranslationRulesIdIndexRoute,
+  patchApiIpamVlanTranslationRulesIndexRoute,
+  patchApiIpamVrfsIdIndexRoute,
+  patchApiIpamVrfsIndexRoute,
+  patchApiTenancyContactAssignmentsIdIndexRoute,
+  patchApiTenancyContactAssignmentsIndexRoute,
+  patchApiTenancyContactGroupsIdIndexRoute,
+  patchApiTenancyContactGroupsIndexRoute,
+  patchApiTenancyContactRolesIdIndexRoute,
+  patchApiTenancyContactRolesIndexRoute,
+  patchApiTenancyContactsIdIndexRoute,
+  patchApiTenancyContactsIndexRoute,
+  patchApiTenancyTenantGroupsIdIndexRoute,
+  patchApiTenancyTenantGroupsIndexRoute,
+  patchApiTenancyTenantsIdIndexRoute,
+  patchApiTenancyTenantsIndexRoute,
+  patchApiUsersGroupsIdIndexRoute,
+  patchApiUsersGroupsIndexRoute,
+  patchApiUsersOwnerGroupsIdIndexRoute,
+  patchApiUsersOwnerGroupsIndexRoute,
+  patchApiUsersOwnersIdIndexRoute,
+  patchApiUsersOwnersIndexRoute,
+  patchApiUsersPermissionsIdIndexRoute,
+  patchApiUsersPermissionsIndexRoute,
+  patchApiUsersTokensIdIndexRoute,
+  patchApiUsersTokensIndexRoute,
+  patchApiUsersUsersIdIndexRoute,
+  patchApiUsersUsersIndexRoute,
+  patchApiVirtualizationClusterGroupsIdIndexRoute,
+  patchApiVirtualizationClusterGroupsIndexRoute,
+  patchApiVirtualizationClustersIdIndexRoute,
+  patchApiVirtualizationClustersIndexRoute,
+  patchApiVirtualizationClusterTypesIdIndexRoute,
+  patchApiVirtualizationClusterTypesIndexRoute,
+  patchApiVirtualizationInterfacesIdIndexRoute,
+  patchApiVirtualizationInterfacesIndexRoute,
+  patchApiVirtualizationVirtualDisksIdIndexRoute,
+  patchApiVirtualizationVirtualDisksIndexRoute,
+  patchApiVirtualizationVirtualMachinesIdIndexRoute,
+  patchApiVirtualizationVirtualMachinesIndexRoute,
+  patchApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  patchApiVirtualizationVirtualMachineTypesIndexRoute,
+  patchApiVpnIkePoliciesIdIndexRoute,
+  patchApiVpnIkePoliciesIndexRoute,
+  patchApiVpnIkeProposalsIdIndexRoute,
+  patchApiVpnIkeProposalsIndexRoute,
+  patchApiVpnIpsecPoliciesIdIndexRoute,
+  patchApiVpnIpsecPoliciesIndexRoute,
+  patchApiVpnIpsecProfilesIdIndexRoute,
+  patchApiVpnIpsecProfilesIndexRoute,
+  patchApiVpnIpsecProposalsIdIndexRoute,
+  patchApiVpnIpsecProposalsIndexRoute,
+  patchApiVpnL2vpnsIdIndexRoute,
+  patchApiVpnL2vpnsIndexRoute,
+  patchApiVpnL2vpnTerminationsIdIndexRoute,
+  patchApiVpnL2vpnTerminationsIndexRoute,
+  patchApiVpnTunnelGroupsIdIndexRoute,
+  patchApiVpnTunnelGroupsIndexRoute,
+  patchApiVpnTunnelsIdIndexRoute,
+  patchApiVpnTunnelsIndexRoute,
+  patchApiVpnTunnelTerminationsIdIndexRoute,
+  patchApiVpnTunnelTerminationsIndexRoute,
+  patchApiWirelessWirelessLanGroupsIdIndexRoute,
+  patchApiWirelessWirelessLanGroupsIndexRoute,
+  patchApiWirelessWirelessLansIdIndexRoute,
+  patchApiWirelessWirelessLansIndexRoute,
+  patchApiWirelessWirelessLinksIdIndexRoute,
+  patchApiWirelessWirelessLinksIndexRoute,
+  postApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  postApiCircuitsCircuitGroupsIndexRoute,
+  postApiCircuitsCircuitsIndexRoute,
+  postApiCircuitsCircuitTerminationsIndexRoute,
+  postApiCircuitsCircuitTypesIndexRoute,
+  postApiCircuitsProviderAccountsIndexRoute,
+  postApiCircuitsProviderNetworksIndexRoute,
+  postApiCircuitsProvidersIndexRoute,
+  postApiCircuitsVirtualCircuitsIndexRoute,
+  postApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  postApiCircuitsVirtualCircuitTypesIndexRoute,
+  postApiCoreBackgroundTasksIdDeleteIndexRoute,
+  postApiCoreBackgroundTasksIdEnqueueIndexRoute,
+  postApiCoreBackgroundTasksIdRequeueIndexRoute,
+  postApiCoreBackgroundTasksIdStopIndexRoute,
+  postApiCoreDataSourcesIdSyncIndexRoute,
+  postApiCoreDataSourcesIndexRoute,
+  postApiDcimCableBundlesIndexRoute,
+  postApiDcimCablesIndexRoute,
+  postApiDcimConsolePortsIndexRoute,
+  postApiDcimConsolePortTemplatesIndexRoute,
+  postApiDcimConsoleServerPortsIndexRoute,
+  postApiDcimConsoleServerPortTemplatesIndexRoute,
+  postApiDcimCoolingFeedsIndexRoute,
+  postApiDcimCoolingIntakesIndexRoute,
+  postApiDcimCoolingIntakeTemplatesIndexRoute,
+  postApiDcimCoolingOutflowsIndexRoute,
+  postApiDcimCoolingOutflowTemplatesIndexRoute,
+  postApiDcimCoolingSourcesIndexRoute,
+  postApiDcimDeviceBaysIndexRoute,
+  postApiDcimDeviceBayTemplatesIndexRoute,
+  postApiDcimDeviceRolesIndexRoute,
+  postApiDcimDevicesIdRenderConfigIndexRoute,
+  postApiDcimDevicesIndexRoute,
+  postApiDcimDeviceTypesIndexRoute,
+  postApiDcimFrontPortsIndexRoute,
+  postApiDcimFrontPortTemplatesIndexRoute,
+  postApiDcimInterfacesIndexRoute,
+  postApiDcimInterfaceTemplatesIndexRoute,
+  postApiDcimInventoryItemRolesIndexRoute,
+  postApiDcimInventoryItemsIndexRoute,
+  postApiDcimInventoryItemTemplatesIndexRoute,
+  postApiDcimLocationsIndexRoute,
+  postApiDcimMacAddressesIndexRoute,
+  postApiDcimManufacturersIndexRoute,
+  postApiDcimModuleBaysIndexRoute,
+  postApiDcimModuleBayTemplatesIndexRoute,
+  postApiDcimModuleBayTypesIndexRoute,
+  postApiDcimModulesIndexRoute,
+  postApiDcimModuleTypeProfilesIndexRoute,
+  postApiDcimModuleTypesIndexRoute,
+  postApiDcimPlatformsIndexRoute,
+  postApiDcimPowerFeedsIndexRoute,
+  postApiDcimPowerOutletsIndexRoute,
+  postApiDcimPowerOutletTemplatesIndexRoute,
+  postApiDcimPowerPanelsIndexRoute,
+  postApiDcimPowerPortsIndexRoute,
+  postApiDcimPowerPortTemplatesIndexRoute,
+  postApiDcimRackGroupsIndexRoute,
+  postApiDcimRackReservationsIndexRoute,
+  postApiDcimRackRolesIndexRoute,
+  postApiDcimRacksIndexRoute,
+  postApiDcimRackTypesIndexRoute,
+  postApiDcimRearPortsIndexRoute,
+  postApiDcimRearPortTemplatesIndexRoute,
+  postApiDcimRegionsIndexRoute,
+  postApiDcimSiteGroupsIndexRoute,
+  postApiDcimSitesIndexRoute,
+  postApiDcimVirtualChassisIndexRoute,
+  postApiDcimVirtualDeviceContextsIndexRoute,
+  postApiExtrasBookmarksIndexRoute,
+  postApiExtrasConfigContextProfilesIdSyncIndexRoute,
+  postApiExtrasConfigContextProfilesIndexRoute,
+  postApiExtrasConfigContextsIdSyncIndexRoute,
+  postApiExtrasConfigContextsIndexRoute,
+  postApiExtrasConfigTemplatesIdRenderIndexRoute,
+  postApiExtrasConfigTemplatesIdSyncIndexRoute,
+  postApiExtrasConfigTemplatesIndexRoute,
+  postApiExtrasCustomFieldChoiceSetsIndexRoute,
+  postApiExtrasCustomFieldsIndexRoute,
+  postApiExtrasCustomLinksIndexRoute,
+  postApiExtrasEventRulesIndexRoute,
+  postApiExtrasExportTemplatesIdSyncIndexRoute,
+  postApiExtrasExportTemplatesIndexRoute,
+  postApiExtrasImageAttachmentsIndexRoute,
+  postApiExtrasJournalEntriesIndexRoute,
+  postApiExtrasNotificationGroupsIndexRoute,
+  postApiExtrasNotificationsIndexRoute,
+  postApiExtrasSavedFiltersIndexRoute,
+  postApiExtrasScriptsIdIndexRoute,
+  postApiExtrasScriptsUploadIndexRoute,
+  postApiExtrasSubscriptionsIndexRoute,
+  postApiExtrasTableConfigsIndexRoute,
+  postApiExtrasTagsIndexRoute,
+  postApiExtrasWebhooksIndexRoute,
+  postApiIpamAggregatesIndexRoute,
+  postApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+  postApiIpamAsnRangesIndexRoute,
+  postApiIpamAsnsIndexRoute,
+  postApiIpamFhrpGroupAssignmentsIndexRoute,
+  postApiIpamFhrpGroupsIndexRoute,
+  postApiIpamIpAddressesIndexRoute,
+  postApiIpamIpRangesIdAvailableIpsIndexRoute,
+  postApiIpamIpRangesIndexRoute,
+  postApiIpamPrefixesIdAvailableIpsIndexRoute,
+  postApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+  postApiIpamPrefixesIndexRoute,
+  postApiIpamRirsIndexRoute,
+  postApiIpamRolesIndexRoute,
+  postApiIpamRouteTargetsIndexRoute,
+  postApiIpamServicesIndexRoute,
+  postApiIpamServiceTemplatesIndexRoute,
+  postApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+  postApiIpamVlanGroupsIndexRoute,
+  postApiIpamVlansIndexRoute,
+  postApiIpamVlanTranslationPoliciesIndexRoute,
+  postApiIpamVlanTranslationRulesIndexRoute,
+  postApiIpamVrfsIndexRoute,
+  postApiTenancyContactAssignmentsIndexRoute,
+  postApiTenancyContactGroupsIndexRoute,
+  postApiTenancyContactRolesIndexRoute,
+  postApiTenancyContactsIndexRoute,
+  postApiTenancyTenantGroupsIndexRoute,
+  postApiTenancyTenantsIndexRoute,
+  postApiUsersGroupsIndexRoute,
+  postApiUsersOwnerGroupsIndexRoute,
+  postApiUsersOwnersIndexRoute,
+  postApiUsersPermissionsIndexRoute,
+  postApiUsersTokensIndexRoute,
+  postApiUsersTokensProvisionIndexRoute,
+  postApiUsersUsersIndexRoute,
+  postApiVirtualizationClusterGroupsIndexRoute,
+  postApiVirtualizationClustersIndexRoute,
+  postApiVirtualizationClusterTypesIndexRoute,
+  postApiVirtualizationInterfacesIndexRoute,
+  postApiVirtualizationVirtualDisksIndexRoute,
+  postApiVirtualizationVirtualMachinesIdRenderConfigIndexRoute,
+  postApiVirtualizationVirtualMachinesIndexRoute,
+  postApiVirtualizationVirtualMachineTypesIndexRoute,
+  postApiVpnIkePoliciesIndexRoute,
+  postApiVpnIkeProposalsIndexRoute,
+  postApiVpnIpsecPoliciesIndexRoute,
+  postApiVpnIpsecProfilesIndexRoute,
+  postApiVpnIpsecProposalsIndexRoute,
+  postApiVpnL2vpnsIndexRoute,
+  postApiVpnL2vpnTerminationsIndexRoute,
+  postApiVpnTunnelGroupsIndexRoute,
+  postApiVpnTunnelsIndexRoute,
+  postApiVpnTunnelTerminationsIndexRoute,
+  postApiWirelessWirelessLanGroupsIndexRoute,
+  postApiWirelessWirelessLansIndexRoute,
+  postApiWirelessWirelessLinksIndexRoute,
+  putApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+  putApiCircuitsCircuitGroupAssignmentsIndexRoute,
+  putApiCircuitsCircuitGroupsIdIndexRoute,
+  putApiCircuitsCircuitGroupsIndexRoute,
+  putApiCircuitsCircuitsIdIndexRoute,
+  putApiCircuitsCircuitsIndexRoute,
+  putApiCircuitsCircuitTerminationsIdIndexRoute,
+  putApiCircuitsCircuitTerminationsIndexRoute,
+  putApiCircuitsCircuitTypesIdIndexRoute,
+  putApiCircuitsCircuitTypesIndexRoute,
+  putApiCircuitsProviderAccountsIdIndexRoute,
+  putApiCircuitsProviderAccountsIndexRoute,
+  putApiCircuitsProviderNetworksIdIndexRoute,
+  putApiCircuitsProviderNetworksIndexRoute,
+  putApiCircuitsProvidersIdIndexRoute,
+  putApiCircuitsProvidersIndexRoute,
+  putApiCircuitsVirtualCircuitsIdIndexRoute,
+  putApiCircuitsVirtualCircuitsIndexRoute,
+  putApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+  putApiCircuitsVirtualCircuitTerminationsIndexRoute,
+  putApiCircuitsVirtualCircuitTypesIdIndexRoute,
+  putApiCircuitsVirtualCircuitTypesIndexRoute,
+  putApiCoreDataSourcesIdIndexRoute,
+  putApiCoreDataSourcesIndexRoute,
+  putApiDcimCableBundlesIdIndexRoute,
+  putApiDcimCableBundlesIndexRoute,
+  putApiDcimCablesIdIndexRoute,
+  putApiDcimCablesIndexRoute,
+  putApiDcimConsolePortsIdIndexRoute,
+  putApiDcimConsolePortsIndexRoute,
+  putApiDcimConsolePortTemplatesIdIndexRoute,
+  putApiDcimConsolePortTemplatesIndexRoute,
+  putApiDcimConsoleServerPortsIdIndexRoute,
+  putApiDcimConsoleServerPortsIndexRoute,
+  putApiDcimConsoleServerPortTemplatesIdIndexRoute,
+  putApiDcimConsoleServerPortTemplatesIndexRoute,
+  putApiDcimCoolingFeedsIdIndexRoute,
+  putApiDcimCoolingFeedsIndexRoute,
+  putApiDcimCoolingIntakesIdIndexRoute,
+  putApiDcimCoolingIntakesIndexRoute,
+  putApiDcimCoolingIntakeTemplatesIdIndexRoute,
+  putApiDcimCoolingIntakeTemplatesIndexRoute,
+  putApiDcimCoolingOutflowsIdIndexRoute,
+  putApiDcimCoolingOutflowsIndexRoute,
+  putApiDcimCoolingOutflowTemplatesIdIndexRoute,
+  putApiDcimCoolingOutflowTemplatesIndexRoute,
+  putApiDcimCoolingSourcesIdIndexRoute,
+  putApiDcimCoolingSourcesIndexRoute,
+  putApiDcimDeviceBaysIdIndexRoute,
+  putApiDcimDeviceBaysIndexRoute,
+  putApiDcimDeviceBayTemplatesIdIndexRoute,
+  putApiDcimDeviceBayTemplatesIndexRoute,
+  putApiDcimDeviceRolesIdIndexRoute,
+  putApiDcimDeviceRolesIndexRoute,
+  putApiDcimDevicesIdIndexRoute,
+  putApiDcimDevicesIndexRoute,
+  putApiDcimDeviceTypesIdIndexRoute,
+  putApiDcimDeviceTypesIndexRoute,
+  putApiDcimFrontPortsIdIndexRoute,
+  putApiDcimFrontPortsIndexRoute,
+  putApiDcimFrontPortTemplatesIdIndexRoute,
+  putApiDcimFrontPortTemplatesIndexRoute,
+  putApiDcimInterfacesIdIndexRoute,
+  putApiDcimInterfacesIndexRoute,
+  putApiDcimInterfaceTemplatesIdIndexRoute,
+  putApiDcimInterfaceTemplatesIndexRoute,
+  putApiDcimInventoryItemRolesIdIndexRoute,
+  putApiDcimInventoryItemRolesIndexRoute,
+  putApiDcimInventoryItemsIdIndexRoute,
+  putApiDcimInventoryItemsIndexRoute,
+  putApiDcimInventoryItemTemplatesIdIndexRoute,
+  putApiDcimInventoryItemTemplatesIndexRoute,
+  putApiDcimLocationsIdIndexRoute,
+  putApiDcimLocationsIndexRoute,
+  putApiDcimMacAddressesIdIndexRoute,
+  putApiDcimMacAddressesIndexRoute,
+  putApiDcimManufacturersIdIndexRoute,
+  putApiDcimManufacturersIndexRoute,
+  putApiDcimModuleBaysIdIndexRoute,
+  putApiDcimModuleBaysIndexRoute,
+  putApiDcimModuleBayTemplatesIdIndexRoute,
+  putApiDcimModuleBayTemplatesIndexRoute,
+  putApiDcimModuleBayTypesIdIndexRoute,
+  putApiDcimModuleBayTypesIndexRoute,
+  putApiDcimModulesIdIndexRoute,
+  putApiDcimModulesIndexRoute,
+  putApiDcimModuleTypeProfilesIdIndexRoute,
+  putApiDcimModuleTypeProfilesIndexRoute,
+  putApiDcimModuleTypesIdIndexRoute,
+  putApiDcimModuleTypesIndexRoute,
+  putApiDcimPlatformsIdIndexRoute,
+  putApiDcimPlatformsIndexRoute,
+  putApiDcimPowerFeedsIdIndexRoute,
+  putApiDcimPowerFeedsIndexRoute,
+  putApiDcimPowerOutletsIdIndexRoute,
+  putApiDcimPowerOutletsIndexRoute,
+  putApiDcimPowerOutletTemplatesIdIndexRoute,
+  putApiDcimPowerOutletTemplatesIndexRoute,
+  putApiDcimPowerPanelsIdIndexRoute,
+  putApiDcimPowerPanelsIndexRoute,
+  putApiDcimPowerPortsIdIndexRoute,
+  putApiDcimPowerPortsIndexRoute,
+  putApiDcimPowerPortTemplatesIdIndexRoute,
+  putApiDcimPowerPortTemplatesIndexRoute,
+  putApiDcimRackGroupsIdIndexRoute,
+  putApiDcimRackGroupsIndexRoute,
+  putApiDcimRackReservationsIdIndexRoute,
+  putApiDcimRackReservationsIndexRoute,
+  putApiDcimRackRolesIdIndexRoute,
+  putApiDcimRackRolesIndexRoute,
+  putApiDcimRacksIdIndexRoute,
+  putApiDcimRacksIndexRoute,
+  putApiDcimRackTypesIdIndexRoute,
+  putApiDcimRackTypesIndexRoute,
+  putApiDcimRearPortsIdIndexRoute,
+  putApiDcimRearPortsIndexRoute,
+  putApiDcimRearPortTemplatesIdIndexRoute,
+  putApiDcimRearPortTemplatesIndexRoute,
+  putApiDcimRegionsIdIndexRoute,
+  putApiDcimRegionsIndexRoute,
+  putApiDcimSiteGroupsIdIndexRoute,
+  putApiDcimSiteGroupsIndexRoute,
+  putApiDcimSitesIdIndexRoute,
+  putApiDcimSitesIndexRoute,
+  putApiDcimVirtualChassisIdIndexRoute,
+  putApiDcimVirtualChassisIndexRoute,
+  putApiDcimVirtualDeviceContextsIdIndexRoute,
+  putApiDcimVirtualDeviceContextsIndexRoute,
+  putApiExtrasBookmarksIdIndexRoute,
+  putApiExtrasBookmarksIndexRoute,
+  putApiExtrasConfigContextProfilesIdIndexRoute,
+  putApiExtrasConfigContextProfilesIndexRoute,
+  putApiExtrasConfigContextsIdIndexRoute,
+  putApiExtrasConfigContextsIndexRoute,
+  putApiExtrasConfigTemplatesIdIndexRoute,
+  putApiExtrasConfigTemplatesIndexRoute,
+  putApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+  putApiExtrasCustomFieldChoiceSetsIndexRoute,
+  putApiExtrasCustomFieldsIdIndexRoute,
+  putApiExtrasCustomFieldsIndexRoute,
+  putApiExtrasCustomLinksIdIndexRoute,
+  putApiExtrasCustomLinksIndexRoute,
+  putApiExtrasDashboardIndexRoute,
+  putApiExtrasEventRulesIdIndexRoute,
+  putApiExtrasEventRulesIndexRoute,
+  putApiExtrasExportTemplatesIdIndexRoute,
+  putApiExtrasExportTemplatesIndexRoute,
+  putApiExtrasImageAttachmentsIdIndexRoute,
+  putApiExtrasImageAttachmentsIndexRoute,
+  putApiExtrasJournalEntriesIdIndexRoute,
+  putApiExtrasJournalEntriesIndexRoute,
+  putApiExtrasNotificationGroupsIdIndexRoute,
+  putApiExtrasNotificationGroupsIndexRoute,
+  putApiExtrasNotificationsIdIndexRoute,
+  putApiExtrasNotificationsIndexRoute,
+  putApiExtrasSavedFiltersIdIndexRoute,
+  putApiExtrasSavedFiltersIndexRoute,
+  putApiExtrasScriptsUploadIdIndexRoute,
+  putApiExtrasSubscriptionsIdIndexRoute,
+  putApiExtrasSubscriptionsIndexRoute,
+  putApiExtrasTableConfigsIdIndexRoute,
+  putApiExtrasTableConfigsIndexRoute,
+  putApiExtrasTagsIdIndexRoute,
+  putApiExtrasTagsIndexRoute,
+  putApiExtrasWebhooksIdIndexRoute,
+  putApiExtrasWebhooksIndexRoute,
+  putApiIpamAggregatesIdIndexRoute,
+  putApiIpamAggregatesIndexRoute,
+  putApiIpamAsnRangesIdIndexRoute,
+  putApiIpamAsnRangesIndexRoute,
+  putApiIpamAsnsIdIndexRoute,
+  putApiIpamAsnsIndexRoute,
+  putApiIpamFhrpGroupAssignmentsIdIndexRoute,
+  putApiIpamFhrpGroupAssignmentsIndexRoute,
+  putApiIpamFhrpGroupsIdIndexRoute,
+  putApiIpamFhrpGroupsIndexRoute,
+  putApiIpamIpAddressesIdIndexRoute,
+  putApiIpamIpAddressesIndexRoute,
+  putApiIpamIpRangesIdIndexRoute,
+  putApiIpamIpRangesIndexRoute,
+  putApiIpamPrefixesIdIndexRoute,
+  putApiIpamPrefixesIndexRoute,
+  putApiIpamRirsIdIndexRoute,
+  putApiIpamRirsIndexRoute,
+  putApiIpamRolesIdIndexRoute,
+  putApiIpamRolesIndexRoute,
+  putApiIpamRouteTargetsIdIndexRoute,
+  putApiIpamRouteTargetsIndexRoute,
+  putApiIpamServicesIdIndexRoute,
+  putApiIpamServicesIndexRoute,
+  putApiIpamServiceTemplatesIdIndexRoute,
+  putApiIpamServiceTemplatesIndexRoute,
+  putApiIpamVlanGroupsIdIndexRoute,
+  putApiIpamVlanGroupsIndexRoute,
+  putApiIpamVlansIdIndexRoute,
+  putApiIpamVlansIndexRoute,
+  putApiIpamVlanTranslationPoliciesIdIndexRoute,
+  putApiIpamVlanTranslationPoliciesIndexRoute,
+  putApiIpamVlanTranslationRulesIdIndexRoute,
+  putApiIpamVlanTranslationRulesIndexRoute,
+  putApiIpamVrfsIdIndexRoute,
+  putApiIpamVrfsIndexRoute,
+  putApiTenancyContactAssignmentsIdIndexRoute,
+  putApiTenancyContactAssignmentsIndexRoute,
+  putApiTenancyContactGroupsIdIndexRoute,
+  putApiTenancyContactGroupsIndexRoute,
+  putApiTenancyContactRolesIdIndexRoute,
+  putApiTenancyContactRolesIndexRoute,
+  putApiTenancyContactsIdIndexRoute,
+  putApiTenancyContactsIndexRoute,
+  putApiTenancyTenantGroupsIdIndexRoute,
+  putApiTenancyTenantGroupsIndexRoute,
+  putApiTenancyTenantsIdIndexRoute,
+  putApiTenancyTenantsIndexRoute,
+  putApiUsersGroupsIdIndexRoute,
+  putApiUsersGroupsIndexRoute,
+  putApiUsersOwnerGroupsIdIndexRoute,
+  putApiUsersOwnerGroupsIndexRoute,
+  putApiUsersOwnersIdIndexRoute,
+  putApiUsersOwnersIndexRoute,
+  putApiUsersPermissionsIdIndexRoute,
+  putApiUsersPermissionsIndexRoute,
+  putApiUsersTokensIdIndexRoute,
+  putApiUsersTokensIndexRoute,
+  putApiUsersUsersIdIndexRoute,
+  putApiUsersUsersIndexRoute,
+  putApiVirtualizationClusterGroupsIdIndexRoute,
+  putApiVirtualizationClusterGroupsIndexRoute,
+  putApiVirtualizationClustersIdIndexRoute,
+  putApiVirtualizationClustersIndexRoute,
+  putApiVirtualizationClusterTypesIdIndexRoute,
+  putApiVirtualizationClusterTypesIndexRoute,
+  putApiVirtualizationInterfacesIdIndexRoute,
+  putApiVirtualizationInterfacesIndexRoute,
+  putApiVirtualizationVirtualDisksIdIndexRoute,
+  putApiVirtualizationVirtualDisksIndexRoute,
+  putApiVirtualizationVirtualMachinesIdIndexRoute,
+  putApiVirtualizationVirtualMachinesIndexRoute,
+  putApiVirtualizationVirtualMachineTypesIdIndexRoute,
+  putApiVirtualizationVirtualMachineTypesIndexRoute,
+  putApiVpnIkePoliciesIdIndexRoute,
+  putApiVpnIkePoliciesIndexRoute,
+  putApiVpnIkeProposalsIdIndexRoute,
+  putApiVpnIkeProposalsIndexRoute,
+  putApiVpnIpsecPoliciesIdIndexRoute,
+  putApiVpnIpsecPoliciesIndexRoute,
+  putApiVpnIpsecProfilesIdIndexRoute,
+  putApiVpnIpsecProfilesIndexRoute,
+  putApiVpnIpsecProposalsIdIndexRoute,
+  putApiVpnIpsecProposalsIndexRoute,
+  putApiVpnL2vpnsIdIndexRoute,
+  putApiVpnL2vpnsIndexRoute,
+  putApiVpnL2vpnTerminationsIdIndexRoute,
+  putApiVpnL2vpnTerminationsIndexRoute,
+  putApiVpnTunnelGroupsIdIndexRoute,
+  putApiVpnTunnelGroupsIndexRoute,
+  putApiVpnTunnelsIdIndexRoute,
+  putApiVpnTunnelsIndexRoute,
+  putApiVpnTunnelTerminationsIdIndexRoute,
+  putApiVpnTunnelTerminationsIndexRoute,
+  putApiWirelessWirelessLanGroupsIdIndexRoute,
+  putApiWirelessWirelessLanGroupsIndexRoute,
+  putApiWirelessWirelessLansIdIndexRoute,
+  putApiWirelessWirelessLansIndexRoute,
+  putApiWirelessWirelessLinksIdIndexRoute,
+  putApiWirelessWirelessLinksIndexRoute,
+} from './routes'
+import {
+  deleteApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  deleteApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  deleteApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  deleteApiCircuitsCircuitGroupsIndexRouteHandler,
+  deleteApiCircuitsCircuitsIdIndexRouteHandler,
+  deleteApiCircuitsCircuitsIndexRouteHandler,
+  deleteApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  deleteApiCircuitsCircuitTerminationsIndexRouteHandler,
+  deleteApiCircuitsCircuitTypesIdIndexRouteHandler,
+  deleteApiCircuitsCircuitTypesIndexRouteHandler,
+  deleteApiCircuitsProviderAccountsIdIndexRouteHandler,
+  deleteApiCircuitsProviderAccountsIndexRouteHandler,
+  deleteApiCircuitsProviderNetworksIdIndexRouteHandler,
+  deleteApiCircuitsProviderNetworksIndexRouteHandler,
+  deleteApiCircuitsProvidersIdIndexRouteHandler,
+  deleteApiCircuitsProvidersIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitsIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  deleteApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  deleteApiCoreDataSourcesIdIndexRouteHandler,
+  deleteApiCoreDataSourcesIndexRouteHandler,
+  deleteApiDcimCableBundlesIdIndexRouteHandler,
+  deleteApiDcimCableBundlesIndexRouteHandler,
+  deleteApiDcimCablesIdIndexRouteHandler,
+  deleteApiDcimCablesIndexRouteHandler,
+  deleteApiDcimConsolePortsIdIndexRouteHandler,
+  deleteApiDcimConsolePortsIndexRouteHandler,
+  deleteApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  deleteApiDcimConsolePortTemplatesIndexRouteHandler,
+  deleteApiDcimConsoleServerPortsIdIndexRouteHandler,
+  deleteApiDcimConsoleServerPortsIndexRouteHandler,
+  deleteApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  deleteApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  deleteApiDcimCoolingFeedsIdIndexRouteHandler,
+  deleteApiDcimCoolingFeedsIndexRouteHandler,
+  deleteApiDcimCoolingIntakesIdIndexRouteHandler,
+  deleteApiDcimCoolingIntakesIndexRouteHandler,
+  deleteApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  deleteApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  deleteApiDcimCoolingOutflowsIdIndexRouteHandler,
+  deleteApiDcimCoolingOutflowsIndexRouteHandler,
+  deleteApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  deleteApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  deleteApiDcimCoolingSourcesIdIndexRouteHandler,
+  deleteApiDcimCoolingSourcesIndexRouteHandler,
+  deleteApiDcimDeviceBaysIdIndexRouteHandler,
+  deleteApiDcimDeviceBaysIndexRouteHandler,
+  deleteApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  deleteApiDcimDeviceBayTemplatesIndexRouteHandler,
+  deleteApiDcimDeviceRolesIdIndexRouteHandler,
+  deleteApiDcimDeviceRolesIndexRouteHandler,
+  deleteApiDcimDevicesIdIndexRouteHandler,
+  deleteApiDcimDevicesIndexRouteHandler,
+  deleteApiDcimDeviceTypesIdIndexRouteHandler,
+  deleteApiDcimDeviceTypesIndexRouteHandler,
+  deleteApiDcimFrontPortsIdIndexRouteHandler,
+  deleteApiDcimFrontPortsIndexRouteHandler,
+  deleteApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  deleteApiDcimFrontPortTemplatesIndexRouteHandler,
+  deleteApiDcimInterfacesIdIndexRouteHandler,
+  deleteApiDcimInterfacesIndexRouteHandler,
+  deleteApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  deleteApiDcimInterfaceTemplatesIndexRouteHandler,
+  deleteApiDcimInventoryItemRolesIdIndexRouteHandler,
+  deleteApiDcimInventoryItemRolesIndexRouteHandler,
+  deleteApiDcimInventoryItemsIdIndexRouteHandler,
+  deleteApiDcimInventoryItemsIndexRouteHandler,
+  deleteApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  deleteApiDcimInventoryItemTemplatesIndexRouteHandler,
+  deleteApiDcimLocationsIdIndexRouteHandler,
+  deleteApiDcimLocationsIndexRouteHandler,
+  deleteApiDcimMacAddressesIdIndexRouteHandler,
+  deleteApiDcimMacAddressesIndexRouteHandler,
+  deleteApiDcimManufacturersIdIndexRouteHandler,
+  deleteApiDcimManufacturersIndexRouteHandler,
+  deleteApiDcimModuleBaysIdIndexRouteHandler,
+  deleteApiDcimModuleBaysIndexRouteHandler,
+  deleteApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  deleteApiDcimModuleBayTemplatesIndexRouteHandler,
+  deleteApiDcimModuleBayTypesIdIndexRouteHandler,
+  deleteApiDcimModuleBayTypesIndexRouteHandler,
+  deleteApiDcimModulesIdIndexRouteHandler,
+  deleteApiDcimModulesIndexRouteHandler,
+  deleteApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  deleteApiDcimModuleTypeProfilesIndexRouteHandler,
+  deleteApiDcimModuleTypesIdIndexRouteHandler,
+  deleteApiDcimModuleTypesIndexRouteHandler,
+  deleteApiDcimPlatformsIdIndexRouteHandler,
+  deleteApiDcimPlatformsIndexRouteHandler,
+  deleteApiDcimPowerFeedsIdIndexRouteHandler,
+  deleteApiDcimPowerFeedsIndexRouteHandler,
+  deleteApiDcimPowerOutletsIdIndexRouteHandler,
+  deleteApiDcimPowerOutletsIndexRouteHandler,
+  deleteApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  deleteApiDcimPowerOutletTemplatesIndexRouteHandler,
+  deleteApiDcimPowerPanelsIdIndexRouteHandler,
+  deleteApiDcimPowerPanelsIndexRouteHandler,
+  deleteApiDcimPowerPortsIdIndexRouteHandler,
+  deleteApiDcimPowerPortsIndexRouteHandler,
+  deleteApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  deleteApiDcimPowerPortTemplatesIndexRouteHandler,
+  deleteApiDcimRackGroupsIdIndexRouteHandler,
+  deleteApiDcimRackGroupsIndexRouteHandler,
+  deleteApiDcimRackReservationsIdIndexRouteHandler,
+  deleteApiDcimRackReservationsIndexRouteHandler,
+  deleteApiDcimRackRolesIdIndexRouteHandler,
+  deleteApiDcimRackRolesIndexRouteHandler,
+  deleteApiDcimRacksIdIndexRouteHandler,
+  deleteApiDcimRacksIndexRouteHandler,
+  deleteApiDcimRackTypesIdIndexRouteHandler,
+  deleteApiDcimRackTypesIndexRouteHandler,
+  deleteApiDcimRearPortsIdIndexRouteHandler,
+  deleteApiDcimRearPortsIndexRouteHandler,
+  deleteApiDcimRearPortTemplatesIdIndexRouteHandler,
+  deleteApiDcimRearPortTemplatesIndexRouteHandler,
+  deleteApiDcimRegionsIdIndexRouteHandler,
+  deleteApiDcimRegionsIndexRouteHandler,
+  deleteApiDcimSiteGroupsIdIndexRouteHandler,
+  deleteApiDcimSiteGroupsIndexRouteHandler,
+  deleteApiDcimSitesIdIndexRouteHandler,
+  deleteApiDcimSitesIndexRouteHandler,
+  deleteApiDcimVirtualChassisIdIndexRouteHandler,
+  deleteApiDcimVirtualChassisIndexRouteHandler,
+  deleteApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  deleteApiDcimVirtualDeviceContextsIndexRouteHandler,
+  deleteApiExtrasBookmarksIdIndexRouteHandler,
+  deleteApiExtrasBookmarksIndexRouteHandler,
+  deleteApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  deleteApiExtrasConfigContextProfilesIndexRouteHandler,
+  deleteApiExtrasConfigContextsIdIndexRouteHandler,
+  deleteApiExtrasConfigContextsIndexRouteHandler,
+  deleteApiExtrasConfigTemplatesIdIndexRouteHandler,
+  deleteApiExtrasConfigTemplatesIndexRouteHandler,
+  deleteApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  deleteApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  deleteApiExtrasCustomFieldsIdIndexRouteHandler,
+  deleteApiExtrasCustomFieldsIndexRouteHandler,
+  deleteApiExtrasCustomLinksIdIndexRouteHandler,
+  deleteApiExtrasCustomLinksIndexRouteHandler,
+  deleteApiExtrasDashboardIndexRouteHandler,
+  deleteApiExtrasEventRulesIdIndexRouteHandler,
+  deleteApiExtrasEventRulesIndexRouteHandler,
+  deleteApiExtrasExportTemplatesIdIndexRouteHandler,
+  deleteApiExtrasExportTemplatesIndexRouteHandler,
+  deleteApiExtrasImageAttachmentsIdIndexRouteHandler,
+  deleteApiExtrasImageAttachmentsIndexRouteHandler,
+  deleteApiExtrasJournalEntriesIdIndexRouteHandler,
+  deleteApiExtrasJournalEntriesIndexRouteHandler,
+  deleteApiExtrasNotificationGroupsIdIndexRouteHandler,
+  deleteApiExtrasNotificationGroupsIndexRouteHandler,
+  deleteApiExtrasNotificationsIdIndexRouteHandler,
+  deleteApiExtrasNotificationsIndexRouteHandler,
+  deleteApiExtrasSavedFiltersIdIndexRouteHandler,
+  deleteApiExtrasSavedFiltersIndexRouteHandler,
+  deleteApiExtrasSubscriptionsIdIndexRouteHandler,
+  deleteApiExtrasSubscriptionsIndexRouteHandler,
+  deleteApiExtrasTableConfigsIdIndexRouteHandler,
+  deleteApiExtrasTableConfigsIndexRouteHandler,
+  deleteApiExtrasTagsIdIndexRouteHandler,
+  deleteApiExtrasTagsIndexRouteHandler,
+  deleteApiExtrasWebhooksIdIndexRouteHandler,
+  deleteApiExtrasWebhooksIndexRouteHandler,
+  deleteApiIpamAggregatesIdIndexRouteHandler,
+  deleteApiIpamAggregatesIndexRouteHandler,
+  deleteApiIpamAsnRangesIdIndexRouteHandler,
+  deleteApiIpamAsnRangesIndexRouteHandler,
+  deleteApiIpamAsnsIdIndexRouteHandler,
+  deleteApiIpamAsnsIndexRouteHandler,
+  deleteApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  deleteApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  deleteApiIpamFhrpGroupsIdIndexRouteHandler,
+  deleteApiIpamFhrpGroupsIndexRouteHandler,
+  deleteApiIpamIpAddressesIdIndexRouteHandler,
+  deleteApiIpamIpAddressesIndexRouteHandler,
+  deleteApiIpamIpRangesIdIndexRouteHandler,
+  deleteApiIpamIpRangesIndexRouteHandler,
+  deleteApiIpamPrefixesIdIndexRouteHandler,
+  deleteApiIpamPrefixesIndexRouteHandler,
+  deleteApiIpamRirsIdIndexRouteHandler,
+  deleteApiIpamRirsIndexRouteHandler,
+  deleteApiIpamRolesIdIndexRouteHandler,
+  deleteApiIpamRolesIndexRouteHandler,
+  deleteApiIpamRouteTargetsIdIndexRouteHandler,
+  deleteApiIpamRouteTargetsIndexRouteHandler,
+  deleteApiIpamServicesIdIndexRouteHandler,
+  deleteApiIpamServicesIndexRouteHandler,
+  deleteApiIpamServiceTemplatesIdIndexRouteHandler,
+  deleteApiIpamServiceTemplatesIndexRouteHandler,
+  deleteApiIpamVlanGroupsIdIndexRouteHandler,
+  deleteApiIpamVlanGroupsIndexRouteHandler,
+  deleteApiIpamVlansIdIndexRouteHandler,
+  deleteApiIpamVlansIndexRouteHandler,
+  deleteApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  deleteApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  deleteApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  deleteApiIpamVlanTranslationRulesIndexRouteHandler,
+  deleteApiIpamVrfsIdIndexRouteHandler,
+  deleteApiIpamVrfsIndexRouteHandler,
+  deleteApiTenancyContactAssignmentsIdIndexRouteHandler,
+  deleteApiTenancyContactAssignmentsIndexRouteHandler,
+  deleteApiTenancyContactGroupsIdIndexRouteHandler,
+  deleteApiTenancyContactGroupsIndexRouteHandler,
+  deleteApiTenancyContactRolesIdIndexRouteHandler,
+  deleteApiTenancyContactRolesIndexRouteHandler,
+  deleteApiTenancyContactsIdIndexRouteHandler,
+  deleteApiTenancyContactsIndexRouteHandler,
+  deleteApiTenancyTenantGroupsIdIndexRouteHandler,
+  deleteApiTenancyTenantGroupsIndexRouteHandler,
+  deleteApiTenancyTenantsIdIndexRouteHandler,
+  deleteApiTenancyTenantsIndexRouteHandler,
+  deleteApiUsersGroupsIdIndexRouteHandler,
+  deleteApiUsersGroupsIndexRouteHandler,
+  deleteApiUsersOwnerGroupsIdIndexRouteHandler,
+  deleteApiUsersOwnerGroupsIndexRouteHandler,
+  deleteApiUsersOwnersIdIndexRouteHandler,
+  deleteApiUsersOwnersIndexRouteHandler,
+  deleteApiUsersPermissionsIdIndexRouteHandler,
+  deleteApiUsersPermissionsIndexRouteHandler,
+  deleteApiUsersTokensIdIndexRouteHandler,
+  deleteApiUsersTokensIndexRouteHandler,
+  deleteApiUsersUsersIdIndexRouteHandler,
+  deleteApiUsersUsersIndexRouteHandler,
+  deleteApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  deleteApiVirtualizationClusterGroupsIndexRouteHandler,
+  deleteApiVirtualizationClustersIdIndexRouteHandler,
+  deleteApiVirtualizationClustersIndexRouteHandler,
+  deleteApiVirtualizationClusterTypesIdIndexRouteHandler,
+  deleteApiVirtualizationClusterTypesIndexRouteHandler,
+  deleteApiVirtualizationInterfacesIdIndexRouteHandler,
+  deleteApiVirtualizationInterfacesIndexRouteHandler,
+  deleteApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  deleteApiVirtualizationVirtualDisksIndexRouteHandler,
+  deleteApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  deleteApiVirtualizationVirtualMachinesIndexRouteHandler,
+  deleteApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  deleteApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  deleteApiVpnIkePoliciesIdIndexRouteHandler,
+  deleteApiVpnIkePoliciesIndexRouteHandler,
+  deleteApiVpnIkeProposalsIdIndexRouteHandler,
+  deleteApiVpnIkeProposalsIndexRouteHandler,
+  deleteApiVpnIpsecPoliciesIdIndexRouteHandler,
+  deleteApiVpnIpsecPoliciesIndexRouteHandler,
+  deleteApiVpnIpsecProfilesIdIndexRouteHandler,
+  deleteApiVpnIpsecProfilesIndexRouteHandler,
+  deleteApiVpnIpsecProposalsIdIndexRouteHandler,
+  deleteApiVpnIpsecProposalsIndexRouteHandler,
+  deleteApiVpnL2vpnsIdIndexRouteHandler,
+  deleteApiVpnL2vpnsIndexRouteHandler,
+  deleteApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  deleteApiVpnL2vpnTerminationsIndexRouteHandler,
+  deleteApiVpnTunnelGroupsIdIndexRouteHandler,
+  deleteApiVpnTunnelGroupsIndexRouteHandler,
+  deleteApiVpnTunnelsIdIndexRouteHandler,
+  deleteApiVpnTunnelsIndexRouteHandler,
+  deleteApiVpnTunnelTerminationsIdIndexRouteHandler,
+  deleteApiVpnTunnelTerminationsIndexRouteHandler,
+  deleteApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  deleteApiWirelessWirelessLanGroupsIndexRouteHandler,
+  deleteApiWirelessWirelessLansIdIndexRouteHandler,
+  deleteApiWirelessWirelessLansIndexRouteHandler,
+  deleteApiWirelessWirelessLinksIdIndexRouteHandler,
+  deleteApiWirelessWirelessLinksIndexRouteHandler,
+  getApiAuthenticationCheckIndexRouteHandler,
+  getApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  getApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  getApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  getApiCircuitsCircuitGroupsIndexRouteHandler,
+  getApiCircuitsCircuitsIdIndexRouteHandler,
+  getApiCircuitsCircuitsIndexRouteHandler,
+  getApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  getApiCircuitsCircuitTerminationsIdPathsIndexRouteHandler,
+  getApiCircuitsCircuitTerminationsIndexRouteHandler,
+  getApiCircuitsCircuitTypesIdIndexRouteHandler,
+  getApiCircuitsCircuitTypesIndexRouteHandler,
+  getApiCircuitsProviderAccountsIdIndexRouteHandler,
+  getApiCircuitsProviderAccountsIndexRouteHandler,
+  getApiCircuitsProviderNetworksIdIndexRouteHandler,
+  getApiCircuitsProviderNetworksIndexRouteHandler,
+  getApiCircuitsProvidersIdIndexRouteHandler,
+  getApiCircuitsProvidersIndexRouteHandler,
+  getApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  getApiCircuitsVirtualCircuitsIndexRouteHandler,
+  getApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRouteHandler,
+  getApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  getApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  getApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  getApiCoreBackgroundQueuesIndexRouteHandler,
+  getApiCoreBackgroundQueuesNameIndexRouteHandler,
+  getApiCoreBackgroundTasksIdIndexRouteHandler,
+  getApiCoreBackgroundTasksIndexRouteHandler,
+  getApiCoreBackgroundWorkersIndexRouteHandler,
+  getApiCoreBackgroundWorkersNameIndexRouteHandler,
+  getApiCoreDataFilesIdIndexRouteHandler,
+  getApiCoreDataFilesIndexRouteHandler,
+  getApiCoreDataSourcesIdIndexRouteHandler,
+  getApiCoreDataSourcesIndexRouteHandler,
+  getApiCoreJobsIdIndexRouteHandler,
+  getApiCoreJobsIndexRouteHandler,
+  getApiCoreObjectChangesIdIndexRouteHandler,
+  getApiCoreObjectChangesIndexRouteHandler,
+  getApiCoreObjectTypesIdIndexRouteHandler,
+  getApiCoreObjectTypesIndexRouteHandler,
+  getApiDcimCableBundlesIdIndexRouteHandler,
+  getApiDcimCableBundlesIndexRouteHandler,
+  getApiDcimCablesIdIndexRouteHandler,
+  getApiDcimCablesIndexRouteHandler,
+  getApiDcimCableTerminationsIdIndexRouteHandler,
+  getApiDcimCableTerminationsIndexRouteHandler,
+  getApiDcimConnectedDeviceIndexRouteHandler,
+  getApiDcimConsolePortsIdIndexRouteHandler,
+  getApiDcimConsolePortsIdTraceIndexRouteHandler,
+  getApiDcimConsolePortsIndexRouteHandler,
+  getApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  getApiDcimConsolePortTemplatesIndexRouteHandler,
+  getApiDcimConsoleServerPortsIdIndexRouteHandler,
+  getApiDcimConsoleServerPortsIdTraceIndexRouteHandler,
+  getApiDcimConsoleServerPortsIndexRouteHandler,
+  getApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  getApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  getApiDcimCoolingFeedsIdIndexRouteHandler,
+  getApiDcimCoolingFeedsIndexRouteHandler,
+  getApiDcimCoolingIntakesIdIndexRouteHandler,
+  getApiDcimCoolingIntakesIndexRouteHandler,
+  getApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  getApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  getApiDcimCoolingOutflowsIdIndexRouteHandler,
+  getApiDcimCoolingOutflowsIndexRouteHandler,
+  getApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  getApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  getApiDcimCoolingSourcesIdIndexRouteHandler,
+  getApiDcimCoolingSourcesIndexRouteHandler,
+  getApiDcimDeviceBaysIdIndexRouteHandler,
+  getApiDcimDeviceBaysIndexRouteHandler,
+  getApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  getApiDcimDeviceBayTemplatesIndexRouteHandler,
+  getApiDcimDeviceRolesIdIndexRouteHandler,
+  getApiDcimDeviceRolesIndexRouteHandler,
+  getApiDcimDevicesIdIndexRouteHandler,
+  getApiDcimDevicesIndexRouteHandler,
+  getApiDcimDeviceTypesIdIndexRouteHandler,
+  getApiDcimDeviceTypesIndexRouteHandler,
+  getApiDcimFrontPortsIdIndexRouteHandler,
+  getApiDcimFrontPortsIdPathsIndexRouteHandler,
+  getApiDcimFrontPortsIndexRouteHandler,
+  getApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  getApiDcimFrontPortTemplatesIndexRouteHandler,
+  getApiDcimInterfacesIdIndexRouteHandler,
+  getApiDcimInterfacesIdTraceIndexRouteHandler,
+  getApiDcimInterfacesIndexRouteHandler,
+  getApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  getApiDcimInterfaceTemplatesIndexRouteHandler,
+  getApiDcimInventoryItemRolesIdIndexRouteHandler,
+  getApiDcimInventoryItemRolesIndexRouteHandler,
+  getApiDcimInventoryItemsIdIndexRouteHandler,
+  getApiDcimInventoryItemsIndexRouteHandler,
+  getApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  getApiDcimInventoryItemTemplatesIndexRouteHandler,
+  getApiDcimLocationsIdIndexRouteHandler,
+  getApiDcimLocationsIndexRouteHandler,
+  getApiDcimMacAddressesIdIndexRouteHandler,
+  getApiDcimMacAddressesIndexRouteHandler,
+  getApiDcimManufacturersIdIndexRouteHandler,
+  getApiDcimManufacturersIndexRouteHandler,
+  getApiDcimModuleBaysIdIndexRouteHandler,
+  getApiDcimModuleBaysIndexRouteHandler,
+  getApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  getApiDcimModuleBayTemplatesIndexRouteHandler,
+  getApiDcimModuleBayTypesIdIndexRouteHandler,
+  getApiDcimModuleBayTypesIndexRouteHandler,
+  getApiDcimModulesIdIndexRouteHandler,
+  getApiDcimModulesIndexRouteHandler,
+  getApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  getApiDcimModuleTypeProfilesIndexRouteHandler,
+  getApiDcimModuleTypesIdIndexRouteHandler,
+  getApiDcimModuleTypesIndexRouteHandler,
+  getApiDcimPlatformsIdIndexRouteHandler,
+  getApiDcimPlatformsIndexRouteHandler,
+  getApiDcimPowerFeedsIdIndexRouteHandler,
+  getApiDcimPowerFeedsIdTraceIndexRouteHandler,
+  getApiDcimPowerFeedsIndexRouteHandler,
+  getApiDcimPowerOutletsIdIndexRouteHandler,
+  getApiDcimPowerOutletsIdTraceIndexRouteHandler,
+  getApiDcimPowerOutletsIndexRouteHandler,
+  getApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  getApiDcimPowerOutletTemplatesIndexRouteHandler,
+  getApiDcimPowerPanelsIdIndexRouteHandler,
+  getApiDcimPowerPanelsIndexRouteHandler,
+  getApiDcimPowerPortsIdIndexRouteHandler,
+  getApiDcimPowerPortsIdTraceIndexRouteHandler,
+  getApiDcimPowerPortsIndexRouteHandler,
+  getApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  getApiDcimPowerPortTemplatesIndexRouteHandler,
+  getApiDcimRackGroupsIdIndexRouteHandler,
+  getApiDcimRackGroupsIndexRouteHandler,
+  getApiDcimRackReservationsIdIndexRouteHandler,
+  getApiDcimRackReservationsIndexRouteHandler,
+  getApiDcimRackRolesIdIndexRouteHandler,
+  getApiDcimRackRolesIndexRouteHandler,
+  getApiDcimRacksIdElevationIndexRouteHandler,
+  getApiDcimRacksIdIndexRouteHandler,
+  getApiDcimRacksIndexRouteHandler,
+  getApiDcimRackTypesIdIndexRouteHandler,
+  getApiDcimRackTypesIndexRouteHandler,
+  getApiDcimRearPortsIdIndexRouteHandler,
+  getApiDcimRearPortsIdPathsIndexRouteHandler,
+  getApiDcimRearPortsIndexRouteHandler,
+  getApiDcimRearPortTemplatesIdIndexRouteHandler,
+  getApiDcimRearPortTemplatesIndexRouteHandler,
+  getApiDcimRegionsIdIndexRouteHandler,
+  getApiDcimRegionsIndexRouteHandler,
+  getApiDcimSiteGroupsIdIndexRouteHandler,
+  getApiDcimSiteGroupsIndexRouteHandler,
+  getApiDcimSitesIdIndexRouteHandler,
+  getApiDcimSitesIndexRouteHandler,
+  getApiDcimVirtualChassisIdIndexRouteHandler,
+  getApiDcimVirtualChassisIndexRouteHandler,
+  getApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  getApiDcimVirtualDeviceContextsIndexRouteHandler,
+  getApiExtrasBookmarksIdIndexRouteHandler,
+  getApiExtrasBookmarksIndexRouteHandler,
+  getApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  getApiExtrasConfigContextProfilesIndexRouteHandler,
+  getApiExtrasConfigContextsIdIndexRouteHandler,
+  getApiExtrasConfigContextsIndexRouteHandler,
+  getApiExtrasConfigTemplatesIdIndexRouteHandler,
+  getApiExtrasConfigTemplatesIndexRouteHandler,
+  getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRouteHandler,
+  getApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  getApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  getApiExtrasCustomFieldsIdIndexRouteHandler,
+  getApiExtrasCustomFieldsIndexRouteHandler,
+  getApiExtrasCustomLinksIdIndexRouteHandler,
+  getApiExtrasCustomLinksIndexRouteHandler,
+  getApiExtrasDashboardIndexRouteHandler,
+  getApiExtrasEventRulesIdIndexRouteHandler,
+  getApiExtrasEventRulesIndexRouteHandler,
+  getApiExtrasExportTemplatesIdIndexRouteHandler,
+  getApiExtrasExportTemplatesIndexRouteHandler,
+  getApiExtrasImageAttachmentsIdIndexRouteHandler,
+  getApiExtrasImageAttachmentsIndexRouteHandler,
+  getApiExtrasJournalEntriesIdIndexRouteHandler,
+  getApiExtrasJournalEntriesIndexRouteHandler,
+  getApiExtrasNotificationGroupsIdIndexRouteHandler,
+  getApiExtrasNotificationGroupsIndexRouteHandler,
+  getApiExtrasNotificationsIdIndexRouteHandler,
+  getApiExtrasNotificationsIndexRouteHandler,
+  getApiExtrasSavedFiltersIdIndexRouteHandler,
+  getApiExtrasSavedFiltersIndexRouteHandler,
+  getApiExtrasScriptsIdIndexRouteHandler,
+  getApiExtrasScriptsIndexRouteHandler,
+  getApiExtrasSubscriptionsIdIndexRouteHandler,
+  getApiExtrasSubscriptionsIndexRouteHandler,
+  getApiExtrasTableConfigsIdIndexRouteHandler,
+  getApiExtrasTableConfigsIndexRouteHandler,
+  getApiExtrasTaggedObjectsIdIndexRouteHandler,
+  getApiExtrasTaggedObjectsIndexRouteHandler,
+  getApiExtrasTagsIdIndexRouteHandler,
+  getApiExtrasTagsIndexRouteHandler,
+  getApiExtrasWebhooksIdIndexRouteHandler,
+  getApiExtrasWebhooksIndexRouteHandler,
+  getApiIpamAggregatesIdIndexRouteHandler,
+  getApiIpamAggregatesIndexRouteHandler,
+  getApiIpamAsnRangesIdAvailableAsnsIndexRouteHandler,
+  getApiIpamAsnRangesIdIndexRouteHandler,
+  getApiIpamAsnRangesIndexRouteHandler,
+  getApiIpamAsnsIdIndexRouteHandler,
+  getApiIpamAsnsIndexRouteHandler,
+  getApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  getApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  getApiIpamFhrpGroupsIdIndexRouteHandler,
+  getApiIpamFhrpGroupsIndexRouteHandler,
+  getApiIpamIpAddressesIdIndexRouteHandler,
+  getApiIpamIpAddressesIndexRouteHandler,
+  getApiIpamIpRangesIdAvailableIpsIndexRouteHandler,
+  getApiIpamIpRangesIdIndexRouteHandler,
+  getApiIpamIpRangesIndexRouteHandler,
+  getApiIpamPrefixesIdAvailableIpsIndexRouteHandler,
+  getApiIpamPrefixesIdAvailablePrefixesIndexRouteHandler,
+  getApiIpamPrefixesIdIndexRouteHandler,
+  getApiIpamPrefixesIndexRouteHandler,
+  getApiIpamRirsIdIndexRouteHandler,
+  getApiIpamRirsIndexRouteHandler,
+  getApiIpamRolesIdIndexRouteHandler,
+  getApiIpamRolesIndexRouteHandler,
+  getApiIpamRouteTargetsIdIndexRouteHandler,
+  getApiIpamRouteTargetsIndexRouteHandler,
+  getApiIpamServicesIdIndexRouteHandler,
+  getApiIpamServicesIndexRouteHandler,
+  getApiIpamServiceTemplatesIdIndexRouteHandler,
+  getApiIpamServiceTemplatesIndexRouteHandler,
+  getApiIpamVlanGroupsIdAvailableVlansIndexRouteHandler,
+  getApiIpamVlanGroupsIdIndexRouteHandler,
+  getApiIpamVlanGroupsIndexRouteHandler,
+  getApiIpamVlansIdIndexRouteHandler,
+  getApiIpamVlansIndexRouteHandler,
+  getApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  getApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  getApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  getApiIpamVlanTranslationRulesIndexRouteHandler,
+  getApiIpamVrfsIdIndexRouteHandler,
+  getApiIpamVrfsIndexRouteHandler,
+  getApiSchemaIndexRouteHandler,
+  getApiStatusIndexRouteHandler,
+  getApiTenancyContactAssignmentsIdIndexRouteHandler,
+  getApiTenancyContactAssignmentsIndexRouteHandler,
+  getApiTenancyContactGroupsIdIndexRouteHandler,
+  getApiTenancyContactGroupsIndexRouteHandler,
+  getApiTenancyContactRolesIdIndexRouteHandler,
+  getApiTenancyContactRolesIndexRouteHandler,
+  getApiTenancyContactsIdIndexRouteHandler,
+  getApiTenancyContactsIndexRouteHandler,
+  getApiTenancyTenantGroupsIdIndexRouteHandler,
+  getApiTenancyTenantGroupsIndexRouteHandler,
+  getApiTenancyTenantsIdIndexRouteHandler,
+  getApiTenancyTenantsIndexRouteHandler,
+  getApiUsersConfigIndexRouteHandler,
+  getApiUsersGroupsIdIndexRouteHandler,
+  getApiUsersGroupsIndexRouteHandler,
+  getApiUsersOwnerGroupsIdIndexRouteHandler,
+  getApiUsersOwnerGroupsIndexRouteHandler,
+  getApiUsersOwnersIdIndexRouteHandler,
+  getApiUsersOwnersIndexRouteHandler,
+  getApiUsersPermissionsIdIndexRouteHandler,
+  getApiUsersPermissionsIndexRouteHandler,
+  getApiUsersTokensIdIndexRouteHandler,
+  getApiUsersTokensIndexRouteHandler,
+  getApiUsersUsersIdIndexRouteHandler,
+  getApiUsersUsersIndexRouteHandler,
+  getApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  getApiVirtualizationClusterGroupsIndexRouteHandler,
+  getApiVirtualizationClustersIdIndexRouteHandler,
+  getApiVirtualizationClustersIndexRouteHandler,
+  getApiVirtualizationClusterTypesIdIndexRouteHandler,
+  getApiVirtualizationClusterTypesIndexRouteHandler,
+  getApiVirtualizationInterfacesIdIndexRouteHandler,
+  getApiVirtualizationInterfacesIndexRouteHandler,
+  getApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  getApiVirtualizationVirtualDisksIndexRouteHandler,
+  getApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  getApiVirtualizationVirtualMachinesIndexRouteHandler,
+  getApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  getApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  getApiVpnIkePoliciesIdIndexRouteHandler,
+  getApiVpnIkePoliciesIndexRouteHandler,
+  getApiVpnIkeProposalsIdIndexRouteHandler,
+  getApiVpnIkeProposalsIndexRouteHandler,
+  getApiVpnIpsecPoliciesIdIndexRouteHandler,
+  getApiVpnIpsecPoliciesIndexRouteHandler,
+  getApiVpnIpsecProfilesIdIndexRouteHandler,
+  getApiVpnIpsecProfilesIndexRouteHandler,
+  getApiVpnIpsecProposalsIdIndexRouteHandler,
+  getApiVpnIpsecProposalsIndexRouteHandler,
+  getApiVpnL2vpnsIdIndexRouteHandler,
+  getApiVpnL2vpnsIndexRouteHandler,
+  getApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  getApiVpnL2vpnTerminationsIndexRouteHandler,
+  getApiVpnTunnelGroupsIdIndexRouteHandler,
+  getApiVpnTunnelGroupsIndexRouteHandler,
+  getApiVpnTunnelsIdIndexRouteHandler,
+  getApiVpnTunnelsIndexRouteHandler,
+  getApiVpnTunnelTerminationsIdIndexRouteHandler,
+  getApiVpnTunnelTerminationsIndexRouteHandler,
+  getApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  getApiWirelessWirelessLanGroupsIndexRouteHandler,
+  getApiWirelessWirelessLansIdIndexRouteHandler,
+  getApiWirelessWirelessLansIndexRouteHandler,
+  getApiWirelessWirelessLinksIdIndexRouteHandler,
+  getApiWirelessWirelessLinksIndexRouteHandler,
+  patchApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  patchApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  patchApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  patchApiCircuitsCircuitGroupsIndexRouteHandler,
+  patchApiCircuitsCircuitsIdIndexRouteHandler,
+  patchApiCircuitsCircuitsIndexRouteHandler,
+  patchApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  patchApiCircuitsCircuitTerminationsIndexRouteHandler,
+  patchApiCircuitsCircuitTypesIdIndexRouteHandler,
+  patchApiCircuitsCircuitTypesIndexRouteHandler,
+  patchApiCircuitsProviderAccountsIdIndexRouteHandler,
+  patchApiCircuitsProviderAccountsIndexRouteHandler,
+  patchApiCircuitsProviderNetworksIdIndexRouteHandler,
+  patchApiCircuitsProviderNetworksIndexRouteHandler,
+  patchApiCircuitsProvidersIdIndexRouteHandler,
+  patchApiCircuitsProvidersIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitsIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  patchApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  patchApiCoreDataSourcesIdIndexRouteHandler,
+  patchApiCoreDataSourcesIndexRouteHandler,
+  patchApiDcimCableBundlesIdIndexRouteHandler,
+  patchApiDcimCableBundlesIndexRouteHandler,
+  patchApiDcimCablesIdIndexRouteHandler,
+  patchApiDcimCablesIndexRouteHandler,
+  patchApiDcimConsolePortsIdIndexRouteHandler,
+  patchApiDcimConsolePortsIndexRouteHandler,
+  patchApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  patchApiDcimConsolePortTemplatesIndexRouteHandler,
+  patchApiDcimConsoleServerPortsIdIndexRouteHandler,
+  patchApiDcimConsoleServerPortsIndexRouteHandler,
+  patchApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  patchApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  patchApiDcimCoolingFeedsIdIndexRouteHandler,
+  patchApiDcimCoolingFeedsIndexRouteHandler,
+  patchApiDcimCoolingIntakesIdIndexRouteHandler,
+  patchApiDcimCoolingIntakesIndexRouteHandler,
+  patchApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  patchApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  patchApiDcimCoolingOutflowsIdIndexRouteHandler,
+  patchApiDcimCoolingOutflowsIndexRouteHandler,
+  patchApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  patchApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  patchApiDcimCoolingSourcesIdIndexRouteHandler,
+  patchApiDcimCoolingSourcesIndexRouteHandler,
+  patchApiDcimDeviceBaysIdIndexRouteHandler,
+  patchApiDcimDeviceBaysIndexRouteHandler,
+  patchApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  patchApiDcimDeviceBayTemplatesIndexRouteHandler,
+  patchApiDcimDeviceRolesIdIndexRouteHandler,
+  patchApiDcimDeviceRolesIndexRouteHandler,
+  patchApiDcimDevicesIdIndexRouteHandler,
+  patchApiDcimDevicesIndexRouteHandler,
+  patchApiDcimDeviceTypesIdIndexRouteHandler,
+  patchApiDcimDeviceTypesIndexRouteHandler,
+  patchApiDcimFrontPortsIdIndexRouteHandler,
+  patchApiDcimFrontPortsIndexRouteHandler,
+  patchApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  patchApiDcimFrontPortTemplatesIndexRouteHandler,
+  patchApiDcimInterfacesIdIndexRouteHandler,
+  patchApiDcimInterfacesIndexRouteHandler,
+  patchApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  patchApiDcimInterfaceTemplatesIndexRouteHandler,
+  patchApiDcimInventoryItemRolesIdIndexRouteHandler,
+  patchApiDcimInventoryItemRolesIndexRouteHandler,
+  patchApiDcimInventoryItemsIdIndexRouteHandler,
+  patchApiDcimInventoryItemsIndexRouteHandler,
+  patchApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  patchApiDcimInventoryItemTemplatesIndexRouteHandler,
+  patchApiDcimLocationsIdIndexRouteHandler,
+  patchApiDcimLocationsIndexRouteHandler,
+  patchApiDcimMacAddressesIdIndexRouteHandler,
+  patchApiDcimMacAddressesIndexRouteHandler,
+  patchApiDcimManufacturersIdIndexRouteHandler,
+  patchApiDcimManufacturersIndexRouteHandler,
+  patchApiDcimModuleBaysIdIndexRouteHandler,
+  patchApiDcimModuleBaysIndexRouteHandler,
+  patchApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  patchApiDcimModuleBayTemplatesIndexRouteHandler,
+  patchApiDcimModuleBayTypesIdIndexRouteHandler,
+  patchApiDcimModuleBayTypesIndexRouteHandler,
+  patchApiDcimModulesIdIndexRouteHandler,
+  patchApiDcimModulesIndexRouteHandler,
+  patchApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  patchApiDcimModuleTypeProfilesIndexRouteHandler,
+  patchApiDcimModuleTypesIdIndexRouteHandler,
+  patchApiDcimModuleTypesIndexRouteHandler,
+  patchApiDcimPlatformsIdIndexRouteHandler,
+  patchApiDcimPlatformsIndexRouteHandler,
+  patchApiDcimPowerFeedsIdIndexRouteHandler,
+  patchApiDcimPowerFeedsIndexRouteHandler,
+  patchApiDcimPowerOutletsIdIndexRouteHandler,
+  patchApiDcimPowerOutletsIndexRouteHandler,
+  patchApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  patchApiDcimPowerOutletTemplatesIndexRouteHandler,
+  patchApiDcimPowerPanelsIdIndexRouteHandler,
+  patchApiDcimPowerPanelsIndexRouteHandler,
+  patchApiDcimPowerPortsIdIndexRouteHandler,
+  patchApiDcimPowerPortsIndexRouteHandler,
+  patchApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  patchApiDcimPowerPortTemplatesIndexRouteHandler,
+  patchApiDcimRackGroupsIdIndexRouteHandler,
+  patchApiDcimRackGroupsIndexRouteHandler,
+  patchApiDcimRackReservationsIdIndexRouteHandler,
+  patchApiDcimRackReservationsIndexRouteHandler,
+  patchApiDcimRackRolesIdIndexRouteHandler,
+  patchApiDcimRackRolesIndexRouteHandler,
+  patchApiDcimRacksIdIndexRouteHandler,
+  patchApiDcimRacksIndexRouteHandler,
+  patchApiDcimRackTypesIdIndexRouteHandler,
+  patchApiDcimRackTypesIndexRouteHandler,
+  patchApiDcimRearPortsIdIndexRouteHandler,
+  patchApiDcimRearPortsIndexRouteHandler,
+  patchApiDcimRearPortTemplatesIdIndexRouteHandler,
+  patchApiDcimRearPortTemplatesIndexRouteHandler,
+  patchApiDcimRegionsIdIndexRouteHandler,
+  patchApiDcimRegionsIndexRouteHandler,
+  patchApiDcimSiteGroupsIdIndexRouteHandler,
+  patchApiDcimSiteGroupsIndexRouteHandler,
+  patchApiDcimSitesIdIndexRouteHandler,
+  patchApiDcimSitesIndexRouteHandler,
+  patchApiDcimVirtualChassisIdIndexRouteHandler,
+  patchApiDcimVirtualChassisIndexRouteHandler,
+  patchApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  patchApiDcimVirtualDeviceContextsIndexRouteHandler,
+  patchApiExtrasBookmarksIdIndexRouteHandler,
+  patchApiExtrasBookmarksIndexRouteHandler,
+  patchApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  patchApiExtrasConfigContextProfilesIndexRouteHandler,
+  patchApiExtrasConfigContextsIdIndexRouteHandler,
+  patchApiExtrasConfigContextsIndexRouteHandler,
+  patchApiExtrasConfigTemplatesIdIndexRouteHandler,
+  patchApiExtrasConfigTemplatesIndexRouteHandler,
+  patchApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  patchApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  patchApiExtrasCustomFieldsIdIndexRouteHandler,
+  patchApiExtrasCustomFieldsIndexRouteHandler,
+  patchApiExtrasCustomLinksIdIndexRouteHandler,
+  patchApiExtrasCustomLinksIndexRouteHandler,
+  patchApiExtrasDashboardIndexRouteHandler,
+  patchApiExtrasEventRulesIdIndexRouteHandler,
+  patchApiExtrasEventRulesIndexRouteHandler,
+  patchApiExtrasExportTemplatesIdIndexRouteHandler,
+  patchApiExtrasExportTemplatesIndexRouteHandler,
+  patchApiExtrasImageAttachmentsIdIndexRouteHandler,
+  patchApiExtrasImageAttachmentsIndexRouteHandler,
+  patchApiExtrasJournalEntriesIdIndexRouteHandler,
+  patchApiExtrasJournalEntriesIndexRouteHandler,
+  patchApiExtrasNotificationGroupsIdIndexRouteHandler,
+  patchApiExtrasNotificationGroupsIndexRouteHandler,
+  patchApiExtrasNotificationsIdIndexRouteHandler,
+  patchApiExtrasNotificationsIndexRouteHandler,
+  patchApiExtrasSavedFiltersIdIndexRouteHandler,
+  patchApiExtrasSavedFiltersIndexRouteHandler,
+  patchApiExtrasScriptsUploadIdIndexRouteHandler,
+  patchApiExtrasSubscriptionsIdIndexRouteHandler,
+  patchApiExtrasSubscriptionsIndexRouteHandler,
+  patchApiExtrasTableConfigsIdIndexRouteHandler,
+  patchApiExtrasTableConfigsIndexRouteHandler,
+  patchApiExtrasTagsIdIndexRouteHandler,
+  patchApiExtrasTagsIndexRouteHandler,
+  patchApiExtrasWebhooksIdIndexRouteHandler,
+  patchApiExtrasWebhooksIndexRouteHandler,
+  patchApiIpamAggregatesIdIndexRouteHandler,
+  patchApiIpamAggregatesIndexRouteHandler,
+  patchApiIpamAsnRangesIdIndexRouteHandler,
+  patchApiIpamAsnRangesIndexRouteHandler,
+  patchApiIpamAsnsIdIndexRouteHandler,
+  patchApiIpamAsnsIndexRouteHandler,
+  patchApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  patchApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  patchApiIpamFhrpGroupsIdIndexRouteHandler,
+  patchApiIpamFhrpGroupsIndexRouteHandler,
+  patchApiIpamIpAddressesIdIndexRouteHandler,
+  patchApiIpamIpAddressesIndexRouteHandler,
+  patchApiIpamIpRangesIdIndexRouteHandler,
+  patchApiIpamIpRangesIndexRouteHandler,
+  patchApiIpamPrefixesIdIndexRouteHandler,
+  patchApiIpamPrefixesIndexRouteHandler,
+  patchApiIpamRirsIdIndexRouteHandler,
+  patchApiIpamRirsIndexRouteHandler,
+  patchApiIpamRolesIdIndexRouteHandler,
+  patchApiIpamRolesIndexRouteHandler,
+  patchApiIpamRouteTargetsIdIndexRouteHandler,
+  patchApiIpamRouteTargetsIndexRouteHandler,
+  patchApiIpamServicesIdIndexRouteHandler,
+  patchApiIpamServicesIndexRouteHandler,
+  patchApiIpamServiceTemplatesIdIndexRouteHandler,
+  patchApiIpamServiceTemplatesIndexRouteHandler,
+  patchApiIpamVlanGroupsIdIndexRouteHandler,
+  patchApiIpamVlanGroupsIndexRouteHandler,
+  patchApiIpamVlansIdIndexRouteHandler,
+  patchApiIpamVlansIndexRouteHandler,
+  patchApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  patchApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  patchApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  patchApiIpamVlanTranslationRulesIndexRouteHandler,
+  patchApiIpamVrfsIdIndexRouteHandler,
+  patchApiIpamVrfsIndexRouteHandler,
+  patchApiTenancyContactAssignmentsIdIndexRouteHandler,
+  patchApiTenancyContactAssignmentsIndexRouteHandler,
+  patchApiTenancyContactGroupsIdIndexRouteHandler,
+  patchApiTenancyContactGroupsIndexRouteHandler,
+  patchApiTenancyContactRolesIdIndexRouteHandler,
+  patchApiTenancyContactRolesIndexRouteHandler,
+  patchApiTenancyContactsIdIndexRouteHandler,
+  patchApiTenancyContactsIndexRouteHandler,
+  patchApiTenancyTenantGroupsIdIndexRouteHandler,
+  patchApiTenancyTenantGroupsIndexRouteHandler,
+  patchApiTenancyTenantsIdIndexRouteHandler,
+  patchApiTenancyTenantsIndexRouteHandler,
+  patchApiUsersGroupsIdIndexRouteHandler,
+  patchApiUsersGroupsIndexRouteHandler,
+  patchApiUsersOwnerGroupsIdIndexRouteHandler,
+  patchApiUsersOwnerGroupsIndexRouteHandler,
+  patchApiUsersOwnersIdIndexRouteHandler,
+  patchApiUsersOwnersIndexRouteHandler,
+  patchApiUsersPermissionsIdIndexRouteHandler,
+  patchApiUsersPermissionsIndexRouteHandler,
+  patchApiUsersTokensIdIndexRouteHandler,
+  patchApiUsersTokensIndexRouteHandler,
+  patchApiUsersUsersIdIndexRouteHandler,
+  patchApiUsersUsersIndexRouteHandler,
+  patchApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  patchApiVirtualizationClusterGroupsIndexRouteHandler,
+  patchApiVirtualizationClustersIdIndexRouteHandler,
+  patchApiVirtualizationClustersIndexRouteHandler,
+  patchApiVirtualizationClusterTypesIdIndexRouteHandler,
+  patchApiVirtualizationClusterTypesIndexRouteHandler,
+  patchApiVirtualizationInterfacesIdIndexRouteHandler,
+  patchApiVirtualizationInterfacesIndexRouteHandler,
+  patchApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  patchApiVirtualizationVirtualDisksIndexRouteHandler,
+  patchApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  patchApiVirtualizationVirtualMachinesIndexRouteHandler,
+  patchApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  patchApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  patchApiVpnIkePoliciesIdIndexRouteHandler,
+  patchApiVpnIkePoliciesIndexRouteHandler,
+  patchApiVpnIkeProposalsIdIndexRouteHandler,
+  patchApiVpnIkeProposalsIndexRouteHandler,
+  patchApiVpnIpsecPoliciesIdIndexRouteHandler,
+  patchApiVpnIpsecPoliciesIndexRouteHandler,
+  patchApiVpnIpsecProfilesIdIndexRouteHandler,
+  patchApiVpnIpsecProfilesIndexRouteHandler,
+  patchApiVpnIpsecProposalsIdIndexRouteHandler,
+  patchApiVpnIpsecProposalsIndexRouteHandler,
+  patchApiVpnL2vpnsIdIndexRouteHandler,
+  patchApiVpnL2vpnsIndexRouteHandler,
+  patchApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  patchApiVpnL2vpnTerminationsIndexRouteHandler,
+  patchApiVpnTunnelGroupsIdIndexRouteHandler,
+  patchApiVpnTunnelGroupsIndexRouteHandler,
+  patchApiVpnTunnelsIdIndexRouteHandler,
+  patchApiVpnTunnelsIndexRouteHandler,
+  patchApiVpnTunnelTerminationsIdIndexRouteHandler,
+  patchApiVpnTunnelTerminationsIndexRouteHandler,
+  patchApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  patchApiWirelessWirelessLanGroupsIndexRouteHandler,
+  patchApiWirelessWirelessLansIdIndexRouteHandler,
+  patchApiWirelessWirelessLansIndexRouteHandler,
+  patchApiWirelessWirelessLinksIdIndexRouteHandler,
+  patchApiWirelessWirelessLinksIndexRouteHandler,
+  postApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  postApiCircuitsCircuitGroupsIndexRouteHandler,
+  postApiCircuitsCircuitsIndexRouteHandler,
+  postApiCircuitsCircuitTerminationsIndexRouteHandler,
+  postApiCircuitsCircuitTypesIndexRouteHandler,
+  postApiCircuitsProviderAccountsIndexRouteHandler,
+  postApiCircuitsProviderNetworksIndexRouteHandler,
+  postApiCircuitsProvidersIndexRouteHandler,
+  postApiCircuitsVirtualCircuitsIndexRouteHandler,
+  postApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  postApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  postApiCoreBackgroundTasksIdDeleteIndexRouteHandler,
+  postApiCoreBackgroundTasksIdEnqueueIndexRouteHandler,
+  postApiCoreBackgroundTasksIdRequeueIndexRouteHandler,
+  postApiCoreBackgroundTasksIdStopIndexRouteHandler,
+  postApiCoreDataSourcesIdSyncIndexRouteHandler,
+  postApiCoreDataSourcesIndexRouteHandler,
+  postApiDcimCableBundlesIndexRouteHandler,
+  postApiDcimCablesIndexRouteHandler,
+  postApiDcimConsolePortsIndexRouteHandler,
+  postApiDcimConsolePortTemplatesIndexRouteHandler,
+  postApiDcimConsoleServerPortsIndexRouteHandler,
+  postApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  postApiDcimCoolingFeedsIndexRouteHandler,
+  postApiDcimCoolingIntakesIndexRouteHandler,
+  postApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  postApiDcimCoolingOutflowsIndexRouteHandler,
+  postApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  postApiDcimCoolingSourcesIndexRouteHandler,
+  postApiDcimDeviceBaysIndexRouteHandler,
+  postApiDcimDeviceBayTemplatesIndexRouteHandler,
+  postApiDcimDeviceRolesIndexRouteHandler,
+  postApiDcimDevicesIdRenderConfigIndexRouteHandler,
+  postApiDcimDevicesIndexRouteHandler,
+  postApiDcimDeviceTypesIndexRouteHandler,
+  postApiDcimFrontPortsIndexRouteHandler,
+  postApiDcimFrontPortTemplatesIndexRouteHandler,
+  postApiDcimInterfacesIndexRouteHandler,
+  postApiDcimInterfaceTemplatesIndexRouteHandler,
+  postApiDcimInventoryItemRolesIndexRouteHandler,
+  postApiDcimInventoryItemsIndexRouteHandler,
+  postApiDcimInventoryItemTemplatesIndexRouteHandler,
+  postApiDcimLocationsIndexRouteHandler,
+  postApiDcimMacAddressesIndexRouteHandler,
+  postApiDcimManufacturersIndexRouteHandler,
+  postApiDcimModuleBaysIndexRouteHandler,
+  postApiDcimModuleBayTemplatesIndexRouteHandler,
+  postApiDcimModuleBayTypesIndexRouteHandler,
+  postApiDcimModulesIndexRouteHandler,
+  postApiDcimModuleTypeProfilesIndexRouteHandler,
+  postApiDcimModuleTypesIndexRouteHandler,
+  postApiDcimPlatformsIndexRouteHandler,
+  postApiDcimPowerFeedsIndexRouteHandler,
+  postApiDcimPowerOutletsIndexRouteHandler,
+  postApiDcimPowerOutletTemplatesIndexRouteHandler,
+  postApiDcimPowerPanelsIndexRouteHandler,
+  postApiDcimPowerPortsIndexRouteHandler,
+  postApiDcimPowerPortTemplatesIndexRouteHandler,
+  postApiDcimRackGroupsIndexRouteHandler,
+  postApiDcimRackReservationsIndexRouteHandler,
+  postApiDcimRackRolesIndexRouteHandler,
+  postApiDcimRacksIndexRouteHandler,
+  postApiDcimRackTypesIndexRouteHandler,
+  postApiDcimRearPortsIndexRouteHandler,
+  postApiDcimRearPortTemplatesIndexRouteHandler,
+  postApiDcimRegionsIndexRouteHandler,
+  postApiDcimSiteGroupsIndexRouteHandler,
+  postApiDcimSitesIndexRouteHandler,
+  postApiDcimVirtualChassisIndexRouteHandler,
+  postApiDcimVirtualDeviceContextsIndexRouteHandler,
+  postApiExtrasBookmarksIndexRouteHandler,
+  postApiExtrasConfigContextProfilesIdSyncIndexRouteHandler,
+  postApiExtrasConfigContextProfilesIndexRouteHandler,
+  postApiExtrasConfigContextsIdSyncIndexRouteHandler,
+  postApiExtrasConfigContextsIndexRouteHandler,
+  postApiExtrasConfigTemplatesIdRenderIndexRouteHandler,
+  postApiExtrasConfigTemplatesIdSyncIndexRouteHandler,
+  postApiExtrasConfigTemplatesIndexRouteHandler,
+  postApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  postApiExtrasCustomFieldsIndexRouteHandler,
+  postApiExtrasCustomLinksIndexRouteHandler,
+  postApiExtrasEventRulesIndexRouteHandler,
+  postApiExtrasExportTemplatesIdSyncIndexRouteHandler,
+  postApiExtrasExportTemplatesIndexRouteHandler,
+  postApiExtrasImageAttachmentsIndexRouteHandler,
+  postApiExtrasJournalEntriesIndexRouteHandler,
+  postApiExtrasNotificationGroupsIndexRouteHandler,
+  postApiExtrasNotificationsIndexRouteHandler,
+  postApiExtrasSavedFiltersIndexRouteHandler,
+  postApiExtrasScriptsIdIndexRouteHandler,
+  postApiExtrasScriptsUploadIndexRouteHandler,
+  postApiExtrasSubscriptionsIndexRouteHandler,
+  postApiExtrasTableConfigsIndexRouteHandler,
+  postApiExtrasTagsIndexRouteHandler,
+  postApiExtrasWebhooksIndexRouteHandler,
+  postApiIpamAggregatesIndexRouteHandler,
+  postApiIpamAsnRangesIdAvailableAsnsIndexRouteHandler,
+  postApiIpamAsnRangesIndexRouteHandler,
+  postApiIpamAsnsIndexRouteHandler,
+  postApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  postApiIpamFhrpGroupsIndexRouteHandler,
+  postApiIpamIpAddressesIndexRouteHandler,
+  postApiIpamIpRangesIdAvailableIpsIndexRouteHandler,
+  postApiIpamIpRangesIndexRouteHandler,
+  postApiIpamPrefixesIdAvailableIpsIndexRouteHandler,
+  postApiIpamPrefixesIdAvailablePrefixesIndexRouteHandler,
+  postApiIpamPrefixesIndexRouteHandler,
+  postApiIpamRirsIndexRouteHandler,
+  postApiIpamRolesIndexRouteHandler,
+  postApiIpamRouteTargetsIndexRouteHandler,
+  postApiIpamServicesIndexRouteHandler,
+  postApiIpamServiceTemplatesIndexRouteHandler,
+  postApiIpamVlanGroupsIdAvailableVlansIndexRouteHandler,
+  postApiIpamVlanGroupsIndexRouteHandler,
+  postApiIpamVlansIndexRouteHandler,
+  postApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  postApiIpamVlanTranslationRulesIndexRouteHandler,
+  postApiIpamVrfsIndexRouteHandler,
+  postApiTenancyContactAssignmentsIndexRouteHandler,
+  postApiTenancyContactGroupsIndexRouteHandler,
+  postApiTenancyContactRolesIndexRouteHandler,
+  postApiTenancyContactsIndexRouteHandler,
+  postApiTenancyTenantGroupsIndexRouteHandler,
+  postApiTenancyTenantsIndexRouteHandler,
+  postApiUsersGroupsIndexRouteHandler,
+  postApiUsersOwnerGroupsIndexRouteHandler,
+  postApiUsersOwnersIndexRouteHandler,
+  postApiUsersPermissionsIndexRouteHandler,
+  postApiUsersTokensIndexRouteHandler,
+  postApiUsersTokensProvisionIndexRouteHandler,
+  postApiUsersUsersIndexRouteHandler,
+  postApiVirtualizationClusterGroupsIndexRouteHandler,
+  postApiVirtualizationClustersIndexRouteHandler,
+  postApiVirtualizationClusterTypesIndexRouteHandler,
+  postApiVirtualizationInterfacesIndexRouteHandler,
+  postApiVirtualizationVirtualDisksIndexRouteHandler,
+  postApiVirtualizationVirtualMachinesIdRenderConfigIndexRouteHandler,
+  postApiVirtualizationVirtualMachinesIndexRouteHandler,
+  postApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  postApiVpnIkePoliciesIndexRouteHandler,
+  postApiVpnIkeProposalsIndexRouteHandler,
+  postApiVpnIpsecPoliciesIndexRouteHandler,
+  postApiVpnIpsecProfilesIndexRouteHandler,
+  postApiVpnIpsecProposalsIndexRouteHandler,
+  postApiVpnL2vpnsIndexRouteHandler,
+  postApiVpnL2vpnTerminationsIndexRouteHandler,
+  postApiVpnTunnelGroupsIndexRouteHandler,
+  postApiVpnTunnelsIndexRouteHandler,
+  postApiVpnTunnelTerminationsIndexRouteHandler,
+  postApiWirelessWirelessLanGroupsIndexRouteHandler,
+  postApiWirelessWirelessLansIndexRouteHandler,
+  postApiWirelessWirelessLinksIndexRouteHandler,
+  putApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  putApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  putApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  putApiCircuitsCircuitGroupsIndexRouteHandler,
+  putApiCircuitsCircuitsIdIndexRouteHandler,
+  putApiCircuitsCircuitsIndexRouteHandler,
+  putApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  putApiCircuitsCircuitTerminationsIndexRouteHandler,
+  putApiCircuitsCircuitTypesIdIndexRouteHandler,
+  putApiCircuitsCircuitTypesIndexRouteHandler,
+  putApiCircuitsProviderAccountsIdIndexRouteHandler,
+  putApiCircuitsProviderAccountsIndexRouteHandler,
+  putApiCircuitsProviderNetworksIdIndexRouteHandler,
+  putApiCircuitsProviderNetworksIndexRouteHandler,
+  putApiCircuitsProvidersIdIndexRouteHandler,
+  putApiCircuitsProvidersIndexRouteHandler,
+  putApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  putApiCircuitsVirtualCircuitsIndexRouteHandler,
+  putApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  putApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  putApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  putApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  putApiCoreDataSourcesIdIndexRouteHandler,
+  putApiCoreDataSourcesIndexRouteHandler,
+  putApiDcimCableBundlesIdIndexRouteHandler,
+  putApiDcimCableBundlesIndexRouteHandler,
+  putApiDcimCablesIdIndexRouteHandler,
+  putApiDcimCablesIndexRouteHandler,
+  putApiDcimConsolePortsIdIndexRouteHandler,
+  putApiDcimConsolePortsIndexRouteHandler,
+  putApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  putApiDcimConsolePortTemplatesIndexRouteHandler,
+  putApiDcimConsoleServerPortsIdIndexRouteHandler,
+  putApiDcimConsoleServerPortsIndexRouteHandler,
+  putApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  putApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  putApiDcimCoolingFeedsIdIndexRouteHandler,
+  putApiDcimCoolingFeedsIndexRouteHandler,
+  putApiDcimCoolingIntakesIdIndexRouteHandler,
+  putApiDcimCoolingIntakesIndexRouteHandler,
+  putApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  putApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  putApiDcimCoolingOutflowsIdIndexRouteHandler,
+  putApiDcimCoolingOutflowsIndexRouteHandler,
+  putApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  putApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  putApiDcimCoolingSourcesIdIndexRouteHandler,
+  putApiDcimCoolingSourcesIndexRouteHandler,
+  putApiDcimDeviceBaysIdIndexRouteHandler,
+  putApiDcimDeviceBaysIndexRouteHandler,
+  putApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  putApiDcimDeviceBayTemplatesIndexRouteHandler,
+  putApiDcimDeviceRolesIdIndexRouteHandler,
+  putApiDcimDeviceRolesIndexRouteHandler,
+  putApiDcimDevicesIdIndexRouteHandler,
+  putApiDcimDevicesIndexRouteHandler,
+  putApiDcimDeviceTypesIdIndexRouteHandler,
+  putApiDcimDeviceTypesIndexRouteHandler,
+  putApiDcimFrontPortsIdIndexRouteHandler,
+  putApiDcimFrontPortsIndexRouteHandler,
+  putApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  putApiDcimFrontPortTemplatesIndexRouteHandler,
+  putApiDcimInterfacesIdIndexRouteHandler,
+  putApiDcimInterfacesIndexRouteHandler,
+  putApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  putApiDcimInterfaceTemplatesIndexRouteHandler,
+  putApiDcimInventoryItemRolesIdIndexRouteHandler,
+  putApiDcimInventoryItemRolesIndexRouteHandler,
+  putApiDcimInventoryItemsIdIndexRouteHandler,
+  putApiDcimInventoryItemsIndexRouteHandler,
+  putApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  putApiDcimInventoryItemTemplatesIndexRouteHandler,
+  putApiDcimLocationsIdIndexRouteHandler,
+  putApiDcimLocationsIndexRouteHandler,
+  putApiDcimMacAddressesIdIndexRouteHandler,
+  putApiDcimMacAddressesIndexRouteHandler,
+  putApiDcimManufacturersIdIndexRouteHandler,
+  putApiDcimManufacturersIndexRouteHandler,
+  putApiDcimModuleBaysIdIndexRouteHandler,
+  putApiDcimModuleBaysIndexRouteHandler,
+  putApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  putApiDcimModuleBayTemplatesIndexRouteHandler,
+  putApiDcimModuleBayTypesIdIndexRouteHandler,
+  putApiDcimModuleBayTypesIndexRouteHandler,
+  putApiDcimModulesIdIndexRouteHandler,
+  putApiDcimModulesIndexRouteHandler,
+  putApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  putApiDcimModuleTypeProfilesIndexRouteHandler,
+  putApiDcimModuleTypesIdIndexRouteHandler,
+  putApiDcimModuleTypesIndexRouteHandler,
+  putApiDcimPlatformsIdIndexRouteHandler,
+  putApiDcimPlatformsIndexRouteHandler,
+  putApiDcimPowerFeedsIdIndexRouteHandler,
+  putApiDcimPowerFeedsIndexRouteHandler,
+  putApiDcimPowerOutletsIdIndexRouteHandler,
+  putApiDcimPowerOutletsIndexRouteHandler,
+  putApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  putApiDcimPowerOutletTemplatesIndexRouteHandler,
+  putApiDcimPowerPanelsIdIndexRouteHandler,
+  putApiDcimPowerPanelsIndexRouteHandler,
+  putApiDcimPowerPortsIdIndexRouteHandler,
+  putApiDcimPowerPortsIndexRouteHandler,
+  putApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  putApiDcimPowerPortTemplatesIndexRouteHandler,
+  putApiDcimRackGroupsIdIndexRouteHandler,
+  putApiDcimRackGroupsIndexRouteHandler,
+  putApiDcimRackReservationsIdIndexRouteHandler,
+  putApiDcimRackReservationsIndexRouteHandler,
+  putApiDcimRackRolesIdIndexRouteHandler,
+  putApiDcimRackRolesIndexRouteHandler,
+  putApiDcimRacksIdIndexRouteHandler,
+  putApiDcimRacksIndexRouteHandler,
+  putApiDcimRackTypesIdIndexRouteHandler,
+  putApiDcimRackTypesIndexRouteHandler,
+  putApiDcimRearPortsIdIndexRouteHandler,
+  putApiDcimRearPortsIndexRouteHandler,
+  putApiDcimRearPortTemplatesIdIndexRouteHandler,
+  putApiDcimRearPortTemplatesIndexRouteHandler,
+  putApiDcimRegionsIdIndexRouteHandler,
+  putApiDcimRegionsIndexRouteHandler,
+  putApiDcimSiteGroupsIdIndexRouteHandler,
+  putApiDcimSiteGroupsIndexRouteHandler,
+  putApiDcimSitesIdIndexRouteHandler,
+  putApiDcimSitesIndexRouteHandler,
+  putApiDcimVirtualChassisIdIndexRouteHandler,
+  putApiDcimVirtualChassisIndexRouteHandler,
+  putApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  putApiDcimVirtualDeviceContextsIndexRouteHandler,
+  putApiExtrasBookmarksIdIndexRouteHandler,
+  putApiExtrasBookmarksIndexRouteHandler,
+  putApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  putApiExtrasConfigContextProfilesIndexRouteHandler,
+  putApiExtrasConfigContextsIdIndexRouteHandler,
+  putApiExtrasConfigContextsIndexRouteHandler,
+  putApiExtrasConfigTemplatesIdIndexRouteHandler,
+  putApiExtrasConfigTemplatesIndexRouteHandler,
+  putApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  putApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  putApiExtrasCustomFieldsIdIndexRouteHandler,
+  putApiExtrasCustomFieldsIndexRouteHandler,
+  putApiExtrasCustomLinksIdIndexRouteHandler,
+  putApiExtrasCustomLinksIndexRouteHandler,
+  putApiExtrasDashboardIndexRouteHandler,
+  putApiExtrasEventRulesIdIndexRouteHandler,
+  putApiExtrasEventRulesIndexRouteHandler,
+  putApiExtrasExportTemplatesIdIndexRouteHandler,
+  putApiExtrasExportTemplatesIndexRouteHandler,
+  putApiExtrasImageAttachmentsIdIndexRouteHandler,
+  putApiExtrasImageAttachmentsIndexRouteHandler,
+  putApiExtrasJournalEntriesIdIndexRouteHandler,
+  putApiExtrasJournalEntriesIndexRouteHandler,
+  putApiExtrasNotificationGroupsIdIndexRouteHandler,
+  putApiExtrasNotificationGroupsIndexRouteHandler,
+  putApiExtrasNotificationsIdIndexRouteHandler,
+  putApiExtrasNotificationsIndexRouteHandler,
+  putApiExtrasSavedFiltersIdIndexRouteHandler,
+  putApiExtrasSavedFiltersIndexRouteHandler,
+  putApiExtrasScriptsUploadIdIndexRouteHandler,
+  putApiExtrasSubscriptionsIdIndexRouteHandler,
+  putApiExtrasSubscriptionsIndexRouteHandler,
+  putApiExtrasTableConfigsIdIndexRouteHandler,
+  putApiExtrasTableConfigsIndexRouteHandler,
+  putApiExtrasTagsIdIndexRouteHandler,
+  putApiExtrasTagsIndexRouteHandler,
+  putApiExtrasWebhooksIdIndexRouteHandler,
+  putApiExtrasWebhooksIndexRouteHandler,
+  putApiIpamAggregatesIdIndexRouteHandler,
+  putApiIpamAggregatesIndexRouteHandler,
+  putApiIpamAsnRangesIdIndexRouteHandler,
+  putApiIpamAsnRangesIndexRouteHandler,
+  putApiIpamAsnsIdIndexRouteHandler,
+  putApiIpamAsnsIndexRouteHandler,
+  putApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  putApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  putApiIpamFhrpGroupsIdIndexRouteHandler,
+  putApiIpamFhrpGroupsIndexRouteHandler,
+  putApiIpamIpAddressesIdIndexRouteHandler,
+  putApiIpamIpAddressesIndexRouteHandler,
+  putApiIpamIpRangesIdIndexRouteHandler,
+  putApiIpamIpRangesIndexRouteHandler,
+  putApiIpamPrefixesIdIndexRouteHandler,
+  putApiIpamPrefixesIndexRouteHandler,
+  putApiIpamRirsIdIndexRouteHandler,
+  putApiIpamRirsIndexRouteHandler,
+  putApiIpamRolesIdIndexRouteHandler,
+  putApiIpamRolesIndexRouteHandler,
+  putApiIpamRouteTargetsIdIndexRouteHandler,
+  putApiIpamRouteTargetsIndexRouteHandler,
+  putApiIpamServicesIdIndexRouteHandler,
+  putApiIpamServicesIndexRouteHandler,
+  putApiIpamServiceTemplatesIdIndexRouteHandler,
+  putApiIpamServiceTemplatesIndexRouteHandler,
+  putApiIpamVlanGroupsIdIndexRouteHandler,
+  putApiIpamVlanGroupsIndexRouteHandler,
+  putApiIpamVlansIdIndexRouteHandler,
+  putApiIpamVlansIndexRouteHandler,
+  putApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  putApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  putApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  putApiIpamVlanTranslationRulesIndexRouteHandler,
+  putApiIpamVrfsIdIndexRouteHandler,
+  putApiIpamVrfsIndexRouteHandler,
+  putApiTenancyContactAssignmentsIdIndexRouteHandler,
+  putApiTenancyContactAssignmentsIndexRouteHandler,
+  putApiTenancyContactGroupsIdIndexRouteHandler,
+  putApiTenancyContactGroupsIndexRouteHandler,
+  putApiTenancyContactRolesIdIndexRouteHandler,
+  putApiTenancyContactRolesIndexRouteHandler,
+  putApiTenancyContactsIdIndexRouteHandler,
+  putApiTenancyContactsIndexRouteHandler,
+  putApiTenancyTenantGroupsIdIndexRouteHandler,
+  putApiTenancyTenantGroupsIndexRouteHandler,
+  putApiTenancyTenantsIdIndexRouteHandler,
+  putApiTenancyTenantsIndexRouteHandler,
+  putApiUsersGroupsIdIndexRouteHandler,
+  putApiUsersGroupsIndexRouteHandler,
+  putApiUsersOwnerGroupsIdIndexRouteHandler,
+  putApiUsersOwnerGroupsIndexRouteHandler,
+  putApiUsersOwnersIdIndexRouteHandler,
+  putApiUsersOwnersIndexRouteHandler,
+  putApiUsersPermissionsIdIndexRouteHandler,
+  putApiUsersPermissionsIndexRouteHandler,
+  putApiUsersTokensIdIndexRouteHandler,
+  putApiUsersTokensIndexRouteHandler,
+  putApiUsersUsersIdIndexRouteHandler,
+  putApiUsersUsersIndexRouteHandler,
+  putApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  putApiVirtualizationClusterGroupsIndexRouteHandler,
+  putApiVirtualizationClustersIdIndexRouteHandler,
+  putApiVirtualizationClustersIndexRouteHandler,
+  putApiVirtualizationClusterTypesIdIndexRouteHandler,
+  putApiVirtualizationClusterTypesIndexRouteHandler,
+  putApiVirtualizationInterfacesIdIndexRouteHandler,
+  putApiVirtualizationInterfacesIndexRouteHandler,
+  putApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  putApiVirtualizationVirtualDisksIndexRouteHandler,
+  putApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  putApiVirtualizationVirtualMachinesIndexRouteHandler,
+  putApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  putApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  putApiVpnIkePoliciesIdIndexRouteHandler,
+  putApiVpnIkePoliciesIndexRouteHandler,
+  putApiVpnIkeProposalsIdIndexRouteHandler,
+  putApiVpnIkeProposalsIndexRouteHandler,
+  putApiVpnIpsecPoliciesIdIndexRouteHandler,
+  putApiVpnIpsecPoliciesIndexRouteHandler,
+  putApiVpnIpsecProfilesIdIndexRouteHandler,
+  putApiVpnIpsecProfilesIndexRouteHandler,
+  putApiVpnIpsecProposalsIdIndexRouteHandler,
+  putApiVpnIpsecProposalsIndexRouteHandler,
+  putApiVpnL2vpnsIdIndexRouteHandler,
+  putApiVpnL2vpnsIndexRouteHandler,
+  putApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  putApiVpnL2vpnTerminationsIndexRouteHandler,
+  putApiVpnTunnelGroupsIdIndexRouteHandler,
+  putApiVpnTunnelGroupsIndexRouteHandler,
+  putApiVpnTunnelsIdIndexRouteHandler,
+  putApiVpnTunnelsIndexRouteHandler,
+  putApiVpnTunnelTerminationsIdIndexRouteHandler,
+  putApiVpnTunnelTerminationsIndexRouteHandler,
+  putApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  putApiWirelessWirelessLanGroupsIndexRouteHandler,
+  putApiWirelessWirelessLansIdIndexRouteHandler,
+  putApiWirelessWirelessLansIndexRouteHandler,
+  putApiWirelessWirelessLinksIdIndexRouteHandler,
+  putApiWirelessWirelessLinksIndexRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler)
+export const api = app
+  .openapi(getApiAuthenticationCheckIndexRoute, getApiAuthenticationCheckIndexRouteHandler)
+  .openapi(
+    getApiCircuitsCircuitGroupAssignmentsIndexRoute,
+    getApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsCircuitGroupAssignmentsIndexRoute,
+    postApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsCircuitGroupAssignmentsIndexRoute,
+    putApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsCircuitGroupAssignmentsIndexRoute,
+    patchApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitGroupAssignmentsIndexRoute,
+    deleteApiCircuitsCircuitGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+    getApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+    putApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+    patchApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitGroupAssignmentsIdIndexRoute,
+    deleteApiCircuitsCircuitGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsCircuitGroupsIndexRoute, getApiCircuitsCircuitGroupsIndexRouteHandler)
+  .openapi(postApiCircuitsCircuitGroupsIndexRoute, postApiCircuitsCircuitGroupsIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitGroupsIndexRoute, putApiCircuitsCircuitGroupsIndexRouteHandler)
+  .openapi(patchApiCircuitsCircuitGroupsIndexRoute, patchApiCircuitsCircuitGroupsIndexRouteHandler)
+  .openapi(
+    deleteApiCircuitsCircuitGroupsIndexRoute,
+    deleteApiCircuitsCircuitGroupsIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsCircuitGroupsIdIndexRoute, getApiCircuitsCircuitGroupsIdIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitGroupsIdIndexRoute, putApiCircuitsCircuitGroupsIdIndexRouteHandler)
+  .openapi(
+    patchApiCircuitsCircuitGroupsIdIndexRoute,
+    patchApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitGroupsIdIndexRoute,
+    deleteApiCircuitsCircuitGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsCircuitTerminationsIndexRoute,
+    getApiCircuitsCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsCircuitTerminationsIndexRoute,
+    postApiCircuitsCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsCircuitTerminationsIndexRoute,
+    putApiCircuitsCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsCircuitTerminationsIndexRoute,
+    patchApiCircuitsCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitTerminationsIndexRoute,
+    deleteApiCircuitsCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsCircuitTerminationsIdIndexRoute,
+    getApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsCircuitTerminationsIdIndexRoute,
+    putApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsCircuitTerminationsIdIndexRoute,
+    patchApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitTerminationsIdIndexRoute,
+    deleteApiCircuitsCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsCircuitTerminationsIdPathsIndexRoute,
+    getApiCircuitsCircuitTerminationsIdPathsIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsCircuitTypesIndexRoute, getApiCircuitsCircuitTypesIndexRouteHandler)
+  .openapi(postApiCircuitsCircuitTypesIndexRoute, postApiCircuitsCircuitTypesIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitTypesIndexRoute, putApiCircuitsCircuitTypesIndexRouteHandler)
+  .openapi(patchApiCircuitsCircuitTypesIndexRoute, patchApiCircuitsCircuitTypesIndexRouteHandler)
+  .openapi(deleteApiCircuitsCircuitTypesIndexRoute, deleteApiCircuitsCircuitTypesIndexRouteHandler)
+  .openapi(getApiCircuitsCircuitTypesIdIndexRoute, getApiCircuitsCircuitTypesIdIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitTypesIdIndexRoute, putApiCircuitsCircuitTypesIdIndexRouteHandler)
+  .openapi(
+    patchApiCircuitsCircuitTypesIdIndexRoute,
+    patchApiCircuitsCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsCircuitTypesIdIndexRoute,
+    deleteApiCircuitsCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsCircuitsIndexRoute, getApiCircuitsCircuitsIndexRouteHandler)
+  .openapi(postApiCircuitsCircuitsIndexRoute, postApiCircuitsCircuitsIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitsIndexRoute, putApiCircuitsCircuitsIndexRouteHandler)
+  .openapi(patchApiCircuitsCircuitsIndexRoute, patchApiCircuitsCircuitsIndexRouteHandler)
+  .openapi(deleteApiCircuitsCircuitsIndexRoute, deleteApiCircuitsCircuitsIndexRouteHandler)
+  .openapi(getApiCircuitsCircuitsIdIndexRoute, getApiCircuitsCircuitsIdIndexRouteHandler)
+  .openapi(putApiCircuitsCircuitsIdIndexRoute, putApiCircuitsCircuitsIdIndexRouteHandler)
+  .openapi(patchApiCircuitsCircuitsIdIndexRoute, patchApiCircuitsCircuitsIdIndexRouteHandler)
+  .openapi(deleteApiCircuitsCircuitsIdIndexRoute, deleteApiCircuitsCircuitsIdIndexRouteHandler)
+  .openapi(
+    getApiCircuitsProviderAccountsIndexRoute,
+    getApiCircuitsProviderAccountsIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsProviderAccountsIndexRoute,
+    postApiCircuitsProviderAccountsIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsProviderAccountsIndexRoute,
+    putApiCircuitsProviderAccountsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsProviderAccountsIndexRoute,
+    patchApiCircuitsProviderAccountsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsProviderAccountsIndexRoute,
+    deleteApiCircuitsProviderAccountsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsProviderAccountsIdIndexRoute,
+    getApiCircuitsProviderAccountsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsProviderAccountsIdIndexRoute,
+    putApiCircuitsProviderAccountsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsProviderAccountsIdIndexRoute,
+    patchApiCircuitsProviderAccountsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsProviderAccountsIdIndexRoute,
+    deleteApiCircuitsProviderAccountsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsProviderNetworksIndexRoute,
+    getApiCircuitsProviderNetworksIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsProviderNetworksIndexRoute,
+    postApiCircuitsProviderNetworksIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsProviderNetworksIndexRoute,
+    putApiCircuitsProviderNetworksIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsProviderNetworksIndexRoute,
+    patchApiCircuitsProviderNetworksIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsProviderNetworksIndexRoute,
+    deleteApiCircuitsProviderNetworksIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsProviderNetworksIdIndexRoute,
+    getApiCircuitsProviderNetworksIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsProviderNetworksIdIndexRoute,
+    putApiCircuitsProviderNetworksIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsProviderNetworksIdIndexRoute,
+    patchApiCircuitsProviderNetworksIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsProviderNetworksIdIndexRoute,
+    deleteApiCircuitsProviderNetworksIdIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsProvidersIndexRoute, getApiCircuitsProvidersIndexRouteHandler)
+  .openapi(postApiCircuitsProvidersIndexRoute, postApiCircuitsProvidersIndexRouteHandler)
+  .openapi(putApiCircuitsProvidersIndexRoute, putApiCircuitsProvidersIndexRouteHandler)
+  .openapi(patchApiCircuitsProvidersIndexRoute, patchApiCircuitsProvidersIndexRouteHandler)
+  .openapi(deleteApiCircuitsProvidersIndexRoute, deleteApiCircuitsProvidersIndexRouteHandler)
+  .openapi(getApiCircuitsProvidersIdIndexRoute, getApiCircuitsProvidersIdIndexRouteHandler)
+  .openapi(putApiCircuitsProvidersIdIndexRoute, putApiCircuitsProvidersIdIndexRouteHandler)
+  .openapi(patchApiCircuitsProvidersIdIndexRoute, patchApiCircuitsProvidersIdIndexRouteHandler)
+  .openapi(deleteApiCircuitsProvidersIdIndexRoute, deleteApiCircuitsProvidersIdIndexRouteHandler)
+  .openapi(
+    getApiCircuitsVirtualCircuitTerminationsIndexRoute,
+    getApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsVirtualCircuitTerminationsIndexRoute,
+    postApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsVirtualCircuitTerminationsIndexRoute,
+    putApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsVirtualCircuitTerminationsIndexRoute,
+    patchApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitTerminationsIndexRoute,
+    deleteApiCircuitsVirtualCircuitTerminationsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+    getApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+    putApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+    patchApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitTerminationsIdIndexRoute,
+    deleteApiCircuitsVirtualCircuitTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRoute,
+    getApiCircuitsVirtualCircuitTerminationsIdPathsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsVirtualCircuitTypesIndexRoute,
+    getApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  )
+  .openapi(
+    postApiCircuitsVirtualCircuitTypesIndexRoute,
+    postApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsVirtualCircuitTypesIndexRoute,
+    putApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsVirtualCircuitTypesIndexRoute,
+    patchApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitTypesIndexRoute,
+    deleteApiCircuitsVirtualCircuitTypesIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsVirtualCircuitTypesIdIndexRoute,
+    getApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsVirtualCircuitTypesIdIndexRoute,
+    putApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsVirtualCircuitTypesIdIndexRoute,
+    patchApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitTypesIdIndexRoute,
+    deleteApiCircuitsVirtualCircuitTypesIdIndexRouteHandler,
+  )
+  .openapi(getApiCircuitsVirtualCircuitsIndexRoute, getApiCircuitsVirtualCircuitsIndexRouteHandler)
+  .openapi(
+    postApiCircuitsVirtualCircuitsIndexRoute,
+    postApiCircuitsVirtualCircuitsIndexRouteHandler,
+  )
+  .openapi(putApiCircuitsVirtualCircuitsIndexRoute, putApiCircuitsVirtualCircuitsIndexRouteHandler)
+  .openapi(
+    patchApiCircuitsVirtualCircuitsIndexRoute,
+    patchApiCircuitsVirtualCircuitsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitsIndexRoute,
+    deleteApiCircuitsVirtualCircuitsIndexRouteHandler,
+  )
+  .openapi(
+    getApiCircuitsVirtualCircuitsIdIndexRoute,
+    getApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiCircuitsVirtualCircuitsIdIndexRoute,
+    putApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiCircuitsVirtualCircuitsIdIndexRoute,
+    patchApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiCircuitsVirtualCircuitsIdIndexRoute,
+    deleteApiCircuitsVirtualCircuitsIdIndexRouteHandler,
+  )
+  .openapi(getApiCoreBackgroundQueuesIndexRoute, getApiCoreBackgroundQueuesIndexRouteHandler)
+  .openapi(
+    getApiCoreBackgroundQueuesNameIndexRoute,
+    getApiCoreBackgroundQueuesNameIndexRouteHandler,
+  )
+  .openapi(getApiCoreBackgroundTasksIndexRoute, getApiCoreBackgroundTasksIndexRouteHandler)
+  .openapi(getApiCoreBackgroundTasksIdIndexRoute, getApiCoreBackgroundTasksIdIndexRouteHandler)
+  .openapi(
+    postApiCoreBackgroundTasksIdDeleteIndexRoute,
+    postApiCoreBackgroundTasksIdDeleteIndexRouteHandler,
+  )
+  .openapi(
+    postApiCoreBackgroundTasksIdEnqueueIndexRoute,
+    postApiCoreBackgroundTasksIdEnqueueIndexRouteHandler,
+  )
+  .openapi(
+    postApiCoreBackgroundTasksIdRequeueIndexRoute,
+    postApiCoreBackgroundTasksIdRequeueIndexRouteHandler,
+  )
+  .openapi(
+    postApiCoreBackgroundTasksIdStopIndexRoute,
+    postApiCoreBackgroundTasksIdStopIndexRouteHandler,
+  )
+  .openapi(getApiCoreBackgroundWorkersIndexRoute, getApiCoreBackgroundWorkersIndexRouteHandler)
+  .openapi(
+    getApiCoreBackgroundWorkersNameIndexRoute,
+    getApiCoreBackgroundWorkersNameIndexRouteHandler,
+  )
+  .openapi(getApiCoreDataFilesIndexRoute, getApiCoreDataFilesIndexRouteHandler)
+  .openapi(getApiCoreDataFilesIdIndexRoute, getApiCoreDataFilesIdIndexRouteHandler)
+  .openapi(getApiCoreDataSourcesIndexRoute, getApiCoreDataSourcesIndexRouteHandler)
+  .openapi(postApiCoreDataSourcesIndexRoute, postApiCoreDataSourcesIndexRouteHandler)
+  .openapi(putApiCoreDataSourcesIndexRoute, putApiCoreDataSourcesIndexRouteHandler)
+  .openapi(patchApiCoreDataSourcesIndexRoute, patchApiCoreDataSourcesIndexRouteHandler)
+  .openapi(deleteApiCoreDataSourcesIndexRoute, deleteApiCoreDataSourcesIndexRouteHandler)
+  .openapi(getApiCoreDataSourcesIdIndexRoute, getApiCoreDataSourcesIdIndexRouteHandler)
+  .openapi(putApiCoreDataSourcesIdIndexRoute, putApiCoreDataSourcesIdIndexRouteHandler)
+  .openapi(patchApiCoreDataSourcesIdIndexRoute, patchApiCoreDataSourcesIdIndexRouteHandler)
+  .openapi(deleteApiCoreDataSourcesIdIndexRoute, deleteApiCoreDataSourcesIdIndexRouteHandler)
+  .openapi(postApiCoreDataSourcesIdSyncIndexRoute, postApiCoreDataSourcesIdSyncIndexRouteHandler)
+  .openapi(getApiCoreJobsIndexRoute, getApiCoreJobsIndexRouteHandler)
+  .openapi(getApiCoreJobsIdIndexRoute, getApiCoreJobsIdIndexRouteHandler)
+  .openapi(getApiCoreObjectChangesIndexRoute, getApiCoreObjectChangesIndexRouteHandler)
+  .openapi(getApiCoreObjectChangesIdIndexRoute, getApiCoreObjectChangesIdIndexRouteHandler)
+  .openapi(getApiCoreObjectTypesIndexRoute, getApiCoreObjectTypesIndexRouteHandler)
+  .openapi(getApiCoreObjectTypesIdIndexRoute, getApiCoreObjectTypesIdIndexRouteHandler)
+  .openapi(getApiDcimCableBundlesIndexRoute, getApiDcimCableBundlesIndexRouteHandler)
+  .openapi(postApiDcimCableBundlesIndexRoute, postApiDcimCableBundlesIndexRouteHandler)
+  .openapi(putApiDcimCableBundlesIndexRoute, putApiDcimCableBundlesIndexRouteHandler)
+  .openapi(patchApiDcimCableBundlesIndexRoute, patchApiDcimCableBundlesIndexRouteHandler)
+  .openapi(deleteApiDcimCableBundlesIndexRoute, deleteApiDcimCableBundlesIndexRouteHandler)
+  .openapi(getApiDcimCableBundlesIdIndexRoute, getApiDcimCableBundlesIdIndexRouteHandler)
+  .openapi(putApiDcimCableBundlesIdIndexRoute, putApiDcimCableBundlesIdIndexRouteHandler)
+  .openapi(patchApiDcimCableBundlesIdIndexRoute, patchApiDcimCableBundlesIdIndexRouteHandler)
+  .openapi(deleteApiDcimCableBundlesIdIndexRoute, deleteApiDcimCableBundlesIdIndexRouteHandler)
+  .openapi(getApiDcimCableTerminationsIndexRoute, getApiDcimCableTerminationsIndexRouteHandler)
+  .openapi(getApiDcimCableTerminationsIdIndexRoute, getApiDcimCableTerminationsIdIndexRouteHandler)
+  .openapi(getApiDcimCablesIndexRoute, getApiDcimCablesIndexRouteHandler)
+  .openapi(postApiDcimCablesIndexRoute, postApiDcimCablesIndexRouteHandler)
+  .openapi(putApiDcimCablesIndexRoute, putApiDcimCablesIndexRouteHandler)
+  .openapi(patchApiDcimCablesIndexRoute, patchApiDcimCablesIndexRouteHandler)
+  .openapi(deleteApiDcimCablesIndexRoute, deleteApiDcimCablesIndexRouteHandler)
+  .openapi(getApiDcimCablesIdIndexRoute, getApiDcimCablesIdIndexRouteHandler)
+  .openapi(putApiDcimCablesIdIndexRoute, putApiDcimCablesIdIndexRouteHandler)
+  .openapi(patchApiDcimCablesIdIndexRoute, patchApiDcimCablesIdIndexRouteHandler)
+  .openapi(deleteApiDcimCablesIdIndexRoute, deleteApiDcimCablesIdIndexRouteHandler)
+  .openapi(getApiDcimConnectedDeviceIndexRoute, getApiDcimConnectedDeviceIndexRouteHandler)
+  .openapi(
+    getApiDcimConsolePortTemplatesIndexRoute,
+    getApiDcimConsolePortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimConsolePortTemplatesIndexRoute,
+    postApiDcimConsolePortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimConsolePortTemplatesIndexRoute,
+    putApiDcimConsolePortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimConsolePortTemplatesIndexRoute,
+    patchApiDcimConsolePortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsolePortTemplatesIndexRoute,
+    deleteApiDcimConsolePortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimConsolePortTemplatesIdIndexRoute,
+    getApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimConsolePortTemplatesIdIndexRoute,
+    putApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimConsolePortTemplatesIdIndexRoute,
+    patchApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsolePortTemplatesIdIndexRoute,
+    deleteApiDcimConsolePortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimConsolePortsIndexRoute, getApiDcimConsolePortsIndexRouteHandler)
+  .openapi(postApiDcimConsolePortsIndexRoute, postApiDcimConsolePortsIndexRouteHandler)
+  .openapi(putApiDcimConsolePortsIndexRoute, putApiDcimConsolePortsIndexRouteHandler)
+  .openapi(patchApiDcimConsolePortsIndexRoute, patchApiDcimConsolePortsIndexRouteHandler)
+  .openapi(deleteApiDcimConsolePortsIndexRoute, deleteApiDcimConsolePortsIndexRouteHandler)
+  .openapi(getApiDcimConsolePortsIdIndexRoute, getApiDcimConsolePortsIdIndexRouteHandler)
+  .openapi(putApiDcimConsolePortsIdIndexRoute, putApiDcimConsolePortsIdIndexRouteHandler)
+  .openapi(patchApiDcimConsolePortsIdIndexRoute, patchApiDcimConsolePortsIdIndexRouteHandler)
+  .openapi(deleteApiDcimConsolePortsIdIndexRoute, deleteApiDcimConsolePortsIdIndexRouteHandler)
+  .openapi(getApiDcimConsolePortsIdTraceIndexRoute, getApiDcimConsolePortsIdTraceIndexRouteHandler)
+  .openapi(
+    getApiDcimConsoleServerPortTemplatesIndexRoute,
+    getApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimConsoleServerPortTemplatesIndexRoute,
+    postApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimConsoleServerPortTemplatesIndexRoute,
+    putApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimConsoleServerPortTemplatesIndexRoute,
+    patchApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsoleServerPortTemplatesIndexRoute,
+    deleteApiDcimConsoleServerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimConsoleServerPortTemplatesIdIndexRoute,
+    getApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimConsoleServerPortTemplatesIdIndexRoute,
+    putApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimConsoleServerPortTemplatesIdIndexRoute,
+    patchApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsoleServerPortTemplatesIdIndexRoute,
+    deleteApiDcimConsoleServerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimConsoleServerPortsIndexRoute, getApiDcimConsoleServerPortsIndexRouteHandler)
+  .openapi(postApiDcimConsoleServerPortsIndexRoute, postApiDcimConsoleServerPortsIndexRouteHandler)
+  .openapi(putApiDcimConsoleServerPortsIndexRoute, putApiDcimConsoleServerPortsIndexRouteHandler)
+  .openapi(
+    patchApiDcimConsoleServerPortsIndexRoute,
+    patchApiDcimConsoleServerPortsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsoleServerPortsIndexRoute,
+    deleteApiDcimConsoleServerPortsIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimConsoleServerPortsIdIndexRoute,
+    getApiDcimConsoleServerPortsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimConsoleServerPortsIdIndexRoute,
+    putApiDcimConsoleServerPortsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimConsoleServerPortsIdIndexRoute,
+    patchApiDcimConsoleServerPortsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimConsoleServerPortsIdIndexRoute,
+    deleteApiDcimConsoleServerPortsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimConsoleServerPortsIdTraceIndexRoute,
+    getApiDcimConsoleServerPortsIdTraceIndexRouteHandler,
+  )
+  .openapi(getApiDcimCoolingFeedsIndexRoute, getApiDcimCoolingFeedsIndexRouteHandler)
+  .openapi(postApiDcimCoolingFeedsIndexRoute, postApiDcimCoolingFeedsIndexRouteHandler)
+  .openapi(putApiDcimCoolingFeedsIndexRoute, putApiDcimCoolingFeedsIndexRouteHandler)
+  .openapi(patchApiDcimCoolingFeedsIndexRoute, patchApiDcimCoolingFeedsIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingFeedsIndexRoute, deleteApiDcimCoolingFeedsIndexRouteHandler)
+  .openapi(getApiDcimCoolingFeedsIdIndexRoute, getApiDcimCoolingFeedsIdIndexRouteHandler)
+  .openapi(putApiDcimCoolingFeedsIdIndexRoute, putApiDcimCoolingFeedsIdIndexRouteHandler)
+  .openapi(patchApiDcimCoolingFeedsIdIndexRoute, patchApiDcimCoolingFeedsIdIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingFeedsIdIndexRoute, deleteApiDcimCoolingFeedsIdIndexRouteHandler)
+  .openapi(
+    getApiDcimCoolingIntakeTemplatesIndexRoute,
+    getApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimCoolingIntakeTemplatesIndexRoute,
+    postApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimCoolingIntakeTemplatesIndexRoute,
+    putApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimCoolingIntakeTemplatesIndexRoute,
+    patchApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimCoolingIntakeTemplatesIndexRoute,
+    deleteApiDcimCoolingIntakeTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimCoolingIntakeTemplatesIdIndexRoute,
+    getApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimCoolingIntakeTemplatesIdIndexRoute,
+    putApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimCoolingIntakeTemplatesIdIndexRoute,
+    patchApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimCoolingIntakeTemplatesIdIndexRoute,
+    deleteApiDcimCoolingIntakeTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimCoolingIntakesIndexRoute, getApiDcimCoolingIntakesIndexRouteHandler)
+  .openapi(postApiDcimCoolingIntakesIndexRoute, postApiDcimCoolingIntakesIndexRouteHandler)
+  .openapi(putApiDcimCoolingIntakesIndexRoute, putApiDcimCoolingIntakesIndexRouteHandler)
+  .openapi(patchApiDcimCoolingIntakesIndexRoute, patchApiDcimCoolingIntakesIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingIntakesIndexRoute, deleteApiDcimCoolingIntakesIndexRouteHandler)
+  .openapi(getApiDcimCoolingIntakesIdIndexRoute, getApiDcimCoolingIntakesIdIndexRouteHandler)
+  .openapi(putApiDcimCoolingIntakesIdIndexRoute, putApiDcimCoolingIntakesIdIndexRouteHandler)
+  .openapi(patchApiDcimCoolingIntakesIdIndexRoute, patchApiDcimCoolingIntakesIdIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingIntakesIdIndexRoute, deleteApiDcimCoolingIntakesIdIndexRouteHandler)
+  .openapi(
+    getApiDcimCoolingOutflowTemplatesIndexRoute,
+    getApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimCoolingOutflowTemplatesIndexRoute,
+    postApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimCoolingOutflowTemplatesIndexRoute,
+    putApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimCoolingOutflowTemplatesIndexRoute,
+    patchApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimCoolingOutflowTemplatesIndexRoute,
+    deleteApiDcimCoolingOutflowTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimCoolingOutflowTemplatesIdIndexRoute,
+    getApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimCoolingOutflowTemplatesIdIndexRoute,
+    putApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimCoolingOutflowTemplatesIdIndexRoute,
+    patchApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimCoolingOutflowTemplatesIdIndexRoute,
+    deleteApiDcimCoolingOutflowTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimCoolingOutflowsIndexRoute, getApiDcimCoolingOutflowsIndexRouteHandler)
+  .openapi(postApiDcimCoolingOutflowsIndexRoute, postApiDcimCoolingOutflowsIndexRouteHandler)
+  .openapi(putApiDcimCoolingOutflowsIndexRoute, putApiDcimCoolingOutflowsIndexRouteHandler)
+  .openapi(patchApiDcimCoolingOutflowsIndexRoute, patchApiDcimCoolingOutflowsIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingOutflowsIndexRoute, deleteApiDcimCoolingOutflowsIndexRouteHandler)
+  .openapi(getApiDcimCoolingOutflowsIdIndexRoute, getApiDcimCoolingOutflowsIdIndexRouteHandler)
+  .openapi(putApiDcimCoolingOutflowsIdIndexRoute, putApiDcimCoolingOutflowsIdIndexRouteHandler)
+  .openapi(patchApiDcimCoolingOutflowsIdIndexRoute, patchApiDcimCoolingOutflowsIdIndexRouteHandler)
+  .openapi(
+    deleteApiDcimCoolingOutflowsIdIndexRoute,
+    deleteApiDcimCoolingOutflowsIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimCoolingSourcesIndexRoute, getApiDcimCoolingSourcesIndexRouteHandler)
+  .openapi(postApiDcimCoolingSourcesIndexRoute, postApiDcimCoolingSourcesIndexRouteHandler)
+  .openapi(putApiDcimCoolingSourcesIndexRoute, putApiDcimCoolingSourcesIndexRouteHandler)
+  .openapi(patchApiDcimCoolingSourcesIndexRoute, patchApiDcimCoolingSourcesIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingSourcesIndexRoute, deleteApiDcimCoolingSourcesIndexRouteHandler)
+  .openapi(getApiDcimCoolingSourcesIdIndexRoute, getApiDcimCoolingSourcesIdIndexRouteHandler)
+  .openapi(putApiDcimCoolingSourcesIdIndexRoute, putApiDcimCoolingSourcesIdIndexRouteHandler)
+  .openapi(patchApiDcimCoolingSourcesIdIndexRoute, patchApiDcimCoolingSourcesIdIndexRouteHandler)
+  .openapi(deleteApiDcimCoolingSourcesIdIndexRoute, deleteApiDcimCoolingSourcesIdIndexRouteHandler)
+  .openapi(getApiDcimDeviceBayTemplatesIndexRoute, getApiDcimDeviceBayTemplatesIndexRouteHandler)
+  .openapi(postApiDcimDeviceBayTemplatesIndexRoute, postApiDcimDeviceBayTemplatesIndexRouteHandler)
+  .openapi(putApiDcimDeviceBayTemplatesIndexRoute, putApiDcimDeviceBayTemplatesIndexRouteHandler)
+  .openapi(
+    patchApiDcimDeviceBayTemplatesIndexRoute,
+    patchApiDcimDeviceBayTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimDeviceBayTemplatesIndexRoute,
+    deleteApiDcimDeviceBayTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimDeviceBayTemplatesIdIndexRoute,
+    getApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimDeviceBayTemplatesIdIndexRoute,
+    putApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimDeviceBayTemplatesIdIndexRoute,
+    patchApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimDeviceBayTemplatesIdIndexRoute,
+    deleteApiDcimDeviceBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimDeviceBaysIndexRoute, getApiDcimDeviceBaysIndexRouteHandler)
+  .openapi(postApiDcimDeviceBaysIndexRoute, postApiDcimDeviceBaysIndexRouteHandler)
+  .openapi(putApiDcimDeviceBaysIndexRoute, putApiDcimDeviceBaysIndexRouteHandler)
+  .openapi(patchApiDcimDeviceBaysIndexRoute, patchApiDcimDeviceBaysIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceBaysIndexRoute, deleteApiDcimDeviceBaysIndexRouteHandler)
+  .openapi(getApiDcimDeviceBaysIdIndexRoute, getApiDcimDeviceBaysIdIndexRouteHandler)
+  .openapi(putApiDcimDeviceBaysIdIndexRoute, putApiDcimDeviceBaysIdIndexRouteHandler)
+  .openapi(patchApiDcimDeviceBaysIdIndexRoute, patchApiDcimDeviceBaysIdIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceBaysIdIndexRoute, deleteApiDcimDeviceBaysIdIndexRouteHandler)
+  .openapi(getApiDcimDeviceRolesIndexRoute, getApiDcimDeviceRolesIndexRouteHandler)
+  .openapi(postApiDcimDeviceRolesIndexRoute, postApiDcimDeviceRolesIndexRouteHandler)
+  .openapi(putApiDcimDeviceRolesIndexRoute, putApiDcimDeviceRolesIndexRouteHandler)
+  .openapi(patchApiDcimDeviceRolesIndexRoute, patchApiDcimDeviceRolesIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceRolesIndexRoute, deleteApiDcimDeviceRolesIndexRouteHandler)
+  .openapi(getApiDcimDeviceRolesIdIndexRoute, getApiDcimDeviceRolesIdIndexRouteHandler)
+  .openapi(putApiDcimDeviceRolesIdIndexRoute, putApiDcimDeviceRolesIdIndexRouteHandler)
+  .openapi(patchApiDcimDeviceRolesIdIndexRoute, patchApiDcimDeviceRolesIdIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceRolesIdIndexRoute, deleteApiDcimDeviceRolesIdIndexRouteHandler)
+  .openapi(getApiDcimDeviceTypesIndexRoute, getApiDcimDeviceTypesIndexRouteHandler)
+  .openapi(postApiDcimDeviceTypesIndexRoute, postApiDcimDeviceTypesIndexRouteHandler)
+  .openapi(putApiDcimDeviceTypesIndexRoute, putApiDcimDeviceTypesIndexRouteHandler)
+  .openapi(patchApiDcimDeviceTypesIndexRoute, patchApiDcimDeviceTypesIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceTypesIndexRoute, deleteApiDcimDeviceTypesIndexRouteHandler)
+  .openapi(getApiDcimDeviceTypesIdIndexRoute, getApiDcimDeviceTypesIdIndexRouteHandler)
+  .openapi(putApiDcimDeviceTypesIdIndexRoute, putApiDcimDeviceTypesIdIndexRouteHandler)
+  .openapi(patchApiDcimDeviceTypesIdIndexRoute, patchApiDcimDeviceTypesIdIndexRouteHandler)
+  .openapi(deleteApiDcimDeviceTypesIdIndexRoute, deleteApiDcimDeviceTypesIdIndexRouteHandler)
+  .openapi(getApiDcimDevicesIndexRoute, getApiDcimDevicesIndexRouteHandler)
+  .openapi(postApiDcimDevicesIndexRoute, postApiDcimDevicesIndexRouteHandler)
+  .openapi(putApiDcimDevicesIndexRoute, putApiDcimDevicesIndexRouteHandler)
+  .openapi(patchApiDcimDevicesIndexRoute, patchApiDcimDevicesIndexRouteHandler)
+  .openapi(deleteApiDcimDevicesIndexRoute, deleteApiDcimDevicesIndexRouteHandler)
+  .openapi(getApiDcimDevicesIdIndexRoute, getApiDcimDevicesIdIndexRouteHandler)
+  .openapi(putApiDcimDevicesIdIndexRoute, putApiDcimDevicesIdIndexRouteHandler)
+  .openapi(patchApiDcimDevicesIdIndexRoute, patchApiDcimDevicesIdIndexRouteHandler)
+  .openapi(deleteApiDcimDevicesIdIndexRoute, deleteApiDcimDevicesIdIndexRouteHandler)
+  .openapi(
+    postApiDcimDevicesIdRenderConfigIndexRoute,
+    postApiDcimDevicesIdRenderConfigIndexRouteHandler,
+  )
+  .openapi(getApiDcimFrontPortTemplatesIndexRoute, getApiDcimFrontPortTemplatesIndexRouteHandler)
+  .openapi(postApiDcimFrontPortTemplatesIndexRoute, postApiDcimFrontPortTemplatesIndexRouteHandler)
+  .openapi(putApiDcimFrontPortTemplatesIndexRoute, putApiDcimFrontPortTemplatesIndexRouteHandler)
+  .openapi(
+    patchApiDcimFrontPortTemplatesIndexRoute,
+    patchApiDcimFrontPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimFrontPortTemplatesIndexRoute,
+    deleteApiDcimFrontPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimFrontPortTemplatesIdIndexRoute,
+    getApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimFrontPortTemplatesIdIndexRoute,
+    putApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimFrontPortTemplatesIdIndexRoute,
+    patchApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimFrontPortTemplatesIdIndexRoute,
+    deleteApiDcimFrontPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimFrontPortsIndexRoute, getApiDcimFrontPortsIndexRouteHandler)
+  .openapi(postApiDcimFrontPortsIndexRoute, postApiDcimFrontPortsIndexRouteHandler)
+  .openapi(putApiDcimFrontPortsIndexRoute, putApiDcimFrontPortsIndexRouteHandler)
+  .openapi(patchApiDcimFrontPortsIndexRoute, patchApiDcimFrontPortsIndexRouteHandler)
+  .openapi(deleteApiDcimFrontPortsIndexRoute, deleteApiDcimFrontPortsIndexRouteHandler)
+  .openapi(getApiDcimFrontPortsIdIndexRoute, getApiDcimFrontPortsIdIndexRouteHandler)
+  .openapi(putApiDcimFrontPortsIdIndexRoute, putApiDcimFrontPortsIdIndexRouteHandler)
+  .openapi(patchApiDcimFrontPortsIdIndexRoute, patchApiDcimFrontPortsIdIndexRouteHandler)
+  .openapi(deleteApiDcimFrontPortsIdIndexRoute, deleteApiDcimFrontPortsIdIndexRouteHandler)
+  .openapi(getApiDcimFrontPortsIdPathsIndexRoute, getApiDcimFrontPortsIdPathsIndexRouteHandler)
+  .openapi(getApiDcimInterfaceTemplatesIndexRoute, getApiDcimInterfaceTemplatesIndexRouteHandler)
+  .openapi(postApiDcimInterfaceTemplatesIndexRoute, postApiDcimInterfaceTemplatesIndexRouteHandler)
+  .openapi(putApiDcimInterfaceTemplatesIndexRoute, putApiDcimInterfaceTemplatesIndexRouteHandler)
+  .openapi(
+    patchApiDcimInterfaceTemplatesIndexRoute,
+    patchApiDcimInterfaceTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInterfaceTemplatesIndexRoute,
+    deleteApiDcimInterfaceTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimInterfaceTemplatesIdIndexRoute,
+    getApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimInterfaceTemplatesIdIndexRoute,
+    putApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimInterfaceTemplatesIdIndexRoute,
+    patchApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInterfaceTemplatesIdIndexRoute,
+    deleteApiDcimInterfaceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimInterfacesIndexRoute, getApiDcimInterfacesIndexRouteHandler)
+  .openapi(postApiDcimInterfacesIndexRoute, postApiDcimInterfacesIndexRouteHandler)
+  .openapi(putApiDcimInterfacesIndexRoute, putApiDcimInterfacesIndexRouteHandler)
+  .openapi(patchApiDcimInterfacesIndexRoute, patchApiDcimInterfacesIndexRouteHandler)
+  .openapi(deleteApiDcimInterfacesIndexRoute, deleteApiDcimInterfacesIndexRouteHandler)
+  .openapi(getApiDcimInterfacesIdIndexRoute, getApiDcimInterfacesIdIndexRouteHandler)
+  .openapi(putApiDcimInterfacesIdIndexRoute, putApiDcimInterfacesIdIndexRouteHandler)
+  .openapi(patchApiDcimInterfacesIdIndexRoute, patchApiDcimInterfacesIdIndexRouteHandler)
+  .openapi(deleteApiDcimInterfacesIdIndexRoute, deleteApiDcimInterfacesIdIndexRouteHandler)
+  .openapi(getApiDcimInterfacesIdTraceIndexRoute, getApiDcimInterfacesIdTraceIndexRouteHandler)
+  .openapi(getApiDcimInventoryItemRolesIndexRoute, getApiDcimInventoryItemRolesIndexRouteHandler)
+  .openapi(postApiDcimInventoryItemRolesIndexRoute, postApiDcimInventoryItemRolesIndexRouteHandler)
+  .openapi(putApiDcimInventoryItemRolesIndexRoute, putApiDcimInventoryItemRolesIndexRouteHandler)
+  .openapi(
+    patchApiDcimInventoryItemRolesIndexRoute,
+    patchApiDcimInventoryItemRolesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInventoryItemRolesIndexRoute,
+    deleteApiDcimInventoryItemRolesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimInventoryItemRolesIdIndexRoute,
+    getApiDcimInventoryItemRolesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimInventoryItemRolesIdIndexRoute,
+    putApiDcimInventoryItemRolesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimInventoryItemRolesIdIndexRoute,
+    patchApiDcimInventoryItemRolesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInventoryItemRolesIdIndexRoute,
+    deleteApiDcimInventoryItemRolesIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimInventoryItemTemplatesIndexRoute,
+    getApiDcimInventoryItemTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimInventoryItemTemplatesIndexRoute,
+    postApiDcimInventoryItemTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimInventoryItemTemplatesIndexRoute,
+    putApiDcimInventoryItemTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimInventoryItemTemplatesIndexRoute,
+    patchApiDcimInventoryItemTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInventoryItemTemplatesIndexRoute,
+    deleteApiDcimInventoryItemTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimInventoryItemTemplatesIdIndexRoute,
+    getApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimInventoryItemTemplatesIdIndexRoute,
+    putApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimInventoryItemTemplatesIdIndexRoute,
+    patchApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimInventoryItemTemplatesIdIndexRoute,
+    deleteApiDcimInventoryItemTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimInventoryItemsIndexRoute, getApiDcimInventoryItemsIndexRouteHandler)
+  .openapi(postApiDcimInventoryItemsIndexRoute, postApiDcimInventoryItemsIndexRouteHandler)
+  .openapi(putApiDcimInventoryItemsIndexRoute, putApiDcimInventoryItemsIndexRouteHandler)
+  .openapi(patchApiDcimInventoryItemsIndexRoute, patchApiDcimInventoryItemsIndexRouteHandler)
+  .openapi(deleteApiDcimInventoryItemsIndexRoute, deleteApiDcimInventoryItemsIndexRouteHandler)
+  .openapi(getApiDcimInventoryItemsIdIndexRoute, getApiDcimInventoryItemsIdIndexRouteHandler)
+  .openapi(putApiDcimInventoryItemsIdIndexRoute, putApiDcimInventoryItemsIdIndexRouteHandler)
+  .openapi(patchApiDcimInventoryItemsIdIndexRoute, patchApiDcimInventoryItemsIdIndexRouteHandler)
+  .openapi(deleteApiDcimInventoryItemsIdIndexRoute, deleteApiDcimInventoryItemsIdIndexRouteHandler)
+  .openapi(getApiDcimLocationsIndexRoute, getApiDcimLocationsIndexRouteHandler)
+  .openapi(postApiDcimLocationsIndexRoute, postApiDcimLocationsIndexRouteHandler)
+  .openapi(putApiDcimLocationsIndexRoute, putApiDcimLocationsIndexRouteHandler)
+  .openapi(patchApiDcimLocationsIndexRoute, patchApiDcimLocationsIndexRouteHandler)
+  .openapi(deleteApiDcimLocationsIndexRoute, deleteApiDcimLocationsIndexRouteHandler)
+  .openapi(getApiDcimLocationsIdIndexRoute, getApiDcimLocationsIdIndexRouteHandler)
+  .openapi(putApiDcimLocationsIdIndexRoute, putApiDcimLocationsIdIndexRouteHandler)
+  .openapi(patchApiDcimLocationsIdIndexRoute, patchApiDcimLocationsIdIndexRouteHandler)
+  .openapi(deleteApiDcimLocationsIdIndexRoute, deleteApiDcimLocationsIdIndexRouteHandler)
+  .openapi(getApiDcimMacAddressesIndexRoute, getApiDcimMacAddressesIndexRouteHandler)
+  .openapi(postApiDcimMacAddressesIndexRoute, postApiDcimMacAddressesIndexRouteHandler)
+  .openapi(putApiDcimMacAddressesIndexRoute, putApiDcimMacAddressesIndexRouteHandler)
+  .openapi(patchApiDcimMacAddressesIndexRoute, patchApiDcimMacAddressesIndexRouteHandler)
+  .openapi(deleteApiDcimMacAddressesIndexRoute, deleteApiDcimMacAddressesIndexRouteHandler)
+  .openapi(getApiDcimMacAddressesIdIndexRoute, getApiDcimMacAddressesIdIndexRouteHandler)
+  .openapi(putApiDcimMacAddressesIdIndexRoute, putApiDcimMacAddressesIdIndexRouteHandler)
+  .openapi(patchApiDcimMacAddressesIdIndexRoute, patchApiDcimMacAddressesIdIndexRouteHandler)
+  .openapi(deleteApiDcimMacAddressesIdIndexRoute, deleteApiDcimMacAddressesIdIndexRouteHandler)
+  .openapi(getApiDcimManufacturersIndexRoute, getApiDcimManufacturersIndexRouteHandler)
+  .openapi(postApiDcimManufacturersIndexRoute, postApiDcimManufacturersIndexRouteHandler)
+  .openapi(putApiDcimManufacturersIndexRoute, putApiDcimManufacturersIndexRouteHandler)
+  .openapi(patchApiDcimManufacturersIndexRoute, patchApiDcimManufacturersIndexRouteHandler)
+  .openapi(deleteApiDcimManufacturersIndexRoute, deleteApiDcimManufacturersIndexRouteHandler)
+  .openapi(getApiDcimManufacturersIdIndexRoute, getApiDcimManufacturersIdIndexRouteHandler)
+  .openapi(putApiDcimManufacturersIdIndexRoute, putApiDcimManufacturersIdIndexRouteHandler)
+  .openapi(patchApiDcimManufacturersIdIndexRoute, patchApiDcimManufacturersIdIndexRouteHandler)
+  .openapi(deleteApiDcimManufacturersIdIndexRoute, deleteApiDcimManufacturersIdIndexRouteHandler)
+  .openapi(getApiDcimModuleBayTemplatesIndexRoute, getApiDcimModuleBayTemplatesIndexRouteHandler)
+  .openapi(postApiDcimModuleBayTemplatesIndexRoute, postApiDcimModuleBayTemplatesIndexRouteHandler)
+  .openapi(putApiDcimModuleBayTemplatesIndexRoute, putApiDcimModuleBayTemplatesIndexRouteHandler)
+  .openapi(
+    patchApiDcimModuleBayTemplatesIndexRoute,
+    patchApiDcimModuleBayTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimModuleBayTemplatesIndexRoute,
+    deleteApiDcimModuleBayTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimModuleBayTemplatesIdIndexRoute,
+    getApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimModuleBayTemplatesIdIndexRoute,
+    putApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimModuleBayTemplatesIdIndexRoute,
+    patchApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimModuleBayTemplatesIdIndexRoute,
+    deleteApiDcimModuleBayTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimModuleBayTypesIndexRoute, getApiDcimModuleBayTypesIndexRouteHandler)
+  .openapi(postApiDcimModuleBayTypesIndexRoute, postApiDcimModuleBayTypesIndexRouteHandler)
+  .openapi(putApiDcimModuleBayTypesIndexRoute, putApiDcimModuleBayTypesIndexRouteHandler)
+  .openapi(patchApiDcimModuleBayTypesIndexRoute, patchApiDcimModuleBayTypesIndexRouteHandler)
+  .openapi(deleteApiDcimModuleBayTypesIndexRoute, deleteApiDcimModuleBayTypesIndexRouteHandler)
+  .openapi(getApiDcimModuleBayTypesIdIndexRoute, getApiDcimModuleBayTypesIdIndexRouteHandler)
+  .openapi(putApiDcimModuleBayTypesIdIndexRoute, putApiDcimModuleBayTypesIdIndexRouteHandler)
+  .openapi(patchApiDcimModuleBayTypesIdIndexRoute, patchApiDcimModuleBayTypesIdIndexRouteHandler)
+  .openapi(deleteApiDcimModuleBayTypesIdIndexRoute, deleteApiDcimModuleBayTypesIdIndexRouteHandler)
+  .openapi(getApiDcimModuleBaysIndexRoute, getApiDcimModuleBaysIndexRouteHandler)
+  .openapi(postApiDcimModuleBaysIndexRoute, postApiDcimModuleBaysIndexRouteHandler)
+  .openapi(putApiDcimModuleBaysIndexRoute, putApiDcimModuleBaysIndexRouteHandler)
+  .openapi(patchApiDcimModuleBaysIndexRoute, patchApiDcimModuleBaysIndexRouteHandler)
+  .openapi(deleteApiDcimModuleBaysIndexRoute, deleteApiDcimModuleBaysIndexRouteHandler)
+  .openapi(getApiDcimModuleBaysIdIndexRoute, getApiDcimModuleBaysIdIndexRouteHandler)
+  .openapi(putApiDcimModuleBaysIdIndexRoute, putApiDcimModuleBaysIdIndexRouteHandler)
+  .openapi(patchApiDcimModuleBaysIdIndexRoute, patchApiDcimModuleBaysIdIndexRouteHandler)
+  .openapi(deleteApiDcimModuleBaysIdIndexRoute, deleteApiDcimModuleBaysIdIndexRouteHandler)
+  .openapi(getApiDcimModuleTypeProfilesIndexRoute, getApiDcimModuleTypeProfilesIndexRouteHandler)
+  .openapi(postApiDcimModuleTypeProfilesIndexRoute, postApiDcimModuleTypeProfilesIndexRouteHandler)
+  .openapi(putApiDcimModuleTypeProfilesIndexRoute, putApiDcimModuleTypeProfilesIndexRouteHandler)
+  .openapi(
+    patchApiDcimModuleTypeProfilesIndexRoute,
+    patchApiDcimModuleTypeProfilesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimModuleTypeProfilesIndexRoute,
+    deleteApiDcimModuleTypeProfilesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimModuleTypeProfilesIdIndexRoute,
+    getApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimModuleTypeProfilesIdIndexRoute,
+    putApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimModuleTypeProfilesIdIndexRoute,
+    patchApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimModuleTypeProfilesIdIndexRoute,
+    deleteApiDcimModuleTypeProfilesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimModuleTypesIndexRoute, getApiDcimModuleTypesIndexRouteHandler)
+  .openapi(postApiDcimModuleTypesIndexRoute, postApiDcimModuleTypesIndexRouteHandler)
+  .openapi(putApiDcimModuleTypesIndexRoute, putApiDcimModuleTypesIndexRouteHandler)
+  .openapi(patchApiDcimModuleTypesIndexRoute, patchApiDcimModuleTypesIndexRouteHandler)
+  .openapi(deleteApiDcimModuleTypesIndexRoute, deleteApiDcimModuleTypesIndexRouteHandler)
+  .openapi(getApiDcimModuleTypesIdIndexRoute, getApiDcimModuleTypesIdIndexRouteHandler)
+  .openapi(putApiDcimModuleTypesIdIndexRoute, putApiDcimModuleTypesIdIndexRouteHandler)
+  .openapi(patchApiDcimModuleTypesIdIndexRoute, patchApiDcimModuleTypesIdIndexRouteHandler)
+  .openapi(deleteApiDcimModuleTypesIdIndexRoute, deleteApiDcimModuleTypesIdIndexRouteHandler)
+  .openapi(getApiDcimModulesIndexRoute, getApiDcimModulesIndexRouteHandler)
+  .openapi(postApiDcimModulesIndexRoute, postApiDcimModulesIndexRouteHandler)
+  .openapi(putApiDcimModulesIndexRoute, putApiDcimModulesIndexRouteHandler)
+  .openapi(patchApiDcimModulesIndexRoute, patchApiDcimModulesIndexRouteHandler)
+  .openapi(deleteApiDcimModulesIndexRoute, deleteApiDcimModulesIndexRouteHandler)
+  .openapi(getApiDcimModulesIdIndexRoute, getApiDcimModulesIdIndexRouteHandler)
+  .openapi(putApiDcimModulesIdIndexRoute, putApiDcimModulesIdIndexRouteHandler)
+  .openapi(patchApiDcimModulesIdIndexRoute, patchApiDcimModulesIdIndexRouteHandler)
+  .openapi(deleteApiDcimModulesIdIndexRoute, deleteApiDcimModulesIdIndexRouteHandler)
+  .openapi(getApiDcimPlatformsIndexRoute, getApiDcimPlatformsIndexRouteHandler)
+  .openapi(postApiDcimPlatformsIndexRoute, postApiDcimPlatformsIndexRouteHandler)
+  .openapi(putApiDcimPlatformsIndexRoute, putApiDcimPlatformsIndexRouteHandler)
+  .openapi(patchApiDcimPlatformsIndexRoute, patchApiDcimPlatformsIndexRouteHandler)
+  .openapi(deleteApiDcimPlatformsIndexRoute, deleteApiDcimPlatformsIndexRouteHandler)
+  .openapi(getApiDcimPlatformsIdIndexRoute, getApiDcimPlatformsIdIndexRouteHandler)
+  .openapi(putApiDcimPlatformsIdIndexRoute, putApiDcimPlatformsIdIndexRouteHandler)
+  .openapi(patchApiDcimPlatformsIdIndexRoute, patchApiDcimPlatformsIdIndexRouteHandler)
+  .openapi(deleteApiDcimPlatformsIdIndexRoute, deleteApiDcimPlatformsIdIndexRouteHandler)
+  .openapi(getApiDcimPowerFeedsIndexRoute, getApiDcimPowerFeedsIndexRouteHandler)
+  .openapi(postApiDcimPowerFeedsIndexRoute, postApiDcimPowerFeedsIndexRouteHandler)
+  .openapi(putApiDcimPowerFeedsIndexRoute, putApiDcimPowerFeedsIndexRouteHandler)
+  .openapi(patchApiDcimPowerFeedsIndexRoute, patchApiDcimPowerFeedsIndexRouteHandler)
+  .openapi(deleteApiDcimPowerFeedsIndexRoute, deleteApiDcimPowerFeedsIndexRouteHandler)
+  .openapi(getApiDcimPowerFeedsIdIndexRoute, getApiDcimPowerFeedsIdIndexRouteHandler)
+  .openapi(putApiDcimPowerFeedsIdIndexRoute, putApiDcimPowerFeedsIdIndexRouteHandler)
+  .openapi(patchApiDcimPowerFeedsIdIndexRoute, patchApiDcimPowerFeedsIdIndexRouteHandler)
+  .openapi(deleteApiDcimPowerFeedsIdIndexRoute, deleteApiDcimPowerFeedsIdIndexRouteHandler)
+  .openapi(getApiDcimPowerFeedsIdTraceIndexRoute, getApiDcimPowerFeedsIdTraceIndexRouteHandler)
+  .openapi(
+    getApiDcimPowerOutletTemplatesIndexRoute,
+    getApiDcimPowerOutletTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimPowerOutletTemplatesIndexRoute,
+    postApiDcimPowerOutletTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimPowerOutletTemplatesIndexRoute,
+    putApiDcimPowerOutletTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimPowerOutletTemplatesIndexRoute,
+    patchApiDcimPowerOutletTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimPowerOutletTemplatesIndexRoute,
+    deleteApiDcimPowerOutletTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimPowerOutletTemplatesIdIndexRoute,
+    getApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimPowerOutletTemplatesIdIndexRoute,
+    putApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimPowerOutletTemplatesIdIndexRoute,
+    patchApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimPowerOutletTemplatesIdIndexRoute,
+    deleteApiDcimPowerOutletTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimPowerOutletsIndexRoute, getApiDcimPowerOutletsIndexRouteHandler)
+  .openapi(postApiDcimPowerOutletsIndexRoute, postApiDcimPowerOutletsIndexRouteHandler)
+  .openapi(putApiDcimPowerOutletsIndexRoute, putApiDcimPowerOutletsIndexRouteHandler)
+  .openapi(patchApiDcimPowerOutletsIndexRoute, patchApiDcimPowerOutletsIndexRouteHandler)
+  .openapi(deleteApiDcimPowerOutletsIndexRoute, deleteApiDcimPowerOutletsIndexRouteHandler)
+  .openapi(getApiDcimPowerOutletsIdIndexRoute, getApiDcimPowerOutletsIdIndexRouteHandler)
+  .openapi(putApiDcimPowerOutletsIdIndexRoute, putApiDcimPowerOutletsIdIndexRouteHandler)
+  .openapi(patchApiDcimPowerOutletsIdIndexRoute, patchApiDcimPowerOutletsIdIndexRouteHandler)
+  .openapi(deleteApiDcimPowerOutletsIdIndexRoute, deleteApiDcimPowerOutletsIdIndexRouteHandler)
+  .openapi(getApiDcimPowerOutletsIdTraceIndexRoute, getApiDcimPowerOutletsIdTraceIndexRouteHandler)
+  .openapi(getApiDcimPowerPanelsIndexRoute, getApiDcimPowerPanelsIndexRouteHandler)
+  .openapi(postApiDcimPowerPanelsIndexRoute, postApiDcimPowerPanelsIndexRouteHandler)
+  .openapi(putApiDcimPowerPanelsIndexRoute, putApiDcimPowerPanelsIndexRouteHandler)
+  .openapi(patchApiDcimPowerPanelsIndexRoute, patchApiDcimPowerPanelsIndexRouteHandler)
+  .openapi(deleteApiDcimPowerPanelsIndexRoute, deleteApiDcimPowerPanelsIndexRouteHandler)
+  .openapi(getApiDcimPowerPanelsIdIndexRoute, getApiDcimPowerPanelsIdIndexRouteHandler)
+  .openapi(putApiDcimPowerPanelsIdIndexRoute, putApiDcimPowerPanelsIdIndexRouteHandler)
+  .openapi(patchApiDcimPowerPanelsIdIndexRoute, patchApiDcimPowerPanelsIdIndexRouteHandler)
+  .openapi(deleteApiDcimPowerPanelsIdIndexRoute, deleteApiDcimPowerPanelsIdIndexRouteHandler)
+  .openapi(getApiDcimPowerPortTemplatesIndexRoute, getApiDcimPowerPortTemplatesIndexRouteHandler)
+  .openapi(postApiDcimPowerPortTemplatesIndexRoute, postApiDcimPowerPortTemplatesIndexRouteHandler)
+  .openapi(putApiDcimPowerPortTemplatesIndexRoute, putApiDcimPowerPortTemplatesIndexRouteHandler)
+  .openapi(
+    patchApiDcimPowerPortTemplatesIndexRoute,
+    patchApiDcimPowerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimPowerPortTemplatesIndexRoute,
+    deleteApiDcimPowerPortTemplatesIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimPowerPortTemplatesIdIndexRoute,
+    getApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimPowerPortTemplatesIdIndexRoute,
+    putApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimPowerPortTemplatesIdIndexRoute,
+    patchApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimPowerPortTemplatesIdIndexRoute,
+    deleteApiDcimPowerPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimPowerPortsIndexRoute, getApiDcimPowerPortsIndexRouteHandler)
+  .openapi(postApiDcimPowerPortsIndexRoute, postApiDcimPowerPortsIndexRouteHandler)
+  .openapi(putApiDcimPowerPortsIndexRoute, putApiDcimPowerPortsIndexRouteHandler)
+  .openapi(patchApiDcimPowerPortsIndexRoute, patchApiDcimPowerPortsIndexRouteHandler)
+  .openapi(deleteApiDcimPowerPortsIndexRoute, deleteApiDcimPowerPortsIndexRouteHandler)
+  .openapi(getApiDcimPowerPortsIdIndexRoute, getApiDcimPowerPortsIdIndexRouteHandler)
+  .openapi(putApiDcimPowerPortsIdIndexRoute, putApiDcimPowerPortsIdIndexRouteHandler)
+  .openapi(patchApiDcimPowerPortsIdIndexRoute, patchApiDcimPowerPortsIdIndexRouteHandler)
+  .openapi(deleteApiDcimPowerPortsIdIndexRoute, deleteApiDcimPowerPortsIdIndexRouteHandler)
+  .openapi(getApiDcimPowerPortsIdTraceIndexRoute, getApiDcimPowerPortsIdTraceIndexRouteHandler)
+  .openapi(getApiDcimRackGroupsIndexRoute, getApiDcimRackGroupsIndexRouteHandler)
+  .openapi(postApiDcimRackGroupsIndexRoute, postApiDcimRackGroupsIndexRouteHandler)
+  .openapi(putApiDcimRackGroupsIndexRoute, putApiDcimRackGroupsIndexRouteHandler)
+  .openapi(patchApiDcimRackGroupsIndexRoute, patchApiDcimRackGroupsIndexRouteHandler)
+  .openapi(deleteApiDcimRackGroupsIndexRoute, deleteApiDcimRackGroupsIndexRouteHandler)
+  .openapi(getApiDcimRackGroupsIdIndexRoute, getApiDcimRackGroupsIdIndexRouteHandler)
+  .openapi(putApiDcimRackGroupsIdIndexRoute, putApiDcimRackGroupsIdIndexRouteHandler)
+  .openapi(patchApiDcimRackGroupsIdIndexRoute, patchApiDcimRackGroupsIdIndexRouteHandler)
+  .openapi(deleteApiDcimRackGroupsIdIndexRoute, deleteApiDcimRackGroupsIdIndexRouteHandler)
+  .openapi(getApiDcimRackReservationsIndexRoute, getApiDcimRackReservationsIndexRouteHandler)
+  .openapi(postApiDcimRackReservationsIndexRoute, postApiDcimRackReservationsIndexRouteHandler)
+  .openapi(putApiDcimRackReservationsIndexRoute, putApiDcimRackReservationsIndexRouteHandler)
+  .openapi(patchApiDcimRackReservationsIndexRoute, patchApiDcimRackReservationsIndexRouteHandler)
+  .openapi(deleteApiDcimRackReservationsIndexRoute, deleteApiDcimRackReservationsIndexRouteHandler)
+  .openapi(getApiDcimRackReservationsIdIndexRoute, getApiDcimRackReservationsIdIndexRouteHandler)
+  .openapi(putApiDcimRackReservationsIdIndexRoute, putApiDcimRackReservationsIdIndexRouteHandler)
+  .openapi(
+    patchApiDcimRackReservationsIdIndexRoute,
+    patchApiDcimRackReservationsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimRackReservationsIdIndexRoute,
+    deleteApiDcimRackReservationsIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimRackRolesIndexRoute, getApiDcimRackRolesIndexRouteHandler)
+  .openapi(postApiDcimRackRolesIndexRoute, postApiDcimRackRolesIndexRouteHandler)
+  .openapi(putApiDcimRackRolesIndexRoute, putApiDcimRackRolesIndexRouteHandler)
+  .openapi(patchApiDcimRackRolesIndexRoute, patchApiDcimRackRolesIndexRouteHandler)
+  .openapi(deleteApiDcimRackRolesIndexRoute, deleteApiDcimRackRolesIndexRouteHandler)
+  .openapi(getApiDcimRackRolesIdIndexRoute, getApiDcimRackRolesIdIndexRouteHandler)
+  .openapi(putApiDcimRackRolesIdIndexRoute, putApiDcimRackRolesIdIndexRouteHandler)
+  .openapi(patchApiDcimRackRolesIdIndexRoute, patchApiDcimRackRolesIdIndexRouteHandler)
+  .openapi(deleteApiDcimRackRolesIdIndexRoute, deleteApiDcimRackRolesIdIndexRouteHandler)
+  .openapi(getApiDcimRackTypesIndexRoute, getApiDcimRackTypesIndexRouteHandler)
+  .openapi(postApiDcimRackTypesIndexRoute, postApiDcimRackTypesIndexRouteHandler)
+  .openapi(putApiDcimRackTypesIndexRoute, putApiDcimRackTypesIndexRouteHandler)
+  .openapi(patchApiDcimRackTypesIndexRoute, patchApiDcimRackTypesIndexRouteHandler)
+  .openapi(deleteApiDcimRackTypesIndexRoute, deleteApiDcimRackTypesIndexRouteHandler)
+  .openapi(getApiDcimRackTypesIdIndexRoute, getApiDcimRackTypesIdIndexRouteHandler)
+  .openapi(putApiDcimRackTypesIdIndexRoute, putApiDcimRackTypesIdIndexRouteHandler)
+  .openapi(patchApiDcimRackTypesIdIndexRoute, patchApiDcimRackTypesIdIndexRouteHandler)
+  .openapi(deleteApiDcimRackTypesIdIndexRoute, deleteApiDcimRackTypesIdIndexRouteHandler)
+  .openapi(getApiDcimRacksIndexRoute, getApiDcimRacksIndexRouteHandler)
+  .openapi(postApiDcimRacksIndexRoute, postApiDcimRacksIndexRouteHandler)
+  .openapi(putApiDcimRacksIndexRoute, putApiDcimRacksIndexRouteHandler)
+  .openapi(patchApiDcimRacksIndexRoute, patchApiDcimRacksIndexRouteHandler)
+  .openapi(deleteApiDcimRacksIndexRoute, deleteApiDcimRacksIndexRouteHandler)
+  .openapi(getApiDcimRacksIdIndexRoute, getApiDcimRacksIdIndexRouteHandler)
+  .openapi(putApiDcimRacksIdIndexRoute, putApiDcimRacksIdIndexRouteHandler)
+  .openapi(patchApiDcimRacksIdIndexRoute, patchApiDcimRacksIdIndexRouteHandler)
+  .openapi(deleteApiDcimRacksIdIndexRoute, deleteApiDcimRacksIdIndexRouteHandler)
+  .openapi(getApiDcimRacksIdElevationIndexRoute, getApiDcimRacksIdElevationIndexRouteHandler)
+  .openapi(getApiDcimRearPortTemplatesIndexRoute, getApiDcimRearPortTemplatesIndexRouteHandler)
+  .openapi(postApiDcimRearPortTemplatesIndexRoute, postApiDcimRearPortTemplatesIndexRouteHandler)
+  .openapi(putApiDcimRearPortTemplatesIndexRoute, putApiDcimRearPortTemplatesIndexRouteHandler)
+  .openapi(patchApiDcimRearPortTemplatesIndexRoute, patchApiDcimRearPortTemplatesIndexRouteHandler)
+  .openapi(
+    deleteApiDcimRearPortTemplatesIndexRoute,
+    deleteApiDcimRearPortTemplatesIndexRouteHandler,
+  )
+  .openapi(getApiDcimRearPortTemplatesIdIndexRoute, getApiDcimRearPortTemplatesIdIndexRouteHandler)
+  .openapi(putApiDcimRearPortTemplatesIdIndexRoute, putApiDcimRearPortTemplatesIdIndexRouteHandler)
+  .openapi(
+    patchApiDcimRearPortTemplatesIdIndexRoute,
+    patchApiDcimRearPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimRearPortTemplatesIdIndexRoute,
+    deleteApiDcimRearPortTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiDcimRearPortsIndexRoute, getApiDcimRearPortsIndexRouteHandler)
+  .openapi(postApiDcimRearPortsIndexRoute, postApiDcimRearPortsIndexRouteHandler)
+  .openapi(putApiDcimRearPortsIndexRoute, putApiDcimRearPortsIndexRouteHandler)
+  .openapi(patchApiDcimRearPortsIndexRoute, patchApiDcimRearPortsIndexRouteHandler)
+  .openapi(deleteApiDcimRearPortsIndexRoute, deleteApiDcimRearPortsIndexRouteHandler)
+  .openapi(getApiDcimRearPortsIdIndexRoute, getApiDcimRearPortsIdIndexRouteHandler)
+  .openapi(putApiDcimRearPortsIdIndexRoute, putApiDcimRearPortsIdIndexRouteHandler)
+  .openapi(patchApiDcimRearPortsIdIndexRoute, patchApiDcimRearPortsIdIndexRouteHandler)
+  .openapi(deleteApiDcimRearPortsIdIndexRoute, deleteApiDcimRearPortsIdIndexRouteHandler)
+  .openapi(getApiDcimRearPortsIdPathsIndexRoute, getApiDcimRearPortsIdPathsIndexRouteHandler)
+  .openapi(getApiDcimRegionsIndexRoute, getApiDcimRegionsIndexRouteHandler)
+  .openapi(postApiDcimRegionsIndexRoute, postApiDcimRegionsIndexRouteHandler)
+  .openapi(putApiDcimRegionsIndexRoute, putApiDcimRegionsIndexRouteHandler)
+  .openapi(patchApiDcimRegionsIndexRoute, patchApiDcimRegionsIndexRouteHandler)
+  .openapi(deleteApiDcimRegionsIndexRoute, deleteApiDcimRegionsIndexRouteHandler)
+  .openapi(getApiDcimRegionsIdIndexRoute, getApiDcimRegionsIdIndexRouteHandler)
+  .openapi(putApiDcimRegionsIdIndexRoute, putApiDcimRegionsIdIndexRouteHandler)
+  .openapi(patchApiDcimRegionsIdIndexRoute, patchApiDcimRegionsIdIndexRouteHandler)
+  .openapi(deleteApiDcimRegionsIdIndexRoute, deleteApiDcimRegionsIdIndexRouteHandler)
+  .openapi(getApiDcimSiteGroupsIndexRoute, getApiDcimSiteGroupsIndexRouteHandler)
+  .openapi(postApiDcimSiteGroupsIndexRoute, postApiDcimSiteGroupsIndexRouteHandler)
+  .openapi(putApiDcimSiteGroupsIndexRoute, putApiDcimSiteGroupsIndexRouteHandler)
+  .openapi(patchApiDcimSiteGroupsIndexRoute, patchApiDcimSiteGroupsIndexRouteHandler)
+  .openapi(deleteApiDcimSiteGroupsIndexRoute, deleteApiDcimSiteGroupsIndexRouteHandler)
+  .openapi(getApiDcimSiteGroupsIdIndexRoute, getApiDcimSiteGroupsIdIndexRouteHandler)
+  .openapi(putApiDcimSiteGroupsIdIndexRoute, putApiDcimSiteGroupsIdIndexRouteHandler)
+  .openapi(patchApiDcimSiteGroupsIdIndexRoute, patchApiDcimSiteGroupsIdIndexRouteHandler)
+  .openapi(deleteApiDcimSiteGroupsIdIndexRoute, deleteApiDcimSiteGroupsIdIndexRouteHandler)
+  .openapi(getApiDcimSitesIndexRoute, getApiDcimSitesIndexRouteHandler)
+  .openapi(postApiDcimSitesIndexRoute, postApiDcimSitesIndexRouteHandler)
+  .openapi(putApiDcimSitesIndexRoute, putApiDcimSitesIndexRouteHandler)
+  .openapi(patchApiDcimSitesIndexRoute, patchApiDcimSitesIndexRouteHandler)
+  .openapi(deleteApiDcimSitesIndexRoute, deleteApiDcimSitesIndexRouteHandler)
+  .openapi(getApiDcimSitesIdIndexRoute, getApiDcimSitesIdIndexRouteHandler)
+  .openapi(putApiDcimSitesIdIndexRoute, putApiDcimSitesIdIndexRouteHandler)
+  .openapi(patchApiDcimSitesIdIndexRoute, patchApiDcimSitesIdIndexRouteHandler)
+  .openapi(deleteApiDcimSitesIdIndexRoute, deleteApiDcimSitesIdIndexRouteHandler)
+  .openapi(getApiDcimVirtualChassisIndexRoute, getApiDcimVirtualChassisIndexRouteHandler)
+  .openapi(postApiDcimVirtualChassisIndexRoute, postApiDcimVirtualChassisIndexRouteHandler)
+  .openapi(putApiDcimVirtualChassisIndexRoute, putApiDcimVirtualChassisIndexRouteHandler)
+  .openapi(patchApiDcimVirtualChassisIndexRoute, patchApiDcimVirtualChassisIndexRouteHandler)
+  .openapi(deleteApiDcimVirtualChassisIndexRoute, deleteApiDcimVirtualChassisIndexRouteHandler)
+  .openapi(getApiDcimVirtualChassisIdIndexRoute, getApiDcimVirtualChassisIdIndexRouteHandler)
+  .openapi(putApiDcimVirtualChassisIdIndexRoute, putApiDcimVirtualChassisIdIndexRouteHandler)
+  .openapi(patchApiDcimVirtualChassisIdIndexRoute, patchApiDcimVirtualChassisIdIndexRouteHandler)
+  .openapi(deleteApiDcimVirtualChassisIdIndexRoute, deleteApiDcimVirtualChassisIdIndexRouteHandler)
+  .openapi(
+    getApiDcimVirtualDeviceContextsIndexRoute,
+    getApiDcimVirtualDeviceContextsIndexRouteHandler,
+  )
+  .openapi(
+    postApiDcimVirtualDeviceContextsIndexRoute,
+    postApiDcimVirtualDeviceContextsIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimVirtualDeviceContextsIndexRoute,
+    putApiDcimVirtualDeviceContextsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimVirtualDeviceContextsIndexRoute,
+    patchApiDcimVirtualDeviceContextsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimVirtualDeviceContextsIndexRoute,
+    deleteApiDcimVirtualDeviceContextsIndexRouteHandler,
+  )
+  .openapi(
+    getApiDcimVirtualDeviceContextsIdIndexRoute,
+    getApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiDcimVirtualDeviceContextsIdIndexRoute,
+    putApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiDcimVirtualDeviceContextsIdIndexRoute,
+    patchApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiDcimVirtualDeviceContextsIdIndexRoute,
+    deleteApiDcimVirtualDeviceContextsIdIndexRouteHandler,
+  )
+  .openapi(getApiExtrasBookmarksIndexRoute, getApiExtrasBookmarksIndexRouteHandler)
+  .openapi(postApiExtrasBookmarksIndexRoute, postApiExtrasBookmarksIndexRouteHandler)
+  .openapi(putApiExtrasBookmarksIndexRoute, putApiExtrasBookmarksIndexRouteHandler)
+  .openapi(patchApiExtrasBookmarksIndexRoute, patchApiExtrasBookmarksIndexRouteHandler)
+  .openapi(deleteApiExtrasBookmarksIndexRoute, deleteApiExtrasBookmarksIndexRouteHandler)
+  .openapi(getApiExtrasBookmarksIdIndexRoute, getApiExtrasBookmarksIdIndexRouteHandler)
+  .openapi(putApiExtrasBookmarksIdIndexRoute, putApiExtrasBookmarksIdIndexRouteHandler)
+  .openapi(patchApiExtrasBookmarksIdIndexRoute, patchApiExtrasBookmarksIdIndexRouteHandler)
+  .openapi(deleteApiExtrasBookmarksIdIndexRoute, deleteApiExtrasBookmarksIdIndexRouteHandler)
+  .openapi(
+    getApiExtrasConfigContextProfilesIndexRoute,
+    getApiExtrasConfigContextProfilesIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasConfigContextProfilesIndexRoute,
+    postApiExtrasConfigContextProfilesIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasConfigContextProfilesIndexRoute,
+    putApiExtrasConfigContextProfilesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasConfigContextProfilesIndexRoute,
+    patchApiExtrasConfigContextProfilesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasConfigContextProfilesIndexRoute,
+    deleteApiExtrasConfigContextProfilesIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasConfigContextProfilesIdIndexRoute,
+    getApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasConfigContextProfilesIdIndexRoute,
+    putApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasConfigContextProfilesIdIndexRoute,
+    patchApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasConfigContextProfilesIdIndexRoute,
+    deleteApiExtrasConfigContextProfilesIdIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasConfigContextProfilesIdSyncIndexRoute,
+    postApiExtrasConfigContextProfilesIdSyncIndexRouteHandler,
+  )
+  .openapi(getApiExtrasConfigContextsIndexRoute, getApiExtrasConfigContextsIndexRouteHandler)
+  .openapi(postApiExtrasConfigContextsIndexRoute, postApiExtrasConfigContextsIndexRouteHandler)
+  .openapi(putApiExtrasConfigContextsIndexRoute, putApiExtrasConfigContextsIndexRouteHandler)
+  .openapi(patchApiExtrasConfigContextsIndexRoute, patchApiExtrasConfigContextsIndexRouteHandler)
+  .openapi(deleteApiExtrasConfigContextsIndexRoute, deleteApiExtrasConfigContextsIndexRouteHandler)
+  .openapi(getApiExtrasConfigContextsIdIndexRoute, getApiExtrasConfigContextsIdIndexRouteHandler)
+  .openapi(putApiExtrasConfigContextsIdIndexRoute, putApiExtrasConfigContextsIdIndexRouteHandler)
+  .openapi(
+    patchApiExtrasConfigContextsIdIndexRoute,
+    patchApiExtrasConfigContextsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasConfigContextsIdIndexRoute,
+    deleteApiExtrasConfigContextsIdIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasConfigContextsIdSyncIndexRoute,
+    postApiExtrasConfigContextsIdSyncIndexRouteHandler,
+  )
+  .openapi(getApiExtrasConfigTemplatesIndexRoute, getApiExtrasConfigTemplatesIndexRouteHandler)
+  .openapi(postApiExtrasConfigTemplatesIndexRoute, postApiExtrasConfigTemplatesIndexRouteHandler)
+  .openapi(putApiExtrasConfigTemplatesIndexRoute, putApiExtrasConfigTemplatesIndexRouteHandler)
+  .openapi(patchApiExtrasConfigTemplatesIndexRoute, patchApiExtrasConfigTemplatesIndexRouteHandler)
+  .openapi(
+    deleteApiExtrasConfigTemplatesIndexRoute,
+    deleteApiExtrasConfigTemplatesIndexRouteHandler,
+  )
+  .openapi(getApiExtrasConfigTemplatesIdIndexRoute, getApiExtrasConfigTemplatesIdIndexRouteHandler)
+  .openapi(putApiExtrasConfigTemplatesIdIndexRoute, putApiExtrasConfigTemplatesIdIndexRouteHandler)
+  .openapi(
+    patchApiExtrasConfigTemplatesIdIndexRoute,
+    patchApiExtrasConfigTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasConfigTemplatesIdIndexRoute,
+    deleteApiExtrasConfigTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasConfigTemplatesIdRenderIndexRoute,
+    postApiExtrasConfigTemplatesIdRenderIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasConfigTemplatesIdSyncIndexRoute,
+    postApiExtrasConfigTemplatesIdSyncIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasCustomFieldChoiceSetsIndexRoute,
+    getApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasCustomFieldChoiceSetsIndexRoute,
+    postApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasCustomFieldChoiceSetsIndexRoute,
+    putApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasCustomFieldChoiceSetsIndexRoute,
+    patchApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasCustomFieldChoiceSetsIndexRoute,
+    deleteApiExtrasCustomFieldChoiceSetsIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+    getApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+    putApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+    patchApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasCustomFieldChoiceSetsIdIndexRoute,
+    deleteApiExtrasCustomFieldChoiceSetsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRoute,
+    getApiExtrasCustomFieldChoiceSetsIdChoicesIndexRouteHandler,
+  )
+  .openapi(getApiExtrasCustomFieldsIndexRoute, getApiExtrasCustomFieldsIndexRouteHandler)
+  .openapi(postApiExtrasCustomFieldsIndexRoute, postApiExtrasCustomFieldsIndexRouteHandler)
+  .openapi(putApiExtrasCustomFieldsIndexRoute, putApiExtrasCustomFieldsIndexRouteHandler)
+  .openapi(patchApiExtrasCustomFieldsIndexRoute, patchApiExtrasCustomFieldsIndexRouteHandler)
+  .openapi(deleteApiExtrasCustomFieldsIndexRoute, deleteApiExtrasCustomFieldsIndexRouteHandler)
+  .openapi(getApiExtrasCustomFieldsIdIndexRoute, getApiExtrasCustomFieldsIdIndexRouteHandler)
+  .openapi(putApiExtrasCustomFieldsIdIndexRoute, putApiExtrasCustomFieldsIdIndexRouteHandler)
+  .openapi(patchApiExtrasCustomFieldsIdIndexRoute, patchApiExtrasCustomFieldsIdIndexRouteHandler)
+  .openapi(deleteApiExtrasCustomFieldsIdIndexRoute, deleteApiExtrasCustomFieldsIdIndexRouteHandler)
+  .openapi(getApiExtrasCustomLinksIndexRoute, getApiExtrasCustomLinksIndexRouteHandler)
+  .openapi(postApiExtrasCustomLinksIndexRoute, postApiExtrasCustomLinksIndexRouteHandler)
+  .openapi(putApiExtrasCustomLinksIndexRoute, putApiExtrasCustomLinksIndexRouteHandler)
+  .openapi(patchApiExtrasCustomLinksIndexRoute, patchApiExtrasCustomLinksIndexRouteHandler)
+  .openapi(deleteApiExtrasCustomLinksIndexRoute, deleteApiExtrasCustomLinksIndexRouteHandler)
+  .openapi(getApiExtrasCustomLinksIdIndexRoute, getApiExtrasCustomLinksIdIndexRouteHandler)
+  .openapi(putApiExtrasCustomLinksIdIndexRoute, putApiExtrasCustomLinksIdIndexRouteHandler)
+  .openapi(patchApiExtrasCustomLinksIdIndexRoute, patchApiExtrasCustomLinksIdIndexRouteHandler)
+  .openapi(deleteApiExtrasCustomLinksIdIndexRoute, deleteApiExtrasCustomLinksIdIndexRouteHandler)
+  .openapi(getApiExtrasDashboardIndexRoute, getApiExtrasDashboardIndexRouteHandler)
+  .openapi(putApiExtrasDashboardIndexRoute, putApiExtrasDashboardIndexRouteHandler)
+  .openapi(patchApiExtrasDashboardIndexRoute, patchApiExtrasDashboardIndexRouteHandler)
+  .openapi(deleteApiExtrasDashboardIndexRoute, deleteApiExtrasDashboardIndexRouteHandler)
+  .openapi(getApiExtrasEventRulesIndexRoute, getApiExtrasEventRulesIndexRouteHandler)
+  .openapi(postApiExtrasEventRulesIndexRoute, postApiExtrasEventRulesIndexRouteHandler)
+  .openapi(putApiExtrasEventRulesIndexRoute, putApiExtrasEventRulesIndexRouteHandler)
+  .openapi(patchApiExtrasEventRulesIndexRoute, patchApiExtrasEventRulesIndexRouteHandler)
+  .openapi(deleteApiExtrasEventRulesIndexRoute, deleteApiExtrasEventRulesIndexRouteHandler)
+  .openapi(getApiExtrasEventRulesIdIndexRoute, getApiExtrasEventRulesIdIndexRouteHandler)
+  .openapi(putApiExtrasEventRulesIdIndexRoute, putApiExtrasEventRulesIdIndexRouteHandler)
+  .openapi(patchApiExtrasEventRulesIdIndexRoute, patchApiExtrasEventRulesIdIndexRouteHandler)
+  .openapi(deleteApiExtrasEventRulesIdIndexRoute, deleteApiExtrasEventRulesIdIndexRouteHandler)
+  .openapi(getApiExtrasExportTemplatesIndexRoute, getApiExtrasExportTemplatesIndexRouteHandler)
+  .openapi(postApiExtrasExportTemplatesIndexRoute, postApiExtrasExportTemplatesIndexRouteHandler)
+  .openapi(putApiExtrasExportTemplatesIndexRoute, putApiExtrasExportTemplatesIndexRouteHandler)
+  .openapi(patchApiExtrasExportTemplatesIndexRoute, patchApiExtrasExportTemplatesIndexRouteHandler)
+  .openapi(
+    deleteApiExtrasExportTemplatesIndexRoute,
+    deleteApiExtrasExportTemplatesIndexRouteHandler,
+  )
+  .openapi(getApiExtrasExportTemplatesIdIndexRoute, getApiExtrasExportTemplatesIdIndexRouteHandler)
+  .openapi(putApiExtrasExportTemplatesIdIndexRoute, putApiExtrasExportTemplatesIdIndexRouteHandler)
+  .openapi(
+    patchApiExtrasExportTemplatesIdIndexRoute,
+    patchApiExtrasExportTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasExportTemplatesIdIndexRoute,
+    deleteApiExtrasExportTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasExportTemplatesIdSyncIndexRoute,
+    postApiExtrasExportTemplatesIdSyncIndexRouteHandler,
+  )
+  .openapi(getApiExtrasImageAttachmentsIndexRoute, getApiExtrasImageAttachmentsIndexRouteHandler)
+  .openapi(postApiExtrasImageAttachmentsIndexRoute, postApiExtrasImageAttachmentsIndexRouteHandler)
+  .openapi(putApiExtrasImageAttachmentsIndexRoute, putApiExtrasImageAttachmentsIndexRouteHandler)
+  .openapi(
+    patchApiExtrasImageAttachmentsIndexRoute,
+    patchApiExtrasImageAttachmentsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasImageAttachmentsIndexRoute,
+    deleteApiExtrasImageAttachmentsIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasImageAttachmentsIdIndexRoute,
+    getApiExtrasImageAttachmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasImageAttachmentsIdIndexRoute,
+    putApiExtrasImageAttachmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasImageAttachmentsIdIndexRoute,
+    patchApiExtrasImageAttachmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasImageAttachmentsIdIndexRoute,
+    deleteApiExtrasImageAttachmentsIdIndexRouteHandler,
+  )
+  .openapi(getApiExtrasJournalEntriesIndexRoute, getApiExtrasJournalEntriesIndexRouteHandler)
+  .openapi(postApiExtrasJournalEntriesIndexRoute, postApiExtrasJournalEntriesIndexRouteHandler)
+  .openapi(putApiExtrasJournalEntriesIndexRoute, putApiExtrasJournalEntriesIndexRouteHandler)
+  .openapi(patchApiExtrasJournalEntriesIndexRoute, patchApiExtrasJournalEntriesIndexRouteHandler)
+  .openapi(deleteApiExtrasJournalEntriesIndexRoute, deleteApiExtrasJournalEntriesIndexRouteHandler)
+  .openapi(getApiExtrasJournalEntriesIdIndexRoute, getApiExtrasJournalEntriesIdIndexRouteHandler)
+  .openapi(putApiExtrasJournalEntriesIdIndexRoute, putApiExtrasJournalEntriesIdIndexRouteHandler)
+  .openapi(
+    patchApiExtrasJournalEntriesIdIndexRoute,
+    patchApiExtrasJournalEntriesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasJournalEntriesIdIndexRoute,
+    deleteApiExtrasJournalEntriesIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasNotificationGroupsIndexRoute,
+    getApiExtrasNotificationGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postApiExtrasNotificationGroupsIndexRoute,
+    postApiExtrasNotificationGroupsIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasNotificationGroupsIndexRoute,
+    putApiExtrasNotificationGroupsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasNotificationGroupsIndexRoute,
+    patchApiExtrasNotificationGroupsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasNotificationGroupsIndexRoute,
+    deleteApiExtrasNotificationGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getApiExtrasNotificationGroupsIdIndexRoute,
+    getApiExtrasNotificationGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiExtrasNotificationGroupsIdIndexRoute,
+    putApiExtrasNotificationGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiExtrasNotificationGroupsIdIndexRoute,
+    patchApiExtrasNotificationGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiExtrasNotificationGroupsIdIndexRoute,
+    deleteApiExtrasNotificationGroupsIdIndexRouteHandler,
+  )
+  .openapi(getApiExtrasNotificationsIndexRoute, getApiExtrasNotificationsIndexRouteHandler)
+  .openapi(postApiExtrasNotificationsIndexRoute, postApiExtrasNotificationsIndexRouteHandler)
+  .openapi(putApiExtrasNotificationsIndexRoute, putApiExtrasNotificationsIndexRouteHandler)
+  .openapi(patchApiExtrasNotificationsIndexRoute, patchApiExtrasNotificationsIndexRouteHandler)
+  .openapi(deleteApiExtrasNotificationsIndexRoute, deleteApiExtrasNotificationsIndexRouteHandler)
+  .openapi(getApiExtrasNotificationsIdIndexRoute, getApiExtrasNotificationsIdIndexRouteHandler)
+  .openapi(putApiExtrasNotificationsIdIndexRoute, putApiExtrasNotificationsIdIndexRouteHandler)
+  .openapi(patchApiExtrasNotificationsIdIndexRoute, patchApiExtrasNotificationsIdIndexRouteHandler)
+  .openapi(
+    deleteApiExtrasNotificationsIdIndexRoute,
+    deleteApiExtrasNotificationsIdIndexRouteHandler,
+  )
+  .openapi(getApiExtrasSavedFiltersIndexRoute, getApiExtrasSavedFiltersIndexRouteHandler)
+  .openapi(postApiExtrasSavedFiltersIndexRoute, postApiExtrasSavedFiltersIndexRouteHandler)
+  .openapi(putApiExtrasSavedFiltersIndexRoute, putApiExtrasSavedFiltersIndexRouteHandler)
+  .openapi(patchApiExtrasSavedFiltersIndexRoute, patchApiExtrasSavedFiltersIndexRouteHandler)
+  .openapi(deleteApiExtrasSavedFiltersIndexRoute, deleteApiExtrasSavedFiltersIndexRouteHandler)
+  .openapi(getApiExtrasSavedFiltersIdIndexRoute, getApiExtrasSavedFiltersIdIndexRouteHandler)
+  .openapi(putApiExtrasSavedFiltersIdIndexRoute, putApiExtrasSavedFiltersIdIndexRouteHandler)
+  .openapi(patchApiExtrasSavedFiltersIdIndexRoute, patchApiExtrasSavedFiltersIdIndexRouteHandler)
+  .openapi(deleteApiExtrasSavedFiltersIdIndexRoute, deleteApiExtrasSavedFiltersIdIndexRouteHandler)
+  .openapi(getApiExtrasScriptsIndexRoute, getApiExtrasScriptsIndexRouteHandler)
+  .openapi(getApiExtrasScriptsIdIndexRoute, getApiExtrasScriptsIdIndexRouteHandler)
+  .openapi(postApiExtrasScriptsIdIndexRoute, postApiExtrasScriptsIdIndexRouteHandler)
+  .openapi(postApiExtrasScriptsUploadIndexRoute, postApiExtrasScriptsUploadIndexRouteHandler)
+  .openapi(putApiExtrasScriptsUploadIdIndexRoute, putApiExtrasScriptsUploadIdIndexRouteHandler)
+  .openapi(patchApiExtrasScriptsUploadIdIndexRoute, patchApiExtrasScriptsUploadIdIndexRouteHandler)
+  .openapi(getApiExtrasSubscriptionsIndexRoute, getApiExtrasSubscriptionsIndexRouteHandler)
+  .openapi(postApiExtrasSubscriptionsIndexRoute, postApiExtrasSubscriptionsIndexRouteHandler)
+  .openapi(putApiExtrasSubscriptionsIndexRoute, putApiExtrasSubscriptionsIndexRouteHandler)
+  .openapi(patchApiExtrasSubscriptionsIndexRoute, patchApiExtrasSubscriptionsIndexRouteHandler)
+  .openapi(deleteApiExtrasSubscriptionsIndexRoute, deleteApiExtrasSubscriptionsIndexRouteHandler)
+  .openapi(getApiExtrasSubscriptionsIdIndexRoute, getApiExtrasSubscriptionsIdIndexRouteHandler)
+  .openapi(putApiExtrasSubscriptionsIdIndexRoute, putApiExtrasSubscriptionsIdIndexRouteHandler)
+  .openapi(patchApiExtrasSubscriptionsIdIndexRoute, patchApiExtrasSubscriptionsIdIndexRouteHandler)
+  .openapi(
+    deleteApiExtrasSubscriptionsIdIndexRoute,
+    deleteApiExtrasSubscriptionsIdIndexRouteHandler,
+  )
+  .openapi(getApiExtrasTableConfigsIndexRoute, getApiExtrasTableConfigsIndexRouteHandler)
+  .openapi(postApiExtrasTableConfigsIndexRoute, postApiExtrasTableConfigsIndexRouteHandler)
+  .openapi(putApiExtrasTableConfigsIndexRoute, putApiExtrasTableConfigsIndexRouteHandler)
+  .openapi(patchApiExtrasTableConfigsIndexRoute, patchApiExtrasTableConfigsIndexRouteHandler)
+  .openapi(deleteApiExtrasTableConfigsIndexRoute, deleteApiExtrasTableConfigsIndexRouteHandler)
+  .openapi(getApiExtrasTableConfigsIdIndexRoute, getApiExtrasTableConfigsIdIndexRouteHandler)
+  .openapi(putApiExtrasTableConfigsIdIndexRoute, putApiExtrasTableConfigsIdIndexRouteHandler)
+  .openapi(patchApiExtrasTableConfigsIdIndexRoute, patchApiExtrasTableConfigsIdIndexRouteHandler)
+  .openapi(deleteApiExtrasTableConfigsIdIndexRoute, deleteApiExtrasTableConfigsIdIndexRouteHandler)
+  .openapi(getApiExtrasTaggedObjectsIndexRoute, getApiExtrasTaggedObjectsIndexRouteHandler)
+  .openapi(getApiExtrasTaggedObjectsIdIndexRoute, getApiExtrasTaggedObjectsIdIndexRouteHandler)
+  .openapi(getApiExtrasTagsIndexRoute, getApiExtrasTagsIndexRouteHandler)
+  .openapi(postApiExtrasTagsIndexRoute, postApiExtrasTagsIndexRouteHandler)
+  .openapi(putApiExtrasTagsIndexRoute, putApiExtrasTagsIndexRouteHandler)
+  .openapi(patchApiExtrasTagsIndexRoute, patchApiExtrasTagsIndexRouteHandler)
+  .openapi(deleteApiExtrasTagsIndexRoute, deleteApiExtrasTagsIndexRouteHandler)
+  .openapi(getApiExtrasTagsIdIndexRoute, getApiExtrasTagsIdIndexRouteHandler)
+  .openapi(putApiExtrasTagsIdIndexRoute, putApiExtrasTagsIdIndexRouteHandler)
+  .openapi(patchApiExtrasTagsIdIndexRoute, patchApiExtrasTagsIdIndexRouteHandler)
+  .openapi(deleteApiExtrasTagsIdIndexRoute, deleteApiExtrasTagsIdIndexRouteHandler)
+  .openapi(getApiExtrasWebhooksIndexRoute, getApiExtrasWebhooksIndexRouteHandler)
+  .openapi(postApiExtrasWebhooksIndexRoute, postApiExtrasWebhooksIndexRouteHandler)
+  .openapi(putApiExtrasWebhooksIndexRoute, putApiExtrasWebhooksIndexRouteHandler)
+  .openapi(patchApiExtrasWebhooksIndexRoute, patchApiExtrasWebhooksIndexRouteHandler)
+  .openapi(deleteApiExtrasWebhooksIndexRoute, deleteApiExtrasWebhooksIndexRouteHandler)
+  .openapi(getApiExtrasWebhooksIdIndexRoute, getApiExtrasWebhooksIdIndexRouteHandler)
+  .openapi(putApiExtrasWebhooksIdIndexRoute, putApiExtrasWebhooksIdIndexRouteHandler)
+  .openapi(patchApiExtrasWebhooksIdIndexRoute, patchApiExtrasWebhooksIdIndexRouteHandler)
+  .openapi(deleteApiExtrasWebhooksIdIndexRoute, deleteApiExtrasWebhooksIdIndexRouteHandler)
+  .openapi(getApiIpamAggregatesIndexRoute, getApiIpamAggregatesIndexRouteHandler)
+  .openapi(postApiIpamAggregatesIndexRoute, postApiIpamAggregatesIndexRouteHandler)
+  .openapi(putApiIpamAggregatesIndexRoute, putApiIpamAggregatesIndexRouteHandler)
+  .openapi(patchApiIpamAggregatesIndexRoute, patchApiIpamAggregatesIndexRouteHandler)
+  .openapi(deleteApiIpamAggregatesIndexRoute, deleteApiIpamAggregatesIndexRouteHandler)
+  .openapi(getApiIpamAggregatesIdIndexRoute, getApiIpamAggregatesIdIndexRouteHandler)
+  .openapi(putApiIpamAggregatesIdIndexRoute, putApiIpamAggregatesIdIndexRouteHandler)
+  .openapi(patchApiIpamAggregatesIdIndexRoute, patchApiIpamAggregatesIdIndexRouteHandler)
+  .openapi(deleteApiIpamAggregatesIdIndexRoute, deleteApiIpamAggregatesIdIndexRouteHandler)
+  .openapi(getApiIpamAsnRangesIndexRoute, getApiIpamAsnRangesIndexRouteHandler)
+  .openapi(postApiIpamAsnRangesIndexRoute, postApiIpamAsnRangesIndexRouteHandler)
+  .openapi(putApiIpamAsnRangesIndexRoute, putApiIpamAsnRangesIndexRouteHandler)
+  .openapi(patchApiIpamAsnRangesIndexRoute, patchApiIpamAsnRangesIndexRouteHandler)
+  .openapi(deleteApiIpamAsnRangesIndexRoute, deleteApiIpamAsnRangesIndexRouteHandler)
+  .openapi(getApiIpamAsnRangesIdIndexRoute, getApiIpamAsnRangesIdIndexRouteHandler)
+  .openapi(putApiIpamAsnRangesIdIndexRoute, putApiIpamAsnRangesIdIndexRouteHandler)
+  .openapi(patchApiIpamAsnRangesIdIndexRoute, patchApiIpamAsnRangesIdIndexRouteHandler)
+  .openapi(deleteApiIpamAsnRangesIdIndexRoute, deleteApiIpamAsnRangesIdIndexRouteHandler)
+  .openapi(
+    getApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+    getApiIpamAsnRangesIdAvailableAsnsIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamAsnRangesIdAvailableAsnsIndexRoute,
+    postApiIpamAsnRangesIdAvailableAsnsIndexRouteHandler,
+  )
+  .openapi(getApiIpamAsnsIndexRoute, getApiIpamAsnsIndexRouteHandler)
+  .openapi(postApiIpamAsnsIndexRoute, postApiIpamAsnsIndexRouteHandler)
+  .openapi(putApiIpamAsnsIndexRoute, putApiIpamAsnsIndexRouteHandler)
+  .openapi(patchApiIpamAsnsIndexRoute, patchApiIpamAsnsIndexRouteHandler)
+  .openapi(deleteApiIpamAsnsIndexRoute, deleteApiIpamAsnsIndexRouteHandler)
+  .openapi(getApiIpamAsnsIdIndexRoute, getApiIpamAsnsIdIndexRouteHandler)
+  .openapi(putApiIpamAsnsIdIndexRoute, putApiIpamAsnsIdIndexRouteHandler)
+  .openapi(patchApiIpamAsnsIdIndexRoute, patchApiIpamAsnsIdIndexRouteHandler)
+  .openapi(deleteApiIpamAsnsIdIndexRoute, deleteApiIpamAsnsIdIndexRouteHandler)
+  .openapi(
+    getApiIpamFhrpGroupAssignmentsIndexRoute,
+    getApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamFhrpGroupAssignmentsIndexRoute,
+    postApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamFhrpGroupAssignmentsIndexRoute,
+    putApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamFhrpGroupAssignmentsIndexRoute,
+    patchApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamFhrpGroupAssignmentsIndexRoute,
+    deleteApiIpamFhrpGroupAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamFhrpGroupAssignmentsIdIndexRoute,
+    getApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamFhrpGroupAssignmentsIdIndexRoute,
+    putApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamFhrpGroupAssignmentsIdIndexRoute,
+    patchApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamFhrpGroupAssignmentsIdIndexRoute,
+    deleteApiIpamFhrpGroupAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(getApiIpamFhrpGroupsIndexRoute, getApiIpamFhrpGroupsIndexRouteHandler)
+  .openapi(postApiIpamFhrpGroupsIndexRoute, postApiIpamFhrpGroupsIndexRouteHandler)
+  .openapi(putApiIpamFhrpGroupsIndexRoute, putApiIpamFhrpGroupsIndexRouteHandler)
+  .openapi(patchApiIpamFhrpGroupsIndexRoute, patchApiIpamFhrpGroupsIndexRouteHandler)
+  .openapi(deleteApiIpamFhrpGroupsIndexRoute, deleteApiIpamFhrpGroupsIndexRouteHandler)
+  .openapi(getApiIpamFhrpGroupsIdIndexRoute, getApiIpamFhrpGroupsIdIndexRouteHandler)
+  .openapi(putApiIpamFhrpGroupsIdIndexRoute, putApiIpamFhrpGroupsIdIndexRouteHandler)
+  .openapi(patchApiIpamFhrpGroupsIdIndexRoute, patchApiIpamFhrpGroupsIdIndexRouteHandler)
+  .openapi(deleteApiIpamFhrpGroupsIdIndexRoute, deleteApiIpamFhrpGroupsIdIndexRouteHandler)
+  .openapi(getApiIpamIpAddressesIndexRoute, getApiIpamIpAddressesIndexRouteHandler)
+  .openapi(postApiIpamIpAddressesIndexRoute, postApiIpamIpAddressesIndexRouteHandler)
+  .openapi(putApiIpamIpAddressesIndexRoute, putApiIpamIpAddressesIndexRouteHandler)
+  .openapi(patchApiIpamIpAddressesIndexRoute, patchApiIpamIpAddressesIndexRouteHandler)
+  .openapi(deleteApiIpamIpAddressesIndexRoute, deleteApiIpamIpAddressesIndexRouteHandler)
+  .openapi(getApiIpamIpAddressesIdIndexRoute, getApiIpamIpAddressesIdIndexRouteHandler)
+  .openapi(putApiIpamIpAddressesIdIndexRoute, putApiIpamIpAddressesIdIndexRouteHandler)
+  .openapi(patchApiIpamIpAddressesIdIndexRoute, patchApiIpamIpAddressesIdIndexRouteHandler)
+  .openapi(deleteApiIpamIpAddressesIdIndexRoute, deleteApiIpamIpAddressesIdIndexRouteHandler)
+  .openapi(getApiIpamIpRangesIndexRoute, getApiIpamIpRangesIndexRouteHandler)
+  .openapi(postApiIpamIpRangesIndexRoute, postApiIpamIpRangesIndexRouteHandler)
+  .openapi(putApiIpamIpRangesIndexRoute, putApiIpamIpRangesIndexRouteHandler)
+  .openapi(patchApiIpamIpRangesIndexRoute, patchApiIpamIpRangesIndexRouteHandler)
+  .openapi(deleteApiIpamIpRangesIndexRoute, deleteApiIpamIpRangesIndexRouteHandler)
+  .openapi(getApiIpamIpRangesIdIndexRoute, getApiIpamIpRangesIdIndexRouteHandler)
+  .openapi(putApiIpamIpRangesIdIndexRoute, putApiIpamIpRangesIdIndexRouteHandler)
+  .openapi(patchApiIpamIpRangesIdIndexRoute, patchApiIpamIpRangesIdIndexRouteHandler)
+  .openapi(deleteApiIpamIpRangesIdIndexRoute, deleteApiIpamIpRangesIdIndexRouteHandler)
+  .openapi(
+    getApiIpamIpRangesIdAvailableIpsIndexRoute,
+    getApiIpamIpRangesIdAvailableIpsIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamIpRangesIdAvailableIpsIndexRoute,
+    postApiIpamIpRangesIdAvailableIpsIndexRouteHandler,
+  )
+  .openapi(getApiIpamPrefixesIndexRoute, getApiIpamPrefixesIndexRouteHandler)
+  .openapi(postApiIpamPrefixesIndexRoute, postApiIpamPrefixesIndexRouteHandler)
+  .openapi(putApiIpamPrefixesIndexRoute, putApiIpamPrefixesIndexRouteHandler)
+  .openapi(patchApiIpamPrefixesIndexRoute, patchApiIpamPrefixesIndexRouteHandler)
+  .openapi(deleteApiIpamPrefixesIndexRoute, deleteApiIpamPrefixesIndexRouteHandler)
+  .openapi(getApiIpamPrefixesIdIndexRoute, getApiIpamPrefixesIdIndexRouteHandler)
+  .openapi(putApiIpamPrefixesIdIndexRoute, putApiIpamPrefixesIdIndexRouteHandler)
+  .openapi(patchApiIpamPrefixesIdIndexRoute, patchApiIpamPrefixesIdIndexRouteHandler)
+  .openapi(deleteApiIpamPrefixesIdIndexRoute, deleteApiIpamPrefixesIdIndexRouteHandler)
+  .openapi(
+    getApiIpamPrefixesIdAvailableIpsIndexRoute,
+    getApiIpamPrefixesIdAvailableIpsIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamPrefixesIdAvailableIpsIndexRoute,
+    postApiIpamPrefixesIdAvailableIpsIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+    getApiIpamPrefixesIdAvailablePrefixesIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamPrefixesIdAvailablePrefixesIndexRoute,
+    postApiIpamPrefixesIdAvailablePrefixesIndexRouteHandler,
+  )
+  .openapi(getApiIpamRirsIndexRoute, getApiIpamRirsIndexRouteHandler)
+  .openapi(postApiIpamRirsIndexRoute, postApiIpamRirsIndexRouteHandler)
+  .openapi(putApiIpamRirsIndexRoute, putApiIpamRirsIndexRouteHandler)
+  .openapi(patchApiIpamRirsIndexRoute, patchApiIpamRirsIndexRouteHandler)
+  .openapi(deleteApiIpamRirsIndexRoute, deleteApiIpamRirsIndexRouteHandler)
+  .openapi(getApiIpamRirsIdIndexRoute, getApiIpamRirsIdIndexRouteHandler)
+  .openapi(putApiIpamRirsIdIndexRoute, putApiIpamRirsIdIndexRouteHandler)
+  .openapi(patchApiIpamRirsIdIndexRoute, patchApiIpamRirsIdIndexRouteHandler)
+  .openapi(deleteApiIpamRirsIdIndexRoute, deleteApiIpamRirsIdIndexRouteHandler)
+  .openapi(getApiIpamRolesIndexRoute, getApiIpamRolesIndexRouteHandler)
+  .openapi(postApiIpamRolesIndexRoute, postApiIpamRolesIndexRouteHandler)
+  .openapi(putApiIpamRolesIndexRoute, putApiIpamRolesIndexRouteHandler)
+  .openapi(patchApiIpamRolesIndexRoute, patchApiIpamRolesIndexRouteHandler)
+  .openapi(deleteApiIpamRolesIndexRoute, deleteApiIpamRolesIndexRouteHandler)
+  .openapi(getApiIpamRolesIdIndexRoute, getApiIpamRolesIdIndexRouteHandler)
+  .openapi(putApiIpamRolesIdIndexRoute, putApiIpamRolesIdIndexRouteHandler)
+  .openapi(patchApiIpamRolesIdIndexRoute, patchApiIpamRolesIdIndexRouteHandler)
+  .openapi(deleteApiIpamRolesIdIndexRoute, deleteApiIpamRolesIdIndexRouteHandler)
+  .openapi(getApiIpamRouteTargetsIndexRoute, getApiIpamRouteTargetsIndexRouteHandler)
+  .openapi(postApiIpamRouteTargetsIndexRoute, postApiIpamRouteTargetsIndexRouteHandler)
+  .openapi(putApiIpamRouteTargetsIndexRoute, putApiIpamRouteTargetsIndexRouteHandler)
+  .openapi(patchApiIpamRouteTargetsIndexRoute, patchApiIpamRouteTargetsIndexRouteHandler)
+  .openapi(deleteApiIpamRouteTargetsIndexRoute, deleteApiIpamRouteTargetsIndexRouteHandler)
+  .openapi(getApiIpamRouteTargetsIdIndexRoute, getApiIpamRouteTargetsIdIndexRouteHandler)
+  .openapi(putApiIpamRouteTargetsIdIndexRoute, putApiIpamRouteTargetsIdIndexRouteHandler)
+  .openapi(patchApiIpamRouteTargetsIdIndexRoute, patchApiIpamRouteTargetsIdIndexRouteHandler)
+  .openapi(deleteApiIpamRouteTargetsIdIndexRoute, deleteApiIpamRouteTargetsIdIndexRouteHandler)
+  .openapi(getApiIpamServiceTemplatesIndexRoute, getApiIpamServiceTemplatesIndexRouteHandler)
+  .openapi(postApiIpamServiceTemplatesIndexRoute, postApiIpamServiceTemplatesIndexRouteHandler)
+  .openapi(putApiIpamServiceTemplatesIndexRoute, putApiIpamServiceTemplatesIndexRouteHandler)
+  .openapi(patchApiIpamServiceTemplatesIndexRoute, patchApiIpamServiceTemplatesIndexRouteHandler)
+  .openapi(deleteApiIpamServiceTemplatesIndexRoute, deleteApiIpamServiceTemplatesIndexRouteHandler)
+  .openapi(getApiIpamServiceTemplatesIdIndexRoute, getApiIpamServiceTemplatesIdIndexRouteHandler)
+  .openapi(putApiIpamServiceTemplatesIdIndexRoute, putApiIpamServiceTemplatesIdIndexRouteHandler)
+  .openapi(
+    patchApiIpamServiceTemplatesIdIndexRoute,
+    patchApiIpamServiceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamServiceTemplatesIdIndexRoute,
+    deleteApiIpamServiceTemplatesIdIndexRouteHandler,
+  )
+  .openapi(getApiIpamServicesIndexRoute, getApiIpamServicesIndexRouteHandler)
+  .openapi(postApiIpamServicesIndexRoute, postApiIpamServicesIndexRouteHandler)
+  .openapi(putApiIpamServicesIndexRoute, putApiIpamServicesIndexRouteHandler)
+  .openapi(patchApiIpamServicesIndexRoute, patchApiIpamServicesIndexRouteHandler)
+  .openapi(deleteApiIpamServicesIndexRoute, deleteApiIpamServicesIndexRouteHandler)
+  .openapi(getApiIpamServicesIdIndexRoute, getApiIpamServicesIdIndexRouteHandler)
+  .openapi(putApiIpamServicesIdIndexRoute, putApiIpamServicesIdIndexRouteHandler)
+  .openapi(patchApiIpamServicesIdIndexRoute, patchApiIpamServicesIdIndexRouteHandler)
+  .openapi(deleteApiIpamServicesIdIndexRoute, deleteApiIpamServicesIdIndexRouteHandler)
+  .openapi(getApiIpamVlanGroupsIndexRoute, getApiIpamVlanGroupsIndexRouteHandler)
+  .openapi(postApiIpamVlanGroupsIndexRoute, postApiIpamVlanGroupsIndexRouteHandler)
+  .openapi(putApiIpamVlanGroupsIndexRoute, putApiIpamVlanGroupsIndexRouteHandler)
+  .openapi(patchApiIpamVlanGroupsIndexRoute, patchApiIpamVlanGroupsIndexRouteHandler)
+  .openapi(deleteApiIpamVlanGroupsIndexRoute, deleteApiIpamVlanGroupsIndexRouteHandler)
+  .openapi(getApiIpamVlanGroupsIdIndexRoute, getApiIpamVlanGroupsIdIndexRouteHandler)
+  .openapi(putApiIpamVlanGroupsIdIndexRoute, putApiIpamVlanGroupsIdIndexRouteHandler)
+  .openapi(patchApiIpamVlanGroupsIdIndexRoute, patchApiIpamVlanGroupsIdIndexRouteHandler)
+  .openapi(deleteApiIpamVlanGroupsIdIndexRoute, deleteApiIpamVlanGroupsIdIndexRouteHandler)
+  .openapi(
+    getApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+    getApiIpamVlanGroupsIdAvailableVlansIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamVlanGroupsIdAvailableVlansIndexRoute,
+    postApiIpamVlanGroupsIdAvailableVlansIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamVlanTranslationPoliciesIndexRoute,
+    getApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamVlanTranslationPoliciesIndexRoute,
+    postApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamVlanTranslationPoliciesIndexRoute,
+    putApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamVlanTranslationPoliciesIndexRoute,
+    patchApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamVlanTranslationPoliciesIndexRoute,
+    deleteApiIpamVlanTranslationPoliciesIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamVlanTranslationPoliciesIdIndexRoute,
+    getApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamVlanTranslationPoliciesIdIndexRoute,
+    putApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamVlanTranslationPoliciesIdIndexRoute,
+    patchApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamVlanTranslationPoliciesIdIndexRoute,
+    deleteApiIpamVlanTranslationPoliciesIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamVlanTranslationRulesIndexRoute,
+    getApiIpamVlanTranslationRulesIndexRouteHandler,
+  )
+  .openapi(
+    postApiIpamVlanTranslationRulesIndexRoute,
+    postApiIpamVlanTranslationRulesIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamVlanTranslationRulesIndexRoute,
+    putApiIpamVlanTranslationRulesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamVlanTranslationRulesIndexRoute,
+    patchApiIpamVlanTranslationRulesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamVlanTranslationRulesIndexRoute,
+    deleteApiIpamVlanTranslationRulesIndexRouteHandler,
+  )
+  .openapi(
+    getApiIpamVlanTranslationRulesIdIndexRoute,
+    getApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiIpamVlanTranslationRulesIdIndexRoute,
+    putApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiIpamVlanTranslationRulesIdIndexRoute,
+    patchApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiIpamVlanTranslationRulesIdIndexRoute,
+    deleteApiIpamVlanTranslationRulesIdIndexRouteHandler,
+  )
+  .openapi(getApiIpamVlansIndexRoute, getApiIpamVlansIndexRouteHandler)
+  .openapi(postApiIpamVlansIndexRoute, postApiIpamVlansIndexRouteHandler)
+  .openapi(putApiIpamVlansIndexRoute, putApiIpamVlansIndexRouteHandler)
+  .openapi(patchApiIpamVlansIndexRoute, patchApiIpamVlansIndexRouteHandler)
+  .openapi(deleteApiIpamVlansIndexRoute, deleteApiIpamVlansIndexRouteHandler)
+  .openapi(getApiIpamVlansIdIndexRoute, getApiIpamVlansIdIndexRouteHandler)
+  .openapi(putApiIpamVlansIdIndexRoute, putApiIpamVlansIdIndexRouteHandler)
+  .openapi(patchApiIpamVlansIdIndexRoute, patchApiIpamVlansIdIndexRouteHandler)
+  .openapi(deleteApiIpamVlansIdIndexRoute, deleteApiIpamVlansIdIndexRouteHandler)
+  .openapi(getApiIpamVrfsIndexRoute, getApiIpamVrfsIndexRouteHandler)
+  .openapi(postApiIpamVrfsIndexRoute, postApiIpamVrfsIndexRouteHandler)
+  .openapi(putApiIpamVrfsIndexRoute, putApiIpamVrfsIndexRouteHandler)
+  .openapi(patchApiIpamVrfsIndexRoute, patchApiIpamVrfsIndexRouteHandler)
+  .openapi(deleteApiIpamVrfsIndexRoute, deleteApiIpamVrfsIndexRouteHandler)
+  .openapi(getApiIpamVrfsIdIndexRoute, getApiIpamVrfsIdIndexRouteHandler)
+  .openapi(putApiIpamVrfsIdIndexRoute, putApiIpamVrfsIdIndexRouteHandler)
+  .openapi(patchApiIpamVrfsIdIndexRoute, patchApiIpamVrfsIdIndexRouteHandler)
+  .openapi(deleteApiIpamVrfsIdIndexRoute, deleteApiIpamVrfsIdIndexRouteHandler)
+  .openapi(getApiSchemaIndexRoute, getApiSchemaIndexRouteHandler)
+  .openapi(getApiStatusIndexRoute, getApiStatusIndexRouteHandler)
+  .openapi(
+    getApiTenancyContactAssignmentsIndexRoute,
+    getApiTenancyContactAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    postApiTenancyContactAssignmentsIndexRoute,
+    postApiTenancyContactAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    putApiTenancyContactAssignmentsIndexRoute,
+    putApiTenancyContactAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiTenancyContactAssignmentsIndexRoute,
+    patchApiTenancyContactAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiTenancyContactAssignmentsIndexRoute,
+    deleteApiTenancyContactAssignmentsIndexRouteHandler,
+  )
+  .openapi(
+    getApiTenancyContactAssignmentsIdIndexRoute,
+    getApiTenancyContactAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiTenancyContactAssignmentsIdIndexRoute,
+    putApiTenancyContactAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiTenancyContactAssignmentsIdIndexRoute,
+    patchApiTenancyContactAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiTenancyContactAssignmentsIdIndexRoute,
+    deleteApiTenancyContactAssignmentsIdIndexRouteHandler,
+  )
+  .openapi(getApiTenancyContactGroupsIndexRoute, getApiTenancyContactGroupsIndexRouteHandler)
+  .openapi(postApiTenancyContactGroupsIndexRoute, postApiTenancyContactGroupsIndexRouteHandler)
+  .openapi(putApiTenancyContactGroupsIndexRoute, putApiTenancyContactGroupsIndexRouteHandler)
+  .openapi(patchApiTenancyContactGroupsIndexRoute, patchApiTenancyContactGroupsIndexRouteHandler)
+  .openapi(deleteApiTenancyContactGroupsIndexRoute, deleteApiTenancyContactGroupsIndexRouteHandler)
+  .openapi(getApiTenancyContactGroupsIdIndexRoute, getApiTenancyContactGroupsIdIndexRouteHandler)
+  .openapi(putApiTenancyContactGroupsIdIndexRoute, putApiTenancyContactGroupsIdIndexRouteHandler)
+  .openapi(
+    patchApiTenancyContactGroupsIdIndexRoute,
+    patchApiTenancyContactGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiTenancyContactGroupsIdIndexRoute,
+    deleteApiTenancyContactGroupsIdIndexRouteHandler,
+  )
+  .openapi(getApiTenancyContactRolesIndexRoute, getApiTenancyContactRolesIndexRouteHandler)
+  .openapi(postApiTenancyContactRolesIndexRoute, postApiTenancyContactRolesIndexRouteHandler)
+  .openapi(putApiTenancyContactRolesIndexRoute, putApiTenancyContactRolesIndexRouteHandler)
+  .openapi(patchApiTenancyContactRolesIndexRoute, patchApiTenancyContactRolesIndexRouteHandler)
+  .openapi(deleteApiTenancyContactRolesIndexRoute, deleteApiTenancyContactRolesIndexRouteHandler)
+  .openapi(getApiTenancyContactRolesIdIndexRoute, getApiTenancyContactRolesIdIndexRouteHandler)
+  .openapi(putApiTenancyContactRolesIdIndexRoute, putApiTenancyContactRolesIdIndexRouteHandler)
+  .openapi(patchApiTenancyContactRolesIdIndexRoute, patchApiTenancyContactRolesIdIndexRouteHandler)
+  .openapi(
+    deleteApiTenancyContactRolesIdIndexRoute,
+    deleteApiTenancyContactRolesIdIndexRouteHandler,
+  )
+  .openapi(getApiTenancyContactsIndexRoute, getApiTenancyContactsIndexRouteHandler)
+  .openapi(postApiTenancyContactsIndexRoute, postApiTenancyContactsIndexRouteHandler)
+  .openapi(putApiTenancyContactsIndexRoute, putApiTenancyContactsIndexRouteHandler)
+  .openapi(patchApiTenancyContactsIndexRoute, patchApiTenancyContactsIndexRouteHandler)
+  .openapi(deleteApiTenancyContactsIndexRoute, deleteApiTenancyContactsIndexRouteHandler)
+  .openapi(getApiTenancyContactsIdIndexRoute, getApiTenancyContactsIdIndexRouteHandler)
+  .openapi(putApiTenancyContactsIdIndexRoute, putApiTenancyContactsIdIndexRouteHandler)
+  .openapi(patchApiTenancyContactsIdIndexRoute, patchApiTenancyContactsIdIndexRouteHandler)
+  .openapi(deleteApiTenancyContactsIdIndexRoute, deleteApiTenancyContactsIdIndexRouteHandler)
+  .openapi(getApiTenancyTenantGroupsIndexRoute, getApiTenancyTenantGroupsIndexRouteHandler)
+  .openapi(postApiTenancyTenantGroupsIndexRoute, postApiTenancyTenantGroupsIndexRouteHandler)
+  .openapi(putApiTenancyTenantGroupsIndexRoute, putApiTenancyTenantGroupsIndexRouteHandler)
+  .openapi(patchApiTenancyTenantGroupsIndexRoute, patchApiTenancyTenantGroupsIndexRouteHandler)
+  .openapi(deleteApiTenancyTenantGroupsIndexRoute, deleteApiTenancyTenantGroupsIndexRouteHandler)
+  .openapi(getApiTenancyTenantGroupsIdIndexRoute, getApiTenancyTenantGroupsIdIndexRouteHandler)
+  .openapi(putApiTenancyTenantGroupsIdIndexRoute, putApiTenancyTenantGroupsIdIndexRouteHandler)
+  .openapi(patchApiTenancyTenantGroupsIdIndexRoute, patchApiTenancyTenantGroupsIdIndexRouteHandler)
+  .openapi(
+    deleteApiTenancyTenantGroupsIdIndexRoute,
+    deleteApiTenancyTenantGroupsIdIndexRouteHandler,
+  )
+  .openapi(getApiTenancyTenantsIndexRoute, getApiTenancyTenantsIndexRouteHandler)
+  .openapi(postApiTenancyTenantsIndexRoute, postApiTenancyTenantsIndexRouteHandler)
+  .openapi(putApiTenancyTenantsIndexRoute, putApiTenancyTenantsIndexRouteHandler)
+  .openapi(patchApiTenancyTenantsIndexRoute, patchApiTenancyTenantsIndexRouteHandler)
+  .openapi(deleteApiTenancyTenantsIndexRoute, deleteApiTenancyTenantsIndexRouteHandler)
+  .openapi(getApiTenancyTenantsIdIndexRoute, getApiTenancyTenantsIdIndexRouteHandler)
+  .openapi(putApiTenancyTenantsIdIndexRoute, putApiTenancyTenantsIdIndexRouteHandler)
+  .openapi(patchApiTenancyTenantsIdIndexRoute, patchApiTenancyTenantsIdIndexRouteHandler)
+  .openapi(deleteApiTenancyTenantsIdIndexRoute, deleteApiTenancyTenantsIdIndexRouteHandler)
+  .openapi(getApiUsersConfigIndexRoute, getApiUsersConfigIndexRouteHandler)
+  .openapi(getApiUsersGroupsIndexRoute, getApiUsersGroupsIndexRouteHandler)
+  .openapi(postApiUsersGroupsIndexRoute, postApiUsersGroupsIndexRouteHandler)
+  .openapi(putApiUsersGroupsIndexRoute, putApiUsersGroupsIndexRouteHandler)
+  .openapi(patchApiUsersGroupsIndexRoute, patchApiUsersGroupsIndexRouteHandler)
+  .openapi(deleteApiUsersGroupsIndexRoute, deleteApiUsersGroupsIndexRouteHandler)
+  .openapi(getApiUsersGroupsIdIndexRoute, getApiUsersGroupsIdIndexRouteHandler)
+  .openapi(putApiUsersGroupsIdIndexRoute, putApiUsersGroupsIdIndexRouteHandler)
+  .openapi(patchApiUsersGroupsIdIndexRoute, patchApiUsersGroupsIdIndexRouteHandler)
+  .openapi(deleteApiUsersGroupsIdIndexRoute, deleteApiUsersGroupsIdIndexRouteHandler)
+  .openapi(getApiUsersOwnerGroupsIndexRoute, getApiUsersOwnerGroupsIndexRouteHandler)
+  .openapi(postApiUsersOwnerGroupsIndexRoute, postApiUsersOwnerGroupsIndexRouteHandler)
+  .openapi(putApiUsersOwnerGroupsIndexRoute, putApiUsersOwnerGroupsIndexRouteHandler)
+  .openapi(patchApiUsersOwnerGroupsIndexRoute, patchApiUsersOwnerGroupsIndexRouteHandler)
+  .openapi(deleteApiUsersOwnerGroupsIndexRoute, deleteApiUsersOwnerGroupsIndexRouteHandler)
+  .openapi(getApiUsersOwnerGroupsIdIndexRoute, getApiUsersOwnerGroupsIdIndexRouteHandler)
+  .openapi(putApiUsersOwnerGroupsIdIndexRoute, putApiUsersOwnerGroupsIdIndexRouteHandler)
+  .openapi(patchApiUsersOwnerGroupsIdIndexRoute, patchApiUsersOwnerGroupsIdIndexRouteHandler)
+  .openapi(deleteApiUsersOwnerGroupsIdIndexRoute, deleteApiUsersOwnerGroupsIdIndexRouteHandler)
+  .openapi(getApiUsersOwnersIndexRoute, getApiUsersOwnersIndexRouteHandler)
+  .openapi(postApiUsersOwnersIndexRoute, postApiUsersOwnersIndexRouteHandler)
+  .openapi(putApiUsersOwnersIndexRoute, putApiUsersOwnersIndexRouteHandler)
+  .openapi(patchApiUsersOwnersIndexRoute, patchApiUsersOwnersIndexRouteHandler)
+  .openapi(deleteApiUsersOwnersIndexRoute, deleteApiUsersOwnersIndexRouteHandler)
+  .openapi(getApiUsersOwnersIdIndexRoute, getApiUsersOwnersIdIndexRouteHandler)
+  .openapi(putApiUsersOwnersIdIndexRoute, putApiUsersOwnersIdIndexRouteHandler)
+  .openapi(patchApiUsersOwnersIdIndexRoute, patchApiUsersOwnersIdIndexRouteHandler)
+  .openapi(deleteApiUsersOwnersIdIndexRoute, deleteApiUsersOwnersIdIndexRouteHandler)
+  .openapi(getApiUsersPermissionsIndexRoute, getApiUsersPermissionsIndexRouteHandler)
+  .openapi(postApiUsersPermissionsIndexRoute, postApiUsersPermissionsIndexRouteHandler)
+  .openapi(putApiUsersPermissionsIndexRoute, putApiUsersPermissionsIndexRouteHandler)
+  .openapi(patchApiUsersPermissionsIndexRoute, patchApiUsersPermissionsIndexRouteHandler)
+  .openapi(deleteApiUsersPermissionsIndexRoute, deleteApiUsersPermissionsIndexRouteHandler)
+  .openapi(getApiUsersPermissionsIdIndexRoute, getApiUsersPermissionsIdIndexRouteHandler)
+  .openapi(putApiUsersPermissionsIdIndexRoute, putApiUsersPermissionsIdIndexRouteHandler)
+  .openapi(patchApiUsersPermissionsIdIndexRoute, patchApiUsersPermissionsIdIndexRouteHandler)
+  .openapi(deleteApiUsersPermissionsIdIndexRoute, deleteApiUsersPermissionsIdIndexRouteHandler)
+  .openapi(getApiUsersTokensIndexRoute, getApiUsersTokensIndexRouteHandler)
+  .openapi(postApiUsersTokensIndexRoute, postApiUsersTokensIndexRouteHandler)
+  .openapi(putApiUsersTokensIndexRoute, putApiUsersTokensIndexRouteHandler)
+  .openapi(patchApiUsersTokensIndexRoute, patchApiUsersTokensIndexRouteHandler)
+  .openapi(deleteApiUsersTokensIndexRoute, deleteApiUsersTokensIndexRouteHandler)
+  .openapi(getApiUsersTokensIdIndexRoute, getApiUsersTokensIdIndexRouteHandler)
+  .openapi(putApiUsersTokensIdIndexRoute, putApiUsersTokensIdIndexRouteHandler)
+  .openapi(patchApiUsersTokensIdIndexRoute, patchApiUsersTokensIdIndexRouteHandler)
+  .openapi(deleteApiUsersTokensIdIndexRoute, deleteApiUsersTokensIdIndexRouteHandler)
+  .openapi(postApiUsersTokensProvisionIndexRoute, postApiUsersTokensProvisionIndexRouteHandler)
+  .openapi(getApiUsersUsersIndexRoute, getApiUsersUsersIndexRouteHandler)
+  .openapi(postApiUsersUsersIndexRoute, postApiUsersUsersIndexRouteHandler)
+  .openapi(putApiUsersUsersIndexRoute, putApiUsersUsersIndexRouteHandler)
+  .openapi(patchApiUsersUsersIndexRoute, patchApiUsersUsersIndexRouteHandler)
+  .openapi(deleteApiUsersUsersIndexRoute, deleteApiUsersUsersIndexRouteHandler)
+  .openapi(getApiUsersUsersIdIndexRoute, getApiUsersUsersIdIndexRouteHandler)
+  .openapi(putApiUsersUsersIdIndexRoute, putApiUsersUsersIdIndexRouteHandler)
+  .openapi(patchApiUsersUsersIdIndexRoute, patchApiUsersUsersIdIndexRouteHandler)
+  .openapi(deleteApiUsersUsersIdIndexRoute, deleteApiUsersUsersIdIndexRouteHandler)
+  .openapi(
+    getApiVirtualizationClusterGroupsIndexRoute,
+    getApiVirtualizationClusterGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationClusterGroupsIndexRoute,
+    postApiVirtualizationClusterGroupsIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationClusterGroupsIndexRoute,
+    putApiVirtualizationClusterGroupsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationClusterGroupsIndexRoute,
+    patchApiVirtualizationClusterGroupsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClusterGroupsIndexRoute,
+    deleteApiVirtualizationClusterGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationClusterGroupsIdIndexRoute,
+    getApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationClusterGroupsIdIndexRoute,
+    putApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationClusterGroupsIdIndexRoute,
+    patchApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClusterGroupsIdIndexRoute,
+    deleteApiVirtualizationClusterGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationClusterTypesIndexRoute,
+    getApiVirtualizationClusterTypesIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationClusterTypesIndexRoute,
+    postApiVirtualizationClusterTypesIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationClusterTypesIndexRoute,
+    putApiVirtualizationClusterTypesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationClusterTypesIndexRoute,
+    patchApiVirtualizationClusterTypesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClusterTypesIndexRoute,
+    deleteApiVirtualizationClusterTypesIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationClusterTypesIdIndexRoute,
+    getApiVirtualizationClusterTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationClusterTypesIdIndexRoute,
+    putApiVirtualizationClusterTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationClusterTypesIdIndexRoute,
+    patchApiVirtualizationClusterTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClusterTypesIdIndexRoute,
+    deleteApiVirtualizationClusterTypesIdIndexRouteHandler,
+  )
+  .openapi(getApiVirtualizationClustersIndexRoute, getApiVirtualizationClustersIndexRouteHandler)
+  .openapi(postApiVirtualizationClustersIndexRoute, postApiVirtualizationClustersIndexRouteHandler)
+  .openapi(putApiVirtualizationClustersIndexRoute, putApiVirtualizationClustersIndexRouteHandler)
+  .openapi(
+    patchApiVirtualizationClustersIndexRoute,
+    patchApiVirtualizationClustersIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClustersIndexRoute,
+    deleteApiVirtualizationClustersIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationClustersIdIndexRoute,
+    getApiVirtualizationClustersIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationClustersIdIndexRoute,
+    putApiVirtualizationClustersIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationClustersIdIndexRoute,
+    patchApiVirtualizationClustersIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationClustersIdIndexRoute,
+    deleteApiVirtualizationClustersIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationInterfacesIndexRoute,
+    getApiVirtualizationInterfacesIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationInterfacesIndexRoute,
+    postApiVirtualizationInterfacesIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationInterfacesIndexRoute,
+    putApiVirtualizationInterfacesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationInterfacesIndexRoute,
+    patchApiVirtualizationInterfacesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationInterfacesIndexRoute,
+    deleteApiVirtualizationInterfacesIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationInterfacesIdIndexRoute,
+    getApiVirtualizationInterfacesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationInterfacesIdIndexRoute,
+    putApiVirtualizationInterfacesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationInterfacesIdIndexRoute,
+    patchApiVirtualizationInterfacesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationInterfacesIdIndexRoute,
+    deleteApiVirtualizationInterfacesIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualDisksIndexRoute,
+    getApiVirtualizationVirtualDisksIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationVirtualDisksIndexRoute,
+    postApiVirtualizationVirtualDisksIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualDisksIndexRoute,
+    putApiVirtualizationVirtualDisksIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualDisksIndexRoute,
+    patchApiVirtualizationVirtualDisksIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualDisksIndexRoute,
+    deleteApiVirtualizationVirtualDisksIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualDisksIdIndexRoute,
+    getApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualDisksIdIndexRoute,
+    putApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualDisksIdIndexRoute,
+    patchApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualDisksIdIndexRoute,
+    deleteApiVirtualizationVirtualDisksIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualMachineTypesIndexRoute,
+    getApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationVirtualMachineTypesIndexRoute,
+    postApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualMachineTypesIndexRoute,
+    putApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualMachineTypesIndexRoute,
+    patchApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualMachineTypesIndexRoute,
+    deleteApiVirtualizationVirtualMachineTypesIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualMachineTypesIdIndexRoute,
+    getApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualMachineTypesIdIndexRoute,
+    putApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualMachineTypesIdIndexRoute,
+    patchApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualMachineTypesIdIndexRoute,
+    deleteApiVirtualizationVirtualMachineTypesIdIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualMachinesIndexRoute,
+    getApiVirtualizationVirtualMachinesIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationVirtualMachinesIndexRoute,
+    postApiVirtualizationVirtualMachinesIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualMachinesIndexRoute,
+    putApiVirtualizationVirtualMachinesIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualMachinesIndexRoute,
+    patchApiVirtualizationVirtualMachinesIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualMachinesIndexRoute,
+    deleteApiVirtualizationVirtualMachinesIndexRouteHandler,
+  )
+  .openapi(
+    getApiVirtualizationVirtualMachinesIdIndexRoute,
+    getApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiVirtualizationVirtualMachinesIdIndexRoute,
+    putApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiVirtualizationVirtualMachinesIdIndexRoute,
+    patchApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVirtualizationVirtualMachinesIdIndexRoute,
+    deleteApiVirtualizationVirtualMachinesIdIndexRouteHandler,
+  )
+  .openapi(
+    postApiVirtualizationVirtualMachinesIdRenderConfigIndexRoute,
+    postApiVirtualizationVirtualMachinesIdRenderConfigIndexRouteHandler,
+  )
+  .openapi(getApiVpnIkePoliciesIndexRoute, getApiVpnIkePoliciesIndexRouteHandler)
+  .openapi(postApiVpnIkePoliciesIndexRoute, postApiVpnIkePoliciesIndexRouteHandler)
+  .openapi(putApiVpnIkePoliciesIndexRoute, putApiVpnIkePoliciesIndexRouteHandler)
+  .openapi(patchApiVpnIkePoliciesIndexRoute, patchApiVpnIkePoliciesIndexRouteHandler)
+  .openapi(deleteApiVpnIkePoliciesIndexRoute, deleteApiVpnIkePoliciesIndexRouteHandler)
+  .openapi(getApiVpnIkePoliciesIdIndexRoute, getApiVpnIkePoliciesIdIndexRouteHandler)
+  .openapi(putApiVpnIkePoliciesIdIndexRoute, putApiVpnIkePoliciesIdIndexRouteHandler)
+  .openapi(patchApiVpnIkePoliciesIdIndexRoute, patchApiVpnIkePoliciesIdIndexRouteHandler)
+  .openapi(deleteApiVpnIkePoliciesIdIndexRoute, deleteApiVpnIkePoliciesIdIndexRouteHandler)
+  .openapi(getApiVpnIkeProposalsIndexRoute, getApiVpnIkeProposalsIndexRouteHandler)
+  .openapi(postApiVpnIkeProposalsIndexRoute, postApiVpnIkeProposalsIndexRouteHandler)
+  .openapi(putApiVpnIkeProposalsIndexRoute, putApiVpnIkeProposalsIndexRouteHandler)
+  .openapi(patchApiVpnIkeProposalsIndexRoute, patchApiVpnIkeProposalsIndexRouteHandler)
+  .openapi(deleteApiVpnIkeProposalsIndexRoute, deleteApiVpnIkeProposalsIndexRouteHandler)
+  .openapi(getApiVpnIkeProposalsIdIndexRoute, getApiVpnIkeProposalsIdIndexRouteHandler)
+  .openapi(putApiVpnIkeProposalsIdIndexRoute, putApiVpnIkeProposalsIdIndexRouteHandler)
+  .openapi(patchApiVpnIkeProposalsIdIndexRoute, patchApiVpnIkeProposalsIdIndexRouteHandler)
+  .openapi(deleteApiVpnIkeProposalsIdIndexRoute, deleteApiVpnIkeProposalsIdIndexRouteHandler)
+  .openapi(getApiVpnIpsecPoliciesIndexRoute, getApiVpnIpsecPoliciesIndexRouteHandler)
+  .openapi(postApiVpnIpsecPoliciesIndexRoute, postApiVpnIpsecPoliciesIndexRouteHandler)
+  .openapi(putApiVpnIpsecPoliciesIndexRoute, putApiVpnIpsecPoliciesIndexRouteHandler)
+  .openapi(patchApiVpnIpsecPoliciesIndexRoute, patchApiVpnIpsecPoliciesIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecPoliciesIndexRoute, deleteApiVpnIpsecPoliciesIndexRouteHandler)
+  .openapi(getApiVpnIpsecPoliciesIdIndexRoute, getApiVpnIpsecPoliciesIdIndexRouteHandler)
+  .openapi(putApiVpnIpsecPoliciesIdIndexRoute, putApiVpnIpsecPoliciesIdIndexRouteHandler)
+  .openapi(patchApiVpnIpsecPoliciesIdIndexRoute, patchApiVpnIpsecPoliciesIdIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecPoliciesIdIndexRoute, deleteApiVpnIpsecPoliciesIdIndexRouteHandler)
+  .openapi(getApiVpnIpsecProfilesIndexRoute, getApiVpnIpsecProfilesIndexRouteHandler)
+  .openapi(postApiVpnIpsecProfilesIndexRoute, postApiVpnIpsecProfilesIndexRouteHandler)
+  .openapi(putApiVpnIpsecProfilesIndexRoute, putApiVpnIpsecProfilesIndexRouteHandler)
+  .openapi(patchApiVpnIpsecProfilesIndexRoute, patchApiVpnIpsecProfilesIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecProfilesIndexRoute, deleteApiVpnIpsecProfilesIndexRouteHandler)
+  .openapi(getApiVpnIpsecProfilesIdIndexRoute, getApiVpnIpsecProfilesIdIndexRouteHandler)
+  .openapi(putApiVpnIpsecProfilesIdIndexRoute, putApiVpnIpsecProfilesIdIndexRouteHandler)
+  .openapi(patchApiVpnIpsecProfilesIdIndexRoute, patchApiVpnIpsecProfilesIdIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecProfilesIdIndexRoute, deleteApiVpnIpsecProfilesIdIndexRouteHandler)
+  .openapi(getApiVpnIpsecProposalsIndexRoute, getApiVpnIpsecProposalsIndexRouteHandler)
+  .openapi(postApiVpnIpsecProposalsIndexRoute, postApiVpnIpsecProposalsIndexRouteHandler)
+  .openapi(putApiVpnIpsecProposalsIndexRoute, putApiVpnIpsecProposalsIndexRouteHandler)
+  .openapi(patchApiVpnIpsecProposalsIndexRoute, patchApiVpnIpsecProposalsIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecProposalsIndexRoute, deleteApiVpnIpsecProposalsIndexRouteHandler)
+  .openapi(getApiVpnIpsecProposalsIdIndexRoute, getApiVpnIpsecProposalsIdIndexRouteHandler)
+  .openapi(putApiVpnIpsecProposalsIdIndexRoute, putApiVpnIpsecProposalsIdIndexRouteHandler)
+  .openapi(patchApiVpnIpsecProposalsIdIndexRoute, patchApiVpnIpsecProposalsIdIndexRouteHandler)
+  .openapi(deleteApiVpnIpsecProposalsIdIndexRoute, deleteApiVpnIpsecProposalsIdIndexRouteHandler)
+  .openapi(getApiVpnL2vpnTerminationsIndexRoute, getApiVpnL2vpnTerminationsIndexRouteHandler)
+  .openapi(postApiVpnL2vpnTerminationsIndexRoute, postApiVpnL2vpnTerminationsIndexRouteHandler)
+  .openapi(putApiVpnL2vpnTerminationsIndexRoute, putApiVpnL2vpnTerminationsIndexRouteHandler)
+  .openapi(patchApiVpnL2vpnTerminationsIndexRoute, patchApiVpnL2vpnTerminationsIndexRouteHandler)
+  .openapi(deleteApiVpnL2vpnTerminationsIndexRoute, deleteApiVpnL2vpnTerminationsIndexRouteHandler)
+  .openapi(getApiVpnL2vpnTerminationsIdIndexRoute, getApiVpnL2vpnTerminationsIdIndexRouteHandler)
+  .openapi(putApiVpnL2vpnTerminationsIdIndexRoute, putApiVpnL2vpnTerminationsIdIndexRouteHandler)
+  .openapi(
+    patchApiVpnL2vpnTerminationsIdIndexRoute,
+    patchApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVpnL2vpnTerminationsIdIndexRoute,
+    deleteApiVpnL2vpnTerminationsIdIndexRouteHandler,
+  )
+  .openapi(getApiVpnL2vpnsIndexRoute, getApiVpnL2vpnsIndexRouteHandler)
+  .openapi(postApiVpnL2vpnsIndexRoute, postApiVpnL2vpnsIndexRouteHandler)
+  .openapi(putApiVpnL2vpnsIndexRoute, putApiVpnL2vpnsIndexRouteHandler)
+  .openapi(patchApiVpnL2vpnsIndexRoute, patchApiVpnL2vpnsIndexRouteHandler)
+  .openapi(deleteApiVpnL2vpnsIndexRoute, deleteApiVpnL2vpnsIndexRouteHandler)
+  .openapi(getApiVpnL2vpnsIdIndexRoute, getApiVpnL2vpnsIdIndexRouteHandler)
+  .openapi(putApiVpnL2vpnsIdIndexRoute, putApiVpnL2vpnsIdIndexRouteHandler)
+  .openapi(patchApiVpnL2vpnsIdIndexRoute, patchApiVpnL2vpnsIdIndexRouteHandler)
+  .openapi(deleteApiVpnL2vpnsIdIndexRoute, deleteApiVpnL2vpnsIdIndexRouteHandler)
+  .openapi(getApiVpnTunnelGroupsIndexRoute, getApiVpnTunnelGroupsIndexRouteHandler)
+  .openapi(postApiVpnTunnelGroupsIndexRoute, postApiVpnTunnelGroupsIndexRouteHandler)
+  .openapi(putApiVpnTunnelGroupsIndexRoute, putApiVpnTunnelGroupsIndexRouteHandler)
+  .openapi(patchApiVpnTunnelGroupsIndexRoute, patchApiVpnTunnelGroupsIndexRouteHandler)
+  .openapi(deleteApiVpnTunnelGroupsIndexRoute, deleteApiVpnTunnelGroupsIndexRouteHandler)
+  .openapi(getApiVpnTunnelGroupsIdIndexRoute, getApiVpnTunnelGroupsIdIndexRouteHandler)
+  .openapi(putApiVpnTunnelGroupsIdIndexRoute, putApiVpnTunnelGroupsIdIndexRouteHandler)
+  .openapi(patchApiVpnTunnelGroupsIdIndexRoute, patchApiVpnTunnelGroupsIdIndexRouteHandler)
+  .openapi(deleteApiVpnTunnelGroupsIdIndexRoute, deleteApiVpnTunnelGroupsIdIndexRouteHandler)
+  .openapi(getApiVpnTunnelTerminationsIndexRoute, getApiVpnTunnelTerminationsIndexRouteHandler)
+  .openapi(postApiVpnTunnelTerminationsIndexRoute, postApiVpnTunnelTerminationsIndexRouteHandler)
+  .openapi(putApiVpnTunnelTerminationsIndexRoute, putApiVpnTunnelTerminationsIndexRouteHandler)
+  .openapi(patchApiVpnTunnelTerminationsIndexRoute, patchApiVpnTunnelTerminationsIndexRouteHandler)
+  .openapi(
+    deleteApiVpnTunnelTerminationsIndexRoute,
+    deleteApiVpnTunnelTerminationsIndexRouteHandler,
+  )
+  .openapi(getApiVpnTunnelTerminationsIdIndexRoute, getApiVpnTunnelTerminationsIdIndexRouteHandler)
+  .openapi(putApiVpnTunnelTerminationsIdIndexRoute, putApiVpnTunnelTerminationsIdIndexRouteHandler)
+  .openapi(
+    patchApiVpnTunnelTerminationsIdIndexRoute,
+    patchApiVpnTunnelTerminationsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiVpnTunnelTerminationsIdIndexRoute,
+    deleteApiVpnTunnelTerminationsIdIndexRouteHandler,
+  )
+  .openapi(getApiVpnTunnelsIndexRoute, getApiVpnTunnelsIndexRouteHandler)
+  .openapi(postApiVpnTunnelsIndexRoute, postApiVpnTunnelsIndexRouteHandler)
+  .openapi(putApiVpnTunnelsIndexRoute, putApiVpnTunnelsIndexRouteHandler)
+  .openapi(patchApiVpnTunnelsIndexRoute, patchApiVpnTunnelsIndexRouteHandler)
+  .openapi(deleteApiVpnTunnelsIndexRoute, deleteApiVpnTunnelsIndexRouteHandler)
+  .openapi(getApiVpnTunnelsIdIndexRoute, getApiVpnTunnelsIdIndexRouteHandler)
+  .openapi(putApiVpnTunnelsIdIndexRoute, putApiVpnTunnelsIdIndexRouteHandler)
+  .openapi(patchApiVpnTunnelsIdIndexRoute, patchApiVpnTunnelsIdIndexRouteHandler)
+  .openapi(deleteApiVpnTunnelsIdIndexRoute, deleteApiVpnTunnelsIdIndexRouteHandler)
+  .openapi(
+    getApiWirelessWirelessLanGroupsIndexRoute,
+    getApiWirelessWirelessLanGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postApiWirelessWirelessLanGroupsIndexRoute,
+    postApiWirelessWirelessLanGroupsIndexRouteHandler,
+  )
+  .openapi(
+    putApiWirelessWirelessLanGroupsIndexRoute,
+    putApiWirelessWirelessLanGroupsIndexRouteHandler,
+  )
+  .openapi(
+    patchApiWirelessWirelessLanGroupsIndexRoute,
+    patchApiWirelessWirelessLanGroupsIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiWirelessWirelessLanGroupsIndexRoute,
+    deleteApiWirelessWirelessLanGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getApiWirelessWirelessLanGroupsIdIndexRoute,
+    getApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    putApiWirelessWirelessLanGroupsIdIndexRoute,
+    putApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    patchApiWirelessWirelessLanGroupsIdIndexRoute,
+    patchApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiWirelessWirelessLanGroupsIdIndexRoute,
+    deleteApiWirelessWirelessLanGroupsIdIndexRouteHandler,
+  )
+  .openapi(getApiWirelessWirelessLansIndexRoute, getApiWirelessWirelessLansIndexRouteHandler)
+  .openapi(postApiWirelessWirelessLansIndexRoute, postApiWirelessWirelessLansIndexRouteHandler)
+  .openapi(putApiWirelessWirelessLansIndexRoute, putApiWirelessWirelessLansIndexRouteHandler)
+  .openapi(patchApiWirelessWirelessLansIndexRoute, patchApiWirelessWirelessLansIndexRouteHandler)
+  .openapi(deleteApiWirelessWirelessLansIndexRoute, deleteApiWirelessWirelessLansIndexRouteHandler)
+  .openapi(getApiWirelessWirelessLansIdIndexRoute, getApiWirelessWirelessLansIdIndexRouteHandler)
+  .openapi(putApiWirelessWirelessLansIdIndexRoute, putApiWirelessWirelessLansIdIndexRouteHandler)
+  .openapi(
+    patchApiWirelessWirelessLansIdIndexRoute,
+    patchApiWirelessWirelessLansIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiWirelessWirelessLansIdIndexRoute,
+    deleteApiWirelessWirelessLansIdIndexRouteHandler,
+  )
+  .openapi(getApiWirelessWirelessLinksIndexRoute, getApiWirelessWirelessLinksIndexRouteHandler)
+  .openapi(postApiWirelessWirelessLinksIndexRoute, postApiWirelessWirelessLinksIndexRouteHandler)
+  .openapi(putApiWirelessWirelessLinksIndexRoute, putApiWirelessWirelessLinksIndexRouteHandler)
+  .openapi(patchApiWirelessWirelessLinksIndexRoute, patchApiWirelessWirelessLinksIndexRouteHandler)
+  .openapi(
+    deleteApiWirelessWirelessLinksIndexRoute,
+    deleteApiWirelessWirelessLinksIndexRouteHandler,
+  )
+  .openapi(getApiWirelessWirelessLinksIdIndexRoute, getApiWirelessWirelessLinksIdIndexRouteHandler)
+  .openapi(putApiWirelessWirelessLinksIdIndexRoute, putApiWirelessWirelessLinksIdIndexRouteHandler)
+  .openapi(
+    patchApiWirelessWirelessLinksIdIndexRoute,
+    patchApiWirelessWirelessLinksIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteApiWirelessWirelessLinksIdIndexRoute,
+    deleteApiWirelessWirelessLinksIdIndexRouteHandler,
+  )
 
 export default app

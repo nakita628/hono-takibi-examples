@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-recommendation/1.1.0/openapi.yaml',
   output: './src/sell-recommendation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sell-recommendation/types.ts' },
   client: { output: './src/sell-recommendation/client.ts', baseUrl: '/' },
   rpc: { output: './src/sell-recommendation/rpc.ts', parseResponse: true },

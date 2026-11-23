@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsOrganizationsV20161128DeregisterDelegatedAdministratorHandler =
-  app.openapi(postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

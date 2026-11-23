@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswafRegional20161128UpdateRuleGroupHandler = app.openapi(
-  postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

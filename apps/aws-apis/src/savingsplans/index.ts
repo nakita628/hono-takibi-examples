@@ -1,27 +1,41 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  createSavingsPlanHandler,
-  deleteQueuedSavingsPlanHandler,
-  describeSavingsPlanRatesHandler,
-  describeSavingsPlansHandler,
-  describeSavingsPlansOfferingRatesHandler,
-  describeSavingsPlansOfferingsHandler,
-  listTagsForResourceHandler,
-  tagResourceHandler,
-  untagResourceHandler,
+  postCreateSavingsPlanRoute,
+  postDeleteQueuedSavingsPlanRoute,
+  postDescribeSavingsPlanRatesRoute,
+  postDescribeSavingsPlansOfferingRatesRoute,
+  postDescribeSavingsPlansOfferingsRoute,
+  postDescribeSavingsPlansRoute,
+  postListTagsForResourceRoute,
+  postTagResourceRoute,
+  postUntagResourceRoute,
+} from './routes'
+import {
+  postCreateSavingsPlanRouteHandler,
+  postDeleteQueuedSavingsPlanRouteHandler,
+  postDescribeSavingsPlanRatesRouteHandler,
+  postDescribeSavingsPlansOfferingRatesRouteHandler,
+  postDescribeSavingsPlansOfferingsRouteHandler,
+  postDescribeSavingsPlansRouteHandler,
+  postListTagsForResourceRouteHandler,
+  postTagResourceRouteHandler,
+  postUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', createSavingsPlanHandler)
-  .route('/', deleteQueuedSavingsPlanHandler)
-  .route('/', describeSavingsPlanRatesHandler)
-  .route('/', describeSavingsPlansHandler)
-  .route('/', describeSavingsPlansOfferingRatesHandler)
-  .route('/', describeSavingsPlansOfferingsHandler)
-  .route('/', listTagsForResourceHandler)
-  .route('/', tagResourceHandler)
-  .route('/', untagResourceHandler)
+  .openapi(postCreateSavingsPlanRoute, postCreateSavingsPlanRouteHandler)
+  .openapi(postDeleteQueuedSavingsPlanRoute, postDeleteQueuedSavingsPlanRouteHandler)
+  .openapi(postDescribeSavingsPlanRatesRoute, postDescribeSavingsPlanRatesRouteHandler)
+  .openapi(postDescribeSavingsPlansRoute, postDescribeSavingsPlansRouteHandler)
+  .openapi(
+    postDescribeSavingsPlansOfferingRatesRoute,
+    postDescribeSavingsPlansOfferingRatesRouteHandler,
+  )
+  .openapi(postDescribeSavingsPlansOfferingsRoute, postDescribeSavingsPlansOfferingsRouteHandler)
+  .openapi(postListTagsForResourceRoute, postListTagsForResourceRouteHandler)
+  .openapi(postTagResourceRoute, postTagResourceRouteHandler)
+  .openapi(postUntagResourceRoute, postUntagResourceRouteHandler)
 
 export default app

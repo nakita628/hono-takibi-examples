@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAchPrenotificationsAchPrenotificationIdRoute,
   getAchPrenotificationsRoute,
   postAchPrenotificationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAchPrenotificationsRouteHandler: RouteHandler<
+  typeof getAchPrenotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const achPrenotificationsHandler = app
-  .openapi(getAchPrenotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAchPrenotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAchPrenotificationsAchPrenotificationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAchPrenotificationsRouteHandler: RouteHandler<
+  typeof postAchPrenotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAchPrenotificationsAchPrenotificationIdRouteHandler: RouteHandler<
+  typeof getAchPrenotificationsAchPrenotificationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

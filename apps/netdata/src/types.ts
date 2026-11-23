@@ -1163,19 +1163,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: ConfigDefaultResponse
             outputFormat: 'json'
-            status: 299
-          }
-        | {
-            input: {
-              query: {
-                action?: 'add' | 'test' | 'update' | undefined
-                id?: string | undefined
-                name?: string | undefined
-                timeout?: number | undefined
-              }
-            }
-            output: ConfigDefaultResponse
-            outputFormat: 'json'
             status: 400
           }
         | {
@@ -9905,12 +9892,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 504
-          }
-        | {
-            input: { query: { function: string; timeout?: number | undefined } }
-            output: {}
-            outputFormat: string
-            status: 591
           }
     }
   } & {

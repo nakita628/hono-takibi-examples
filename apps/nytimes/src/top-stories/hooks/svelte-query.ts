@@ -9,26 +9,26 @@ export function getSectionFormatKey() {
 }
 
 export function getSectionFormatQueryKey(
-  args: InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: InferRequestType<(typeof client)[':section.{format}']['$get']>,
 ) {
-  return [':section.:format', '/:section.:format', args] as const
+  return [':section.{format}', '/:section.{format}', args] as const
 }
 
 export function getSectionFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: InferRequestType<(typeof client)[':section.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
       >
     >,
     TError,
@@ -38,7 +38,7 @@ export function getSectionFormatQueryOptions<
     queryKey: getSectionFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client[':section.:format'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client[':section.{format}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -47,18 +47,18 @@ export function getSectionFormatQueryOptions<
 export function createSectionFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: () => InferRequestType<(typeof client)[':section.{format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
           >
         >,
         TError,

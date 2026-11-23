@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTextractGetDocumentAnalysisRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTextractGetDocumentAnalysisRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTextractGetDocumentAnalysisHandler = app.openapi(
-  postXAmzTargetTextractGetDocumentAnalysisRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTextractGetDocumentAnalysisRouteHandler: RouteHandler<
+  typeof postXAmzTargetTextractGetDocumentAnalysisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

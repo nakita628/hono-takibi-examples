@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getShakespeareGenerateInsultRoute,
   getShakespeareGenerateLoremIpsumRoute,
   getShakespeareGenerateNameRoute,
@@ -7,21 +7,32 @@ import {
   getShakespeareTranslateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShakespeareGenerateInsultRouteHandler: RouteHandler<
+  typeof getShakespeareGenerateInsultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shakespeareHandler = app
-  .openapi(getShakespeareGenerateInsultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShakespeareGenerateLoremIpsumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShakespeareGenerateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShakespeareQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShakespeareTranslateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getShakespeareGenerateLoremIpsumRouteHandler: RouteHandler<
+  typeof getShakespeareGenerateLoremIpsumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShakespeareGenerateNameRouteHandler: RouteHandler<
+  typeof getShakespeareGenerateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShakespeareQuoteRouteHandler: RouteHandler<
+  typeof getShakespeareQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShakespeareTranslateRouteHandler: RouteHandler<
+  typeof getShakespeareTranslateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

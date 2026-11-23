@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsOrigamiServiceGatewayServiceDeleteReportDefinitionHandler = app.openapi(
-  postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

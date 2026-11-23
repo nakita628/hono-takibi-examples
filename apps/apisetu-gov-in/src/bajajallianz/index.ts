@@ -1,23 +1,32 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  cripcHandler,
-  cvipcHandler,
-  cyipcHandler,
-  hlipcHandler,
-  hmipcHandler,
-  tripcHandler,
-  twipcHandler,
+  postCripcCertificateRoute,
+  postCvipcCertificateRoute,
+  postCyipcCertificateRoute,
+  postHlipcCertificateRoute,
+  postHmipcCertificateRoute,
+  postTripcCertificateRoute,
+  postTwipcCertificateRoute,
+} from './routes'
+import {
+  postCripcCertificateRouteHandler,
+  postCvipcCertificateRouteHandler,
+  postCyipcCertificateRouteHandler,
+  postHlipcCertificateRouteHandler,
+  postHmipcCertificateRouteHandler,
+  postTripcCertificateRouteHandler,
+  postTwipcCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', cripcHandler)
-  .route('/', cvipcHandler)
-  .route('/', cyipcHandler)
-  .route('/', hlipcHandler)
-  .route('/', hmipcHandler)
-  .route('/', tripcHandler)
-  .route('/', twipcHandler)
+  .openapi(postCripcCertificateRoute, postCripcCertificateRouteHandler)
+  .openapi(postCvipcCertificateRoute, postCvipcCertificateRouteHandler)
+  .openapi(postCyipcCertificateRoute, postCyipcCertificateRouteHandler)
+  .openapi(postHlipcCertificateRoute, postHlipcCertificateRouteHandler)
+  .openapi(postHmipcCertificateRoute, postHmipcCertificateRouteHandler)
+  .openapi(postTripcCertificateRoute, postTripcCertificateRouteHandler)
+  .openapi(postTwipcCertificateRoute, postTwipcCertificateRouteHandler)
 
 export default app

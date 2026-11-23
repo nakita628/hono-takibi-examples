@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vocadb.net/1.0/openapi.yaml',
   output: './src/vocadb-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vocadb-net/types.ts' },
   client: { output: './src/vocadb-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/vocadb-net/rpc.ts', parseResponse: true },

@@ -8292,11 +8292,8 @@ export const getV1ChecksCheckIdPdfRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Downloads the PDF of the check', content: {} },
-    404: {
-      description: 'This can happen if the create pdf request has not been finished.',
-      content: {},
-    },
+    200: { description: 'Downloads the PDF of the check' },
+    404: { description: 'This can happen if the create pdf request has not been finished.' },
   },
 })
 
@@ -8323,8 +8320,8 @@ export const postV1ChecksCheckIdPdfRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Outputs the link to download the PDF', content: {} },
-    404: { description: "This can happen if the check ID doesn't exist.", content: {} },
+    200: { description: 'Outputs the link to download the PDF' },
+    404: { description: "This can happen if the check ID doesn't exist." },
   },
 })
 
@@ -19929,7 +19926,7 @@ export const getV1ReportsReportIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'The Report was not found', content: {} },
+    404: { description: 'The Report was not found' },
   },
   security: [{ 'api-key': [] }],
 })

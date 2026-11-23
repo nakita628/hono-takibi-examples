@@ -1,327 +1,965 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetLightsail20161128AllocateStaticIpHandler,
-  xAmzTargetLightsail20161128AttachCertificateToDistributionHandler,
-  xAmzTargetLightsail20161128AttachDiskHandler,
-  xAmzTargetLightsail20161128AttachInstancesToLoadBalancerHandler,
-  xAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateHandler,
-  xAmzTargetLightsail20161128AttachStaticIpHandler,
-  xAmzTargetLightsail20161128CloseInstancePublicPortsHandler,
-  xAmzTargetLightsail20161128CopySnapshotHandler,
-  xAmzTargetLightsail20161128CreateBucketAccessKeyHandler,
-  xAmzTargetLightsail20161128CreateBucketHandler,
-  xAmzTargetLightsail20161128CreateCertificateHandler,
-  xAmzTargetLightsail20161128CreateCloudFormationStackHandler,
-  xAmzTargetLightsail20161128CreateContactMethodHandler,
-  xAmzTargetLightsail20161128CreateContainerServiceDeploymentHandler,
-  xAmzTargetLightsail20161128CreateContainerServiceHandler,
-  xAmzTargetLightsail20161128CreateContainerServiceRegistryLoginHandler,
-  xAmzTargetLightsail20161128CreateDiskFromSnapshotHandler,
-  xAmzTargetLightsail20161128CreateDiskHandler,
-  xAmzTargetLightsail20161128CreateDiskSnapshotHandler,
-  xAmzTargetLightsail20161128CreateDistributionHandler,
-  xAmzTargetLightsail20161128CreateDomainEntryHandler,
-  xAmzTargetLightsail20161128CreateDomainHandler,
-  xAmzTargetLightsail20161128CreateGuiSessionAccessDetailsHandler,
-  xAmzTargetLightsail20161128CreateInstancesFromSnapshotHandler,
-  xAmzTargetLightsail20161128CreateInstancesHandler,
-  xAmzTargetLightsail20161128CreateInstanceSnapshotHandler,
-  xAmzTargetLightsail20161128CreateKeyPairHandler,
-  xAmzTargetLightsail20161128CreateLoadBalancerHandler,
-  xAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateHandler,
-  xAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotHandler,
-  xAmzTargetLightsail20161128CreateRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotHandler,
-  xAmzTargetLightsail20161128DeleteAlarmHandler,
-  xAmzTargetLightsail20161128DeleteAutoSnapshotHandler,
-  xAmzTargetLightsail20161128DeleteBucketAccessKeyHandler,
-  xAmzTargetLightsail20161128DeleteBucketHandler,
-  xAmzTargetLightsail20161128DeleteCertificateHandler,
-  xAmzTargetLightsail20161128DeleteContactMethodHandler,
-  xAmzTargetLightsail20161128DeleteContainerImageHandler,
-  xAmzTargetLightsail20161128DeleteContainerServiceHandler,
-  xAmzTargetLightsail20161128DeleteDiskHandler,
-  xAmzTargetLightsail20161128DeleteDiskSnapshotHandler,
-  xAmzTargetLightsail20161128DeleteDistributionHandler,
-  xAmzTargetLightsail20161128DeleteDomainEntryHandler,
-  xAmzTargetLightsail20161128DeleteDomainHandler,
-  xAmzTargetLightsail20161128DeleteInstanceHandler,
-  xAmzTargetLightsail20161128DeleteInstanceSnapshotHandler,
-  xAmzTargetLightsail20161128DeleteKeyPairHandler,
-  xAmzTargetLightsail20161128DeleteKnownHostKeysHandler,
-  xAmzTargetLightsail20161128DeleteLoadBalancerHandler,
-  xAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateHandler,
-  xAmzTargetLightsail20161128DeleteRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotHandler,
-  xAmzTargetLightsail20161128DetachCertificateFromDistributionHandler,
-  xAmzTargetLightsail20161128DetachDiskHandler,
-  xAmzTargetLightsail20161128DetachInstancesFromLoadBalancerHandler,
-  xAmzTargetLightsail20161128DetachStaticIpHandler,
-  xAmzTargetLightsail20161128DisableAddOnHandler,
-  xAmzTargetLightsail20161128DownloadDefaultKeyPairHandler,
-  xAmzTargetLightsail20161128EnableAddOnHandler,
-  xAmzTargetLightsail20161128ExportSnapshotHandler,
-  xAmzTargetLightsail20161128GetActiveNamesHandler,
-  xAmzTargetLightsail20161128GetAlarmsHandler,
-  xAmzTargetLightsail20161128GetAutoSnapshotsHandler,
-  xAmzTargetLightsail20161128GetBlueprintsHandler,
-  xAmzTargetLightsail20161128GetBucketAccessKeysHandler,
-  xAmzTargetLightsail20161128GetBucketBundlesHandler,
-  xAmzTargetLightsail20161128GetBucketMetricDataHandler,
-  xAmzTargetLightsail20161128GetBucketsHandler,
-  xAmzTargetLightsail20161128GetBundlesHandler,
-  xAmzTargetLightsail20161128GetCertificatesHandler,
-  xAmzTargetLightsail20161128GetCloudFormationStackRecordsHandler,
-  xAmzTargetLightsail20161128GetContactMethodsHandler,
-  xAmzTargetLightsail20161128GetContainerApiMetadataHandler,
-  xAmzTargetLightsail20161128GetContainerImagesHandler,
-  xAmzTargetLightsail20161128GetContainerLogHandler,
-  xAmzTargetLightsail20161128GetContainerServiceDeploymentsHandler,
-  xAmzTargetLightsail20161128GetContainerServiceMetricDataHandler,
-  xAmzTargetLightsail20161128GetContainerServicePowersHandler,
-  xAmzTargetLightsail20161128GetContainerServicesHandler,
-  xAmzTargetLightsail20161128GetCostEstimateHandler,
-  xAmzTargetLightsail20161128GetDiskHandler,
-  xAmzTargetLightsail20161128GetDisksHandler,
-  xAmzTargetLightsail20161128GetDiskSnapshotHandler,
-  xAmzTargetLightsail20161128GetDiskSnapshotsHandler,
-  xAmzTargetLightsail20161128GetDistributionBundlesHandler,
-  xAmzTargetLightsail20161128GetDistributionLatestCacheResetHandler,
-  xAmzTargetLightsail20161128GetDistributionMetricDataHandler,
-  xAmzTargetLightsail20161128GetDistributionsHandler,
-  xAmzTargetLightsail20161128GetDomainHandler,
-  xAmzTargetLightsail20161128GetDomainsHandler,
-  xAmzTargetLightsail20161128GetExportSnapshotRecordsHandler,
-  xAmzTargetLightsail20161128GetInstanceAccessDetailsHandler,
-  xAmzTargetLightsail20161128GetInstanceHandler,
-  xAmzTargetLightsail20161128GetInstanceMetricDataHandler,
-  xAmzTargetLightsail20161128GetInstancePortStatesHandler,
-  xAmzTargetLightsail20161128GetInstancesHandler,
-  xAmzTargetLightsail20161128GetInstanceSnapshotHandler,
-  xAmzTargetLightsail20161128GetInstanceSnapshotsHandler,
-  xAmzTargetLightsail20161128GetInstanceStateHandler,
-  xAmzTargetLightsail20161128GetKeyPairHandler,
-  xAmzTargetLightsail20161128GetKeyPairsHandler,
-  xAmzTargetLightsail20161128GetLoadBalancerHandler,
-  xAmzTargetLightsail20161128GetLoadBalancerMetricDataHandler,
-  xAmzTargetLightsail20161128GetLoadBalancersHandler,
-  xAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesHandler,
-  xAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesHandler,
-  xAmzTargetLightsail20161128GetOperationHandler,
-  xAmzTargetLightsail20161128GetOperationsForResourceHandler,
-  xAmzTargetLightsail20161128GetOperationsHandler,
-  xAmzTargetLightsail20161128GetRegionsHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseBundlesHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseEventsHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseLogEventsHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseMetricDataHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseParametersHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabasesHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseSnapshotHandler,
-  xAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsHandler,
-  xAmzTargetLightsail20161128GetStaticIpHandler,
-  xAmzTargetLightsail20161128GetStaticIpsHandler,
-  xAmzTargetLightsail20161128ImportKeyPairHandler,
-  xAmzTargetLightsail20161128IsVpcPeeredHandler,
-  xAmzTargetLightsail20161128OpenInstancePublicPortsHandler,
-  xAmzTargetLightsail20161128PeerVpcHandler,
-  xAmzTargetLightsail20161128PutAlarmHandler,
-  xAmzTargetLightsail20161128PutInstancePublicPortsHandler,
-  xAmzTargetLightsail20161128RebootInstanceHandler,
-  xAmzTargetLightsail20161128RebootRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128RegisterContainerImageHandler,
-  xAmzTargetLightsail20161128ReleaseStaticIpHandler,
-  xAmzTargetLightsail20161128ResetDistributionCacheHandler,
-  xAmzTargetLightsail20161128SendContactMethodVerificationHandler,
-  xAmzTargetLightsail20161128SetIpAddressTypeHandler,
-  xAmzTargetLightsail20161128SetResourceAccessForBucketHandler,
-  xAmzTargetLightsail20161128StartGuiSessionHandler,
-  xAmzTargetLightsail20161128StartInstanceHandler,
-  xAmzTargetLightsail20161128StartRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128StopGuiSessionHandler,
-  xAmzTargetLightsail20161128StopInstanceHandler,
-  xAmzTargetLightsail20161128StopRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128TagResourceHandler,
-  xAmzTargetLightsail20161128TestAlarmHandler,
-  xAmzTargetLightsail20161128UnpeerVpcHandler,
-  xAmzTargetLightsail20161128UntagResourceHandler,
-  xAmzTargetLightsail20161128UpdateBucketBundleHandler,
-  xAmzTargetLightsail20161128UpdateBucketHandler,
-  xAmzTargetLightsail20161128UpdateContainerServiceHandler,
-  xAmzTargetLightsail20161128UpdateDistributionBundleHandler,
-  xAmzTargetLightsail20161128UpdateDistributionHandler,
-  xAmzTargetLightsail20161128UpdateDomainEntryHandler,
-  xAmzTargetLightsail20161128UpdateInstanceMetadataOptionsHandler,
-  xAmzTargetLightsail20161128UpdateLoadBalancerAttributeHandler,
-  xAmzTargetLightsail20161128UpdateRelationalDatabaseHandler,
-  xAmzTargetLightsail20161128UpdateRelationalDatabaseParametersHandler,
+  postXAmzTargetLightsail20161128AllocateStaticIpRoute,
+  postXAmzTargetLightsail20161128AttachCertificateToDistributionRoute,
+  postXAmzTargetLightsail20161128AttachDiskRoute,
+  postXAmzTargetLightsail20161128AttachInstancesToLoadBalancerRoute,
+  postXAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateRoute,
+  postXAmzTargetLightsail20161128AttachStaticIpRoute,
+  postXAmzTargetLightsail20161128CloseInstancePublicPortsRoute,
+  postXAmzTargetLightsail20161128CopySnapshotRoute,
+  postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute,
+  postXAmzTargetLightsail20161128CreateBucketRoute,
+  postXAmzTargetLightsail20161128CreateCertificateRoute,
+  postXAmzTargetLightsail20161128CreateCloudFormationStackRoute,
+  postXAmzTargetLightsail20161128CreateContactMethodRoute,
+  postXAmzTargetLightsail20161128CreateContainerServiceDeploymentRoute,
+  postXAmzTargetLightsail20161128CreateContainerServiceRegistryLoginRoute,
+  postXAmzTargetLightsail20161128CreateContainerServiceRoute,
+  postXAmzTargetLightsail20161128CreateDiskFromSnapshotRoute,
+  postXAmzTargetLightsail20161128CreateDiskRoute,
+  postXAmzTargetLightsail20161128CreateDiskSnapshotRoute,
+  postXAmzTargetLightsail20161128CreateDistributionRoute,
+  postXAmzTargetLightsail20161128CreateDomainEntryRoute,
+  postXAmzTargetLightsail20161128CreateDomainRoute,
+  postXAmzTargetLightsail20161128CreateGUISessionAccessDetailsRoute,
+  postXAmzTargetLightsail20161128CreateInstancesFromSnapshotRoute,
+  postXAmzTargetLightsail20161128CreateInstanceSnapshotRoute,
+  postXAmzTargetLightsail20161128CreateInstancesRoute,
+  postXAmzTargetLightsail20161128CreateKeyPairRoute,
+  postXAmzTargetLightsail20161128CreateLoadBalancerRoute,
+  postXAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateRoute,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotRoute,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotRoute,
+  postXAmzTargetLightsail20161128DeleteAlarmRoute,
+  postXAmzTargetLightsail20161128DeleteAutoSnapshotRoute,
+  postXAmzTargetLightsail20161128DeleteBucketAccessKeyRoute,
+  postXAmzTargetLightsail20161128DeleteBucketRoute,
+  postXAmzTargetLightsail20161128DeleteCertificateRoute,
+  postXAmzTargetLightsail20161128DeleteContactMethodRoute,
+  postXAmzTargetLightsail20161128DeleteContainerImageRoute,
+  postXAmzTargetLightsail20161128DeleteContainerServiceRoute,
+  postXAmzTargetLightsail20161128DeleteDiskRoute,
+  postXAmzTargetLightsail20161128DeleteDiskSnapshotRoute,
+  postXAmzTargetLightsail20161128DeleteDistributionRoute,
+  postXAmzTargetLightsail20161128DeleteDomainEntryRoute,
+  postXAmzTargetLightsail20161128DeleteDomainRoute,
+  postXAmzTargetLightsail20161128DeleteInstanceRoute,
+  postXAmzTargetLightsail20161128DeleteInstanceSnapshotRoute,
+  postXAmzTargetLightsail20161128DeleteKeyPairRoute,
+  postXAmzTargetLightsail20161128DeleteKnownHostKeysRoute,
+  postXAmzTargetLightsail20161128DeleteLoadBalancerRoute,
+  postXAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateRoute,
+  postXAmzTargetLightsail20161128DeleteRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute,
+  postXAmzTargetLightsail20161128DetachCertificateFromDistributionRoute,
+  postXAmzTargetLightsail20161128DetachDiskRoute,
+  postXAmzTargetLightsail20161128DetachInstancesFromLoadBalancerRoute,
+  postXAmzTargetLightsail20161128DetachStaticIpRoute,
+  postXAmzTargetLightsail20161128DisableAddOnRoute,
+  postXAmzTargetLightsail20161128DownloadDefaultKeyPairRoute,
+  postXAmzTargetLightsail20161128EnableAddOnRoute,
+  postXAmzTargetLightsail20161128ExportSnapshotRoute,
+  postXAmzTargetLightsail20161128GetActiveNamesRoute,
+  postXAmzTargetLightsail20161128GetAlarmsRoute,
+  postXAmzTargetLightsail20161128GetAutoSnapshotsRoute,
+  postXAmzTargetLightsail20161128GetBlueprintsRoute,
+  postXAmzTargetLightsail20161128GetBucketAccessKeysRoute,
+  postXAmzTargetLightsail20161128GetBucketBundlesRoute,
+  postXAmzTargetLightsail20161128GetBucketMetricDataRoute,
+  postXAmzTargetLightsail20161128GetBucketsRoute,
+  postXAmzTargetLightsail20161128GetBundlesRoute,
+  postXAmzTargetLightsail20161128GetCertificatesRoute,
+  postXAmzTargetLightsail20161128GetCloudFormationStackRecordsRoute,
+  postXAmzTargetLightsail20161128GetContactMethodsRoute,
+  postXAmzTargetLightsail20161128GetContainerAPIMetadataRoute,
+  postXAmzTargetLightsail20161128GetContainerImagesRoute,
+  postXAmzTargetLightsail20161128GetContainerLogRoute,
+  postXAmzTargetLightsail20161128GetContainerServiceDeploymentsRoute,
+  postXAmzTargetLightsail20161128GetContainerServiceMetricDataRoute,
+  postXAmzTargetLightsail20161128GetContainerServicePowersRoute,
+  postXAmzTargetLightsail20161128GetContainerServicesRoute,
+  postXAmzTargetLightsail20161128GetCostEstimateRoute,
+  postXAmzTargetLightsail20161128GetDiskRoute,
+  postXAmzTargetLightsail20161128GetDiskSnapshotRoute,
+  postXAmzTargetLightsail20161128GetDiskSnapshotsRoute,
+  postXAmzTargetLightsail20161128GetDisksRoute,
+  postXAmzTargetLightsail20161128GetDistributionBundlesRoute,
+  postXAmzTargetLightsail20161128GetDistributionLatestCacheResetRoute,
+  postXAmzTargetLightsail20161128GetDistributionMetricDataRoute,
+  postXAmzTargetLightsail20161128GetDistributionsRoute,
+  postXAmzTargetLightsail20161128GetDomainRoute,
+  postXAmzTargetLightsail20161128GetDomainsRoute,
+  postXAmzTargetLightsail20161128GetExportSnapshotRecordsRoute,
+  postXAmzTargetLightsail20161128GetInstanceAccessDetailsRoute,
+  postXAmzTargetLightsail20161128GetInstanceMetricDataRoute,
+  postXAmzTargetLightsail20161128GetInstancePortStatesRoute,
+  postXAmzTargetLightsail20161128GetInstanceRoute,
+  postXAmzTargetLightsail20161128GetInstanceSnapshotRoute,
+  postXAmzTargetLightsail20161128GetInstanceSnapshotsRoute,
+  postXAmzTargetLightsail20161128GetInstancesRoute,
+  postXAmzTargetLightsail20161128GetInstanceStateRoute,
+  postXAmzTargetLightsail20161128GetKeyPairRoute,
+  postXAmzTargetLightsail20161128GetKeyPairsRoute,
+  postXAmzTargetLightsail20161128GetLoadBalancerMetricDataRoute,
+  postXAmzTargetLightsail20161128GetLoadBalancerRoute,
+  postXAmzTargetLightsail20161128GetLoadBalancersRoute,
+  postXAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesRoute,
+  postXAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesRoute,
+  postXAmzTargetLightsail20161128GetOperationRoute,
+  postXAmzTargetLightsail20161128GetOperationsForResourceRoute,
+  postXAmzTargetLightsail20161128GetOperationsRoute,
+  postXAmzTargetLightsail20161128GetRegionsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseBundlesRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseEventsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseLogEventsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseMetricDataRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseParametersRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsRoute,
+  postXAmzTargetLightsail20161128GetRelationalDatabasesRoute,
+  postXAmzTargetLightsail20161128GetStaticIpRoute,
+  postXAmzTargetLightsail20161128GetStaticIpsRoute,
+  postXAmzTargetLightsail20161128ImportKeyPairRoute,
+  postXAmzTargetLightsail20161128IsVpcPeeredRoute,
+  postXAmzTargetLightsail20161128OpenInstancePublicPortsRoute,
+  postXAmzTargetLightsail20161128PeerVpcRoute,
+  postXAmzTargetLightsail20161128PutAlarmRoute,
+  postXAmzTargetLightsail20161128PutInstancePublicPortsRoute,
+  postXAmzTargetLightsail20161128RebootInstanceRoute,
+  postXAmzTargetLightsail20161128RebootRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128RegisterContainerImageRoute,
+  postXAmzTargetLightsail20161128ReleaseStaticIpRoute,
+  postXAmzTargetLightsail20161128ResetDistributionCacheRoute,
+  postXAmzTargetLightsail20161128SendContactMethodVerificationRoute,
+  postXAmzTargetLightsail20161128SetIpAddressTypeRoute,
+  postXAmzTargetLightsail20161128SetResourceAccessForBucketRoute,
+  postXAmzTargetLightsail20161128StartGUISessionRoute,
+  postXAmzTargetLightsail20161128StartInstanceRoute,
+  postXAmzTargetLightsail20161128StartRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128StopGUISessionRoute,
+  postXAmzTargetLightsail20161128StopInstanceRoute,
+  postXAmzTargetLightsail20161128StopRelationalDatabaseRoute,
+  postXAmzTargetLightsail20161128TagResourceRoute,
+  postXAmzTargetLightsail20161128TestAlarmRoute,
+  postXAmzTargetLightsail20161128UnpeerVpcRoute,
+  postXAmzTargetLightsail20161128UntagResourceRoute,
+  postXAmzTargetLightsail20161128UpdateBucketBundleRoute,
+  postXAmzTargetLightsail20161128UpdateBucketRoute,
+  postXAmzTargetLightsail20161128UpdateContainerServiceRoute,
+  postXAmzTargetLightsail20161128UpdateDistributionBundleRoute,
+  postXAmzTargetLightsail20161128UpdateDistributionRoute,
+  postXAmzTargetLightsail20161128UpdateDomainEntryRoute,
+  postXAmzTargetLightsail20161128UpdateInstanceMetadataOptionsRoute,
+  postXAmzTargetLightsail20161128UpdateLoadBalancerAttributeRoute,
+  postXAmzTargetLightsail20161128UpdateRelationalDatabaseParametersRoute,
+  postXAmzTargetLightsail20161128UpdateRelationalDatabaseRoute,
+} from './routes'
+import {
+  postXAmzTargetLightsail20161128AllocateStaticIpRouteHandler,
+  postXAmzTargetLightsail20161128AttachCertificateToDistributionRouteHandler,
+  postXAmzTargetLightsail20161128AttachDiskRouteHandler,
+  postXAmzTargetLightsail20161128AttachInstancesToLoadBalancerRouteHandler,
+  postXAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateRouteHandler,
+  postXAmzTargetLightsail20161128AttachStaticIpRouteHandler,
+  postXAmzTargetLightsail20161128CloseInstancePublicPortsRouteHandler,
+  postXAmzTargetLightsail20161128CopySnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateBucketAccessKeyRouteHandler,
+  postXAmzTargetLightsail20161128CreateBucketRouteHandler,
+  postXAmzTargetLightsail20161128CreateCertificateRouteHandler,
+  postXAmzTargetLightsail20161128CreateCloudFormationStackRouteHandler,
+  postXAmzTargetLightsail20161128CreateContactMethodRouteHandler,
+  postXAmzTargetLightsail20161128CreateContainerServiceDeploymentRouteHandler,
+  postXAmzTargetLightsail20161128CreateContainerServiceRegistryLoginRouteHandler,
+  postXAmzTargetLightsail20161128CreateContainerServiceRouteHandler,
+  postXAmzTargetLightsail20161128CreateDiskFromSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateDiskRouteHandler,
+  postXAmzTargetLightsail20161128CreateDiskSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateDistributionRouteHandler,
+  postXAmzTargetLightsail20161128CreateDomainEntryRouteHandler,
+  postXAmzTargetLightsail20161128CreateDomainRouteHandler,
+  postXAmzTargetLightsail20161128CreateGUISessionAccessDetailsRouteHandler,
+  postXAmzTargetLightsail20161128CreateInstancesFromSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateInstanceSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateInstancesRouteHandler,
+  postXAmzTargetLightsail20161128CreateKeyPairRouteHandler,
+  postXAmzTargetLightsail20161128CreateLoadBalancerRouteHandler,
+  postXAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateRouteHandler,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128DeleteAlarmRouteHandler,
+  postXAmzTargetLightsail20161128DeleteAutoSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128DeleteBucketAccessKeyRouteHandler,
+  postXAmzTargetLightsail20161128DeleteBucketRouteHandler,
+  postXAmzTargetLightsail20161128DeleteCertificateRouteHandler,
+  postXAmzTargetLightsail20161128DeleteContactMethodRouteHandler,
+  postXAmzTargetLightsail20161128DeleteContainerImageRouteHandler,
+  postXAmzTargetLightsail20161128DeleteContainerServiceRouteHandler,
+  postXAmzTargetLightsail20161128DeleteDiskRouteHandler,
+  postXAmzTargetLightsail20161128DeleteDiskSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128DeleteDistributionRouteHandler,
+  postXAmzTargetLightsail20161128DeleteDomainEntryRouteHandler,
+  postXAmzTargetLightsail20161128DeleteDomainRouteHandler,
+  postXAmzTargetLightsail20161128DeleteInstanceRouteHandler,
+  postXAmzTargetLightsail20161128DeleteInstanceSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128DeleteKeyPairRouteHandler,
+  postXAmzTargetLightsail20161128DeleteKnownHostKeysRouteHandler,
+  postXAmzTargetLightsail20161128DeleteLoadBalancerRouteHandler,
+  postXAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateRouteHandler,
+  postXAmzTargetLightsail20161128DeleteRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128DetachCertificateFromDistributionRouteHandler,
+  postXAmzTargetLightsail20161128DetachDiskRouteHandler,
+  postXAmzTargetLightsail20161128DetachInstancesFromLoadBalancerRouteHandler,
+  postXAmzTargetLightsail20161128DetachStaticIpRouteHandler,
+  postXAmzTargetLightsail20161128DisableAddOnRouteHandler,
+  postXAmzTargetLightsail20161128DownloadDefaultKeyPairRouteHandler,
+  postXAmzTargetLightsail20161128EnableAddOnRouteHandler,
+  postXAmzTargetLightsail20161128ExportSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128GetActiveNamesRouteHandler,
+  postXAmzTargetLightsail20161128GetAlarmsRouteHandler,
+  postXAmzTargetLightsail20161128GetAutoSnapshotsRouteHandler,
+  postXAmzTargetLightsail20161128GetBlueprintsRouteHandler,
+  postXAmzTargetLightsail20161128GetBucketAccessKeysRouteHandler,
+  postXAmzTargetLightsail20161128GetBucketBundlesRouteHandler,
+  postXAmzTargetLightsail20161128GetBucketMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetBucketsRouteHandler,
+  postXAmzTargetLightsail20161128GetBundlesRouteHandler,
+  postXAmzTargetLightsail20161128GetCertificatesRouteHandler,
+  postXAmzTargetLightsail20161128GetCloudFormationStackRecordsRouteHandler,
+  postXAmzTargetLightsail20161128GetContactMethodsRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerAPIMetadataRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerImagesRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerLogRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerServiceDeploymentsRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerServiceMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerServicePowersRouteHandler,
+  postXAmzTargetLightsail20161128GetContainerServicesRouteHandler,
+  postXAmzTargetLightsail20161128GetCostEstimateRouteHandler,
+  postXAmzTargetLightsail20161128GetDiskRouteHandler,
+  postXAmzTargetLightsail20161128GetDiskSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128GetDiskSnapshotsRouteHandler,
+  postXAmzTargetLightsail20161128GetDisksRouteHandler,
+  postXAmzTargetLightsail20161128GetDistributionBundlesRouteHandler,
+  postXAmzTargetLightsail20161128GetDistributionLatestCacheResetRouteHandler,
+  postXAmzTargetLightsail20161128GetDistributionMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetDistributionsRouteHandler,
+  postXAmzTargetLightsail20161128GetDomainRouteHandler,
+  postXAmzTargetLightsail20161128GetDomainsRouteHandler,
+  postXAmzTargetLightsail20161128GetExportSnapshotRecordsRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceAccessDetailsRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetInstancePortStatesRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceSnapshotsRouteHandler,
+  postXAmzTargetLightsail20161128GetInstancesRouteHandler,
+  postXAmzTargetLightsail20161128GetInstanceStateRouteHandler,
+  postXAmzTargetLightsail20161128GetKeyPairRouteHandler,
+  postXAmzTargetLightsail20161128GetKeyPairsRouteHandler,
+  postXAmzTargetLightsail20161128GetLoadBalancerMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetLoadBalancerRouteHandler,
+  postXAmzTargetLightsail20161128GetLoadBalancersRouteHandler,
+  postXAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesRouteHandler,
+  postXAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesRouteHandler,
+  postXAmzTargetLightsail20161128GetOperationRouteHandler,
+  postXAmzTargetLightsail20161128GetOperationsForResourceRouteHandler,
+  postXAmzTargetLightsail20161128GetOperationsRouteHandler,
+  postXAmzTargetLightsail20161128GetRegionsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseBundlesRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseEventsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseLogEventsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseMetricDataRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseParametersRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsRouteHandler,
+  postXAmzTargetLightsail20161128GetRelationalDatabasesRouteHandler,
+  postXAmzTargetLightsail20161128GetStaticIpRouteHandler,
+  postXAmzTargetLightsail20161128GetStaticIpsRouteHandler,
+  postXAmzTargetLightsail20161128ImportKeyPairRouteHandler,
+  postXAmzTargetLightsail20161128IsVpcPeeredRouteHandler,
+  postXAmzTargetLightsail20161128OpenInstancePublicPortsRouteHandler,
+  postXAmzTargetLightsail20161128PeerVpcRouteHandler,
+  postXAmzTargetLightsail20161128PutAlarmRouteHandler,
+  postXAmzTargetLightsail20161128PutInstancePublicPortsRouteHandler,
+  postXAmzTargetLightsail20161128RebootInstanceRouteHandler,
+  postXAmzTargetLightsail20161128RebootRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128RegisterContainerImageRouteHandler,
+  postXAmzTargetLightsail20161128ReleaseStaticIpRouteHandler,
+  postXAmzTargetLightsail20161128ResetDistributionCacheRouteHandler,
+  postXAmzTargetLightsail20161128SendContactMethodVerificationRouteHandler,
+  postXAmzTargetLightsail20161128SetIpAddressTypeRouteHandler,
+  postXAmzTargetLightsail20161128SetResourceAccessForBucketRouteHandler,
+  postXAmzTargetLightsail20161128StartGUISessionRouteHandler,
+  postXAmzTargetLightsail20161128StartInstanceRouteHandler,
+  postXAmzTargetLightsail20161128StartRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128StopGUISessionRouteHandler,
+  postXAmzTargetLightsail20161128StopInstanceRouteHandler,
+  postXAmzTargetLightsail20161128StopRelationalDatabaseRouteHandler,
+  postXAmzTargetLightsail20161128TagResourceRouteHandler,
+  postXAmzTargetLightsail20161128TestAlarmRouteHandler,
+  postXAmzTargetLightsail20161128UnpeerVpcRouteHandler,
+  postXAmzTargetLightsail20161128UntagResourceRouteHandler,
+  postXAmzTargetLightsail20161128UpdateBucketBundleRouteHandler,
+  postXAmzTargetLightsail20161128UpdateBucketRouteHandler,
+  postXAmzTargetLightsail20161128UpdateContainerServiceRouteHandler,
+  postXAmzTargetLightsail20161128UpdateDistributionBundleRouteHandler,
+  postXAmzTargetLightsail20161128UpdateDistributionRouteHandler,
+  postXAmzTargetLightsail20161128UpdateDomainEntryRouteHandler,
+  postXAmzTargetLightsail20161128UpdateInstanceMetadataOptionsRouteHandler,
+  postXAmzTargetLightsail20161128UpdateLoadBalancerAttributeRouteHandler,
+  postXAmzTargetLightsail20161128UpdateRelationalDatabaseParametersRouteHandler,
+  postXAmzTargetLightsail20161128UpdateRelationalDatabaseRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetLightsail20161128AllocateStaticIpHandler)
-  .route('/', xAmzTargetLightsail20161128AttachCertificateToDistributionHandler)
-  .route('/', xAmzTargetLightsail20161128AttachDiskHandler)
-  .route('/', xAmzTargetLightsail20161128AttachInstancesToLoadBalancerHandler)
-  .route('/', xAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateHandler)
-  .route('/', xAmzTargetLightsail20161128AttachStaticIpHandler)
-  .route('/', xAmzTargetLightsail20161128CloseInstancePublicPortsHandler)
-  .route('/', xAmzTargetLightsail20161128CopySnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateBucketHandler)
-  .route('/', xAmzTargetLightsail20161128CreateBucketAccessKeyHandler)
-  .route('/', xAmzTargetLightsail20161128CreateCertificateHandler)
-  .route('/', xAmzTargetLightsail20161128CreateCloudFormationStackHandler)
-  .route('/', xAmzTargetLightsail20161128CreateContactMethodHandler)
-  .route('/', xAmzTargetLightsail20161128CreateContainerServiceHandler)
-  .route('/', xAmzTargetLightsail20161128CreateContainerServiceDeploymentHandler)
-  .route('/', xAmzTargetLightsail20161128CreateContainerServiceRegistryLoginHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDiskHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDiskFromSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDiskSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDistributionHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDomainHandler)
-  .route('/', xAmzTargetLightsail20161128CreateDomainEntryHandler)
-  .route('/', xAmzTargetLightsail20161128CreateGuiSessionAccessDetailsHandler)
-  .route('/', xAmzTargetLightsail20161128CreateInstanceSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateInstancesHandler)
-  .route('/', xAmzTargetLightsail20161128CreateInstancesFromSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateKeyPairHandler)
-  .route('/', xAmzTargetLightsail20161128CreateLoadBalancerHandler)
-  .route('/', xAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateHandler)
-  .route('/', xAmzTargetLightsail20161128CreateRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteAlarmHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteAutoSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteBucketHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteBucketAccessKeyHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteCertificateHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteContactMethodHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteContainerImageHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteContainerServiceHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteDiskHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteDiskSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteDistributionHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteDomainHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteDomainEntryHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteInstanceHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteInstanceSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteKeyPairHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteKnownHostKeysHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteLoadBalancerHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128DetachCertificateFromDistributionHandler)
-  .route('/', xAmzTargetLightsail20161128DetachDiskHandler)
-  .route('/', xAmzTargetLightsail20161128DetachInstancesFromLoadBalancerHandler)
-  .route('/', xAmzTargetLightsail20161128DetachStaticIpHandler)
-  .route('/', xAmzTargetLightsail20161128DisableAddOnHandler)
-  .route('/', xAmzTargetLightsail20161128DownloadDefaultKeyPairHandler)
-  .route('/', xAmzTargetLightsail20161128EnableAddOnHandler)
-  .route('/', xAmzTargetLightsail20161128ExportSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128GetActiveNamesHandler)
-  .route('/', xAmzTargetLightsail20161128GetAlarmsHandler)
-  .route('/', xAmzTargetLightsail20161128GetAutoSnapshotsHandler)
-  .route('/', xAmzTargetLightsail20161128GetBlueprintsHandler)
-  .route('/', xAmzTargetLightsail20161128GetBucketAccessKeysHandler)
-  .route('/', xAmzTargetLightsail20161128GetBucketBundlesHandler)
-  .route('/', xAmzTargetLightsail20161128GetBucketMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetBucketsHandler)
-  .route('/', xAmzTargetLightsail20161128GetBundlesHandler)
-  .route('/', xAmzTargetLightsail20161128GetCertificatesHandler)
-  .route('/', xAmzTargetLightsail20161128GetCloudFormationStackRecordsHandler)
-  .route('/', xAmzTargetLightsail20161128GetContactMethodsHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerApiMetadataHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerImagesHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerLogHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerServiceDeploymentsHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerServiceMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerServicePowersHandler)
-  .route('/', xAmzTargetLightsail20161128GetContainerServicesHandler)
-  .route('/', xAmzTargetLightsail20161128GetCostEstimateHandler)
-  .route('/', xAmzTargetLightsail20161128GetDiskHandler)
-  .route('/', xAmzTargetLightsail20161128GetDiskSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128GetDiskSnapshotsHandler)
-  .route('/', xAmzTargetLightsail20161128GetDisksHandler)
-  .route('/', xAmzTargetLightsail20161128GetDistributionBundlesHandler)
-  .route('/', xAmzTargetLightsail20161128GetDistributionLatestCacheResetHandler)
-  .route('/', xAmzTargetLightsail20161128GetDistributionMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetDistributionsHandler)
-  .route('/', xAmzTargetLightsail20161128GetDomainHandler)
-  .route('/', xAmzTargetLightsail20161128GetDomainsHandler)
-  .route('/', xAmzTargetLightsail20161128GetExportSnapshotRecordsHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceAccessDetailsHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstancePortStatesHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceSnapshotsHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstanceStateHandler)
-  .route('/', xAmzTargetLightsail20161128GetInstancesHandler)
-  .route('/', xAmzTargetLightsail20161128GetKeyPairHandler)
-  .route('/', xAmzTargetLightsail20161128GetKeyPairsHandler)
-  .route('/', xAmzTargetLightsail20161128GetLoadBalancerHandler)
-  .route('/', xAmzTargetLightsail20161128GetLoadBalancerMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesHandler)
-  .route('/', xAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesHandler)
-  .route('/', xAmzTargetLightsail20161128GetLoadBalancersHandler)
-  .route('/', xAmzTargetLightsail20161128GetOperationHandler)
-  .route('/', xAmzTargetLightsail20161128GetOperationsHandler)
-  .route('/', xAmzTargetLightsail20161128GetOperationsForResourceHandler)
-  .route('/', xAmzTargetLightsail20161128GetRegionsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseBundlesHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseEventsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseLogEventsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseMetricDataHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseParametersHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseSnapshotHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsHandler)
-  .route('/', xAmzTargetLightsail20161128GetRelationalDatabasesHandler)
-  .route('/', xAmzTargetLightsail20161128GetStaticIpHandler)
-  .route('/', xAmzTargetLightsail20161128GetStaticIpsHandler)
-  .route('/', xAmzTargetLightsail20161128ImportKeyPairHandler)
-  .route('/', xAmzTargetLightsail20161128IsVpcPeeredHandler)
-  .route('/', xAmzTargetLightsail20161128OpenInstancePublicPortsHandler)
-  .route('/', xAmzTargetLightsail20161128PeerVpcHandler)
-  .route('/', xAmzTargetLightsail20161128PutAlarmHandler)
-  .route('/', xAmzTargetLightsail20161128PutInstancePublicPortsHandler)
-  .route('/', xAmzTargetLightsail20161128RebootInstanceHandler)
-  .route('/', xAmzTargetLightsail20161128RebootRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128RegisterContainerImageHandler)
-  .route('/', xAmzTargetLightsail20161128ReleaseStaticIpHandler)
-  .route('/', xAmzTargetLightsail20161128ResetDistributionCacheHandler)
-  .route('/', xAmzTargetLightsail20161128SendContactMethodVerificationHandler)
-  .route('/', xAmzTargetLightsail20161128SetIpAddressTypeHandler)
-  .route('/', xAmzTargetLightsail20161128SetResourceAccessForBucketHandler)
-  .route('/', xAmzTargetLightsail20161128StartGuiSessionHandler)
-  .route('/', xAmzTargetLightsail20161128StartInstanceHandler)
-  .route('/', xAmzTargetLightsail20161128StartRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128StopGuiSessionHandler)
-  .route('/', xAmzTargetLightsail20161128StopInstanceHandler)
-  .route('/', xAmzTargetLightsail20161128StopRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128TagResourceHandler)
-  .route('/', xAmzTargetLightsail20161128TestAlarmHandler)
-  .route('/', xAmzTargetLightsail20161128UnpeerVpcHandler)
-  .route('/', xAmzTargetLightsail20161128UntagResourceHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateBucketHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateBucketBundleHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateContainerServiceHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateDistributionHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateDistributionBundleHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateDomainEntryHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateInstanceMetadataOptionsHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateLoadBalancerAttributeHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateRelationalDatabaseHandler)
-  .route('/', xAmzTargetLightsail20161128UpdateRelationalDatabaseParametersHandler)
+  .openapi(
+    postXAmzTargetLightsail20161128AllocateStaticIpRoute,
+    postXAmzTargetLightsail20161128AllocateStaticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128AttachCertificateToDistributionRoute,
+    postXAmzTargetLightsail20161128AttachCertificateToDistributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128AttachDiskRoute,
+    postXAmzTargetLightsail20161128AttachDiskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128AttachInstancesToLoadBalancerRoute,
+    postXAmzTargetLightsail20161128AttachInstancesToLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateRoute,
+    postXAmzTargetLightsail20161128AttachLoadBalancerTlsCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128AttachStaticIpRoute,
+    postXAmzTargetLightsail20161128AttachStaticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CloseInstancePublicPortsRoute,
+    postXAmzTargetLightsail20161128CloseInstancePublicPortsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CopySnapshotRoute,
+    postXAmzTargetLightsail20161128CopySnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateBucketRoute,
+    postXAmzTargetLightsail20161128CreateBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute,
+    postXAmzTargetLightsail20161128CreateBucketAccessKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateCertificateRoute,
+    postXAmzTargetLightsail20161128CreateCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateCloudFormationStackRoute,
+    postXAmzTargetLightsail20161128CreateCloudFormationStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateContactMethodRoute,
+    postXAmzTargetLightsail20161128CreateContactMethodRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateContainerServiceRoute,
+    postXAmzTargetLightsail20161128CreateContainerServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateContainerServiceDeploymentRoute,
+    postXAmzTargetLightsail20161128CreateContainerServiceDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateContainerServiceRegistryLoginRoute,
+    postXAmzTargetLightsail20161128CreateContainerServiceRegistryLoginRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDiskRoute,
+    postXAmzTargetLightsail20161128CreateDiskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDiskFromSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateDiskFromSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDiskSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateDiskSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDistributionRoute,
+    postXAmzTargetLightsail20161128CreateDistributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDomainRoute,
+    postXAmzTargetLightsail20161128CreateDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateDomainEntryRoute,
+    postXAmzTargetLightsail20161128CreateDomainEntryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateGUISessionAccessDetailsRoute,
+    postXAmzTargetLightsail20161128CreateGUISessionAccessDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateInstanceSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateInstanceSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateInstancesRoute,
+    postXAmzTargetLightsail20161128CreateInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateInstancesFromSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateInstancesFromSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateKeyPairRoute,
+    postXAmzTargetLightsail20161128CreateKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateLoadBalancerRoute,
+    postXAmzTargetLightsail20161128CreateLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateRoute,
+    postXAmzTargetLightsail20161128CreateLoadBalancerTlsCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseFromSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotRoute,
+    postXAmzTargetLightsail20161128CreateRelationalDatabaseSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteAlarmRoute,
+    postXAmzTargetLightsail20161128DeleteAlarmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteAutoSnapshotRoute,
+    postXAmzTargetLightsail20161128DeleteAutoSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteBucketRoute,
+    postXAmzTargetLightsail20161128DeleteBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteBucketAccessKeyRoute,
+    postXAmzTargetLightsail20161128DeleteBucketAccessKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteCertificateRoute,
+    postXAmzTargetLightsail20161128DeleteCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteContactMethodRoute,
+    postXAmzTargetLightsail20161128DeleteContactMethodRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteContainerImageRoute,
+    postXAmzTargetLightsail20161128DeleteContainerImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteContainerServiceRoute,
+    postXAmzTargetLightsail20161128DeleteContainerServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteDiskRoute,
+    postXAmzTargetLightsail20161128DeleteDiskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteDiskSnapshotRoute,
+    postXAmzTargetLightsail20161128DeleteDiskSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteDistributionRoute,
+    postXAmzTargetLightsail20161128DeleteDistributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteDomainRoute,
+    postXAmzTargetLightsail20161128DeleteDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteDomainEntryRoute,
+    postXAmzTargetLightsail20161128DeleteDomainEntryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteInstanceRoute,
+    postXAmzTargetLightsail20161128DeleteInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteInstanceSnapshotRoute,
+    postXAmzTargetLightsail20161128DeleteInstanceSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteKeyPairRoute,
+    postXAmzTargetLightsail20161128DeleteKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteKnownHostKeysRoute,
+    postXAmzTargetLightsail20161128DeleteKnownHostKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteLoadBalancerRoute,
+    postXAmzTargetLightsail20161128DeleteLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateRoute,
+    postXAmzTargetLightsail20161128DeleteLoadBalancerTlsCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128DeleteRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute,
+    postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DetachCertificateFromDistributionRoute,
+    postXAmzTargetLightsail20161128DetachCertificateFromDistributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DetachDiskRoute,
+    postXAmzTargetLightsail20161128DetachDiskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DetachInstancesFromLoadBalancerRoute,
+    postXAmzTargetLightsail20161128DetachInstancesFromLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DetachStaticIpRoute,
+    postXAmzTargetLightsail20161128DetachStaticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DisableAddOnRoute,
+    postXAmzTargetLightsail20161128DisableAddOnRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128DownloadDefaultKeyPairRoute,
+    postXAmzTargetLightsail20161128DownloadDefaultKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128EnableAddOnRoute,
+    postXAmzTargetLightsail20161128EnableAddOnRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128ExportSnapshotRoute,
+    postXAmzTargetLightsail20161128ExportSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetActiveNamesRoute,
+    postXAmzTargetLightsail20161128GetActiveNamesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetAlarmsRoute,
+    postXAmzTargetLightsail20161128GetAlarmsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetAutoSnapshotsRoute,
+    postXAmzTargetLightsail20161128GetAutoSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBlueprintsRoute,
+    postXAmzTargetLightsail20161128GetBlueprintsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBucketAccessKeysRoute,
+    postXAmzTargetLightsail20161128GetBucketAccessKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBucketBundlesRoute,
+    postXAmzTargetLightsail20161128GetBucketBundlesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBucketMetricDataRoute,
+    postXAmzTargetLightsail20161128GetBucketMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBucketsRoute,
+    postXAmzTargetLightsail20161128GetBucketsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetBundlesRoute,
+    postXAmzTargetLightsail20161128GetBundlesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetCertificatesRoute,
+    postXAmzTargetLightsail20161128GetCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetCloudFormationStackRecordsRoute,
+    postXAmzTargetLightsail20161128GetCloudFormationStackRecordsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContactMethodsRoute,
+    postXAmzTargetLightsail20161128GetContactMethodsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerAPIMetadataRoute,
+    postXAmzTargetLightsail20161128GetContainerAPIMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerImagesRoute,
+    postXAmzTargetLightsail20161128GetContainerImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerLogRoute,
+    postXAmzTargetLightsail20161128GetContainerLogRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerServiceDeploymentsRoute,
+    postXAmzTargetLightsail20161128GetContainerServiceDeploymentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerServiceMetricDataRoute,
+    postXAmzTargetLightsail20161128GetContainerServiceMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerServicePowersRoute,
+    postXAmzTargetLightsail20161128GetContainerServicePowersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetContainerServicesRoute,
+    postXAmzTargetLightsail20161128GetContainerServicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetCostEstimateRoute,
+    postXAmzTargetLightsail20161128GetCostEstimateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDiskRoute,
+    postXAmzTargetLightsail20161128GetDiskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDiskSnapshotRoute,
+    postXAmzTargetLightsail20161128GetDiskSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDiskSnapshotsRoute,
+    postXAmzTargetLightsail20161128GetDiskSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDisksRoute,
+    postXAmzTargetLightsail20161128GetDisksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDistributionBundlesRoute,
+    postXAmzTargetLightsail20161128GetDistributionBundlesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDistributionLatestCacheResetRoute,
+    postXAmzTargetLightsail20161128GetDistributionLatestCacheResetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDistributionMetricDataRoute,
+    postXAmzTargetLightsail20161128GetDistributionMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDistributionsRoute,
+    postXAmzTargetLightsail20161128GetDistributionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDomainRoute,
+    postXAmzTargetLightsail20161128GetDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetDomainsRoute,
+    postXAmzTargetLightsail20161128GetDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetExportSnapshotRecordsRoute,
+    postXAmzTargetLightsail20161128GetExportSnapshotRecordsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceRoute,
+    postXAmzTargetLightsail20161128GetInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceAccessDetailsRoute,
+    postXAmzTargetLightsail20161128GetInstanceAccessDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceMetricDataRoute,
+    postXAmzTargetLightsail20161128GetInstanceMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstancePortStatesRoute,
+    postXAmzTargetLightsail20161128GetInstancePortStatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceSnapshotRoute,
+    postXAmzTargetLightsail20161128GetInstanceSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceSnapshotsRoute,
+    postXAmzTargetLightsail20161128GetInstanceSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstanceStateRoute,
+    postXAmzTargetLightsail20161128GetInstanceStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetInstancesRoute,
+    postXAmzTargetLightsail20161128GetInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetKeyPairRoute,
+    postXAmzTargetLightsail20161128GetKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetKeyPairsRoute,
+    postXAmzTargetLightsail20161128GetKeyPairsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetLoadBalancerRoute,
+    postXAmzTargetLightsail20161128GetLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetLoadBalancerMetricDataRoute,
+    postXAmzTargetLightsail20161128GetLoadBalancerMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesRoute,
+    postXAmzTargetLightsail20161128GetLoadBalancerTlsCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesRoute,
+    postXAmzTargetLightsail20161128GetLoadBalancerTlsPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetLoadBalancersRoute,
+    postXAmzTargetLightsail20161128GetLoadBalancersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetOperationRoute,
+    postXAmzTargetLightsail20161128GetOperationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetOperationsRoute,
+    postXAmzTargetLightsail20161128GetOperationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetOperationsForResourceRoute,
+    postXAmzTargetLightsail20161128GetOperationsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRegionsRoute,
+    postXAmzTargetLightsail20161128GetRegionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseBlueprintsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseBundlesRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseBundlesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseEventsRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseLogEventsRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseLogEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseLogStreamsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseMasterUserPasswordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseMetricDataRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseMetricDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseParametersRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabaseSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetRelationalDatabasesRoute,
+    postXAmzTargetLightsail20161128GetRelationalDatabasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetStaticIpRoute,
+    postXAmzTargetLightsail20161128GetStaticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128GetStaticIpsRoute,
+    postXAmzTargetLightsail20161128GetStaticIpsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128ImportKeyPairRoute,
+    postXAmzTargetLightsail20161128ImportKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128IsVpcPeeredRoute,
+    postXAmzTargetLightsail20161128IsVpcPeeredRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128OpenInstancePublicPortsRoute,
+    postXAmzTargetLightsail20161128OpenInstancePublicPortsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128PeerVpcRoute,
+    postXAmzTargetLightsail20161128PeerVpcRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128PutAlarmRoute,
+    postXAmzTargetLightsail20161128PutAlarmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128PutInstancePublicPortsRoute,
+    postXAmzTargetLightsail20161128PutInstancePublicPortsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128RebootInstanceRoute,
+    postXAmzTargetLightsail20161128RebootInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128RebootRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128RebootRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128RegisterContainerImageRoute,
+    postXAmzTargetLightsail20161128RegisterContainerImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128ReleaseStaticIpRoute,
+    postXAmzTargetLightsail20161128ReleaseStaticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128ResetDistributionCacheRoute,
+    postXAmzTargetLightsail20161128ResetDistributionCacheRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128SendContactMethodVerificationRoute,
+    postXAmzTargetLightsail20161128SendContactMethodVerificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128SetIpAddressTypeRoute,
+    postXAmzTargetLightsail20161128SetIpAddressTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128SetResourceAccessForBucketRoute,
+    postXAmzTargetLightsail20161128SetResourceAccessForBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StartGUISessionRoute,
+    postXAmzTargetLightsail20161128StartGUISessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StartInstanceRoute,
+    postXAmzTargetLightsail20161128StartInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StartRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128StartRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StopGUISessionRoute,
+    postXAmzTargetLightsail20161128StopGUISessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StopInstanceRoute,
+    postXAmzTargetLightsail20161128StopInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128StopRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128StopRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128TagResourceRoute,
+    postXAmzTargetLightsail20161128TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128TestAlarmRoute,
+    postXAmzTargetLightsail20161128TestAlarmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UnpeerVpcRoute,
+    postXAmzTargetLightsail20161128UnpeerVpcRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UntagResourceRoute,
+    postXAmzTargetLightsail20161128UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateBucketRoute,
+    postXAmzTargetLightsail20161128UpdateBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateBucketBundleRoute,
+    postXAmzTargetLightsail20161128UpdateBucketBundleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateContainerServiceRoute,
+    postXAmzTargetLightsail20161128UpdateContainerServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateDistributionRoute,
+    postXAmzTargetLightsail20161128UpdateDistributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateDistributionBundleRoute,
+    postXAmzTargetLightsail20161128UpdateDistributionBundleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateDomainEntryRoute,
+    postXAmzTargetLightsail20161128UpdateDomainEntryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateInstanceMetadataOptionsRoute,
+    postXAmzTargetLightsail20161128UpdateInstanceMetadataOptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateLoadBalancerAttributeRoute,
+    postXAmzTargetLightsail20161128UpdateLoadBalancerAttributeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateRelationalDatabaseRoute,
+    postXAmzTargetLightsail20161128UpdateRelationalDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLightsail20161128UpdateRelationalDatabaseParametersRoute,
+    postXAmzTargetLightsail20161128UpdateRelationalDatabaseParametersRouteHandler,
+  )
 
 export default app

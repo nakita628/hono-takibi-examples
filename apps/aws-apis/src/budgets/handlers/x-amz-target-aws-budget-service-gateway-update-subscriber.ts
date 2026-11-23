@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsBudgetServiceGatewayUpdateSubscriberHandler = app.openapi(
-  postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

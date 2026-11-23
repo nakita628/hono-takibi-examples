@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHtDcphaseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHtDcphaseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const htDcphaseHandler = app.openapi(getHtDcphaseRoute, (c) => {
+export const getHtDcphaseRouteHandler: RouteHandler<typeof getHtDcphaseRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

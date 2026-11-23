@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSupportedTimezonesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSupportedTimezonesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const supportedTimezonesHandler = app.openapi(getSupportedTimezonesRoute, (c) => {
+export const getSupportedTimezonesRouteHandler: RouteHandler<
+  typeof getSupportedTimezonesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/barti/3.0.0/openapi.yaml',
   output: './src/barti/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/barti/types.ts' },
   client: { output: './src/barti/client.ts', baseUrl: '/' },
   rpc: { output: './src/barti/rpc.ts', parseResponse: true },

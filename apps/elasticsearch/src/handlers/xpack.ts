@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getXpackRoute, getXpackUsageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getXpackRoute, getXpackUsageRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getXpackRouteHandler: RouteHandler<typeof getXpackRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const xpackHandler = app
-  .openapi(getXpackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getXpackUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getXpackUsageRouteHandler: RouteHandler<typeof getXpackUsageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

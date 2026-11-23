@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postConversationsActivateRoute,
   postConversationsClearUnreadRoute,
   postConversationsDeleteRoute,
   postConversationsSetUnreadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postConversationsClearUnreadRouteHandler: RouteHandler<
+  typeof postConversationsClearUnreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const conversationsHandler = app
-  .openapi(postConversationsClearUnreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsSetUnreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConversationsSetUnreadRouteHandler: RouteHandler<
+  typeof postConversationsSetUnreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsDeleteRouteHandler: RouteHandler<
+  typeof postConversationsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsActivateRouteHandler: RouteHandler<
+  typeof postConversationsActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

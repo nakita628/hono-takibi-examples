@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDisconnectFromServiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDisconnectFromServiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const disconnectFromServiceHandler = app.openapi(postDisconnectFromServiceRoute, (c) => {
+export const postDisconnectFromServiceRouteHandler: RouteHandler<
+  typeof postDisconnectFromServiceRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

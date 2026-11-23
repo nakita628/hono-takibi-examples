@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV1beta1ParentDeliveryDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV1beta1ParentDeliveryDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1beta1Handler = app.openapi(getV1beta1ParentDeliveryDataRoute, (c) => {
+export const getV1beta1ParentDeliveryDataRouteHandler: RouteHandler<
+  typeof getV1beta1ParentDeliveryDataRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

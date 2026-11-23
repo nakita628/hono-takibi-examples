@@ -274,12 +274,12 @@ const EncryptionConfigurationSchema = z
   .openapi('EncryptionConfiguration')
 
 type CreateFirewallPolicyRequestType = {
-  FirewallPolicyName: z.infer<typeof ResourceNameSchema> & unknown
-  FirewallPolicy: z.infer<typeof FirewallPolicySchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  DryRun?: z.infer<typeof BooleanSchema> & unknown
-  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema> & unknown
+  FirewallPolicyName: z.infer<typeof ResourceNameSchema>
+  FirewallPolicy: z.infer<typeof FirewallPolicySchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  DryRun?: z.infer<typeof BooleanSchema>
+  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
 }
 
 const VariableDefinitionSchema = z.string().regex(/^.*$/).min(1).openapi('VariableDefinition')
@@ -648,8 +648,8 @@ const StatelessRuleSchema = z
 const StatelessRulesSchema = z.array(StatelessRuleSchema).openapi('StatelessRules')
 
 type StatelessRulesAndCustomActionsType = {
-  StatelessRules: z.infer<typeof StatelessRulesSchema> & unknown
-  CustomActions?: z.infer<typeof CustomActionsSchema> & unknown
+  StatelessRules: z.infer<typeof StatelessRulesSchema>
+  CustomActions?: z.infer<typeof CustomActionsSchema>
 }
 
 const StatelessRulesAndCustomActionsSchema: z.ZodType<StatelessRulesAndCustomActionsType> = z
@@ -670,10 +670,10 @@ const StatelessRulesAndCustomActionsSchema: z.ZodType<StatelessRulesAndCustomAct
   .openapi('StatelessRulesAndCustomActions')
 
 type RulesSourceType = {
-  RulesString?: z.infer<typeof RulesStringSchema> & unknown
-  RulesSourceList?: z.infer<typeof RulesSourceListSchema> & unknown
-  StatefulRules?: z.infer<typeof StatefulRulesSchema> & unknown
-  StatelessRulesAndCustomActions?: z.infer<typeof StatelessRulesAndCustomActionsSchema> & unknown
+  RulesString?: z.infer<typeof RulesStringSchema>
+  RulesSourceList?: z.infer<typeof RulesSourceListSchema>
+  StatefulRules?: z.infer<typeof StatefulRulesSchema>
+  StatelessRulesAndCustomActions?: z.infer<typeof StatelessRulesAndCustomActionsSchema>
 }
 
 const RulesSourceSchema: z.ZodType<RulesSourceType> = z
@@ -715,10 +715,10 @@ const StatefulRuleOptionsSchema = z
   .openapi('StatefulRuleOptions')
 
 type RuleGroupType = {
-  RuleVariables?: z.infer<typeof RuleVariablesSchema> & unknown
-  ReferenceSets?: z.infer<typeof ReferenceSetsSchema> & unknown
-  RulesSource: z.infer<typeof RulesSourceSchema> & unknown
-  StatefulRuleOptions?: z.infer<typeof StatefulRuleOptionsSchema> & unknown
+  RuleVariables?: z.infer<typeof RuleVariablesSchema>
+  ReferenceSets?: z.infer<typeof ReferenceSetsSchema>
+  RulesSource: z.infer<typeof RulesSourceSchema>
+  StatefulRuleOptions?: z.infer<typeof StatefulRuleOptionsSchema>
 }
 
 const RuleGroupSchema: z.ZodType<RuleGroupType> = z
@@ -775,16 +775,16 @@ const SourceMetadataSchema = z
   .openapi('SourceMetadata')
 
 type CreateRuleGroupRequestType = {
-  RuleGroupName: z.infer<typeof ResourceNameSchema> & unknown
-  RuleGroup?: z.infer<typeof RuleGroupSchema> & unknown
-  Rules?: z.infer<typeof RulesStringSchema> & unknown
-  Type: z.infer<typeof RuleGroupTypeSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Capacity: z.infer<typeof RuleCapacitySchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  DryRun?: z.infer<typeof BooleanSchema> & unknown
-  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema> & unknown
-  SourceMetadata?: z.infer<typeof SourceMetadataSchema> & unknown
+  RuleGroupName: z.infer<typeof ResourceNameSchema>
+  RuleGroup?: z.infer<typeof RuleGroupSchema>
+  Rules?: z.infer<typeof RulesStringSchema>
+  Type: z.infer<typeof RuleGroupTypeSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Capacity: z.infer<typeof RuleCapacitySchema>
+  Tags?: z.infer<typeof TagListSchema>
+  DryRun?: z.infer<typeof BooleanSchema>
+  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
+  SourceMetadata?: z.infer<typeof SourceMetadataSchema>
 }
 
 const ServerCertificateSchema = z
@@ -873,10 +873,10 @@ const TLSInspectionConfigurationSchema = z
   .openapi('TLSInspectionConfiguration')
 
 type CreateTLSInspectionConfigurationRequestType = {
-  TLSInspectionConfigurationName: z.infer<typeof ResourceNameSchema> & unknown
-  TLSInspectionConfiguration: z.infer<typeof TLSInspectionConfigurationSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  TLSInspectionConfigurationName: z.infer<typeof ResourceNameSchema>
+  TLSInspectionConfiguration: z.infer<typeof TLSInspectionConfigurationSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Tags?: z.infer<typeof TagListSchema>
   EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
 }
 
@@ -942,9 +942,9 @@ const FirewallPolicyResponseSchema = z
   .openapi('FirewallPolicyResponse')
 
 type DescribeFirewallPolicyResponseType = {
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
-  FirewallPolicyResponse: z.infer<typeof FirewallPolicyResponseSchema> & unknown
-  FirewallPolicy?: z.infer<typeof FirewallPolicySchema> & unknown
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
+  FirewallPolicyResponse: z.infer<typeof FirewallPolicyResponseSchema>
+  FirewallPolicy?: z.infer<typeof FirewallPolicySchema>
 }
 
 const RuleGroupResponseSchema = z
@@ -1007,9 +1007,9 @@ const RuleGroupResponseSchema = z
   .openapi('RuleGroupResponse')
 
 type DescribeRuleGroupResponseType = {
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
-  RuleGroup?: z.infer<typeof RuleGroupSchema> & unknown
-  RuleGroupResponse: z.infer<typeof RuleGroupResponseSchema> & unknown
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
+  RuleGroup?: z.infer<typeof RuleGroupSchema>
+  RuleGroupResponse: z.infer<typeof RuleGroupResponseSchema>
 }
 
 const StatusReasonSchema = z
@@ -1092,42 +1092,41 @@ const TLSInspectionConfigurationResponseSchema = z
   .openapi('TLSInspectionConfigurationResponse')
 
 type DescribeTLSInspectionConfigurationResponseType = {
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
-  TLSInspectionConfiguration?: z.infer<typeof TLSInspectionConfigurationSchema> & unknown
-  TLSInspectionConfigurationResponse: z.infer<typeof TLSInspectionConfigurationResponseSchema> &
-    unknown
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
+  TLSInspectionConfiguration?: z.infer<typeof TLSInspectionConfigurationSchema>
+  TLSInspectionConfigurationResponse: z.infer<typeof TLSInspectionConfigurationResponseSchema>
 }
 
 type UpdateFirewallPolicyRequestType = {
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
-  FirewallPolicyArn?: z.infer<typeof ResourceArnSchema> & unknown
-  FirewallPolicyName?: z.infer<typeof ResourceNameSchema> & unknown
-  FirewallPolicy: z.infer<typeof FirewallPolicySchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  DryRun?: z.infer<typeof BooleanSchema> & unknown
-  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema> & unknown
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
+  FirewallPolicyArn?: z.infer<typeof ResourceArnSchema>
+  FirewallPolicyName?: z.infer<typeof ResourceNameSchema>
+  FirewallPolicy: z.infer<typeof FirewallPolicySchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  DryRun?: z.infer<typeof BooleanSchema>
+  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
 }
 
 type UpdateRuleGroupRequestType = {
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
-  RuleGroupArn?: z.infer<typeof ResourceArnSchema> & unknown
-  RuleGroupName?: z.infer<typeof ResourceNameSchema> & unknown
-  RuleGroup?: z.infer<typeof RuleGroupSchema> & unknown
-  Rules?: z.infer<typeof RulesStringSchema> & unknown
-  Type?: z.infer<typeof RuleGroupTypeSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  DryRun?: z.infer<typeof BooleanSchema> & unknown
-  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema> & unknown
-  SourceMetadata?: z.infer<typeof SourceMetadataSchema> & unknown
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
+  RuleGroupArn?: z.infer<typeof ResourceArnSchema>
+  RuleGroupName?: z.infer<typeof ResourceNameSchema>
+  RuleGroup?: z.infer<typeof RuleGroupSchema>
+  Rules?: z.infer<typeof RulesStringSchema>
+  Type?: z.infer<typeof RuleGroupTypeSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  DryRun?: z.infer<typeof BooleanSchema>
+  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
+  SourceMetadata?: z.infer<typeof SourceMetadataSchema>
 }
 
 type UpdateTLSInspectionConfigurationRequestType = {
-  TLSInspectionConfigurationArn?: z.infer<typeof ResourceArnSchema> & unknown
-  TLSInspectionConfigurationName?: z.infer<typeof ResourceNameSchema> & unknown
-  TLSInspectionConfiguration: z.infer<typeof TLSInspectionConfigurationSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema> & unknown
-  UpdateToken: z.infer<typeof UpdateTokenSchema> & unknown
+  TLSInspectionConfigurationArn?: z.infer<typeof ResourceArnSchema>
+  TLSInspectionConfigurationName?: z.infer<typeof ResourceNameSchema>
+  TLSInspectionConfiguration: z.infer<typeof TLSInspectionConfigurationSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  EncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
+  UpdateToken: z.infer<typeof UpdateTokenSchema>
 }
 
 const AssociateFirewallPolicyResponseSchema = z

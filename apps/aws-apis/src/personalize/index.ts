@@ -1,141 +1,407 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonPersonalizeCreateBatchInferenceJobHandler,
-  xAmzTargetAmazonPersonalizeCreateBatchSegmentJobHandler,
-  xAmzTargetAmazonPersonalizeCreateCampaignHandler,
-  xAmzTargetAmazonPersonalizeCreateDatasetExportJobHandler,
-  xAmzTargetAmazonPersonalizeCreateDatasetGroupHandler,
-  xAmzTargetAmazonPersonalizeCreateDatasetHandler,
-  xAmzTargetAmazonPersonalizeCreateDatasetImportJobHandler,
-  xAmzTargetAmazonPersonalizeCreateEventTrackerHandler,
-  xAmzTargetAmazonPersonalizeCreateFilterHandler,
-  xAmzTargetAmazonPersonalizeCreateMetricAttributionHandler,
-  xAmzTargetAmazonPersonalizeCreateRecommenderHandler,
-  xAmzTargetAmazonPersonalizeCreateSchemaHandler,
-  xAmzTargetAmazonPersonalizeCreateSolutionHandler,
-  xAmzTargetAmazonPersonalizeCreateSolutionVersionHandler,
-  xAmzTargetAmazonPersonalizeDeleteCampaignHandler,
-  xAmzTargetAmazonPersonalizeDeleteDatasetGroupHandler,
-  xAmzTargetAmazonPersonalizeDeleteDatasetHandler,
-  xAmzTargetAmazonPersonalizeDeleteEventTrackerHandler,
-  xAmzTargetAmazonPersonalizeDeleteFilterHandler,
-  xAmzTargetAmazonPersonalizeDeleteMetricAttributionHandler,
-  xAmzTargetAmazonPersonalizeDeleteRecommenderHandler,
-  xAmzTargetAmazonPersonalizeDeleteSchemaHandler,
-  xAmzTargetAmazonPersonalizeDeleteSolutionHandler,
-  xAmzTargetAmazonPersonalizeDescribeAlgorithmHandler,
-  xAmzTargetAmazonPersonalizeDescribeBatchInferenceJobHandler,
-  xAmzTargetAmazonPersonalizeDescribeBatchSegmentJobHandler,
-  xAmzTargetAmazonPersonalizeDescribeCampaignHandler,
-  xAmzTargetAmazonPersonalizeDescribeDatasetExportJobHandler,
-  xAmzTargetAmazonPersonalizeDescribeDatasetGroupHandler,
-  xAmzTargetAmazonPersonalizeDescribeDatasetHandler,
-  xAmzTargetAmazonPersonalizeDescribeDatasetImportJobHandler,
-  xAmzTargetAmazonPersonalizeDescribeEventTrackerHandler,
-  xAmzTargetAmazonPersonalizeDescribeFeatureTransformationHandler,
-  xAmzTargetAmazonPersonalizeDescribeFilterHandler,
-  xAmzTargetAmazonPersonalizeDescribeMetricAttributionHandler,
-  xAmzTargetAmazonPersonalizeDescribeRecipeHandler,
-  xAmzTargetAmazonPersonalizeDescribeRecommenderHandler,
-  xAmzTargetAmazonPersonalizeDescribeSchemaHandler,
-  xAmzTargetAmazonPersonalizeDescribeSolutionHandler,
-  xAmzTargetAmazonPersonalizeDescribeSolutionVersionHandler,
-  xAmzTargetAmazonPersonalizeGetSolutionMetricsHandler,
-  xAmzTargetAmazonPersonalizeListBatchInferenceJobsHandler,
-  xAmzTargetAmazonPersonalizeListBatchSegmentJobsHandler,
-  xAmzTargetAmazonPersonalizeListCampaignsHandler,
-  xAmzTargetAmazonPersonalizeListDatasetExportJobsHandler,
-  xAmzTargetAmazonPersonalizeListDatasetGroupsHandler,
-  xAmzTargetAmazonPersonalizeListDatasetImportJobsHandler,
-  xAmzTargetAmazonPersonalizeListDatasetsHandler,
-  xAmzTargetAmazonPersonalizeListEventTrackersHandler,
-  xAmzTargetAmazonPersonalizeListFiltersHandler,
-  xAmzTargetAmazonPersonalizeListMetricAttributionMetricsHandler,
-  xAmzTargetAmazonPersonalizeListMetricAttributionsHandler,
-  xAmzTargetAmazonPersonalizeListRecipesHandler,
-  xAmzTargetAmazonPersonalizeListRecommendersHandler,
-  xAmzTargetAmazonPersonalizeListSchemasHandler,
-  xAmzTargetAmazonPersonalizeListSolutionsHandler,
-  xAmzTargetAmazonPersonalizeListSolutionVersionsHandler,
-  xAmzTargetAmazonPersonalizeListTagsForResourceHandler,
-  xAmzTargetAmazonPersonalizeStartRecommenderHandler,
-  xAmzTargetAmazonPersonalizeStopRecommenderHandler,
-  xAmzTargetAmazonPersonalizeStopSolutionVersionCreationHandler,
-  xAmzTargetAmazonPersonalizeTagResourceHandler,
-  xAmzTargetAmazonPersonalizeUntagResourceHandler,
-  xAmzTargetAmazonPersonalizeUpdateCampaignHandler,
-  xAmzTargetAmazonPersonalizeUpdateMetricAttributionHandler,
-  xAmzTargetAmazonPersonalizeUpdateRecommenderHandler,
+  postXAmzTargetAmazonPersonalizeCreateBatchInferenceJobRoute,
+  postXAmzTargetAmazonPersonalizeCreateBatchSegmentJobRoute,
+  postXAmzTargetAmazonPersonalizeCreateCampaignRoute,
+  postXAmzTargetAmazonPersonalizeCreateDatasetExportJobRoute,
+  postXAmzTargetAmazonPersonalizeCreateDatasetGroupRoute,
+  postXAmzTargetAmazonPersonalizeCreateDatasetImportJobRoute,
+  postXAmzTargetAmazonPersonalizeCreateDatasetRoute,
+  postXAmzTargetAmazonPersonalizeCreateEventTrackerRoute,
+  postXAmzTargetAmazonPersonalizeCreateFilterRoute,
+  postXAmzTargetAmazonPersonalizeCreateMetricAttributionRoute,
+  postXAmzTargetAmazonPersonalizeCreateRecommenderRoute,
+  postXAmzTargetAmazonPersonalizeCreateSchemaRoute,
+  postXAmzTargetAmazonPersonalizeCreateSolutionRoute,
+  postXAmzTargetAmazonPersonalizeCreateSolutionVersionRoute,
+  postXAmzTargetAmazonPersonalizeDeleteCampaignRoute,
+  postXAmzTargetAmazonPersonalizeDeleteDatasetGroupRoute,
+  postXAmzTargetAmazonPersonalizeDeleteDatasetRoute,
+  postXAmzTargetAmazonPersonalizeDeleteEventTrackerRoute,
+  postXAmzTargetAmazonPersonalizeDeleteFilterRoute,
+  postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute,
+  postXAmzTargetAmazonPersonalizeDeleteRecommenderRoute,
+  postXAmzTargetAmazonPersonalizeDeleteSchemaRoute,
+  postXAmzTargetAmazonPersonalizeDeleteSolutionRoute,
+  postXAmzTargetAmazonPersonalizeDescribeAlgorithmRoute,
+  postXAmzTargetAmazonPersonalizeDescribeBatchInferenceJobRoute,
+  postXAmzTargetAmazonPersonalizeDescribeBatchSegmentJobRoute,
+  postXAmzTargetAmazonPersonalizeDescribeCampaignRoute,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetExportJobRoute,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetImportJobRoute,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetRoute,
+  postXAmzTargetAmazonPersonalizeDescribeEventTrackerRoute,
+  postXAmzTargetAmazonPersonalizeDescribeFeatureTransformationRoute,
+  postXAmzTargetAmazonPersonalizeDescribeFilterRoute,
+  postXAmzTargetAmazonPersonalizeDescribeMetricAttributionRoute,
+  postXAmzTargetAmazonPersonalizeDescribeRecipeRoute,
+  postXAmzTargetAmazonPersonalizeDescribeRecommenderRoute,
+  postXAmzTargetAmazonPersonalizeDescribeSchemaRoute,
+  postXAmzTargetAmazonPersonalizeDescribeSolutionRoute,
+  postXAmzTargetAmazonPersonalizeDescribeSolutionVersionRoute,
+  postXAmzTargetAmazonPersonalizeGetSolutionMetricsRoute,
+  postXAmzTargetAmazonPersonalizeListBatchInferenceJobsRoute,
+  postXAmzTargetAmazonPersonalizeListBatchSegmentJobsRoute,
+  postXAmzTargetAmazonPersonalizeListCampaignsRoute,
+  postXAmzTargetAmazonPersonalizeListDatasetExportJobsRoute,
+  postXAmzTargetAmazonPersonalizeListDatasetGroupsRoute,
+  postXAmzTargetAmazonPersonalizeListDatasetImportJobsRoute,
+  postXAmzTargetAmazonPersonalizeListDatasetsRoute,
+  postXAmzTargetAmazonPersonalizeListEventTrackersRoute,
+  postXAmzTargetAmazonPersonalizeListFiltersRoute,
+  postXAmzTargetAmazonPersonalizeListMetricAttributionMetricsRoute,
+  postXAmzTargetAmazonPersonalizeListMetricAttributionsRoute,
+  postXAmzTargetAmazonPersonalizeListRecipesRoute,
+  postXAmzTargetAmazonPersonalizeListRecommendersRoute,
+  postXAmzTargetAmazonPersonalizeListSchemasRoute,
+  postXAmzTargetAmazonPersonalizeListSolutionsRoute,
+  postXAmzTargetAmazonPersonalizeListSolutionVersionsRoute,
+  postXAmzTargetAmazonPersonalizeListTagsForResourceRoute,
+  postXAmzTargetAmazonPersonalizeStartRecommenderRoute,
+  postXAmzTargetAmazonPersonalizeStopRecommenderRoute,
+  postXAmzTargetAmazonPersonalizeStopSolutionVersionCreationRoute,
+  postXAmzTargetAmazonPersonalizeTagResourceRoute,
+  postXAmzTargetAmazonPersonalizeUntagResourceRoute,
+  postXAmzTargetAmazonPersonalizeUpdateCampaignRoute,
+  postXAmzTargetAmazonPersonalizeUpdateMetricAttributionRoute,
+  postXAmzTargetAmazonPersonalizeUpdateRecommenderRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonPersonalizeCreateBatchInferenceJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateBatchSegmentJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateCampaignRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateDatasetExportJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateDatasetGroupRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateDatasetImportJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateDatasetRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateEventTrackerRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateFilterRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateMetricAttributionRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateRecommenderRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateSchemaRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateSolutionRouteHandler,
+  postXAmzTargetAmazonPersonalizeCreateSolutionVersionRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteCampaignRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteDatasetGroupRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteDatasetRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteEventTrackerRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteFilterRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteRecommenderRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteSchemaRouteHandler,
+  postXAmzTargetAmazonPersonalizeDeleteSolutionRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeAlgorithmRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeBatchInferenceJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeBatchSegmentJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeCampaignRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetExportJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetImportJobRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeDatasetRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeEventTrackerRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeFeatureTransformationRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeFilterRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeMetricAttributionRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeRecipeRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeRecommenderRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeSchemaRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeSolutionRouteHandler,
+  postXAmzTargetAmazonPersonalizeDescribeSolutionVersionRouteHandler,
+  postXAmzTargetAmazonPersonalizeGetSolutionMetricsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListBatchInferenceJobsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListBatchSegmentJobsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListCampaignsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListDatasetExportJobsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListDatasetGroupsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListDatasetImportJobsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListDatasetsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListEventTrackersRouteHandler,
+  postXAmzTargetAmazonPersonalizeListFiltersRouteHandler,
+  postXAmzTargetAmazonPersonalizeListMetricAttributionMetricsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListMetricAttributionsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListRecipesRouteHandler,
+  postXAmzTargetAmazonPersonalizeListRecommendersRouteHandler,
+  postXAmzTargetAmazonPersonalizeListSchemasRouteHandler,
+  postXAmzTargetAmazonPersonalizeListSolutionsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListSolutionVersionsRouteHandler,
+  postXAmzTargetAmazonPersonalizeListTagsForResourceRouteHandler,
+  postXAmzTargetAmazonPersonalizeStartRecommenderRouteHandler,
+  postXAmzTargetAmazonPersonalizeStopRecommenderRouteHandler,
+  postXAmzTargetAmazonPersonalizeStopSolutionVersionCreationRouteHandler,
+  postXAmzTargetAmazonPersonalizeTagResourceRouteHandler,
+  postXAmzTargetAmazonPersonalizeUntagResourceRouteHandler,
+  postXAmzTargetAmazonPersonalizeUpdateCampaignRouteHandler,
+  postXAmzTargetAmazonPersonalizeUpdateMetricAttributionRouteHandler,
+  postXAmzTargetAmazonPersonalizeUpdateRecommenderRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonPersonalizeCreateBatchInferenceJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateBatchSegmentJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateCampaignHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateDatasetHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateDatasetExportJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateDatasetGroupHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateDatasetImportJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateEventTrackerHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateFilterHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateMetricAttributionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateRecommenderHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateSchemaHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateSolutionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeCreateSolutionVersionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteCampaignHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteDatasetHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteDatasetGroupHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteEventTrackerHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteFilterHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteMetricAttributionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteRecommenderHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteSchemaHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDeleteSolutionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeAlgorithmHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeBatchInferenceJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeBatchSegmentJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeCampaignHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeDatasetHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeDatasetExportJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeDatasetGroupHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeDatasetImportJobHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeEventTrackerHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeFeatureTransformationHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeFilterHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeMetricAttributionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeRecipeHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeRecommenderHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeSchemaHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeSolutionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeDescribeSolutionVersionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeGetSolutionMetricsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListBatchInferenceJobsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListBatchSegmentJobsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListCampaignsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListDatasetExportJobsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListDatasetGroupsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListDatasetImportJobsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListDatasetsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListEventTrackersHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListFiltersHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListMetricAttributionMetricsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListMetricAttributionsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListRecipesHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListRecommendersHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListSchemasHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListSolutionVersionsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListSolutionsHandler)
-  .route('/', xAmzTargetAmazonPersonalizeListTagsForResourceHandler)
-  .route('/', xAmzTargetAmazonPersonalizeStartRecommenderHandler)
-  .route('/', xAmzTargetAmazonPersonalizeStopRecommenderHandler)
-  .route('/', xAmzTargetAmazonPersonalizeStopSolutionVersionCreationHandler)
-  .route('/', xAmzTargetAmazonPersonalizeTagResourceHandler)
-  .route('/', xAmzTargetAmazonPersonalizeUntagResourceHandler)
-  .route('/', xAmzTargetAmazonPersonalizeUpdateCampaignHandler)
-  .route('/', xAmzTargetAmazonPersonalizeUpdateMetricAttributionHandler)
-  .route('/', xAmzTargetAmazonPersonalizeUpdateRecommenderHandler)
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateBatchInferenceJobRoute,
+    postXAmzTargetAmazonPersonalizeCreateBatchInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateBatchSegmentJobRoute,
+    postXAmzTargetAmazonPersonalizeCreateBatchSegmentJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateCampaignRoute,
+    postXAmzTargetAmazonPersonalizeCreateCampaignRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateDatasetRoute,
+    postXAmzTargetAmazonPersonalizeCreateDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateDatasetExportJobRoute,
+    postXAmzTargetAmazonPersonalizeCreateDatasetExportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateDatasetGroupRoute,
+    postXAmzTargetAmazonPersonalizeCreateDatasetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateDatasetImportJobRoute,
+    postXAmzTargetAmazonPersonalizeCreateDatasetImportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateEventTrackerRoute,
+    postXAmzTargetAmazonPersonalizeCreateEventTrackerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateFilterRoute,
+    postXAmzTargetAmazonPersonalizeCreateFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateMetricAttributionRoute,
+    postXAmzTargetAmazonPersonalizeCreateMetricAttributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeCreateRecommenderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateSchemaRoute,
+    postXAmzTargetAmazonPersonalizeCreateSchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateSolutionRoute,
+    postXAmzTargetAmazonPersonalizeCreateSolutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeCreateSolutionVersionRoute,
+    postXAmzTargetAmazonPersonalizeCreateSolutionVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteCampaignRoute,
+    postXAmzTargetAmazonPersonalizeDeleteCampaignRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteDatasetRoute,
+    postXAmzTargetAmazonPersonalizeDeleteDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteDatasetGroupRoute,
+    postXAmzTargetAmazonPersonalizeDeleteDatasetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteEventTrackerRoute,
+    postXAmzTargetAmazonPersonalizeDeleteEventTrackerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteFilterRoute,
+    postXAmzTargetAmazonPersonalizeDeleteFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute,
+    postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeDeleteRecommenderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteSchemaRoute,
+    postXAmzTargetAmazonPersonalizeDeleteSchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDeleteSolutionRoute,
+    postXAmzTargetAmazonPersonalizeDeleteSolutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeAlgorithmRoute,
+    postXAmzTargetAmazonPersonalizeDescribeAlgorithmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeBatchInferenceJobRoute,
+    postXAmzTargetAmazonPersonalizeDescribeBatchInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeBatchSegmentJobRoute,
+    postXAmzTargetAmazonPersonalizeDescribeBatchSegmentJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeCampaignRoute,
+    postXAmzTargetAmazonPersonalizeDescribeCampaignRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeDatasetRoute,
+    postXAmzTargetAmazonPersonalizeDescribeDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeDatasetExportJobRoute,
+    postXAmzTargetAmazonPersonalizeDescribeDatasetExportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute,
+    postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeDatasetImportJobRoute,
+    postXAmzTargetAmazonPersonalizeDescribeDatasetImportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeEventTrackerRoute,
+    postXAmzTargetAmazonPersonalizeDescribeEventTrackerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeFeatureTransformationRoute,
+    postXAmzTargetAmazonPersonalizeDescribeFeatureTransformationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeFilterRoute,
+    postXAmzTargetAmazonPersonalizeDescribeFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeMetricAttributionRoute,
+    postXAmzTargetAmazonPersonalizeDescribeMetricAttributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeRecipeRoute,
+    postXAmzTargetAmazonPersonalizeDescribeRecipeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeDescribeRecommenderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeSchemaRoute,
+    postXAmzTargetAmazonPersonalizeDescribeSchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeSolutionRoute,
+    postXAmzTargetAmazonPersonalizeDescribeSolutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeDescribeSolutionVersionRoute,
+    postXAmzTargetAmazonPersonalizeDescribeSolutionVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeGetSolutionMetricsRoute,
+    postXAmzTargetAmazonPersonalizeGetSolutionMetricsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListBatchInferenceJobsRoute,
+    postXAmzTargetAmazonPersonalizeListBatchInferenceJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListBatchSegmentJobsRoute,
+    postXAmzTargetAmazonPersonalizeListBatchSegmentJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListCampaignsRoute,
+    postXAmzTargetAmazonPersonalizeListCampaignsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListDatasetExportJobsRoute,
+    postXAmzTargetAmazonPersonalizeListDatasetExportJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListDatasetGroupsRoute,
+    postXAmzTargetAmazonPersonalizeListDatasetGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListDatasetImportJobsRoute,
+    postXAmzTargetAmazonPersonalizeListDatasetImportJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListDatasetsRoute,
+    postXAmzTargetAmazonPersonalizeListDatasetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListEventTrackersRoute,
+    postXAmzTargetAmazonPersonalizeListEventTrackersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListFiltersRoute,
+    postXAmzTargetAmazonPersonalizeListFiltersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListMetricAttributionMetricsRoute,
+    postXAmzTargetAmazonPersonalizeListMetricAttributionMetricsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListMetricAttributionsRoute,
+    postXAmzTargetAmazonPersonalizeListMetricAttributionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListRecipesRoute,
+    postXAmzTargetAmazonPersonalizeListRecipesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListRecommendersRoute,
+    postXAmzTargetAmazonPersonalizeListRecommendersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListSchemasRoute,
+    postXAmzTargetAmazonPersonalizeListSchemasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListSolutionVersionsRoute,
+    postXAmzTargetAmazonPersonalizeListSolutionVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListSolutionsRoute,
+    postXAmzTargetAmazonPersonalizeListSolutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeListTagsForResourceRoute,
+    postXAmzTargetAmazonPersonalizeListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeStartRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeStartRecommenderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeStopRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeStopRecommenderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeStopSolutionVersionCreationRoute,
+    postXAmzTargetAmazonPersonalizeStopSolutionVersionCreationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeTagResourceRoute,
+    postXAmzTargetAmazonPersonalizeTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeUntagResourceRoute,
+    postXAmzTargetAmazonPersonalizeUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeUpdateCampaignRoute,
+    postXAmzTargetAmazonPersonalizeUpdateCampaignRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeUpdateMetricAttributionRoute,
+    postXAmzTargetAmazonPersonalizeUpdateMetricAttributionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonPersonalizeUpdateRecommenderRoute,
+    postXAmzTargetAmazonPersonalizeUpdateRecommenderRouteHandler,
+  )
 
 export default app

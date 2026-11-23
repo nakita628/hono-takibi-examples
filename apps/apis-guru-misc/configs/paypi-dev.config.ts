@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/paypi.dev/1.0.0/openapi.yaml',
   output: './src/paypi-dev/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/paypi-dev/types.ts' },
   client: { output: './src/paypi-dev/client.ts', baseUrl: '/' },
   rpc: { output: './src/paypi-dev/rpc.ts', parseResponse: true },

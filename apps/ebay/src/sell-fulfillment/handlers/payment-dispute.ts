@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPaymentDisputePaymentDisputeIdActivityRoute,
   getPaymentDisputePaymentDisputeIdFetchEvidenceContentRoute,
   getPaymentDisputePaymentDisputeIdRoute,
@@ -10,30 +10,50 @@ import {
   postPaymentDisputePaymentDisputeIdUploadEvidenceFileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentDisputePaymentDisputeIdRouteHandler: RouteHandler<
+  typeof getPaymentDisputePaymentDisputeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentDisputeHandler = app
-  .openapi(getPaymentDisputePaymentDisputeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDisputePaymentDisputeIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentDisputePaymentDisputeIdActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDisputePaymentDisputeIdAddEvidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDisputePaymentDisputeIdContestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentDisputePaymentDisputeIdFetchEvidenceContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDisputePaymentDisputeIdUpdateEvidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDisputePaymentDisputeIdUploadEvidenceFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentDisputePaymentDisputeIdAcceptRouteHandler: RouteHandler<
+  typeof postPaymentDisputePaymentDisputeIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentDisputePaymentDisputeIdActivityRouteHandler: RouteHandler<
+  typeof getPaymentDisputePaymentDisputeIdActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentDisputePaymentDisputeIdAddEvidenceRouteHandler: RouteHandler<
+  typeof postPaymentDisputePaymentDisputeIdAddEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentDisputePaymentDisputeIdContestRouteHandler: RouteHandler<
+  typeof postPaymentDisputePaymentDisputeIdContestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentDisputePaymentDisputeIdFetchEvidenceContentRouteHandler: RouteHandler<
+  typeof getPaymentDisputePaymentDisputeIdFetchEvidenceContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentDisputePaymentDisputeIdUpdateEvidenceRouteHandler: RouteHandler<
+  typeof postPaymentDisputePaymentDisputeIdUpdateEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentDisputePaymentDisputeIdUploadEvidenceFileRouteHandler: RouteHandler<
+  typeof postPaymentDisputePaymentDisputeIdUploadEvidenceFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

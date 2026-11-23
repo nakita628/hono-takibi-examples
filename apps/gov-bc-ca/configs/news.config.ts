@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/news/1.0/openapi.yaml',
   output: './src/news/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/news/types.ts' },
   client: { output: './src/news/client.ts', baseUrl: '/' },
   rpc: { output: './src/news/rpc.ts', parseResponse: true },

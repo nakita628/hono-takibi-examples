@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRegistryV2DevicesDeviceOrExternalIdRoute,
   deleteRegistryV2TrackingIdRoute,
   getRegistryV2AppIdDevicesRoute,
@@ -17,51 +17,92 @@ import {
   putRegistryV2DevicesDeviceOrExternalIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteRegistryV2DevicesDeviceOrExternalIdRouteHandler: RouteHandler<
+  typeof deleteRegistryV2DevicesDeviceOrExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const registryHandler = app
-  .openapi(deleteRegistryV2DevicesDeviceOrExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2DevicesDeviceOrExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRegistryV2DevicesDeviceOrExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2LicensesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2AppIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistryV2AppIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2AppIdLicenseCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistryV2AppIdOneDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2JobIdResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2JobIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRegistryV2TrackingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistryV2TrackingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistryV4ResourcesResourceTypeFindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRegistryV2DevicesDeviceOrExternalIdRouteHandler: RouteHandler<
+  typeof getRegistryV2DevicesDeviceOrExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRegistryV2DevicesDeviceOrExternalIdRouteHandler: RouteHandler<
+  typeof putRegistryV2DevicesDeviceOrExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2HealthRouteHandler: RouteHandler<
+  typeof getRegistryV2HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2LicensesRouteHandler: RouteHandler<
+  typeof getRegistryV2LicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2VersionRouteHandler: RouteHandler<
+  typeof getRegistryV2VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2AppIdDevicesRouteHandler: RouteHandler<
+  typeof getRegistryV2AppIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegistryV2AppIdDevicesRouteHandler: RouteHandler<
+  typeof postRegistryV2AppIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2AppIdLicenseCountRouteHandler: RouteHandler<
+  typeof getRegistryV2AppIdLicenseCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegistryV2AppIdOneDeviceRouteHandler: RouteHandler<
+  typeof postRegistryV2AppIdOneDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2JobIdResultsRouteHandler: RouteHandler<
+  typeof getRegistryV2JobIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2JobIdStatusRouteHandler: RouteHandler<
+  typeof getRegistryV2JobIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRegistryV2TrackingIdRouteHandler: RouteHandler<
+  typeof deleteRegistryV2TrackingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistryV2TrackingIdRouteHandler: RouteHandler<
+  typeof getRegistryV2TrackingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegistryV4ResourcesResourceTypeFindRouteHandler: RouteHandler<
+  typeof postRegistryV4ResourcesResourceTypeFindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

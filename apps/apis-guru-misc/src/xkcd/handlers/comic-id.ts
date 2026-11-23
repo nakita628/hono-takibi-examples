@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getComicIdInfo0JsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getComicIdInfo0JsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const comicIdHandler = app.openapi(getComicIdInfo0JsonRoute, (c) => {
+export const getComicIdInfo0JsonRouteHandler: RouteHandler<
+  typeof getComicIdInfo0JsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

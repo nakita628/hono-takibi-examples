@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTopicsRoute,
   getTopicsTopicnamePartitionsPartitionidOffsetsRoute,
   getTopicsTopicnamePartitionsPartitionidRoute,
@@ -9,27 +9,42 @@ import {
   postTopicsTopicnameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTopicsRouteHandler: RouteHandler<typeof getTopicsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const topicsHandler = app
-  .openapi(getTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTopicsTopicnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTopicsTopicnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTopicsTopicnamePartitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTopicsTopicnamePartitionsPartitionidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTopicsTopicnamePartitionsPartitionidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTopicsTopicnamePartitionsPartitionidOffsetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTopicsTopicnameRouteHandler: RouteHandler<typeof getTopicsTopicnameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTopicsTopicnameRouteHandler: RouteHandler<
+  typeof postTopicsTopicnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTopicsTopicnamePartitionsRouteHandler: RouteHandler<
+  typeof getTopicsTopicnamePartitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTopicsTopicnamePartitionsPartitionidRouteHandler: RouteHandler<
+  typeof getTopicsTopicnamePartitionsPartitionidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTopicsTopicnamePartitionsPartitionidRouteHandler: RouteHandler<
+  typeof postTopicsTopicnamePartitionsPartitionidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTopicsTopicnamePartitionsPartitionidOffsetsRouteHandler: RouteHandler<
+  typeof getTopicsTopicnamePartitionsPartitionidOffsetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

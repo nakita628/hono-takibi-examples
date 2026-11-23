@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/cloudmersive.com/ocr/v1/openapi.yaml',
   output: './src/cloudmersive-ocr/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudmersive-ocr/types.ts' },
   client: { output: './src/cloudmersive-ocr/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudmersive-ocr/rpc.ts', parseResponse: true },

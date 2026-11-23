@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueBatchDeleteConnectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueBatchDeleteConnectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueBatchDeleteConnectionHandler = app.openapi(
-  postXAmzTargetAWSGlueBatchDeleteConnectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueBatchDeleteConnectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueBatchDeleteConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

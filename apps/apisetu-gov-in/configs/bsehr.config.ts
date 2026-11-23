@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/bsehr/3.0.0/openapi.yaml',
   output: './src/bsehr/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bsehr/types.ts' },
   client: { output: './src/bsehr/client.ts', baseUrl: '/' },
   rpc: { output: './src/bsehr/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getcitymatch/1.0.0/openapi.yaml',
   output: './src/getcitymatch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getcitymatch/types.ts' },
   client: { output: './src/getcitymatch/client.ts', baseUrl: '/' },
   rpc: { output: './src/getcitymatch/rpc.ts', parseResponse: true },

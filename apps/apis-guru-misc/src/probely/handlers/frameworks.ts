@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFrameworksIdIndexRoute, getFrameworksIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFrameworksIdIndexRoute, getFrameworksIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFrameworksIndexRouteHandler: RouteHandler<typeof getFrameworksIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const frameworksHandler = app
-  .openapi(getFrameworksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFrameworksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFrameworksIdIndexRouteHandler: RouteHandler<
+  typeof getFrameworksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

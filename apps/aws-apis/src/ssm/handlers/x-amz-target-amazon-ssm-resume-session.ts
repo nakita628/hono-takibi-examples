@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMResumeSessionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMResumeSessionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmResumeSessionHandler = app.openapi(
-  postXAmzTargetAmazonSSMResumeSessionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMResumeSessionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMResumeSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

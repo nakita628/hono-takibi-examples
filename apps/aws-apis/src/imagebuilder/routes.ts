@@ -1045,8 +1045,8 @@ const ImageSchema = z
   .openapi('Image')
 
 type GetImageResponseType = {
-  requestId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  image?: z.infer<typeof ImageSchema> & unknown
+  requestId?: z.infer<typeof NonEmptyStringSchema>
+  image?: z.infer<typeof ImageSchema>
 }
 
 const ClientTokenSchema = z.string().min(1).max(36).openapi('ClientToken')

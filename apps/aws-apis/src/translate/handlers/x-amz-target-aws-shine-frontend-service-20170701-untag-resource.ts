@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShineFrontendService20170701UntagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShineFrontendService20170701UntagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShineFrontendService20170701UntagResourceHandler = app.openapi(
-  postXAmzTargetAWSShineFrontendService20170701UntagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShineFrontendService20170701UntagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShineFrontendService20170701UntagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

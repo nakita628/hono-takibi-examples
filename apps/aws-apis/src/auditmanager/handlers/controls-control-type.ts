@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getControlsControlTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getControlsControlTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const controlsControlTypeHandler = app.openapi(getControlsControlTypeRoute, (c) => {
+export const getControlsControlTypeRouteHandler: RouteHandler<
+  typeof getControlsControlTypeRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

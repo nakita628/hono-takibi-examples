@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLinksNOffsetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLinksNOffsetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const linksHandler = app.openapi(getLinksNOffsetRoute, (c) => {
+export const getLinksNOffsetRouteHandler: RouteHandler<typeof getLinksNOffsetRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

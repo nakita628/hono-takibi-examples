@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRevokePermissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRevokePermissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const revokePermissionsHandler = app.openapi(postRevokePermissionsRoute, (c) => {
+export const postRevokePermissionsRouteHandler: RouteHandler<
+  typeof postRevokePermissionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteContactdbCustomFieldsCustomFieldIdRoute,
   deleteContactdbListsListIdRecipientsRecipientIdRoute,
   deleteContactdbListsListIdRoute,
@@ -35,105 +35,200 @@ import {
   postContactdbSegmentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getContactdbCustomFieldsRouteHandler: RouteHandler<
+  typeof getContactdbCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contactdbHandler = app
-  .openapi(getContactdbCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbCustomFieldsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbCustomFieldsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchContactdbListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbListsListIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbListsListIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbListsListIdRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbListsListIdRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchContactdbRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsBillableCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbRecipientsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbRecipientsRecipientIdListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbReservedFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactdbSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactdbSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchContactdbSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbSegmentsSegmentIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactdbStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postContactdbCustomFieldsRouteHandler: RouteHandler<
+  typeof postContactdbCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbCustomFieldsCustomFieldIdRouteHandler: RouteHandler<
+  typeof deleteContactdbCustomFieldsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbCustomFieldsCustomFieldIdRouteHandler: RouteHandler<
+  typeof getContactdbCustomFieldsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbListsRouteHandler: RouteHandler<
+  typeof deleteContactdbListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbListsRouteHandler: RouteHandler<typeof getContactdbListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbListsRouteHandler: RouteHandler<typeof postContactdbListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbListsListIdRouteHandler: RouteHandler<
+  typeof deleteContactdbListsListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbListsListIdRouteHandler: RouteHandler<
+  typeof getContactdbListsListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchContactdbListsListIdRouteHandler: RouteHandler<
+  typeof patchContactdbListsListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbListsListIdRecipientsRouteHandler: RouteHandler<
+  typeof getContactdbListsListIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbListsListIdRecipientsRouteHandler: RouteHandler<
+  typeof postContactdbListsListIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbListsListIdRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof deleteContactdbListsListIdRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbListsListIdRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof postContactdbListsListIdRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbRecipientsRouteHandler: RouteHandler<
+  typeof deleteContactdbRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchContactdbRecipientsRouteHandler: RouteHandler<
+  typeof patchContactdbRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbRecipientsRouteHandler: RouteHandler<
+  typeof postContactdbRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsBillableCountRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsBillableCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsCountRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsSearchRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbRecipientsSearchRouteHandler: RouteHandler<
+  typeof postContactdbRecipientsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof deleteContactdbRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbRecipientsRecipientIdListsRouteHandler: RouteHandler<
+  typeof getContactdbRecipientsRecipientIdListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbReservedFieldsRouteHandler: RouteHandler<
+  typeof getContactdbReservedFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbSegmentsRouteHandler: RouteHandler<
+  typeof getContactdbSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactdbSegmentsRouteHandler: RouteHandler<
+  typeof postContactdbSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactdbSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof deleteContactdbSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof getContactdbSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchContactdbSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof patchContactdbSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbSegmentsSegmentIdRecipientsRouteHandler: RouteHandler<
+  typeof getContactdbSegmentsSegmentIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactdbStatusRouteHandler: RouteHandler<typeof getContactdbStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

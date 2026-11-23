@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postResendEmailConfirmationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postResendEmailConfirmationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const resendEmailConfirmationHandler = app.openapi(postResendEmailConfirmationRoute, (c) => {
+export const postResendEmailConfirmationRouteHandler: RouteHandler<
+  typeof postResendEmailConfirmationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

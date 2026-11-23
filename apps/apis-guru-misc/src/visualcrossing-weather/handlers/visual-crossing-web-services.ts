@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVisualCrossingWebServicesRestServicesTimelineLocationRoute,
   getVisualCrossingWebServicesRestServicesTimelineLocationStartdateEnddateRoute,
   getVisualCrossingWebServicesRestServicesTimelineLocationStartdateRoute,
@@ -7,21 +7,32 @@ import {
   getVisualCrossingWebServicesRestServicesWeatherdataHistoryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVisualCrossingWebServicesRestServicesTimelineLocationRouteHandler: RouteHandler<
+  typeof getVisualCrossingWebServicesRestServicesTimelineLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const visualCrossingWebServicesHandler = app
-  .openapi(getVisualCrossingWebServicesRestServicesTimelineLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVisualCrossingWebServicesRestServicesTimelineLocationStartdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVisualCrossingWebServicesRestServicesTimelineLocationStartdateEnddateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVisualCrossingWebServicesRestServicesWeatherdataForecastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVisualCrossingWebServicesRestServicesWeatherdataHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVisualCrossingWebServicesRestServicesTimelineLocationStartdateRouteHandler: RouteHandler<
+  typeof getVisualCrossingWebServicesRestServicesTimelineLocationStartdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVisualCrossingWebServicesRestServicesTimelineLocationStartdateEnddateRouteHandler: RouteHandler<
+  typeof getVisualCrossingWebServicesRestServicesTimelineLocationStartdateEnddateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVisualCrossingWebServicesRestServicesWeatherdataForecastRouteHandler: RouteHandler<
+  typeof getVisualCrossingWebServicesRestServicesWeatherdataForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVisualCrossingWebServicesRestServicesWeatherdataHistoryRouteHandler: RouteHandler<
+  typeof getVisualCrossingWebServicesRestServicesWeatherdataHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

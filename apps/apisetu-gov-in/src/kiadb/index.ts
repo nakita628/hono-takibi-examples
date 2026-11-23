@@ -1,25 +1,35 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  alltrHandler,
-  bknocHandler,
-  bpcerHandler,
-  cfltrHandler,
-  lcsagHandler,
-  pscerHandler,
-  psnocHandler,
-  wtrblHandler,
+  postAlltrCertificateRoute,
+  postBknocCertificateRoute,
+  postBpcerCertificateRoute,
+  postCfltrCertificateRoute,
+  postLcsagCertificateRoute,
+  postPscerCertificateRoute,
+  postPsnocCertificateRoute,
+  postWtrblCertificateRoute,
+} from './routes'
+import {
+  postAlltrCertificateRouteHandler,
+  postBknocCertificateRouteHandler,
+  postBpcerCertificateRouteHandler,
+  postCfltrCertificateRouteHandler,
+  postLcsagCertificateRouteHandler,
+  postPscerCertificateRouteHandler,
+  postPsnocCertificateRouteHandler,
+  postWtrblCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', alltrHandler)
-  .route('/', bknocHandler)
-  .route('/', bpcerHandler)
-  .route('/', cfltrHandler)
-  .route('/', lcsagHandler)
-  .route('/', pscerHandler)
-  .route('/', psnocHandler)
-  .route('/', wtrblHandler)
+  .openapi(postAlltrCertificateRoute, postAlltrCertificateRouteHandler)
+  .openapi(postBknocCertificateRoute, postBknocCertificateRouteHandler)
+  .openapi(postBpcerCertificateRoute, postBpcerCertificateRouteHandler)
+  .openapi(postCfltrCertificateRoute, postCfltrCertificateRouteHandler)
+  .openapi(postLcsagCertificateRoute, postLcsagCertificateRouteHandler)
+  .openapi(postPscerCertificateRoute, postPscerCertificateRouteHandler)
+  .openapi(postPsnocCertificateRoute, postPsnocCertificateRouteHandler)
+  .openapi(postWtrblCertificateRoute, postWtrblCertificateRouteHandler)
 
 export default app

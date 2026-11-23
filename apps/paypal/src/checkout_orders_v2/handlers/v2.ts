@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2CheckoutOrdersIdRoute,
   patchV2CheckoutOrdersIdRoute,
   patchV2CheckoutOrdersIdTrackersTrackerIdRoute,
@@ -11,33 +11,56 @@ import {
   postV2CheckoutOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2CheckoutOrdersRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2CheckoutOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CheckoutOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CheckoutOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CheckoutOrdersIdConfirmPaymentSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CheckoutOrdersIdAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CheckoutOrdersIdCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CheckoutOrdersIdTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CheckoutOrdersIdTrackersTrackerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CheckoutOrdersOrderUpdateCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CheckoutOrdersIdRouteHandler: RouteHandler<
+  typeof getV2CheckoutOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CheckoutOrdersIdRouteHandler: RouteHandler<
+  typeof patchV2CheckoutOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CheckoutOrdersIdConfirmPaymentSourceRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersIdConfirmPaymentSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CheckoutOrdersIdAuthorizeRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersIdAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CheckoutOrdersIdCaptureRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersIdCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CheckoutOrdersIdTrackRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersIdTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CheckoutOrdersIdTrackersTrackerIdRouteHandler: RouteHandler<
+  typeof patchV2CheckoutOrdersIdTrackersTrackerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CheckoutOrdersOrderUpdateCallbackRouteHandler: RouteHandler<
+  typeof postV2CheckoutOrdersOrderUpdateCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

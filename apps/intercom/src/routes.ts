@@ -58737,7 +58737,7 @@ export const postPhoneCallRedirectsRoute = createRoute({
         },
       },
     },
-    400: { description: 'The phone number lookup or the SMS send failed', content: {} },
+    400: { description: 'The phone number lookup or the SMS send failed' },
     401: {
       description: 'Unauthorized',
       content: {
@@ -58767,7 +58767,6 @@ export const postPhoneCallRedirectsRoute = createRoute({
     422: {
       description:
         'The request was invalid. The response is an object with a single `error_key`: `caller_phone` when `phone` is missing, `invalid_phone_number`, `landline_phone`, `twilio_settings` when the workspace has no Twilio account to send the SMS, or `context` when `custom_attributes` is invalid. Any other invalid input returns its own key, such as `send_notification` or `country`.',
-      content: {},
     },
   },
 })
@@ -63351,7 +63350,7 @@ export const putTicketsTicketIdRoute = createRoute({
         },
       },
     },
-    400: { description: 'Bad request', content: {} },
+    400: { description: 'Bad request' },
     401: {
       description: 'Unauthorized',
       content: {
@@ -63369,7 +63368,7 @@ export const putTicketsTicketIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Ticket, admin or assignee not found', content: {} },
+    404: { description: 'Ticket, admin or assignee not found' },
     422: {
       description: 'Conversation already assigned to the assignee',
       content: {

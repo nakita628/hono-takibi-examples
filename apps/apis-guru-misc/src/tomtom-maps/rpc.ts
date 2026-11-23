@@ -3,44 +3,46 @@ import { parseResponse } from 'hono/client'
 import { client } from './client'
 
 export async function getMapVersionNumberCopyrightsFormat(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.map[':versionNumber']['copyrights.:format'].$get(args, options))
+  return await parseResponse(
+    client.map[':versionNumber']['copyrights.{format}'].$get(args, options),
+  )
 }
 
 export async function getMapVersionNumberCopyrightsCaptionFormat(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.map[':versionNumber'].copyrights['caption.:format'].$get(args, options),
+    client.map[':versionNumber'].copyrights['caption.{format}'].$get(args, options),
   )
 }
 
 export async function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.map[':versionNumber'].copyrights[':minLon'][':minLat'][':maxLon'][
-      ':maxLat.:format'
+      ':maxLat.{format}'
     ].$get(args, options),
   )
 }
 
 export async function getMapVersionNumberCopyrightsZoomXYFormat(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.:format'].$get(args, options),
+    client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.{format}'].$get(args, options),
   )
 }
 
@@ -67,12 +69,12 @@ export async function getMapVersionNumberTileLayerStyleZoomXYPbf(
 
 export async function getMapVersionNumberTileLayerStyleZoomXYFormat(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.:format'].$get(
+    client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.{format}'].$get(
       args,
       options,
     ),

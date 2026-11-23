@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFeedsPodcastVideoChaptersJsonRoute,
   getFeedsPodcastVideosXmlRoute,
   getFeedsSubscriptionsFormatRoute,
@@ -7,21 +7,32 @@ import {
   getFeedsVideosFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeedsVideoCommentsFormatRouteHandler: RouteHandler<
+  typeof getFeedsVideoCommentsFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const feedsHandler = app
-  .openapi(getFeedsVideoCommentsFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedsVideosFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedsSubscriptionsFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedsPodcastVideosXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedsPodcastVideoChaptersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFeedsVideosFormatRouteHandler: RouteHandler<
+  typeof getFeedsVideosFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeedsSubscriptionsFormatRouteHandler: RouteHandler<
+  typeof getFeedsSubscriptionsFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeedsPodcastVideosXmlRouteHandler: RouteHandler<
+  typeof getFeedsPodcastVideosXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeedsPodcastVideoChaptersJsonRouteHandler: RouteHandler<
+  typeof getFeedsPodcastVideoChaptersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

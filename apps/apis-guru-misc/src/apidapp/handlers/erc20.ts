@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getErc20AddressRoute,
   getErc20Route,
   optionsErc20AddressRoute,
@@ -8,24 +8,30 @@ import {
   postErc20Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getErc20RouteHandler: RouteHandler<typeof getErc20Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const erc20Handler = app
-  .openapi(getErc20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsErc20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postErc20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getErc20AddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsErc20AddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postErc20AddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsErc20RouteHandler: RouteHandler<typeof optionsErc20Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postErc20RouteHandler: RouteHandler<typeof postErc20Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getErc20AddressRouteHandler: RouteHandler<typeof getErc20AddressRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsErc20AddressRouteHandler: RouteHandler<
+  typeof optionsErc20AddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postErc20AddressRouteHandler: RouteHandler<typeof postErc20AddressRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

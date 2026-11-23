@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatDriverDriveridRoute,
   getFormatDriverRaceProjectionsRaceidRoute,
   getFormatDriversRoute,
@@ -8,24 +8,36 @@ import {
   getFormatSeriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatDriverRaceProjectionsRaceidRouteHandler: RouteHandler<
+  typeof getFormatDriverRaceProjectionsRaceidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatDriverRaceProjectionsRaceidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatDriverDriveridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatDriversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatRaceresultRaceidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatRacesSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatDriverDriveridRouteHandler: RouteHandler<
+  typeof getFormatDriverDriveridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatDriversRouteHandler: RouteHandler<typeof getFormatDriversRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatRaceresultRaceidRouteHandler: RouteHandler<
+  typeof getFormatRaceresultRaceidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatRacesSeasonRouteHandler: RouteHandler<
+  typeof getFormatRacesSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatSeriesRouteHandler: RouteHandler<typeof getFormatSeriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

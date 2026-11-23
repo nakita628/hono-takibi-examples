@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAlicloudMountPathConfigRoute,
   deleteAlicloudMountPathRoleNameRoute,
   getAlicloudMountPathConfigRoute,
@@ -10,30 +10,50 @@ import {
   postAlicloudMountPathRoleNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlicloudMountPathConfigRouteHandler: RouteHandler<
+  typeof getAlicloudMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alicloudMountPathHandler = app
-  .openapi(getAlicloudMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlicloudMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlicloudMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlicloudMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlicloudMountPathRoleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlicloudMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlicloudMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlicloudMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlicloudMountPathConfigRouteHandler: RouteHandler<
+  typeof postAlicloudMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlicloudMountPathConfigRouteHandler: RouteHandler<
+  typeof deleteAlicloudMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlicloudMountPathCredsNameRouteHandler: RouteHandler<
+  typeof getAlicloudMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlicloudMountPathRoleIndexRouteHandler: RouteHandler<
+  typeof getAlicloudMountPathRoleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlicloudMountPathRoleNameRouteHandler: RouteHandler<
+  typeof getAlicloudMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlicloudMountPathRoleNameRouteHandler: RouteHandler<
+  typeof postAlicloudMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlicloudMountPathRoleNameRouteHandler: RouteHandler<
+  typeof deleteAlicloudMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

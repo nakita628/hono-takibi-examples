@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1IntegrationsGetRoute,
   getApiV1IntegrationsHistoryRoute,
   getApiV1IntegrationsListRoute,
@@ -15,45 +15,80 @@ import {
   putApiV1IntegrationsUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiV1IntegrationsCreateRouteHandler: RouteHandler<
+  typeof postApiV1IntegrationsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiV1IntegrationsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1IntegrationsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1IntegrationsHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1IntegrationsClearHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1IntegrationsReplayOutgoingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1IntegrationsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiV1IntegrationsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1IntegrationsRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1OauthAppsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1OauthAppsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1OauthAppsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1OauthAppsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1OauthAppsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV1IntegrationsGetRouteHandler: RouteHandler<
+  typeof getApiV1IntegrationsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1IntegrationsHistoryRouteHandler: RouteHandler<
+  typeof getApiV1IntegrationsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1IntegrationsClearHistoryRouteHandler: RouteHandler<
+  typeof postApiV1IntegrationsClearHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1IntegrationsReplayOutgoingRouteHandler: RouteHandler<
+  typeof postApiV1IntegrationsReplayOutgoingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1IntegrationsListRouteHandler: RouteHandler<
+  typeof getApiV1IntegrationsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV1IntegrationsUpdateRouteHandler: RouteHandler<
+  typeof putApiV1IntegrationsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1IntegrationsRemoveRouteHandler: RouteHandler<
+  typeof postApiV1IntegrationsRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1OauthAppsCreateRouteHandler: RouteHandler<
+  typeof postApiV1OauthAppsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1OauthAppsUpdateRouteHandler: RouteHandler<
+  typeof postApiV1OauthAppsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1OauthAppsListRouteHandler: RouteHandler<
+  typeof getApiV1OauthAppsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1OauthAppsGetRouteHandler: RouteHandler<
+  typeof getApiV1OauthAppsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1OauthAppsDeleteRouteHandler: RouteHandler<
+  typeof postApiV1OauthAppsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

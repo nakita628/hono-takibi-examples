@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnythingHeadersRoute,
   getAnythingHeadersSimpleRoute,
   getAnythingPathLabelPrimitiveArrayObjectRoute,
@@ -24,72 +24,134 @@ import {
   putAnythingFormDataFormRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnythingHeadersRouteHandler: RouteHandler<typeof getAnythingHeadersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(getAnythingHeadersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingHeadersSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingHeadersSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingPathPrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingPathMatrixPrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingPathMatrixPrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingPathLabelPrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingPathLabelPrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingPathSimplePrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingPathSimplePrimitiveArrayObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingQueryFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingQueryFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingQuerySpaceDelimitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingQueryPipeDelimitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingQueryDeepObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingFormDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingFormDataFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingFormDataFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingFormDataSpaceDelimitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingFormDataPipeDelimitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingFormDataDeepObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnythingHeadersSimpleRouteHandler: RouteHandler<
+  typeof getAnythingHeadersSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingHeadersSimpleRouteHandler: RouteHandler<
+  typeof postAnythingHeadersSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingPathPrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof getAnythingPathPrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingPathMatrixPrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof getAnythingPathMatrixPrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingPathMatrixPrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof postAnythingPathMatrixPrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingPathLabelPrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof getAnythingPathLabelPrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingPathLabelPrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof postAnythingPathLabelPrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingPathSimplePrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof getAnythingPathSimplePrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingPathSimplePrimitiveArrayObjectRouteHandler: RouteHandler<
+  typeof postAnythingPathSimplePrimitiveArrayObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingQueryRouteHandler: RouteHandler<typeof getAnythingQueryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingQueryFormRouteHandler: RouteHandler<
+  typeof getAnythingQueryFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingQueryFormRouteHandler: RouteHandler<
+  typeof postAnythingQueryFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingQuerySpaceDelimitedRouteHandler: RouteHandler<
+  typeof getAnythingQuerySpaceDelimitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingQueryPipeDelimitedRouteHandler: RouteHandler<
+  typeof getAnythingQueryPipeDelimitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingQueryDeepObjectRouteHandler: RouteHandler<
+  typeof getAnythingQueryDeepObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingFormDataRouteHandler: RouteHandler<
+  typeof postAnythingFormDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingFormDataFormRouteHandler: RouteHandler<
+  typeof postAnythingFormDataFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingFormDataFormRouteHandler: RouteHandler<
+  typeof putAnythingFormDataFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingFormDataSpaceDelimitedRouteHandler: RouteHandler<
+  typeof postAnythingFormDataSpaceDelimitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingFormDataPipeDelimitedRouteHandler: RouteHandler<
+  typeof postAnythingFormDataPipeDelimitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingFormDataDeepObjectRouteHandler: RouteHandler<
+  typeof postAnythingFormDataDeepObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRollbackTransactionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRollbackTransactionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rollbackTransactionHandler = app.openapi(postRollbackTransactionRoute, (c) => {
+export const postRollbackTransactionRouteHandler: RouteHandler<
+  typeof postRollbackTransactionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

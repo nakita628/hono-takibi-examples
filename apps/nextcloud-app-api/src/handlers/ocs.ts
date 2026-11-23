@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute,
   deleteOcsV2PhpAppsAppApiApiV1ExAppConfigRoute,
   deleteOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute,
@@ -45,135 +45,260 @@ import {
   putOcsV2PhpAppsAppApiExAppStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOcsV2PhpAppsAppApiApiV1LogRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1LogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(postOcsV2PhpAppsAppApiApiV1LogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsAppApiAppsStatusAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsAppApiExAppStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiExAppStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1InfoNextcloudUrlAbsoluteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1ExAppConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1ExAppConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1ExAppConfigGetValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1ExAppPreferenceGetValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1NotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1OccCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1OccCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1OccCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1TalkBotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1TalkBotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1TalkProxyAppIdRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV2UiFilesActionsMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiTopMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiTopMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiTopMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiInitialStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiInitialStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiInitialStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiScriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiScriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiScriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiStyleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiStyleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiStyleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1UiSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1UiSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1UiSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsAppApiApiV1SetupCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsAppApiApiV1SetupCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOcsV2PhpAppsAppApiApiV1UsersRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsAppApiAppsStatusAppIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsAppApiAppsStatusAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsAppApiExAppStatusRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsAppApiExAppStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiExAppStateRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiExAppStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1InfoNextcloudUrlAbsoluteRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1InfoNextcloudUrlAbsoluteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1ExAppConfigRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1ExAppConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1ExAppConfigRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1ExAppConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1ExAppConfigGetValuesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1ExAppConfigGetValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1ExAppPreferenceRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1ExAppPreferenceRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1ExAppPreferenceGetValuesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1ExAppPreferenceGetValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1NotificationRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1NotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1OccCommandRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1OccCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1OccCommandRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1OccCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1OccCommandRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1OccCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1TalkBotRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1TalkBotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1TalkBotRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1TalkBotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1TalkProxyAppIdRouteRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1TalkProxyAppIdRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiFilesActionsMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV2UiFilesActionsMenuRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV2UiFilesActionsMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiTopMenuRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiTopMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiTopMenuRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiTopMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiTopMenuRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiTopMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiInitialStateRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiInitialStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiInitialStateRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiInitialStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiInitialStateRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiInitialStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiScriptRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiScriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiScriptRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiScriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiScriptRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiScriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiStyleRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiStyleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiStyleRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiStyleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiStyleRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiStyleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1UiSettingsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1UiSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1UiSettingsRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1UiSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1UiSettingsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1UiSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsAppApiApiV1SetupCheckRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsAppApiApiV1SetupCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsAppApiApiV1SetupCheckRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsAppApiApiV1SetupCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswafRegional20161128GetChangeTokenStatusHandler = app.openapi(
-  postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

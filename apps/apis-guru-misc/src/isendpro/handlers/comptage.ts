@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postComptageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postComptageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const comptageHandler = app.openapi(postComptageRoute, (c) => {
+export const postComptageRouteHandler: RouteHandler<typeof postComptageRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

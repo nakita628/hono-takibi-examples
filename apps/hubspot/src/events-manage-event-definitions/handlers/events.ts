@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute,
   deleteEvents202609EventDefinitionsEventNameRoute,
   getEvents202609EventDefinitionsEventNameRoute,
@@ -11,33 +11,56 @@ import {
   postEvents202609SendBatchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEvents202609EventDefinitionsRouteHandler: RouteHandler<
+  typeof getEvents202609EventDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsHandler = app
-  .openapi(getEvents202609EventDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEvents202609EventDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEvents202609EventDefinitionsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEvents202609EventDefinitionsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEvents202609EventDefinitionsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEvents202609EventDefinitionsEventNamePropertyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEvents202609SendBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEvents202609EventDefinitionsRouteHandler: RouteHandler<
+  typeof postEvents202609EventDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEvents202609EventDefinitionsEventNameRouteHandler: RouteHandler<
+  typeof getEvents202609EventDefinitionsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEvents202609EventDefinitionsEventNameRouteHandler: RouteHandler<
+  typeof deleteEvents202609EventDefinitionsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEvents202609EventDefinitionsEventNameRouteHandler: RouteHandler<
+  typeof patchEvents202609EventDefinitionsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEvents202609EventDefinitionsEventNamePropertyRouteHandler: RouteHandler<
+  typeof postEvents202609EventDefinitionsEventNamePropertyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEvents202609EventDefinitionsEventNamePropertyPropertyNameRouteHandler: RouteHandler<
+  typeof deleteEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEvents202609EventDefinitionsEventNamePropertyPropertyNameRouteHandler: RouteHandler<
+  typeof patchEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEvents202609SendBatchRouteHandler: RouteHandler<
+  typeof postEvents202609SendBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

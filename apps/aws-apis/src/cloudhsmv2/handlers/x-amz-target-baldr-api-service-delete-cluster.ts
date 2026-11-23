@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetBaldrApiServiceDeleteClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetBaldrApiServiceDeleteClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetBaldrApiServiceDeleteClusterHandler = app.openapi(
-  postXAmzTargetBaldrApiServiceDeleteClusterRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetBaldrApiServiceDeleteClusterRouteHandler: RouteHandler<
+  typeof postXAmzTargetBaldrApiServiceDeleteClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

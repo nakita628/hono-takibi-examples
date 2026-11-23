@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCongressionalRecordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCongressionalRecordRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const congressionalRecordHandler = app.openapi(getCongressionalRecordRoute, (c) => {
+export const getCongressionalRecordRouteHandler: RouteHandler<
+  typeof getCongressionalRecordRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/getpostman.com/1.20.0/openapi.yaml',
   output: './src/getpostman/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getpostman/types.ts' },
   client: { output: './src/getpostman/client.ts', baseUrl: '/' },
   rpc: { output: './src/getpostman/rpc.ts', parseResponse: true },

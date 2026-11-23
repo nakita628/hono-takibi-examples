@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/asana.com/1.0/openapi.yaml',
   output: './src/asana/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/asana/types.ts' },
   client: { output: './src/asana/client.ts', baseUrl: '/' },
   rpc: { output: './src/asana/rpc.ts', parseResponse: true },

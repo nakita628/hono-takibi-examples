@@ -231,7 +231,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/attributes/computed/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Attribute }
         output: Attribute
@@ -251,7 +251,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/calendars/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Calendar }
         output: Calendar
@@ -279,34 +279,55 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/commands/send': {
-      $get: {
-        input: { query: { deviceId?: number | undefined } }
-        output: Command[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { deviceId?: number | undefined } }
+            output: Command[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { deviceId?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
       $post:
         | { input: { json: Command }; output: Command; outputFormat: 'json'; status: 200 }
         | { input: { json: Command }; output: Command; outputFormat: 'json'; status: 202 }
+        | { input: { json: Command }; output: {}; outputFormat: string; status: 400 }
     }
   } & {
     '/commands/types': {
-      $get: {
-        input: {
-          query: {
-            deviceId?: number | undefined
-            protocol?: string | undefined
-            textChannel?: boolean | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                deviceId?: number | undefined
+                protocol?: string | undefined
+                textChannel?: boolean | undefined
+              }
+            }
+            output: CommandType[]
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CommandType[]
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                deviceId?: number | undefined
+                protocol?: string | undefined
+                textChannel?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/commands/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Command }
         output: Command
@@ -316,24 +337,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/devices': {
-      $get: {
-        input: {
-          query: {
-            all?: boolean | undefined
-            userId?: number | undefined
-            id?: number | undefined
-            uniqueId?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                all?: boolean | undefined
+                userId?: number | undefined
+                id?: number | undefined
+                uniqueId?: string | undefined
+              }
+            }
+            output: Device[]
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: Device[]
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                all?: boolean | undefined
+                userId?: number | undefined
+                id?: number | undefined
+                uniqueId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
       $post: { input: { json: Device }; output: Device; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/devices/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Device }
         output: Device
@@ -347,7 +382,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { id: number } } & { json: DeviceAccumulators }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -370,7 +405,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/drivers/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Driver }
         output: Driver
@@ -402,7 +437,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/geofences/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Geofence }
         output: Geofence
@@ -418,11 +453,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: { input: { json: Group }; output: Group; outputFormat: 'json'; status: 200 }
+      $post:
+        | { input: { json: Group }; output: Group; outputFormat: 'json'; status: 200 }
+        | { input: { json: Group }; output: {}; outputFormat: string; status: 400 }
     }
   } & {
     '/groups/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Group }
         output: Group
@@ -455,7 +492,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/maintenance/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Maintenance }
         output: Maintenance
@@ -487,14 +524,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/notifications/test': { $post: { input: {}; output: {}; outputFormat: string; status: 200 } }
+    '/notifications/test': {
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 400 }
+    }
   } & {
     '/notifications/types': {
       $get: { input: {}; output: NotificationType[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/notifications/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: Notification }
         output: Notification
@@ -504,8 +545,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/permissions': {
-      $delete: { input: { json: Permission }; output: {}; outputFormat: string; status: 200 }
-      $post: { input: { json: Permission }; output: Permission; outputFormat: 'json'; status: 200 }
+      $delete: { input: { json: Permission }; output: {}; outputFormat: string; status: 204 }
+      $post:
+        | { input: { json: Permission }; output: Permission; outputFormat: 'json'; status: 200 }
+        | { input: { json: Permission }; output: {}; outputFormat: string; status: 400 }
     }
   } & {
     '/positions': {
@@ -709,21 +752,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/session': {
-      $delete: { input: {}; output: {}; outputFormat: string; status: 200 }
-      $get: {
-        input: { query: { token?: string | undefined } }
-        output: User
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: { email: string; password: string } } & {
-          form: { email: string; password: string }
-        }
-        output: User
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete: { input: {}; output: {}; outputFormat: string; status: 204 }
+      $get:
+        | {
+            input: { query: { token?: string | undefined } }
+            output: User
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { token?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { json: { email: string; password: string } } & {
+              form: { email: string; password: string }
+            }
+            output: User
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: { email: string; password: string } } & {
+              form: { email: string; password: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/statistics': {
@@ -736,17 +795,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/users': {
-      $get: {
-        input: { query: { userId?: string | undefined } }
-        output: User[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: User[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
       $post: { input: { json: User }; output: User; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/users/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { id: number } } & { json: User }
         output: User

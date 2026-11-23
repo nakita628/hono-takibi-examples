@@ -1,13 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { cripcHandler, cvipcHandler, hmipcHandler, tripcHandler, twipcHandler } from './handlers'
+import {
+  postCripcCertificateRoute,
+  postCvipcCertificateRoute,
+  postHmipcCertificateRoute,
+  postTripcCertificateRoute,
+  postTwipcCertificateRoute,
+} from './routes'
+import {
+  postCripcCertificateRouteHandler,
+  postCvipcCertificateRouteHandler,
+  postHmipcCertificateRouteHandler,
+  postTripcCertificateRouteHandler,
+  postTwipcCertificateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', cripcHandler)
-  .route('/', cvipcHandler)
-  .route('/', hmipcHandler)
-  .route('/', tripcHandler)
-  .route('/', twipcHandler)
+  .openapi(postCripcCertificateRoute, postCripcCertificateRouteHandler)
+  .openapi(postCvipcCertificateRoute, postCvipcCertificateRouteHandler)
+  .openapi(postHmipcCertificateRoute, postHmipcCertificateRouteHandler)
+  .openapi(postTripcCertificateRoute, postTripcCertificateRouteHandler)
+  .openapi(postTwipcCertificateRoute, postTwipcCertificateRouteHandler)
 
 export default app

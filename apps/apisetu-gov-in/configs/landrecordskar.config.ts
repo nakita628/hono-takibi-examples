@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/landrecordskar/3.0.0/openapi.yaml',
   output: './src/landrecordskar/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/landrecordskar/types.ts' },
   client: { output: './src/landrecordskar/client.ts', baseUrl: '/' },
   rpc: { output: './src/landrecordskar/rpc.ts', parseResponse: true },

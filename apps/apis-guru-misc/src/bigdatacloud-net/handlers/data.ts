@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDataIpGeolocationFullRoute, getDataIpGeolocationWithConfidenceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getDataIpGeolocationFullRoute,
+  getDataIpGeolocationWithConfidenceRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataIpGeolocationFullRouteHandler: RouteHandler<
+  typeof getDataIpGeolocationFullRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataHandler = app
-  .openapi(getDataIpGeolocationFullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIpGeolocationWithConfidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataIpGeolocationWithConfidenceRouteHandler: RouteHandler<
+  typeof getDataIpGeolocationWithConfidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

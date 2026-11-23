@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSMPMeteringServiceResolveCustomerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSMPMeteringServiceResolveCustomerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsmpMeteringServiceResolveCustomerHandler = app.openapi(
-  postXAmzTargetAWSMPMeteringServiceResolveCustomerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSMPMeteringServiceResolveCustomerRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSMPMeteringServiceResolveCustomerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

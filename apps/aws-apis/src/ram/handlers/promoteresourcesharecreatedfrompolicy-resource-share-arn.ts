@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPromoteresourcesharecreatedfrompolicyResourceShareArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPromoteresourcesharecreatedfrompolicyResourceShareArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const promoteresourcesharecreatedfrompolicyResourceShareArnHandler = app.openapi(
-  postPromoteresourcesharecreatedfrompolicyResourceShareArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postPromoteresourcesharecreatedfrompolicyResourceShareArnRouteHandler: RouteHandler<
+  typeof postPromoteresourcesharecreatedfrompolicyResourceShareArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

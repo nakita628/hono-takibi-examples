@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2ProjectsProjectIdFinancePayablesPayableIdRoute,
   deleteV2ProjectsProjectIdFinanceReceivablesReceivableIdRoute,
   deleteV2QuotesQuoteIdFinancePayablesPayableIdRoute,
@@ -88,264 +88,512 @@ import {
   putV2QuotesQuoteIdVolumeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2JobsForExternalIdRouteHandler: RouteHandler<
+  typeof getV2JobsForExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2JobsForExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2JobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdDatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2JobsJobIdFilesAddExternalLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2JobsJobIdFilesDeliveredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdFilesDeliveredAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2JobsJobIdFilesDeliveredAddLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2JobsJobIdFilesDeliveredUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2JobsJobIdFilesSharedReferenceFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdFilesSharedReferenceFilesShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2JobsJobIdFilesSharedWorkFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdFilesSharedWorkFilesShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdFilesStopSharingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2JobsJobIdVendorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsFilesArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsFilesFileIdDownloadFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsForExternalIdExternalProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdAddJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdCatToolProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdClientContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdClientContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdClientDeadlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdClientNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdClientReferenceNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdCustomFieldsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdFilesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdFilesAddExternalLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdFilesAddLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdFilesDeliverableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdFilesUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdFinanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdFinancePayablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2ProjectsProjectIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ProjectsProjectIdFinanceReceivablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2ProjectsProjectIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdInternalNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdOrderDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdProcessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdSourceLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdSpecializationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdTargetLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdVendorInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ProjectsProjectIdVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2QuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2QuotesFilesArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesFilesFileIdDownloadFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdBusinessDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdClientContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdClientContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdClientNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdClientReferenceNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdCustomFieldsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdExpectedDeliveryDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdFilesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2QuotesQuoteIdFilesUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdFinanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2QuotesQuoteIdFinancePayablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2QuotesQuoteIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2QuotesQuoteIdFinanceReceivablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2QuotesQuoteIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdInternalNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2QuotesQuoteIdJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdQuoteExpiryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdSourceLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdSpecializationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdTargetLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdVendorInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2QuotesQuoteIdVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2JobsJobIdRouteHandler: RouteHandler<typeof getV2JobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdDatesRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdDatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2JobsJobIdFilesAddExternalLinkRouteHandler: RouteHandler<
+  typeof postV2JobsJobIdFilesAddExternalLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2JobsJobIdFilesDeliveredRouteHandler: RouteHandler<
+  typeof getV2JobsJobIdFilesDeliveredRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdFilesDeliveredAddRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdFilesDeliveredAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2JobsJobIdFilesDeliveredAddLinkRouteHandler: RouteHandler<
+  typeof postV2JobsJobIdFilesDeliveredAddLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2JobsJobIdFilesDeliveredUploadRouteHandler: RouteHandler<
+  typeof postV2JobsJobIdFilesDeliveredUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2JobsJobIdFilesSharedReferenceFilesRouteHandler: RouteHandler<
+  typeof getV2JobsJobIdFilesSharedReferenceFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdFilesSharedReferenceFilesShareRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdFilesSharedReferenceFilesShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2JobsJobIdFilesSharedWorkFilesRouteHandler: RouteHandler<
+  typeof getV2JobsJobIdFilesSharedWorkFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdFilesSharedWorkFilesShareRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdFilesSharedWorkFilesShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdFilesStopSharingRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdFilesStopSharingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdInstructionsRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdStatusRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2JobsJobIdVendorRouteHandler: RouteHandler<
+  typeof putV2JobsJobIdVendorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsRouteHandler: RouteHandler<typeof postV2ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsFilesArchiveRouteHandler: RouteHandler<
+  typeof postV2ProjectsFilesArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsFilesFileIdRouteHandler: RouteHandler<
+  typeof getV2ProjectsFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsFilesFileIdDownloadFileNameRouteHandler: RouteHandler<
+  typeof getV2ProjectsFilesFileIdDownloadFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsForExternalIdExternalProjectIdRouteHandler: RouteHandler<
+  typeof getV2ProjectsForExternalIdExternalProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdAddJobRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdAddJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdCatToolProjectRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdCatToolProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdClientContactsRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdClientContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdClientContactsRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdClientContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdClientDeadlineRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdClientDeadlineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdClientNotesRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdClientNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdClientReferenceNumberRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdClientReferenceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdCustomFieldsKeyRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdCustomFieldsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdFilesRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdFilesAddRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdFilesAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdFilesAddExternalLinkRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdFilesAddExternalLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdFilesAddLinkRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdFilesAddLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdFilesDeliverableRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdFilesDeliverableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdFilesUploadRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdFilesUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdFinanceRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdFinanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdFinancePayablesRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdFinancePayablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2ProjectsProjectIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof deleteV2ProjectsProjectIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ProjectsProjectIdFinanceReceivablesRouteHandler: RouteHandler<
+  typeof postV2ProjectsProjectIdFinanceReceivablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2ProjectsProjectIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof deleteV2ProjectsProjectIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdInternalNotesRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdInternalNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdJobsRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdOrderDateRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdOrderDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdProcessRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdProcessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdSourceLanguageRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdSourceLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdSpecializationRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdSpecializationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdStatusRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdTargetLanguagesRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdTargetLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdVendorInstructionsRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdVendorInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ProjectsProjectIdVolumeRouteHandler: RouteHandler<
+  typeof putV2ProjectsProjectIdVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2QuotesRouteHandler: RouteHandler<typeof postV2QuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2QuotesFilesArchiveRouteHandler: RouteHandler<
+  typeof postV2QuotesFilesArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesFilesFileIdRouteHandler: RouteHandler<
+  typeof getV2QuotesFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesFilesFileIdDownloadFileNameRouteHandler: RouteHandler<
+  typeof getV2QuotesFilesFileIdDownloadFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdRouteHandler: RouteHandler<typeof getV2QuotesQuoteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdBusinessDaysRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdBusinessDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdClientContactsRouteHandler: RouteHandler<
+  typeof getV2QuotesQuoteIdClientContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdClientContactsRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdClientContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdClientNotesRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdClientNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdClientReferenceNumberRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdClientReferenceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getV2QuotesQuoteIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdCustomFieldsKeyRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdCustomFieldsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdExpectedDeliveryDateRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdExpectedDeliveryDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdFilesRouteHandler: RouteHandler<
+  typeof getV2QuotesQuoteIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdFilesAddRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdFilesAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2QuotesQuoteIdFilesUploadRouteHandler: RouteHandler<
+  typeof postV2QuotesQuoteIdFilesUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdFinanceRouteHandler: RouteHandler<
+  typeof getV2QuotesQuoteIdFinanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2QuotesQuoteIdFinancePayablesRouteHandler: RouteHandler<
+  typeof postV2QuotesQuoteIdFinancePayablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2QuotesQuoteIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof deleteV2QuotesQuoteIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2QuotesQuoteIdFinanceReceivablesRouteHandler: RouteHandler<
+  typeof postV2QuotesQuoteIdFinanceReceivablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2QuotesQuoteIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof deleteV2QuotesQuoteIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdInternalNotesRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdInternalNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2QuotesQuoteIdJobsRouteHandler: RouteHandler<
+  typeof getV2QuotesQuoteIdJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdQuoteExpiryRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdQuoteExpiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdSourceLanguageRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdSourceLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdSpecializationRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdSpecializationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdStatusRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdTargetLanguagesRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdTargetLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdVendorInstructionsRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdVendorInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2QuotesQuoteIdVolumeRouteHandler: RouteHandler<
+  typeof putV2QuotesQuoteIdVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

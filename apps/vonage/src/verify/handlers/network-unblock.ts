@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postNetworkUnblockRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postNetworkUnblockRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const networkUnblockHandler = app.openapi(postNetworkUnblockRoute, (c) => {
+export const postNetworkUnblockRouteHandler: RouteHandler<typeof postNetworkUnblockRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

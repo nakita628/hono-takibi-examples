@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetHealthLakeDeleteFHIRDatastoreRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetHealthLakeDeleteFHIRDatastoreRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetHealthLakeDeleteFhirDatastoreHandler = app.openapi(
-  postXAmzTargetHealthLakeDeleteFHIRDatastoreRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetHealthLakeDeleteFHIRDatastoreRouteHandler: RouteHandler<
+  typeof postXAmzTargetHealthLakeDeleteFHIRDatastoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

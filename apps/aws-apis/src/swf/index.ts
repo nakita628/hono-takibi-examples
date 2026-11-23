@@ -1,83 +1,233 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsHandler,
-  xAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsHandler,
-  xAmzTargetSimpleWorkflowServiceCountPendingActivityTasksHandler,
-  xAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksHandler,
-  xAmzTargetSimpleWorkflowServiceDeprecateActivityTypeHandler,
-  xAmzTargetSimpleWorkflowServiceDeprecateDomainHandler,
-  xAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeHandler,
-  xAmzTargetSimpleWorkflowServiceDescribeActivityTypeHandler,
-  xAmzTargetSimpleWorkflowServiceDescribeDomainHandler,
-  xAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionHandler,
-  xAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeHandler,
-  xAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryHandler,
-  xAmzTargetSimpleWorkflowServiceListActivityTypesHandler,
-  xAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsHandler,
-  xAmzTargetSimpleWorkflowServiceListDomainsHandler,
-  xAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsHandler,
-  xAmzTargetSimpleWorkflowServiceListTagsForResourceHandler,
-  xAmzTargetSimpleWorkflowServiceListWorkflowTypesHandler,
-  xAmzTargetSimpleWorkflowServicePollForActivityTaskHandler,
-  xAmzTargetSimpleWorkflowServicePollForDecisionTaskHandler,
-  xAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatHandler,
-  xAmzTargetSimpleWorkflowServiceRegisterActivityTypeHandler,
-  xAmzTargetSimpleWorkflowServiceRegisterDomainHandler,
-  xAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeHandler,
-  xAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionHandler,
-  xAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledHandler,
-  xAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedHandler,
-  xAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedHandler,
-  xAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedHandler,
-  xAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionHandler,
-  xAmzTargetSimpleWorkflowServiceStartWorkflowExecutionHandler,
-  xAmzTargetSimpleWorkflowServiceTagResourceHandler,
-  xAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionHandler,
-  xAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeHandler,
-  xAmzTargetSimpleWorkflowServiceUndeprecateDomainHandler,
-  xAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeHandler,
-  xAmzTargetSimpleWorkflowServiceUntagResourceHandler,
+  postXAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsRoute,
+  postXAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsRoute,
+  postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute,
+  postXAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksRoute,
+  postXAmzTargetSimpleWorkflowServiceDeprecateActivityTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceDeprecateDomainRoute,
+  postXAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceDescribeActivityTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceDescribeDomainRoute,
+  postXAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionRoute,
+  postXAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryRoute,
+  postXAmzTargetSimpleWorkflowServiceListActivityTypesRoute,
+  postXAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsRoute,
+  postXAmzTargetSimpleWorkflowServiceListDomainsRoute,
+  postXAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsRoute,
+  postXAmzTargetSimpleWorkflowServiceListTagsForResourceRoute,
+  postXAmzTargetSimpleWorkflowServiceListWorkflowTypesRoute,
+  postXAmzTargetSimpleWorkflowServicePollForActivityTaskRoute,
+  postXAmzTargetSimpleWorkflowServicePollForDecisionTaskRoute,
+  postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute,
+  postXAmzTargetSimpleWorkflowServiceRegisterActivityTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute,
+  postXAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionRoute,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledRoute,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedRoute,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedRoute,
+  postXAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedRoute,
+  postXAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionRoute,
+  postXAmzTargetSimpleWorkflowServiceStartWorkflowExecutionRoute,
+  postXAmzTargetSimpleWorkflowServiceTagResourceRoute,
+  postXAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionRoute,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateDomainRoute,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute,
+  postXAmzTargetSimpleWorkflowServiceUntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDeprecateActivityTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDeprecateDomainRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDescribeActivityTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDescribeDomainRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListActivityTypesRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListDomainsRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListTagsForResourceRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceListWorkflowTypesRouteHandler,
+  postXAmzTargetSimpleWorkflowServicePollForActivityTaskRouteHandler,
+  postXAmzTargetSimpleWorkflowServicePollForDecisionTaskRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRegisterActivityTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRegisterDomainRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceStartWorkflowExecutionRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceTagResourceRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateDomainRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRouteHandler,
+  postXAmzTargetSimpleWorkflowServiceUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceCountPendingActivityTasksHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDeprecateActivityTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDeprecateDomainHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDescribeActivityTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDescribeDomainHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListActivityTypesHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListDomainsHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceListWorkflowTypesHandler)
-  .route('/', xAmzTargetSimpleWorkflowServicePollForActivityTaskHandler)
-  .route('/', xAmzTargetSimpleWorkflowServicePollForDecisionTaskHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRegisterActivityTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRegisterDomainHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceStartWorkflowExecutionHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceTagResourceHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceUndeprecateDomainHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeHandler)
-  .route('/', xAmzTargetSimpleWorkflowServiceUntagResourceHandler)
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsRoute,
+    postXAmzTargetSimpleWorkflowServiceCountClosedWorkflowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsRoute,
+    postXAmzTargetSimpleWorkflowServiceCountOpenWorkflowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute,
+    postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksRoute,
+    postXAmzTargetSimpleWorkflowServiceCountPendingDecisionTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDeprecateActivityTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceDeprecateActivityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDeprecateDomainRoute,
+    postXAmzTargetSimpleWorkflowServiceDeprecateDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceDeprecateWorkflowTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDescribeActivityTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceDescribeActivityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDescribeDomainRoute,
+    postXAmzTargetSimpleWorkflowServiceDescribeDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionRoute,
+    postXAmzTargetSimpleWorkflowServiceDescribeWorkflowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceDescribeWorkflowTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryRoute,
+    postXAmzTargetSimpleWorkflowServiceGetWorkflowExecutionHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListActivityTypesRoute,
+    postXAmzTargetSimpleWorkflowServiceListActivityTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsRoute,
+    postXAmzTargetSimpleWorkflowServiceListClosedWorkflowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListDomainsRoute,
+    postXAmzTargetSimpleWorkflowServiceListDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsRoute,
+    postXAmzTargetSimpleWorkflowServiceListOpenWorkflowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListTagsForResourceRoute,
+    postXAmzTargetSimpleWorkflowServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceListWorkflowTypesRoute,
+    postXAmzTargetSimpleWorkflowServiceListWorkflowTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServicePollForActivityTaskRoute,
+    postXAmzTargetSimpleWorkflowServicePollForActivityTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServicePollForDecisionTaskRoute,
+    postXAmzTargetSimpleWorkflowServicePollForDecisionTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute,
+    postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRegisterActivityTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceRegisterActivityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute,
+    postXAmzTargetSimpleWorkflowServiceRegisterDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceRegisterWorkflowTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionRoute,
+    postXAmzTargetSimpleWorkflowServiceRequestCancelWorkflowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledRoute,
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCanceledRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedRoute,
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskCompletedRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedRoute,
+    postXAmzTargetSimpleWorkflowServiceRespondActivityTaskFailedRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedRoute,
+    postXAmzTargetSimpleWorkflowServiceRespondDecisionTaskCompletedRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionRoute,
+    postXAmzTargetSimpleWorkflowServiceSignalWorkflowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceStartWorkflowExecutionRoute,
+    postXAmzTargetSimpleWorkflowServiceStartWorkflowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceTagResourceRoute,
+    postXAmzTargetSimpleWorkflowServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionRoute,
+    postXAmzTargetSimpleWorkflowServiceTerminateWorkflowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceUndeprecateActivityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceUndeprecateDomainRoute,
+    postXAmzTargetSimpleWorkflowServiceUndeprecateDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute,
+    postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSimpleWorkflowServiceUntagResourceRoute,
+    postXAmzTargetSimpleWorkflowServiceUntagResourceRouteHandler,
+  )
 
 export default app

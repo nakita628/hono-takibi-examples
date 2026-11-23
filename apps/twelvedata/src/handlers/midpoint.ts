@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMidpointRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMidpointRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const midpointHandler = app.openapi(getMidpointRoute, (c) => {
+export const getMidpointRouteHandler: RouteHandler<typeof getMidpointRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

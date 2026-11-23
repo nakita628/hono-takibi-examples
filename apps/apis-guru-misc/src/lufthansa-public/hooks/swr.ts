@@ -23,16 +23,16 @@ export function getReferencesKey() {
 
 export function getGetCargoGetRouteOriginDestinationFromDateProductCodeKey(
   args: InferRequestType<
-    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['cargo', '/cargo/getRoute/:origin-:destination/:fromDate/:productCode', keyArgs] as const
+  return ['cargo', '/cargo/getRoute/:origin-{destination}/:fromDate/:productCode', keyArgs] as const
 }
 
 export function useGetCargoGetRouteOriginDestinationFromDateProductCode<TError = unknown>(
   args: InferRequestType<
-    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -41,7 +41,7 @@ export function useGetCargoGetRouteOriginDestinationFromDateProductCode<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
               >
             >
           >
@@ -68,7 +68,7 @@ export function useGetCargoGetRouteOriginDestinationFromDateProductCode<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
               >
             >
           >
@@ -79,7 +79,7 @@ export function useGetCargoGetRouteOriginDestinationFromDateProductCode<TError =
       swrKey,
       async () =>
         parseResponse(
-          client.cargo.getRoute[':origin-:destination'][':fromDate'][':productCode'].$get(
+          client.cargo.getRoute[':origin-{destination}'][':fromDate'][':productCode'].$get(
             args,
             clientOptions,
           ),
@@ -91,7 +91,7 @@ export function useGetCargoGetRouteOriginDestinationFromDateProductCode<TError =
 
 export function useImmutableGetCargoGetRouteOriginDestinationFromDateProductCode<TError = unknown>(
   args: InferRequestType<
-    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -100,7 +100,7 @@ export function useImmutableGetCargoGetRouteOriginDestinationFromDateProductCode
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
               >
             >
           >
@@ -127,7 +127,7 @@ export function useImmutableGetCargoGetRouteOriginDestinationFromDateProductCode
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
               >
             >
           >
@@ -138,7 +138,7 @@ export function useImmutableGetCargoGetRouteOriginDestinationFromDateProductCode
       swrKey,
       async () =>
         parseResponse(
-          client.cargo.getRoute[':origin-:destination'][':fromDate'][':productCode'].$get(
+          client.cargo.getRoute[':origin-{destination}'][':fromDate'][':productCode'].$get(
             args,
             clientOptions,
           ),
@@ -149,21 +149,21 @@ export function useImmutableGetCargoGetRouteOriginDestinationFromDateProductCode
 }
 
 export function getGetCargoShipmentTrackingAWBPrefixAWBNumberKey(
-  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>,
+  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['cargo', '/cargo/shipmentTracking/:aWBPrefix-:aWBNumber', keyArgs] as const
+  return ['cargo', '/cargo/shipmentTracking/:aWBPrefix-{aWBNumber}', keyArgs] as const
 }
 
 export function useGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = unknown>(
-  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>,
+  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
             >
           >
         >
@@ -188,7 +188,7 @@ export function useGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
             >
           >
         >
@@ -198,7 +198,7 @@ export function useGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.cargo.shipmentTracking[':aWBPrefix-:aWBNumber'].$get(args, clientOptions),
+          client.cargo.shipmentTracking[':aWBPrefix-{aWBNumber}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -206,14 +206,14 @@ export function useGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = unknown>(
 }
 
 export function useImmutableGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = unknown>(
-  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>,
+  args: InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
             >
           >
         >
@@ -238,7 +238,7 @@ export function useImmutableGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = 
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+              ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
             >
           >
         >
@@ -248,7 +248,7 @@ export function useImmutableGetCargoShipmentTrackingAWBPrefixAWBNumber<TError = 
       swrKey,
       async () =>
         parseResponse(
-          client.cargo.shipmentTracking[':aWBPrefix-:aWBNumber'].$get(args, clientOptions),
+          client.cargo.shipmentTracking[':aWBPrefix-{aWBNumber}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1306,16 +1306,16 @@ export function useImmutableGetReferencesAirlinesAirlineCode<TError = unknown>(
 
 export function getGetReferencesAirportsNearestLatitudeLongitudeKey(
   args: InferRequestType<
-    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['references', '/references/airports/nearest/:latitude,:longitude', keyArgs] as const
+  return ['references', '/references/airports/nearest/:latitude,{longitude}', keyArgs] as const
 }
 
 export function useGetReferencesAirportsNearestLatitudeLongitude<TError = unknown>(
   args: InferRequestType<
-    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1324,7 +1324,7 @@ export function useGetReferencesAirportsNearestLatitudeLongitude<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
               >
             >
           >
@@ -1351,7 +1351,7 @@ export function useGetReferencesAirportsNearestLatitudeLongitude<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
               >
             >
           >
@@ -1362,7 +1362,7 @@ export function useGetReferencesAirportsNearestLatitudeLongitude<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.references.airports.nearest[':latitude,:longitude'].$get(args, clientOptions),
+          client.references.airports.nearest[':latitude,{longitude}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1371,7 +1371,7 @@ export function useGetReferencesAirportsNearestLatitudeLongitude<TError = unknow
 
 export function useImmutableGetReferencesAirportsNearestLatitudeLongitude<TError = unknown>(
   args: InferRequestType<
-    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1380,7 +1380,7 @@ export function useImmutableGetReferencesAirportsNearestLatitudeLongitude<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
               >
             >
           >
@@ -1407,7 +1407,7 @@ export function useImmutableGetReferencesAirportsNearestLatitudeLongitude<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
               >
             >
           >
@@ -1418,7 +1418,7 @@ export function useImmutableGetReferencesAirportsNearestLatitudeLongitude<TError
       swrKey,
       async () =>
         parseResponse(
-          client.references.airports.nearest[':latitude,:longitude'].$get(args, clientOptions),
+          client.references.airports.nearest[':latitude,{longitude}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

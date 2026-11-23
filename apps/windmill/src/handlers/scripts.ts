@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getScriptsHubGetFullPathRoute,
   getScriptsHubGetPathRoute,
   getScriptsHubPickPathRoute,
   getScriptsHubTopRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScriptsHubGetPathRouteHandler: RouteHandler<
+  typeof getScriptsHubGetPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scriptsHandler = app
-  .openapi(getScriptsHubGetPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsHubGetFullPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsHubPickPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsHubTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScriptsHubGetFullPathRouteHandler: RouteHandler<
+  typeof getScriptsHubGetFullPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsHubPickPathRouteHandler: RouteHandler<
+  typeof getScriptsHubPickPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsHubTopRouteHandler: RouteHandler<typeof getScriptsHubTopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

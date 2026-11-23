@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteContactFlowsInstanceIdContactFlowIdRoute,
   getContactFlowsInstanceIdContactFlowIdRoute,
   postContactFlowsInstanceIdContactFlowIdContentRoute,
@@ -8,24 +8,38 @@ import {
   putContactFlowsInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putContactFlowsInstanceIdRouteHandler: RouteHandler<
+  typeof putContactFlowsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contactFlowsHandler = app
-  .openapi(putContactFlowsInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactFlowsInstanceIdContactFlowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactFlowsInstanceIdContactFlowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactFlowsInstanceIdContactFlowIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactFlowsInstanceIdContactFlowIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactFlowsInstanceIdContactFlowIdNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteContactFlowsInstanceIdContactFlowIdRouteHandler: RouteHandler<
+  typeof deleteContactFlowsInstanceIdContactFlowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactFlowsInstanceIdContactFlowIdRouteHandler: RouteHandler<
+  typeof getContactFlowsInstanceIdContactFlowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactFlowsInstanceIdContactFlowIdContentRouteHandler: RouteHandler<
+  typeof postContactFlowsInstanceIdContactFlowIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactFlowsInstanceIdContactFlowIdMetadataRouteHandler: RouteHandler<
+  typeof postContactFlowsInstanceIdContactFlowIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactFlowsInstanceIdContactFlowIdNameRouteHandler: RouteHandler<
+  typeof postContactFlowsInstanceIdContactFlowIdNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

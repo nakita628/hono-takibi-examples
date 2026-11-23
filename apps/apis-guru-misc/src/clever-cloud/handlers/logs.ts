@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLogsAppIdDrainsIdOrUrlRoute,
   getLogsAppIdDrainsIdOrUrlRoute,
   getLogsAppIdDrainsRoute,
@@ -12,36 +12,56 @@ import {
   putLogsDrainsDrainIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLogsDrainsRouteHandler: RouteHandler<typeof getLogsDrainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const logsHandler = app
-  .openapi(getLogsDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLogsDrainsDrainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsLogsChunkedAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsLogsSocketAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsAppIdDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLogsAppIdDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLogsAppIdDrainsIdOrUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsAppIdDrainsIdOrUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsAppIdSseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putLogsDrainsDrainIdRouteHandler: RouteHandler<
+  typeof putLogsDrainsDrainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsLogsChunkedAppIdRouteHandler: RouteHandler<
+  typeof getLogsLogsChunkedAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsLogsSocketAppIdRouteHandler: RouteHandler<
+  typeof getLogsLogsSocketAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsAppIdRouteHandler: RouteHandler<typeof getLogsAppIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsAppIdDrainsRouteHandler: RouteHandler<typeof getLogsAppIdDrainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postLogsAppIdDrainsRouteHandler: RouteHandler<
+  typeof postLogsAppIdDrainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLogsAppIdDrainsIdOrUrlRouteHandler: RouteHandler<
+  typeof deleteLogsAppIdDrainsIdOrUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsAppIdDrainsIdOrUrlRouteHandler: RouteHandler<
+  typeof getLogsAppIdDrainsIdOrUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsAppIdSseRouteHandler: RouteHandler<typeof getLogsAppIdSseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1888,20 +1888,20 @@ const RuntimeDetailsSchema = z
   .openapi('RuntimeDetails')
 
 type ServiceType = {
-  Action?: z.infer<typeof ActionSchema> & unknown
-  Evidence?: z.infer<typeof EvidenceSchema> & unknown
-  Archived?: z.infer<typeof BooleanSchema> & unknown
-  Count?: z.infer<typeof IntegerSchema> & unknown
-  DetectorId?: z.infer<typeof DetectorIdSchema> & unknown
-  EventFirstSeen?: z.infer<typeof StringSchema> & unknown
-  EventLastSeen?: z.infer<typeof StringSchema> & unknown
-  ResourceRole?: z.infer<typeof StringSchema> & unknown
-  ServiceName?: z.infer<typeof StringSchema> & unknown
-  UserFeedback?: z.infer<typeof StringSchema> & unknown
-  AdditionalInfo?: z.infer<typeof ServiceAdditionalInfoSchema> & unknown
-  FeatureName?: z.infer<typeof StringSchema> & unknown
-  EbsVolumeScanDetails?: z.infer<typeof EbsVolumeScanDetailsSchema> & unknown
-  RuntimeDetails?: z.infer<typeof RuntimeDetailsSchema> & unknown
+  Action?: z.infer<typeof ActionSchema>
+  Evidence?: z.infer<typeof EvidenceSchema>
+  Archived?: z.infer<typeof BooleanSchema>
+  Count?: z.infer<typeof IntegerSchema>
+  DetectorId?: z.infer<typeof DetectorIdSchema>
+  EventFirstSeen?: z.infer<typeof StringSchema>
+  EventLastSeen?: z.infer<typeof StringSchema>
+  ResourceRole?: z.infer<typeof StringSchema>
+  ServiceName?: z.infer<typeof StringSchema>
+  UserFeedback?: z.infer<typeof StringSchema>
+  AdditionalInfo?: z.infer<typeof ServiceAdditionalInfoSchema>
+  FeatureName?: z.infer<typeof StringSchema>
+  EbsVolumeScanDetails?: z.infer<typeof EbsVolumeScanDetailsSchema>
+  RuntimeDetails?: z.infer<typeof RuntimeDetailsSchema>
 }
 
 const ServiceSchema: z.ZodType<ServiceType> = z
@@ -1976,21 +1976,21 @@ const ServiceSchema: z.ZodType<ServiceType> = z
 const FindingTypeSchema = z.string().min(1).max(50).openapi('FindingType')
 
 type FindingType = {
-  AccountId: z.infer<typeof StringSchema> & unknown
-  Arn: z.infer<typeof StringSchema> & unknown
-  Confidence?: z.infer<typeof DoubleSchema> & unknown
-  CreatedAt: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  Id: z.infer<typeof StringSchema> & unknown
-  Partition?: z.infer<typeof StringSchema> & unknown
-  Region: z.infer<typeof StringSchema> & unknown
-  Resource: z.infer<typeof ResourceSchema> & unknown
-  SchemaVersion: z.infer<typeof StringSchema> & unknown
-  Service?: z.infer<typeof ServiceSchema> & unknown
-  Severity: z.infer<typeof DoubleSchema> & unknown
-  Title?: z.infer<typeof StringSchema> & unknown
-  Type: z.infer<typeof FindingTypeSchema> & unknown
-  UpdatedAt: z.infer<typeof StringSchema> & unknown
+  AccountId: z.infer<typeof StringSchema>
+  Arn: z.infer<typeof StringSchema>
+  Confidence?: z.infer<typeof DoubleSchema>
+  CreatedAt: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  Id: z.infer<typeof StringSchema>
+  Partition?: z.infer<typeof StringSchema>
+  Region: z.infer<typeof StringSchema>
+  Resource: z.infer<typeof ResourceSchema>
+  SchemaVersion: z.infer<typeof StringSchema>
+  Service?: z.infer<typeof ServiceSchema>
+  Severity: z.infer<typeof DoubleSchema>
+  Title?: z.infer<typeof StringSchema>
+  Type: z.infer<typeof FindingTypeSchema>
+  UpdatedAt: z.infer<typeof StringSchema>
 }
 
 const FindingSchema: z.ZodType<FindingType> = z
@@ -2067,7 +2067,7 @@ const FindingsSchema: z.ZodType<FindingsType> = z
   .max(50)
   .openapi('Findings')
 
-type GetFindingsResponseType = { Findings: z.infer<typeof FindingsSchema> & unknown }
+type GetFindingsResponseType = { Findings: z.infer<typeof FindingsSchema> }
 
 const AcceptAdministratorInvitationResponseSchema = z
   .looseObject({})

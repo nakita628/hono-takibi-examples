@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/eos.local/1.0.0/openapi.yaml',
   output: './src/eos/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/eos/types.ts' },
   client: { output: './src/eos/client.ts', baseUrl: '/' },
   rpc: { output: './src/eos/rpc.ts', parseResponse: true },

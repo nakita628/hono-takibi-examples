@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectionConnectionIdRoute,
   getConnectionConnectionIdRoute,
   getConnectionRoute,
@@ -10,30 +10,46 @@ import {
   postConnectionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConnectionRouteHandler: RouteHandler<typeof getConnectionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectionHandler = app
-  .openapi(getConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConnectionMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionConnectionIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConnectionConnectionIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConnectionRouteHandler: RouteHandler<typeof postConnectionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionConnectionIdRouteHandler: RouteHandler<
+  typeof getConnectionConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionConnectionIdRouteHandler: RouteHandler<
+  typeof deleteConnectionConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionMetadataRouteHandler: RouteHandler<
+  typeof postConnectionMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConnectionMetadataRouteHandler: RouteHandler<
+  typeof patchConnectionMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionConnectionIdMetadataRouteHandler: RouteHandler<
+  typeof postConnectionConnectionIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConnectionConnectionIdMetadataRouteHandler: RouteHandler<
+  typeof patchConnectionConnectionIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

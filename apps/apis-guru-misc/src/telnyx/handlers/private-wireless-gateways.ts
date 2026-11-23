@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePrivateWirelessGatewaysIdRoute,
   getPrivateWirelessGatewaysIdRoute,
   getPrivateWirelessGatewaysRoute,
   postPrivateWirelessGatewaysRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPrivateWirelessGatewaysRouteHandler: RouteHandler<
+  typeof getPrivateWirelessGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const privateWirelessGatewaysHandler = app
-  .openapi(getPrivateWirelessGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPrivateWirelessGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePrivateWirelessGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPrivateWirelessGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPrivateWirelessGatewaysRouteHandler: RouteHandler<
+  typeof postPrivateWirelessGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePrivateWirelessGatewaysIdRouteHandler: RouteHandler<
+  typeof deletePrivateWirelessGatewaysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPrivateWirelessGatewaysIdRouteHandler: RouteHandler<
+  typeof getPrivateWirelessGatewaysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSyncPlaybackIdRoute,
   getSyncCollectionTypeRoute,
   getSyncHistoryTypeIdRoute,
@@ -23,69 +23,124 @@ import {
   postSyncWatchlistRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSyncCollectionRouteHandler: RouteHandler<typeof postSyncCollectionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const syncHandler = app
-  .openapi(postSyncCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncCollectionRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncCollectionTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncHistoryRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncHistoryTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncLastActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSyncPlaybackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncPlaybackTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncRatingsRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncRatingsTypeRatingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncRecommendationsRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncRecommendationsReorderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncRecommendationsTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncWatchedTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncWatchlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncWatchlistRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncWatchlistReorderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncWatchlistTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSyncCollectionRemoveRouteHandler: RouteHandler<
+  typeof postSyncCollectionRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncCollectionTypeRouteHandler: RouteHandler<
+  typeof getSyncCollectionTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncHistoryRouteHandler: RouteHandler<typeof postSyncHistoryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncHistoryRemoveRouteHandler: RouteHandler<
+  typeof postSyncHistoryRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncHistoryTypeIdRouteHandler: RouteHandler<
+  typeof getSyncHistoryTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncLastActivitiesRouteHandler: RouteHandler<
+  typeof getSyncLastActivitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSyncPlaybackIdRouteHandler: RouteHandler<
+  typeof deleteSyncPlaybackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncPlaybackTypeRouteHandler: RouteHandler<
+  typeof getSyncPlaybackTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncRatingsRouteHandler: RouteHandler<typeof postSyncRatingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncRatingsRemoveRouteHandler: RouteHandler<
+  typeof postSyncRatingsRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncRatingsTypeRatingRouteHandler: RouteHandler<
+  typeof getSyncRatingsTypeRatingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncRecommendationsRouteHandler: RouteHandler<
+  typeof postSyncRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncRecommendationsRemoveRouteHandler: RouteHandler<
+  typeof postSyncRecommendationsRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncRecommendationsReorderRouteHandler: RouteHandler<
+  typeof postSyncRecommendationsReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncRecommendationsTypeSortRouteHandler: RouteHandler<
+  typeof getSyncRecommendationsTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncWatchedTypeRouteHandler: RouteHandler<typeof getSyncWatchedTypeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncWatchlistRouteHandler: RouteHandler<typeof postSyncWatchlistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncWatchlistRemoveRouteHandler: RouteHandler<
+  typeof postSyncWatchlistRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncWatchlistReorderRouteHandler: RouteHandler<
+  typeof postSyncWatchlistReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncWatchlistTypeSortRouteHandler: RouteHandler<
+  typeof getSyncWatchlistTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

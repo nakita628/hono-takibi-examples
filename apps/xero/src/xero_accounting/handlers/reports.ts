@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReportsAgedPayablesByContactRoute,
   getReportsAgedReceivablesByContactRoute,
   getReportsBalanceSheetRoute,
@@ -13,39 +13,66 @@ import {
   getReportsTrialBalanceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReportsTenNinetyNineRouteHandler: RouteHandler<
+  typeof getReportsTenNinetyNineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportsHandler = app
-  .openapi(getReportsTenNinetyNineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsAgedPayablesByContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsAgedReceivablesByContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsBalanceSheetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsBankSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsReportIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsBudgetSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsExecutiveSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsProfitAndLossRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsTrialBalanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReportsAgedPayablesByContactRouteHandler: RouteHandler<
+  typeof getReportsAgedPayablesByContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsAgedReceivablesByContactRouteHandler: RouteHandler<
+  typeof getReportsAgedReceivablesByContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsBalanceSheetRouteHandler: RouteHandler<
+  typeof getReportsBalanceSheetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsBankSummaryRouteHandler: RouteHandler<
+  typeof getReportsBankSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsReportIDRouteHandler: RouteHandler<typeof getReportsReportIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsBudgetSummaryRouteHandler: RouteHandler<
+  typeof getReportsBudgetSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsExecutiveSummaryRouteHandler: RouteHandler<
+  typeof getReportsExecutiveSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsRouteHandler: RouteHandler<typeof getReportsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsProfitAndLossRouteHandler: RouteHandler<
+  typeof getReportsProfitAndLossRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsTrialBalanceRouteHandler: RouteHandler<
+  typeof getReportsTrialBalanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

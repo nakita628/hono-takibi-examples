@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/geo_api/1.0.0/openapi.yaml',
   output: './src/geo-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/geo-api/types.ts' },
   client: { output: './src/geo-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/geo-api/rpc.ts', parseResponse: true },

@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mediaconvert/2017-08-29/openapi.yaml',
   output: './src/mediaconvert/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/mediaconvert/types.ts' },
   client: { output: './src/mediaconvert/client.ts', baseUrl: '/' },

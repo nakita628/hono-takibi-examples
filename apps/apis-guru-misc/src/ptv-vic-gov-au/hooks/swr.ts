@@ -1296,19 +1296,21 @@ export function useImmutableGetV3Outlets<TError = unknown>(
 }
 
 export function getGetV3OutletsLocationLatitudeLongitudeKey(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['v3', '/v3/outlets/location/:latitude,:longitude', args] as const
+  return ['v3', '/v3/outlets/location/:latitude,{longitude}', args] as const
 }
 
 export function useGetV3OutletsLocationLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>
+            >
           >
         >
       >,
@@ -1331,7 +1333,9 @@ export function useGetV3OutletsLocationLatitudeLongitude<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>
+            >
           >
         >
       >,
@@ -1339,20 +1343,24 @@ export function useGetV3OutletsLocationLatitudeLongitude<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.v3.outlets.location[':latitude,:longitude'].$get(args, clientOptions)),
+        parseResponse(
+          client.v3.outlets.location[':latitude,{longitude}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV3OutletsLocationLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>
+            >
           >
         >
       >,
@@ -1375,7 +1383,9 @@ export function useImmutableGetV3OutletsLocationLatitudeLongitude<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>
+            >
           >
         >
       >,
@@ -1383,7 +1393,9 @@ export function useImmutableGetV3OutletsLocationLatitudeLongitude<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.v3.outlets.location[':latitude,:longitude'].$get(args, clientOptions)),
+        parseResponse(
+          client.v3.outlets.location[':latitude,{longitude}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
@@ -2204,19 +2216,19 @@ export function useImmutableGetV3SearchSearchTerm<TError = unknown>(
 }
 
 export function getGetV3StopsLocationLatitudeLongitudeKey(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['v3', '/v3/stops/location/:latitude,:longitude', args] as const
+  return ['v3', '/v3/stops/location/:latitude,{longitude}', args] as const
 }
 
 export function useGetV3StopsLocationLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -2239,7 +2251,7 @@ export function useGetV3StopsLocationLatitudeLongitude<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -2247,20 +2259,20 @@ export function useGetV3StopsLocationLatitudeLongitude<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.v3.stops.location[':latitude,:longitude'].$get(args, clientOptions)),
+        parseResponse(client.v3.stops.location[':latitude,{longitude}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV3StopsLocationLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -2283,7 +2295,7 @@ export function useImmutableGetV3StopsLocationLatitudeLongitude<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -2291,7 +2303,7 @@ export function useImmutableGetV3StopsLocationLatitudeLongitude<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.v3.stops.location[':latitude,:longitude'].$get(args, clientOptions)),
+        parseResponse(client.v3.stops.location[':latitude,{longitude}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

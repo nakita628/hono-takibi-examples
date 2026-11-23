@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2CustomerShortNameSessionRoute,
   getV2CustomerShortNameBranchBranchesBranchIDRoute,
   getV2CustomerShortNameBranchBranchesRoute,
@@ -26,78 +26,146 @@ import {
   putV2CustomerShortNameSessionPasswordRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2CustomerShortNameBranchBranchesRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameBranchBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2CustomerShortNameBranchBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameBranchBranchesBranchIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordAccountingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordDocumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordInventoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordLandlordcrmentriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordMaintenanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordProfitlossRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordRentarrearsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordSasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordTenancyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomerShortNameLandlordTenancyMaintenancePreferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameLandlordTenancyagreementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNamePhotoDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNamePropertyPropertyIDPhotosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CustomerShortNameSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerShortNameSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomerShortNameSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomerShortNameSessionCreatelandlordloginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CustomerShortNameSessionPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomerShortNameSessionResetpasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CustomerShortNameBranchBranchesBranchIDRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameBranchBranchesBranchIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordAccountingRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordAccountingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordDocumentRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordDocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordInventoryRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordInventoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordInvoiceRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordLandlordcrmentriesRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordLandlordcrmentriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordMaintenanceRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordMaintenanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordProfitlossRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordProfitlossRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordRentarrearsRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordRentarrearsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordSasRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordSasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordSettingsRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordSummaryRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordTenancyRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordTenancyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomerShortNameLandlordTenancyMaintenancePreferenceRouteHandler: RouteHandler<
+  typeof postV2CustomerShortNameLandlordTenancyMaintenancePreferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameLandlordTenancyagreementRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameLandlordTenancyagreementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNamePhotoDownloadRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNamePhotoDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNamePropertyPropertyIDPhotosRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNamePropertyPropertyIDPhotosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CustomerShortNameSessionRouteHandler: RouteHandler<
+  typeof deleteV2CustomerShortNameSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomerShortNameSessionRouteHandler: RouteHandler<
+  typeof getV2CustomerShortNameSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomerShortNameSessionRouteHandler: RouteHandler<
+  typeof postV2CustomerShortNameSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomerShortNameSessionCreatelandlordloginRouteHandler: RouteHandler<
+  typeof postV2CustomerShortNameSessionCreatelandlordloginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CustomerShortNameSessionPasswordRouteHandler: RouteHandler<
+  typeof putV2CustomerShortNameSessionPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomerShortNameSessionResetpasswordRouteHandler: RouteHandler<
+  typeof postV2CustomerShortNameSessionResetpasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/ktech/3.0.0/openapi.yaml',
   output: './src/ktech/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ktech/types.ts' },
   client: { output: './src/ktech/client.ts', baseUrl: '/' },
   rpc: { output: './src/ktech/rpc.ts', parseResponse: true },

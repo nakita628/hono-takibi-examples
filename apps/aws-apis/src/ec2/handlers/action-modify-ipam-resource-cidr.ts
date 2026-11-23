@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionModifyIpamResourceCidrRoute,
   postActionModifyIpamResourceCidrRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyIpamResourceCidrRouteHandler: RouteHandler<
+  typeof getActionModifyIpamResourceCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyIpamResourceCidrHandler = app
-  .openapi(getActionModifyIpamResourceCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyIpamResourceCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyIpamResourceCidrRouteHandler: RouteHandler<
+  typeof postActionModifyIpamResourceCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

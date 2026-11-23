@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPinsChangeRoute, postPinsRevealRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPinsChangeRoute, postPinsRevealRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPinsChangeRouteHandler: RouteHandler<typeof postPinsChangeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pinsHandler = app
-  .openapi(postPinsChangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPinsRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPinsRevealRouteHandler: RouteHandler<typeof postPinsRevealRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

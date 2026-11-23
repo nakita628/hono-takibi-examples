@@ -5087,7 +5087,7 @@ export const postCmsBlogs202609TagsBatchArchiveRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: { 'application/json': { schema: BatchResponseTagWithErrorsSchema, example: null } },
@@ -5700,7 +5700,7 @@ export const putCmsBlogs202609TagsMultiLanguageSetNewLangPrimaryRoute = createRo
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -5830,7 +5830,7 @@ export const deleteCmsBlogs202609TagsObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 

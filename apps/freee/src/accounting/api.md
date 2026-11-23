@@ -38813,8 +38813,8 @@ oauth2 ( Scopes: write read )
 |created_at|string(date-time)|true|none|仕訳の作成日時。|
 |updated_at|string(date-time)|true|none|仕訳の最終更新日時。|
 |receipt_ids|[integer(int64)]|true|none|紐づく証憑IDのリスト。閲覧権限がない場合は空配列。|
-|debit|[object]|true|none|借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
-|credit|[object]|true|none|貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
+|debit|[[reportJournalsJournalDebitItems](#schemareportjournalsjournaldebititems)]|true|none|借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
+|credit|[[reportJournalsJournalDebitItems](#schemareportjournalsjournaldebititems)]|true|none|貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
 
 <h2 id="tocS_reportJournalsJournalLine">reportJournalsJournalLine</h2>
 <!-- backwards compatibility -->
@@ -47225,3 +47225,54 @@ oauth2 ( Scopes: write read )
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_group|object|true|none|作成された決算書表示名（小カテゴリー）|
+
+<h2 id="tocS_reportJournalsJournalDebitItems">reportJournalsJournalDebitItems</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsjournaldebititems"></a>
+<a id="schema_reportJournalsJournalDebitItems"></a>
+<a id="tocSreportjournalsjournaldebititems"></a>
+<a id="tocsreportjournalsjournaldebititems"></a>
+
+```json
+{
+  "id": 0,
+  "line_type": {},
+  "account_item_id": 0,
+  "amount": 0,
+  "net_amount": 0,
+  "vat": 0,
+  "tax_code": 0,
+  "partner_id": 0,
+  "item_id": 0,
+  "section_id": 0,
+  "segment_tag_1_id": 0,
+  "segment_tag_2_id": 0,
+  "segment_tag_3_id": 0,
+  "memo_tag_ids": [
+    0
+  ],
+  "description": "string"
+}
+```
+
+仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64) \| null|true|none|明細行ID。消費税行では null。|
+|line_type|object|true|none|行種別。detail は通常明細、tax は税抜経理事業所の消費税行。|
+|account_item_id|integer(int64)|true|none|勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。|
+|amount|integer(int64)|true|none|表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。|
+|net_amount|integer(int64) \| null|true|none|税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。|
+|vat|integer(int64) \| null|true|none|消費税額。通常明細ではその明細の税額、消費税行では null。|
+|tax_code|integer(int32) \| null|true|none|税区分コード。|
+|partner_id|integer(int64) \| null|true|none|取引先ID。|
+|item_id|integer(int64) \| null|true|none|品目ID。消費税行では null。|
+|section_id|integer(int64) \| null|true|none|部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。|
+|segment_tag_1_id|integer(int64) \| null|true|none|セグメント1タグID。消費税行では null。|
+|segment_tag_2_id|integer(int64) \| null|true|none|セグメント2タグID。消費税行では null。|
+|segment_tag_3_id|integer(int64) \| null|true|none|セグメント3タグID。消費税行では null。|
+|memo_tag_ids|[integer(int64)]|true|none|メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。|
+|description|string \| null|true|none|行の備考。逆仕訳の確認等で利用可能。消費税行では null。|

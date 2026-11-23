@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTimestream20181101DeleteScheduledQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTimestream20181101DeleteScheduledQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTimestream20181101DeleteScheduledQueryHandler = app.openapi(
-  postXAmzTargetTimestream20181101DeleteScheduledQueryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTimestream20181101DeleteScheduledQueryRouteHandler: RouteHandler<
+  typeof postXAmzTargetTimestream20181101DeleteScheduledQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

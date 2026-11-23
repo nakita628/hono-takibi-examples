@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/omnichannel.yaml',
   output: './src/omnichannel/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/omnichannel/types.ts' },
   client: { output: './src/omnichannel/client.ts', baseUrl: '/' },
   rpc: { output: './src/omnichannel/rpc.ts', parseResponse: true },

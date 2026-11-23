@@ -1,115 +1,326 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetDynamoDb20120810BatchExecuteStatementHandler,
-  xAmzTargetDynamoDb20120810BatchGetItemHandler,
-  xAmzTargetDynamoDb20120810BatchWriteItemHandler,
-  xAmzTargetDynamoDb20120810CreateBackupHandler,
-  xAmzTargetDynamoDb20120810CreateGlobalTableHandler,
-  xAmzTargetDynamoDb20120810CreateTableHandler,
-  xAmzTargetDynamoDb20120810DeleteBackupHandler,
-  xAmzTargetDynamoDb20120810DeleteItemHandler,
-  xAmzTargetDynamoDb20120810DeleteTableHandler,
-  xAmzTargetDynamoDb20120810DescribeBackupHandler,
-  xAmzTargetDynamoDb20120810DescribeContinuousBackupsHandler,
-  xAmzTargetDynamoDb20120810DescribeContributorInsightsHandler,
-  xAmzTargetDynamoDb20120810DescribeEndpointsHandler,
-  xAmzTargetDynamoDb20120810DescribeExportHandler,
-  xAmzTargetDynamoDb20120810DescribeGlobalTableHandler,
-  xAmzTargetDynamoDb20120810DescribeGlobalTableSettingsHandler,
-  xAmzTargetDynamoDb20120810DescribeImportHandler,
-  xAmzTargetDynamoDb20120810DescribeKinesisStreamingDestinationHandler,
-  xAmzTargetDynamoDb20120810DescribeLimitsHandler,
-  xAmzTargetDynamoDb20120810DescribeTableHandler,
-  xAmzTargetDynamoDb20120810DescribeTableReplicaAutoScalingHandler,
-  xAmzTargetDynamoDb20120810DescribeTimeToLiveHandler,
-  xAmzTargetDynamoDb20120810DisableKinesisStreamingDestinationHandler,
-  xAmzTargetDynamoDb20120810EnableKinesisStreamingDestinationHandler,
-  xAmzTargetDynamoDb20120810ExecuteStatementHandler,
-  xAmzTargetDynamoDb20120810ExecuteTransactionHandler,
-  xAmzTargetDynamoDb20120810ExportTableToPointInTimeHandler,
-  xAmzTargetDynamoDb20120810GetItemHandler,
-  xAmzTargetDynamoDb20120810ImportTableHandler,
-  xAmzTargetDynamoDb20120810ListBackupsHandler,
-  xAmzTargetDynamoDb20120810ListContributorInsightsHandler,
-  xAmzTargetDynamoDb20120810ListExportsHandler,
-  xAmzTargetDynamoDb20120810ListGlobalTablesHandler,
-  xAmzTargetDynamoDb20120810ListImportsHandler,
-  xAmzTargetDynamoDb20120810ListTablesHandler,
-  xAmzTargetDynamoDb20120810ListTagsOfResourceHandler,
-  xAmzTargetDynamoDb20120810PutItemHandler,
-  xAmzTargetDynamoDb20120810QueryHandler,
-  xAmzTargetDynamoDb20120810RestoreTableFromBackupHandler,
-  xAmzTargetDynamoDb20120810RestoreTableToPointInTimeHandler,
-  xAmzTargetDynamoDb20120810ScanHandler,
-  xAmzTargetDynamoDb20120810TagResourceHandler,
-  xAmzTargetDynamoDb20120810TransactGetItemsHandler,
-  xAmzTargetDynamoDb20120810TransactWriteItemsHandler,
-  xAmzTargetDynamoDb20120810UntagResourceHandler,
-  xAmzTargetDynamoDb20120810UpdateContinuousBackupsHandler,
-  xAmzTargetDynamoDb20120810UpdateContributorInsightsHandler,
-  xAmzTargetDynamoDb20120810UpdateGlobalTableHandler,
-  xAmzTargetDynamoDb20120810UpdateGlobalTableSettingsHandler,
-  xAmzTargetDynamoDb20120810UpdateItemHandler,
-  xAmzTargetDynamoDb20120810UpdateTableHandler,
-  xAmzTargetDynamoDb20120810UpdateTableReplicaAutoScalingHandler,
-  xAmzTargetDynamoDb20120810UpdateTimeToLiveHandler,
+  postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute,
+  postXAmzTargetDynamoDB20120810BatchGetItemRoute,
+  postXAmzTargetDynamoDB20120810BatchWriteItemRoute,
+  postXAmzTargetDynamoDB20120810CreateBackupRoute,
+  postXAmzTargetDynamoDB20120810CreateGlobalTableRoute,
+  postXAmzTargetDynamoDB20120810CreateTableRoute,
+  postXAmzTargetDynamoDB20120810DeleteBackupRoute,
+  postXAmzTargetDynamoDB20120810DeleteItemRoute,
+  postXAmzTargetDynamoDB20120810DeleteTableRoute,
+  postXAmzTargetDynamoDB20120810DescribeBackupRoute,
+  postXAmzTargetDynamoDB20120810DescribeContinuousBackupsRoute,
+  postXAmzTargetDynamoDB20120810DescribeContributorInsightsRoute,
+  postXAmzTargetDynamoDB20120810DescribeEndpointsRoute,
+  postXAmzTargetDynamoDB20120810DescribeExportRoute,
+  postXAmzTargetDynamoDB20120810DescribeGlobalTableRoute,
+  postXAmzTargetDynamoDB20120810DescribeGlobalTableSettingsRoute,
+  postXAmzTargetDynamoDB20120810DescribeImportRoute,
+  postXAmzTargetDynamoDB20120810DescribeKinesisStreamingDestinationRoute,
+  postXAmzTargetDynamoDB20120810DescribeLimitsRoute,
+  postXAmzTargetDynamoDB20120810DescribeTableReplicaAutoScalingRoute,
+  postXAmzTargetDynamoDB20120810DescribeTableRoute,
+  postXAmzTargetDynamoDB20120810DescribeTimeToLiveRoute,
+  postXAmzTargetDynamoDB20120810DisableKinesisStreamingDestinationRoute,
+  postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute,
+  postXAmzTargetDynamoDB20120810ExecuteStatementRoute,
+  postXAmzTargetDynamoDB20120810ExecuteTransactionRoute,
+  postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute,
+  postXAmzTargetDynamoDB20120810GetItemRoute,
+  postXAmzTargetDynamoDB20120810ImportTableRoute,
+  postXAmzTargetDynamoDB20120810ListBackupsRoute,
+  postXAmzTargetDynamoDB20120810ListContributorInsightsRoute,
+  postXAmzTargetDynamoDB20120810ListExportsRoute,
+  postXAmzTargetDynamoDB20120810ListGlobalTablesRoute,
+  postXAmzTargetDynamoDB20120810ListImportsRoute,
+  postXAmzTargetDynamoDB20120810ListTablesRoute,
+  postXAmzTargetDynamoDB20120810ListTagsOfResourceRoute,
+  postXAmzTargetDynamoDB20120810PutItemRoute,
+  postXAmzTargetDynamoDB20120810QueryRoute,
+  postXAmzTargetDynamoDB20120810RestoreTableFromBackupRoute,
+  postXAmzTargetDynamoDB20120810RestoreTableToPointInTimeRoute,
+  postXAmzTargetDynamoDB20120810ScanRoute,
+  postXAmzTargetDynamoDB20120810TagResourceRoute,
+  postXAmzTargetDynamoDB20120810TransactGetItemsRoute,
+  postXAmzTargetDynamoDB20120810TransactWriteItemsRoute,
+  postXAmzTargetDynamoDB20120810UntagResourceRoute,
+  postXAmzTargetDynamoDB20120810UpdateContinuousBackupsRoute,
+  postXAmzTargetDynamoDB20120810UpdateContributorInsightsRoute,
+  postXAmzTargetDynamoDB20120810UpdateGlobalTableRoute,
+  postXAmzTargetDynamoDB20120810UpdateGlobalTableSettingsRoute,
+  postXAmzTargetDynamoDB20120810UpdateItemRoute,
+  postXAmzTargetDynamoDB20120810UpdateTableReplicaAutoScalingRoute,
+  postXAmzTargetDynamoDB20120810UpdateTableRoute,
+  postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute,
+} from './routes'
+import {
+  postXAmzTargetDynamoDB20120810BatchExecuteStatementRouteHandler,
+  postXAmzTargetDynamoDB20120810BatchGetItemRouteHandler,
+  postXAmzTargetDynamoDB20120810BatchWriteItemRouteHandler,
+  postXAmzTargetDynamoDB20120810CreateBackupRouteHandler,
+  postXAmzTargetDynamoDB20120810CreateGlobalTableRouteHandler,
+  postXAmzTargetDynamoDB20120810CreateTableRouteHandler,
+  postXAmzTargetDynamoDB20120810DeleteBackupRouteHandler,
+  postXAmzTargetDynamoDB20120810DeleteItemRouteHandler,
+  postXAmzTargetDynamoDB20120810DeleteTableRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeBackupRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeContinuousBackupsRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeContributorInsightsRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeEndpointsRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeExportRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeGlobalTableRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeGlobalTableSettingsRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeImportRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeKinesisStreamingDestinationRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeLimitsRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeTableReplicaAutoScalingRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeTableRouteHandler,
+  postXAmzTargetDynamoDB20120810DescribeTimeToLiveRouteHandler,
+  postXAmzTargetDynamoDB20120810DisableKinesisStreamingDestinationRouteHandler,
+  postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRouteHandler,
+  postXAmzTargetDynamoDB20120810ExecuteStatementRouteHandler,
+  postXAmzTargetDynamoDB20120810ExecuteTransactionRouteHandler,
+  postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRouteHandler,
+  postXAmzTargetDynamoDB20120810GetItemRouteHandler,
+  postXAmzTargetDynamoDB20120810ImportTableRouteHandler,
+  postXAmzTargetDynamoDB20120810ListBackupsRouteHandler,
+  postXAmzTargetDynamoDB20120810ListContributorInsightsRouteHandler,
+  postXAmzTargetDynamoDB20120810ListExportsRouteHandler,
+  postXAmzTargetDynamoDB20120810ListGlobalTablesRouteHandler,
+  postXAmzTargetDynamoDB20120810ListImportsRouteHandler,
+  postXAmzTargetDynamoDB20120810ListTablesRouteHandler,
+  postXAmzTargetDynamoDB20120810ListTagsOfResourceRouteHandler,
+  postXAmzTargetDynamoDB20120810PutItemRouteHandler,
+  postXAmzTargetDynamoDB20120810QueryRouteHandler,
+  postXAmzTargetDynamoDB20120810RestoreTableFromBackupRouteHandler,
+  postXAmzTargetDynamoDB20120810RestoreTableToPointInTimeRouteHandler,
+  postXAmzTargetDynamoDB20120810ScanRouteHandler,
+  postXAmzTargetDynamoDB20120810TagResourceRouteHandler,
+  postXAmzTargetDynamoDB20120810TransactGetItemsRouteHandler,
+  postXAmzTargetDynamoDB20120810TransactWriteItemsRouteHandler,
+  postXAmzTargetDynamoDB20120810UntagResourceRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateContinuousBackupsRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateContributorInsightsRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateGlobalTableRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateGlobalTableSettingsRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateItemRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateTableReplicaAutoScalingRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateTableRouteHandler,
+  postXAmzTargetDynamoDB20120810UpdateTimeToLiveRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetDynamoDb20120810BatchExecuteStatementHandler)
-  .route('/', xAmzTargetDynamoDb20120810BatchGetItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810BatchWriteItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810CreateBackupHandler)
-  .route('/', xAmzTargetDynamoDb20120810CreateGlobalTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810CreateTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810DeleteBackupHandler)
-  .route('/', xAmzTargetDynamoDb20120810DeleteItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810DeleteTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeBackupHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeContinuousBackupsHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeContributorInsightsHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeEndpointsHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeExportHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeGlobalTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeGlobalTableSettingsHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeImportHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeKinesisStreamingDestinationHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeLimitsHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeTableReplicaAutoScalingHandler)
-  .route('/', xAmzTargetDynamoDb20120810DescribeTimeToLiveHandler)
-  .route('/', xAmzTargetDynamoDb20120810DisableKinesisStreamingDestinationHandler)
-  .route('/', xAmzTargetDynamoDb20120810EnableKinesisStreamingDestinationHandler)
-  .route('/', xAmzTargetDynamoDb20120810ExecuteStatementHandler)
-  .route('/', xAmzTargetDynamoDb20120810ExecuteTransactionHandler)
-  .route('/', xAmzTargetDynamoDb20120810ExportTableToPointInTimeHandler)
-  .route('/', xAmzTargetDynamoDb20120810GetItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810ImportTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListBackupsHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListContributorInsightsHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListExportsHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListGlobalTablesHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListImportsHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListTablesHandler)
-  .route('/', xAmzTargetDynamoDb20120810ListTagsOfResourceHandler)
-  .route('/', xAmzTargetDynamoDb20120810PutItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810QueryHandler)
-  .route('/', xAmzTargetDynamoDb20120810RestoreTableFromBackupHandler)
-  .route('/', xAmzTargetDynamoDb20120810RestoreTableToPointInTimeHandler)
-  .route('/', xAmzTargetDynamoDb20120810ScanHandler)
-  .route('/', xAmzTargetDynamoDb20120810TagResourceHandler)
-  .route('/', xAmzTargetDynamoDb20120810TransactGetItemsHandler)
-  .route('/', xAmzTargetDynamoDb20120810TransactWriteItemsHandler)
-  .route('/', xAmzTargetDynamoDb20120810UntagResourceHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateContinuousBackupsHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateContributorInsightsHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateGlobalTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateGlobalTableSettingsHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateItemHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateTableHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateTableReplicaAutoScalingHandler)
-  .route('/', xAmzTargetDynamoDb20120810UpdateTimeToLiveHandler)
+  .openapi(
+    postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute,
+    postXAmzTargetDynamoDB20120810BatchExecuteStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810BatchGetItemRoute,
+    postXAmzTargetDynamoDB20120810BatchGetItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810BatchWriteItemRoute,
+    postXAmzTargetDynamoDB20120810BatchWriteItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810CreateBackupRoute,
+    postXAmzTargetDynamoDB20120810CreateBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810CreateGlobalTableRoute,
+    postXAmzTargetDynamoDB20120810CreateGlobalTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810CreateTableRoute,
+    postXAmzTargetDynamoDB20120810CreateTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DeleteBackupRoute,
+    postXAmzTargetDynamoDB20120810DeleteBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DeleteItemRoute,
+    postXAmzTargetDynamoDB20120810DeleteItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DeleteTableRoute,
+    postXAmzTargetDynamoDB20120810DeleteTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeBackupRoute,
+    postXAmzTargetDynamoDB20120810DescribeBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeContinuousBackupsRoute,
+    postXAmzTargetDynamoDB20120810DescribeContinuousBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeContributorInsightsRoute,
+    postXAmzTargetDynamoDB20120810DescribeContributorInsightsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeEndpointsRoute,
+    postXAmzTargetDynamoDB20120810DescribeEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeExportRoute,
+    postXAmzTargetDynamoDB20120810DescribeExportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeGlobalTableRoute,
+    postXAmzTargetDynamoDB20120810DescribeGlobalTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeGlobalTableSettingsRoute,
+    postXAmzTargetDynamoDB20120810DescribeGlobalTableSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeImportRoute,
+    postXAmzTargetDynamoDB20120810DescribeImportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeKinesisStreamingDestinationRoute,
+    postXAmzTargetDynamoDB20120810DescribeKinesisStreamingDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeLimitsRoute,
+    postXAmzTargetDynamoDB20120810DescribeLimitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeTableRoute,
+    postXAmzTargetDynamoDB20120810DescribeTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeTableReplicaAutoScalingRoute,
+    postXAmzTargetDynamoDB20120810DescribeTableReplicaAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DescribeTimeToLiveRoute,
+    postXAmzTargetDynamoDB20120810DescribeTimeToLiveRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810DisableKinesisStreamingDestinationRoute,
+    postXAmzTargetDynamoDB20120810DisableKinesisStreamingDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute,
+    postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ExecuteStatementRoute,
+    postXAmzTargetDynamoDB20120810ExecuteStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ExecuteTransactionRoute,
+    postXAmzTargetDynamoDB20120810ExecuteTransactionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute,
+    postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810GetItemRoute,
+    postXAmzTargetDynamoDB20120810GetItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ImportTableRoute,
+    postXAmzTargetDynamoDB20120810ImportTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListBackupsRoute,
+    postXAmzTargetDynamoDB20120810ListBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListContributorInsightsRoute,
+    postXAmzTargetDynamoDB20120810ListContributorInsightsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListExportsRoute,
+    postXAmzTargetDynamoDB20120810ListExportsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListGlobalTablesRoute,
+    postXAmzTargetDynamoDB20120810ListGlobalTablesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListImportsRoute,
+    postXAmzTargetDynamoDB20120810ListImportsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListTablesRoute,
+    postXAmzTargetDynamoDB20120810ListTablesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810ListTagsOfResourceRoute,
+    postXAmzTargetDynamoDB20120810ListTagsOfResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810PutItemRoute,
+    postXAmzTargetDynamoDB20120810PutItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810QueryRoute,
+    postXAmzTargetDynamoDB20120810QueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810RestoreTableFromBackupRoute,
+    postXAmzTargetDynamoDB20120810RestoreTableFromBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810RestoreTableToPointInTimeRoute,
+    postXAmzTargetDynamoDB20120810RestoreTableToPointInTimeRouteHandler,
+  )
+  .openapi(postXAmzTargetDynamoDB20120810ScanRoute, postXAmzTargetDynamoDB20120810ScanRouteHandler)
+  .openapi(
+    postXAmzTargetDynamoDB20120810TagResourceRoute,
+    postXAmzTargetDynamoDB20120810TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810TransactGetItemsRoute,
+    postXAmzTargetDynamoDB20120810TransactGetItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810TransactWriteItemsRoute,
+    postXAmzTargetDynamoDB20120810TransactWriteItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UntagResourceRoute,
+    postXAmzTargetDynamoDB20120810UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateContinuousBackupsRoute,
+    postXAmzTargetDynamoDB20120810UpdateContinuousBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateContributorInsightsRoute,
+    postXAmzTargetDynamoDB20120810UpdateContributorInsightsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateGlobalTableRoute,
+    postXAmzTargetDynamoDB20120810UpdateGlobalTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateGlobalTableSettingsRoute,
+    postXAmzTargetDynamoDB20120810UpdateGlobalTableSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateItemRoute,
+    postXAmzTargetDynamoDB20120810UpdateItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateTableRoute,
+    postXAmzTargetDynamoDB20120810UpdateTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateTableReplicaAutoScalingRoute,
+    postXAmzTargetDynamoDB20120810UpdateTableReplicaAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute,
+    postXAmzTargetDynamoDB20120810UpdateTimeToLiveRouteHandler,
+  )
 
 export default app

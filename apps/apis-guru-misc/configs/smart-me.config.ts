@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/smart-me.com/v1/openapi.yaml',
   output: './src/smart-me/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/smart-me/types.ts' },
   client: { output: './src/smart-me/client.ts', baseUrl: '/' },
   rpc: { output: './src/smart-me/rpc.ts', parseResponse: true },

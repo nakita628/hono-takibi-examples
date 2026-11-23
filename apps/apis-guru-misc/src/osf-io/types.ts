@@ -110,7 +110,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -248,7 +248,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { collection_id: string } } & { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -287,7 +287,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { collection_id: string } } & { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -500,7 +500,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -2786,7 +2786,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {

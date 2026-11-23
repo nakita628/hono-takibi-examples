@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchCodeRoute,
   getSearchCommitsRoute,
   getSearchIssuesRoute,
@@ -9,27 +9,34 @@ import {
   getSearchUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchCodeRouteHandler: RouteHandler<typeof getSearchCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchIssuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchRepositoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchCommitsRouteHandler: RouteHandler<typeof getSearchCommitsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchIssuesRouteHandler: RouteHandler<typeof getSearchIssuesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchLabelsRouteHandler: RouteHandler<typeof getSearchLabelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchRepositoriesRouteHandler: RouteHandler<
+  typeof getSearchRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchTopicsRouteHandler: RouteHandler<typeof getSearchTopicsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchUsersRouteHandler: RouteHandler<typeof getSearchUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

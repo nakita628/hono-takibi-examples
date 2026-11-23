@@ -1,51 +1,137 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesHandler,
-  xAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsHandler,
-  xAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceExportEbsVolumeRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceExportEc2InstanceRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceExportEcsServiceRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetEbsVolumeRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetEc2InstanceRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetEc2RecommendationProjectedMetricsHandler,
-  xAmzTargetComputeOptimizerServiceGetEcsServiceRecommendationProjectedMetricsHandler,
-  xAmzTargetComputeOptimizerServiceGetEcsServiceRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesHandler,
-  xAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationHandler,
-  xAmzTargetComputeOptimizerServiceGetEnrollmentStatusHandler,
-  xAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsHandler,
-  xAmzTargetComputeOptimizerServiceGetRecommendationPreferencesHandler,
-  xAmzTargetComputeOptimizerServiceGetRecommendationSummariesHandler,
-  xAmzTargetComputeOptimizerServicePutRecommendationPreferencesHandler,
-  xAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusHandler,
+  postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute,
+  postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute,
+  postXAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceExportEBSVolumeRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceExportEC2InstanceRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceExportECSServiceRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetEBSVolumeRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetEC2InstanceRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetEC2RecommendationProjectedMetricsRoute,
+  postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationProjectedMetricsRoute,
+  postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesRoute,
+  postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationRoute,
+  postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute,
+  postXAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsRoute,
+  postXAmzTargetComputeOptimizerServiceGetRecommendationPreferencesRoute,
+  postXAmzTargetComputeOptimizerServiceGetRecommendationSummariesRoute,
+  postXAmzTargetComputeOptimizerServicePutRecommendationPreferencesRoute,
+  postXAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusRoute,
+} from './routes'
+import {
+  postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRouteHandler,
+  postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceExportEBSVolumeRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceExportEC2InstanceRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceExportECSServiceRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEBSVolumeRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEC2InstanceRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEC2RecommendationProjectedMetricsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationProjectedMetricsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetRecommendationPreferencesRouteHandler,
+  postXAmzTargetComputeOptimizerServiceGetRecommendationSummariesRouteHandler,
+  postXAmzTargetComputeOptimizerServicePutRecommendationPreferencesRouteHandler,
+  postXAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceExportEbsVolumeRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceExportEc2InstanceRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceExportEcsServiceRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEbsVolumeRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEc2InstanceRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEc2RecommendationProjectedMetricsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEcsServiceRecommendationProjectedMetricsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEcsServiceRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEnrollmentStatusHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetRecommendationPreferencesHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceGetRecommendationSummariesHandler)
-  .route('/', xAmzTargetComputeOptimizerServicePutRecommendationPreferencesHandler)
-  .route('/', xAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusHandler)
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute,
+    postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute,
+    postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceExportAutoScalingGroupRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceExportEBSVolumeRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceExportEBSVolumeRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceExportEC2InstanceRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceExportEC2InstanceRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceExportECSServiceRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceExportECSServiceRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceExportLambdaFunctionRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceGetAutoScalingGroupRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEBSVolumeRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceGetEBSVolumeRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEC2InstanceRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceGetEC2InstanceRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEC2RecommendationProjectedMetricsRoute,
+    postXAmzTargetComputeOptimizerServiceGetEC2RecommendationProjectedMetricsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationProjectedMetricsRoute,
+    postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationProjectedMetricsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceGetECSServiceRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesRoute,
+    postXAmzTargetComputeOptimizerServiceGetEffectiveRecommendationPreferencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute,
+    postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationRoute,
+    postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusesForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsRoute,
+    postXAmzTargetComputeOptimizerServiceGetLambdaFunctionRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetRecommendationPreferencesRoute,
+    postXAmzTargetComputeOptimizerServiceGetRecommendationPreferencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceGetRecommendationSummariesRoute,
+    postXAmzTargetComputeOptimizerServiceGetRecommendationSummariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServicePutRecommendationPreferencesRoute,
+    postXAmzTargetComputeOptimizerServicePutRecommendationPreferencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusRoute,
+    postXAmzTargetComputeOptimizerServiceUpdateEnrollmentStatusRouteHandler,
+  )
 
 export default app

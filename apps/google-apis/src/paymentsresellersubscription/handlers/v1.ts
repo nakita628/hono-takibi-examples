@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1NameRoute,
   getV1ParentProductsRoute,
   getV1ParentPromotionsRoute,
@@ -12,36 +12,60 @@ import {
   postV1ParentSubscriptionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameEntitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameExtendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameUndoCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentPromotionsFindEligibleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentSubscriptionsProvisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1NameCancelRouteHandler: RouteHandler<typeof postV1NameCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameEntitleRouteHandler: RouteHandler<typeof postV1NameEntitleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameExtendRouteHandler: RouteHandler<typeof postV1NameExtendRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameUndoCancelRouteHandler: RouteHandler<
+  typeof postV1NameUndoCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentProductsRouteHandler: RouteHandler<
+  typeof getV1ParentProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentPromotionsRouteHandler: RouteHandler<
+  typeof getV1ParentPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentPromotionsFindEligibleRouteHandler: RouteHandler<
+  typeof postV1ParentPromotionsFindEligibleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentSubscriptionsRouteHandler: RouteHandler<
+  typeof postV1ParentSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentSubscriptionsProvisionRouteHandler: RouteHandler<
+  typeof postV1ParentSubscriptionsProvisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

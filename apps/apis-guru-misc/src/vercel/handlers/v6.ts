@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV6DomainsDomainRoute,
   getV6DeploymentsIdFilesFileIdRoute,
   getV6DeploymentsIdFilesRoute,
@@ -7,21 +7,32 @@ import {
   getV6DomainsDomainConfigRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV6DeploymentsRouteHandler: RouteHandler<typeof getV6DeploymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v6Handler = app
-  .openapi(getV6DeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV6DeploymentsIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV6DeploymentsIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV6DomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV6DomainsDomainConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV6DeploymentsIdFilesRouteHandler: RouteHandler<
+  typeof getV6DeploymentsIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV6DeploymentsIdFilesFileIdRouteHandler: RouteHandler<
+  typeof getV6DeploymentsIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV6DomainsDomainRouteHandler: RouteHandler<
+  typeof deleteV6DomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV6DomainsDomainConfigRouteHandler: RouteHandler<
+  typeof getV6DomainsDomainConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

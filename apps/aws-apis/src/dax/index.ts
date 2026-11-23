@@ -1,51 +1,134 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonDaxv3CreateClusterHandler,
-  xAmzTargetAmazonDaxv3CreateParameterGroupHandler,
-  xAmzTargetAmazonDaxv3CreateSubnetGroupHandler,
-  xAmzTargetAmazonDaxv3DecreaseReplicationFactorHandler,
-  xAmzTargetAmazonDaxv3DeleteClusterHandler,
-  xAmzTargetAmazonDaxv3DeleteParameterGroupHandler,
-  xAmzTargetAmazonDaxv3DeleteSubnetGroupHandler,
-  xAmzTargetAmazonDaxv3DescribeClustersHandler,
-  xAmzTargetAmazonDaxv3DescribeDefaultParametersHandler,
-  xAmzTargetAmazonDaxv3DescribeEventsHandler,
-  xAmzTargetAmazonDaxv3DescribeParameterGroupsHandler,
-  xAmzTargetAmazonDaxv3DescribeParametersHandler,
-  xAmzTargetAmazonDaxv3DescribeSubnetGroupsHandler,
-  xAmzTargetAmazonDaxv3IncreaseReplicationFactorHandler,
-  xAmzTargetAmazonDaxv3ListTagsHandler,
-  xAmzTargetAmazonDaxv3RebootNodeHandler,
-  xAmzTargetAmazonDaxv3TagResourceHandler,
-  xAmzTargetAmazonDaxv3UntagResourceHandler,
-  xAmzTargetAmazonDaxv3UpdateClusterHandler,
-  xAmzTargetAmazonDaxv3UpdateParameterGroupHandler,
-  xAmzTargetAmazonDaxv3UpdateSubnetGroupHandler,
+  postXAmzTargetAmazonDAXV3CreateClusterRoute,
+  postXAmzTargetAmazonDAXV3CreateParameterGroupRoute,
+  postXAmzTargetAmazonDAXV3CreateSubnetGroupRoute,
+  postXAmzTargetAmazonDAXV3DecreaseReplicationFactorRoute,
+  postXAmzTargetAmazonDAXV3DeleteClusterRoute,
+  postXAmzTargetAmazonDAXV3DeleteParameterGroupRoute,
+  postXAmzTargetAmazonDAXV3DeleteSubnetGroupRoute,
+  postXAmzTargetAmazonDAXV3DescribeClustersRoute,
+  postXAmzTargetAmazonDAXV3DescribeDefaultParametersRoute,
+  postXAmzTargetAmazonDAXV3DescribeEventsRoute,
+  postXAmzTargetAmazonDAXV3DescribeParameterGroupsRoute,
+  postXAmzTargetAmazonDAXV3DescribeParametersRoute,
+  postXAmzTargetAmazonDAXV3DescribeSubnetGroupsRoute,
+  postXAmzTargetAmazonDAXV3IncreaseReplicationFactorRoute,
+  postXAmzTargetAmazonDAXV3ListTagsRoute,
+  postXAmzTargetAmazonDAXV3RebootNodeRoute,
+  postXAmzTargetAmazonDAXV3TagResourceRoute,
+  postXAmzTargetAmazonDAXV3UntagResourceRoute,
+  postXAmzTargetAmazonDAXV3UpdateClusterRoute,
+  postXAmzTargetAmazonDAXV3UpdateParameterGroupRoute,
+  postXAmzTargetAmazonDAXV3UpdateSubnetGroupRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonDAXV3CreateClusterRouteHandler,
+  postXAmzTargetAmazonDAXV3CreateParameterGroupRouteHandler,
+  postXAmzTargetAmazonDAXV3CreateSubnetGroupRouteHandler,
+  postXAmzTargetAmazonDAXV3DecreaseReplicationFactorRouteHandler,
+  postXAmzTargetAmazonDAXV3DeleteClusterRouteHandler,
+  postXAmzTargetAmazonDAXV3DeleteParameterGroupRouteHandler,
+  postXAmzTargetAmazonDAXV3DeleteSubnetGroupRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeClustersRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeDefaultParametersRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeEventsRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeParameterGroupsRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeParametersRouteHandler,
+  postXAmzTargetAmazonDAXV3DescribeSubnetGroupsRouteHandler,
+  postXAmzTargetAmazonDAXV3IncreaseReplicationFactorRouteHandler,
+  postXAmzTargetAmazonDAXV3ListTagsRouteHandler,
+  postXAmzTargetAmazonDAXV3RebootNodeRouteHandler,
+  postXAmzTargetAmazonDAXV3TagResourceRouteHandler,
+  postXAmzTargetAmazonDAXV3UntagResourceRouteHandler,
+  postXAmzTargetAmazonDAXV3UpdateClusterRouteHandler,
+  postXAmzTargetAmazonDAXV3UpdateParameterGroupRouteHandler,
+  postXAmzTargetAmazonDAXV3UpdateSubnetGroupRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonDaxv3CreateClusterHandler)
-  .route('/', xAmzTargetAmazonDaxv3CreateParameterGroupHandler)
-  .route('/', xAmzTargetAmazonDaxv3CreateSubnetGroupHandler)
-  .route('/', xAmzTargetAmazonDaxv3DecreaseReplicationFactorHandler)
-  .route('/', xAmzTargetAmazonDaxv3DeleteClusterHandler)
-  .route('/', xAmzTargetAmazonDaxv3DeleteParameterGroupHandler)
-  .route('/', xAmzTargetAmazonDaxv3DeleteSubnetGroupHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeClustersHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeDefaultParametersHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeEventsHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeParameterGroupsHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeParametersHandler)
-  .route('/', xAmzTargetAmazonDaxv3DescribeSubnetGroupsHandler)
-  .route('/', xAmzTargetAmazonDaxv3IncreaseReplicationFactorHandler)
-  .route('/', xAmzTargetAmazonDaxv3ListTagsHandler)
-  .route('/', xAmzTargetAmazonDaxv3RebootNodeHandler)
-  .route('/', xAmzTargetAmazonDaxv3TagResourceHandler)
-  .route('/', xAmzTargetAmazonDaxv3UntagResourceHandler)
-  .route('/', xAmzTargetAmazonDaxv3UpdateClusterHandler)
-  .route('/', xAmzTargetAmazonDaxv3UpdateParameterGroupHandler)
-  .route('/', xAmzTargetAmazonDaxv3UpdateSubnetGroupHandler)
+  .openapi(
+    postXAmzTargetAmazonDAXV3CreateClusterRoute,
+    postXAmzTargetAmazonDAXV3CreateClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3CreateParameterGroupRoute,
+    postXAmzTargetAmazonDAXV3CreateParameterGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3CreateSubnetGroupRoute,
+    postXAmzTargetAmazonDAXV3CreateSubnetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DecreaseReplicationFactorRoute,
+    postXAmzTargetAmazonDAXV3DecreaseReplicationFactorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DeleteClusterRoute,
+    postXAmzTargetAmazonDAXV3DeleteClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DeleteParameterGroupRoute,
+    postXAmzTargetAmazonDAXV3DeleteParameterGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DeleteSubnetGroupRoute,
+    postXAmzTargetAmazonDAXV3DeleteSubnetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeClustersRoute,
+    postXAmzTargetAmazonDAXV3DescribeClustersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeDefaultParametersRoute,
+    postXAmzTargetAmazonDAXV3DescribeDefaultParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeEventsRoute,
+    postXAmzTargetAmazonDAXV3DescribeEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeParameterGroupsRoute,
+    postXAmzTargetAmazonDAXV3DescribeParameterGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeParametersRoute,
+    postXAmzTargetAmazonDAXV3DescribeParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3DescribeSubnetGroupsRoute,
+    postXAmzTargetAmazonDAXV3DescribeSubnetGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3IncreaseReplicationFactorRoute,
+    postXAmzTargetAmazonDAXV3IncreaseReplicationFactorRouteHandler,
+  )
+  .openapi(postXAmzTargetAmazonDAXV3ListTagsRoute, postXAmzTargetAmazonDAXV3ListTagsRouteHandler)
+  .openapi(
+    postXAmzTargetAmazonDAXV3RebootNodeRoute,
+    postXAmzTargetAmazonDAXV3RebootNodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3TagResourceRoute,
+    postXAmzTargetAmazonDAXV3TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3UntagResourceRoute,
+    postXAmzTargetAmazonDAXV3UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3UpdateClusterRoute,
+    postXAmzTargetAmazonDAXV3UpdateClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3UpdateParameterGroupRoute,
+    postXAmzTargetAmazonDAXV3UpdateParameterGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDAXV3UpdateSubnetGroupRoute,
+    postXAmzTargetAmazonDAXV3UpdateSubnetGroupRouteHandler,
+  )
 
 export default app

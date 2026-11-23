@@ -1,153 +1,443 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetRekognitionServiceAssociateFacesHandler,
-  xAmzTargetRekognitionServiceCompareFacesHandler,
-  xAmzTargetRekognitionServiceCopyProjectVersionHandler,
-  xAmzTargetRekognitionServiceCreateCollectionHandler,
-  xAmzTargetRekognitionServiceCreateDatasetHandler,
-  xAmzTargetRekognitionServiceCreateFaceLivenessSessionHandler,
-  xAmzTargetRekognitionServiceCreateProjectHandler,
-  xAmzTargetRekognitionServiceCreateProjectVersionHandler,
-  xAmzTargetRekognitionServiceCreateStreamProcessorHandler,
-  xAmzTargetRekognitionServiceCreateUserHandler,
-  xAmzTargetRekognitionServiceDeleteCollectionHandler,
-  xAmzTargetRekognitionServiceDeleteDatasetHandler,
-  xAmzTargetRekognitionServiceDeleteFacesHandler,
-  xAmzTargetRekognitionServiceDeleteProjectHandler,
-  xAmzTargetRekognitionServiceDeleteProjectPolicyHandler,
-  xAmzTargetRekognitionServiceDeleteProjectVersionHandler,
-  xAmzTargetRekognitionServiceDeleteStreamProcessorHandler,
-  xAmzTargetRekognitionServiceDeleteUserHandler,
-  xAmzTargetRekognitionServiceDescribeCollectionHandler,
-  xAmzTargetRekognitionServiceDescribeDatasetHandler,
-  xAmzTargetRekognitionServiceDescribeProjectsHandler,
-  xAmzTargetRekognitionServiceDescribeProjectVersionsHandler,
-  xAmzTargetRekognitionServiceDescribeStreamProcessorHandler,
-  xAmzTargetRekognitionServiceDetectCustomLabelsHandler,
-  xAmzTargetRekognitionServiceDetectFacesHandler,
-  xAmzTargetRekognitionServiceDetectLabelsHandler,
-  xAmzTargetRekognitionServiceDetectModerationLabelsHandler,
-  xAmzTargetRekognitionServiceDetectProtectiveEquipmentHandler,
-  xAmzTargetRekognitionServiceDetectTextHandler,
-  xAmzTargetRekognitionServiceDisassociateFacesHandler,
-  xAmzTargetRekognitionServiceDistributeDatasetEntriesHandler,
-  xAmzTargetRekognitionServiceGetCelebrityInfoHandler,
-  xAmzTargetRekognitionServiceGetCelebrityRecognitionHandler,
-  xAmzTargetRekognitionServiceGetContentModerationHandler,
-  xAmzTargetRekognitionServiceGetFaceDetectionHandler,
-  xAmzTargetRekognitionServiceGetFaceLivenessSessionResultsHandler,
-  xAmzTargetRekognitionServiceGetFaceSearchHandler,
-  xAmzTargetRekognitionServiceGetLabelDetectionHandler,
-  xAmzTargetRekognitionServiceGetPersonTrackingHandler,
-  xAmzTargetRekognitionServiceGetSegmentDetectionHandler,
-  xAmzTargetRekognitionServiceGetTextDetectionHandler,
-  xAmzTargetRekognitionServiceIndexFacesHandler,
-  xAmzTargetRekognitionServiceListCollectionsHandler,
-  xAmzTargetRekognitionServiceListDatasetEntriesHandler,
-  xAmzTargetRekognitionServiceListDatasetLabelsHandler,
-  xAmzTargetRekognitionServiceListFacesHandler,
-  xAmzTargetRekognitionServiceListProjectPoliciesHandler,
-  xAmzTargetRekognitionServiceListStreamProcessorsHandler,
-  xAmzTargetRekognitionServiceListTagsForResourceHandler,
-  xAmzTargetRekognitionServiceListUsersHandler,
-  xAmzTargetRekognitionServicePutProjectPolicyHandler,
-  xAmzTargetRekognitionServiceRecognizeCelebritiesHandler,
-  xAmzTargetRekognitionServiceSearchFacesByImageHandler,
-  xAmzTargetRekognitionServiceSearchFacesHandler,
-  xAmzTargetRekognitionServiceSearchUsersByImageHandler,
-  xAmzTargetRekognitionServiceSearchUsersHandler,
-  xAmzTargetRekognitionServiceStartCelebrityRecognitionHandler,
-  xAmzTargetRekognitionServiceStartContentModerationHandler,
-  xAmzTargetRekognitionServiceStartFaceDetectionHandler,
-  xAmzTargetRekognitionServiceStartFaceSearchHandler,
-  xAmzTargetRekognitionServiceStartLabelDetectionHandler,
-  xAmzTargetRekognitionServiceStartPersonTrackingHandler,
-  xAmzTargetRekognitionServiceStartProjectVersionHandler,
-  xAmzTargetRekognitionServiceStartSegmentDetectionHandler,
-  xAmzTargetRekognitionServiceStartStreamProcessorHandler,
-  xAmzTargetRekognitionServiceStartTextDetectionHandler,
-  xAmzTargetRekognitionServiceStopProjectVersionHandler,
-  xAmzTargetRekognitionServiceStopStreamProcessorHandler,
-  xAmzTargetRekognitionServiceTagResourceHandler,
-  xAmzTargetRekognitionServiceUntagResourceHandler,
-  xAmzTargetRekognitionServiceUpdateDatasetEntriesHandler,
-  xAmzTargetRekognitionServiceUpdateStreamProcessorHandler,
+  postXAmzTargetRekognitionServiceAssociateFacesRoute,
+  postXAmzTargetRekognitionServiceCompareFacesRoute,
+  postXAmzTargetRekognitionServiceCopyProjectVersionRoute,
+  postXAmzTargetRekognitionServiceCreateCollectionRoute,
+  postXAmzTargetRekognitionServiceCreateDatasetRoute,
+  postXAmzTargetRekognitionServiceCreateFaceLivenessSessionRoute,
+  postXAmzTargetRekognitionServiceCreateProjectRoute,
+  postXAmzTargetRekognitionServiceCreateProjectVersionRoute,
+  postXAmzTargetRekognitionServiceCreateStreamProcessorRoute,
+  postXAmzTargetRekognitionServiceCreateUserRoute,
+  postXAmzTargetRekognitionServiceDeleteCollectionRoute,
+  postXAmzTargetRekognitionServiceDeleteDatasetRoute,
+  postXAmzTargetRekognitionServiceDeleteFacesRoute,
+  postXAmzTargetRekognitionServiceDeleteProjectPolicyRoute,
+  postXAmzTargetRekognitionServiceDeleteProjectRoute,
+  postXAmzTargetRekognitionServiceDeleteProjectVersionRoute,
+  postXAmzTargetRekognitionServiceDeleteStreamProcessorRoute,
+  postXAmzTargetRekognitionServiceDeleteUserRoute,
+  postXAmzTargetRekognitionServiceDescribeCollectionRoute,
+  postXAmzTargetRekognitionServiceDescribeDatasetRoute,
+  postXAmzTargetRekognitionServiceDescribeProjectsRoute,
+  postXAmzTargetRekognitionServiceDescribeProjectVersionsRoute,
+  postXAmzTargetRekognitionServiceDescribeStreamProcessorRoute,
+  postXAmzTargetRekognitionServiceDetectCustomLabelsRoute,
+  postXAmzTargetRekognitionServiceDetectFacesRoute,
+  postXAmzTargetRekognitionServiceDetectLabelsRoute,
+  postXAmzTargetRekognitionServiceDetectModerationLabelsRoute,
+  postXAmzTargetRekognitionServiceDetectProtectiveEquipmentRoute,
+  postXAmzTargetRekognitionServiceDetectTextRoute,
+  postXAmzTargetRekognitionServiceDisassociateFacesRoute,
+  postXAmzTargetRekognitionServiceDistributeDatasetEntriesRoute,
+  postXAmzTargetRekognitionServiceGetCelebrityInfoRoute,
+  postXAmzTargetRekognitionServiceGetCelebrityRecognitionRoute,
+  postXAmzTargetRekognitionServiceGetContentModerationRoute,
+  postXAmzTargetRekognitionServiceGetFaceDetectionRoute,
+  postXAmzTargetRekognitionServiceGetFaceLivenessSessionResultsRoute,
+  postXAmzTargetRekognitionServiceGetFaceSearchRoute,
+  postXAmzTargetRekognitionServiceGetLabelDetectionRoute,
+  postXAmzTargetRekognitionServiceGetPersonTrackingRoute,
+  postXAmzTargetRekognitionServiceGetSegmentDetectionRoute,
+  postXAmzTargetRekognitionServiceGetTextDetectionRoute,
+  postXAmzTargetRekognitionServiceIndexFacesRoute,
+  postXAmzTargetRekognitionServiceListCollectionsRoute,
+  postXAmzTargetRekognitionServiceListDatasetEntriesRoute,
+  postXAmzTargetRekognitionServiceListDatasetLabelsRoute,
+  postXAmzTargetRekognitionServiceListFacesRoute,
+  postXAmzTargetRekognitionServiceListProjectPoliciesRoute,
+  postXAmzTargetRekognitionServiceListStreamProcessorsRoute,
+  postXAmzTargetRekognitionServiceListTagsForResourceRoute,
+  postXAmzTargetRekognitionServiceListUsersRoute,
+  postXAmzTargetRekognitionServicePutProjectPolicyRoute,
+  postXAmzTargetRekognitionServiceRecognizeCelebritiesRoute,
+  postXAmzTargetRekognitionServiceSearchFacesByImageRoute,
+  postXAmzTargetRekognitionServiceSearchFacesRoute,
+  postXAmzTargetRekognitionServiceSearchUsersByImageRoute,
+  postXAmzTargetRekognitionServiceSearchUsersRoute,
+  postXAmzTargetRekognitionServiceStartCelebrityRecognitionRoute,
+  postXAmzTargetRekognitionServiceStartContentModerationRoute,
+  postXAmzTargetRekognitionServiceStartFaceDetectionRoute,
+  postXAmzTargetRekognitionServiceStartFaceSearchRoute,
+  postXAmzTargetRekognitionServiceStartLabelDetectionRoute,
+  postXAmzTargetRekognitionServiceStartPersonTrackingRoute,
+  postXAmzTargetRekognitionServiceStartProjectVersionRoute,
+  postXAmzTargetRekognitionServiceStartSegmentDetectionRoute,
+  postXAmzTargetRekognitionServiceStartStreamProcessorRoute,
+  postXAmzTargetRekognitionServiceStartTextDetectionRoute,
+  postXAmzTargetRekognitionServiceStopProjectVersionRoute,
+  postXAmzTargetRekognitionServiceStopStreamProcessorRoute,
+  postXAmzTargetRekognitionServiceTagResourceRoute,
+  postXAmzTargetRekognitionServiceUntagResourceRoute,
+  postXAmzTargetRekognitionServiceUpdateDatasetEntriesRoute,
+  postXAmzTargetRekognitionServiceUpdateStreamProcessorRoute,
+} from './routes'
+import {
+  postXAmzTargetRekognitionServiceAssociateFacesRouteHandler,
+  postXAmzTargetRekognitionServiceCompareFacesRouteHandler,
+  postXAmzTargetRekognitionServiceCopyProjectVersionRouteHandler,
+  postXAmzTargetRekognitionServiceCreateCollectionRouteHandler,
+  postXAmzTargetRekognitionServiceCreateDatasetRouteHandler,
+  postXAmzTargetRekognitionServiceCreateFaceLivenessSessionRouteHandler,
+  postXAmzTargetRekognitionServiceCreateProjectRouteHandler,
+  postXAmzTargetRekognitionServiceCreateProjectVersionRouteHandler,
+  postXAmzTargetRekognitionServiceCreateStreamProcessorRouteHandler,
+  postXAmzTargetRekognitionServiceCreateUserRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteCollectionRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteDatasetRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteFacesRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteProjectPolicyRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteProjectRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteProjectVersionRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteStreamProcessorRouteHandler,
+  postXAmzTargetRekognitionServiceDeleteUserRouteHandler,
+  postXAmzTargetRekognitionServiceDescribeCollectionRouteHandler,
+  postXAmzTargetRekognitionServiceDescribeDatasetRouteHandler,
+  postXAmzTargetRekognitionServiceDescribeProjectsRouteHandler,
+  postXAmzTargetRekognitionServiceDescribeProjectVersionsRouteHandler,
+  postXAmzTargetRekognitionServiceDescribeStreamProcessorRouteHandler,
+  postXAmzTargetRekognitionServiceDetectCustomLabelsRouteHandler,
+  postXAmzTargetRekognitionServiceDetectFacesRouteHandler,
+  postXAmzTargetRekognitionServiceDetectLabelsRouteHandler,
+  postXAmzTargetRekognitionServiceDetectModerationLabelsRouteHandler,
+  postXAmzTargetRekognitionServiceDetectProtectiveEquipmentRouteHandler,
+  postXAmzTargetRekognitionServiceDetectTextRouteHandler,
+  postXAmzTargetRekognitionServiceDisassociateFacesRouteHandler,
+  postXAmzTargetRekognitionServiceDistributeDatasetEntriesRouteHandler,
+  postXAmzTargetRekognitionServiceGetCelebrityInfoRouteHandler,
+  postXAmzTargetRekognitionServiceGetCelebrityRecognitionRouteHandler,
+  postXAmzTargetRekognitionServiceGetContentModerationRouteHandler,
+  postXAmzTargetRekognitionServiceGetFaceDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceGetFaceLivenessSessionResultsRouteHandler,
+  postXAmzTargetRekognitionServiceGetFaceSearchRouteHandler,
+  postXAmzTargetRekognitionServiceGetLabelDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceGetPersonTrackingRouteHandler,
+  postXAmzTargetRekognitionServiceGetSegmentDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceGetTextDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceIndexFacesRouteHandler,
+  postXAmzTargetRekognitionServiceListCollectionsRouteHandler,
+  postXAmzTargetRekognitionServiceListDatasetEntriesRouteHandler,
+  postXAmzTargetRekognitionServiceListDatasetLabelsRouteHandler,
+  postXAmzTargetRekognitionServiceListFacesRouteHandler,
+  postXAmzTargetRekognitionServiceListProjectPoliciesRouteHandler,
+  postXAmzTargetRekognitionServiceListStreamProcessorsRouteHandler,
+  postXAmzTargetRekognitionServiceListTagsForResourceRouteHandler,
+  postXAmzTargetRekognitionServiceListUsersRouteHandler,
+  postXAmzTargetRekognitionServicePutProjectPolicyRouteHandler,
+  postXAmzTargetRekognitionServiceRecognizeCelebritiesRouteHandler,
+  postXAmzTargetRekognitionServiceSearchFacesByImageRouteHandler,
+  postXAmzTargetRekognitionServiceSearchFacesRouteHandler,
+  postXAmzTargetRekognitionServiceSearchUsersByImageRouteHandler,
+  postXAmzTargetRekognitionServiceSearchUsersRouteHandler,
+  postXAmzTargetRekognitionServiceStartCelebrityRecognitionRouteHandler,
+  postXAmzTargetRekognitionServiceStartContentModerationRouteHandler,
+  postXAmzTargetRekognitionServiceStartFaceDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceStartFaceSearchRouteHandler,
+  postXAmzTargetRekognitionServiceStartLabelDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceStartPersonTrackingRouteHandler,
+  postXAmzTargetRekognitionServiceStartProjectVersionRouteHandler,
+  postXAmzTargetRekognitionServiceStartSegmentDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceStartStreamProcessorRouteHandler,
+  postXAmzTargetRekognitionServiceStartTextDetectionRouteHandler,
+  postXAmzTargetRekognitionServiceStopProjectVersionRouteHandler,
+  postXAmzTargetRekognitionServiceStopStreamProcessorRouteHandler,
+  postXAmzTargetRekognitionServiceTagResourceRouteHandler,
+  postXAmzTargetRekognitionServiceUntagResourceRouteHandler,
+  postXAmzTargetRekognitionServiceUpdateDatasetEntriesRouteHandler,
+  postXAmzTargetRekognitionServiceUpdateStreamProcessorRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetRekognitionServiceAssociateFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceCompareFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceCopyProjectVersionHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateCollectionHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateDatasetHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateFaceLivenessSessionHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateProjectHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateProjectVersionHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateStreamProcessorHandler)
-  .route('/', xAmzTargetRekognitionServiceCreateUserHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteCollectionHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteDatasetHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteProjectHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteProjectPolicyHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteProjectVersionHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteStreamProcessorHandler)
-  .route('/', xAmzTargetRekognitionServiceDeleteUserHandler)
-  .route('/', xAmzTargetRekognitionServiceDescribeCollectionHandler)
-  .route('/', xAmzTargetRekognitionServiceDescribeDatasetHandler)
-  .route('/', xAmzTargetRekognitionServiceDescribeProjectVersionsHandler)
-  .route('/', xAmzTargetRekognitionServiceDescribeProjectsHandler)
-  .route('/', xAmzTargetRekognitionServiceDescribeStreamProcessorHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectCustomLabelsHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectLabelsHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectModerationLabelsHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectProtectiveEquipmentHandler)
-  .route('/', xAmzTargetRekognitionServiceDetectTextHandler)
-  .route('/', xAmzTargetRekognitionServiceDisassociateFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceDistributeDatasetEntriesHandler)
-  .route('/', xAmzTargetRekognitionServiceGetCelebrityInfoHandler)
-  .route('/', xAmzTargetRekognitionServiceGetCelebrityRecognitionHandler)
-  .route('/', xAmzTargetRekognitionServiceGetContentModerationHandler)
-  .route('/', xAmzTargetRekognitionServiceGetFaceDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceGetFaceLivenessSessionResultsHandler)
-  .route('/', xAmzTargetRekognitionServiceGetFaceSearchHandler)
-  .route('/', xAmzTargetRekognitionServiceGetLabelDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceGetPersonTrackingHandler)
-  .route('/', xAmzTargetRekognitionServiceGetSegmentDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceGetTextDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceIndexFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceListCollectionsHandler)
-  .route('/', xAmzTargetRekognitionServiceListDatasetEntriesHandler)
-  .route('/', xAmzTargetRekognitionServiceListDatasetLabelsHandler)
-  .route('/', xAmzTargetRekognitionServiceListFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceListProjectPoliciesHandler)
-  .route('/', xAmzTargetRekognitionServiceListStreamProcessorsHandler)
-  .route('/', xAmzTargetRekognitionServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetRekognitionServiceListUsersHandler)
-  .route('/', xAmzTargetRekognitionServicePutProjectPolicyHandler)
-  .route('/', xAmzTargetRekognitionServiceRecognizeCelebritiesHandler)
-  .route('/', xAmzTargetRekognitionServiceSearchFacesHandler)
-  .route('/', xAmzTargetRekognitionServiceSearchFacesByImageHandler)
-  .route('/', xAmzTargetRekognitionServiceSearchUsersHandler)
-  .route('/', xAmzTargetRekognitionServiceSearchUsersByImageHandler)
-  .route('/', xAmzTargetRekognitionServiceStartCelebrityRecognitionHandler)
-  .route('/', xAmzTargetRekognitionServiceStartContentModerationHandler)
-  .route('/', xAmzTargetRekognitionServiceStartFaceDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceStartFaceSearchHandler)
-  .route('/', xAmzTargetRekognitionServiceStartLabelDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceStartPersonTrackingHandler)
-  .route('/', xAmzTargetRekognitionServiceStartProjectVersionHandler)
-  .route('/', xAmzTargetRekognitionServiceStartSegmentDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceStartStreamProcessorHandler)
-  .route('/', xAmzTargetRekognitionServiceStartTextDetectionHandler)
-  .route('/', xAmzTargetRekognitionServiceStopProjectVersionHandler)
-  .route('/', xAmzTargetRekognitionServiceStopStreamProcessorHandler)
-  .route('/', xAmzTargetRekognitionServiceTagResourceHandler)
-  .route('/', xAmzTargetRekognitionServiceUntagResourceHandler)
-  .route('/', xAmzTargetRekognitionServiceUpdateDatasetEntriesHandler)
-  .route('/', xAmzTargetRekognitionServiceUpdateStreamProcessorHandler)
+  .openapi(
+    postXAmzTargetRekognitionServiceAssociateFacesRoute,
+    postXAmzTargetRekognitionServiceAssociateFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCompareFacesRoute,
+    postXAmzTargetRekognitionServiceCompareFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCopyProjectVersionRoute,
+    postXAmzTargetRekognitionServiceCopyProjectVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateCollectionRoute,
+    postXAmzTargetRekognitionServiceCreateCollectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateDatasetRoute,
+    postXAmzTargetRekognitionServiceCreateDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateFaceLivenessSessionRoute,
+    postXAmzTargetRekognitionServiceCreateFaceLivenessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateProjectRoute,
+    postXAmzTargetRekognitionServiceCreateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateProjectVersionRoute,
+    postXAmzTargetRekognitionServiceCreateProjectVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceCreateStreamProcessorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceCreateUserRoute,
+    postXAmzTargetRekognitionServiceCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteCollectionRoute,
+    postXAmzTargetRekognitionServiceDeleteCollectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteDatasetRoute,
+    postXAmzTargetRekognitionServiceDeleteDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteFacesRoute,
+    postXAmzTargetRekognitionServiceDeleteFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteProjectRoute,
+    postXAmzTargetRekognitionServiceDeleteProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteProjectPolicyRoute,
+    postXAmzTargetRekognitionServiceDeleteProjectPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteProjectVersionRoute,
+    postXAmzTargetRekognitionServiceDeleteProjectVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceDeleteStreamProcessorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDeleteUserRoute,
+    postXAmzTargetRekognitionServiceDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDescribeCollectionRoute,
+    postXAmzTargetRekognitionServiceDescribeCollectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDescribeDatasetRoute,
+    postXAmzTargetRekognitionServiceDescribeDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDescribeProjectVersionsRoute,
+    postXAmzTargetRekognitionServiceDescribeProjectVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDescribeProjectsRoute,
+    postXAmzTargetRekognitionServiceDescribeProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDescribeStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceDescribeStreamProcessorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectCustomLabelsRoute,
+    postXAmzTargetRekognitionServiceDetectCustomLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectFacesRoute,
+    postXAmzTargetRekognitionServiceDetectFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectLabelsRoute,
+    postXAmzTargetRekognitionServiceDetectLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectModerationLabelsRoute,
+    postXAmzTargetRekognitionServiceDetectModerationLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectProtectiveEquipmentRoute,
+    postXAmzTargetRekognitionServiceDetectProtectiveEquipmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDetectTextRoute,
+    postXAmzTargetRekognitionServiceDetectTextRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDisassociateFacesRoute,
+    postXAmzTargetRekognitionServiceDisassociateFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceDistributeDatasetEntriesRoute,
+    postXAmzTargetRekognitionServiceDistributeDatasetEntriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetCelebrityInfoRoute,
+    postXAmzTargetRekognitionServiceGetCelebrityInfoRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetCelebrityRecognitionRoute,
+    postXAmzTargetRekognitionServiceGetCelebrityRecognitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetContentModerationRoute,
+    postXAmzTargetRekognitionServiceGetContentModerationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetFaceDetectionRoute,
+    postXAmzTargetRekognitionServiceGetFaceDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetFaceLivenessSessionResultsRoute,
+    postXAmzTargetRekognitionServiceGetFaceLivenessSessionResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetFaceSearchRoute,
+    postXAmzTargetRekognitionServiceGetFaceSearchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetLabelDetectionRoute,
+    postXAmzTargetRekognitionServiceGetLabelDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetPersonTrackingRoute,
+    postXAmzTargetRekognitionServiceGetPersonTrackingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetSegmentDetectionRoute,
+    postXAmzTargetRekognitionServiceGetSegmentDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceGetTextDetectionRoute,
+    postXAmzTargetRekognitionServiceGetTextDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceIndexFacesRoute,
+    postXAmzTargetRekognitionServiceIndexFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListCollectionsRoute,
+    postXAmzTargetRekognitionServiceListCollectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListDatasetEntriesRoute,
+    postXAmzTargetRekognitionServiceListDatasetEntriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListDatasetLabelsRoute,
+    postXAmzTargetRekognitionServiceListDatasetLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListFacesRoute,
+    postXAmzTargetRekognitionServiceListFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListProjectPoliciesRoute,
+    postXAmzTargetRekognitionServiceListProjectPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListStreamProcessorsRoute,
+    postXAmzTargetRekognitionServiceListStreamProcessorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListTagsForResourceRoute,
+    postXAmzTargetRekognitionServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceListUsersRoute,
+    postXAmzTargetRekognitionServiceListUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServicePutProjectPolicyRoute,
+    postXAmzTargetRekognitionServicePutProjectPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceRecognizeCelebritiesRoute,
+    postXAmzTargetRekognitionServiceRecognizeCelebritiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceSearchFacesRoute,
+    postXAmzTargetRekognitionServiceSearchFacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceSearchFacesByImageRoute,
+    postXAmzTargetRekognitionServiceSearchFacesByImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceSearchUsersRoute,
+    postXAmzTargetRekognitionServiceSearchUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceSearchUsersByImageRoute,
+    postXAmzTargetRekognitionServiceSearchUsersByImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartCelebrityRecognitionRoute,
+    postXAmzTargetRekognitionServiceStartCelebrityRecognitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartContentModerationRoute,
+    postXAmzTargetRekognitionServiceStartContentModerationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartFaceDetectionRoute,
+    postXAmzTargetRekognitionServiceStartFaceDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartFaceSearchRoute,
+    postXAmzTargetRekognitionServiceStartFaceSearchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartLabelDetectionRoute,
+    postXAmzTargetRekognitionServiceStartLabelDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartPersonTrackingRoute,
+    postXAmzTargetRekognitionServiceStartPersonTrackingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartProjectVersionRoute,
+    postXAmzTargetRekognitionServiceStartProjectVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartSegmentDetectionRoute,
+    postXAmzTargetRekognitionServiceStartSegmentDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceStartStreamProcessorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStartTextDetectionRoute,
+    postXAmzTargetRekognitionServiceStartTextDetectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStopProjectVersionRoute,
+    postXAmzTargetRekognitionServiceStopProjectVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceStopStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceStopStreamProcessorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceTagResourceRoute,
+    postXAmzTargetRekognitionServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceUntagResourceRoute,
+    postXAmzTargetRekognitionServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceUpdateDatasetEntriesRoute,
+    postXAmzTargetRekognitionServiceUpdateDatasetEntriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRekognitionServiceUpdateStreamProcessorRoute,
+    postXAmzTargetRekognitionServiceUpdateStreamProcessorRouteHandler,
+  )
 
 export default app

@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  batchExecuteHandler,
-  beginTransactionHandler,
-  commitTransactionHandler,
-  executeHandler,
-  executeSqlHandler,
-  rollbackTransactionHandler,
+  postBatchExecuteRoute,
+  postBeginTransactionRoute,
+  postCommitTransactionRoute,
+  postExecuteRoute,
+  postExecuteSqlRoute,
+  postRollbackTransactionRoute,
+} from './routes'
+import {
+  postBatchExecuteRouteHandler,
+  postBeginTransactionRouteHandler,
+  postCommitTransactionRouteHandler,
+  postExecuteRouteHandler,
+  postExecuteSqlRouteHandler,
+  postRollbackTransactionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', batchExecuteHandler)
-  .route('/', beginTransactionHandler)
-  .route('/', commitTransactionHandler)
-  .route('/', executeSqlHandler)
-  .route('/', executeHandler)
-  .route('/', rollbackTransactionHandler)
+  .openapi(postBatchExecuteRoute, postBatchExecuteRouteHandler)
+  .openapi(postBeginTransactionRoute, postBeginTransactionRouteHandler)
+  .openapi(postCommitTransactionRoute, postCommitTransactionRouteHandler)
+  .openapi(postExecuteSqlRoute, postExecuteSqlRouteHandler)
+  .openapi(postExecuteRoute, postExecuteRouteHandler)
+  .openapi(postRollbackTransactionRoute, postRollbackTransactionRouteHandler)
 
 export default app

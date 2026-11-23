@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute,
   deleteV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute,
   deleteV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute,
@@ -47,153 +47,270 @@ import {
   postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1betaAppsRouteHandler: RouteHandler<typeof postV1betaAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(postV1betaAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdAuthorizedCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAppsAppsIdAuthorizedCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdAuthorizedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdDomainMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAppsAppsIdDomainMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdFirewallIngressRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAppsAppsIdFirewallIngressRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAppsAppsIdFirewallIngressRulesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdLocationsLocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdOperationsOperationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAppsAppsIdServicesServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdServicesServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdServicesServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdServicesServicesIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAppsAppsIdServicesServicesIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdDebugRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1betaAppsAppsIdRepairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaProjectsProjectsIdLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaProjectsProjectsIdLocationsLocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRepairRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1betaProjectsProjectsIdLocationsLocationsIdOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaProjectsProjectsIdLocationsLocationsIdOperationsOperationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1betaAppsAppsIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdAuthorizedCertificatesRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdAuthorizedCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdAuthorizedCertificatesRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdAuthorizedCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdAuthorizedCertificatesAuthorizedCertificatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdAuthorizedDomainsRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdAuthorizedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdDomainMappingsRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdDomainMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdDomainMappingsRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdDomainMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdDomainMappingsDomainMappingsIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdDomainMappingsDomainMappingsIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdDomainMappingsDomainMappingsIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdDomainMappingsDomainMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdFirewallIngressRulesRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdFirewallIngressRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdFirewallIngressRulesRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdFirewallIngressRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdFirewallIngressRulesIngressRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdFirewallIngressRulesBatchUpdateRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdFirewallIngressRulesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdLocationsRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdLocationsLocationsIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdLocationsLocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdOperationsRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdOperationsOperationsIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdOperationsOperationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdServicesServicesIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdServicesServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesServicesIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdServicesServicesIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdServicesServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesServicesIdVersionsRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesServicesIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdServicesServicesIdVersionsRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdServicesServicesIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRouteHandler: RouteHandler<
+  typeof patchV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRouteHandler: RouteHandler<
+  typeof deleteV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRouteHandler: RouteHandler<
+  typeof getV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdDebugRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdServicesServicesIdVersionsVersionsIdInstancesInstancesIdDebugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAppsAppsIdRepairRouteHandler: RouteHandler<
+  typeof postV1betaAppsAppsIdRepairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaProjectsProjectsIdLocationsRouteHandler: RouteHandler<
+  typeof getV1betaProjectsProjectsIdLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaProjectsProjectsIdLocationsLocationsIdRouteHandler: RouteHandler<
+  typeof getV1betaProjectsProjectsIdLocationsLocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsRouteHandler: RouteHandler<
+  typeof postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRouteHandler: RouteHandler<
+  typeof getV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRepairRouteHandler: RouteHandler<
+  typeof postV1betaProjectsProjectsIdLocationsLocationsIdApplicationsApplicationsIdRepairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaProjectsProjectsIdLocationsLocationsIdOperationsRouteHandler: RouteHandler<
+  typeof getV1betaProjectsProjectsIdLocationsLocationsIdOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaProjectsProjectsIdLocationsLocationsIdOperationsOperationsIdRouteHandler: RouteHandler<
+  typeof getV1betaProjectsProjectsIdLocationsLocationsIdOperationsOperationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

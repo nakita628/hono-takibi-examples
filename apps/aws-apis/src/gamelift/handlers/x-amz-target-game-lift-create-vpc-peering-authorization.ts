@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGameLiftCreateVpcPeeringAuthorizationHandler = app.openapi(
-  postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRouteHandler: RouteHandler<
+  typeof postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

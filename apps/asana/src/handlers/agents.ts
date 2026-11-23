@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAgentsAgentGidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAgentsAgentGidRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const agentsHandler = app.openapi(getAgentsAgentGidRoute, (c) => {
+export const getAgentsAgentGidRouteHandler: RouteHandler<typeof getAgentsAgentGidRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

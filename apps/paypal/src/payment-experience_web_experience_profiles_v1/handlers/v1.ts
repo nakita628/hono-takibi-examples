@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1PaymentExperienceWebProfilesIdRoute,
   getV1PaymentExperienceWebProfilesIdRoute,
   getV1PaymentExperienceWebProfilesRoute,
@@ -8,24 +8,38 @@ import {
   putV1PaymentExperienceWebProfilesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1PaymentExperienceWebProfilesRouteHandler: RouteHandler<
+  typeof postV1PaymentExperienceWebProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1PaymentExperienceWebProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentExperienceWebProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1PaymentExperienceWebProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1PaymentExperienceWebProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentExperienceWebProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1PaymentExperienceWebProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1PaymentExperienceWebProfilesRouteHandler: RouteHandler<
+  typeof getV1PaymentExperienceWebProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1PaymentExperienceWebProfilesIdRouteHandler: RouteHandler<
+  typeof putV1PaymentExperienceWebProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1PaymentExperienceWebProfilesIdRouteHandler: RouteHandler<
+  typeof patchV1PaymentExperienceWebProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentExperienceWebProfilesIdRouteHandler: RouteHandler<
+  typeof getV1PaymentExperienceWebProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1PaymentExperienceWebProfilesIdRouteHandler: RouteHandler<
+  typeof deleteV1PaymentExperienceWebProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

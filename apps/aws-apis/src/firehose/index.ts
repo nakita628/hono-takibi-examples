@@ -1,33 +1,83 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetFirehose20150804CreateDeliveryStreamHandler,
-  xAmzTargetFirehose20150804DeleteDeliveryStreamHandler,
-  xAmzTargetFirehose20150804DescribeDeliveryStreamHandler,
-  xAmzTargetFirehose20150804ListDeliveryStreamsHandler,
-  xAmzTargetFirehose20150804ListTagsForDeliveryStreamHandler,
-  xAmzTargetFirehose20150804PutRecordBatchHandler,
-  xAmzTargetFirehose20150804PutRecordHandler,
-  xAmzTargetFirehose20150804StartDeliveryStreamEncryptionHandler,
-  xAmzTargetFirehose20150804StopDeliveryStreamEncryptionHandler,
-  xAmzTargetFirehose20150804TagDeliveryStreamHandler,
-  xAmzTargetFirehose20150804UntagDeliveryStreamHandler,
-  xAmzTargetFirehose20150804UpdateDestinationHandler,
+  postXAmzTargetFirehose20150804CreateDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804DeleteDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804DescribeDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804ListDeliveryStreamsRoute,
+  postXAmzTargetFirehose20150804ListTagsForDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804PutRecordBatchRoute,
+  postXAmzTargetFirehose20150804PutRecordRoute,
+  postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRoute,
+  postXAmzTargetFirehose20150804StopDeliveryStreamEncryptionRoute,
+  postXAmzTargetFirehose20150804TagDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804UntagDeliveryStreamRoute,
+  postXAmzTargetFirehose20150804UpdateDestinationRoute,
+} from './routes'
+import {
+  postXAmzTargetFirehose20150804CreateDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804DeleteDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804DescribeDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804ListDeliveryStreamsRouteHandler,
+  postXAmzTargetFirehose20150804ListTagsForDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804PutRecordBatchRouteHandler,
+  postXAmzTargetFirehose20150804PutRecordRouteHandler,
+  postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRouteHandler,
+  postXAmzTargetFirehose20150804StopDeliveryStreamEncryptionRouteHandler,
+  postXAmzTargetFirehose20150804TagDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804UntagDeliveryStreamRouteHandler,
+  postXAmzTargetFirehose20150804UpdateDestinationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetFirehose20150804CreateDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804DeleteDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804DescribeDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804ListDeliveryStreamsHandler)
-  .route('/', xAmzTargetFirehose20150804ListTagsForDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804PutRecordHandler)
-  .route('/', xAmzTargetFirehose20150804PutRecordBatchHandler)
-  .route('/', xAmzTargetFirehose20150804StartDeliveryStreamEncryptionHandler)
-  .route('/', xAmzTargetFirehose20150804StopDeliveryStreamEncryptionHandler)
-  .route('/', xAmzTargetFirehose20150804TagDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804UntagDeliveryStreamHandler)
-  .route('/', xAmzTargetFirehose20150804UpdateDestinationHandler)
+  .openapi(
+    postXAmzTargetFirehose20150804CreateDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804CreateDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804DeleteDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804DeleteDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804DescribeDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804DescribeDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804ListDeliveryStreamsRoute,
+    postXAmzTargetFirehose20150804ListDeliveryStreamsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804ListTagsForDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804ListTagsForDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804PutRecordRoute,
+    postXAmzTargetFirehose20150804PutRecordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804PutRecordBatchRoute,
+    postXAmzTargetFirehose20150804PutRecordBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRoute,
+    postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804StopDeliveryStreamEncryptionRoute,
+    postXAmzTargetFirehose20150804StopDeliveryStreamEncryptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804TagDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804TagDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804UntagDeliveryStreamRoute,
+    postXAmzTargetFirehose20150804UntagDeliveryStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFirehose20150804UpdateDestinationRoute,
+    postXAmzTargetFirehose20150804UpdateDestinationRouteHandler,
+  )
 
 export default app

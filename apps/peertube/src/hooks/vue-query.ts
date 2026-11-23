@@ -566,20 +566,24 @@ export function useDownloadVideosGenerateVideoIdOrUUID<
 }
 
 export function getFeedsVideoCommentsFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>
+  >,
 ) {
-  return ['feeds', '/feeds/video-comments.:format', toValue(args)] as const
+  return ['feeds', '/feeds/video-comments.{format}', toValue(args)] as const
 }
 
 export function getFeedsVideoCommentsFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>
+  >,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getFeedsVideoCommentsFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.feeds['video-comments.:format'].$get(toValue(args), {
+        client.feeds['video-comments.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -592,13 +596,15 @@ export function useFeedsVideoCommentsFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>
+  >,
   options?: {
     query?: Omit<
       Extract<
@@ -606,7 +612,7 @@ export function useFeedsVideoCommentsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
               >
             >
           >,
@@ -615,7 +621,7 @@ export function useFeedsVideoCommentsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
               >
             >
           >,
@@ -634,7 +640,7 @@ export function useFeedsVideoCommentsFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
         >
       >
     >,
@@ -647,7 +653,7 @@ export function useFeedsVideoCommentsFormat<
       queryKey: computed(() => getFeedsVideoCommentsFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.feeds['video-comments.:format'].$get(toValue(args), {
+          client.feeds['video-comments.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -659,20 +665,20 @@ export function useFeedsVideoCommentsFormat<
 }
 
 export function getFeedsVideosFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>>,
 ) {
-  return ['feeds', '/feeds/videos.:format', toValue(args)] as const
+  return ['feeds', '/feeds/videos.{format}', toValue(args)] as const
 }
 
 export function getFeedsVideosFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getFeedsVideosFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.feeds['videos.:format'].$get(toValue(args), {
+        client.feeds['videos.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -684,12 +690,12 @@ export function getFeedsVideosFormatQueryOptions(
 export function useFeedsVideosFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -697,7 +703,7 @@ export function useFeedsVideosFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
               >
             >
           >,
@@ -706,7 +712,7 @@ export function useFeedsVideosFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
               >
             >
           >,
@@ -724,7 +730,7 @@ export function useFeedsVideosFormat<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>>
       >
     >,
     TError,
@@ -736,7 +742,7 @@ export function useFeedsVideosFormat<
       queryKey: computed(() => getFeedsVideosFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.feeds['videos.:format'].$get(toValue(args), {
+          client.feeds['videos.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -748,20 +754,20 @@ export function useFeedsVideosFormat<
 }
 
 export function getFeedsSubscriptionsFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>>,
 ) {
-  return ['feeds', '/feeds/subscriptions.:format', toValue(args)] as const
+  return ['feeds', '/feeds/subscriptions.{format}', toValue(args)] as const
 }
 
 export function getFeedsSubscriptionsFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getFeedsSubscriptionsFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.feeds['subscriptions.:format'].$get(toValue(args), {
+        client.feeds['subscriptions.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -774,13 +780,13 @@ export function useFeedsSubscriptionsFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -788,7 +794,7 @@ export function useFeedsSubscriptionsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
               >
             >
           >,
@@ -797,7 +803,7 @@ export function useFeedsSubscriptionsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
               >
             >
           >,
@@ -816,7 +822,7 @@ export function useFeedsSubscriptionsFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
         >
       >
     >,
@@ -829,7 +835,7 @@ export function useFeedsSubscriptionsFormat<
       queryKey: computed(() => getFeedsSubscriptionsFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.feeds['subscriptions.:format'].$get(toValue(args), {
+          client.feeds['subscriptions.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

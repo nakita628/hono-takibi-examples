@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteModerationBansRoute,
   deleteModerationBlockedTermsRoute,
   deleteModerationChatRoute,
@@ -24,72 +24,134 @@ import {
   putModerationShieldModeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postModerationEnforcementsStatusRouteHandler: RouteHandler<
+  typeof postModerationEnforcementsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moderationHandler = app
-  .openapi(postModerationEnforcementsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationAutomodMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationAutomodSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putModerationAutomodSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationBannedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationBansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModerationBansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationUnbanRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModerationUnbanRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationBlockedTermsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationBlockedTermsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModerationBlockedTermsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModerationChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModerationModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putModerationShieldModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationShieldModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationWarningsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationSuspiciousUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModerationSuspiciousUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postModerationAutomodMessageRouteHandler: RouteHandler<
+  typeof postModerationAutomodMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationAutomodSettingsRouteHandler: RouteHandler<
+  typeof getModerationAutomodSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putModerationAutomodSettingsRouteHandler: RouteHandler<
+  typeof putModerationAutomodSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationBannedRouteHandler: RouteHandler<
+  typeof getModerationBannedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationBansRouteHandler: RouteHandler<typeof postModerationBansRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModerationBansRouteHandler: RouteHandler<
+  typeof deleteModerationBansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationUnbanRequestsRouteHandler: RouteHandler<
+  typeof getModerationUnbanRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModerationUnbanRequestsRouteHandler: RouteHandler<
+  typeof patchModerationUnbanRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationBlockedTermsRouteHandler: RouteHandler<
+  typeof getModerationBlockedTermsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationBlockedTermsRouteHandler: RouteHandler<
+  typeof postModerationBlockedTermsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModerationBlockedTermsRouteHandler: RouteHandler<
+  typeof deleteModerationBlockedTermsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModerationChatRouteHandler: RouteHandler<
+  typeof deleteModerationChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationChannelsRouteHandler: RouteHandler<
+  typeof getModerationChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationModeratorsRouteHandler: RouteHandler<
+  typeof getModerationModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationModeratorsRouteHandler: RouteHandler<
+  typeof postModerationModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModerationModeratorsRouteHandler: RouteHandler<
+  typeof deleteModerationModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putModerationShieldModeRouteHandler: RouteHandler<
+  typeof putModerationShieldModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationShieldModeRouteHandler: RouteHandler<
+  typeof getModerationShieldModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationWarningsRouteHandler: RouteHandler<
+  typeof postModerationWarningsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationSuspiciousUsersRouteHandler: RouteHandler<
+  typeof postModerationSuspiciousUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModerationSuspiciousUsersRouteHandler: RouteHandler<
+  typeof deleteModerationSuspiciousUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

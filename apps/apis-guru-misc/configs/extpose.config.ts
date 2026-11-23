@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/extpose.com/1.0.0/openapi.yaml',
   output: './src/extpose/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/extpose/types.ts' },
   client: { output: './src/extpose/client.ts', baseUrl: '/' },
   rpc: { output: './src/extpose/rpc.ts', parseResponse: true },

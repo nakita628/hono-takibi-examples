@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAuthnJwtServiceIdAccountAuthenticateRoute,
   postAuthnJwtServiceIdAccountIdAuthenticateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthnJwtServiceIdAccountAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthnJwtServiceIdAccountAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authnJwtHandler = app
-  .openapi(postAuthnJwtServiceIdAccountAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthnJwtServiceIdAccountIdAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthnJwtServiceIdAccountIdAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthnJwtServiceIdAccountIdAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

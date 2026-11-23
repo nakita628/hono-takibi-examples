@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTransformOutputRoute, postTransformOutputRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTransformOutputRoute, postTransformOutputRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTransformOutputRouteHandler: RouteHandler<typeof getTransformOutputRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const transformOutputHandler = app
-  .openapi(getTransformOutputRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformOutputRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTransformOutputRouteHandler: RouteHandler<
+  typeof postTransformOutputRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOauthDelegationsRoute,
   getOauthDelegationsRevocationRequestsStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteOauthDelegationsRouteHandler: RouteHandler<
+  typeof deleteOauthDelegationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauthDelegationsHandler = app
-  .openapi(deleteOauthDelegationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauthDelegationsRevocationRequestsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOauthDelegationsRevocationRequestsStatusRouteHandler: RouteHandler<
+  typeof getOauthDelegationsRevocationRequestsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

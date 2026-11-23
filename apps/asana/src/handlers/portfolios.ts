@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePortfoliosPortfolioGidRoute,
   getPortfoliosPortfolioGidCustomFieldSettingsRoute,
   getPortfoliosPortfolioGidItemsRoute,
@@ -18,54 +18,94 @@ import {
   putPortfoliosPortfolioGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPortfoliosPortfolioGidCustomFieldSettingsRouteHandler: RouteHandler<
+  typeof getPortfoliosPortfolioGidCustomFieldSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const portfoliosHandler = app
-  .openapi(getPortfoliosPortfolioGidCustomFieldSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortfoliosPortfolioGidPortfolioMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortfoliosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortfoliosPortfolioGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPortfoliosPortfolioGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePortfoliosPortfolioGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortfoliosPortfolioGidItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidAddItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidRemoveItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidAddCustomFieldSettingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidRemoveCustomFieldSettingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidAddMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidRemoveMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortfoliosPortfolioGidDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortfoliosPortfolioGidProjectPortfolioSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPortfoliosPortfolioGidPortfolioMembershipsRouteHandler: RouteHandler<
+  typeof getPortfoliosPortfolioGidPortfolioMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortfoliosRouteHandler: RouteHandler<typeof getPortfoliosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosRouteHandler: RouteHandler<typeof postPortfoliosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortfoliosPortfolioGidRouteHandler: RouteHandler<
+  typeof getPortfoliosPortfolioGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPortfoliosPortfolioGidRouteHandler: RouteHandler<
+  typeof putPortfoliosPortfolioGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePortfoliosPortfolioGidRouteHandler: RouteHandler<
+  typeof deletePortfoliosPortfolioGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortfoliosPortfolioGidItemsRouteHandler: RouteHandler<
+  typeof getPortfoliosPortfolioGidItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidAddItemRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidAddItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidRemoveItemRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidRemoveItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidAddCustomFieldSettingRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidAddCustomFieldSettingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidRemoveCustomFieldSettingRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidRemoveCustomFieldSettingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidAddMembersRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidAddMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidRemoveMembersRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidRemoveMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortfoliosPortfolioGidDuplicateRouteHandler: RouteHandler<
+  typeof postPortfoliosPortfolioGidDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortfoliosPortfolioGidProjectPortfolioSettingsRouteHandler: RouteHandler<
+  typeof getPortfoliosPortfolioGidProjectPortfolioSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

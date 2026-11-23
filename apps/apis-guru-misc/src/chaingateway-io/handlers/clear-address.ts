@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postClearAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postClearAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const clearAddressHandler = app.openapi(postClearAddressRoute, (c) => {
+export const postClearAddressRouteHandler: RouteHandler<typeof postClearAddressRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

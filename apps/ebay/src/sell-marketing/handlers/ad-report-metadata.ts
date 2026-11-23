@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdReportMetadataReportTypeRoute, getAdReportMetadataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdReportMetadataReportTypeRoute, getAdReportMetadataRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdReportMetadataRouteHandler: RouteHandler<
+  typeof getAdReportMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adReportMetadataHandler = app
-  .openapi(getAdReportMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdReportMetadataReportTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdReportMetadataReportTypeRouteHandler: RouteHandler<
+  typeof getAdReportMetadataReportTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

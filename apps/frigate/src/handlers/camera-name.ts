@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCameraNameRegionGridRoute,
   getCameraNameGridJpgRoute,
   getCameraNameLabelBestJpgRoute,
@@ -22,66 +22,120 @@ import {
   postCameraNameSearchMotionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCameraNameRouteHandler: RouteHandler<typeof getCameraNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cameraNameHandler = app
-  .openapi(getCameraNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNamePtzInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameLatestExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameRecordingsFrameTimeSnapshotFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCameraNamePlusFrameTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameStartStartTsEndEndTsClipMp4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameGridJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCameraNameRegionGridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameStartStartTsEndEndTsPreviewGifRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameStartStartTsEndEndTsPreviewMp4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameLabelThumbnailJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameLabelBestJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameLabelClipMp4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameLabelSnapshotJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCameraNameSearchMotionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameSearchMotionJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCameraNameSearchMotionJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameRecordingsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameRecordingsCoverageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCameraNameRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCameraNamePtzInfoRouteHandler: RouteHandler<
+  typeof getCameraNamePtzInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameLatestExtensionRouteHandler: RouteHandler<
+  typeof getCameraNameLatestExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameRecordingsFrameTimeSnapshotFormatRouteHandler: RouteHandler<
+  typeof getCameraNameRecordingsFrameTimeSnapshotFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCameraNamePlusFrameTimeRouteHandler: RouteHandler<
+  typeof postCameraNamePlusFrameTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameStartStartTsEndEndTsClipMp4RouteHandler: RouteHandler<
+  typeof getCameraNameStartStartTsEndEndTsClipMp4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameGridJpgRouteHandler: RouteHandler<
+  typeof getCameraNameGridJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCameraNameRegionGridRouteHandler: RouteHandler<
+  typeof deleteCameraNameRegionGridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameStartStartTsEndEndTsPreviewGifRouteHandler: RouteHandler<
+  typeof getCameraNameStartStartTsEndEndTsPreviewGifRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameStartStartTsEndEndTsPreviewMp4RouteHandler: RouteHandler<
+  typeof getCameraNameStartStartTsEndEndTsPreviewMp4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameLabelThumbnailJpgRouteHandler: RouteHandler<
+  typeof getCameraNameLabelThumbnailJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameLabelBestJpgRouteHandler: RouteHandler<
+  typeof getCameraNameLabelBestJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameLabelClipMp4RouteHandler: RouteHandler<
+  typeof getCameraNameLabelClipMp4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameLabelSnapshotJpgRouteHandler: RouteHandler<
+  typeof getCameraNameLabelSnapshotJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCameraNameSearchMotionRouteHandler: RouteHandler<
+  typeof postCameraNameSearchMotionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameSearchMotionJobIdRouteHandler: RouteHandler<
+  typeof getCameraNameSearchMotionJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCameraNameSearchMotionJobIdCancelRouteHandler: RouteHandler<
+  typeof postCameraNameSearchMotionJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameRecordingsSummaryRouteHandler: RouteHandler<
+  typeof getCameraNameRecordingsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameRecordingsCoverageRouteHandler: RouteHandler<
+  typeof getCameraNameRecordingsCoverageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCameraNameRecordingsRouteHandler: RouteHandler<
+  typeof getCameraNameRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

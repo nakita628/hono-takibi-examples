@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConversationsCommunityConvIdParticipantsRoute,
   deleteConversationsConvIdArchiveRoute,
   deleteConversationsConvIdFavoriteRoute,
@@ -49,147 +49,284 @@ import {
   putConversationsGroupConvIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConversationsRouteHandler: RouteHandler<typeof getConversationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const conversationsHandler = app
-  .openapi(getConversationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsByIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsCommunityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsCommunityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConversationsCommunityConvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsCommunityConvIdJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsCommunityConvIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsCommunityConvIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConversationdetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsDirectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsDirectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsFavoriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConversationsGroupConvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsGroupConvIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsGroupConvIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsLabelLabelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsMessagesFlagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsMessagesItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsModerateConvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsResolveinvitetokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsUnmoderateConvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdConversationdetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdFavoriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdFavoriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdLabelLabelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdMessagesFlagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdMessagesItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdMessagesItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConversationsConvIdMessagesItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdMessagesItemIdFlagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdMessagesItemIdFlagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdMessagesItemIdLikeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdMessagesItemIdLikeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsConvIdPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConversationsConvIdPinsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsConvIdPinsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConversationsByIdsRouteHandler: RouteHandler<
+  typeof getConversationsByIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsCommunityRouteHandler: RouteHandler<
+  typeof getConversationsCommunityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsCommunityRouteHandler: RouteHandler<
+  typeof postConversationsCommunityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConversationsCommunityConvIdRouteHandler: RouteHandler<
+  typeof putConversationsCommunityConvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsCommunityConvIdJoinRouteHandler: RouteHandler<
+  typeof postConversationsCommunityConvIdJoinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsCommunityConvIdParticipantsRouteHandler: RouteHandler<
+  typeof deleteConversationsCommunityConvIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsCommunityConvIdParticipantsRouteHandler: RouteHandler<
+  typeof postConversationsCommunityConvIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConversationdetailsRouteHandler: RouteHandler<
+  typeof getConversationsConversationdetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsDirectRouteHandler: RouteHandler<
+  typeof getConversationsDirectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsDirectRouteHandler: RouteHandler<
+  typeof postConversationsDirectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsFavoriteRouteHandler: RouteHandler<
+  typeof getConversationsFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsGroupRouteHandler: RouteHandler<
+  typeof postConversationsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConversationsGroupConvIdRouteHandler: RouteHandler<
+  typeof putConversationsGroupConvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsGroupConvIdParticipantsRouteHandler: RouteHandler<
+  typeof deleteConversationsGroupConvIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsGroupConvIdParticipantsRouteHandler: RouteHandler<
+  typeof postConversationsGroupConvIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsLabelLabelIdRouteHandler: RouteHandler<
+  typeof getConversationsLabelLabelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsMessagesFlagRouteHandler: RouteHandler<
+  typeof getConversationsMessagesFlagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsMessagesItemIdRouteHandler: RouteHandler<
+  typeof getConversationsMessagesItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsModerateConvIdRouteHandler: RouteHandler<
+  typeof postConversationsModerateConvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsResolveinvitetokenRouteHandler: RouteHandler<
+  typeof getConversationsResolveinvitetokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsSearchRouteHandler: RouteHandler<
+  typeof getConversationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsUnmoderateConvIdRouteHandler: RouteHandler<
+  typeof postConversationsUnmoderateConvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdRouteHandler: RouteHandler<
+  typeof getConversationsConvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdArchiveRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdArchiveRouteHandler: RouteHandler<
+  typeof postConversationsConvIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdConversationdetailsRouteHandler: RouteHandler<
+  typeof getConversationsConvIdConversationdetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdFavoriteRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdFavoriteRouteHandler: RouteHandler<
+  typeof postConversationsConvIdFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdItemsRouteHandler: RouteHandler<
+  typeof getConversationsConvIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdLabelRouteHandler: RouteHandler<
+  typeof postConversationsConvIdLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdLabelLabelIdRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdLabelLabelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdMessagesRouteHandler: RouteHandler<
+  typeof postConversationsConvIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdMessagesFlagRouteHandler: RouteHandler<
+  typeof getConversationsConvIdMessagesFlagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdMessagesItemIdRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdMessagesItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdMessagesItemIdRouteHandler: RouteHandler<
+  typeof postConversationsConvIdMessagesItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConversationsConvIdMessagesItemIdRouteHandler: RouteHandler<
+  typeof putConversationsConvIdMessagesItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdMessagesItemIdFlagRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdMessagesItemIdFlagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdMessagesItemIdFlagRouteHandler: RouteHandler<
+  typeof postConversationsConvIdMessagesItemIdFlagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdMessagesItemIdLikeRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdMessagesItemIdLikeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdMessagesItemIdLikeRouteHandler: RouteHandler<
+  typeof postConversationsConvIdMessagesItemIdLikeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdModeratorsRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdModeratorsRouteHandler: RouteHandler<
+  typeof postConversationsConvIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdParticipantsRouteHandler: RouteHandler<
+  typeof getConversationsConvIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsConvIdPinsRouteHandler: RouteHandler<
+  typeof getConversationsConvIdPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConversationsConvIdPinsItemIdRouteHandler: RouteHandler<
+  typeof deleteConversationsConvIdPinsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsConvIdPinsItemIdRouteHandler: RouteHandler<
+  typeof postConversationsConvIdPinsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

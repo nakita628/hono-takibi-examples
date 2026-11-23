@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/sso-admin/2020-07-20/openapi.yaml',
   output: './src/sso-admin/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sso-admin/types.ts' },
   client: { output: './src/sso-admin/client.ts', baseUrl: '/' },
   rpc: { output: './src/sso-admin/rpc.ts', parseResponse: true },

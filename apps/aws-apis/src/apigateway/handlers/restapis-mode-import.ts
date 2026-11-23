@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRestapisModeImportRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRestapisModeImportRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const restapisModeImportHandler = app.openapi(postRestapisModeImportRoute, (c) => {
+export const postRestapisModeImportRouteHandler: RouteHandler<
+  typeof postRestapisModeImportRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

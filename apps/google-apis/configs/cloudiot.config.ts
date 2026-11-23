@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudiot/v1/openapi.yaml',
   output: './src/cloudiot/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudiot/types.ts' },
   client: { output: './src/cloudiot/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudiot/rpc.ts', parseResponse: true },

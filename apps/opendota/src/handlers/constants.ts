@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getConstantsResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getConstantsResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const constantsHandler = app.openapi(getConstantsResourceRoute, (c) => {
+export const getConstantsResourceRouteHandler: RouteHandler<
+  typeof getConstantsResourceRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

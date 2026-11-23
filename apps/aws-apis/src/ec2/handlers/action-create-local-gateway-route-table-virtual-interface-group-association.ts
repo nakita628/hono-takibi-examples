@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
   postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler: RouteHandler<
+  typeof getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationHandler = app
-  .openapi(getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler: RouteHandler<
+  typeof postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

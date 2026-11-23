@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeScheduledInstanceAvailabilityRoute,
   postActionDescribeScheduledInstanceAvailabilityRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeScheduledInstanceAvailabilityRouteHandler: RouteHandler<
+  typeof getActionDescribeScheduledInstanceAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeScheduledInstanceAvailabilityHandler = app
-  .openapi(getActionDescribeScheduledInstanceAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeScheduledInstanceAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeScheduledInstanceAvailabilityRouteHandler: RouteHandler<
+  typeof postActionDescribeScheduledInstanceAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAudioFeaturesIdRoute, getAudioFeaturesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAudioFeaturesIdRoute, getAudioFeaturesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAudioFeaturesRouteHandler: RouteHandler<typeof getAudioFeaturesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const audioFeaturesHandler = app
-  .openapi(getAudioFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudioFeaturesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAudioFeaturesIdRouteHandler: RouteHandler<typeof getAudioFeaturesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRulesetsNameRoute,
   getRulesetsNameRoute,
   getRulesetsRoute,
@@ -7,21 +7,24 @@ import {
   putRulesetsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRulesetsRouteHandler: RouteHandler<typeof postRulesetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rulesetsHandler = app
-  .openapi(postRulesetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRulesetsRouteHandler: RouteHandler<typeof getRulesetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesetsNameRouteHandler: RouteHandler<typeof deleteRulesetsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesetsNameRouteHandler: RouteHandler<typeof getRulesetsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRulesetsNameRouteHandler: RouteHandler<typeof putRulesetsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

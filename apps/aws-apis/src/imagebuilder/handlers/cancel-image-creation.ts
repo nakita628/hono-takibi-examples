@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putCancelImageCreationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putCancelImageCreationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cancelImageCreationHandler = app.openapi(putCancelImageCreationRoute, (c) => {
+export const putCancelImageCreationRouteHandler: RouteHandler<
+  typeof putCancelImageCreationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -16979,10 +16979,10 @@ export function injectReposOwnerRepoGitCommitsSha<
 
 export function getReposOwnerRepoGitCommitsShaDiffTypeQueryKey(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/git/commits/:sha.:diffType', args] as const
+  return ['repos', '/repos/:owner/:repo/git/commits/:sha.{diffType}', args] as const
 }
 
 export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions<
@@ -16991,7 +16991,7 @@ export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
           >
         >
       >
@@ -17000,7 +17000,7 @@ export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -17010,7 +17010,7 @@ export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+              (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
             >
           >
         >
@@ -17023,7 +17023,7 @@ export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions<
     queryKey: getReposOwnerRepoGitCommitsShaDiffTypeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(args, {
+        client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -17038,7 +17038,7 @@ export function injectReposOwnerRepoGitCommitsShaDiffType<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
           >
         >
       >
@@ -17047,7 +17047,7 @@ export function injectReposOwnerRepoGitCommitsShaDiffType<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -17057,7 +17057,7 @@ export function injectReposOwnerRepoGitCommitsShaDiffType<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                  (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
                 >
               >
             >
@@ -28554,10 +28554,10 @@ export function injectPatchReposOwnerRepoPullsIndex<
 
 export function getReposOwnerRepoPullsIndexDiffTypeQueryKey(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/pulls/:index.:diffType', args] as const
+  return ['repos', '/repos/:owner/:repo/pulls/:index.{diffType}', args] as const
 }
 
 export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions<
@@ -28565,7 +28565,7 @@ export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
         >
       >
     >
@@ -28573,7 +28573,7 @@ export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -28583,7 +28583,7 @@ export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+              (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
             >
           >
         >
@@ -28596,7 +28596,7 @@ export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions<
     queryKey: getReposOwnerRepoPullsIndexDiffTypeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(args, {
+        client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -28610,7 +28610,7 @@ export function injectReposOwnerRepoPullsIndexDiffType<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
         >
       >
     >
@@ -28618,7 +28618,7 @@ export function injectReposOwnerRepoPullsIndexDiffType<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -28628,7 +28628,7 @@ export function injectReposOwnerRepoPullsIndexDiffType<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                  (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
                 >
               >
             >

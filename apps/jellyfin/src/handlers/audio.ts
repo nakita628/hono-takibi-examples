@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAudioItemIdLyricsRoute,
   getAudioItemIdLyricsRoute,
   getAudioItemIdRemoteSearchLyricsRoute,
@@ -13,39 +13,68 @@ import {
   postAudioItemIdRemoteSearchLyricsLyricIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAudioItemIdStreamRouteHandler: RouteHandler<
+  typeof getAudioItemIdStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const audioHandler = app
-  .openapi(getAudioItemIdStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headAudioItemIdStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudioItemIdStreamContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headAudioItemIdStreamContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudioItemIdLyricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAudioItemIdLyricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAudioItemIdLyricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudioItemIdRemoteSearchLyricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAudioItemIdRemoteSearchLyricsLyricIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudioItemIdUniversalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headAudioItemIdUniversalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const headAudioItemIdStreamRouteHandler: RouteHandler<
+  typeof headAudioItemIdStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAudioItemIdStreamContainerRouteHandler: RouteHandler<
+  typeof getAudioItemIdStreamContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headAudioItemIdStreamContainerRouteHandler: RouteHandler<
+  typeof headAudioItemIdStreamContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAudioItemIdLyricsRouteHandler: RouteHandler<
+  typeof getAudioItemIdLyricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAudioItemIdLyricsRouteHandler: RouteHandler<
+  typeof postAudioItemIdLyricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAudioItemIdLyricsRouteHandler: RouteHandler<
+  typeof deleteAudioItemIdLyricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAudioItemIdRemoteSearchLyricsRouteHandler: RouteHandler<
+  typeof getAudioItemIdRemoteSearchLyricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAudioItemIdRemoteSearchLyricsLyricIdRouteHandler: RouteHandler<
+  typeof postAudioItemIdRemoteSearchLyricsLyricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAudioItemIdUniversalRouteHandler: RouteHandler<
+  typeof getAudioItemIdUniversalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headAudioItemIdUniversalRouteHandler: RouteHandler<
+  typeof headAudioItemIdUniversalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

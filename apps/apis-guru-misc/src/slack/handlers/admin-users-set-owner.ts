@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminUsersSetOwnerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminUsersSetOwnerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminUsersSetOwnerHandler = app.openapi(postAdminUsersSetOwnerRoute, (c) => {
+export const postAdminUsersSetOwnerRouteHandler: RouteHandler<
+  typeof postAdminUsersSetOwnerRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler } from './handlers'
+import { postApiMailServicePvtProvidersEmailProviderDkimRoute } from './routes'
+import { postApiMailServicePvtProvidersEmailProviderDkimRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler)
+export const api = app.openapi(
+  postApiMailServicePvtProvidersEmailProviderDkimRoute,
+  postApiMailServicePvtProvidersEmailProviderDkimRouteHandler,
+)
 
 export default app

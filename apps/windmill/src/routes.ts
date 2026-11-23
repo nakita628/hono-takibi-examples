@@ -33035,7 +33035,7 @@ export const getWWorkspaceAppsULoadParquetPreviewPathRoute = createRoute({
       exp: S3ExpParamsSchema,
     }),
   },
-  responses: { 200: { description: 'Parquet Preview', content: {} } },
+  responses: { 200: { description: 'Parquet Preview' } },
 })
 
 export const getWWorkspaceAppsULoadCsvPreviewPathRoute = createRoute({
@@ -33125,7 +33125,7 @@ export const getWWorkspaceAppsULoadCsvPreviewPathRoute = createRoute({
       exp: S3ExpParamsSchema,
     }),
   },
-  responses: { 200: { description: 'Csv Preview', content: {} } },
+  responses: { 200: { description: 'Csv Preview' } },
 })
 
 export const getWWorkspaceAppsULoadTableCountPathRoute = createRoute({
@@ -44782,7 +44782,6 @@ export const getWWorkspaceJobHelpersLoadParquetPreviewPathRoute = createRoute({
   responses: {
     200: {
       description: 'Parquet Preview: `columns`, `column_types` (Arrow type names) and `rows`.\n',
-      content: {},
     },
   },
 })
@@ -44929,7 +44928,6 @@ export const getWWorkspaceJobHelpersLoadCsvPreviewPathRoute = createRoute({
     200: {
       description:
         'Csv Preview: `columns`, `column_types` (Arrow type names), `rows`, and the `csv_separator` the file was read with, guessed from its first bytes when none is given. A `.jsonl` or `.ndjson` file is read as newline-delimited JSON.\n',
-      content: {},
     },
   },
 })

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceUpdateMailboxQuotaHandler = app.openapi(
-  postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceUpdateMailboxQuotaRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceUpdateMailboxQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

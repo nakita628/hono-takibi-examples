@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWorkspacesRoute,
   getWorkspacesWorkspaceGidAuditLogEventsRoute,
   getWorkspacesWorkspaceGidCustomFieldsRoute,
@@ -18,54 +18,96 @@ import {
   putWorkspacesWorkspaceGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkspacesRouteHandler: RouteHandler<typeof getWorkspacesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workspacesHandler = app
-  .openapi(getWorkspacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspaceGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceGidAddUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidAuditLogEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceGidProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceGidRemoveUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceGidTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidTasksSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidTypeaheadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceGidWorkspaceMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkspacesWorkspaceGidRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspaceGidRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspaceGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceGidAddUserRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceGidAddUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidAuditLogEventsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidAuditLogEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidCustomFieldsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidProjectsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceGidProjectsRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceGidProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceGidRemoveUserRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceGidRemoveUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidTagsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceGidTagsRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceGidTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidTasksSearchRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidTasksSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidTeamsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidTypeaheadRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidTypeaheadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidUsersRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceGidWorkspaceMembershipsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceGidWorkspaceMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

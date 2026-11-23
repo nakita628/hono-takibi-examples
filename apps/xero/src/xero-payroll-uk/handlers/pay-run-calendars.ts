@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPayRunCalendarsPayRunCalendarIDRoute,
   getPayRunCalendarsRoute,
   postPayRunCalendarsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPayRunCalendarsRouteHandler: RouteHandler<typeof getPayRunCalendarsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const payRunCalendarsHandler = app
-  .openapi(getPayRunCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayRunCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPayRunCalendarsPayRunCalendarIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPayRunCalendarsRouteHandler: RouteHandler<
+  typeof postPayRunCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPayRunCalendarsPayRunCalendarIDRouteHandler: RouteHandler<
+  typeof getPayRunCalendarsPayRunCalendarIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

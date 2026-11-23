@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIssueTrackersIssueTrackerNameRoute,
   getIssueTrackersIssueTrackerNameIssuesIssueNameRoute,
   getIssueTrackersIssueTrackerNameRoute,
@@ -8,24 +8,38 @@ import {
   putIssueTrackersIssueTrackerNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIssueTrackersRouteHandler: RouteHandler<typeof getIssueTrackersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const issueTrackersHandler = app
-  .openapi(getIssueTrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIssueTrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIssueTrackersIssueTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackersIssueTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIssueTrackersIssueTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackersIssueTrackerNameIssuesIssueNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIssueTrackersRouteHandler: RouteHandler<typeof postIssueTrackersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIssueTrackersIssueTrackerNameRouteHandler: RouteHandler<
+  typeof deleteIssueTrackersIssueTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackersIssueTrackerNameRouteHandler: RouteHandler<
+  typeof getIssueTrackersIssueTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIssueTrackersIssueTrackerNameRouteHandler: RouteHandler<
+  typeof putIssueTrackersIssueTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackersIssueTrackerNameIssuesIssueNameRouteHandler: RouteHandler<
+  typeof getIssueTrackersIssueTrackerNameIssuesIssueNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

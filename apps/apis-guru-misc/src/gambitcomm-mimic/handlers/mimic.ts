@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMimicAccessDelUserRoute,
   deleteMimicAgentAgentNumFromDeleteIPPortRoute,
   deleteMimicAgentAgentNumIpaliasDeleteIPPortRoute,
@@ -358,1095 +358,2124 @@ import {
   putMimicTerminateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMimicAccessAddUserAgentsMaskRouteHandler: RouteHandler<
+  typeof postMimicAccessAddUserAgentsMaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mimicHandler = app
-  .openapi(postMimicAccessAddUserAgentsMaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAccessDelUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAccessGetAcldbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAccessGetAdmindirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAccessGetAdminuserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAccessGetEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAccessLoadFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAccessSaveFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAccessSetAcldbDatabaseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAccessSetEnabledEnabledOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumAddIPRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumFromAddIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumFromDeleteIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumFromListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetChangedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetConfigChangedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetDropsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetInformTimeoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetMaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetMibsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetNumStartsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetOiddirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetOwnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetPdusizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetPrivdirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetProtocolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetScenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetSimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetStateChangedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumGetWriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumHaltRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumIpaliasAddIPPortMaskInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumIpaliasDeleteIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumIpaliasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumIpaliasStartIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumIpaliasStatusIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumIpaliasStopIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgCoapGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgCoapGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgCoapGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgCoapGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgCoapSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgCoapSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgDhcpGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgDhcpGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgDhcpGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgDhcpGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgDhcpParamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgDhcpSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgDhcpSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgIpmiGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgIpmiGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgIpmiGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgIpmiGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgIpmiGetAttrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgIpmiSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgIpmiSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgIpmiSetAttrValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientGetProtstateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientGetStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientMessageCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientMessageGetMsgNumAttrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientMessageSetMsgNumAttrValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientResubscribeSubNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientRuntimeAbortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientRuntimeConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientRuntimeDisconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetBrokerBrokerAddrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetCleansessionCleanOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetClientidClientIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetKeepaliveAliveTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetOnDisconnectActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetPasswordPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetPortPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetUsernameUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetWillmsgMsgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetWillqosQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetWillretainRetainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSetWilltopicTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientSubscribeCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttClientSubscribeGetSubNumAttrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientSubscribeSetSubNumAttrValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttClientUnsubscribeSubNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgMqttGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgMqttSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowFlowChangeDfsIntervalIntervalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowFlowChangeTfsIntervalIntervalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putMimicAgentAgentNumProtocolMsgNetflowFlowChangeFlowsetUidFieldNumAttrValueRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getMimicAgentAgentNumProtocolMsgNetflowFlowListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgNetflowGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgNetflowGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgNetflowGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgNetflowGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowHaltRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowSetCollectorCollectorIPRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowSetFilenameFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgNetflowSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgProxyPortAddPortTargetTargetPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyPortIsStartedPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgProxyPortListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgProxyPortRemovePortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgProxyPortStartPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgProxyPortStopPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgProxySetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgProxySetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSflowGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSflowGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSflowGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSflowGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSflowHaltRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSflowReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSflowResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSflowSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSflowSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasDisableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasEnableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasIsenabledIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmptcpSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmptcpSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postMimicAgentAgentNumProtocolMsgSnmpv3AccessAddGroupNamePrefixSecurityModelSecurityLevelContextMatchReadViewWriteViewNotifyViewRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessDelAccessNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3AccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GetContextEngineidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginebootsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GetEngineidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginetimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postMimicAgentAgentNumProtocolMsgSnmpv3GroupAddGroupNameSecurityModelSecurityNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupDelGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3GroupListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmpv3SetConfigParameterValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postMimicAgentAgentNumProtocolMsgSnmpv3UserAddUserNameSecurityNameAuthProtocolAuthKeyPrivProtocolPrivKeyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3UserClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3UserDelUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3UserListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveasFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveasFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgSnmpv3ViewAddViewNameViewTypeSubtreeMaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewDelViewNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSnmpv3ViewListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSshIpaliasDisableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSshIpaliasEnableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshIpaliasIsenabledIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSshIpaliasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSshSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSshSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSyslogGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSyslogGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSyslogGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSyslogGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgSyslogGetAttrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgSyslogSendPriRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSyslogSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSyslogSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgSyslogSetAttrValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putMimicAgentAgentNumProtocolMsgTelnetConnectionLogonConnectionIDUserPasswordRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putMimicAgentAgentNumProtocolMsgTelnetConnectionRequestConnectionIDCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putMimicAgentAgentNumProtocolMsgTelnetConnectionSignalConnectionIDSignalNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTelnetIpaliasDisableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTelnetIpaliasEnableIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetIpaliasIsenabledIpaddressPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetIpaliasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetKeymapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetRulesdbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetUserdbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTelnetServerGetUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTelnetSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTelnetSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgTftpSessionReadServerSrcfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgTftpSessionWriteServerSrcfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTftpSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTftpSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpSessionIDGetParameterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTftpSessionIDSetParameterValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTftpSessionIDStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTftpSessionIDStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTftpSessionIDStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTodGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTodGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTodGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgTodGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getMimicAgentAgentNumProtocolMsgTodGettimeServerServerAddrPortPortNumScriptScriptNameTimeoutTimeSecRetriesNumRetriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putMimicAgentAgentNumProtocolMsgTodSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgTodSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgWebGetArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgWebGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgWebGetStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgWebGetTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumProtocolMsgWebPortAddPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolMsgWebPortExistsPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumProtocolMsgWebPortRemovePortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgWebPortSetPortProtocolVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgWebPortStartPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgWebPortStopPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgWebSetConfigArgumentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumProtocolMsgWebSetTraceEnableOrNotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumProtocolProtGetConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetDropsDropsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetHostHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetInformTimeoutInformTimeoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetInterfaceInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetMaskMaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetMibsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetOiddirOiddirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetOwnerOwnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetPdusizePdusizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetPortPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetPrivdirPrivdirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetProtocolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetReadReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetStartStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetTraceTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetValidateValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumSetWriteWriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStoreCopyOtherAgentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumStoreExistsVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumStoreGetVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumStoreListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStoreLreplaceVarIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumStorePersistsVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStoreSetVarPersistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumStoreUnsetVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumTimerScriptAddScriptIntervalArgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumTimerScriptDeleteScriptIntervalArgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumTimerScriptListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumTrapConfigAddIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumTrapConfigDeleteIPPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumTrapConfigListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumTrapListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicAgentAgentNumValueAddObjectInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueEvalObjectInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueGetObjectInstanceVariableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueInfoObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueInstancesObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueListOIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueMevalObjInsArrayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueMgetObjInsVarArrayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueMibObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumValueMsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumValueMunsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueNameOIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueOidObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicAgentAgentNumValueRemoveObjectInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumValueSetObjectInstanceVariableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueSplitOIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueStateGetObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumValueStateSetObjectStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicAgentAgentNumValueUnsetObjectInstanceVariableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicAgentAgentNumValueVariablesObjectInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicClearFirstAgentNumLastAgentNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetActiveDataListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetActiveListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetCfgfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetCfgfileChangedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetChangedConfigListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetChangedStateListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetConfiguredListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetLastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetMaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetNetaddrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetNetdevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetProductRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetProtocolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicGetVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicLoadCfgFileFirstAgentNumLastAgentNumStartAgentNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicMgetInfoArrayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgCoapGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgDhcpGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgIpmiGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgMqttGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgNetflowGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgProxyGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgSflowGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgSnmptcpGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgSshGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgSyslogGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgTelnetGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgTftpGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgTodGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicProtocolMsgWebGetStatsHdrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicSaveasCfgFileFirstAgentNumLastAgentNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicSetLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicSetNetdevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicSetPersistentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicStoreExistsVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicStoreGetVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicStoreListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicStoreLreplaceVarIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicStorePersistsVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicStoreSetVarPersistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicStoreUnsetVarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMimicTerminateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMimicTimerScriptAddScriptIntervalArgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMimicTimerScriptDeleteScriptIntervalArgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMimicTimerScriptListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMimicAccessDelUserRouteHandler: RouteHandler<
+  typeof deleteMimicAccessDelUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAccessGetAcldbRouteHandler: RouteHandler<
+  typeof getMimicAccessGetAcldbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAccessGetAdmindirRouteHandler: RouteHandler<
+  typeof getMimicAccessGetAdmindirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAccessGetAdminuserRouteHandler: RouteHandler<
+  typeof getMimicAccessGetAdminuserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAccessGetEnabledRouteHandler: RouteHandler<
+  typeof getMimicAccessGetEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAccessListRouteHandler: RouteHandler<typeof getMimicAccessListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAccessLoadFilenameRouteHandler: RouteHandler<
+  typeof putMimicAccessLoadFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAccessSaveFilenameRouteHandler: RouteHandler<
+  typeof putMimicAccessSaveFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAccessSetAcldbDatabaseNameRouteHandler: RouteHandler<
+  typeof putMimicAccessSetAcldbDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAccessSetEnabledEnabledOrNotRouteHandler: RouteHandler<
+  typeof putMimicAccessSetEnabledEnabledOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumAddIPRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumAddIPRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumFromAddIPPortRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumFromAddIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumFromDeleteIPPortRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumFromDeleteIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumFromListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumFromListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetChangedRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetChangedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetConfigChangedRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetConfigChangedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetDelayRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetDelayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetDropsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetDropsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetHostRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetInformTimeoutRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetInformTimeoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetInterfaceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetMaskRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetMaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetMibsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetMibsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetNumStartsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetNumStartsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetOiddirRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetOiddirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetOwnerRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetOwnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetPdusizeRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetPdusizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetPrivdirRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetPrivdirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetProtocolRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetProtocolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetReadRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetScenRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetScenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetSimRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetSimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetStartRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetStateRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetStateChangedRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetStateChangedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetValidateRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumGetWriteRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumGetWriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumHaltRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumHaltRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumIpaliasAddIPPortMaskInterfaceRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumIpaliasAddIPPortMaskInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumIpaliasDeleteIPPortRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumIpaliasDeleteIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumIpaliasListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumIpaliasListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumIpaliasStartIPPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumIpaliasStartIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumIpaliasStatusIPPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumIpaliasStatusIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumIpaliasStopIPPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumIpaliasStopIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumPauseRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgCoapGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgCoapGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgCoapGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgCoapGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgCoapGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgCoapGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgCoapGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgCoapGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgCoapSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgCoapSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgCoapSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgCoapSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgDhcpGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgDhcpGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgDhcpGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgDhcpGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgDhcpGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgDhcpGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgDhcpGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgDhcpGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgDhcpParamsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgDhcpParamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgDhcpSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgDhcpSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgDhcpSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgDhcpSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgIpmiGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgIpmiGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgIpmiGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgIpmiGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgIpmiGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgIpmiGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgIpmiGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgIpmiGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgIpmiGetAttrRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgIpmiGetAttrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgIpmiSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgIpmiSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgIpmiSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgIpmiSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgIpmiSetAttrValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgIpmiSetAttrValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientGetProtstateRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientGetProtstateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientGetStateRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientGetStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientMessageCardRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientMessageCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientMessageGetMsgNumAttrRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientMessageGetMsgNumAttrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientMessageSetMsgNumAttrValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientMessageSetMsgNumAttrValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientResubscribeSubNumRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientResubscribeSubNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientRuntimeAbortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientRuntimeAbortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientRuntimeConnectRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientRuntimeConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientRuntimeDisconnectRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientRuntimeDisconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetBrokerBrokerAddrRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetBrokerBrokerAddrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetCleansessionCleanOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetCleansessionCleanOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetClientidClientIDRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetClientidClientIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetKeepaliveAliveTimeRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetKeepaliveAliveTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetOnDisconnectActionRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetOnDisconnectActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetPasswordPasswordRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetPasswordPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetPortPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetPortPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetUsernameUsernameRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetUsernameUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetWillmsgMsgRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetWillmsgMsgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetWillqosQosRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetWillqosQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetWillretainRetainRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetWillretainRetainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSetWilltopicTopicRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSetWilltopicTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientSubscribeCardRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientSubscribeCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttClientSubscribeGetSubNumAttrRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttClientSubscribeGetSubNumAttrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientSubscribeSetSubNumAttrValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientSubscribeSetSubNumAttrValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttClientUnsubscribeSubNumRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttClientUnsubscribeSubNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgMqttGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgMqttGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgMqttSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgMqttSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowFlowChangeDfsIntervalIntervalRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowFlowChangeDfsIntervalIntervalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowFlowChangeTfsIntervalIntervalRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowFlowChangeTfsIntervalIntervalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowFlowChangeFlowsetUidFieldNumAttrValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowFlowChangeFlowsetUidFieldNumAttrValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgNetflowFlowListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgNetflowFlowListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgNetflowGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgNetflowGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgNetflowGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgNetflowGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgNetflowGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgNetflowGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgNetflowGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgNetflowGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowHaltRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowHaltRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowReloadRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowResumeRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowSetCollectorCollectorIPRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowSetCollectorCollectorIPRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowSetFilenameFileNameRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowSetFilenameFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgNetflowSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgNetflowSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgProxyPortAddPortTargetTargetPortRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgProxyPortAddPortTargetTargetPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyPortIsStartedPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyPortIsStartedPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgProxyPortListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgProxyPortListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgProxyPortRemovePortRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgProxyPortRemovePortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgProxyPortStartPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgProxyPortStartPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgProxyPortStopPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgProxyPortStopPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgProxySetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgProxySetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgProxySetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgProxySetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSflowGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSflowGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSflowGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSflowGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSflowGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSflowGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSflowGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSflowGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSflowHaltRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSflowHaltRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSflowReloadRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSflowReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSflowResumeRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSflowResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSflowSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSflowSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSflowSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSflowSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasDisableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasDisableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasEnableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmptcpIpaliasEnableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasIsenabledIpaddressPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasIsenabledIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmptcpIpaliasListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmptcpSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmptcpSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmptcpSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmptcpSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgSnmpv3AccessAddGroupNamePrefixSecurityModelSecurityLevelContextMatchReadViewWriteViewNotifyViewRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgSnmpv3AccessAddGroupNamePrefixSecurityModelSecurityLevelContextMatchReadViewWriteViewNotifyViewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessClearRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessDelAccessNameRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3AccessDelAccessNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3AccessListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3AccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GetContextEngineidRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GetContextEngineidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginebootsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginebootsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GetEngineidRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GetEngineidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginetimeRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GetEnginetimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgSnmpv3GroupAddGroupNameSecurityModelSecurityNameRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgSnmpv3GroupAddGroupNameSecurityModelSecurityNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupClearRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupDelGroupNameRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3GroupDelGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3GroupListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3GroupListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmpv3SetConfigParameterValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmpv3SetConfigParameterValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgSnmpv3UserAddUserNameSecurityNameAuthProtocolAuthKeyPrivProtocolPrivKeyRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgSnmpv3UserAddUserNameSecurityNameAuthProtocolAuthKeyPrivProtocolPrivKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3UserClearRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3UserClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3UserDelUserNameRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3UserDelUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3UserListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3UserListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveasFilenameRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmpv3UsmSaveasFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveasFilenameRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSnmpv3VacmSaveasFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgSnmpv3ViewAddViewNameViewTypeSubtreeMaskRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgSnmpv3ViewAddViewNameViewTypeSubtreeMaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewClearRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewDelViewNameRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgSnmpv3ViewDelViewNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSnmpv3ViewListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSnmpv3ViewListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSshIpaliasDisableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSshIpaliasDisableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSshIpaliasEnableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSshIpaliasEnableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshIpaliasIsenabledIpaddressPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshIpaliasIsenabledIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSshIpaliasListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSshIpaliasListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSshSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSshSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSshSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSshSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSyslogGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSyslogGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSyslogGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSyslogGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSyslogGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSyslogGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSyslogGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSyslogGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgSyslogGetAttrRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgSyslogGetAttrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgSyslogSendPriRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgSyslogSendPriRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSyslogSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSyslogSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSyslogSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSyslogSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgSyslogSetAttrValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgSyslogSetAttrValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetConnectionLogonConnectionIDUserPasswordRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetConnectionLogonConnectionIDUserPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetConnectionRequestConnectionIDCommandRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetConnectionRequestConnectionIDCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetConnectionSignalConnectionIDSignalNameRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetConnectionSignalConnectionIDSignalNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetIpaliasDisableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetIpaliasDisableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetIpaliasEnableIpaddressPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetIpaliasEnableIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetIpaliasIsenabledIpaddressPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetIpaliasIsenabledIpaddressPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetIpaliasListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetIpaliasListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetConnectionsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetKeymapRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetKeymapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetRulesdbRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetRulesdbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetStateRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetUserdbRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetUserdbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTelnetServerGetUsersRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTelnetServerGetUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTelnetSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTelnetSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgTftpSessionReadServerSrcfileRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgTftpSessionReadServerSrcfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgTftpSessionWriteServerSrcfileRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgTftpSessionWriteServerSrcfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTftpSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTftpSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTftpSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTftpSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpSessionIDGetParameterRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpSessionIDGetParameterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTftpSessionIDSetParameterValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTftpSessionIDSetParameterValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTftpSessionIDStartRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTftpSessionIDStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTftpSessionIDStatusRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTftpSessionIDStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTftpSessionIDStopRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTftpSessionIDStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTodGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTodGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTodGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTodGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTodGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTodGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTodGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTodGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgTodGettimeServerServerAddrPortPortNumScriptScriptNameTimeoutTimeSecRetriesNumRetriesRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgTodGettimeServerServerAddrPortPortNumScriptScriptNameTimeoutTimeSecRetriesNumRetriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTodSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTodSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgTodSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgTodSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgWebGetArgsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgWebGetArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgWebGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgWebGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgWebGetStatisticsRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgWebGetStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgWebGetTraceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgWebGetTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumProtocolMsgWebPortAddPortRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumProtocolMsgWebPortAddPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolMsgWebPortExistsPortRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolMsgWebPortExistsPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumProtocolMsgWebPortRemovePortRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumProtocolMsgWebPortRemovePortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgWebPortSetPortProtocolVersionRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgWebPortSetPortProtocolVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgWebPortStartPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgWebPortStartPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgWebPortStopPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgWebPortStopPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgWebSetConfigArgumentValueRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgWebSetConfigArgumentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumProtocolMsgWebSetTraceEnableOrNotRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumProtocolMsgWebSetTraceEnableOrNotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumProtocolProtGetConfigRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumProtocolProtGetConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumReloadRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumRemoveRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumResumeRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSaveRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetDelayDelayRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetDelayDelayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetDropsDropsRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetDropsDropsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetHostHostRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetHostHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetInformTimeoutInformTimeoutRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetInformTimeoutInformTimeoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetInterfaceInterfaceRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetInterfaceInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetMaskMaskRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetMaskMaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetMibsRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetMibsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetOiddirOiddirRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetOiddirOiddirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetOwnerOwnerRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetOwnerOwnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetPdusizePdusizeRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetPdusizePdusizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetPortPortRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetPortPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetPrivdirPrivdirRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetPrivdirPrivdirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetProtocolRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetProtocolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetReadReadRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetReadReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetStartStartRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetStartStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetTraceTraceRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetTraceTraceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetValidateValidateRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetValidateValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumSetWriteWriteRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumSetWriteWriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStartRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStopRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStoreCopyOtherAgentRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStoreCopyOtherAgentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumStoreExistsVarRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumStoreExistsVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumStoreGetVarRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumStoreGetVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumStoreListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumStoreListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStoreLreplaceVarIndexRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStoreLreplaceVarIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumStorePersistsVarRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumStorePersistsVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStoreSetVarPersistRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStoreSetVarPersistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumStoreUnsetVarRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumStoreUnsetVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumTimerScriptAddScriptIntervalArgRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumTimerScriptAddScriptIntervalArgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumTimerScriptDeleteScriptIntervalArgRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumTimerScriptDeleteScriptIntervalArgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumTimerScriptListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumTimerScriptListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumTrapConfigAddIPPortRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumTrapConfigAddIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumTrapConfigDeleteIPPortRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumTrapConfigDeleteIPPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumTrapConfigListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumTrapConfigListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumTrapListRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumTrapListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicAgentAgentNumValueAddObjectInstanceRouteHandler: RouteHandler<
+  typeof postMimicAgentAgentNumValueAddObjectInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueEvalObjectInstanceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueEvalObjectInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueGetObjectInstanceVariableRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueGetObjectInstanceVariableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueInfoObjectRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueInfoObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueInstancesObjectRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueInstancesObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueListOIDRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueListOIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueMevalObjInsArrayRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueMevalObjInsArrayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueMgetObjInsVarArrayRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueMgetObjInsVarArrayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueMibObjectRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueMibObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumValueMsetRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumValueMsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumValueMunsetRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumValueMunsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueNameOIDRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueNameOIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueOidObjectRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueOidObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicAgentAgentNumValueRemoveObjectInstanceRouteHandler: RouteHandler<
+  typeof deleteMimicAgentAgentNumValueRemoveObjectInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumValueSetObjectInstanceVariableRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumValueSetObjectInstanceVariableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueSplitOIDRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueSplitOIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueStateGetObjectRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueStateGetObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumValueStateSetObjectStateRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumValueStateSetObjectStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicAgentAgentNumValueUnsetObjectInstanceVariableRouteHandler: RouteHandler<
+  typeof putMimicAgentAgentNumValueUnsetObjectInstanceVariableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicAgentAgentNumValueVariablesObjectInstanceRouteHandler: RouteHandler<
+  typeof getMimicAgentAgentNumValueVariablesObjectInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicClearFirstAgentNumLastAgentNumRouteHandler: RouteHandler<
+  typeof putMimicClearFirstAgentNumLastAgentNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetActiveDataListRouteHandler: RouteHandler<
+  typeof getMimicGetActiveDataListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetActiveListRouteHandler: RouteHandler<
+  typeof getMimicGetActiveListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetCfgfileRouteHandler: RouteHandler<typeof getMimicGetCfgfileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetCfgfileChangedRouteHandler: RouteHandler<
+  typeof getMimicGetCfgfileChangedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetChangedConfigListRouteHandler: RouteHandler<
+  typeof getMimicGetChangedConfigListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetChangedStateListRouteHandler: RouteHandler<
+  typeof getMimicGetChangedStateListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetClientsRouteHandler: RouteHandler<typeof getMimicGetClientsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetConfiguredListRouteHandler: RouteHandler<
+  typeof getMimicGetConfiguredListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetInterfacesRouteHandler: RouteHandler<
+  typeof getMimicGetInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetLastRouteHandler: RouteHandler<typeof getMimicGetLastRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetLogRouteHandler: RouteHandler<typeof getMimicGetLogRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetMaxRouteHandler: RouteHandler<typeof getMimicGetMaxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetNetaddrRouteHandler: RouteHandler<typeof getMimicGetNetaddrRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetNetdevRouteHandler: RouteHandler<typeof getMimicGetNetdevRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetProductRouteHandler: RouteHandler<typeof getMimicGetProductRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetProtocolsRouteHandler: RouteHandler<
+  typeof getMimicGetProtocolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetReturnRouteHandler: RouteHandler<typeof getMimicGetReturnRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicGetVersionRouteHandler: RouteHandler<typeof getMimicGetVersionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicLoadCfgFileFirstAgentNumLastAgentNumStartAgentNumRouteHandler: RouteHandler<
+  typeof putMimicLoadCfgFileFirstAgentNumLastAgentNumStartAgentNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicMgetInfoArrayRouteHandler: RouteHandler<
+  typeof getMimicMgetInfoArrayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgCoapGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgCoapGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgDhcpGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgDhcpGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgIpmiGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgIpmiGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgMqttGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgMqttGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgNetflowGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgNetflowGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgProxyGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgProxyGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgSflowGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgSflowGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgSnmptcpGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgSnmptcpGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgSshGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgSshGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgSyslogGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgSyslogGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgTelnetGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgTelnetGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgTftpGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgTftpGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgTodGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgTodGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicProtocolMsgWebGetStatsHdrRouteHandler: RouteHandler<
+  typeof getMimicProtocolMsgWebGetStatsHdrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicSaveRouteHandler: RouteHandler<typeof putMimicSaveRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicSaveasCfgFileFirstAgentNumLastAgentNumRouteHandler: RouteHandler<
+  typeof putMimicSaveasCfgFileFirstAgentNumLastAgentNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicSetLogRouteHandler: RouteHandler<typeof putMimicSetLogRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicSetNetdevRouteHandler: RouteHandler<typeof putMimicSetNetdevRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicSetPersistentRouteHandler: RouteHandler<
+  typeof putMimicSetPersistentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicStartRouteHandler: RouteHandler<typeof putMimicStartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicStopRouteHandler: RouteHandler<typeof putMimicStopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicStoreExistsVarRouteHandler: RouteHandler<
+  typeof getMimicStoreExistsVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicStoreGetVarRouteHandler: RouteHandler<
+  typeof getMimicStoreGetVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicStoreListRouteHandler: RouteHandler<typeof getMimicStoreListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicStoreLreplaceVarIndexRouteHandler: RouteHandler<
+  typeof putMimicStoreLreplaceVarIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicStorePersistsVarRouteHandler: RouteHandler<
+  typeof getMimicStorePersistsVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicStoreSetVarPersistRouteHandler: RouteHandler<
+  typeof putMimicStoreSetVarPersistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicStoreUnsetVarRouteHandler: RouteHandler<
+  typeof putMimicStoreUnsetVarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMimicTerminateRouteHandler: RouteHandler<typeof putMimicTerminateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMimicTimerScriptAddScriptIntervalArgRouteHandler: RouteHandler<
+  typeof postMimicTimerScriptAddScriptIntervalArgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMimicTimerScriptDeleteScriptIntervalArgRouteHandler: RouteHandler<
+  typeof deleteMimicTimerScriptDeleteScriptIntervalArgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMimicTimerScriptListRouteHandler: RouteHandler<
+  typeof getMimicTimerScriptListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

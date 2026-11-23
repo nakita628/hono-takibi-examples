@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionListPhoneNumbersOptedOutRoute,
   postActionListPhoneNumbersOptedOutRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionListPhoneNumbersOptedOutRouteHandler: RouteHandler<
+  typeof getActionListPhoneNumbersOptedOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionListPhoneNumbersOptedOutHandler = app
-  .openapi(getActionListPhoneNumbersOptedOutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionListPhoneNumbersOptedOutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionListPhoneNumbersOptedOutRouteHandler: RouteHandler<
+  typeof postActionListPhoneNumbersOptedOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

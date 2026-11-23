@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/firebasedatabase/v1beta/openapi.yaml',
   output: './src/firebasedatabase/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firebasedatabase/types.ts' },
   client: { output: './src/firebasedatabase/client.ts', baseUrl: '/' },
   rpc: { output: './src/firebasedatabase/rpc.ts', parseResponse: true },

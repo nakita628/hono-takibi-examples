@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postChatUnfurlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postChatUnfurlRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const chatUnfurlHandler = app.openapi(postChatUnfurlRoute, (c) => {
+export const postChatUnfurlRouteHandler: RouteHandler<typeof postChatUnfurlRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

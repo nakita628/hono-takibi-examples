@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/conjur.local/5.3.0/openapi.yaml',
   output: './src/conjur/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/conjur/types.ts' },
   client: { output: './src/conjur/client.ts', baseUrl: '/' },
   rpc: { output: './src/conjur/rpc.ts', parseResponse: true },

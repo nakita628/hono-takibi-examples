@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaNameRoute,
   getV1betaNameRoute,
   getV1betaParentGuestPoliciesRoute,
@@ -16,48 +16,82 @@ import {
   postV1betaParentPatchJobsExecuteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1betaInstanceLookupEffectiveGuestPolicyRouteHandler: RouteHandler<
+  typeof postV1betaInstanceLookupEffectiveGuestPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(postV1betaInstanceLookupEffectiveGuestPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNamePauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNameResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentGuestPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentGuestPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentInstanceDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentPatchDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentPatchDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentPatchJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentPatchJobsExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV1betaNameRouteHandler: RouteHandler<typeof deleteV1betaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaNameRouteHandler: RouteHandler<typeof patchV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaNameCancelRouteHandler: RouteHandler<
+  typeof postV1betaNameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaNamePauseRouteHandler: RouteHandler<
+  typeof postV1betaNamePauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaNameResumeRouteHandler: RouteHandler<
+  typeof postV1betaNameResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentGuestPoliciesRouteHandler: RouteHandler<
+  typeof getV1betaParentGuestPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentGuestPoliciesRouteHandler: RouteHandler<
+  typeof postV1betaParentGuestPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentInstanceDetailsRouteHandler: RouteHandler<
+  typeof getV1betaParentInstanceDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentPatchDeploymentsRouteHandler: RouteHandler<
+  typeof getV1betaParentPatchDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentPatchDeploymentsRouteHandler: RouteHandler<
+  typeof postV1betaParentPatchDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentPatchJobsRouteHandler: RouteHandler<
+  typeof getV1betaParentPatchJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentPatchJobsExecuteRouteHandler: RouteHandler<
+  typeof postV1betaParentPatchJobsExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPpaGamesRoute,
   getPpaPlayersGamesRoute,
   getPpaPlayersSeasonRoute,
@@ -7,21 +7,26 @@ import {
   getPpaTeamsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPpaGamesRouteHandler: RouteHandler<typeof getPpaGamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ppaHandler = app
-  .openapi(getPpaGamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPpaPlayersGamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPpaPlayersSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPpaPredictedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPpaTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPpaPlayersGamesRouteHandler: RouteHandler<typeof getPpaPlayersGamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPpaPlayersSeasonRouteHandler: RouteHandler<
+  typeof getPpaPlayersSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPpaPredictedRouteHandler: RouteHandler<typeof getPpaPredictedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPpaTeamsRouteHandler: RouteHandler<typeof getPpaTeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -375,10 +375,10 @@ export async function getEmailHistory(options?: ClientRequestOptions) {
 }
 
 export async function getEmailHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.email.history['export?filename=:filename'].$get(args, options))
+  return await parseResponse(client.email.history['export?filename={filename}'].$get(args, options))
 }
 
 export async function getEmailMasterTemplates(options?: ClientRequestOptions) {
@@ -482,20 +482,20 @@ export async function deleteEmailTemplatesTemplateId(
 }
 
 export async function getFaxHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.fax.history['export?filename=:filename'].$get(args, options))
+  return await parseResponse(client.fax.history['export?filename={filename}'].$get(args, options))
 }
 
 export async function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.fax['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by'].$get(
+    client.fax['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}'].$get(
       args,
       options,
     ),
@@ -643,11 +643,11 @@ export async function deleteListsListIdContactsContactId(
 }
 
 export async function getListsListIdExportFilenameFilename(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.lists[':list_id']['export?filename=:filename'].$get(args, options),
+    client.lists[':list_id']['export?filename={filename}'].$get(args, options),
   )
 }
 
@@ -695,20 +695,20 @@ export async function putMmsCancelAll(options?: ClientRequestOptions) {
 }
 
 export async function getMmsHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.mms.history['export?filename=:filename'].$get(args, options))
+  return await parseResponse(client.mms.history['export?filename={filename}'].$get(args, options))
 }
 
 export async function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.mms['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to'].$get(
+    client.mms['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}'].$get(
       args,
       options,
     ),
@@ -764,12 +764,12 @@ export async function postNumbersBuyDedicatedNumber(
 
 export async function getNumbersSearchCountrySearch1SearchType2(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.numbers.search[':country?:search=1&:search_type=2'].$get(args, options),
+    client.numbers.search[':country?{search}=1&{search_type}=2'].$get(args, options),
   )
 }
 
@@ -793,12 +793,12 @@ export async function postPostDirectMailCampaignsSend(
 
 export async function getPostDirectMailLocationsSearchCountryQQuery(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.post['direct-mail'].locations.search[':country']['?q=:query'].$get(args, options),
+    client.post['direct-mail'].locations.search[':country']['?q={query}'].$get(args, options),
   )
 }
 
@@ -814,11 +814,13 @@ export async function getPostLettersHistory(options?: ClientRequestOptions) {
 }
 
 export async function getPostLettersHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.post.letters.history['export?filename=:filename'].$get(args, options),
+    client.post.letters.history['export?filename={filename}'].$get(args, options),
   )
 }
 
@@ -837,10 +839,12 @@ export async function postPostLettersSend(
 }
 
 export async function getPostPostcardsExportFilenameFilename(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.post.postcards['export?filename=:filename'].$get(args, options))
+  return await parseResponse(
+    client.post.postcards['export?filename={filename}'].$get(args, options),
+  )
 }
 
 export async function getPostPostcardsHistory(options?: ClientRequestOptions) {
@@ -900,10 +904,10 @@ export async function deletePostReturnAddressesReturnAddressId(
 }
 
 export async function getPricingCountryCurrencyCurrency(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.pricing[':country?currency=:currency'].$get(args, options))
+  return await parseResponse(client.pricing[':country?currency={currency}'].$get(args, options))
 }
 
 export async function getRechargeCreditCard(options?: ClientRequestOptions) {
@@ -918,10 +922,10 @@ export async function putRechargeCreditCard(
 }
 
 export async function getRechargePackagesCountryCountry(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.recharge['packages?country=:country'].$get(args, options))
+  return await parseResponse(client.recharge['packages?country={country}'].$get(args, options))
 }
 
 export async function putRechargePurchasePackageId(
@@ -1011,10 +1015,10 @@ export async function getSdkDownloadType(
 }
 
 export async function getSearchContactsListsQQ(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['contacts-lists?q=:q'].$get(args, options))
+  return await parseResponse(client.search['contacts-lists?q={q}'].$get(args, options))
 }
 
 export async function getSmsCampaigns(options?: ClientRequestOptions) {
@@ -1037,12 +1041,12 @@ export async function postSmsCampaignsSend(
 
 export async function getSmsCampaignsCampaignIdLinkExportFilenameFilename(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client['sms-campaigns'][':campaign_id']['link-export?filename=:filename'].$get(args, options),
+    client['sms-campaigns'][':campaign_id']['link-export?filename={filename}'].$get(args, options),
   )
 }
 
@@ -1162,20 +1166,20 @@ export async function deleteSmsEmailSmsEmailAddressId(
 }
 
 export async function getSmsHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.sms.history['export?filename=:filename'].$get(args, options))
+  return await parseResponse(client.sms.history['export?filename={filename}'].$get(args, options))
 }
 
 export async function getSmsHistoryDateFromDateFromDateToDateTo(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sms['history?date_from=:date_from&date_to=:date_to'].$get(args, options),
+    client.sms['history?date_from={date_from}&date_to={date_to}'].$get(args, options),
   )
 }
 
@@ -1336,10 +1340,10 @@ export async function getTimezones(options?: ClientRequestOptions) {
 }
 
 export async function postUploadsConvertConvert(
-  args: InferRequestType<(typeof client)['uploads?convert=:convert']['$post']>,
+  args: InferRequestType<(typeof client)['uploads?convert={convert}']['$post']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['uploads?convert=:convert'].$post(args, options))
+  return await parseResponse(client['uploads?convert={convert}'].$post(args, options))
 }
 
 export async function putVoiceCancelAll(options?: ClientRequestOptions) {
@@ -1347,20 +1351,20 @@ export async function putVoiceCancelAll(options?: ClientRequestOptions) {
 }
 
 export async function getVoiceHistoryExportFilenameFilename(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.voice.history['export?filename=:filename'].$get(args, options))
+  return await parseResponse(client.voice.history['export?filename={filename}'].$get(args, options))
 }
 
 export async function getVoiceHistoryDateFromDateFromDateToDateTo(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.voice['history?date_from=:date_from&date_to=:date_to'].$get(args, options),
+    client.voice['history?date_from={date_from}&date_to={date_to}'].$get(args, options),
   )
 }
 
@@ -1387,11 +1391,11 @@ export async function postVoiceReceipts(
 }
 
 export async function putVoiceReceiptsReadDateBeforeDateBefore(
-  args: InferRequestType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>,
+  args: InferRequestType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.voice['receipts-read?date_before=:date_before'].$put(args, options),
+    client.voice['receipts-read?date_before={date_before}'].$put(args, options),
   )
 }
 

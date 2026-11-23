@@ -1,81 +1,227 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetNetworkFirewall20201112AssociateFirewallPolicyHandler,
-  xAmzTargetNetworkFirewall20201112AssociateSubnetsHandler,
-  xAmzTargetNetworkFirewall20201112CreateFirewallHandler,
-  xAmzTargetNetworkFirewall20201112CreateFirewallPolicyHandler,
-  xAmzTargetNetworkFirewall20201112CreateRuleGroupHandler,
-  xAmzTargetNetworkFirewall20201112CreateTlsInspectionConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112DeleteFirewallHandler,
-  xAmzTargetNetworkFirewall20201112DeleteFirewallPolicyHandler,
-  xAmzTargetNetworkFirewall20201112DeleteResourcePolicyHandler,
-  xAmzTargetNetworkFirewall20201112DeleteRuleGroupHandler,
-  xAmzTargetNetworkFirewall20201112DeleteTlsInspectionConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112DescribeFirewallHandler,
-  xAmzTargetNetworkFirewall20201112DescribeFirewallPolicyHandler,
-  xAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112DescribeResourcePolicyHandler,
-  xAmzTargetNetworkFirewall20201112DescribeRuleGroupHandler,
-  xAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataHandler,
-  xAmzTargetNetworkFirewall20201112DescribeTlsInspectionConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112DisassociateSubnetsHandler,
-  xAmzTargetNetworkFirewall20201112ListFirewallPoliciesHandler,
-  xAmzTargetNetworkFirewall20201112ListFirewallsHandler,
-  xAmzTargetNetworkFirewall20201112ListRuleGroupsHandler,
-  xAmzTargetNetworkFirewall20201112ListTagsForResourceHandler,
-  xAmzTargetNetworkFirewall20201112ListTlsInspectionConfigurationsHandler,
-  xAmzTargetNetworkFirewall20201112PutResourcePolicyHandler,
-  xAmzTargetNetworkFirewall20201112TagResourceHandler,
-  xAmzTargetNetworkFirewall20201112UntagResourceHandler,
-  xAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionHandler,
-  xAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionHandler,
-  xAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionHandler,
-  xAmzTargetNetworkFirewall20201112UpdateFirewallPolicyHandler,
-  xAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationHandler,
-  xAmzTargetNetworkFirewall20201112UpdateRuleGroupHandler,
-  xAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionHandler,
-  xAmzTargetNetworkFirewall20201112UpdateTlsInspectionConfigurationHandler,
+  postXAmzTargetNetworkFirewall20201112AssociateFirewallPolicyRoute,
+  postXAmzTargetNetworkFirewall20201112AssociateSubnetsRoute,
+  postXAmzTargetNetworkFirewall20201112CreateFirewallPolicyRoute,
+  postXAmzTargetNetworkFirewall20201112CreateFirewallRoute,
+  postXAmzTargetNetworkFirewall20201112CreateRuleGroupRoute,
+  postXAmzTargetNetworkFirewall20201112CreateTLSInspectionConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112DeleteFirewallPolicyRoute,
+  postXAmzTargetNetworkFirewall20201112DeleteFirewallRoute,
+  postXAmzTargetNetworkFirewall20201112DeleteResourcePolicyRoute,
+  postXAmzTargetNetworkFirewall20201112DeleteRuleGroupRoute,
+  postXAmzTargetNetworkFirewall20201112DeleteTLSInspectionConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeFirewallPolicyRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeFirewallRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeResourcePolicyRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeRuleGroupRoute,
+  postXAmzTargetNetworkFirewall20201112DescribeTLSInspectionConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112DisassociateSubnetsRoute,
+  postXAmzTargetNetworkFirewall20201112ListFirewallPoliciesRoute,
+  postXAmzTargetNetworkFirewall20201112ListFirewallsRoute,
+  postXAmzTargetNetworkFirewall20201112ListRuleGroupsRoute,
+  postXAmzTargetNetworkFirewall20201112ListTagsForResourceRoute,
+  postXAmzTargetNetworkFirewall20201112ListTLSInspectionConfigurationsRoute,
+  postXAmzTargetNetworkFirewall20201112PutResourcePolicyRoute,
+  postXAmzTargetNetworkFirewall20201112TagResourceRoute,
+  postXAmzTargetNetworkFirewall20201112UntagResourceRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateRuleGroupRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionRoute,
+  postXAmzTargetNetworkFirewall20201112UpdateTLSInspectionConfigurationRoute,
+} from './routes'
+import {
+  postXAmzTargetNetworkFirewall20201112AssociateFirewallPolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112AssociateSubnetsRouteHandler,
+  postXAmzTargetNetworkFirewall20201112CreateFirewallPolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112CreateFirewallRouteHandler,
+  postXAmzTargetNetworkFirewall20201112CreateRuleGroupRouteHandler,
+  postXAmzTargetNetworkFirewall20201112CreateTLSInspectionConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DeleteFirewallPolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DeleteFirewallRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DeleteResourcePolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DeleteRuleGroupRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DeleteTLSInspectionConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeFirewallPolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeFirewallRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeResourcePolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeRuleGroupRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DescribeTLSInspectionConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112DisassociateSubnetsRouteHandler,
+  postXAmzTargetNetworkFirewall20201112ListFirewallPoliciesRouteHandler,
+  postXAmzTargetNetworkFirewall20201112ListFirewallsRouteHandler,
+  postXAmzTargetNetworkFirewall20201112ListRuleGroupsRouteHandler,
+  postXAmzTargetNetworkFirewall20201112ListTagsForResourceRouteHandler,
+  postXAmzTargetNetworkFirewall20201112ListTLSInspectionConfigurationsRouteHandler,
+  postXAmzTargetNetworkFirewall20201112PutResourcePolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112TagResourceRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UntagResourceRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateRuleGroupRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionRouteHandler,
+  postXAmzTargetNetworkFirewall20201112UpdateTLSInspectionConfigurationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetNetworkFirewall20201112AssociateFirewallPolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112AssociateSubnetsHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112CreateFirewallHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112CreateFirewallPolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112CreateRuleGroupHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112CreateTlsInspectionConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DeleteFirewallHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DeleteFirewallPolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DeleteResourcePolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DeleteRuleGroupHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DeleteTlsInspectionConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeFirewallHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeFirewallPolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeResourcePolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeRuleGroupHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DescribeTlsInspectionConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112DisassociateSubnetsHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112ListFirewallPoliciesHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112ListFirewallsHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112ListRuleGroupsHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112ListTlsInspectionConfigurationsHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112ListTagsForResourceHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112PutResourcePolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112TagResourceHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UntagResourceHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateFirewallPolicyHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateRuleGroupHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionHandler)
-  .route('/', xAmzTargetNetworkFirewall20201112UpdateTlsInspectionConfigurationHandler)
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112AssociateFirewallPolicyRoute,
+    postXAmzTargetNetworkFirewall20201112AssociateFirewallPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112AssociateSubnetsRoute,
+    postXAmzTargetNetworkFirewall20201112AssociateSubnetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112CreateFirewallRoute,
+    postXAmzTargetNetworkFirewall20201112CreateFirewallRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112CreateFirewallPolicyRoute,
+    postXAmzTargetNetworkFirewall20201112CreateFirewallPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112CreateRuleGroupRoute,
+    postXAmzTargetNetworkFirewall20201112CreateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112CreateTLSInspectionConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112CreateTLSInspectionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DeleteFirewallRoute,
+    postXAmzTargetNetworkFirewall20201112DeleteFirewallRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DeleteFirewallPolicyRoute,
+    postXAmzTargetNetworkFirewall20201112DeleteFirewallPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DeleteResourcePolicyRoute,
+    postXAmzTargetNetworkFirewall20201112DeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DeleteRuleGroupRoute,
+    postXAmzTargetNetworkFirewall20201112DeleteRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DeleteTLSInspectionConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112DeleteTLSInspectionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeFirewallRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeFirewallRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeFirewallPolicyRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeFirewallPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeResourcePolicyRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeRuleGroupRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeRuleGroupMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DescribeTLSInspectionConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112DescribeTLSInspectionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112DisassociateSubnetsRoute,
+    postXAmzTargetNetworkFirewall20201112DisassociateSubnetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112ListFirewallPoliciesRoute,
+    postXAmzTargetNetworkFirewall20201112ListFirewallPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112ListFirewallsRoute,
+    postXAmzTargetNetworkFirewall20201112ListFirewallsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112ListRuleGroupsRoute,
+    postXAmzTargetNetworkFirewall20201112ListRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112ListTLSInspectionConfigurationsRoute,
+    postXAmzTargetNetworkFirewall20201112ListTLSInspectionConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112ListTagsForResourceRoute,
+    postXAmzTargetNetworkFirewall20201112ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112PutResourcePolicyRoute,
+    postXAmzTargetNetworkFirewall20201112PutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112TagResourceRoute,
+    postXAmzTargetNetworkFirewall20201112TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UntagResourceRoute,
+    postXAmzTargetNetworkFirewall20201112UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallDeleteProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallDescriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallEncryptionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyChangeProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateRuleGroupRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateSubnetChangeProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetNetworkFirewall20201112UpdateTLSInspectionConfigurationRoute,
+    postXAmzTargetNetworkFirewall20201112UpdateTLSInspectionConfigurationRouteHandler,
+  )
 
 export default app

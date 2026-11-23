@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWirelessDevicesIdDataMessageIdRoute,
   deleteWirelessDevicesIdRoute,
   deleteWirelessDevicesIdThingRoute,
@@ -15,45 +15,80 @@ import {
   putWirelessDevicesIdThingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putWirelessDevicesIdThingRouteHandler: RouteHandler<
+  typeof putWirelessDevicesIdThingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wirelessDevicesHandler = app
-  .openapi(putWirelessDevicesIdThingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessDevicesIdThingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessDevicesIdDataMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWirelessDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWirelessDevicesIdentifierDeregisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessDevicesIdentifierIdentifierTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessDevicesIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessDevicesIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessDevicesIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessDevicesIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteWirelessDevicesIdThingRouteHandler: RouteHandler<
+  typeof deleteWirelessDevicesIdThingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWirelessDevicesRouteHandler: RouteHandler<
+  typeof postWirelessDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessDevicesRouteHandler: RouteHandler<typeof getWirelessDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessDevicesIdDataMessageIdRouteHandler: RouteHandler<
+  typeof deleteWirelessDevicesIdDataMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessDevicesIdRouteHandler: RouteHandler<
+  typeof deleteWirelessDevicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWirelessDevicesIdRouteHandler: RouteHandler<
+  typeof patchWirelessDevicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWirelessDevicesIdentifierDeregisterRouteHandler: RouteHandler<
+  typeof patchWirelessDevicesIdentifierDeregisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessDevicesIdentifierIdentifierTypeRouteHandler: RouteHandler<
+  typeof getWirelessDevicesIdentifierIdentifierTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessDevicesIdStatisticsRouteHandler: RouteHandler<
+  typeof getWirelessDevicesIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessDevicesIdDataRouteHandler: RouteHandler<
+  typeof getWirelessDevicesIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWirelessDevicesIdDataRouteHandler: RouteHandler<
+  typeof postWirelessDevicesIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWirelessDevicesIdTestRouteHandler: RouteHandler<
+  typeof postWirelessDevicesIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

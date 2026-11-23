@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOauth2AccessTokensIdIndexRoute,
   deleteOauth2AuthorizationCodesIdIndexRoute,
   deleteOauth2RefreshTokensIdIndexRoute,
@@ -14,42 +14,74 @@ import {
   getOauth2RefreshTokensIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauth2AccessTokensIndexRouteHandler: RouteHandler<
+  typeof getOauth2AccessTokensIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(getOauth2AccessTokensIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2AccessTokensIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOauth2AccessTokensIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2AccessTokensIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2AuthorizationCodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2AuthorizationCodesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOauth2AuthorizationCodesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2AuthorizationCodesIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2RefreshTokensIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2RefreshTokensIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOauth2RefreshTokensIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2RefreshTokensIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOauth2AccessTokensIdIndexRouteHandler: RouteHandler<
+  typeof getOauth2AccessTokensIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOauth2AccessTokensIdIndexRouteHandler: RouteHandler<
+  typeof deleteOauth2AccessTokensIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2AccessTokensIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getOauth2AccessTokensIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2AuthorizationCodesIndexRouteHandler: RouteHandler<
+  typeof getOauth2AuthorizationCodesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2AuthorizationCodesIdIndexRouteHandler: RouteHandler<
+  typeof getOauth2AuthorizationCodesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOauth2AuthorizationCodesIdIndexRouteHandler: RouteHandler<
+  typeof deleteOauth2AuthorizationCodesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2AuthorizationCodesIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getOauth2AuthorizationCodesIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2RefreshTokensIndexRouteHandler: RouteHandler<
+  typeof getOauth2RefreshTokensIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2RefreshTokensIdIndexRouteHandler: RouteHandler<
+  typeof getOauth2RefreshTokensIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOauth2RefreshTokensIdIndexRouteHandler: RouteHandler<
+  typeof deleteOauth2RefreshTokensIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2RefreshTokensIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getOauth2RefreshTokensIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

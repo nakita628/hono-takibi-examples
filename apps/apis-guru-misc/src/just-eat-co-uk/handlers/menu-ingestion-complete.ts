@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMenuIngestionCompleteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMenuIngestionCompleteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const menuIngestionCompleteHandler = app.openapi(postMenuIngestionCompleteRoute, (c) => {
+export const postMenuIngestionCompleteRouteHandler: RouteHandler<
+  typeof postMenuIngestionCompleteRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

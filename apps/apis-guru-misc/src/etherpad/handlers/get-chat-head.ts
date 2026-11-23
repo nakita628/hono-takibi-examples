@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetChatHeadRoute, postGetChatHeadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetChatHeadRoute, postGetChatHeadRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGetChatHeadRouteHandler: RouteHandler<typeof getGetChatHeadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const getChatHeadHandler = app
-  .openapi(getGetChatHeadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGetChatHeadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGetChatHeadRouteHandler: RouteHandler<typeof postGetChatHeadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

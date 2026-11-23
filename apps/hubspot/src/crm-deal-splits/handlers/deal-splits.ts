@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDealSplits202609BatchReadRoute, postDealSplits202609BatchUpsertRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postDealSplits202609BatchReadRoute,
+  postDealSplits202609BatchUpsertRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postDealSplits202609BatchReadRouteHandler: RouteHandler<
+  typeof postDealSplits202609BatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dealSplitsHandler = app
-  .openapi(postDealSplits202609BatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDealSplits202609BatchUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDealSplits202609BatchUpsertRouteHandler: RouteHandler<
+  typeof postDealSplits202609BatchUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

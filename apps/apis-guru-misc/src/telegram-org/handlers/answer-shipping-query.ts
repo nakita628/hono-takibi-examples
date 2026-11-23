@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAnswerShippingQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAnswerShippingQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const answerShippingQueryHandler = app.openapi(postAnswerShippingQueryRoute, (c) => {
+export const postAnswerShippingQueryRouteHandler: RouteHandler<
+  typeof postAnswerShippingQueryRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

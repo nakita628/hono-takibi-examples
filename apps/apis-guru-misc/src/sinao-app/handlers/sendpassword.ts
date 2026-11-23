@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendpasswordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendpasswordRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendpasswordHandler = app.openapi(postSendpasswordRoute, (c) => {
+export const postSendpasswordRouteHandler: RouteHandler<typeof postSendpasswordRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

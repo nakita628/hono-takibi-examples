@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/gluecon/example1_from_._Fixed_multipart.md.yaml',
   output: './src/3-0-gluecon-example1-from-fixed-multipart-md/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-gluecon-example1-from-fixed-multipart-md/types.ts' },
   client: { output: './src/3-0-gluecon-example1-from-fixed-multipart-md/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-gluecon-example1-from-fixed-multipart-md/rpc.ts', parseResponse: true },

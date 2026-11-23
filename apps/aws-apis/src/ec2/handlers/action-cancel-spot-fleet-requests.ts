@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCancelSpotFleetRequestsRoute,
   postActionCancelSpotFleetRequestsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCancelSpotFleetRequestsRouteHandler: RouteHandler<
+  typeof getActionCancelSpotFleetRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCancelSpotFleetRequestsHandler = app
-  .openapi(getActionCancelSpotFleetRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCancelSpotFleetRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCancelSpotFleetRequestsRouteHandler: RouteHandler<
+  typeof postActionCancelSpotFleetRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

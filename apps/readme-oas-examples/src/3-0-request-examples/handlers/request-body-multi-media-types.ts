@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRequestBodyMultiMediaTypesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRequestBodyMultiMediaTypesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const requestBodyMultiMediaTypesHandler = app.openapi(
-  postRequestBodyMultiMediaTypesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRequestBodyMultiMediaTypesRouteHandler: RouteHandler<
+  typeof postRequestBodyMultiMediaTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

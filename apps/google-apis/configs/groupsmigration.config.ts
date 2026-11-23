@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/groupsmigration/v1/openapi.yaml',
   output: './src/groupsmigration/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/groupsmigration/types.ts' },
   client: { output: './src/groupsmigration/client.ts', baseUrl: '/' },
   rpc: { output: './src/groupsmigration/rpc.ts', parseResponse: true },

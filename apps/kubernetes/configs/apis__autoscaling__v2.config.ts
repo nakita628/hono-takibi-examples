@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__autoscaling__v2_openapi.json',
   output: './src/apis__autoscaling__v2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apis__autoscaling__v2/types.ts' },
   client: { output: './src/apis__autoscaling__v2/client.ts', baseUrl: '/' },
   rpc: { output: './src/apis__autoscaling__v2/rpc.ts', parseResponse: true },

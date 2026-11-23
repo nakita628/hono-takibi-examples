@@ -1,217 +1,578 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetGameLiftAcceptMatchHandler,
-  xAmzTargetGameLiftClaimGameServerHandler,
-  xAmzTargetGameLiftCreateAliasHandler,
-  xAmzTargetGameLiftCreateBuildHandler,
-  xAmzTargetGameLiftCreateFleetHandler,
-  xAmzTargetGameLiftCreateFleetLocationsHandler,
-  xAmzTargetGameLiftCreateGameServerGroupHandler,
-  xAmzTargetGameLiftCreateGameSessionHandler,
-  xAmzTargetGameLiftCreateGameSessionQueueHandler,
-  xAmzTargetGameLiftCreateLocationHandler,
-  xAmzTargetGameLiftCreateMatchmakingConfigurationHandler,
-  xAmzTargetGameLiftCreateMatchmakingRuleSetHandler,
-  xAmzTargetGameLiftCreatePlayerSessionHandler,
-  xAmzTargetGameLiftCreatePlayerSessionsHandler,
-  xAmzTargetGameLiftCreateScriptHandler,
-  xAmzTargetGameLiftCreateVpcPeeringAuthorizationHandler,
-  xAmzTargetGameLiftCreateVpcPeeringConnectionHandler,
-  xAmzTargetGameLiftDeleteAliasHandler,
-  xAmzTargetGameLiftDeleteBuildHandler,
-  xAmzTargetGameLiftDeleteFleetHandler,
-  xAmzTargetGameLiftDeleteFleetLocationsHandler,
-  xAmzTargetGameLiftDeleteGameServerGroupHandler,
-  xAmzTargetGameLiftDeleteGameSessionQueueHandler,
-  xAmzTargetGameLiftDeleteLocationHandler,
-  xAmzTargetGameLiftDeleteMatchmakingConfigurationHandler,
-  xAmzTargetGameLiftDeleteMatchmakingRuleSetHandler,
-  xAmzTargetGameLiftDeleteScalingPolicyHandler,
-  xAmzTargetGameLiftDeleteScriptHandler,
-  xAmzTargetGameLiftDeleteVpcPeeringAuthorizationHandler,
-  xAmzTargetGameLiftDeleteVpcPeeringConnectionHandler,
-  xAmzTargetGameLiftDeregisterComputeHandler,
-  xAmzTargetGameLiftDeregisterGameServerHandler,
-  xAmzTargetGameLiftDescribeAliasHandler,
-  xAmzTargetGameLiftDescribeBuildHandler,
-  xAmzTargetGameLiftDescribeComputeHandler,
-  xAmzTargetGameLiftDescribeEc2InstanceLimitsHandler,
-  xAmzTargetGameLiftDescribeFleetAttributesHandler,
-  xAmzTargetGameLiftDescribeFleetCapacityHandler,
-  xAmzTargetGameLiftDescribeFleetEventsHandler,
-  xAmzTargetGameLiftDescribeFleetLocationAttributesHandler,
-  xAmzTargetGameLiftDescribeFleetLocationCapacityHandler,
-  xAmzTargetGameLiftDescribeFleetLocationUtilizationHandler,
-  xAmzTargetGameLiftDescribeFleetPortSettingsHandler,
-  xAmzTargetGameLiftDescribeFleetUtilizationHandler,
-  xAmzTargetGameLiftDescribeGameServerGroupHandler,
-  xAmzTargetGameLiftDescribeGameServerHandler,
-  xAmzTargetGameLiftDescribeGameServerInstancesHandler,
-  xAmzTargetGameLiftDescribeGameSessionDetailsHandler,
-  xAmzTargetGameLiftDescribeGameSessionPlacementHandler,
-  xAmzTargetGameLiftDescribeGameSessionQueuesHandler,
-  xAmzTargetGameLiftDescribeGameSessionsHandler,
-  xAmzTargetGameLiftDescribeInstancesHandler,
-  xAmzTargetGameLiftDescribeMatchmakingConfigurationsHandler,
-  xAmzTargetGameLiftDescribeMatchmakingHandler,
-  xAmzTargetGameLiftDescribeMatchmakingRuleSetsHandler,
-  xAmzTargetGameLiftDescribePlayerSessionsHandler,
-  xAmzTargetGameLiftDescribeRuntimeConfigurationHandler,
-  xAmzTargetGameLiftDescribeScalingPoliciesHandler,
-  xAmzTargetGameLiftDescribeScriptHandler,
-  xAmzTargetGameLiftDescribeVpcPeeringAuthorizationsHandler,
-  xAmzTargetGameLiftDescribeVpcPeeringConnectionsHandler,
-  xAmzTargetGameLiftGetComputeAccessHandler,
-  xAmzTargetGameLiftGetComputeAuthTokenHandler,
-  xAmzTargetGameLiftGetGameSessionLogUrlHandler,
-  xAmzTargetGameLiftGetInstanceAccessHandler,
-  xAmzTargetGameLiftListAliasesHandler,
-  xAmzTargetGameLiftListBuildsHandler,
-  xAmzTargetGameLiftListComputeHandler,
-  xAmzTargetGameLiftListFleetsHandler,
-  xAmzTargetGameLiftListGameServerGroupsHandler,
-  xAmzTargetGameLiftListGameServersHandler,
-  xAmzTargetGameLiftListLocationsHandler,
-  xAmzTargetGameLiftListScriptsHandler,
-  xAmzTargetGameLiftListTagsForResourceHandler,
-  xAmzTargetGameLiftPutScalingPolicyHandler,
-  xAmzTargetGameLiftRegisterComputeHandler,
-  xAmzTargetGameLiftRegisterGameServerHandler,
-  xAmzTargetGameLiftRequestUploadCredentialsHandler,
-  xAmzTargetGameLiftResolveAliasHandler,
-  xAmzTargetGameLiftResumeGameServerGroupHandler,
-  xAmzTargetGameLiftSearchGameSessionsHandler,
-  xAmzTargetGameLiftStartFleetActionsHandler,
-  xAmzTargetGameLiftStartGameSessionPlacementHandler,
-  xAmzTargetGameLiftStartMatchBackfillHandler,
-  xAmzTargetGameLiftStartMatchmakingHandler,
-  xAmzTargetGameLiftStopFleetActionsHandler,
-  xAmzTargetGameLiftStopGameSessionPlacementHandler,
-  xAmzTargetGameLiftStopMatchmakingHandler,
-  xAmzTargetGameLiftSuspendGameServerGroupHandler,
-  xAmzTargetGameLiftTagResourceHandler,
-  xAmzTargetGameLiftUntagResourceHandler,
-  xAmzTargetGameLiftUpdateAliasHandler,
-  xAmzTargetGameLiftUpdateBuildHandler,
-  xAmzTargetGameLiftUpdateFleetAttributesHandler,
-  xAmzTargetGameLiftUpdateFleetCapacityHandler,
-  xAmzTargetGameLiftUpdateFleetPortSettingsHandler,
-  xAmzTargetGameLiftUpdateGameServerGroupHandler,
-  xAmzTargetGameLiftUpdateGameServerHandler,
-  xAmzTargetGameLiftUpdateGameSessionHandler,
-  xAmzTargetGameLiftUpdateGameSessionQueueHandler,
-  xAmzTargetGameLiftUpdateMatchmakingConfigurationHandler,
-  xAmzTargetGameLiftUpdateRuntimeConfigurationHandler,
-  xAmzTargetGameLiftUpdateScriptHandler,
-  xAmzTargetGameLiftValidateMatchmakingRuleSetHandler,
+  postXAmzTargetGameLiftAcceptMatchRoute,
+  postXAmzTargetGameLiftClaimGameServerRoute,
+  postXAmzTargetGameLiftCreateAliasRoute,
+  postXAmzTargetGameLiftCreateBuildRoute,
+  postXAmzTargetGameLiftCreateFleetLocationsRoute,
+  postXAmzTargetGameLiftCreateFleetRoute,
+  postXAmzTargetGameLiftCreateGameServerGroupRoute,
+  postXAmzTargetGameLiftCreateGameSessionQueueRoute,
+  postXAmzTargetGameLiftCreateGameSessionRoute,
+  postXAmzTargetGameLiftCreateLocationRoute,
+  postXAmzTargetGameLiftCreateMatchmakingConfigurationRoute,
+  postXAmzTargetGameLiftCreateMatchmakingRuleSetRoute,
+  postXAmzTargetGameLiftCreatePlayerSessionRoute,
+  postXAmzTargetGameLiftCreatePlayerSessionsRoute,
+  postXAmzTargetGameLiftCreateScriptRoute,
+  postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute,
+  postXAmzTargetGameLiftCreateVpcPeeringConnectionRoute,
+  postXAmzTargetGameLiftDeleteAliasRoute,
+  postXAmzTargetGameLiftDeleteBuildRoute,
+  postXAmzTargetGameLiftDeleteFleetLocationsRoute,
+  postXAmzTargetGameLiftDeleteFleetRoute,
+  postXAmzTargetGameLiftDeleteGameServerGroupRoute,
+  postXAmzTargetGameLiftDeleteGameSessionQueueRoute,
+  postXAmzTargetGameLiftDeleteLocationRoute,
+  postXAmzTargetGameLiftDeleteMatchmakingConfigurationRoute,
+  postXAmzTargetGameLiftDeleteMatchmakingRuleSetRoute,
+  postXAmzTargetGameLiftDeleteScalingPolicyRoute,
+  postXAmzTargetGameLiftDeleteScriptRoute,
+  postXAmzTargetGameLiftDeleteVpcPeeringAuthorizationRoute,
+  postXAmzTargetGameLiftDeleteVpcPeeringConnectionRoute,
+  postXAmzTargetGameLiftDeregisterComputeRoute,
+  postXAmzTargetGameLiftDeregisterGameServerRoute,
+  postXAmzTargetGameLiftDescribeAliasRoute,
+  postXAmzTargetGameLiftDescribeBuildRoute,
+  postXAmzTargetGameLiftDescribeComputeRoute,
+  postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute,
+  postXAmzTargetGameLiftDescribeFleetAttributesRoute,
+  postXAmzTargetGameLiftDescribeFleetCapacityRoute,
+  postXAmzTargetGameLiftDescribeFleetEventsRoute,
+  postXAmzTargetGameLiftDescribeFleetLocationAttributesRoute,
+  postXAmzTargetGameLiftDescribeFleetLocationCapacityRoute,
+  postXAmzTargetGameLiftDescribeFleetLocationUtilizationRoute,
+  postXAmzTargetGameLiftDescribeFleetPortSettingsRoute,
+  postXAmzTargetGameLiftDescribeFleetUtilizationRoute,
+  postXAmzTargetGameLiftDescribeGameServerGroupRoute,
+  postXAmzTargetGameLiftDescribeGameServerInstancesRoute,
+  postXAmzTargetGameLiftDescribeGameServerRoute,
+  postXAmzTargetGameLiftDescribeGameSessionDetailsRoute,
+  postXAmzTargetGameLiftDescribeGameSessionPlacementRoute,
+  postXAmzTargetGameLiftDescribeGameSessionQueuesRoute,
+  postXAmzTargetGameLiftDescribeGameSessionsRoute,
+  postXAmzTargetGameLiftDescribeInstancesRoute,
+  postXAmzTargetGameLiftDescribeMatchmakingConfigurationsRoute,
+  postXAmzTargetGameLiftDescribeMatchmakingRoute,
+  postXAmzTargetGameLiftDescribeMatchmakingRuleSetsRoute,
+  postXAmzTargetGameLiftDescribePlayerSessionsRoute,
+  postXAmzTargetGameLiftDescribeRuntimeConfigurationRoute,
+  postXAmzTargetGameLiftDescribeScalingPoliciesRoute,
+  postXAmzTargetGameLiftDescribeScriptRoute,
+  postXAmzTargetGameLiftDescribeVpcPeeringAuthorizationsRoute,
+  postXAmzTargetGameLiftDescribeVpcPeeringConnectionsRoute,
+  postXAmzTargetGameLiftGetComputeAccessRoute,
+  postXAmzTargetGameLiftGetComputeAuthTokenRoute,
+  postXAmzTargetGameLiftGetGameSessionLogUrlRoute,
+  postXAmzTargetGameLiftGetInstanceAccessRoute,
+  postXAmzTargetGameLiftListAliasesRoute,
+  postXAmzTargetGameLiftListBuildsRoute,
+  postXAmzTargetGameLiftListComputeRoute,
+  postXAmzTargetGameLiftListFleetsRoute,
+  postXAmzTargetGameLiftListGameServerGroupsRoute,
+  postXAmzTargetGameLiftListGameServersRoute,
+  postXAmzTargetGameLiftListLocationsRoute,
+  postXAmzTargetGameLiftListScriptsRoute,
+  postXAmzTargetGameLiftListTagsForResourceRoute,
+  postXAmzTargetGameLiftPutScalingPolicyRoute,
+  postXAmzTargetGameLiftRegisterComputeRoute,
+  postXAmzTargetGameLiftRegisterGameServerRoute,
+  postXAmzTargetGameLiftRequestUploadCredentialsRoute,
+  postXAmzTargetGameLiftResolveAliasRoute,
+  postXAmzTargetGameLiftResumeGameServerGroupRoute,
+  postXAmzTargetGameLiftSearchGameSessionsRoute,
+  postXAmzTargetGameLiftStartFleetActionsRoute,
+  postXAmzTargetGameLiftStartGameSessionPlacementRoute,
+  postXAmzTargetGameLiftStartMatchBackfillRoute,
+  postXAmzTargetGameLiftStartMatchmakingRoute,
+  postXAmzTargetGameLiftStopFleetActionsRoute,
+  postXAmzTargetGameLiftStopGameSessionPlacementRoute,
+  postXAmzTargetGameLiftStopMatchmakingRoute,
+  postXAmzTargetGameLiftSuspendGameServerGroupRoute,
+  postXAmzTargetGameLiftTagResourceRoute,
+  postXAmzTargetGameLiftUntagResourceRoute,
+  postXAmzTargetGameLiftUpdateAliasRoute,
+  postXAmzTargetGameLiftUpdateBuildRoute,
+  postXAmzTargetGameLiftUpdateFleetAttributesRoute,
+  postXAmzTargetGameLiftUpdateFleetCapacityRoute,
+  postXAmzTargetGameLiftUpdateFleetPortSettingsRoute,
+  postXAmzTargetGameLiftUpdateGameServerGroupRoute,
+  postXAmzTargetGameLiftUpdateGameServerRoute,
+  postXAmzTargetGameLiftUpdateGameSessionQueueRoute,
+  postXAmzTargetGameLiftUpdateGameSessionRoute,
+  postXAmzTargetGameLiftUpdateMatchmakingConfigurationRoute,
+  postXAmzTargetGameLiftUpdateRuntimeConfigurationRoute,
+  postXAmzTargetGameLiftUpdateScriptRoute,
+  postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute,
+} from './routes'
+import {
+  postXAmzTargetGameLiftAcceptMatchRouteHandler,
+  postXAmzTargetGameLiftClaimGameServerRouteHandler,
+  postXAmzTargetGameLiftCreateAliasRouteHandler,
+  postXAmzTargetGameLiftCreateBuildRouteHandler,
+  postXAmzTargetGameLiftCreateFleetLocationsRouteHandler,
+  postXAmzTargetGameLiftCreateFleetRouteHandler,
+  postXAmzTargetGameLiftCreateGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftCreateGameSessionQueueRouteHandler,
+  postXAmzTargetGameLiftCreateGameSessionRouteHandler,
+  postXAmzTargetGameLiftCreateLocationRouteHandler,
+  postXAmzTargetGameLiftCreateMatchmakingConfigurationRouteHandler,
+  postXAmzTargetGameLiftCreateMatchmakingRuleSetRouteHandler,
+  postXAmzTargetGameLiftCreatePlayerSessionRouteHandler,
+  postXAmzTargetGameLiftCreatePlayerSessionsRouteHandler,
+  postXAmzTargetGameLiftCreateScriptRouteHandler,
+  postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRouteHandler,
+  postXAmzTargetGameLiftCreateVpcPeeringConnectionRouteHandler,
+  postXAmzTargetGameLiftDeleteAliasRouteHandler,
+  postXAmzTargetGameLiftDeleteBuildRouteHandler,
+  postXAmzTargetGameLiftDeleteFleetLocationsRouteHandler,
+  postXAmzTargetGameLiftDeleteFleetRouteHandler,
+  postXAmzTargetGameLiftDeleteGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftDeleteGameSessionQueueRouteHandler,
+  postXAmzTargetGameLiftDeleteLocationRouteHandler,
+  postXAmzTargetGameLiftDeleteMatchmakingConfigurationRouteHandler,
+  postXAmzTargetGameLiftDeleteMatchmakingRuleSetRouteHandler,
+  postXAmzTargetGameLiftDeleteScalingPolicyRouteHandler,
+  postXAmzTargetGameLiftDeleteScriptRouteHandler,
+  postXAmzTargetGameLiftDeleteVpcPeeringAuthorizationRouteHandler,
+  postXAmzTargetGameLiftDeleteVpcPeeringConnectionRouteHandler,
+  postXAmzTargetGameLiftDeregisterComputeRouteHandler,
+  postXAmzTargetGameLiftDeregisterGameServerRouteHandler,
+  postXAmzTargetGameLiftDescribeAliasRouteHandler,
+  postXAmzTargetGameLiftDescribeBuildRouteHandler,
+  postXAmzTargetGameLiftDescribeComputeRouteHandler,
+  postXAmzTargetGameLiftDescribeEC2InstanceLimitsRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetAttributesRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetCapacityRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetEventsRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetLocationAttributesRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetLocationCapacityRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetLocationUtilizationRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetPortSettingsRouteHandler,
+  postXAmzTargetGameLiftDescribeFleetUtilizationRouteHandler,
+  postXAmzTargetGameLiftDescribeGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftDescribeGameServerInstancesRouteHandler,
+  postXAmzTargetGameLiftDescribeGameServerRouteHandler,
+  postXAmzTargetGameLiftDescribeGameSessionDetailsRouteHandler,
+  postXAmzTargetGameLiftDescribeGameSessionPlacementRouteHandler,
+  postXAmzTargetGameLiftDescribeGameSessionQueuesRouteHandler,
+  postXAmzTargetGameLiftDescribeGameSessionsRouteHandler,
+  postXAmzTargetGameLiftDescribeInstancesRouteHandler,
+  postXAmzTargetGameLiftDescribeMatchmakingConfigurationsRouteHandler,
+  postXAmzTargetGameLiftDescribeMatchmakingRouteHandler,
+  postXAmzTargetGameLiftDescribeMatchmakingRuleSetsRouteHandler,
+  postXAmzTargetGameLiftDescribePlayerSessionsRouteHandler,
+  postXAmzTargetGameLiftDescribeRuntimeConfigurationRouteHandler,
+  postXAmzTargetGameLiftDescribeScalingPoliciesRouteHandler,
+  postXAmzTargetGameLiftDescribeScriptRouteHandler,
+  postXAmzTargetGameLiftDescribeVpcPeeringAuthorizationsRouteHandler,
+  postXAmzTargetGameLiftDescribeVpcPeeringConnectionsRouteHandler,
+  postXAmzTargetGameLiftGetComputeAccessRouteHandler,
+  postXAmzTargetGameLiftGetComputeAuthTokenRouteHandler,
+  postXAmzTargetGameLiftGetGameSessionLogUrlRouteHandler,
+  postXAmzTargetGameLiftGetInstanceAccessRouteHandler,
+  postXAmzTargetGameLiftListAliasesRouteHandler,
+  postXAmzTargetGameLiftListBuildsRouteHandler,
+  postXAmzTargetGameLiftListComputeRouteHandler,
+  postXAmzTargetGameLiftListFleetsRouteHandler,
+  postXAmzTargetGameLiftListGameServerGroupsRouteHandler,
+  postXAmzTargetGameLiftListGameServersRouteHandler,
+  postXAmzTargetGameLiftListLocationsRouteHandler,
+  postXAmzTargetGameLiftListScriptsRouteHandler,
+  postXAmzTargetGameLiftListTagsForResourceRouteHandler,
+  postXAmzTargetGameLiftPutScalingPolicyRouteHandler,
+  postXAmzTargetGameLiftRegisterComputeRouteHandler,
+  postXAmzTargetGameLiftRegisterGameServerRouteHandler,
+  postXAmzTargetGameLiftRequestUploadCredentialsRouteHandler,
+  postXAmzTargetGameLiftResolveAliasRouteHandler,
+  postXAmzTargetGameLiftResumeGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftSearchGameSessionsRouteHandler,
+  postXAmzTargetGameLiftStartFleetActionsRouteHandler,
+  postXAmzTargetGameLiftStartGameSessionPlacementRouteHandler,
+  postXAmzTargetGameLiftStartMatchBackfillRouteHandler,
+  postXAmzTargetGameLiftStartMatchmakingRouteHandler,
+  postXAmzTargetGameLiftStopFleetActionsRouteHandler,
+  postXAmzTargetGameLiftStopGameSessionPlacementRouteHandler,
+  postXAmzTargetGameLiftStopMatchmakingRouteHandler,
+  postXAmzTargetGameLiftSuspendGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftTagResourceRouteHandler,
+  postXAmzTargetGameLiftUntagResourceRouteHandler,
+  postXAmzTargetGameLiftUpdateAliasRouteHandler,
+  postXAmzTargetGameLiftUpdateBuildRouteHandler,
+  postXAmzTargetGameLiftUpdateFleetAttributesRouteHandler,
+  postXAmzTargetGameLiftUpdateFleetCapacityRouteHandler,
+  postXAmzTargetGameLiftUpdateFleetPortSettingsRouteHandler,
+  postXAmzTargetGameLiftUpdateGameServerGroupRouteHandler,
+  postXAmzTargetGameLiftUpdateGameServerRouteHandler,
+  postXAmzTargetGameLiftUpdateGameSessionQueueRouteHandler,
+  postXAmzTargetGameLiftUpdateGameSessionRouteHandler,
+  postXAmzTargetGameLiftUpdateMatchmakingConfigurationRouteHandler,
+  postXAmzTargetGameLiftUpdateRuntimeConfigurationRouteHandler,
+  postXAmzTargetGameLiftUpdateScriptRouteHandler,
+  postXAmzTargetGameLiftValidateMatchmakingRuleSetRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetGameLiftAcceptMatchHandler)
-  .route('/', xAmzTargetGameLiftClaimGameServerHandler)
-  .route('/', xAmzTargetGameLiftCreateAliasHandler)
-  .route('/', xAmzTargetGameLiftCreateBuildHandler)
-  .route('/', xAmzTargetGameLiftCreateFleetHandler)
-  .route('/', xAmzTargetGameLiftCreateFleetLocationsHandler)
-  .route('/', xAmzTargetGameLiftCreateGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftCreateGameSessionHandler)
-  .route('/', xAmzTargetGameLiftCreateGameSessionQueueHandler)
-  .route('/', xAmzTargetGameLiftCreateLocationHandler)
-  .route('/', xAmzTargetGameLiftCreateMatchmakingConfigurationHandler)
-  .route('/', xAmzTargetGameLiftCreateMatchmakingRuleSetHandler)
-  .route('/', xAmzTargetGameLiftCreatePlayerSessionHandler)
-  .route('/', xAmzTargetGameLiftCreatePlayerSessionsHandler)
-  .route('/', xAmzTargetGameLiftCreateScriptHandler)
-  .route('/', xAmzTargetGameLiftCreateVpcPeeringAuthorizationHandler)
-  .route('/', xAmzTargetGameLiftCreateVpcPeeringConnectionHandler)
-  .route('/', xAmzTargetGameLiftDeleteAliasHandler)
-  .route('/', xAmzTargetGameLiftDeleteBuildHandler)
-  .route('/', xAmzTargetGameLiftDeleteFleetHandler)
-  .route('/', xAmzTargetGameLiftDeleteFleetLocationsHandler)
-  .route('/', xAmzTargetGameLiftDeleteGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftDeleteGameSessionQueueHandler)
-  .route('/', xAmzTargetGameLiftDeleteLocationHandler)
-  .route('/', xAmzTargetGameLiftDeleteMatchmakingConfigurationHandler)
-  .route('/', xAmzTargetGameLiftDeleteMatchmakingRuleSetHandler)
-  .route('/', xAmzTargetGameLiftDeleteScalingPolicyHandler)
-  .route('/', xAmzTargetGameLiftDeleteScriptHandler)
-  .route('/', xAmzTargetGameLiftDeleteVpcPeeringAuthorizationHandler)
-  .route('/', xAmzTargetGameLiftDeleteVpcPeeringConnectionHandler)
-  .route('/', xAmzTargetGameLiftDeregisterComputeHandler)
-  .route('/', xAmzTargetGameLiftDeregisterGameServerHandler)
-  .route('/', xAmzTargetGameLiftDescribeAliasHandler)
-  .route('/', xAmzTargetGameLiftDescribeBuildHandler)
-  .route('/', xAmzTargetGameLiftDescribeComputeHandler)
-  .route('/', xAmzTargetGameLiftDescribeEc2InstanceLimitsHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetAttributesHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetCapacityHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetEventsHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetLocationAttributesHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetLocationCapacityHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetLocationUtilizationHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetPortSettingsHandler)
-  .route('/', xAmzTargetGameLiftDescribeFleetUtilizationHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameServerHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameServerInstancesHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameSessionDetailsHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameSessionPlacementHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameSessionQueuesHandler)
-  .route('/', xAmzTargetGameLiftDescribeGameSessionsHandler)
-  .route('/', xAmzTargetGameLiftDescribeInstancesHandler)
-  .route('/', xAmzTargetGameLiftDescribeMatchmakingHandler)
-  .route('/', xAmzTargetGameLiftDescribeMatchmakingConfigurationsHandler)
-  .route('/', xAmzTargetGameLiftDescribeMatchmakingRuleSetsHandler)
-  .route('/', xAmzTargetGameLiftDescribePlayerSessionsHandler)
-  .route('/', xAmzTargetGameLiftDescribeRuntimeConfigurationHandler)
-  .route('/', xAmzTargetGameLiftDescribeScalingPoliciesHandler)
-  .route('/', xAmzTargetGameLiftDescribeScriptHandler)
-  .route('/', xAmzTargetGameLiftDescribeVpcPeeringAuthorizationsHandler)
-  .route('/', xAmzTargetGameLiftDescribeVpcPeeringConnectionsHandler)
-  .route('/', xAmzTargetGameLiftGetComputeAccessHandler)
-  .route('/', xAmzTargetGameLiftGetComputeAuthTokenHandler)
-  .route('/', xAmzTargetGameLiftGetGameSessionLogUrlHandler)
-  .route('/', xAmzTargetGameLiftGetInstanceAccessHandler)
-  .route('/', xAmzTargetGameLiftListAliasesHandler)
-  .route('/', xAmzTargetGameLiftListBuildsHandler)
-  .route('/', xAmzTargetGameLiftListComputeHandler)
-  .route('/', xAmzTargetGameLiftListFleetsHandler)
-  .route('/', xAmzTargetGameLiftListGameServerGroupsHandler)
-  .route('/', xAmzTargetGameLiftListGameServersHandler)
-  .route('/', xAmzTargetGameLiftListLocationsHandler)
-  .route('/', xAmzTargetGameLiftListScriptsHandler)
-  .route('/', xAmzTargetGameLiftListTagsForResourceHandler)
-  .route('/', xAmzTargetGameLiftPutScalingPolicyHandler)
-  .route('/', xAmzTargetGameLiftRegisterComputeHandler)
-  .route('/', xAmzTargetGameLiftRegisterGameServerHandler)
-  .route('/', xAmzTargetGameLiftRequestUploadCredentialsHandler)
-  .route('/', xAmzTargetGameLiftResolveAliasHandler)
-  .route('/', xAmzTargetGameLiftResumeGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftSearchGameSessionsHandler)
-  .route('/', xAmzTargetGameLiftStartFleetActionsHandler)
-  .route('/', xAmzTargetGameLiftStartGameSessionPlacementHandler)
-  .route('/', xAmzTargetGameLiftStartMatchBackfillHandler)
-  .route('/', xAmzTargetGameLiftStartMatchmakingHandler)
-  .route('/', xAmzTargetGameLiftStopFleetActionsHandler)
-  .route('/', xAmzTargetGameLiftStopGameSessionPlacementHandler)
-  .route('/', xAmzTargetGameLiftStopMatchmakingHandler)
-  .route('/', xAmzTargetGameLiftSuspendGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftTagResourceHandler)
-  .route('/', xAmzTargetGameLiftUntagResourceHandler)
-  .route('/', xAmzTargetGameLiftUpdateAliasHandler)
-  .route('/', xAmzTargetGameLiftUpdateBuildHandler)
-  .route('/', xAmzTargetGameLiftUpdateFleetAttributesHandler)
-  .route('/', xAmzTargetGameLiftUpdateFleetCapacityHandler)
-  .route('/', xAmzTargetGameLiftUpdateFleetPortSettingsHandler)
-  .route('/', xAmzTargetGameLiftUpdateGameServerHandler)
-  .route('/', xAmzTargetGameLiftUpdateGameServerGroupHandler)
-  .route('/', xAmzTargetGameLiftUpdateGameSessionHandler)
-  .route('/', xAmzTargetGameLiftUpdateGameSessionQueueHandler)
-  .route('/', xAmzTargetGameLiftUpdateMatchmakingConfigurationHandler)
-  .route('/', xAmzTargetGameLiftUpdateRuntimeConfigurationHandler)
-  .route('/', xAmzTargetGameLiftUpdateScriptHandler)
-  .route('/', xAmzTargetGameLiftValidateMatchmakingRuleSetHandler)
+  .openapi(postXAmzTargetGameLiftAcceptMatchRoute, postXAmzTargetGameLiftAcceptMatchRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftClaimGameServerRoute,
+    postXAmzTargetGameLiftClaimGameServerRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftCreateAliasRoute, postXAmzTargetGameLiftCreateAliasRouteHandler)
+  .openapi(postXAmzTargetGameLiftCreateBuildRoute, postXAmzTargetGameLiftCreateBuildRouteHandler)
+  .openapi(postXAmzTargetGameLiftCreateFleetRoute, postXAmzTargetGameLiftCreateFleetRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftCreateFleetLocationsRoute,
+    postXAmzTargetGameLiftCreateFleetLocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateGameServerGroupRoute,
+    postXAmzTargetGameLiftCreateGameServerGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateGameSessionRoute,
+    postXAmzTargetGameLiftCreateGameSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateGameSessionQueueRoute,
+    postXAmzTargetGameLiftCreateGameSessionQueueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateLocationRoute,
+    postXAmzTargetGameLiftCreateLocationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateMatchmakingConfigurationRoute,
+    postXAmzTargetGameLiftCreateMatchmakingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateMatchmakingRuleSetRoute,
+    postXAmzTargetGameLiftCreateMatchmakingRuleSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreatePlayerSessionRoute,
+    postXAmzTargetGameLiftCreatePlayerSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreatePlayerSessionsRoute,
+    postXAmzTargetGameLiftCreatePlayerSessionsRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftCreateScriptRoute, postXAmzTargetGameLiftCreateScriptRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRoute,
+    postXAmzTargetGameLiftCreateVpcPeeringAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftCreateVpcPeeringConnectionRoute,
+    postXAmzTargetGameLiftCreateVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftDeleteAliasRoute, postXAmzTargetGameLiftDeleteAliasRouteHandler)
+  .openapi(postXAmzTargetGameLiftDeleteBuildRoute, postXAmzTargetGameLiftDeleteBuildRouteHandler)
+  .openapi(postXAmzTargetGameLiftDeleteFleetRoute, postXAmzTargetGameLiftDeleteFleetRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftDeleteFleetLocationsRoute,
+    postXAmzTargetGameLiftDeleteFleetLocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteGameServerGroupRoute,
+    postXAmzTargetGameLiftDeleteGameServerGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteGameSessionQueueRoute,
+    postXAmzTargetGameLiftDeleteGameSessionQueueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteLocationRoute,
+    postXAmzTargetGameLiftDeleteLocationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteMatchmakingConfigurationRoute,
+    postXAmzTargetGameLiftDeleteMatchmakingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteMatchmakingRuleSetRoute,
+    postXAmzTargetGameLiftDeleteMatchmakingRuleSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteScalingPolicyRoute,
+    postXAmzTargetGameLiftDeleteScalingPolicyRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftDeleteScriptRoute, postXAmzTargetGameLiftDeleteScriptRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftDeleteVpcPeeringAuthorizationRoute,
+    postXAmzTargetGameLiftDeleteVpcPeeringAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeleteVpcPeeringConnectionRoute,
+    postXAmzTargetGameLiftDeleteVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeregisterComputeRoute,
+    postXAmzTargetGameLiftDeregisterComputeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDeregisterGameServerRoute,
+    postXAmzTargetGameLiftDeregisterGameServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeAliasRoute,
+    postXAmzTargetGameLiftDescribeAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeBuildRoute,
+    postXAmzTargetGameLiftDescribeBuildRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeComputeRoute,
+    postXAmzTargetGameLiftDescribeComputeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute,
+    postXAmzTargetGameLiftDescribeEC2InstanceLimitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetAttributesRoute,
+    postXAmzTargetGameLiftDescribeFleetAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetCapacityRoute,
+    postXAmzTargetGameLiftDescribeFleetCapacityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetEventsRoute,
+    postXAmzTargetGameLiftDescribeFleetEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetLocationAttributesRoute,
+    postXAmzTargetGameLiftDescribeFleetLocationAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetLocationCapacityRoute,
+    postXAmzTargetGameLiftDescribeFleetLocationCapacityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetLocationUtilizationRoute,
+    postXAmzTargetGameLiftDescribeFleetLocationUtilizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetPortSettingsRoute,
+    postXAmzTargetGameLiftDescribeFleetPortSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeFleetUtilizationRoute,
+    postXAmzTargetGameLiftDescribeFleetUtilizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameServerRoute,
+    postXAmzTargetGameLiftDescribeGameServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameServerGroupRoute,
+    postXAmzTargetGameLiftDescribeGameServerGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameServerInstancesRoute,
+    postXAmzTargetGameLiftDescribeGameServerInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameSessionDetailsRoute,
+    postXAmzTargetGameLiftDescribeGameSessionDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameSessionPlacementRoute,
+    postXAmzTargetGameLiftDescribeGameSessionPlacementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameSessionQueuesRoute,
+    postXAmzTargetGameLiftDescribeGameSessionQueuesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeGameSessionsRoute,
+    postXAmzTargetGameLiftDescribeGameSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeInstancesRoute,
+    postXAmzTargetGameLiftDescribeInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeMatchmakingRoute,
+    postXAmzTargetGameLiftDescribeMatchmakingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeMatchmakingConfigurationsRoute,
+    postXAmzTargetGameLiftDescribeMatchmakingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeMatchmakingRuleSetsRoute,
+    postXAmzTargetGameLiftDescribeMatchmakingRuleSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribePlayerSessionsRoute,
+    postXAmzTargetGameLiftDescribePlayerSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeRuntimeConfigurationRoute,
+    postXAmzTargetGameLiftDescribeRuntimeConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeScalingPoliciesRoute,
+    postXAmzTargetGameLiftDescribeScalingPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeScriptRoute,
+    postXAmzTargetGameLiftDescribeScriptRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeVpcPeeringAuthorizationsRoute,
+    postXAmzTargetGameLiftDescribeVpcPeeringAuthorizationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftDescribeVpcPeeringConnectionsRoute,
+    postXAmzTargetGameLiftDescribeVpcPeeringConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftGetComputeAccessRoute,
+    postXAmzTargetGameLiftGetComputeAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftGetComputeAuthTokenRoute,
+    postXAmzTargetGameLiftGetComputeAuthTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftGetGameSessionLogUrlRoute,
+    postXAmzTargetGameLiftGetGameSessionLogUrlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftGetInstanceAccessRoute,
+    postXAmzTargetGameLiftGetInstanceAccessRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftListAliasesRoute, postXAmzTargetGameLiftListAliasesRouteHandler)
+  .openapi(postXAmzTargetGameLiftListBuildsRoute, postXAmzTargetGameLiftListBuildsRouteHandler)
+  .openapi(postXAmzTargetGameLiftListComputeRoute, postXAmzTargetGameLiftListComputeRouteHandler)
+  .openapi(postXAmzTargetGameLiftListFleetsRoute, postXAmzTargetGameLiftListFleetsRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftListGameServerGroupsRoute,
+    postXAmzTargetGameLiftListGameServerGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftListGameServersRoute,
+    postXAmzTargetGameLiftListGameServersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftListLocationsRoute,
+    postXAmzTargetGameLiftListLocationsRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftListScriptsRoute, postXAmzTargetGameLiftListScriptsRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftListTagsForResourceRoute,
+    postXAmzTargetGameLiftListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftPutScalingPolicyRoute,
+    postXAmzTargetGameLiftPutScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftRegisterComputeRoute,
+    postXAmzTargetGameLiftRegisterComputeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftRegisterGameServerRoute,
+    postXAmzTargetGameLiftRegisterGameServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftRequestUploadCredentialsRoute,
+    postXAmzTargetGameLiftRequestUploadCredentialsRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftResolveAliasRoute, postXAmzTargetGameLiftResolveAliasRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftResumeGameServerGroupRoute,
+    postXAmzTargetGameLiftResumeGameServerGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftSearchGameSessionsRoute,
+    postXAmzTargetGameLiftSearchGameSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStartFleetActionsRoute,
+    postXAmzTargetGameLiftStartFleetActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStartGameSessionPlacementRoute,
+    postXAmzTargetGameLiftStartGameSessionPlacementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStartMatchBackfillRoute,
+    postXAmzTargetGameLiftStartMatchBackfillRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStartMatchmakingRoute,
+    postXAmzTargetGameLiftStartMatchmakingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStopFleetActionsRoute,
+    postXAmzTargetGameLiftStopFleetActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStopGameSessionPlacementRoute,
+    postXAmzTargetGameLiftStopGameSessionPlacementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftStopMatchmakingRoute,
+    postXAmzTargetGameLiftStopMatchmakingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftSuspendGameServerGroupRoute,
+    postXAmzTargetGameLiftSuspendGameServerGroupRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftTagResourceRoute, postXAmzTargetGameLiftTagResourceRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftUntagResourceRoute,
+    postXAmzTargetGameLiftUntagResourceRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftUpdateAliasRoute, postXAmzTargetGameLiftUpdateAliasRouteHandler)
+  .openapi(postXAmzTargetGameLiftUpdateBuildRoute, postXAmzTargetGameLiftUpdateBuildRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftUpdateFleetAttributesRoute,
+    postXAmzTargetGameLiftUpdateFleetAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateFleetCapacityRoute,
+    postXAmzTargetGameLiftUpdateFleetCapacityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateFleetPortSettingsRoute,
+    postXAmzTargetGameLiftUpdateFleetPortSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateGameServerRoute,
+    postXAmzTargetGameLiftUpdateGameServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateGameServerGroupRoute,
+    postXAmzTargetGameLiftUpdateGameServerGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateGameSessionRoute,
+    postXAmzTargetGameLiftUpdateGameSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateGameSessionQueueRoute,
+    postXAmzTargetGameLiftUpdateGameSessionQueueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateMatchmakingConfigurationRoute,
+    postXAmzTargetGameLiftUpdateMatchmakingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGameLiftUpdateRuntimeConfigurationRoute,
+    postXAmzTargetGameLiftUpdateRuntimeConfigurationRouteHandler,
+  )
+  .openapi(postXAmzTargetGameLiftUpdateScriptRoute, postXAmzTargetGameLiftUpdateScriptRouteHandler)
+  .openapi(
+    postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute,
+    postXAmzTargetGameLiftValidateMatchmakingRuleSetRouteHandler,
+  )
 
 export default app

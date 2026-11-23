@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/chennaicorp/3.0.0/openapi.yaml',
   output: './src/chennaicorp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chennaicorp/types.ts' },
   client: { output: './src/chennaicorp/client.ts', baseUrl: '/' },
   rpc: { output: './src/chennaicorp/rpc.ts', parseResponse: true },

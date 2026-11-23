@@ -17,28 +17,35 @@ type ValidatorStatus =
   | 'exited_slashed'
   | 'withdrawal_possible'
   | 'withdrawal_done'
+type GloasBuilderPreferencesEntryProposerPubkeyAllOf0 = string
+type ValidatorResponseValidator = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  withdrawal_credentials: Root
+  effective_balance: Uint64
+  slashed: boolean
+  activation_eligibility_epoch: Uint64
+  activation_epoch: Uint64
+  exit_epoch: Uint64
+  withdrawable_epoch: Uint64
+}
 type ValidatorResponse = {
   index: Uint64
   balance: Uint64
   status: ValidatorStatus
-  validator: {
-    pubkey: unknown
-    withdrawal_credentials: Root
-    effective_balance: Uint64
-    slashed: boolean
-    activation_eligibility_epoch: Uint64
-    activation_epoch: Uint64
-    exit_epoch: Uint64
-    withdrawable_epoch: Uint64
-  }
+  validator: ValidatorResponseValidator
 }
 type ValidatorBalanceResponse = { index: Uint64; balance: Uint64 }
-type ValidatorIdentityResponse = { index: Uint64; pubkey: unknown; activation_epoch: Uint64 }
+type ValidatorIdentityResponse = {
+  index: Uint64
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  activation_epoch: Uint64
+}
 type BuilderStatus = 'pending' | 'active' | 'exited'
+type GloasBeaconStateCurrentEpochParticipationItems = string
 type ExecutionAddress = string
 type GloasBuilder = {
-  pubkey: unknown
-  version: unknown
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  version: GloasBeaconStateCurrentEpochParticipationItems
   execution_address: ExecutionAddress
   balance: Uint64
   deposit_epoch: Uint64
@@ -46,7 +53,11 @@ type GloasBuilder = {
 }
 type BuilderResponse = { index: Uint64; status: BuilderStatus; builder: GloasBuilder }
 type Committee = { index: Uint64; slot: Uint64; validators: Uint64[] }
-type AltairSyncCommittee = { validators: Uint64[]; validator_aggregates: unknown[] }
+type AltairSyncCommitteeValidators = Uint64[]
+type AltairSyncCommittee = {
+  validators: AltairSyncCommitteeValidators
+  validator_aggregates: AltairSyncCommitteeValidators[]
+}
 type GloasPayloadTimelinessCommittee = Uint64[]
 type ConsensusVersion =
   | 'phase0'
@@ -62,7 +73,7 @@ type GloasPendingConsolidations = ElectraPendingConsolidation[]
 type ElectraPendingConsolidations = ElectraPendingConsolidation[]
 type Signature = string
 type ElectraPendingDeposit = {
-  pubkey: unknown
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
   withdrawal_credentials: Root
   amount: Uint64
   signature: Signature
@@ -89,8 +100,24 @@ type GloasBuilderPendingPayment = {
   proposer_index: Uint64
 }
 type GloasBuilderPendingPayments = GloasBuilderPendingPayment[]
-type Phase0SignedBeaconBlockHeader = { message: unknown; signature: Signature }
+type GloasBeaconStateLatestBlockHeader = {
+  slot: Uint64
+  proposer_index: Uint64
+  parent_root: Root
+  state_root: Root
+  body_root: Root
+}
+type Phase0SignedBeaconBlockHeader = {
+  message: GloasBeaconStateLatestBlockHeader
+  signature: Signature
+}
 type BroadcastValidation = 'gossip' | 'consensus' | 'consensus_and_equivocation'
+type GloasBeaconStateLatestBlockHash = string
+type GloasBeaconStateEth1Data = {
+  deposit_root: Root
+  deposit_count: Uint64
+  block_hash: GloasBeaconStateLatestBlockHash
+}
 type Graffiti = string
 type Phase0ProposerSlashing = {
   signed_header_1: Phase0SignedBeaconBlockHeader
@@ -103,27 +130,92 @@ type Phase0AttestationData = {
   source: Checkpoint
   target: Checkpoint
 }
-type ElectraAttesterSlashing = {
-  attestation_1: { attesting_indices: Uint64[]; data: Phase0AttestationData; signature: Signature }
-  attestation_2: unknown
-}
-type ElectraAttestation = {
-  aggregation_bits: unknown
+type ElectraAttesterSlashingAttestation1 = {
+  attesting_indices: Uint64[]
   data: Phase0AttestationData
   signature: Signature
-  committee_bits: unknown
+}
+type ElectraAttesterSlashing = {
+  attestation_1: ElectraAttesterSlashingAttestation1
+  attestation_2: ElectraAttesterSlashingAttestation1
+}
+type Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits = string
+type GloasBeaconStateJustificationBits = string
+type ElectraAttestation = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
+  data: Phase0AttestationData
+  signature: Signature
+  committee_bits: GloasBeaconStateJustificationBits
+}
+type GloasBeaconBlockAllOf1BodyDepositsItems = {
+  proof: Root[]
+  data: {
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+    withdrawal_credentials: Root
+    amount: Uint64
+    signature: Signature
+  }
 }
 type Phase0SignedVoluntaryExit = {
   message: { epoch: Uint64; validator_index: Uint64 }
   signature: Signature
 }
+type GloasLightClientFinalityUpdateSyncAggregate = {
+  sync_committee_bits: GloasBeaconStateJustificationBits
+  sync_committee_signature: Signature
+}
 type CapellaSignedBLSToExecutionChange = {
   message: {
     validator_index: Uint64
-    from_bls_pubkey: unknown
+    from_bls_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
     to_execution_address: ExecutionAddress
   }
   signature: Signature
+}
+type FuluDataColumnSidecarsItemsKzgCommitmentsItems = string
+type GloasExecutionPayloadLogsBloom = string
+type GloasBeaconStateRandaoMixesItems = string
+type GloasExecutionPayloadExtraData = string
+type FuluBeaconStateLatestExecutionPayloadHeader = {
+  parent_hash: GloasBeaconStateLatestBlockHash
+  fee_recipient: ExecutionAddress
+  state_root: Root
+  receipts_root: Root
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  blob_gas_used: Uint64
+  excess_blob_gas: Uint64
+  block_hash: GloasBeaconStateLatestBlockHash
+  transactions_root: Root
+  withdrawals_root: Root
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  withdrawal_credentials: Root
+  amount: Uint64
+  signature: Signature
+  index: Uint64
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems = {
+  source_address: ExecutionAddress
+  validator_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  amount: Uint64
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems = {
+  source_address: ExecutionAddress
+  source_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  target_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+}
+type ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
 }
 type ElectraBlindedBeaconBlock = {
   slot: Uint64
@@ -132,30 +224,32 @@ type ElectraBlindedBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: {}
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: ElectraAttesterSlashing[]
     attestations: ElectraAttestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: string[]
-    execution_payload_header: unknown
-    execution_requests: { deposits: unknown[]; withdrawals: unknown[]; consolidations: unknown[] }
+    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
+    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests
   }
 }
 type ElectraSignedBlindedBeaconBlock = { message: ElectraBlindedBeaconBlock; signature: Signature }
+type Phase0AttesterSlashingAttestation1 = {
+  attesting_indices: Uint64[]
+  data: Phase0AttestationData
+  signature: Signature
+}
 type Phase0AttesterSlashing = {
-  attestation_1: { attesting_indices: Uint64[]; data: Phase0AttestationData; signature: Signature }
-  attestation_2: unknown
+  attestation_1: Phase0AttesterSlashingAttestation1
+  attestation_2: Phase0AttesterSlashingAttestation1
 }
 type Phase0Attestation = {
-  aggregation_bits: unknown
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
   data: Phase0AttestationData
   signature: Signature
 }
@@ -166,23 +260,37 @@ type DenebBlindedBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: {}
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: string[]
-    execution_payload_header: unknown
+    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
   }
 }
 type DenebSignedBlindedBeaconBlock = { message: DenebBlindedBeaconBlock; signature: Signature }
+type CapellaBeaconStateLatestExecutionPayloadHeader = {
+  parent_hash: GloasBeaconStateLatestBlockHash
+  fee_recipient: ExecutionAddress
+  state_root: Root
+  receipts_root: Root
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHash
+  transactions_root: Root
+  withdrawals_root: Root
+}
 type CapellaBlindedBeaconBlock = {
   slot: Uint64
   proposer_index: Uint64
@@ -190,22 +298,35 @@ type CapellaBlindedBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    execution_payload_header: unknown
+    execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeader
   }
 }
 type CapellaSignedBlindedBeaconBlock = { message: CapellaBlindedBeaconBlock; signature: Signature }
+type BellatrixBeaconStateLatestExecutionPayloadHeader = {
+  parent_hash: GloasBeaconStateLatestBlockHash
+  fee_recipient: ExecutionAddress
+  state_root: Root
+  receipts_root: Root
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHash
+  transactions_root: Root
+}
 type BellatrixBlindedBeaconBlock = {
   slot: Uint64
   proposer_index: Uint64
@@ -213,18 +334,15 @@ type BellatrixBlindedBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
-    execution_payload_header: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+    execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeader
   }
 }
 type BellatrixSignedBlindedBeaconBlock = {
@@ -238,17 +356,14 @@ type AltairBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   }
 }
 type AltairSignedBeaconBlock = { message: AltairBeaconBlock; signature: Signature }
@@ -259,41 +374,43 @@ type Phase0BeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
   }
 }
 type Phase0SignedBeaconBlock = { message: Phase0BeaconBlock; signature: Signature }
-type GloasAttesterSlashing = {
-  attestation_1: { attesting_indices: Uint64[]; data: Phase0AttestationData; signature: Signature }
-  attestation_2: unknown
-}
-type GloasAttestation = {
-  aggregation_bits: unknown
+type GloasAttesterSlashingAttestation1 = {
+  attesting_indices: Uint64[]
   data: Phase0AttestationData
   signature: Signature
-  committee_bits: unknown
+}
+type GloasAttesterSlashing = {
+  attestation_1: GloasAttesterSlashingAttestation1
+  attestation_2: GloasAttesterSlashingAttestation1
+}
+type GloasAttestation = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
+  data: Phase0AttestationData
+  signature: Signature
+  committee_bits: GloasBeaconStateJustificationBits
 }
 type GloasExecutionPayloadBid = {
-  parent_block_hash: unknown
+  parent_block_hash: GloasBeaconStateLatestBlockHash
   parent_block_root: Root
-  block_hash: unknown
-  prev_randao: unknown
+  block_hash: GloasBeaconStateLatestBlockHash
+  prev_randao: GloasBeaconStateRandaoMixesItems
   fee_recipient: ExecutionAddress
   gas_limit: Uint64
   builder_index: Uint64
   slot: Uint64
   value: Uint64
   execution_payment: Uint64
-  blob_kzg_commitments: string[]
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
   execution_requests_root: Root
 }
 type GloasSignedExecutionPayloadBid = { message: GloasExecutionPayloadBid; signature: Signature }
@@ -304,9 +421,24 @@ type GloasPayloadAttestationData = {
   blob_data_available: boolean
 }
 type GloasPayloadAttestation = {
-  aggregation_bits: unknown
+  aggregation_bits: GloasBeaconStateJustificationBits
   data: GloasPayloadAttestationData
   signature: Signature
+}
+type GloasExecutionPayloadEnvelopeExecutionRequests = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
+  builder_deposits: {
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+    withdrawal_credentials: GloasBeaconStateRandaoMixesItems
+    amount: Uint64
+    signature: Signature
+  }[]
+  builder_exits: {
+    source_address: ExecutionAddress
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  }[]
 }
 type GloasBeaconBlock = {
   slot: Uint64
@@ -315,35 +447,85 @@ type GloasBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: GloasAttesterSlashing[]
     attestations: GloasAttestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
     signed_execution_payload_bid: GloasSignedExecutionPayloadBid
     payload_attestations: GloasPayloadAttestation[]
-    parent_execution_requests: unknown
+    parent_execution_requests: GloasExecutionPayloadEnvelopeExecutionRequests
   }
 }
 type GloasSignedBeaconBlock = { message: GloasBeaconBlock; signature: Signature }
-type ElectraSignedBeaconBlock = { message: unknown; signature: Signature }
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions = string[]
+type CapellaWithdrawal = {
+  index: Uint64
+  validator_index: Uint64
+  address: ExecutionAddress
+  amount: Uint64
+}
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals = CapellaWithdrawal[]
+type FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload = {
+  parent_hash: GloasBeaconStateLatestBlockHash
+  fee_recipient: ExecutionAddress
+  state_root: Root
+  receipts_root: Root
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  blob_gas_used: Uint64
+  excess_blob_gas: Uint64
+  block_hash: GloasBeaconStateLatestBlockHash
+  transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
+  withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
+}
+type FuluBlockContentsBlock = {
+  slot: Uint64
+  proposer_index: Uint64
+  parent_root: Root
+  state_root: Root
+  body: {
+    randao_reveal: {}
+    eth1_data: GloasBeaconStateEth1Data
+    graffiti: Graffiti
+    proposer_slashings: Phase0ProposerSlashing[]
+    attester_slashings: ElectraAttesterSlashing[]
+    attestations: ElectraAttestation[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+    voluntary_exits: Phase0SignedVoluntaryExit[]
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
+    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+    execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload
+    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests
+  }
+}
+type ElectraSignedBeaconBlock = { message: FuluBlockContentsBlock; signature: Signature }
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems = string
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofs =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
 type Blob = string
 type Blobs = Blob[]
 type FuluSignedBlockContents = {
   signed_block: ElectraSignedBeaconBlock
-  kzg_proofs: unknown
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
+type ElectraSignedBlockContentsKzgProofs =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
 type ElectraSignedBlockContents = {
   signed_block: ElectraSignedBeaconBlock
-  kzg_proofs: unknown[]
+  kzg_proofs: ElectraSignedBlockContentsKzgProofs
   blobs: Blobs
 }
 type DenebBeaconBlock = {
@@ -353,33 +535,24 @@ type DenebBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: {}
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: string[]
-    execution_payload: unknown
+    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+    execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload
   }
 }
 type DenebSignedBeaconBlock = { message: DenebBeaconBlock; signature: Signature }
 type DenebSignedBlockContents = {
   signed_block: DenebSignedBeaconBlock
-  kzg_proofs: unknown
+  kzg_proofs: ElectraSignedBlockContentsKzgProofs
   blobs: Blobs
-}
-type CapellaWithdrawal = {
-  index: Uint64
-  validator_index: Uint64
-  address: ExecutionAddress
-  amount: Uint64
 }
 type CapellaBeaconBlock = {
   slot: Uint64
@@ -388,34 +561,31 @@ type CapellaBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
     execution_payload: {
-      parent_hash: unknown
+      parent_hash: GloasBeaconStateLatestBlockHash
       fee_recipient: ExecutionAddress
       state_root: Root
       receipts_root: Root
-      logs_bloom: unknown
-      prev_randao: unknown
+      logs_bloom: GloasExecutionPayloadLogsBloom
+      prev_randao: GloasBeaconStateRandaoMixesItems
       block_number: Uint64
       gas_limit: Uint64
       gas_used: Uint64
       timestamp: Uint64
-      extra_data: unknown
+      extra_data: GloasExecutionPayloadExtraData
       base_fee_per_gas: string
-      block_hash: unknown
-      transactions: string[]
-      withdrawals: CapellaWithdrawal[]
+      block_hash: GloasBeaconStateLatestBlockHash
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
+      withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
     }
   }
 }
@@ -427,50 +597,47 @@ type BellatrixBeaconBlock = {
   state_root: Root
   body: {
     randao_reveal: Signature
-    eth1_data: unknown
+    eth1_data: GloasBeaconStateEth1Data
     graffiti: Graffiti
     proposer_slashings: Phase0ProposerSlashing[]
     attester_slashings: Phase0AttesterSlashing[]
     attestations: Phase0Attestation[]
-    deposits: {
-      proof: Root[]
-      data: { pubkey: unknown; withdrawal_credentials: Root; amount: Uint64; signature: Signature }
-    }[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
     voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: unknown
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
     execution_payload: {
-      parent_hash: unknown
+      parent_hash: GloasBeaconStateLatestBlockHash
       fee_recipient: ExecutionAddress
       state_root: Root
       receipts_root: Root
-      logs_bloom: unknown
-      prev_randao: unknown
+      logs_bloom: GloasExecutionPayloadLogsBloom
+      prev_randao: GloasBeaconStateRandaoMixesItems
       block_number: Uint64
       gas_limit: Uint64
       gas_used: Uint64
       timestamp: Uint64
-      extra_data: unknown
+      extra_data: GloasExecutionPayloadExtraData
       base_fee_per_gas: string
-      block_hash: unknown
-      transactions: string[]
+      block_hash: GloasBeaconStateLatestBlockHash
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
     }
   }
 }
 type BellatrixSignedBeaconBlock = { message: BellatrixBeaconBlock; signature: Signature }
 type GloasExecutionPayload = {
-  parent_hash: unknown
+  parent_hash: GloasBeaconStateLatestBlockHash
   fee_recipient: ExecutionAddress
-  state_root: unknown
-  receipts_root: unknown
-  logs_bloom: string
-  prev_randao: unknown
+  state_root: GloasBeaconStateRandaoMixesItems
+  receipts_root: GloasBeaconStateRandaoMixesItems
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
   block_number: Uint64
   gas_limit: Uint64
   gas_used: Uint64
   timestamp: Uint64
-  extra_data: string
+  extra_data: GloasExecutionPayloadExtraData
   base_fee_per_gas: string
-  block_hash: unknown
+  block_hash: GloasBeaconStateLatestBlockHash
   transactions: string[]
   withdrawals: CapellaWithdrawal[]
   blob_gas_used: Uint64
@@ -480,28 +647,7 @@ type GloasExecutionPayload = {
 }
 type GloasExecutionPayloadEnvelope = {
   payload: GloasExecutionPayload
-  execution_requests: {
-    deposits: {
-      pubkey: unknown
-      withdrawal_credentials: Root
-      amount: Uint64
-      signature: Signature
-      index: Uint64
-    }[]
-    withdrawals: { source_address: ExecutionAddress; validator_pubkey: unknown; amount: Uint64 }[]
-    consolidations: {
-      source_address: ExecutionAddress
-      source_pubkey: unknown
-      target_pubkey: unknown
-    }[]
-    builder_deposits: {
-      pubkey: unknown
-      withdrawal_credentials: unknown
-      amount: Uint64
-      signature: Signature
-    }[]
-    builder_exits: { source_address: ExecutionAddress; pubkey: unknown }[]
-  }
+  execution_requests: GloasExecutionPayloadEnvelopeExecutionRequests
   builder_index: Uint64
   beacon_block_root: Root
   parent_beacon_block_root: Root
@@ -512,7 +658,7 @@ type GloasSignedExecutionPayloadEnvelope = {
 }
 type GloasSignedExecutionPayloadEnvelopeContents = {
   signed_execution_payload_envelope: GloasSignedExecutionPayloadEnvelope
-  kzg_proofs: string[]
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
 type GloasProposerPreferences = {
@@ -524,22 +670,24 @@ type GloasProposerPreferences = {
 }
 type GloasSignedProposerPreferences = { message: GloasProposerPreferences; signature: Signature }
 type VersionedHash = string
+type GloasDataColumnSidecarsItemsColumnItems = string
 type GloasDataColumnSidecars = {
   index: Uint64
-  column: string[]
-  kzg_proofs: unknown[]
+  column: GloasDataColumnSidecarsItemsColumnItems[]
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
   slot: Uint64
   beacon_block_root: Root
 }[]
 type FuluDataColumnSidecars = {
   index: Uint64
-  column: string[]
-  kzg_commitments: string[]
-  kzg_proofs: unknown[]
+  column: GloasDataColumnSidecarsItemsColumnItems[]
+  kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
   signed_block_header: Phase0SignedBeaconBlockHeader
-  kzg_commitments_inclusion_proof: unknown[]
+  kzg_commitments_inclusion_proof: GloasBeaconStateRandaoMixesItems[]
 }[]
-type SyncCommitteeRewards = { validator_index: Uint64; reward: string }[]
+type SyncCommitteeRewardsItemsReward = string
+type SyncCommitteeRewards = { validator_index: Uint64; reward: SyncCommitteeRewardsItemsReward }[]
 type BlockRewards = {
   proposer_index: Uint64
   total: Uint64
@@ -551,149 +699,175 @@ type BlockRewards = {
 type AttestationsRewards = {
   ideal_rewards: {
     effective_balance: Uint64
-    head: string
-    target: string
-    source: string
+    head: SyncCommitteeRewardsItemsReward
+    target: SyncCommitteeRewardsItemsReward
+    source: SyncCommitteeRewardsItemsReward
     inclusion_delay?: Uint64 | undefined
-    inactivity: string
+    inactivity: SyncCommitteeRewardsItemsReward
   }[]
   total_rewards: {
     validator_index: Uint64
-    head: string
-    target: string
-    source: string
+    head: SyncCommitteeRewardsItemsReward
+    target: SyncCommitteeRewardsItemsReward
+    source: SyncCommitteeRewardsItemsReward
     inclusion_delay?: Uint64 | undefined
-    inactivity: string
+    inactivity: SyncCommitteeRewardsItemsReward
   }[]
 }
+type GloasLightClientBootstrapHeader = {
+  beacon: GloasBeaconStateLatestBlockHeader
+  execution_block_hash: GloasBeaconStateLatestBlockHash
+  execution_branch: Root[]
+}
+type GloasBeaconStateNextSyncCommittee = {
+  pubkeys: GloasBuilderPreferencesEntryProposerPubkeyAllOf0[]
+  aggregate_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+}
 type GloasLightClientBootstrap = {
-  header: { beacon: unknown; execution_block_hash: unknown; execution_branch: Root[] }
-  current_sync_committee: unknown
+  header: GloasLightClientBootstrapHeader
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
   current_sync_committee_branch: Root[]
+}
+type ElectraLightClientBootstrapHeaderExecutionBranch = Root[]
+type ElectraLightClientBootstrapHeader = {
+  beacon: GloasBeaconStateLatestBlockHeader
+  execution: FuluBeaconStateLatestExecutionPayloadHeader
+  execution_branch: ElectraLightClientBootstrapHeaderExecutionBranch
 }
 type ElectraLightClientBootstrap = {
-  header: { beacon: unknown; execution: unknown; execution_branch: Root[] }
-  current_sync_committee: unknown
+  header: ElectraLightClientBootstrapHeader
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
   current_sync_committee_branch: Root[]
 }
+type DenebLightClientBootstrapCurrentSyncCommitteeBranch = Root[]
 type DenebLightClientBootstrap = {
-  header: unknown
-  current_sync_committee: unknown
-  current_sync_committee_branch: Root[]
+  header: ElectraLightClientBootstrapHeader
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranch
+}
+type CapellaLightClientBootstrapHeader = {
+  beacon: GloasBeaconStateLatestBlockHeader
+  execution: CapellaBeaconStateLatestExecutionPayloadHeader
+  execution_branch: ElectraLightClientBootstrapHeaderExecutionBranch
 }
 type CapellaLightClientBootstrap = {
-  header: { beacon: unknown; execution: unknown; execution_branch: unknown }
-  current_sync_committee: unknown
-  current_sync_committee_branch: unknown
+  header: CapellaLightClientBootstrapHeader
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranch
 }
+type AltairLightClientBootstrapHeader = { beacon: GloasBeaconStateLatestBlockHeader }
 type AltairLightClientBootstrap = {
-  header: { beacon: unknown }
-  current_sync_committee: unknown
-  current_sync_committee_branch: unknown
+  header: AltairLightClientBootstrapHeader
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranch
 }
+type GloasLightClientFinalityUpdateFinalityBranch = Root[]
 type GloasLightClientUpdate = {
-  attested_header: unknown
-  next_sync_committee: unknown
+  attested_header: GloasLightClientBootstrapHeader
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
   next_sync_committee_branch: Root[]
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  finalized_header: GloasLightClientBootstrapHeader
+  finality_branch: GloasLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
+type ElectraLightClientFinalityUpdateFinalityBranch = Root[]
 type ElectraLightClientUpdate = {
-  attested_header: unknown
-  next_sync_committee: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
   next_sync_committee_branch: Root[]
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  finalized_header: ElectraLightClientBootstrapHeader
+  finality_branch: ElectraLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
+type DenebLightClientUpdateNextSyncCommitteeBranch = Root[]
+type DenebLightClientFinalityUpdateFinalityBranch = Root[]
 type DenebLightClientUpdate = {
-  attested_header: unknown
-  next_sync_committee: unknown
-  next_sync_committee_branch: Root[]
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranch
+  finalized_header: ElectraLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type CapellaLightClientUpdate = {
-  attested_header: unknown
-  next_sync_committee: unknown
-  next_sync_committee_branch: unknown
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  attested_header: CapellaLightClientBootstrapHeader
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranch
+  finalized_header: CapellaLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type AltairLightClientUpdate = {
-  attested_header: unknown
-  next_sync_committee: unknown
-  next_sync_committee_branch: unknown
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  attested_header: AltairLightClientBootstrapHeader
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranch
+  finalized_header: AltairLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type GloasLightClientFinalityUpdate = {
-  attested_header: unknown
-  finalized_header: unknown
-  finality_branch: Root[]
-  sync_aggregate: { sync_committee_bits: unknown; sync_committee_signature: Signature }
+  attested_header: GloasLightClientBootstrapHeader
+  finalized_header: GloasLightClientBootstrapHeader
+  finality_branch: GloasLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type ElectraLightClientFinalityUpdate = {
-  attested_header: unknown
-  finalized_header: unknown
-  finality_branch: Root[]
-  sync_aggregate: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  finalized_header: ElectraLightClientBootstrapHeader
+  finality_branch: ElectraLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type DenebLightClientFinalityUpdate = {
-  attested_header: unknown
-  finalized_header: unknown
-  finality_branch: Root[]
-  sync_aggregate: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  finalized_header: ElectraLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type CapellaLightClientFinalityUpdate = {
-  attested_header: unknown
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  attested_header: CapellaLightClientBootstrapHeader
+  finalized_header: CapellaLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type AltairLightClientFinalityUpdate = {
-  attested_header: unknown
-  finalized_header: unknown
-  finality_branch: unknown
-  sync_aggregate: unknown
+  attested_header: AltairLightClientBootstrapHeader
+  finalized_header: AltairLightClientBootstrapHeader
+  finality_branch: DenebLightClientFinalityUpdateFinalityBranch
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type GloasLightClientOptimisticUpdate = {
-  attested_header: unknown
-  sync_aggregate: unknown
+  attested_header: GloasLightClientBootstrapHeader
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type ElectraLightClientOptimisticUpdate = {
-  attested_header: unknown
-  sync_aggregate: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type DenebLightClientOptimisticUpdate = {
-  attested_header: unknown
-  sync_aggregate: unknown
+  attested_header: ElectraLightClientBootstrapHeader
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type CapellaLightClientOptimisticUpdate = {
-  attested_header: unknown
-  sync_aggregate: unknown
+  attested_header: CapellaLightClientBootstrapHeader
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type AltairLightClientOptimisticUpdate = {
-  attested_header: unknown
-  sync_aggregate: unknown
+  attested_header: AltairLightClientBootstrapHeader
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
 type ElectraSingleAttestation = {
@@ -718,41 +892,39 @@ type AltairSyncCommitteeSignature = {
   validator_index: Uint64
   signature: Signature
 }
+type GloasBeaconStateHistoricalSummariesItems = {
+  block_summary_root: Root
+  state_summary_root: Root
+}
 type GloasBeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: {
-    slot: Uint64
-    proposer_index: Uint64
-    parent_root: Root
-    state_root: Root
-    body_root: Root
-  }
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: { deposit_root: Root; deposit_count: Uint64; block_hash: unknown }
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: string[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown[]
-  current_epoch_participation: string[]
-  justification_bits: string
+  previous_epoch_participation: GloasBeaconStateCurrentEpochParticipationItems[]
+  current_epoch_participation: GloasBeaconStateCurrentEpochParticipationItems[]
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: { pubkeys: unknown[]; aggregate_pubkey: unknown }
-  latest_block_hash: string
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_block_hash: GloasBeaconStateLatestBlockHash
   next_withdrawal_index: Uint64
   next_withdrawal_validator_index: Uint64
-  historical_summaries: { block_summary_root: Root; state_summary_root: Root }[]
+  historical_summaries: GloasBeaconStateHistoricalSummariesItems[]
   deposit_requests_start_index: Uint64
   deposit_balance_to_consume: Uint64
   exit_balance_to_consume: Uint64
@@ -765,60 +937,43 @@ type GloasBeaconState = {
   proposer_lookahead: Uint64[]
   builders: GloasBuilder[]
   next_withdrawal_builder_index: Uint64
-  execution_payload_availability: unknown
+  execution_payload_availability: GloasBeaconStateJustificationBits
   builder_pending_payments: GloasBuilderPendingPayments
   builder_pending_withdrawals: GloasBuilderPendingWithdrawals
   latest_execution_payload_bid: GloasExecutionPayloadBid
   payload_expected_withdrawals: CapellaWithdrawal[]
   ptc_window: GloasPayloadTimelinessCommittee[]
 }
+type FuluBeaconStateCurrentEpochParticipation = GloasBeaconStateCurrentEpochParticipationItems[]
 type FuluBeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown[]
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
-  latest_execution_payload_header: {
-    parent_hash: unknown
-    fee_recipient: ExecutionAddress
-    state_root: Root
-    receipts_root: Root
-    logs_bloom: unknown
-    prev_randao: unknown
-    block_number: Uint64
-    gas_limit: Uint64
-    gas_used: Uint64
-    timestamp: Uint64
-    extra_data: unknown
-    base_fee_per_gas: string
-    blob_gas_used: Uint64
-    excess_blob_gas: Uint64
-    block_hash: unknown
-    transactions_root: Root
-    withdrawals_root: Root
-  }
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
   next_withdrawal_index: Uint64
   next_withdrawal_validator_index: Uint64
-  historical_summaries: unknown[]
+  historical_summaries: GloasBeaconStateHistoricalSummariesItems[]
   deposit_requests_start_index: Uint64
   deposit_balance_to_consume: Uint64
   exit_balance_to_consume: Uint64
@@ -835,30 +990,30 @@ type ElectraBeaconState = {
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
-  latest_execution_payload_header: unknown
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
   next_withdrawal_index: Uint64
   next_withdrawal_validator_index: Uint64
-  historical_summaries: unknown[]
+  historical_summaries: GloasBeaconStateHistoricalSummariesItems[]
   deposit_requests_start_index: Uint64
   deposit_balance_to_consume: Uint64
   exit_balance_to_consume: Uint64
@@ -874,169 +1029,139 @@ type DenebBeaconState = {
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
-  latest_execution_payload_header: unknown
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
   next_withdrawal_index: Uint64
   next_withdrawal_validator_index: Uint64
-  historical_summaries: unknown[]
+  historical_summaries: GloasBeaconStateHistoricalSummariesItems[]
 }
 type CapellaBeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
-  latest_execution_payload_header: {
-    parent_hash: unknown
-    fee_recipient: ExecutionAddress
-    state_root: Root
-    receipts_root: Root
-    logs_bloom: unknown
-    prev_randao: unknown
-    block_number: Uint64
-    gas_limit: Uint64
-    gas_used: Uint64
-    timestamp: Uint64
-    extra_data: unknown
-    base_fee_per_gas: string
-    block_hash: unknown
-    transactions_root: Root
-    withdrawals_root: Root
-  }
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeader
   next_withdrawal_index: Uint64
   next_withdrawal_validator_index: Uint64
-  historical_summaries: unknown[]
+  historical_summaries: GloasBeaconStateHistoricalSummariesItems[]
 }
 type BellatrixBeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
-  latest_execution_payload_header: {
-    parent_hash: unknown
-    fee_recipient: ExecutionAddress
-    state_root: Root
-    receipts_root: Root
-    logs_bloom: unknown
-    prev_randao: unknown
-    block_number: Uint64
-    gas_limit: Uint64
-    gas_used: Uint64
-    timestamp: Uint64
-    extra_data: unknown
-    base_fee_per_gas: string
-    block_hash: unknown
-    transactions_root: Root
-  }
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+  latest_execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeader
 }
 type AltairBeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_participation: unknown
-  current_epoch_participation: unknown
-  justification_bits: unknown
+  previous_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  current_epoch_participation: FuluBeaconStateCurrentEpochParticipation
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   inactivity_scores: Uint64[]
-  current_sync_committee: unknown
-  next_sync_committee: unknown
+  current_sync_committee: GloasBeaconStateNextSyncCommittee
+  next_sync_committee: GloasBeaconStateNextSyncCommittee
+}
+type Phase0BeaconStateCurrentEpochAttestationsItems = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
+  data: Phase0AttestationData
+  inclusion_delay: Uint64
+  proposer_index: Uint64
 }
 type Phase0BeaconState = {
   genesis_time: Uint64
   genesis_validators_root: Root
   slot: Uint64
   fork: Fork
-  latest_block_header: unknown
+  latest_block_header: GloasBeaconStateLatestBlockHeader
   block_roots: Root[]
   state_roots: Root[]
   historical_roots: Root[]
-  eth1_data: unknown
-  eth1_data_votes: unknown[]
+  eth1_data: GloasBeaconStateEth1Data
+  eth1_data_votes: GloasBeaconStateEth1Data[]
   eth1_deposit_index: Uint64
-  validators: unknown[]
+  validators: ValidatorResponseValidator[]
   balances: Uint64[]
-  randao_mixes: unknown[]
+  randao_mixes: GloasBeaconStateRandaoMixesItems[]
   slashings: Uint64[]
-  previous_epoch_attestations: unknown[]
-  current_epoch_attestations: {
-    aggregation_bits: string
-    data: Phase0AttestationData
-    inclusion_delay: Uint64
-    proposer_index: Uint64
-  }[]
-  justification_bits: unknown
+  previous_epoch_attestations: Phase0BeaconStateCurrentEpochAttestationsItems[]
+  current_epoch_attestations: Phase0BeaconStateCurrentEpochAttestationsItems[]
+  justification_bits: GloasBeaconStateJustificationBits
   previous_justified_checkpoint: Checkpoint
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
@@ -1050,7 +1175,7 @@ type Node = {
   finalized_epoch: Uint64
   weight: Uint64
   validity: 'valid' | 'invalid' | 'optimistic'
-  execution_block_hash: unknown
+  execution_block_hash: GloasBeaconStateLatestBlockHash
   extra_data?: ExtraData | undefined
 }
 type NodeV2 = {
@@ -1063,22 +1188,24 @@ type NodeV2 = {
   finalized_checkpoint: Checkpoint
   weight: Uint64
   validity: 'valid' | 'invalid' | 'optimistic'
-  execution_block_hash: unknown
+  execution_block_hash: GloasBeaconStateLatestBlockHash
   payload_attester_count: Uint64
   payload_availability_yes_count: Uint64
   payload_data_availability_yes_count: Uint64
   extra_data: ExtraData
 }
 type PeerId = string
+type NetworkIdentityEnr = string
+type NetworkIdentityP2pAddressesItems = string
 type NetworkIdentity = {
   peer_id: PeerId
-  enr: string
-  p2p_addresses: string[]
-  discovery_addresses: unknown[]
+  enr: NetworkIdentityEnr
+  p2p_addresses: NetworkIdentityP2pAddressesItems[]
+  discovery_addresses: NetworkIdentityP2pAddressesItems[]
   metadata: {
     seq_number: Uint64
-    attnets: unknown
-    syncnets?: unknown | undefined
+    attnets: GloasBeaconStateJustificationBits
+    syncnets?: GloasBeaconStateJustificationBits | undefined
     custody_group_count?: Uint64 | undefined
   }
 }
@@ -1086,8 +1213,8 @@ type PeerConnectionState = 'disconnected' | 'connecting' | 'connected' | 'discon
 type PeerConnectionDirection = 'inbound' | 'outbound'
 type Peer = {
   peer_id: PeerId
-  enr: ({ [x: string]: unknown } | null) | unknown
-  last_seen_p2p_address: unknown
+  enr: ({ [x: string]: unknown } | null) | NetworkIdentityEnr
+  last_seen_p2p_address: NetworkIdentityP2pAddressesItems
   state: PeerConnectionState
   direction: PeerConnectionDirection
 }
@@ -1100,7 +1227,7 @@ type ClientVersionV1 = {
 }
 type DependentRoot = string
 type AttesterDuty = {
-  pubkey: unknown
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
   validator_index: Uint64
   committee_index: Uint64
   committee_length: Uint64
@@ -1108,48 +1235,36 @@ type AttesterDuty = {
   validator_committee_index: Uint64
   slot: Uint64
 }
-type ProposerDuty = { pubkey: unknown; validator_index: Uint64; slot: Uint64 }
+type ProposerDuty = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  validator_index: Uint64
+  slot: Uint64
+}
 type AltairSyncDuty = {
-  pubkey: unknown
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
   validator_index: Uint64
   validator_sync_committee_indices: Uint64[]
 }
-type PtcDuty = { pubkey: unknown; validator_index: Uint64; slot: Uint64 }
+type PtcDuty = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  validator_index: Uint64
+  slot: Uint64
+}
 type FuluBlockContents = {
-  block: {
-    slot: Uint64
-    proposer_index: Uint64
-    parent_root: Root
-    state_root: Root
-    body: {
-      randao_reveal: {}
-      eth1_data: unknown
-      graffiti: Graffiti
-      proposer_slashings: Phase0ProposerSlashing[]
-      attester_slashings: ElectraAttesterSlashing[]
-      attestations: ElectraAttestation[]
-      deposits: {
-        proof: Root[]
-        data: {
-          pubkey: unknown
-          withdrawal_credentials: Root
-          amount: Uint64
-          signature: Signature
-        }
-      }[]
-      voluntary_exits: Phase0SignedVoluntaryExit[]
-      sync_aggregate: unknown
-      bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-      blob_kzg_commitments: string[]
-      execution_payload: { transactions: string[]; withdrawals: CapellaWithdrawal[] }
-      execution_requests: { deposits: unknown[]; withdrawals: unknown[]; consolidations: unknown[] }
-    }
-  }
-  kzg_proofs: unknown
+  block: FuluBlockContentsBlock
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
-type ElectraBlockContents = { block: unknown; kzg_proofs: unknown; blobs: Blobs }
-type DenebBlockContents = { block: DenebBeaconBlock; kzg_proofs: unknown; blobs: Blobs }
+type ElectraBlockContents = {
+  block: FuluBlockContentsBlock
+  kzg_proofs: ElectraSignedBlockContentsKzgProofs
+  blobs: Blobs
+}
+type DenebBlockContents = {
+  block: DenebBeaconBlock
+  kzg_proofs: ElectraSignedBlockContentsKzgProofs
+  blobs: Blobs
+}
 type GloasBuilderRequestAuth = { data: string; slot: {} }
 type GloasBuilderEntry = {
   url: string
@@ -1163,7 +1278,7 @@ type GloasBuilderConfig = { min_bid: {}; builder_boost_factor: {}; builders: Glo
 type GloasBlockContents = {
   block: GloasBeaconBlock
   execution_payload_envelope: GloasExecutionPayloadEnvelope
-  kzg_proofs: unknown
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
 type GloasSignedAggregateAndProof = {
@@ -1192,7 +1307,7 @@ type AltairSyncCommitteeContribution = {
   slot: Uint64
   beacon_block_root: Root
   subcommittee_index: Uint64
-  aggregation_bits: unknown
+  aggregation_bits: GloasBeaconStateJustificationBits
   signature: Signature
 }
 type SyncCommitteeSelection = {
@@ -1215,7 +1330,7 @@ type SignedValidatorRegistration = {
     fee_recipient: ExecutionAddress
     gas_limit: Uint64
     timestamp: Uint64
-    pubkey: unknown
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
   }
   signature: Signature
 }

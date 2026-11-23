@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSegmentwriterV1SegmentWriterServicePushRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSegmentwriterV1SegmentWriterServicePushRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const segmentwriterV1SegmentWriterServiceHandler = app.openapi(
-  postSegmentwriterV1SegmentWriterServicePushRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postSegmentwriterV1SegmentWriterServicePushRouteHandler: RouteHandler<
+  typeof postSegmentwriterV1SegmentWriterServicePushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

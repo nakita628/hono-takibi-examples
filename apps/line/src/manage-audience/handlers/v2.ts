@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2BotAudienceGroupAudienceGroupIdRoute,
   getV2BotAudienceGroupAudienceGroupIdRoute,
   getV2BotAudienceGroupListRoute,
@@ -14,42 +14,74 @@ import {
   putV2BotAudienceGroupUploadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2BotAudienceGroupUploadRouteHandler: RouteHandler<
+  typeof postV2BotAudienceGroupUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2BotAudienceGroupUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2BotAudienceGroupUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotAudienceGroupUploadByFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2BotAudienceGroupUploadByFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotAudienceGroupClickRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotAudienceGroupImpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2BotAudienceGroupAudienceGroupIdUpdateDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BotAudienceGroupAudienceGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotAudienceGroupAudienceGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotAudienceGroupListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotAudienceGroupSharedAudienceGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotAudienceGroupSharedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putV2BotAudienceGroupUploadRouteHandler: RouteHandler<
+  typeof putV2BotAudienceGroupUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotAudienceGroupUploadByFileRouteHandler: RouteHandler<
+  typeof postV2BotAudienceGroupUploadByFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2BotAudienceGroupUploadByFileRouteHandler: RouteHandler<
+  typeof putV2BotAudienceGroupUploadByFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotAudienceGroupClickRouteHandler: RouteHandler<
+  typeof postV2BotAudienceGroupClickRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotAudienceGroupImpRouteHandler: RouteHandler<
+  typeof postV2BotAudienceGroupImpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2BotAudienceGroupAudienceGroupIdUpdateDescriptionRouteHandler: RouteHandler<
+  typeof putV2BotAudienceGroupAudienceGroupIdUpdateDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BotAudienceGroupAudienceGroupIdRouteHandler: RouteHandler<
+  typeof deleteV2BotAudienceGroupAudienceGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotAudienceGroupAudienceGroupIdRouteHandler: RouteHandler<
+  typeof getV2BotAudienceGroupAudienceGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotAudienceGroupListRouteHandler: RouteHandler<
+  typeof getV2BotAudienceGroupListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotAudienceGroupSharedAudienceGroupIdRouteHandler: RouteHandler<
+  typeof getV2BotAudienceGroupSharedAudienceGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotAudienceGroupSharedListRouteHandler: RouteHandler<
+  typeof getV2BotAudienceGroupSharedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

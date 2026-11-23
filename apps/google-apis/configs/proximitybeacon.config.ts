@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/proximitybeacon/v1beta1/openapi.yaml',
   output: './src/proximitybeacon/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/proximitybeacon/types.ts' },
   client: { output: './src/proximitybeacon/client.ts', baseUrl: '/' },
   rpc: { output: './src/proximitybeacon/rpc.ts', parseResponse: true },

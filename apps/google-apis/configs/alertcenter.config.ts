@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/alertcenter/v1beta1/openapi.yaml',
   output: './src/alertcenter/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/alertcenter/types.ts' },
   client: { output: './src/alertcenter/client.ts', baseUrl: '/' },
   rpc: { output: './src/alertcenter/rpc.ts', parseResponse: true },

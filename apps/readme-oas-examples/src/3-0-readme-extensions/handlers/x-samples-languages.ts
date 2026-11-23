@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getXSamplesLanguagesRoute, postXSamplesLanguagesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getXSamplesLanguagesRoute, postXSamplesLanguagesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getXSamplesLanguagesRouteHandler: RouteHandler<
+  typeof getXSamplesLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const xSamplesLanguagesHandler = app
-  .openapi(getXSamplesLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postXSamplesLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXSamplesLanguagesRouteHandler: RouteHandler<
+  typeof postXSamplesLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

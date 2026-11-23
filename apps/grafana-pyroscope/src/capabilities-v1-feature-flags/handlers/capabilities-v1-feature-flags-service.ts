@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCapabilitiesV1FeatureFlagsServiceGetFeatureFlagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCapabilitiesV1FeatureFlagsServiceGetFeatureFlagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const capabilitiesV1FeatureFlagsServiceHandler = app.openapi(
-  postCapabilitiesV1FeatureFlagsServiceGetFeatureFlagsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postCapabilitiesV1FeatureFlagsServiceGetFeatureFlagsRouteHandler: RouteHandler<
+  typeof postCapabilitiesV1FeatureFlagsServiceGetFeatureFlagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1AutotranslateGetProviderUiMetadataRoute,
   getApiV1AutotranslateGetSupportedLanguagesRoute,
   getApiV1ChatGetDeletedMessagesRoute,
@@ -49,147 +49,278 @@ import {
   postApiV1ImBlockUserRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiV1ChatDeleteRouteHandler: RouteHandler<
+  typeof postApiV1ChatDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiV1ChatDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatReactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatReportMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatFollowMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatUnfollowMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetThreadsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetDeletedMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetDiscussionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetMentionedMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetMessageReadReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetPinnedMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatGetMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetStarredMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetThreadMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatReadThreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatIgnoreUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatPinMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatUnPinMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatPostMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatSendMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatStarMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ChatUnStarMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatSyncThreadsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatSyncThreadMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatSyncMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ChatGetURLPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ImBlockUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DmCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmCountersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DmCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DmDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmListEveryoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DmMessagesOthersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DmOpenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DmSetTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1AutotranslateGetProviderUiMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1AutotranslateGetSupportedLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AutotranslateSaveSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AutotranslateTranslateMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiV1ChatReactRouteHandler: RouteHandler<typeof postApiV1ChatReactRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatUpdateRouteHandler: RouteHandler<
+  typeof postApiV1ChatUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatReportMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatReportMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatFollowMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatFollowMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatUnfollowMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatUnfollowMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetMessageRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetThreadsListRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetThreadsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetDeletedMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetDeletedMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetDiscussionsRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetDiscussionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetMentionedMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetMentionedMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetMessageReadReceiptsRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetMessageReadReceiptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetPinnedMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetPinnedMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatGetMessagesRouteHandler: RouteHandler<
+  typeof postApiV1ChatGetMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetStarredMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetStarredMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetThreadMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetThreadMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatReadThreadRouteHandler: RouteHandler<
+  typeof postApiV1ChatReadThreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatIgnoreUserRouteHandler: RouteHandler<
+  typeof getApiV1ChatIgnoreUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatPinMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatPinMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatUnPinMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatUnPinMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatPostMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatPostMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatSearchRouteHandler: RouteHandler<typeof getApiV1ChatSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatSendMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatSendMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatStarMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatStarMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ChatUnStarMessageRouteHandler: RouteHandler<
+  typeof postApiV1ChatUnStarMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatSyncThreadsListRouteHandler: RouteHandler<
+  typeof getApiV1ChatSyncThreadsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatSyncThreadMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatSyncThreadMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatSyncMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ChatSyncMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ChatGetURLPreviewRouteHandler: RouteHandler<
+  typeof getApiV1ChatGetURLPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ImBlockUserRouteHandler: RouteHandler<
+  typeof postApiV1ImBlockUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DmCloseRouteHandler: RouteHandler<typeof postApiV1DmCloseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmCountersRouteHandler: RouteHandler<typeof getApiV1DmCountersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DmCreateRouteHandler: RouteHandler<typeof postApiV1DmCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DmDeleteRouteHandler: RouteHandler<typeof postApiV1DmDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmFilesRouteHandler: RouteHandler<typeof getApiV1DmFilesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmHistoryRouteHandler: RouteHandler<typeof getApiV1DmHistoryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmListEveryoneRouteHandler: RouteHandler<
+  typeof getApiV1DmListEveryoneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmListRouteHandler: RouteHandler<typeof getApiV1DmListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmMembersRouteHandler: RouteHandler<typeof getApiV1DmMembersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmMessagesRouteHandler: RouteHandler<typeof getApiV1DmMessagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DmMessagesOthersRouteHandler: RouteHandler<
+  typeof getApiV1DmMessagesOthersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DmOpenRouteHandler: RouteHandler<typeof postApiV1DmOpenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DmSetTopicRouteHandler: RouteHandler<
+  typeof postApiV1DmSetTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1AutotranslateGetProviderUiMetadataRouteHandler: RouteHandler<
+  typeof getApiV1AutotranslateGetProviderUiMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1AutotranslateGetSupportedLanguagesRouteHandler: RouteHandler<
+  typeof getApiV1AutotranslateGetSupportedLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AutotranslateSaveSettingsRouteHandler: RouteHandler<
+  typeof postApiV1AutotranslateSaveSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AutotranslateTranslateMessageRouteHandler: RouteHandler<
+  typeof postApiV1AutotranslateTranslateMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTreatyCongressRoute,
   getTreatyCongressTreatyNumberActionsRoute,
   getTreatyCongressTreatyNumberCommitteesRoute,
@@ -9,27 +9,42 @@ import {
   getTreatyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTreatyRouteHandler: RouteHandler<typeof getTreatyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const treatyHandler = app
-  .openapi(getTreatyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressTreatyNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressTreatyNumberTreatySuffixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressTreatyNumberActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressTreatyNumberTreatySuffixActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTreatyCongressTreatyNumberCommitteesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTreatyCongressRouteHandler: RouteHandler<typeof getTreatyCongressRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTreatyCongressTreatyNumberRouteHandler: RouteHandler<
+  typeof getTreatyCongressTreatyNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTreatyCongressTreatyNumberTreatySuffixRouteHandler: RouteHandler<
+  typeof getTreatyCongressTreatyNumberTreatySuffixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTreatyCongressTreatyNumberActionsRouteHandler: RouteHandler<
+  typeof getTreatyCongressTreatyNumberActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTreatyCongressTreatyNumberTreatySuffixActionsRouteHandler: RouteHandler<
+  typeof getTreatyCongressTreatyNumberTreatySuffixActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTreatyCongressTreatyNumberCommitteesRouteHandler: RouteHandler<
+  typeof getTreatyCongressTreatyNumberCommitteesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

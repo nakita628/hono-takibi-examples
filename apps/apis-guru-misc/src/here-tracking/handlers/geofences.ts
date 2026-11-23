@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGeofencesV2GeofenceIdRoute,
   deleteGeofencesV2Route,
   getGeofencesV2GeofenceIdRoute,
@@ -12,36 +12,58 @@ import {
   putGeofencesV2GeofenceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteGeofencesV2RouteHandler: RouteHandler<typeof deleteGeofencesV2Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const geofencesHandler = app
-  .openapi(deleteGeofencesV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencesV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencesV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencesV2HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencesV2TrainingTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencesV2VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGeofencesV2GeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencesV2GeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGeofencesV2GeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencesV2GeofenceIdPoiTrainingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGeofencesV2RouteHandler: RouteHandler<typeof getGeofencesV2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencesV2RouteHandler: RouteHandler<typeof postGeofencesV2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofencesV2HealthRouteHandler: RouteHandler<
+  typeof getGeofencesV2HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencesV2TrainingTestRouteHandler: RouteHandler<
+  typeof postGeofencesV2TrainingTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofencesV2VersionRouteHandler: RouteHandler<
+  typeof getGeofencesV2VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGeofencesV2GeofenceIdRouteHandler: RouteHandler<
+  typeof deleteGeofencesV2GeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofencesV2GeofenceIdRouteHandler: RouteHandler<
+  typeof getGeofencesV2GeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGeofencesV2GeofenceIdRouteHandler: RouteHandler<
+  typeof putGeofencesV2GeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencesV2GeofenceIdPoiTrainingRouteHandler: RouteHandler<
+  typeof postGeofencesV2GeofenceIdPoiTrainingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

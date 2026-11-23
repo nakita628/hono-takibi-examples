@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSSMContactsPutContactPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSSMContactsPutContactPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSsmContactsPutContactPolicyHandler = app.openapi(
-  postXAmzTargetSSMContactsPutContactPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSSMContactsPutContactPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetSSMContactsPutContactPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -7,12 +7,6 @@ type ConfigureLogsResponse = {
   Id?: {} | undefined
   Tags?: {} | undefined
 }
-type UnprocessableEntityException = { [x: string]: unknown }
-type InternalServerErrorException = { [x: string]: unknown }
-type ForbiddenException = { [x: string]: unknown }
-type NotFoundException = { [x: string]: unknown }
-type ServiceUnavailableException = { [x: string]: unknown }
-type TooManyRequestsException = { [x: string]: unknown }
 type String = string
 type CreateAssetResponse = {
   Arn?: {} | undefined
@@ -257,2551 +251,383 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/packaging_groups/:id/configure_logs': {
-      $put:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: ConfigureLogsResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined } }
+        output: ConfigureLogsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/assets': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateAssetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            id: string
+            packagingGroupId: string
+            resourceId?: string | undefined
+            sourceArn: string
+            sourceRoleArn: string
+            tags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateAssetResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            packagingGroupId?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                id: string
-                packagingGroupId: string
-                resourceId?: string | undefined
-                sourceArn: string
-                sourceRoleArn: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListAssetsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: ListAssetsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/packaging_configurations': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreatePackagingConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            cmafPackage?:
+              | {
+                  Encryption?:
+                    | {
+                        ConstantInitializationVector?: {} | undefined
+                        SpekeKeyProvider: {
+                          EncryptionContractConfiguration?:
+                            | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
+                            | undefined
+                          RoleArn: {}
+                          SystemIds: {}
+                          Url: {}
+                        }
+                      }
+                    | undefined
+                  HlsManifests?: {} | undefined
+                  IncludeEncoderConfigurationInSegments?: {} | undefined
+                  SegmentDurationSeconds?: {} | undefined
+                }
+              | undefined
+            dashPackage?:
+              | {
+                  DashManifests?: {} | undefined
+                  Encryption?:
+                    | {
+                        SpekeKeyProvider: {
+                          EncryptionContractConfiguration?:
+                            | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
+                            | undefined
+                          RoleArn: {}
+                          SystemIds: {}
+                          Url: {}
+                        }
+                      }
+                    | undefined
+                  IncludeEncoderConfigurationInSegments?: {} | undefined
+                  IncludeIframeOnlyStream?: {} | undefined
+                  PeriodTriggers?: {} | undefined
+                  SegmentDurationSeconds?: {} | undefined
+                  SegmentTemplateFormat?: {} | undefined
+                }
+              | undefined
+            hlsPackage?:
+              | {
+                  Encryption?:
+                    | {
+                        ConstantInitializationVector?: {} | undefined
+                        EncryptionMethod?: {} | undefined
+                        SpekeKeyProvider: {
+                          EncryptionContractConfiguration?:
+                            | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
+                            | undefined
+                          RoleArn: {}
+                          SystemIds: {}
+                          Url: {}
+                        }
+                      }
+                    | undefined
+                  HlsManifests?: {} | undefined
+                  IncludeDvbSubtitles?: {} | undefined
+                  SegmentDurationSeconds?: {} | undefined
+                  UseAudioRenditionGroup?: {} | undefined
+                }
+              | undefined
+            id: string
+            mssPackage?:
+              | {
+                  Encryption?:
+                    | {
+                        SpekeKeyProvider: {
+                          EncryptionContractConfiguration?:
+                            | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
+                            | undefined
+                          RoleArn: {}
+                          SystemIds: {}
+                          Url: {}
+                        }
+                      }
+                    | undefined
+                  MssManifests?: {} | undefined
+                  SegmentDurationSeconds?: {} | undefined
+                }
+              | undefined
+            packagingGroupId: string
+            tags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreatePackagingConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            packagingGroupId?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                cmafPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                dashPackage?:
-                  | {
-                      DashManifests?: {} | undefined
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      IncludeEncoderConfigurationInSegments?: {} | undefined
-                      IncludeIframeOnlyStream?: {} | undefined
-                      PeriodTriggers?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      SegmentTemplateFormat?: {} | undefined
-                    }
-                  | undefined
-                hlsPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            ConstantInitializationVector?: {} | undefined
-                            EncryptionMethod?: {} | undefined
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      HlsManifests?: {} | undefined
-                      IncludeDvbSubtitles?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                      UseAudioRenditionGroup?: {} | undefined
-                    }
-                  | undefined
-                id: string
-                mssPackage?:
-                  | {
-                      Encryption?:
-                        | {
-                            SpekeKeyProvider: {
-                              EncryptionContractConfiguration?:
-                                | { PresetSpeke20Audio: {}; PresetSpeke20Video: {} }
-                                | undefined
-                              RoleArn: {}
-                              SystemIds: {}
-                              Url: {}
-                            }
-                          }
-                        | undefined
-                      MssManifests?: {} | undefined
-                      SegmentDurationSeconds?: {} | undefined
-                    }
-                  | undefined
-                packagingGroupId: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListPackagingConfigurationsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                packagingGroupId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: ListPackagingConfigurationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/packaging_groups': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreatePackagingGroupResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            authorization?:
+              | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
+              | undefined
+            egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
+            id: string
+            tags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreatePackagingGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-                egressAccessLogs?: { LogGroupName?: {} | undefined } | undefined
-                id: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListPackagingGroupsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: ListPackagingGroupsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/assets/:id': {
-      $delete:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteAssetResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteAssetResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAssetResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: DescribeAssetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/packaging_configurations/:id': {
-      $delete:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeletePackagingConfigurationResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeletePackagingConfigurationResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribePackagingConfigurationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: DescribePackagingConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/packaging_groups/:id': {
-      $delete:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeletePackagingGroupResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeletePackagingGroupResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribePackagingGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { id: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            authorization?:
+              | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
+              | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribePackagingGroupResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-      $put:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: UpdatePackagingGroupResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: UnprocessableEntityException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                authorization?:
-                  | { CdnIdentifierSecret?: {} | undefined; SecretsRoleArn?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdatePackagingGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resource-arn': {

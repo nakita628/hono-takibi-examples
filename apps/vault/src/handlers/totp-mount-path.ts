@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTotpMountPathKeysNameRoute,
   getTotpMountPathCodeNameRoute,
   getTotpMountPathKeysIndexRoute,
@@ -8,24 +8,38 @@ import {
   postTotpMountPathKeysNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTotpMountPathCodeNameRouteHandler: RouteHandler<
+  typeof getTotpMountPathCodeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const totpMountPathHandler = app
-  .openapi(getTotpMountPathCodeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTotpMountPathCodeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTotpMountPathKeysIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTotpMountPathKeysNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTotpMountPathKeysNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTotpMountPathKeysNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTotpMountPathCodeNameRouteHandler: RouteHandler<
+  typeof postTotpMountPathCodeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTotpMountPathKeysIndexRouteHandler: RouteHandler<
+  typeof getTotpMountPathKeysIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTotpMountPathKeysNameRouteHandler: RouteHandler<
+  typeof getTotpMountPathKeysNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTotpMountPathKeysNameRouteHandler: RouteHandler<
+  typeof postTotpMountPathKeysNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTotpMountPathKeysNameRouteHandler: RouteHandler<
+  typeof deleteTotpMountPathKeysNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

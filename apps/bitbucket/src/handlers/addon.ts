@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteAddonRoute, getAddonAddonKeyClientKeyRoute, putAddonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteAddonRoute, getAddonAddonKeyClientKeyRoute, putAddonRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAddonRouteHandler: RouteHandler<typeof deleteAddonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const addonHandler = app
-  .openapi(deleteAddonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAddonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonAddonKeyClientKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAddonRouteHandler: RouteHandler<typeof putAddonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddonAddonKeyClientKeyRouteHandler: RouteHandler<
+  typeof getAddonAddonKeyClientKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -5,10 +5,7 @@ export const getRoute = createRoute({
   path: '/',
   summary: 'List API versions',
   operationId: 'listVersionsv2',
-  responses: {
-    200: { description: '200 response', content: {} },
-    300: { description: '300 response', content: {} },
-  },
+  responses: { 200: { description: '200 response' }, 300: { description: '300 response' } },
 })
 
 export const getV2Route = createRoute({
@@ -16,8 +13,5 @@ export const getV2Route = createRoute({
   path: '/v2',
   summary: 'Show API version details',
   operationId: 'getVersionDetailsv2',
-  responses: {
-    200: { description: '200 response', content: {} },
-    203: { description: '203 response', content: {} },
-  },
+  responses: { 200: { description: '200 response' }, 203: { description: '203 response' } },
 })

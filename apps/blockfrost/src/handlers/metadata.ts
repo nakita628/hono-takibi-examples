@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetadataTxsLabelsLabelCborRoute,
   getMetadataTxsLabelsLabelRoute,
   getMetadataTxsLabelsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetadataTxsLabelsRouteHandler: RouteHandler<
+  typeof getMetadataTxsLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metadataHandler = app
-  .openapi(getMetadataTxsLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTxsLabelsLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTxsLabelsLabelCborRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetadataTxsLabelsLabelRouteHandler: RouteHandler<
+  typeof getMetadataTxsLabelsLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetadataTxsLabelsLabelCborRouteHandler: RouteHandler<
+  typeof getMetadataTxsLabelsLabelCborRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

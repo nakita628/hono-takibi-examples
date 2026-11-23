@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { exudeHandler } from './handlers'
+import { postExudeTypeDataRoute, postExudeTypeFileRoute } from './routes'
+import { postExudeTypeDataRouteHandler, postExudeTypeFileRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', exudeHandler)
+export const api = app
+  .openapi(postExudeTypeDataRoute, postExudeTypeDataRouteHandler)
+  .openapi(postExudeTypeFileRoute, postExudeTypeFileRouteHandler)
 
 export default app

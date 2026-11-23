@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/workflows/v1beta/openapi.yaml',
   output: './src/workflows/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/workflows/types.ts' },
   client: { output: './src/workflows/client.ts', baseUrl: '/' },
   rpc: { output: './src/workflows/rpc.ts', parseResponse: true },

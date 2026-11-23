@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasThanosNameRoute,
   getDbaasThanosNameRoute,
   getDbaasThanosServiceNameUserUsernamePasswordRevealRoute,
@@ -8,24 +8,38 @@ import {
   putDbaasThanosNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putDbaasThanosNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasThanosNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasThanosHandler = app
-  .openapi(putDbaasThanosNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasThanosServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasThanosNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasThanosNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasThanosNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasThanosNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDbaasThanosServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasThanosServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasThanosNameRouteHandler: RouteHandler<typeof getDbaasThanosNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasThanosNameRouteHandler: RouteHandler<
+  typeof postDbaasThanosNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasThanosNameRouteHandler: RouteHandler<typeof putDbaasThanosNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasThanosNameRouteHandler: RouteHandler<
+  typeof deleteDbaasThanosNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

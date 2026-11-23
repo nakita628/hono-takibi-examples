@@ -1,8 +1,98 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { giftcardprovidersHandler } from './handlers'
+import {
+  deleteGiftcardprovidersGiftCardProviderIDRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRoute,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDRoute,
+  getGiftcardprovidersGiftCardProviderIdRoute,
+  getGiftcardprovidersRoute,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRoute,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRoute,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRoute,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsRoute,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsSearchRoute,
+  putGiftcardprovidersGiftCardProviderIDRoute,
+} from './routes'
+import {
+  deleteGiftcardprovidersGiftCardProviderIDRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRouteHandler,
+  getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDRouteHandler,
+  getGiftcardprovidersGiftCardProviderIdRouteHandler,
+  getGiftcardprovidersRouteHandler,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRouteHandler,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRouteHandler,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRouteHandler,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsRouteHandler,
+  postGiftcardprovidersGiftCardProviderIDGiftcardsSearchRouteHandler,
+  putGiftcardprovidersGiftCardProviderIDRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', giftcardprovidersHandler)
+export const api = app
+  .openapi(getGiftcardprovidersRoute, getGiftcardprovidersRouteHandler)
+  .openapi(
+    deleteGiftcardprovidersGiftCardProviderIDRoute,
+    deleteGiftcardprovidersGiftCardProviderIDRouteHandler,
+  )
+  .openapi(
+    putGiftcardprovidersGiftCardProviderIDRoute,
+    putGiftcardprovidersGiftCardProviderIDRouteHandler,
+  )
+  .openapi(
+    postGiftcardprovidersGiftCardProviderIDGiftcardsRoute,
+    postGiftcardprovidersGiftCardProviderIDGiftcardsRouteHandler,
+  )
+  .openapi(
+    postGiftcardprovidersGiftCardProviderIDGiftcardsSearchRoute,
+    postGiftcardprovidersGiftCardProviderIDGiftcardsSearchRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRouteHandler,
+  )
+  .openapi(
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRoute,
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRouteHandler,
+  )
+  .openapi(
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRoute,
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdCancellationsRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRouteHandler,
+  )
+  .openapi(
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRoute,
+    postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTIdSettlementsRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRoute,
+    getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRouteHandler,
+  )
+  .openapi(
+    getGiftcardprovidersGiftCardProviderIdRoute,
+    getGiftcardprovidersGiftCardProviderIdRouteHandler,
+  )
 
 export default app

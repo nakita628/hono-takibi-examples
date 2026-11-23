@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSchemasEntityRoute,
   getSchemasFiltersFilterNameRoute,
   getSchemasPluginsPluginNameRoute,
@@ -9,27 +9,44 @@ import {
   postSchemasVaultsVaultNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSchemasEntityRouteHandler: RouteHandler<typeof getSchemasEntityRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const schemasHandler = app
-  .openapi(getSchemasEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSchemasEntityValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasFiltersFilterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasPluginsPluginNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSchemasPluginsValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasVaultsVaultNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSchemasVaultsVaultNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSchemasEntityValidateRouteHandler: RouteHandler<
+  typeof postSchemasEntityValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemasFiltersFilterNameRouteHandler: RouteHandler<
+  typeof getSchemasFiltersFilterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemasPluginsPluginNameRouteHandler: RouteHandler<
+  typeof getSchemasPluginsPluginNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSchemasPluginsValidateRouteHandler: RouteHandler<
+  typeof postSchemasPluginsValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemasVaultsVaultNameRouteHandler: RouteHandler<
+  typeof getSchemasVaultsVaultNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSchemasVaultsVaultNameRouteHandler: RouteHandler<
+  typeof postSchemasVaultsVaultNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

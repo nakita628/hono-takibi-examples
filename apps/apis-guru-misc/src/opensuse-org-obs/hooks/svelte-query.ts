@@ -5971,29 +5971,29 @@ export function createWorkerStatus<
 }
 
 export function getWorkerArchitectureNameWorkerIdQueryKey(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
 ) {
-  return ['worker', '/worker/:architecture_name::worker_id', args] as const
+  return ['worker', '/worker/:architecture_name:{worker_id}', args] as const
 }
 
 export function getWorkerArchitectureNameWorkerIdQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+        Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+          Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
         >
       >
     >,
@@ -6004,7 +6004,7 @@ export function getWorkerArchitectureNameWorkerIdQueryOptions<
     queryKey: getWorkerArchitectureNameWorkerIdQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.worker[':architecture_name::worker_id'].$get(args, {
+        client.worker[':architecture_name:{worker_id}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -6017,20 +6017,20 @@ export function createWorkerArchitectureNameWorkerId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+        Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: () => InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+              Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
             >
           >
         >,

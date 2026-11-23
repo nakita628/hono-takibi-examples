@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiPvtRulesRuleIdRoute,
   getApiPvtAffiliationsAffiliationIdRoute,
   getApiPvtAffiliationsRoute,
@@ -24,72 +24,130 @@ import {
   putApiPvtRulesRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiPubTransactionsTransactionIdPaymentsRouteHandler: RouteHandler<
+  typeof postApiPubTransactionsTransactionIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiPubTransactionsTransactionIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtAffiliationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtAffiliationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtAffiliationsAffiliationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPvtAffiliationsAffiliationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtInstallmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtMerchantsPaymentSystemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiPvtRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPvtRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdAdditionalDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdAuthorizationRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdCancellationRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtTransactionsTransactionIdPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdRefundingRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPvtTransactionsTransactionIdSettlementRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvtTransactionsTransactionIdSettlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiPvtAffiliationsRouteHandler: RouteHandler<
+  typeof getApiPvtAffiliationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtAffiliationsRouteHandler: RouteHandler<
+  typeof postApiPvtAffiliationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtAffiliationsAffiliationIdRouteHandler: RouteHandler<
+  typeof getApiPvtAffiliationsAffiliationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPvtAffiliationsAffiliationIdRouteHandler: RouteHandler<
+  typeof putApiPvtAffiliationsAffiliationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtInstallmentsRouteHandler: RouteHandler<
+  typeof getApiPvtInstallmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtMerchantsPaymentSystemsRouteHandler: RouteHandler<
+  typeof getApiPvtMerchantsPaymentSystemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtRulesRouteHandler: RouteHandler<typeof getApiPvtRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtRulesRouteHandler: RouteHandler<typeof postApiPvtRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiPvtRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiPvtRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiPvtRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPvtRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiPvtRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof getApiPvtTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdAdditionalDataRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdAdditionalDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdAuthorizationRequestRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdAuthorizationRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdCancellationRequestRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdCancellationRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdPaymentsRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtTransactionsTransactionIdPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getApiPvtTransactionsTransactionIdPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdRefundingRequestRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdRefundingRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPvtTransactionsTransactionIdSettlementRequestRouteHandler: RouteHandler<
+  typeof postApiPvtTransactionsTransactionIdSettlementRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvtTransactionsTransactionIdSettlementsRouteHandler: RouteHandler<
+  typeof getApiPvtTransactionsTransactionIdSettlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

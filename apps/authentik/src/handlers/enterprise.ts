@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnterpriseLicenseLicenseUuidIndexRoute,
   getEnterpriseLicenseIndexRoute,
   getEnterpriseLicenseInstallIdIndexRoute,
@@ -12,36 +12,62 @@ import {
   putEnterpriseLicenseLicenseUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEnterpriseLicenseIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const enterpriseHandler = app
-  .openapi(getEnterpriseLicenseIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterpriseLicenseIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseLicenseLicenseUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterpriseLicenseLicenseUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnterpriseLicenseLicenseUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnterpriseLicenseLicenseUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseLicenseLicenseUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseLicenseInstallIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseLicenseSummaryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseLicenseUserCountsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEnterpriseLicenseIndexRouteHandler: RouteHandler<
+  typeof postEnterpriseLicenseIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseLicenseLicenseUuidIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseLicenseUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterpriseLicenseLicenseUuidIndexRouteHandler: RouteHandler<
+  typeof putEnterpriseLicenseLicenseUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnterpriseLicenseLicenseUuidIndexRouteHandler: RouteHandler<
+  typeof patchEnterpriseLicenseLicenseUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnterpriseLicenseLicenseUuidIndexRouteHandler: RouteHandler<
+  typeof deleteEnterpriseLicenseLicenseUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseLicenseLicenseUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseLicenseUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseLicenseInstallIdIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseInstallIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseLicenseSummaryIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseSummaryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseLicenseUserCountsIndexRouteHandler: RouteHandler<
+  typeof getEnterpriseLicenseUserCountsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

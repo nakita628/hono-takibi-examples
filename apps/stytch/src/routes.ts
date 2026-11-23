@@ -16430,9 +16430,9 @@ export const getV1ConnectedAppsClientsClientIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16474,9 +16474,9 @@ export const putV1ConnectedAppsClientsClientIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16511,9 +16511,9 @@ export const deleteV1ConnectedAppsClientsClientIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16541,9 +16541,9 @@ export const postV1ConnectedAppsClientsSearchRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16571,9 +16571,9 @@ export const postV1ConnectedAppsClientsRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16619,9 +16619,9 @@ export const postV1ConnectedAppsClientsClientIdSecretsRotateStartRoute = createR
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16667,9 +16667,9 @@ export const postV1ConnectedAppsClientsClientIdSecretsRotateCancelRoute = create
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16715,9 +16715,9 @@ export const postV1ConnectedAppsClientsClientIdSecretsRotateRoute = createRoute(
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16844,9 +16844,9 @@ export const getV1B2bScimOrganizationIdConnectionConnectionIdRoute = createRoute
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -16931,9 +16931,9 @@ export const putV1B2bScimOrganizationIdConnectionConnectionIdRoute = createRoute
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17014,9 +17014,9 @@ export const deleteV1B2bScimOrganizationIdConnectionConnectionIdRoute = createRo
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17103,9 +17103,9 @@ export const postV1B2bScimOrganizationIdConnectionConnectionIdRotateStartRoute =
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17193,9 +17193,9 @@ export const postV1B2bScimOrganizationIdConnectionConnectionIdRotateCompleteRout
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17283,9 +17283,9 @@ export const postV1B2bScimOrganizationIdConnectionConnectionIdRotateCancelRoute 
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17352,9 +17352,9 @@ export const getV1B2bScimOrganizationIdConnectionRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bScimV1B2bScimConnectionGetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17427,9 +17427,9 @@ export const postV1B2bScimOrganizationIdConnectionRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17453,9 +17453,9 @@ export const postV1B2bOrganizationsRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17494,9 +17494,9 @@ export const getV1B2bOrganizationsOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1GetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17568,9 +17568,9 @@ export const putV1B2bOrganizationsOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1UpdateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17638,9 +17638,9 @@ export const deleteV1B2bOrganizationsOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1DeleteResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17664,9 +17664,9 @@ export const postV1B2bOrganizationsSearchRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1SearchResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17696,9 +17696,9 @@ export const getV1B2bOrganizationsOrganizationIdMetricsRoute = createRoute({
       content: { 'application/json': { schema: ApiOrganizationV1MetricsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17766,9 +17766,9 @@ export const getV1B2bOrganizationsOrganizationIdConnectedAppsRoute = createRoute
       content: { 'application/json': { schema: ApiOrganizationV1ConnectedAppsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17848,9 +17848,9 @@ export const getV1B2bOrganizationsOrganizationIdConnectedAppsConnectedAppIdRoute
       content: { 'application/json': { schema: ApiOrganizationV1GetConnectedAppResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -17908,9 +17908,9 @@ export const deleteV1B2bOrganizationsOrganizationIdExternalIdRoute = createRoute
       content: { 'application/json': { schema: ApiOrganizationV1DeleteExternalIdResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18003,9 +18003,9 @@ export const putV1B2bOrganizationsOrganizationIdMembersMemberIdRoute = createRou
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18092,9 +18092,9 @@ export const deleteV1B2bOrganizationsOrganizationIdMembersMemberIdRoute = create
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18192,9 +18192,9 @@ export const putV1B2bOrganizationsOrganizationIdMembersMemberIdReactivateRoute =
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18285,9 +18285,9 @@ export const deleteV1B2bOrganizationsOrganizationIdMembersMfaPhoneNumbersMemberI
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -18377,9 +18377,9 @@ export const deleteV1B2bOrganizationsOrganizationIdMembersMemberIdTotpRoute = cr
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18435,9 +18435,9 @@ export const postV1B2bOrganizationsMembersSearchRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18525,9 +18525,9 @@ export const deleteV1B2bOrganizationsOrganizationIdMembersPasswordsMemberPasswor
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -18586,9 +18586,9 @@ export const getV1B2bOrganizationsMembersDangerouslyGetMemberIdRoute = createRou
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18669,9 +18669,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOidcProvidersRout
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -18770,9 +18770,9 @@ export const postV1B2bOrganizationsOrganizationIdMembersMemberIdUnlinkRetiredEma
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -18871,9 +18871,9 @@ export const postV1B2bOrganizationsOrganizationIdMembersMemberIdStartEmailUpdate
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   },
 )
@@ -18964,9 +18964,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdConnectedAppsRout
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19033,9 +19033,9 @@ export const deleteV1B2bOrganizationsOrganizationIdMembersMemberIdExternalIdRout
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19110,9 +19110,9 @@ export const postV1B2bOrganizationsOrganizationIdMembersRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19184,9 +19184,9 @@ export const getV1B2bOrganizationsOrganizationIdMemberRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19268,9 +19268,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOauthProvidersGoo
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19352,9 +19352,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOauthProvidersMic
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19417,9 +19417,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOauthProvidersSla
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19501,9 +19501,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOauthProvidersHub
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19585,9 +19585,9 @@ export const getV1B2bOrganizationsOrganizationIdMembersMemberIdOauthProvidersGit
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19698,9 +19698,9 @@ export const postV1B2bOrganizationsOrganizationIdMembersMemberIdConnectedAppsCon
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -19728,9 +19728,9 @@ export const postV1B2bIdpOauthAuthorizeStartRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19754,9 +19754,9 @@ export const postV1B2bIdpOauthAuthorizeRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bIdpV1B2bIdpOauthAuthorizeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19780,9 +19780,9 @@ export const postV1UsersRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19821,9 +19821,9 @@ export const getV1UsersUserIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1GetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19867,9 +19867,9 @@ export const putV1UsersUserIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1UpdateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19908,9 +19908,9 @@ export const deleteV1UsersUserIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19934,9 +19934,9 @@ export const postV1UsersSearchRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1SearchResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -19980,9 +19980,9 @@ export const putV1UsersUserIdExchangePrimaryFactorRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1ExchangePrimaryFactorResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20015,9 +20015,9 @@ export const deleteV1UsersEmailsEmailIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteEmailResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20050,9 +20050,9 @@ export const deleteV1UsersPhoneNumbersPhoneIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeletePhoneNumberResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20090,9 +20090,9 @@ export const deleteV1UsersWebauthnRegistrationsWebauthnRegistrationIdRoute = cre
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20130,9 +20130,9 @@ export const deleteV1UsersBiometricRegistrationsBiometricRegistrationIdRoute = c
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20165,9 +20165,9 @@ export const deleteV1UsersTotpsTotpIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteTOTPResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20200,9 +20200,9 @@ export const deleteV1UsersCryptoWalletsCryptoWalletIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteCryptoWalletResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20235,9 +20235,9 @@ export const deleteV1UsersPasswordsPasswordIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeletePasswordResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20273,9 +20273,9 @@ export const deleteV1UsersOauthOauthUserRegistrationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteOAuthRegistrationResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20300,9 +20300,9 @@ export const deleteV1UsersUserIdExternalIdRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1DeleteExternalIdResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20342,9 +20342,9 @@ export const getV1UsersUserIdConnectedAppsRoute = createRoute({
       content: { 'application/json': { schema: ApiUserV1ConnectedAppsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20400,9 +20400,9 @@ export const postV1UsersUserIdConnectedAppsConnectedAppIdRevokeRoute = createRou
       content: { 'application/json': { schema: ApiUserV1RevokeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20440,9 +20440,9 @@ export const getV1SessionsRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1GetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20466,9 +20466,9 @@ export const postV1SessionsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20492,9 +20492,9 @@ export const postV1SessionsRevokeRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1RevokeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20518,9 +20518,9 @@ export const postV1SessionsMigrateRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1MigrateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20544,9 +20544,9 @@ export const postV1SessionsExchangeAccessTokenRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1ExchangeAccessTokenResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20580,9 +20580,9 @@ export const getV1SessionsJwksProjectIdRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1GetJWKSResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20606,9 +20606,9 @@ export const postV1SessionsAttestRoute = createRoute({
       content: { 'application/json': { schema: ApiSessionV1AttestResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20661,9 +20661,9 @@ export const getV1B2bSessionsRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1GetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20687,9 +20687,9 @@ export const postV1B2bSessionsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20741,9 +20741,9 @@ export const postV1B2bSessionsRevokeRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1RevokeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20767,9 +20767,9 @@ export const postV1B2bSessionsExchangeRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1ExchangeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20793,9 +20793,9 @@ export const postV1B2bSessionsExchangeAccessTokenRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1ExchangeAccessTokenResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20819,9 +20819,9 @@ export const postV1B2bSessionsAttestRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1AttestResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20845,9 +20845,9 @@ export const postV1B2bSessionsMigrateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1MigrateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20881,9 +20881,9 @@ export const getV1B2bSessionsJwksProjectIdRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bSessionV1GetJWKSResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20907,9 +20907,9 @@ export const postV1B2bImpersonationAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bImpersonationV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20927,9 +20927,9 @@ export const getV1B2bRbacPolicyRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bRbacV1PolicyResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -20971,9 +20971,9 @@ export const getV1B2bRbacOrganizationsOrganizationIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21021,9 +21021,9 @@ export const putV1B2bRbacOrganizationsOrganizationIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21047,9 +21047,9 @@ export const postV1B2bRecoveryCodesRecoverRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bRecoveryCodesV1RecoverResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21106,9 +21106,9 @@ export const getV1B2bRecoveryCodesOrganizationIdMemberIdRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bRecoveryCodesV1GetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21132,9 +21132,9 @@ export const postV1B2bRecoveryCodesRotateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bRecoveryCodesV1RotateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21158,9 +21158,9 @@ export const postV1B2bTotpRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bTotpV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21183,9 +21183,9 @@ export const postV1B2bTotpAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bTotpV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21209,9 +21209,9 @@ export const postV1B2bTotpMigrateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bTotpV1MigrateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21229,9 +21229,9 @@ export const getV1RbacPolicyRoute = createRoute({
       content: { 'application/json': { schema: ApiConsumerRbacV1PolicyResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21255,9 +21255,9 @@ export const postV1CryptoWalletsAuthenticateStartRoute = createRoute({
       content: { 'application/json': { schema: ApiCryptoWalletV1AuthenticateStartResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21280,9 +21280,9 @@ export const postV1CryptoWalletsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiCryptoWalletV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21298,9 +21298,9 @@ export const getV1DebugWhoamiRoute = createRoute({
       content: { 'application/json': { schema: ApiDebugV1WhoamiResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21332,9 +21332,9 @@ export const postV1B2bDiscoveryIntermediateSessionsExchangeRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21362,9 +21362,9 @@ export const postV1B2bDiscoveryOrganizationsCreateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21388,9 +21388,9 @@ export const postV1B2bDiscoveryOrganizationsRoute = createRoute({
       content: { 'application/json': { schema: ApiDiscoveryV1DiscoveryListResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21414,9 +21414,9 @@ export const postV1FingerprintLookupRoute = createRoute({
       content: { 'application/json': { schema: ApiFraudV1FraudFingerprintLookupResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21440,9 +21440,9 @@ export const postV1RulesSetRoute = createRoute({
       content: { 'application/json': { schema: ApiFraudV1FraudRulesSetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21465,9 +21465,9 @@ export const postV1RulesListRoute = createRoute({
       content: { 'application/json': { schema: ApiFraudV1FraudRulesListResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21495,9 +21495,9 @@ export const postV1VerdictReasonsOverrideRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21521,9 +21521,9 @@ export const postV1VerdictReasonsListRoute = createRoute({
       content: { 'application/json': { schema: ApiFraudV1FraudVerdictReasonsListResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21547,9 +21547,9 @@ export const postV1EmailRiskRoute = createRoute({
       content: { 'application/json': { schema: ApiFraudV1FraudEmailRiskResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21573,9 +21573,9 @@ export const postV1IdpOauthAuthorizeStartRoute = createRoute({
       content: { 'application/json': { schema: ApiIdpV1IdpOauthAuthorizeStartResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21599,9 +21599,9 @@ export const postV1IdpOauthAuthorizeRoute = createRoute({
       content: { 'application/json': { schema: ApiIdpV1IdpOauthAuthorizeResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21625,9 +21625,9 @@ export const postV1ImpersonationAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiImpersonationV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21660,9 +21660,9 @@ export const getV1M2mClientsClientIdRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsGetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21700,9 +21700,9 @@ export const putV1M2mClientsClientIdRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsUpdateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21736,9 +21736,9 @@ export const deleteV1M2mClientsClientIdRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsDeleteResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21762,9 +21762,9 @@ export const postV1M2mClientsSearchRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsSearchResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21788,9 +21788,9 @@ export const postV1M2mClientsRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsCreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21832,9 +21832,9 @@ export const postV1M2mClientsClientIdSecretsRotateStartRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21876,9 +21876,9 @@ export const postV1M2mClientsClientIdSecretsRotateCancelRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21916,9 +21916,9 @@ export const postV1M2mClientsClientIdSecretsRotateRoute = createRoute({
       content: { 'application/json': { schema: ApiM2mV1M2mClientsSecretsRotateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21942,9 +21942,9 @@ export const postV1MagicLinksAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiMagicV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21968,9 +21968,9 @@ export const postV1MagicLinksRoute = createRoute({
       content: { 'application/json': { schema: ApiMagicV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -21994,9 +21994,9 @@ export const postV1MagicLinksEmailSendRoute = createRoute({
       content: { 'application/json': { schema: ApiMagicV1MagicLinksEmailSendResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22024,9 +22024,9 @@ export const postV1MagicLinksEmailLoginOrCreateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22050,9 +22050,9 @@ export const postV1MagicLinksEmailInviteRoute = createRoute({
       content: { 'application/json': { schema: ApiMagicV1MagicLinksEmailInviteResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22079,9 +22079,9 @@ export const postV1MagicLinksEmailRevokeInviteRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22105,9 +22105,9 @@ export const postV1B2bMagicLinksAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bMagicV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22135,9 +22135,9 @@ export const postV1B2bMagicLinksEmailLoginOrSignupRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22193,9 +22193,9 @@ export const postV1B2bMagicLinksEmailInviteRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22223,9 +22223,9 @@ export const postV1B2bMagicLinksEmailDiscoverySendRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22257,9 +22257,9 @@ export const postV1B2bMagicLinksDiscoveryAuthenticateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22283,9 +22283,9 @@ export const postV1B2bOauthAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bOauthV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22313,9 +22313,9 @@ export const postV1B2bOauthDiscoveryAuthenticateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22339,9 +22339,9 @@ export const postV1B2bOtpsSmsSendRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bOtpV1B2bOtpSmsSendResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22365,9 +22365,9 @@ export const postV1B2bOtpsSmsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bOtpV1B2bOtpSmsAuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22393,9 +22393,9 @@ export const postV1B2bOtpsEmailLoginOrSignupRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22419,9 +22419,9 @@ export const postV1B2bOtpsEmailAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bOtpV1B2bOtpEmailAuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22447,9 +22447,9 @@ export const postV1B2bOtpsEmailDiscoverySendRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22477,9 +22477,9 @@ export const postV1B2bOtpsEmailDiscoveryAuthenticateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22503,9 +22503,9 @@ export const postV1PasswordsRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22529,9 +22529,9 @@ export const postV1PasswordsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22555,9 +22555,9 @@ export const postV1PasswordsStrengthCheckRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1StrengthCheckResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22581,9 +22581,9 @@ export const postV1PasswordsMigrateRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1MigrateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22611,9 +22611,9 @@ export const postV1PasswordsEmailResetStartRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22637,9 +22637,9 @@ export const postV1PasswordsEmailResetRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1PasswordsEmailResetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22667,9 +22667,9 @@ export const postV1PasswordsExistingPasswordResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22693,9 +22693,9 @@ export const postV1PasswordsSessionResetRoute = createRoute({
       content: { 'application/json': { schema: ApiPasswordV1PasswordsSessionResetResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22719,9 +22719,9 @@ export const postV1B2bPasswordsStrengthCheckRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bPasswordV1StrengthCheckResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22745,9 +22745,9 @@ export const postV1B2bPasswordsMigrateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bPasswordV1MigrateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22771,9 +22771,9 @@ export const postV1B2bPasswordsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiB2bPasswordV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22801,9 +22801,9 @@ export const postV1B2bPasswordsEmailResetStartRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22831,9 +22831,9 @@ export const postV1B2bPasswordsEmailResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22889,9 +22889,9 @@ export const postV1B2bPasswordsEmailRequireResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22919,9 +22919,9 @@ export const postV1B2bPasswordsSessionResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22953,9 +22953,9 @@ export const postV1B2bPasswordsExistingPasswordResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -22987,9 +22987,9 @@ export const postV1B2bPasswordsDiscoveryAuthenticateRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23021,9 +23021,9 @@ export const postV1B2bPasswordsDiscoveryEmailResetStartRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23055,9 +23055,9 @@ export const postV1B2bPasswordsDiscoveryEmailResetRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23081,9 +23081,9 @@ export const postV1OauthAttachRoute = createRoute({
       content: { 'application/json': { schema: ApiOauthV1AttachResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23107,9 +23107,9 @@ export const postV1OauthAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiOauthV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23133,9 +23133,9 @@ export const postV1OtpsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23159,9 +23159,9 @@ export const postV1OtpsSmsSendRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpSmsSendResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23185,9 +23185,9 @@ export const postV1OtpsSmsLoginOrCreateRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpSmsLoginOrCreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23211,9 +23211,9 @@ export const postV1OtpsWhatsappSendRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpWhatsappSendResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23237,9 +23237,9 @@ export const postV1OtpsWhatsappLoginOrCreateRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpWhatsappLoginOrCreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23263,9 +23263,9 @@ export const postV1OtpsEmailSendRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpEmailSendResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23289,9 +23289,9 @@ export const postV1OtpsEmailLoginOrCreateRoute = createRoute({
       content: { 'application/json': { schema: ApiOtpV1OtpEmailLoginOrCreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23307,9 +23307,9 @@ export const getV1ProjectsMetricsRoute = createRoute({
       content: { 'application/json': { schema: ApiProjectV1MetricsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23376,9 +23376,9 @@ export const getV1B2bSsoOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiSsoV1GetConnectionsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23463,9 +23463,9 @@ export const deleteV1B2bSsoOrganizationIdConnectionsConnectionIdRoute = createRo
       content: { 'application/json': { schema: ApiSsoV1DeleteConnectionResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23489,9 +23489,9 @@ export const postV1B2bSsoAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiSsoV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23562,9 +23562,9 @@ export const postV1B2bSsoOidcOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiSsoV1SsoOidcCreateConnectionResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23654,9 +23654,9 @@ export const putV1B2bSsoOidcOrganizationIdConnectionsConnectionIdRoute = createR
       content: { 'application/json': { schema: ApiSsoV1SsoOidcUpdateConnectionResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23727,9 +23727,9 @@ export const postV1B2bSsoSamlOrganizationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiSsoV1SsoSamlCreateConnectionResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23819,9 +23819,9 @@ export const putV1B2bSsoSamlOrganizationIdConnectionsConnectionIdRoute = createR
       content: { 'application/json': { schema: ApiSsoV1SsoSamlUpdateConnectionResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -23911,9 +23911,9 @@ export const putV1B2bSsoSamlOrganizationIdConnectionsConnectionIdUrlRoute = crea
       content: { 'application/json': { schema: ApiSsoV1SsoSamlUpdateByURLResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24010,9 +24010,9 @@ export const deleteV1B2bSsoSamlOrganizationIdConnectionsConnectionIdVerification
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -24115,9 +24115,9 @@ export const deleteV1B2bSsoSamlOrganizationIdConnectionsConnectionIdEncryptionPr
         },
       },
       400: { description: 'Bad request' },
-      401: { description: 'Unauthorized', content: {} },
-      429: { description: 'Too Many Requests', content: {} },
-      500: { description: 'Internal server error', content: {} },
+      401: { description: 'Unauthorized' },
+      429: { description: 'Too Many Requests' },
+      500: { description: 'Internal server error' },
     },
   })
 
@@ -24190,9 +24190,9 @@ export const postV1B2bSsoExternalOrganizationIdRoute = createRoute({
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24281,9 +24281,9 @@ export const putV1B2bSsoExternalOrganizationIdConnectionsConnectionIdRoute = cre
       },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24307,9 +24307,9 @@ export const postV1TotpsRoute = createRoute({
       content: { 'application/json': { schema: ApiTotpV1CreateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24332,9 +24332,9 @@ export const postV1TotpsAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiTotpV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24357,9 +24357,9 @@ export const postV1TotpsRecoveryCodesRoute = createRoute({
       content: { 'application/json': { schema: ApiTotpV1RecoveryCodesResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24382,9 +24382,9 @@ export const postV1TotpsRecoverRoute = createRoute({
       content: { 'application/json': { schema: ApiTotpV1RecoverResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24408,9 +24408,9 @@ export const postV1WebauthnRegisterStartRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1RegisterStartResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24434,9 +24434,9 @@ export const postV1WebauthnRegisterRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1RegisterResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24460,9 +24460,9 @@ export const postV1WebauthnAuthenticateStartRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1AuthenticateStartResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24486,9 +24486,9 @@ export const postV1WebauthnAuthenticateRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1AuthenticateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24531,9 +24531,9 @@ export const putV1WebauthnWebauthnRegistrationIdRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1UpdateResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })
 
@@ -24591,8 +24591,8 @@ export const getV1WebauthnCredentialsUserIdDomainRoute = createRoute({
       content: { 'application/json': { schema: ApiWebauthnV1ListCredentialsResponseSchema } },
     },
     400: { description: 'Bad request' },
-    401: { description: 'Unauthorized', content: {} },
-    429: { description: 'Too Many Requests', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    401: { description: 'Unauthorized' },
+    429: { description: 'Too Many Requests' },
+    500: { description: 'Internal server error' },
   },
 })

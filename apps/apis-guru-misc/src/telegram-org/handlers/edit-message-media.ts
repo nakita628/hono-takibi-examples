@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEditMessageMediaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEditMessageMediaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const editMessageMediaHandler = app.openapi(postEditMessageMediaRoute, (c) => {
+export const postEditMessageMediaRouteHandler: RouteHandler<
+  typeof postEditMessageMediaRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

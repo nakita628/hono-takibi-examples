@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/androidmanagement/v1/openapi.yaml',
   output: './src/androidmanagement/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/androidmanagement/types.ts' },
   client: { output: './src/androidmanagement/client.ts', baseUrl: '/' },
   rpc: { output: './src/androidmanagement/rpc.ts', parseResponse: true },

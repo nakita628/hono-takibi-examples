@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceModifyCertificateBasedAuthPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

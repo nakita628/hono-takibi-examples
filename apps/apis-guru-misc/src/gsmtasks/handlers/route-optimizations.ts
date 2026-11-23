@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRouteOptimizationsIdIndexRoute,
   getRouteOptimizationsIdResultsIndexRoute,
   getRouteOptimizationsIdRoutesIndexRoute,
@@ -10,30 +10,50 @@ import {
   postRouteOptimizationsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRouteOptimizationsIndexRouteHandler: RouteHandler<
+  typeof getRouteOptimizationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const routeOptimizationsHandler = app
-  .openapi(getRouteOptimizationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRouteOptimizationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRouteOptimizationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRouteOptimizationsIdCommitIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRouteOptimizationsIdResultsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRouteOptimizationsIdRoutesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRouteOptimizationsIdRoutesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRouteOptimizationsIdScheduleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRouteOptimizationsIndexRouteHandler: RouteHandler<
+  typeof postRouteOptimizationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRouteOptimizationsIdIndexRouteHandler: RouteHandler<
+  typeof getRouteOptimizationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRouteOptimizationsIdCommitIndexRouteHandler: RouteHandler<
+  typeof postRouteOptimizationsIdCommitIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRouteOptimizationsIdResultsIndexRouteHandler: RouteHandler<
+  typeof getRouteOptimizationsIdResultsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRouteOptimizationsIdRoutesIndexRouteHandler: RouteHandler<
+  typeof getRouteOptimizationsIdRoutesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRouteOptimizationsIdRoutesIndexRouteHandler: RouteHandler<
+  typeof postRouteOptimizationsIdRoutesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRouteOptimizationsIdScheduleIndexRouteHandler: RouteHandler<
+  typeof postRouteOptimizationsIdScheduleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

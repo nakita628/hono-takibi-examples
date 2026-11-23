@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { svgconvertHandler } from './handlers'
+import { postSvgconvertRoute } from './routes'
+import { postSvgconvertRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', svgconvertHandler)
+export const api = app.openapi(postSvgconvertRoute, postSvgconvertRouteHandler)
 
 export default app

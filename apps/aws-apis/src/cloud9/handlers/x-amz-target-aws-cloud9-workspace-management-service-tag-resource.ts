@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCloud9WorkspaceManagementServiceTagResourceHandler = app.openapi(
-  postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCloud9WorkspaceManagementServiceTagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

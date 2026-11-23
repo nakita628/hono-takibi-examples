@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/weather_status/openapi.json',
   output: './src/weather-status/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/weather-status/types.ts' },
   client: { output: './src/weather-status/client.ts', baseUrl: '/' },
   rpc: { output: './src/weather-status/rpc.ts', parseResponse: true },

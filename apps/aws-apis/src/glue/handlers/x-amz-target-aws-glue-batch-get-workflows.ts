@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueBatchGetWorkflowsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueBatchGetWorkflowsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueBatchGetWorkflowsHandler = app.openapi(
-  postXAmzTargetAWSGlueBatchGetWorkflowsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueBatchGetWorkflowsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueBatchGetWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

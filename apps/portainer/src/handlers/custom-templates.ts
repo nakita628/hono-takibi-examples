@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCustomTemplatesIdRoute,
   getCustomTemplatesIdFileRoute,
   getCustomTemplatesIdRoute,
@@ -11,33 +11,56 @@ import {
   putCustomTemplatesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCustomTemplatesRouteHandler: RouteHandler<typeof getCustomTemplatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const customTemplatesHandler = app
-  .openapi(getCustomTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCustomTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCustomTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomTemplatesIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCustomTemplatesIdGitFetchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomTemplatesCreateFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomTemplatesCreateRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomTemplatesCreateStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCustomTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteCustomTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomTemplatesIdRouteHandler: RouteHandler<
+  typeof getCustomTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCustomTemplatesIdRouteHandler: RouteHandler<
+  typeof putCustomTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomTemplatesIdFileRouteHandler: RouteHandler<
+  typeof getCustomTemplatesIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCustomTemplatesIdGitFetchRouteHandler: RouteHandler<
+  typeof putCustomTemplatesIdGitFetchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCustomTemplatesCreateFileRouteHandler: RouteHandler<
+  typeof postCustomTemplatesCreateFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCustomTemplatesCreateRepositoryRouteHandler: RouteHandler<
+  typeof postCustomTemplatesCreateRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCustomTemplatesCreateStringRouteHandler: RouteHandler<
+  typeof postCustomTemplatesCreateStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

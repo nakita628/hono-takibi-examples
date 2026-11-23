@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/crm/9.3.0/openapi.yaml',
   output: './src/crm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm/types.ts' },
   client: { output: './src/crm/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm/rpc.ts', parseResponse: true },

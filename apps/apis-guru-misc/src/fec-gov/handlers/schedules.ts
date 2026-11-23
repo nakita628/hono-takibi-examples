@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSchedulesScheduleAByEmployerIndexRoute,
   getSchedulesScheduleAByOccupationIndexRoute,
   getSchedulesScheduleABySizeByCandidateIndexRoute,
@@ -30,90 +30,170 @@ import {
   getSchedulesScheduleFSubIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSchedulesScheduleAIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schedulesHandler = app
-  .openapi(getSchedulesScheduleAIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByEmployerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByOccupationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleABySizeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleABySizeByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByStateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByStateByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByStateByCandidateTotalsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByStateTotalsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAByZipIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleAEfileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleASubIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBByPurposeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBByRecipientIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBByRecipientIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBEfileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleBSubIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleCIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleCSubIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleDIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleDSubIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleEIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleEByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleEEfileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleETotalsByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleFIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesScheduleFSubIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSchedulesScheduleAByEmployerIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByEmployerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByOccupationIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByOccupationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleABySizeIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleABySizeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleABySizeByCandidateIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleABySizeByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByStateIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByStateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByStateByCandidateIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByStateByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByStateByCandidateTotalsIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByStateByCandidateTotalsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByStateTotalsIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByStateTotalsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAByZipIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAByZipIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleAEfileIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleAEfileIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleASubIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleASubIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBByPurposeIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBByPurposeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBByRecipientIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBByRecipientIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBByRecipientIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBByRecipientIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBEfileIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBEfileIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleBSubIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleBSubIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleCIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleCIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleCSubIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleCSubIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleDIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleDIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleDSubIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleDSubIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleEIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleEIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleEByCandidateIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleEByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleEEfileIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleEEfileIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleETotalsByCandidateIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleETotalsByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleFIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleFIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesScheduleFSubIdIndexRouteHandler: RouteHandler<
+  typeof getSchedulesScheduleFSubIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

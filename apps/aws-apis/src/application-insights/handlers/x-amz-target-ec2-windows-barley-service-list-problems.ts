@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetEc2WindowsBarleyServiceListProblemsHandler = app.openapi(
-  postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetEC2WindowsBarleyServiceListProblemsRouteHandler: RouteHandler<
+  typeof postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

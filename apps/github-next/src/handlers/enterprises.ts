@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoCustomPropertyNameRoute,
   deleteEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute,
   deleteEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRoute,
@@ -33,105 +33,188 @@ import {
   putEnterprisesEnterpriseDependabotRepositoryAccessDefaultLevelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEnterprisesEnterpriseActionsCacheRetentionLimitRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseActionsCacheRetentionLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const enterprisesHandler = app
-  .openapi(getEnterprisesEnterpriseActionsCacheRetentionLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseActionsCacheRetentionLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseActionsCacheStorageLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseActionsCacheStorageLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoCustomPropertyNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEnterprisesEnterpriseCodeSecurityConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterprisesEnterpriseCodeSecurityConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCodeSecurityConfigurationsDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRepositoriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsEnterprise1DayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsEnterprise28DayLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsRepos1DayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsUserTeams1DayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsUsers1DayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotMetricsReportsUsers28DayLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseCopilotPoliciesCodeReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseCopilotPoliciesCodeReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseCopilotPoliciesCodingAgentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseDependabotAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterprisesEnterpriseDependabotRepositoryAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnterprisesEnterpriseDependabotRepositoryAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnterprisesEnterpriseDependabotRepositoryAccessDefaultLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putEnterprisesEnterpriseActionsCacheRetentionLimitRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseActionsCacheRetentionLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseActionsCacheStorageLimitRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseActionsCacheStorageLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterprisesEnterpriseActionsCacheStorageLimitRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseActionsCacheStorageLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRouteHandler: RouteHandler<
+  typeof postEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoCustomPropertyNameRouteHandler: RouteHandler<
+  typeof deleteEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoCustomPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCodeSecurityConfigurationsRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCodeSecurityConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnterprisesEnterpriseCodeSecurityConfigurationsRouteHandler: RouteHandler<
+  typeof postEnterprisesEnterpriseCodeSecurityConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCodeSecurityConfigurationsDefaultsRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCodeSecurityConfigurationsDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRouteHandler: RouteHandler<
+  typeof patchEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRouteHandler: RouteHandler<
+  typeof deleteEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdAttachRouteHandler: RouteHandler<
+  typeof postEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdDefaultsRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRepositoriesRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsEnterprise1DayRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsEnterprise1DayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsEnterprise28DayLatestRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsEnterprise28DayLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsRepos1DayRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsRepos1DayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsUserTeams1DayRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsUserTeams1DayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsUsers1DayRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsUsers1DayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotMetricsReportsUsers28DayLatestRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotMetricsReportsUsers28DayLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseCopilotPoliciesCodeReviewRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseCopilotPoliciesCodeReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterprisesEnterpriseCopilotPoliciesCodeReviewRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseCopilotPoliciesCodeReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterprisesEnterpriseCopilotPoliciesCodingAgentRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseCopilotPoliciesCodingAgentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRouteHandler: RouteHandler<
+  typeof postEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRouteHandler: RouteHandler<
+  typeof deleteEnterprisesEnterpriseCopilotPoliciesCodingAgentOrganizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseDependabotAlertsRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseDependabotAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterprisesEnterpriseDependabotRepositoryAccessRouteHandler: RouteHandler<
+  typeof getEnterprisesEnterpriseDependabotRepositoryAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnterprisesEnterpriseDependabotRepositoryAccessRouteHandler: RouteHandler<
+  typeof patchEnterprisesEnterpriseDependabotRepositoryAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnterprisesEnterpriseDependabotRepositoryAccessDefaultLevelRouteHandler: RouteHandler<
+  typeof putEnterprisesEnterpriseDependabotRepositoryAccessDefaultLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

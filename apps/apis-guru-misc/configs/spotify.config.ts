@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/spotify.com/1.0.0/openapi.yaml',
   output: './src/spotify/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/spotify/types.ts' },
   client: { output: './src/spotify/client.ts', baseUrl: '/' },
   rpc: { output: './src/spotify/rpc.ts', parseResponse: true },

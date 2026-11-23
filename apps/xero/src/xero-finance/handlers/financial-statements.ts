@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFinancialStatementsBalanceSheetRoute,
   getFinancialStatementsCashflowRoute,
   getFinancialStatementsContactsExpenseRoute,
@@ -8,24 +8,38 @@ import {
   getFinancialStatementsTrialBalanceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFinancialStatementsBalanceSheetRouteHandler: RouteHandler<
+  typeof getFinancialStatementsBalanceSheetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const financialStatementsHandler = app
-  .openapi(getFinancialStatementsBalanceSheetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinancialStatementsCashflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinancialStatementsProfitAndLossRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinancialStatementsTrialBalanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinancialStatementsContactsRevenueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinancialStatementsContactsExpenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFinancialStatementsCashflowRouteHandler: RouteHandler<
+  typeof getFinancialStatementsCashflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinancialStatementsProfitAndLossRouteHandler: RouteHandler<
+  typeof getFinancialStatementsProfitAndLossRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinancialStatementsTrialBalanceRouteHandler: RouteHandler<
+  typeof getFinancialStatementsTrialBalanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinancialStatementsContactsRevenueRouteHandler: RouteHandler<
+  typeof getFinancialStatementsContactsRevenueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinancialStatementsContactsExpenseRouteHandler: RouteHandler<
+  typeof getFinancialStatementsContactsExpenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

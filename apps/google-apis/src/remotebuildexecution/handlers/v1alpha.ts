@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1alphaNameRoute,
   getV1alphaNameRoute,
   getV1alphaParentInstancesRoute,
@@ -10,30 +10,48 @@ import {
   postV1alphaParentWorkerpoolsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1alphaNameRouteHandler: RouteHandler<typeof deleteV1alphaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1alphaHandler = app
-  .openapi(deleteV1alphaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alphaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1alphaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alphaNameTestNotifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alphaParentInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alphaParentInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alphaParentWorkerpoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alphaParentWorkerpoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1alphaNameRouteHandler: RouteHandler<typeof getV1alphaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1alphaNameRouteHandler: RouteHandler<typeof patchV1alphaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alphaNameTestNotifyRouteHandler: RouteHandler<
+  typeof postV1alphaNameTestNotifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alphaParentInstancesRouteHandler: RouteHandler<
+  typeof getV1alphaParentInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alphaParentInstancesRouteHandler: RouteHandler<
+  typeof postV1alphaParentInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alphaParentWorkerpoolsRouteHandler: RouteHandler<
+  typeof getV1alphaParentWorkerpoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alphaParentWorkerpoolsRouteHandler: RouteHandler<
+  typeof postV1alphaParentWorkerpoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDomainnamesDomainNameBasepathmappingsBasePathRoute,
   deleteDomainnamesDomainNameRoute,
   getDomainnamesDomainNameBasepathmappingsBasePathRoute,
@@ -12,36 +12,58 @@ import {
   postDomainnamesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDomainnamesDomainNameBasepathmappingsRouteHandler: RouteHandler<
+  typeof postDomainnamesDomainNameBasepathmappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const domainnamesHandler = app
-  .openapi(postDomainnamesDomainNameBasepathmappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainnamesDomainNameBasepathmappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainnamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainnamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainnamesDomainNameBasepathmappingsBasePathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainnamesDomainNameBasepathmappingsBasePathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDomainnamesDomainNameBasepathmappingsBasePathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDomainnamesDomainNameBasepathmappingsRouteHandler: RouteHandler<
+  typeof getDomainnamesDomainNameBasepathmappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainnamesRouteHandler: RouteHandler<typeof postDomainnamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainnamesRouteHandler: RouteHandler<typeof getDomainnamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainnamesDomainNameBasepathmappingsBasePathRouteHandler: RouteHandler<
+  typeof deleteDomainnamesDomainNameBasepathmappingsBasePathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainnamesDomainNameBasepathmappingsBasePathRouteHandler: RouteHandler<
+  typeof getDomainnamesDomainNameBasepathmappingsBasePathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDomainnamesDomainNameBasepathmappingsBasePathRouteHandler: RouteHandler<
+  typeof patchDomainnamesDomainNameBasepathmappingsBasePathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof deleteDomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof getDomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof patchDomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

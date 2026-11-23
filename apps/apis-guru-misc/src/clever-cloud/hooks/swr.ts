@@ -2788,18 +2788,18 @@ export function useImmutableGetOauthRights<TError = unknown>(options?: {
 }
 
 export function getGetOpenapiType2Key(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
 ) {
-  return ['openapi.:type', '/openapi.:type', args] as const
+  return ['openapi.{type}', '/openapi.{type}', args] as const
 }
 
 export function useGetOpenapiType2<TError = unknown>(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
         >
       >,
       TError
@@ -2816,25 +2816,25 @@ export function useGetOpenapiType2<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['openapi.:type'].$get(args, clientOptions)),
+      async () => parseResponse(client['openapi.{type}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetOpenapiType2<TError = unknown>(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
         >
       >,
       TError
@@ -2851,13 +2851,13 @@ export function useImmutableGetOpenapiType2<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['openapi.:type'].$get(args, clientOptions)),
+      async () => parseResponse(client['openapi.{type}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -12738,19 +12738,19 @@ export function useImmutableGetProductsInstances<TError = unknown>(
 }
 
 export function getGetProductsInstancesTypeVersionKey(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
 ) {
-  return ['products', '/products/instances/:type-:version', args] as const
+  return ['products', '/products/instances/:type-{version}', args] as const
 }
 
 export function useGetProductsInstancesTypeVersion<TError = unknown>(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+            Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
           >
         >
       >,
@@ -12773,7 +12773,7 @@ export function useGetProductsInstancesTypeVersion<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+            Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
           >
         >
       >,
@@ -12781,20 +12781,20 @@ export function useGetProductsInstancesTypeVersion<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.products.instances[':type-:version'].$get(args, clientOptions)),
+        parseResponse(client.products.instances[':type-{version}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetProductsInstancesTypeVersion<TError = unknown>(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+            Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
           >
         >
       >,
@@ -12817,7 +12817,7 @@ export function useImmutableGetProductsInstancesTypeVersion<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+            Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
           >
         >
       >,
@@ -12825,7 +12825,7 @@ export function useImmutableGetProductsInstancesTypeVersion<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.products.instances[':type-:version'].$get(args, clientOptions)),
+        parseResponse(client.products.instances[':type-{version}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

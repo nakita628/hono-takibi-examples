@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDistrictDistrictKeyEventsKeysRoute,
   getDistrictDistrictKeyEventsRoute,
   getDistrictDistrictKeyEventsSimpleRoute,
@@ -9,27 +9,44 @@ import {
   getDistrictDistrictKeyTeamsSimpleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDistrictDistrictKeyEventsRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const districtHandler = app
-  .openapi(getDistrictDistrictKeyEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyEventsKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyEventsSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyRankingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyTeamsKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistrictDistrictKeyTeamsSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDistrictDistrictKeyEventsKeysRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyEventsKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistrictDistrictKeyEventsSimpleRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyEventsSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistrictDistrictKeyRankingsRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyRankingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistrictDistrictKeyTeamsRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistrictDistrictKeyTeamsKeysRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyTeamsKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistrictDistrictKeyTeamsSimpleRouteHandler: RouteHandler<
+  typeof getDistrictDistrictKeyTeamsSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBrandingSplashscreenRoute,
   getBrandingConfigurationRoute,
   getBrandingCssCssRoute,
@@ -8,24 +8,36 @@ import {
   postBrandingSplashscreenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBrandingConfigurationRouteHandler: RouteHandler<
+  typeof getBrandingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const brandingHandler = app
-  .openapi(getBrandingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrandingCssRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrandingCssCssRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrandingSplashscreenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBrandingSplashscreenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBrandingSplashscreenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBrandingCssRouteHandler: RouteHandler<typeof getBrandingCssRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrandingCssCssRouteHandler: RouteHandler<typeof getBrandingCssCssRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrandingSplashscreenRouteHandler: RouteHandler<
+  typeof getBrandingSplashscreenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBrandingSplashscreenRouteHandler: RouteHandler<
+  typeof postBrandingSplashscreenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBrandingSplashscreenRouteHandler: RouteHandler<
+  typeof deleteBrandingSplashscreenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

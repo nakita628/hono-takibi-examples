@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUploadsUplIdRoute,
   getUploadsRoute,
   getUploadsUplIdExportsExIdRoute,
@@ -11,33 +11,50 @@ import {
   postUploadsUplIdFileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUploadsRouteHandler: RouteHandler<typeof getUploadsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const uploadsHandler = app
-  .openapi(getUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUploadsUplIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUploadsUplIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUploadsUplIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUploadsUplIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUploadsUplIdExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUploadsUplIdReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUploadsUplIdExportsExIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUploadsRouteHandler: RouteHandler<typeof postUploadsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUploadsUplIdRouteHandler: RouteHandler<typeof getUploadsUplIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUploadsUplIdRouteHandler: RouteHandler<typeof patchUploadsUplIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUploadsUplIdRouteHandler: RouteHandler<typeof deleteUploadsUplIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postUploadsUplIdFileRouteHandler: RouteHandler<
+  typeof postUploadsUplIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUploadsUplIdExportsRouteHandler: RouteHandler<
+  typeof postUploadsUplIdExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUploadsUplIdReportRouteHandler: RouteHandler<
+  typeof getUploadsUplIdReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUploadsUplIdExportsExIdRouteHandler: RouteHandler<
+  typeof getUploadsUplIdExportsExIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

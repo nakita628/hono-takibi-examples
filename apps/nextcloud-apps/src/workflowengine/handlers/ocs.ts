@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute,
   deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute,
   getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute,
@@ -12,36 +12,62 @@ import {
   putOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsGlobalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsWorkflowengineApiV1WorkflowsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

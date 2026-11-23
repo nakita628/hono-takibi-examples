@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionAdvertiseByoipCidrRoute, postActionAdvertiseByoipCidrRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionAdvertiseByoipCidrRoute, postActionAdvertiseByoipCidrRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionAdvertiseByoipCidrRouteHandler: RouteHandler<
+  typeof getActionAdvertiseByoipCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionAdvertiseByoipCidrHandler = app
-  .openapi(getActionAdvertiseByoipCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionAdvertiseByoipCidrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionAdvertiseByoipCidrRouteHandler: RouteHandler<
+  typeof postActionAdvertiseByoipCidrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

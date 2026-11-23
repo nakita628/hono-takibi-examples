@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/sheets/v4/openapi.yaml',
   output: './src/sheets-v4/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sheets-v4/types.ts' },
   client: { output: './src/sheets-v4/client.ts', baseUrl: '/' },
   rpc: { output: './src/sheets-v4/rpc.ts', parseResponse: true },

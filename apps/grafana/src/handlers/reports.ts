@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReportsIdRoute,
   getReportsDashboardsUidRoute,
   getReportsIdRoute,
@@ -15,45 +15,70 @@ import {
   putReportsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReportsRouteHandler: RouteHandler<typeof getReportsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportsHandler = app
-  .openapi(getReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsDashboardsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsImagesImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsRenderCsvsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsRenderPdfsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsTestEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postReportsRouteHandler: RouteHandler<typeof postReportsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsDashboardsUidRouteHandler: RouteHandler<
+  typeof getReportsDashboardsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportsEmailRouteHandler: RouteHandler<typeof postReportsEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsImagesImageRouteHandler: RouteHandler<
+  typeof getReportsImagesImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsRenderCsvsRouteHandler: RouteHandler<
+  typeof getReportsRenderCsvsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsRenderPdfsRouteHandler: RouteHandler<
+  typeof getReportsRenderPdfsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsSettingsRouteHandler: RouteHandler<typeof getReportsSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportsSettingsRouteHandler: RouteHandler<
+  typeof postReportsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportsTestEmailRouteHandler: RouteHandler<
+  typeof postReportsTestEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportsIdRouteHandler: RouteHandler<typeof deleteReportsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsIdRouteHandler: RouteHandler<typeof getReportsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putReportsIdRouteHandler: RouteHandler<typeof putReportsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

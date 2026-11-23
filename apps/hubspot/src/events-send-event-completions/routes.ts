@@ -216,7 +216,7 @@ export const postEvents202609SendRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['analytics.behavioral_events.send'] }],
 })
 
@@ -238,6 +238,6 @@ export const postEvents202609SendBatchRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['analytics.behavioral_events.send'] }],
 })

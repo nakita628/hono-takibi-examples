@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCollectionsCollectionIdCollectedMetadataCgmIdRoute,
   deleteCollectionsCollectionIdIndexRoute,
   deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute,
@@ -23,72 +23,128 @@ import {
   postCollectionsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCollectionsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const collectionsHandler = app
-  .openapi(getCollectionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdCollectedMetadataIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionIdCollectedMetadataIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionIdCollectedMetadataCgmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdCollectedMetadataCgmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionIdCollectedMetadataCgmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getCollectionsCollectionIdCollectedMetadataCgmIdSubjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdLinkedNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdLinkedPreprintsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdLinkedRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCollectionsIndexRouteHandler: RouteHandler<
+  typeof postCollectionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionIdIndexRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdCollectedMetadataIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdCollectedMetadataIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionIdCollectedMetadataIndexRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionIdCollectedMetadataIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionIdCollectedMetadataCgmIdRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionIdCollectedMetadataCgmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdCollectedMetadataCgmIdRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdCollectedMetadataCgmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionIdCollectedMetadataCgmIdRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionIdCollectedMetadataCgmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdCollectedMetadataCgmIdSubjectsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdCollectedMetadataCgmIdSubjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdLinkedNodesRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdLinkedNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdLinkedNodesRelationshipsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionIdLinkedNodesRelationshipsIndexRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdLinkedPreprintsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdLinkedPreprintsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdLinkedRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdLinkedRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

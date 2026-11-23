@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/recaptchaenterprise/v1/openapi.yaml',
   output: './src/recaptchaenterprise/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/recaptchaenterprise/types.ts' },
   client: { output: './src/recaptchaenterprise/client.ts', baseUrl: '/' },
   rpc: { output: './src/recaptchaenterprise/rpc.ts', parseResponse: true },

@@ -1,77 +1,215 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsStepFunctionsCreateActivityHandler,
-  xAmzTargetAwsStepFunctionsCreateStateMachineAliasHandler,
-  xAmzTargetAwsStepFunctionsCreateStateMachineHandler,
-  xAmzTargetAwsStepFunctionsDeleteActivityHandler,
-  xAmzTargetAwsStepFunctionsDeleteStateMachineAliasHandler,
-  xAmzTargetAwsStepFunctionsDeleteStateMachineHandler,
-  xAmzTargetAwsStepFunctionsDeleteStateMachineVersionHandler,
-  xAmzTargetAwsStepFunctionsDescribeActivityHandler,
-  xAmzTargetAwsStepFunctionsDescribeExecutionHandler,
-  xAmzTargetAwsStepFunctionsDescribeMapRunHandler,
-  xAmzTargetAwsStepFunctionsDescribeStateMachineAliasHandler,
-  xAmzTargetAwsStepFunctionsDescribeStateMachineForExecutionHandler,
-  xAmzTargetAwsStepFunctionsDescribeStateMachineHandler,
-  xAmzTargetAwsStepFunctionsGetActivityTaskHandler,
-  xAmzTargetAwsStepFunctionsGetExecutionHistoryHandler,
-  xAmzTargetAwsStepFunctionsListActivitiesHandler,
-  xAmzTargetAwsStepFunctionsListExecutionsHandler,
-  xAmzTargetAwsStepFunctionsListMapRunsHandler,
-  xAmzTargetAwsStepFunctionsListStateMachineAliasesHandler,
-  xAmzTargetAwsStepFunctionsListStateMachinesHandler,
-  xAmzTargetAwsStepFunctionsListStateMachineVersionsHandler,
-  xAmzTargetAwsStepFunctionsListTagsForResourceHandler,
-  xAmzTargetAwsStepFunctionsPublishStateMachineVersionHandler,
-  xAmzTargetAwsStepFunctionsSendTaskFailureHandler,
-  xAmzTargetAwsStepFunctionsSendTaskHeartbeatHandler,
-  xAmzTargetAwsStepFunctionsSendTaskSuccessHandler,
-  xAmzTargetAwsStepFunctionsStartExecutionHandler,
-  xAmzTargetAwsStepFunctionsStartSyncExecutionHandler,
-  xAmzTargetAwsStepFunctionsStopExecutionHandler,
-  xAmzTargetAwsStepFunctionsTagResourceHandler,
-  xAmzTargetAwsStepFunctionsUntagResourceHandler,
-  xAmzTargetAwsStepFunctionsUpdateMapRunHandler,
-  xAmzTargetAwsStepFunctionsUpdateStateMachineAliasHandler,
-  xAmzTargetAwsStepFunctionsUpdateStateMachineHandler,
+  postXAmzTargetAWSStepFunctionsCreateActivityRoute,
+  postXAmzTargetAWSStepFunctionsCreateStateMachineAliasRoute,
+  postXAmzTargetAWSStepFunctionsCreateStateMachineRoute,
+  postXAmzTargetAWSStepFunctionsDeleteActivityRoute,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineAliasRoute,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineRoute,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineVersionRoute,
+  postXAmzTargetAWSStepFunctionsDescribeActivityRoute,
+  postXAmzTargetAWSStepFunctionsDescribeExecutionRoute,
+  postXAmzTargetAWSStepFunctionsDescribeMapRunRoute,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineAliasRoute,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRoute,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineRoute,
+  postXAmzTargetAWSStepFunctionsGetActivityTaskRoute,
+  postXAmzTargetAWSStepFunctionsGetExecutionHistoryRoute,
+  postXAmzTargetAWSStepFunctionsListActivitiesRoute,
+  postXAmzTargetAWSStepFunctionsListExecutionsRoute,
+  postXAmzTargetAWSStepFunctionsListMapRunsRoute,
+  postXAmzTargetAWSStepFunctionsListStateMachineAliasesRoute,
+  postXAmzTargetAWSStepFunctionsListStateMachinesRoute,
+  postXAmzTargetAWSStepFunctionsListStateMachineVersionsRoute,
+  postXAmzTargetAWSStepFunctionsListTagsForResourceRoute,
+  postXAmzTargetAWSStepFunctionsPublishStateMachineVersionRoute,
+  postXAmzTargetAWSStepFunctionsSendTaskFailureRoute,
+  postXAmzTargetAWSStepFunctionsSendTaskHeartbeatRoute,
+  postXAmzTargetAWSStepFunctionsSendTaskSuccessRoute,
+  postXAmzTargetAWSStepFunctionsStartExecutionRoute,
+  postXAmzTargetAWSStepFunctionsStartSyncExecutionRoute,
+  postXAmzTargetAWSStepFunctionsStopExecutionRoute,
+  postXAmzTargetAWSStepFunctionsTagResourceRoute,
+  postXAmzTargetAWSStepFunctionsUntagResourceRoute,
+  postXAmzTargetAWSStepFunctionsUpdateMapRunRoute,
+  postXAmzTargetAWSStepFunctionsUpdateStateMachineAliasRoute,
+  postXAmzTargetAWSStepFunctionsUpdateStateMachineRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSStepFunctionsCreateActivityRouteHandler,
+  postXAmzTargetAWSStepFunctionsCreateStateMachineAliasRouteHandler,
+  postXAmzTargetAWSStepFunctionsCreateStateMachineRouteHandler,
+  postXAmzTargetAWSStepFunctionsDeleteActivityRouteHandler,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineAliasRouteHandler,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineRouteHandler,
+  postXAmzTargetAWSStepFunctionsDeleteStateMachineVersionRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeActivityRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeExecutionRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeMapRunRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineAliasRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRouteHandler,
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineRouteHandler,
+  postXAmzTargetAWSStepFunctionsGetActivityTaskRouteHandler,
+  postXAmzTargetAWSStepFunctionsGetExecutionHistoryRouteHandler,
+  postXAmzTargetAWSStepFunctionsListActivitiesRouteHandler,
+  postXAmzTargetAWSStepFunctionsListExecutionsRouteHandler,
+  postXAmzTargetAWSStepFunctionsListMapRunsRouteHandler,
+  postXAmzTargetAWSStepFunctionsListStateMachineAliasesRouteHandler,
+  postXAmzTargetAWSStepFunctionsListStateMachinesRouteHandler,
+  postXAmzTargetAWSStepFunctionsListStateMachineVersionsRouteHandler,
+  postXAmzTargetAWSStepFunctionsListTagsForResourceRouteHandler,
+  postXAmzTargetAWSStepFunctionsPublishStateMachineVersionRouteHandler,
+  postXAmzTargetAWSStepFunctionsSendTaskFailureRouteHandler,
+  postXAmzTargetAWSStepFunctionsSendTaskHeartbeatRouteHandler,
+  postXAmzTargetAWSStepFunctionsSendTaskSuccessRouteHandler,
+  postXAmzTargetAWSStepFunctionsStartExecutionRouteHandler,
+  postXAmzTargetAWSStepFunctionsStartSyncExecutionRouteHandler,
+  postXAmzTargetAWSStepFunctionsStopExecutionRouteHandler,
+  postXAmzTargetAWSStepFunctionsTagResourceRouteHandler,
+  postXAmzTargetAWSStepFunctionsUntagResourceRouteHandler,
+  postXAmzTargetAWSStepFunctionsUpdateMapRunRouteHandler,
+  postXAmzTargetAWSStepFunctionsUpdateStateMachineAliasRouteHandler,
+  postXAmzTargetAWSStepFunctionsUpdateStateMachineRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsStepFunctionsCreateActivityHandler)
-  .route('/', xAmzTargetAwsStepFunctionsCreateStateMachineHandler)
-  .route('/', xAmzTargetAwsStepFunctionsCreateStateMachineAliasHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDeleteActivityHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDeleteStateMachineHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDeleteStateMachineAliasHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDeleteStateMachineVersionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeActivityHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeExecutionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeMapRunHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeStateMachineHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeStateMachineAliasHandler)
-  .route('/', xAmzTargetAwsStepFunctionsDescribeStateMachineForExecutionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsGetActivityTaskHandler)
-  .route('/', xAmzTargetAwsStepFunctionsGetExecutionHistoryHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListActivitiesHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListExecutionsHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListMapRunsHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListStateMachineAliasesHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListStateMachineVersionsHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListStateMachinesHandler)
-  .route('/', xAmzTargetAwsStepFunctionsListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsStepFunctionsPublishStateMachineVersionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsSendTaskFailureHandler)
-  .route('/', xAmzTargetAwsStepFunctionsSendTaskHeartbeatHandler)
-  .route('/', xAmzTargetAwsStepFunctionsSendTaskSuccessHandler)
-  .route('/', xAmzTargetAwsStepFunctionsStartExecutionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsStartSyncExecutionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsStopExecutionHandler)
-  .route('/', xAmzTargetAwsStepFunctionsTagResourceHandler)
-  .route('/', xAmzTargetAwsStepFunctionsUntagResourceHandler)
-  .route('/', xAmzTargetAwsStepFunctionsUpdateMapRunHandler)
-  .route('/', xAmzTargetAwsStepFunctionsUpdateStateMachineHandler)
-  .route('/', xAmzTargetAwsStepFunctionsUpdateStateMachineAliasHandler)
+  .openapi(
+    postXAmzTargetAWSStepFunctionsCreateActivityRoute,
+    postXAmzTargetAWSStepFunctionsCreateActivityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsCreateStateMachineRoute,
+    postXAmzTargetAWSStepFunctionsCreateStateMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsCreateStateMachineAliasRoute,
+    postXAmzTargetAWSStepFunctionsCreateStateMachineAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDeleteActivityRoute,
+    postXAmzTargetAWSStepFunctionsDeleteActivityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineRoute,
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineAliasRoute,
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineVersionRoute,
+    postXAmzTargetAWSStepFunctionsDeleteStateMachineVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeActivityRoute,
+    postXAmzTargetAWSStepFunctionsDescribeActivityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeExecutionRoute,
+    postXAmzTargetAWSStepFunctionsDescribeExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeMapRunRoute,
+    postXAmzTargetAWSStepFunctionsDescribeMapRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineRoute,
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineAliasRoute,
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRoute,
+    postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsGetActivityTaskRoute,
+    postXAmzTargetAWSStepFunctionsGetActivityTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsGetExecutionHistoryRoute,
+    postXAmzTargetAWSStepFunctionsGetExecutionHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListActivitiesRoute,
+    postXAmzTargetAWSStepFunctionsListActivitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListExecutionsRoute,
+    postXAmzTargetAWSStepFunctionsListExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListMapRunsRoute,
+    postXAmzTargetAWSStepFunctionsListMapRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListStateMachineAliasesRoute,
+    postXAmzTargetAWSStepFunctionsListStateMachineAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListStateMachineVersionsRoute,
+    postXAmzTargetAWSStepFunctionsListStateMachineVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListStateMachinesRoute,
+    postXAmzTargetAWSStepFunctionsListStateMachinesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsListTagsForResourceRoute,
+    postXAmzTargetAWSStepFunctionsListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsPublishStateMachineVersionRoute,
+    postXAmzTargetAWSStepFunctionsPublishStateMachineVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsSendTaskFailureRoute,
+    postXAmzTargetAWSStepFunctionsSendTaskFailureRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsSendTaskHeartbeatRoute,
+    postXAmzTargetAWSStepFunctionsSendTaskHeartbeatRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsSendTaskSuccessRoute,
+    postXAmzTargetAWSStepFunctionsSendTaskSuccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsStartExecutionRoute,
+    postXAmzTargetAWSStepFunctionsStartExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsStartSyncExecutionRoute,
+    postXAmzTargetAWSStepFunctionsStartSyncExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsStopExecutionRoute,
+    postXAmzTargetAWSStepFunctionsStopExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsTagResourceRoute,
+    postXAmzTargetAWSStepFunctionsTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsUntagResourceRoute,
+    postXAmzTargetAWSStepFunctionsUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsUpdateMapRunRoute,
+    postXAmzTargetAWSStepFunctionsUpdateMapRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsUpdateStateMachineRoute,
+    postXAmzTargetAWSStepFunctionsUpdateStateMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSStepFunctionsUpdateStateMachineAliasRoute,
+    postXAmzTargetAWSStepFunctionsUpdateStateMachineAliasRouteHandler,
+  )
 
 export default app

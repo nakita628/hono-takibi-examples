@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53ResolverCreateFirewallRuleGroupHandler = app.openapi(
-  postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

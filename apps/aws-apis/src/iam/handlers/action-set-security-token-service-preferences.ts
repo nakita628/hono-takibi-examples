@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSetSecurityTokenServicePreferencesRoute,
   postActionSetSecurityTokenServicePreferencesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetSecurityTokenServicePreferencesRouteHandler: RouteHandler<
+  typeof getActionSetSecurityTokenServicePreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetSecurityTokenServicePreferencesHandler = app
-  .openapi(getActionSetSecurityTokenServicePreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetSecurityTokenServicePreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetSecurityTokenServicePreferencesRouteHandler: RouteHandler<
+  typeof postActionSetSecurityTokenServicePreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV3CalendarMarketRoute, getV3ClockRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV3CalendarMarketRoute, getV3ClockRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3CalendarMarketRouteHandler: RouteHandler<
+  typeof getV3CalendarMarketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3CalendarMarketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ClockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3ClockRouteHandler: RouteHandler<typeof getV3ClockRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

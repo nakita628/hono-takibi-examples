@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFeedDataSeriesRoute, getFeedDetailsRoute, getFeedListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFeedDataSeriesRoute, getFeedDetailsRoute, getFeedListRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeedDataSeriesRouteHandler: RouteHandler<typeof getFeedDataSeriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const feedHandler = app
-  .openapi(getFeedDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFeedDetailsRouteHandler: RouteHandler<typeof getFeedDetailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeedListRouteHandler: RouteHandler<typeof getFeedListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMetricValuesThingNameMetricNameStartTimeEndTimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMetricValuesThingNameMetricNameStartTimeEndTimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metricValuesThingNameMetricNameStartTimeEndTimeHandler = app.openapi(
-  getMetricValuesThingNameMetricNameStartTimeEndTimeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getMetricValuesThingNameMetricNameStartTimeEndTimeRouteHandler: RouteHandler<
+  typeof getMetricValuesThingNameMetricNameStartTimeEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

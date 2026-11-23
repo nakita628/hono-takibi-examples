@@ -1,23 +1,356 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  botsHandler,
-  builtinsHandler,
-  createuploadurlHandler,
-  exportsHandler,
-  importsHandler,
-  policyHandler,
-  tagsHandler,
+  deleteBotsBotIdBotaliasesBotAliasIdIndexRoute,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyRoute,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+  deleteBotsBotIdBotversionsBotVersionIndexRoute,
+  deleteBotsBotIdIndexRoute,
+  deleteBotsBotIdUtterancesIndexRoute,
+  deleteExportsExportIdIndexRoute,
+  deleteImportsImportIdIndexRoute,
+  deletePolicyResourceArnIndexRoute,
+  deletePolicyResourceArnStatementsStatementIdIndexRoute,
+  deleteTagsResourceARNTagKeysRoute,
+  getBotsBotIdBotaliasesBotAliasIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTMetadataRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+  getBotsBotIdBotversionsBotVersionIndexRoute,
+  getBotsBotIdIndexRoute,
+  getExportsExportIdIndexRoute,
+  getImportsImportIdIndexRoute,
+  getPolicyResourceArnIndexRoute,
+  getTagsResourceARNRoute,
+  postBotsBotIdAggregatedutterancesIndexRoute,
+  postBotsBotIdBotaliasesIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdAssociatedtranscriptsRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIntentsRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchdeleteRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTListRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRoute,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRoute,
+  postBotsBotIdBotversionsIndexRoute,
+  postBotsIndexRoute,
+  postBuiltinsLocalesLocaleIdIntentsIndexRoute,
+  postBuiltinsLocalesLocaleIdSlottypesIndexRoute,
+  postCreateuploadurlIndexRoute,
+  postExportsIndexRoute,
+  postImportsIndexRoute,
+  postPolicyResourceArnIndexRoute,
+  postPolicyResourceArnStatementsIndexRoute,
+  postTagsResourceARNRoute,
+  putBotsBotIdBotaliasesBotAliasIdIndexRoute,
+  putBotsBotIdBotaliasesIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdStopbotrecommendationRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchcreateRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchupdateRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRoute,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+  putBotsBotIdBotversionsIndexRoute,
+  putBotsBotIdIndexRoute,
+  putBotsIndexRoute,
+  putExportsExportIdIndexRoute,
+  putExportsIndexRoute,
+  putImportsIndexRoute,
+  putPolicyResourceArnIndexRoute,
+} from './routes'
+import {
+  deleteBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  deleteBotsBotIdBotversionsBotVersionIndexRouteHandler,
+  deleteBotsBotIdIndexRouteHandler,
+  deleteBotsBotIdUtterancesIndexRouteHandler,
+  deleteExportsExportIdIndexRouteHandler,
+  deleteImportsImportIdIndexRouteHandler,
+  deletePolicyResourceArnIndexRouteHandler,
+  deletePolicyResourceArnStatementsStatementIdIndexRouteHandler,
+  deleteTagsResourceARNTagKeysRouteHandler,
+  getBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTMetadataRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  getBotsBotIdBotversionsBotVersionIndexRouteHandler,
+  getBotsBotIdIndexRouteHandler,
+  getExportsExportIdIndexRouteHandler,
+  getImportsImportIdIndexRouteHandler,
+  getPolicyResourceArnIndexRouteHandler,
+  getTagsResourceARNRouteHandler,
+  postBotsBotIdAggregatedutterancesIndexRouteHandler,
+  postBotsBotIdBotaliasesIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdAssociatedtranscriptsRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIntentsRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchdeleteRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTListRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRouteHandler,
+  postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRouteHandler,
+  postBotsBotIdBotversionsIndexRouteHandler,
+  postBotsIndexRouteHandler,
+  postBuiltinsLocalesLocaleIdIntentsIndexRouteHandler,
+  postBuiltinsLocalesLocaleIdSlottypesIndexRouteHandler,
+  postCreateuploadurlIndexRouteHandler,
+  postExportsIndexRouteHandler,
+  postImportsIndexRouteHandler,
+  postPolicyResourceArnIndexRouteHandler,
+  postPolicyResourceArnStatementsIndexRouteHandler,
+  postTagsResourceARNRouteHandler,
+  putBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  putBotsBotIdBotaliasesIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdStopbotrecommendationRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchcreateRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchupdateRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRouteHandler,
+  putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  putBotsBotIdBotversionsIndexRouteHandler,
+  putBotsBotIdIndexRouteHandler,
+  putBotsIndexRouteHandler,
+  putExportsExportIdIndexRouteHandler,
+  putExportsIndexRouteHandler,
+  putImportsIndexRouteHandler,
+  putPolicyResourceArnIndexRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', botsHandler)
-  .route('/', exportsHandler)
-  .route('/', policyHandler)
-  .route('/', createuploadurlHandler)
-  .route('/', importsHandler)
-  .route('/', builtinsHandler)
-  .route('/', tagsHandler)
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchcreateRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchcreateRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchdeleteRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchdeleteRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchupdateRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTBatchupdateRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIndexRouteHandler,
+  )
+  .openapi(putBotsIndexRoute, putBotsIndexRouteHandler)
+  .openapi(postBotsIndexRoute, postBotsIndexRouteHandler)
+  .openapi(putBotsBotIdBotaliasesIndexRoute, putBotsBotIdBotaliasesIndexRouteHandler)
+  .openapi(postBotsBotIdBotaliasesIndexRoute, postBotsBotIdBotaliasesIndexRouteHandler)
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesIndexRouteHandler,
+  )
+  .openapi(putBotsBotIdBotversionsIndexRoute, putBotsBotIdBotversionsIndexRouteHandler)
+  .openapi(postBotsBotIdBotversionsIndexRoute, postBotsBotIdBotversionsIndexRouteHandler)
+  .openapi(putExportsIndexRoute, putExportsIndexRouteHandler)
+  .openapi(postExportsIndexRoute, postExportsIndexRouteHandler)
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIndexRouteHandler,
+  )
+  .openapi(postPolicyResourceArnIndexRoute, postPolicyResourceArnIndexRouteHandler)
+  .openapi(deletePolicyResourceArnIndexRoute, deletePolicyResourceArnIndexRouteHandler)
+  .openapi(getPolicyResourceArnIndexRoute, getPolicyResourceArnIndexRouteHandler)
+  .openapi(putPolicyResourceArnIndexRoute, putPolicyResourceArnIndexRouteHandler)
+  .openapi(
+    postPolicyResourceArnStatementsIndexRoute,
+    postPolicyResourceArnStatementsIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesIndexRouteHandler,
+  )
+  .openapi(postCreateuploadurlIndexRoute, postCreateuploadurlIndexRouteHandler)
+  .openapi(deleteBotsBotIdIndexRoute, deleteBotsBotIdIndexRouteHandler)
+  .openapi(getBotsBotIdIndexRoute, getBotsBotIdIndexRouteHandler)
+  .openapi(putBotsBotIdIndexRoute, putBotsBotIdIndexRouteHandler)
+  .openapi(
+    deleteBotsBotIdBotaliasesBotAliasIdIndexRoute,
+    deleteBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotaliasesBotAliasIdIndexRoute,
+    getBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotaliasesBotAliasIdIndexRoute,
+    putBotsBotIdBotaliasesBotAliasIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionIndexRoute,
+    deleteBotsBotIdBotversionsBotVersionIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionIndexRoute,
+    getBotsBotIdBotversionsBotVersionIndexRouteHandler,
+  )
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyRoute,
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyRouteHandler,
+  )
+  .openapi(deleteExportsExportIdIndexRoute, deleteExportsExportIdIndexRouteHandler)
+  .openapi(getExportsExportIdIndexRoute, getExportsExportIdIndexRouteHandler)
+  .openapi(putExportsExportIdIndexRoute, putExportsExportIdIndexRouteHandler)
+  .openapi(deleteImportsImportIdIndexRoute, deleteImportsImportIdIndexRouteHandler)
+  .openapi(getImportsImportIdIndexRoute, getImportsImportIdIndexRouteHandler)
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdIndexRouteHandler,
+  )
+  .openapi(
+    deletePolicyResourceArnStatementsStatementIdIndexRoute,
+    deletePolicyResourceArnStatementsStatementIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdIntentsIntentIdSlotsSlotIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+    deleteBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdSlottypesSlotTypeIdIndexRouteHandler,
+  )
+  .openapi(deleteBotsBotIdUtterancesIndexRoute, deleteBotsBotIdUtterancesIndexRouteHandler)
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIndexRouteHandler,
+  )
+  .openapi(
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTMetadataRoute,
+    getBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTMetadataRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdAggregatedutterancesIndexRoute,
+    postBotsBotIdAggregatedutterancesIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsIndexRouteHandler,
+  )
+  .openapi(
+    postBuiltinsLocalesLocaleIdIntentsIndexRoute,
+    postBuiltinsLocalesLocaleIdIntentsIndexRouteHandler,
+  )
+  .openapi(
+    postBuiltinsLocalesLocaleIdSlottypesIndexRoute,
+    postBuiltinsLocalesLocaleIdSlottypesIndexRouteHandler,
+  )
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTListRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdCustomvocabularyDEFAULTListRouteHandler,
+  )
+  .openapi(postImportsIndexRoute, postImportsIndexRouteHandler)
+  .openapi(putImportsIndexRoute, putImportsIndexRouteHandler)
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIntentsRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdIntentsRouteHandler,
+  )
+  .openapi(getTagsResourceARNRoute, getTagsResourceARNRouteHandler)
+  .openapi(postTagsResourceARNRoute, postTagsResourceARNRouteHandler)
+  .openapi(
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdAssociatedtranscriptsRoute,
+    postBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdAssociatedtranscriptsRouteHandler,
+  )
+  .openapi(
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdStopbotrecommendationRoute,
+    putBotsBotIdBotversionsBotVersionBotlocalesLocaleIdBotrecommendationsBotRecommendationIdStopbotrecommendationRouteHandler,
+  )
+  .openapi(deleteTagsResourceARNTagKeysRoute, deleteTagsResourceARNTagKeysRouteHandler)
 
 export default app

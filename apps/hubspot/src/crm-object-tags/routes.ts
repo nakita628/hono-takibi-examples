@@ -5268,7 +5268,7 @@ export const deleteCrmObjectTags202609ObjectTypeIdTagIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.object_tags.read'] }],
 })
 

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCeilRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCeilRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ceilHandler = app.openapi(getCeilRoute, (c) => {
+export const getCeilRouteHandler: RouteHandler<typeof getCeilRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

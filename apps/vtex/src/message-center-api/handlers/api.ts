@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postApiMailServicePvtProvidersEmailProviderDkimRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postApiMailServicePvtProvidersEmailProviderDkimRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const apiHandler = app.openapi(postApiMailServicePvtProvidersEmailProviderDkimRoute, (c) => {
+export const postApiMailServicePvtProvidersEmailProviderDkimRouteHandler: RouteHandler<
+  typeof postApiMailServicePvtProvidersEmailProviderDkimRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

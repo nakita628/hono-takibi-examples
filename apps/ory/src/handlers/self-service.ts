@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSelfServiceLoginTestRoute,
   deleteSelfServiceLogoutApiRoute,
   getSelfServiceErrorsRoute,
@@ -29,87 +29,164 @@ import {
   postSelfServiceVerificationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSelfServiceErrorsRouteHandler: RouteHandler<
+  typeof getSelfServiceErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const selfServiceHandler = app
-  .openapi(getSelfServiceErrorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceFedCmParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceFedCmTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceLoginApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceLoginBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceLoginFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfServiceLoginTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfServiceLogoutApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceLogoutBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceRecoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRecoveryApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRecoveryBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRecoveryFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceRegistrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRegistrationApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRegistrationBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceRegistrationFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceSettingsApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceSettingsBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceSettingsFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfServiceVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceVerificationApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceVerificationBrowserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfServiceVerificationFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSelfServiceFedCmParametersRouteHandler: RouteHandler<
+  typeof getSelfServiceFedCmParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceFedCmTokenRouteHandler: RouteHandler<
+  typeof postSelfServiceFedCmTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceLoginRouteHandler: RouteHandler<
+  typeof postSelfServiceLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceLoginApiRouteHandler: RouteHandler<
+  typeof getSelfServiceLoginApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceLoginBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceLoginBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceLoginFlowsRouteHandler: RouteHandler<
+  typeof getSelfServiceLoginFlowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfServiceLoginTestRouteHandler: RouteHandler<
+  typeof deleteSelfServiceLoginTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceLogoutRouteHandler: RouteHandler<
+  typeof getSelfServiceLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfServiceLogoutApiRouteHandler: RouteHandler<
+  typeof deleteSelfServiceLogoutApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceLogoutBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceLogoutBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceRecoveryRouteHandler: RouteHandler<
+  typeof postSelfServiceRecoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRecoveryApiRouteHandler: RouteHandler<
+  typeof getSelfServiceRecoveryApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRecoveryBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceRecoveryBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRecoveryFlowsRouteHandler: RouteHandler<
+  typeof getSelfServiceRecoveryFlowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceRegistrationRouteHandler: RouteHandler<
+  typeof postSelfServiceRegistrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRegistrationApiRouteHandler: RouteHandler<
+  typeof getSelfServiceRegistrationApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRegistrationBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceRegistrationBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceRegistrationFlowsRouteHandler: RouteHandler<
+  typeof getSelfServiceRegistrationFlowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceSettingsRouteHandler: RouteHandler<
+  typeof postSelfServiceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceSettingsApiRouteHandler: RouteHandler<
+  typeof getSelfServiceSettingsApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceSettingsBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceSettingsBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceSettingsFlowsRouteHandler: RouteHandler<
+  typeof getSelfServiceSettingsFlowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfServiceVerificationRouteHandler: RouteHandler<
+  typeof postSelfServiceVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceVerificationApiRouteHandler: RouteHandler<
+  typeof getSelfServiceVerificationApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceVerificationBrowserRouteHandler: RouteHandler<
+  typeof getSelfServiceVerificationBrowserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfServiceVerificationFlowsRouteHandler: RouteHandler<
+  typeof getSelfServiceVerificationFlowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

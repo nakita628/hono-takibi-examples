@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
   deleteCustomObjectInstancesCustomObjectTypeIdentifierRoute,
   getCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
@@ -7,24 +7,32 @@ import {
   postCustomObjectInstancesCustomObjectTypeIdentifierRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCustomObjectInstancesCustomObjectTypeIdentifierRouteHandler: RouteHandler<
+  typeof postCustomObjectInstancesCustomObjectTypeIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const customObjectInstancesHandler = app
-  .openapi(postCustomObjectInstancesCustomObjectTypeIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomObjectInstancesCustomObjectTypeIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCustomObjectInstancesCustomObjectTypeIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getCustomObjectInstancesCustomObjectTypeIdentifierRouteHandler: RouteHandler<
+  typeof getCustomObjectInstancesCustomObjectTypeIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCustomObjectInstancesCustomObjectTypeIdentifierRouteHandler: RouteHandler<
+  typeof deleteCustomObjectInstancesCustomObjectTypeIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRouteHandler: RouteHandler<
+  typeof getCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRouteHandler: RouteHandler<
+  typeof deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

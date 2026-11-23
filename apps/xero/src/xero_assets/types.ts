@@ -126,14 +126,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
-      $post: {
-        input: { header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string } } & {
-          json: Asset
-        }
-        output: Asset
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Asset }
+            output: Asset
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Asset }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/Assets/:id': {
@@ -174,6 +183,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: AssetType
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: AssetType }
+            output: {}
+            outputFormat: string
+            status: 400
           }
         | {
             input: {

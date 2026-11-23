@@ -18,7 +18,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/query.:extension': {
+    '/query.{extension}': {
       $get: {
         input: { param: { extension: 'atom' | 'rss' | 'html' | 'json' } } & {
           query: {

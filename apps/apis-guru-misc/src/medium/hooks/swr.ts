@@ -1446,19 +1446,19 @@ export function useImmutableGetRelatedTagsTag<TError = unknown>(
 }
 
 export function getGetSearchArticlesQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
 ) {
-  return ['search', '/search/articles?query=:query', args] as const
+  return ['search', '/search/articles?query={query}', args] as const
 }
 
 export function useGetSearchArticlesQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
           >
         >
       >,
@@ -1481,27 +1481,27 @@ export function useGetSearchArticlesQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['articles?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['articles?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchArticlesQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
           >
         >
       >,
@@ -1524,33 +1524,33 @@ export function useImmutableGetSearchArticlesQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['articles?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['articles?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetSearchListsQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
 ) {
-  return ['search', '/search/lists?query=:query', args] as const
+  return ['search', '/search/lists?query={query}', args] as const
 }
 
 export function useGetSearchListsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
           >
         >
       >,
@@ -1573,27 +1573,27 @@ export function useGetSearchListsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['lists?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['lists?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchListsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
           >
         >
       >,
@@ -1616,33 +1616,33 @@ export function useImmutableGetSearchListsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['lists?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['lists?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetSearchPublicationsQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
 ) {
-  return ['search', '/search/publications?query=:query', args] as const
+  return ['search', '/search/publications?query={query}', args] as const
 }
 
 export function useGetSearchPublicationsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
           >
         >
       >,
@@ -1665,7 +1665,7 @@ export function useGetSearchPublicationsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
           >
         >
       >,
@@ -1673,20 +1673,20 @@ export function useGetSearchPublicationsQueryQuery<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.search['publications?query=:query'].$get(args, clientOptions)),
+        parseResponse(client.search['publications?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchPublicationsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
           >
         >
       >,
@@ -1709,7 +1709,7 @@ export function useImmutableGetSearchPublicationsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
           >
         >
       >,
@@ -1717,26 +1717,26 @@ export function useImmutableGetSearchPublicationsQueryQuery<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.search['publications?query=:query'].$get(args, clientOptions)),
+        parseResponse(client.search['publications?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetSearchTagsQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
 ) {
-  return ['search', '/search/tags?query=:query', args] as const
+  return ['search', '/search/tags?query={query}', args] as const
 }
 
 export function useGetSearchTagsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
           >
         >
       >,
@@ -1759,27 +1759,27 @@ export function useGetSearchTagsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['tags?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['tags?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchTagsQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
           >
         >
       >,
@@ -1802,33 +1802,33 @@ export function useImmutableGetSearchTagsQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['tags?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['tags?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetSearchUsersQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
 ) {
-  return ['search', '/search/users?query=:query', args] as const
+  return ['search', '/search/users?query={query}', args] as const
 }
 
 export function useGetSearchUsersQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
           >
         >
       >,
@@ -1851,27 +1851,27 @@ export function useGetSearchUsersQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['users?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['users?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchUsersQueryQuery<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
           >
         >
       >,
@@ -1894,14 +1894,14 @@ export function useImmutableGetSearchUsersQueryQuery<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['users?query=:query'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['users?query={query}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

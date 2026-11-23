@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/punjabteched/3.0.0/openapi.yaml',
   output: './src/punjabteched/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/punjabteched/types.ts' },
   client: { output: './src/punjabteched/client.ts', baseUrl: '/' },
   rpc: { output: './src/punjabteched/rpc.ts', parseResponse: true },

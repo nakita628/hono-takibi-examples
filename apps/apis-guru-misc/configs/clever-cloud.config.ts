@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/clever-cloud.com/1.0.0/openapi.yaml',
   output: './src/clever-cloud/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/clever-cloud/types.ts' },
   client: { output: './src/clever-cloud/client.ts', baseUrl: '/' },
   rpc: { output: './src/clever-cloud/rpc.ts', parseResponse: true },

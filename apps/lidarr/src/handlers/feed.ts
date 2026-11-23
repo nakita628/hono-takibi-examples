@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFeedV1CalendarLidarrIcsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFeedV1CalendarLidarrIcsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const feedHandler = app.openapi(getFeedV1CalendarLidarrIcsRoute, (c) => {
+export const getFeedV1CalendarLidarrIcsRouteHandler: RouteHandler<
+  typeof getFeedV1CalendarLidarrIcsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

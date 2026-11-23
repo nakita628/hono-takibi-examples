@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mturk-requester/2017-01-17/openapi.yaml',
   output: './src/mturk-requester/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mturk-requester/types.ts' },
   client: { output: './src/mturk-requester/client.ts', baseUrl: '/' },
   rpc: { output: './src/mturk-requester/rpc.ts', parseResponse: true },

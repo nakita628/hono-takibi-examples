@@ -1703,6 +1703,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                token: string
+                pass?: string | undefined
+                view?: 0 | 1 | undefined
+                inline?: 0 | 1 | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 400
           }
         | {
@@ -2698,6 +2711,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                token: string
+                pass?: string | undefined
+                path?: string | undefined
+                page?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 400
           }
         | {
@@ -2960,6 +2986,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/pro/audit/exportCsv.php': {
       $get:
+        | {
+            input: {
+              query: {
+                folder?: string | undefined
+                user?: string | undefined
+                action?: string | undefined
+                source?: string | undefined
+                storage?: string | undefined
+                from?: string | undefined
+                to?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               query: {
@@ -3788,6 +3831,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/profile/totp_setup.php': {
       $get:
+        | {
+            input: { header: { 'X-CSRF-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { header: { 'X-CSRF-Token': string } }
             output: {}

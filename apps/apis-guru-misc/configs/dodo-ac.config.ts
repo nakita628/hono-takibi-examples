@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/dodo.ac/1.5.0/openapi.yaml',
   output: './src/dodo-ac/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dodo-ac/types.ts' },
   client: { output: './src/dodo-ac/client.ts', baseUrl: '/' },
   rpc: { output: './src/dodo-ac/rpc.ts', parseResponse: true },

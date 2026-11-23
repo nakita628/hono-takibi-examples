@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAstronomicalObjectRoute,
   getAstronomicalObjectSearchRoute,
   postAstronomicalObjectSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAstronomicalObjectRouteHandler: RouteHandler<
+  typeof getAstronomicalObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const astronomicalObjectHandler = app
-  .openapi(getAstronomicalObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAstronomicalObjectSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAstronomicalObjectSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAstronomicalObjectSearchRouteHandler: RouteHandler<
+  typeof getAstronomicalObjectSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAstronomicalObjectSearchRouteHandler: RouteHandler<
+  typeof postAstronomicalObjectSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

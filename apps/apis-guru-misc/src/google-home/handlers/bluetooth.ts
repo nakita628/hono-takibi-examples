@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBluetoothGetBondedRoute,
   getBluetoothScanResultsRoute,
   getBluetoothStatusRoute,
@@ -9,27 +9,44 @@ import {
   postBluetoothScanRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBluetoothBondRouteHandler: RouteHandler<typeof postBluetoothBondRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bluetoothHandler = app
-  .openapi(postBluetoothBondRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBluetoothConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBluetoothDiscoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBluetoothGetBondedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBluetoothScanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBluetoothScanResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBluetoothStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBluetoothConnectRouteHandler: RouteHandler<
+  typeof postBluetoothConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBluetoothDiscoveryRouteHandler: RouteHandler<
+  typeof postBluetoothDiscoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBluetoothGetBondedRouteHandler: RouteHandler<
+  typeof getBluetoothGetBondedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBluetoothScanRouteHandler: RouteHandler<typeof postBluetoothScanRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBluetoothScanResultsRouteHandler: RouteHandler<
+  typeof getBluetoothScanResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBluetoothStatusRouteHandler: RouteHandler<typeof getBluetoothStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

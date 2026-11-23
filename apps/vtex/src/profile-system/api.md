@@ -74,12 +74,12 @@ Creates new client profile.
 |Accept|header|string|true|HTTP Client Negotiation _Accept_ Header. Indicates the types of responses the client can understand.|
 |ttl|query|integer|false|This parameter sets the the Time To Live (TTL), in days, of the specific document being created or updated with this request. After this period of time from the moment of the request, the document is deleted. By sending this parameter you override the TTL set for the schema.<br><br>> Currently, the available default document schemas have no TTL. This means that documents are stored indefinitely, unless a TTL is sent when creating or updating.|
 |body|body|[profile](#schemaprofile)|false|none|
-|» birthDate|body|string|false|Client's birth date in ISO 8601 format.|
-|» document|body|string|true|Client's document.|
-|» documentType|body|string|true|Type of document informed in `document`.|
-|» email|body|string|true|Client's email address.|
-|» firstName|body|string|true|Client's first name.|
-|» lastName|body|string|true|Client's last name.|
+|» birthDate|body|[profileBirthDate](#schemaprofilebirthdate)|false|Client's birth date in ISO 8601 format.|
+|» document|body|[profileDocument](#schemaprofiledocument)|true|Client's document.|
+|» documentType|body|[profileDocumentType](#schemaprofiledocumenttype)|true|Type of document informed in `document`.|
+|» email|body|[profileEmail](#schemaprofileemail)|true|Client's email address.|
+|» firstName|body|[profileFirstName](#schemaprofilefirstname)|true|Client's first name.|
+|» lastName|body|[profileLastName](#schemaprofilelastname)|true|Client's last name.|
 
 > Example responses
 
@@ -285,12 +285,12 @@ Updates one or more fields of an existing client profile.
 |alternativeKey|query|string|false|The `profileId` path parameter may be substituted by other profile fields in this request. When making this request, send the `alternativeKey` parameter with a value equal to the key of the field you wish to use as `profileId`.<br><br>> Currently, there are two possible values for this parameter: `email` and `document`.|
 |ttl|query|integer|false|This parameter sets the the Time To Live (TTL), in days, of the specific document being created or updated with this request. After this period of time from the moment of the request, the document is deleted. By sending this parameter you override the TTL set for the schema.<br><br>> Currently, the available default document schemas have no TTL. This means that documents are stored indefinitely, unless a TTL is sent when creating or updating.|
 |body|body|object|false|none|
-|» birthDate|body|string|false|Client's birth date in ISO 8601 format.|
-|» document|body|string|false|Client's document.|
-|» documentType|body|string|false|Type of document informed in `document`.|
-|» email|body|string|false|Client's email address.|
-|» firstName|body|string|false|Client's first name.|
-|» lastName|body|string|false|Client's last name.|
+|» birthDate|body|[profileBirthDate](#schemaprofilebirthdate)|false|Client's birth date in ISO 8601 format.|
+|» document|body|[profileDocument](#schemaprofiledocument)|false|Client's document.|
+|» documentType|body|[profileDocumentType](#schemaprofiledocumenttype)|false|Type of document informed in `document`.|
+|» email|body|[profileEmail](#schemaprofileemail)|false|Client's email address.|
+|» firstName|body|[profileFirstName](#schemaprofilefirstname)|false|Client's first name.|
+|» lastName|body|[profileLastName](#schemaprofilelastname)|false|Client's last name.|
 
 > Example responses
 
@@ -693,12 +693,12 @@ Creates new address for a given client profile.
 |profileId|path|string|true|ID of the client's profile as returned by the Create profile endpoint's response, in the `id` field. It can also be an `alternativeKey` according to your custom profile schema. In this case, this request should also send the `alternativeKey` parameter.|
 |alternativeKey|query|string|false|The `profileId` path parameter may be substituted by other profile fields in this request. When making this request, send the `alternativeKey` parameter with a value equal to the key of the field you wish to use as `profileId`.<br><br>> Currently, there are two possible values for this parameter: `email` and `document`.|
 |body|body|[address](#schemaaddress)|false|none|
-|» administrativeAreaLevel1|body|string|true|Name of administrative area, such as the state or province.|
-|» countryCode|body|string|false|Two letter country code.|
-|» countryName|body|string|true|Name of the address country.|
-|» locality|body|string|true|Name of address locality, such as the city.|
-|» localityAreaLevel1|body|string|true|Name of the address locality area, such as the neighborhood or district.|
-|» postalCode|body|string|true|Address postal code.|
+|» administrativeAreaLevel1|body|[addressAdministrativeAreaLevel1](#schemaaddressadministrativearealevel1)|true|Name of administrative area, such as the state or province.|
+|» countryCode|body|[addressCountryCode](#schemaaddresscountrycode)|false|Two letter country code.|
+|» countryName|body|[addressCountryName](#schemaaddresscountryname)|true|Name of the address country.|
+|» locality|body|[addressLocality](#schemaaddresslocality)|true|Name of address locality, such as the city.|
+|» localityAreaLevel1|body|[addressLocalityAreaLevel1](#schemaaddresslocalityarealevel1)|true|Name of the address locality area, such as the neighborhood or district.|
+|» postalCode|body|[addressPostalCode](#schemaaddresspostalcode)|true|Address postal code.|
 |» route|body|string|true|Address route or street name.|
 |» streetNumber|body|string|true|Address street number.|
 
@@ -981,14 +981,14 @@ Updates one or more fields of an existing address for a given client profile.
 |addressId|path|string|true|ID of a client's specific address as returned in the Create client address endpoint's response, in the `id` field.|
 |alternativeKey|query|string|false|The `profileId` path parameter may be substituted by other profile fields in this request. When making this request, send the `alternativeKey` parameter with a value equal to the key of the field you wish to use as `profileId`.<br><br>> Currently, there are two possible values for this parameter: `email` and `document`.|
 |body|body|object|false|none|
-|» administrativeAreaLevel1|body|string|false|Name of administrative area, such as the state or province.|
-|» countryCode|body|string|false|Two letter country code.|
-|» countryName|body|string|false|Name of the address country.|
-|» locality|body|string|false|Name of address locality, such as the city.|
-|» localityAreaLevel1|body|string|false|Name of the address locality area, such as the neighborhood or district.|
-|» postalCode|body|string|false|Address postal code.|
-|» route|body|string|false|Name of the address country.|
-|» streetNumber|body|string|false|Name of the address country.|
+|» administrativeAreaLevel1|body|[addressAdministrativeAreaLevel1](#schemaaddressadministrativearealevel1)|false|Name of administrative area, such as the state or province.|
+|» countryCode|body|[addressCountryCode](#schemaaddresscountrycode)|false|Two letter country code.|
+|» countryName|body|[addressCountryName](#schemaaddresscountryname)|false|Name of the address country.|
+|» locality|body|[addressLocality](#schemaaddresslocality)|false|Name of address locality, such as the city.|
+|» localityAreaLevel1|body|[addressLocalityAreaLevel1](#schemaaddresslocalityarealevel1)|false|Name of the address locality area, such as the neighborhood or district.|
+|» postalCode|body|[addressPostalCode](#schemaaddresspostalcode)|false|Address postal code.|
+|» route|body|[addressCountryName](#schemaaddresscountryname)|false|Name of the address country.|
+|» streetNumber|body|[addressCountryName](#schemaaddresscountryname)|false|Name of the address country.|
 
 > Example responses
 
@@ -1954,12 +1954,12 @@ appKey & appToken
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|administrativeAreaLevel1|string|true|none|Name of administrative area, such as the state or province.|
-|countryCode|string|false|none|Two letter country code.|
-|countryName|string|true|none|Name of the address country.|
-|locality|string|true|none|Name of address locality, such as the city.|
-|localityAreaLevel1|string|true|none|Name of the address locality area, such as the neighborhood or district.|
-|postalCode|string|true|none|Address postal code.|
+|administrativeAreaLevel1|[addressAdministrativeAreaLevel1](#schemaaddressadministrativearealevel1)|true|none|Name of administrative area, such as the state or province.|
+|countryCode|[addressCountryCode](#schemaaddresscountrycode)|false|none|Two letter country code.|
+|countryName|[addressCountryName](#schemaaddresscountryname)|true|none|Name of the address country.|
+|locality|[addressLocality](#schemaaddresslocality)|true|none|Name of address locality, such as the city.|
+|localityAreaLevel1|[addressLocalityAreaLevel1](#schemaaddresslocalityarealevel1)|true|none|Name of the address locality area, such as the neighborhood or district.|
+|postalCode|[addressPostalCode](#schemaaddresspostalcode)|true|none|Address postal code.|
 |route|string|true|none|Address route or street name.|
 |streetNumber|string|true|none|Address street number.|
 
@@ -1985,12 +1985,12 @@ appKey & appToken
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string|false|none|Client's birth date in ISO 8601 format.|
-|document|string|true|none|Client's document.|
-|documentType|string|true|none|Type of document informed in `document`.|
-|email|string|true|none|Client's email address.|
-|firstName|string|true|none|Client's first name.|
-|lastName|string|true|none|Client's last name.|
+|birthDate|[profileBirthDate](#schemaprofilebirthdate)|false|none|Client's birth date in ISO 8601 format.|
+|document|[profileDocument](#schemaprofiledocument)|true|none|Client's document.|
+|documentType|[profileDocumentType](#schemaprofiledocumenttype)|true|none|Type of document informed in `document`.|
+|email|[profileEmail](#schemaprofileemail)|true|none|Client's email address.|
+|firstName|[profileFirstName](#schemaprofilefirstname)|true|none|Client's first name.|
+|lastName|[profileLastName](#schemaprofilelastname)|true|none|Client's last name.|
 
 <h2 id="tocS_prospect">prospect</h2>
 <!-- backwards compatibility -->
@@ -2058,3 +2058,159 @@ null
 |v-indexed|[object]|false|none|none|
 |v-unique|[object]|false|none|none|
 |version|integer|false|none|Schema version.|
+
+<h2 id="tocS_profileBirthDate">profileBirthDate</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofilebirthdate"></a>
+<a id="schema_profileBirthDate"></a>
+<a id="tocSprofilebirthdate"></a>
+<a id="tocsprofilebirthdate"></a>
+
+```json
+"1925-11-17"
+```
+
+Client's birth date in ISO 8601 format.
+
+<h2 id="tocS_profileDocument">profileDocument</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofiledocument"></a>
+<a id="schema_profileDocument"></a>
+<a id="tocSprofiledocument"></a>
+<a id="tocsprofiledocument"></a>
+
+```json
+"12345678900"
+```
+
+Client's document.
+
+<h2 id="tocS_profileDocumentType">profileDocumentType</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofiledocumenttype"></a>
+<a id="schema_profileDocumentType"></a>
+<a id="tocSprofiledocumenttype"></a>
+<a id="tocsprofiledocumenttype"></a>
+
+```json
+"CPF"
+```
+
+Type of document informed in `document`.
+
+<h2 id="tocS_profileEmail">profileEmail</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofileemail"></a>
+<a id="schema_profileEmail"></a>
+<a id="tocSprofileemail"></a>
+<a id="tocsprofileemail"></a>
+
+```json
+"john.doe@example.com"
+```
+
+Client's email address.
+
+<h2 id="tocS_profileFirstName">profileFirstName</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofilefirstname"></a>
+<a id="schema_profileFirstName"></a>
+<a id="tocSprofilefirstname"></a>
+<a id="tocsprofilefirstname"></a>
+
+```json
+"John"
+```
+
+Client's first name.
+
+<h2 id="tocS_profileLastName">profileLastName</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofilelastname"></a>
+<a id="schema_profileLastName"></a>
+<a id="tocSprofilelastname"></a>
+<a id="tocsprofilelastname"></a>
+
+```json
+"Doe"
+```
+
+Client's last name.
+
+<h2 id="tocS_addressAdministrativeAreaLevel1">addressAdministrativeAreaLevel1</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddressadministrativearealevel1"></a>
+<a id="schema_addressAdministrativeAreaLevel1"></a>
+<a id="tocSaddressadministrativearealevel1"></a>
+<a id="tocsaddressadministrativearealevel1"></a>
+
+```json
+"RJ"
+```
+
+Name of administrative area, such as the state or province.
+
+<h2 id="tocS_addressCountryCode">addressCountryCode</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddresscountrycode"></a>
+<a id="schema_addressCountryCode"></a>
+<a id="tocSaddresscountrycode"></a>
+<a id="tocsaddresscountrycode"></a>
+
+```json
+"BR"
+```
+
+Two letter country code.
+
+<h2 id="tocS_addressCountryName">addressCountryName</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddresscountryname"></a>
+<a id="schema_addressCountryName"></a>
+<a id="tocSaddresscountryname"></a>
+<a id="tocsaddresscountryname"></a>
+
+```json
+"Brasil"
+```
+
+Name of the address country.
+
+<h2 id="tocS_addressLocality">addressLocality</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddresslocality"></a>
+<a id="schema_addressLocality"></a>
+<a id="tocSaddresslocality"></a>
+<a id="tocsaddresslocality"></a>
+
+```json
+"Locality"
+```
+
+Name of address locality, such as the city.
+
+<h2 id="tocS_addressLocalityAreaLevel1">addressLocalityAreaLevel1</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddresslocalityarealevel1"></a>
+<a id="schema_addressLocalityAreaLevel1"></a>
+<a id="tocSaddresslocalityarealevel1"></a>
+<a id="tocsaddresslocalityarealevel1"></a>
+
+```json
+"Locality area"
+```
+
+Name of the address locality area, such as the neighborhood or district.
+
+<h2 id="tocS_addressPostalCode">addressPostalCode</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddresspostalcode"></a>
+<a id="schema_addressPostalCode"></a>
+<a id="tocSaddresspostalcode"></a>
+<a id="tocsaddresspostalcode"></a>
+
+```json
+"20200-000"
+```
+
+Address postal code.

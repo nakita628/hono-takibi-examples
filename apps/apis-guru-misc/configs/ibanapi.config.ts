@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ibanapi.com/1.0.0/openapi.yaml',
   output: './src/ibanapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ibanapi/types.ts' },
   client: { output: './src/ibanapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/ibanapi/rpc.ts', parseResponse: true },

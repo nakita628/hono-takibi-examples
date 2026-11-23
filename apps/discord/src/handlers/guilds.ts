@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGuildsGuildIdAutoModerationRulesRuleIdRoute,
   deleteGuildsGuildIdBansUserIdRoute,
   deleteGuildsGuildIdEmojisEmojiIdRoute,
@@ -95,294 +95,560 @@ import {
   putGuildsGuildIdTemplatesCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGuildsTemplatesCodeRouteHandler: RouteHandler<
+  typeof getGuildsTemplatesCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const guildsHandler = app
-  .openapi(getGuildsTemplatesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdAuditLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdAutoModerationRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdAutoModerationRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdAutoModerationRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdAutoModerationRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdAutoModerationRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdBansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdBansUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdBansUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdBansUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdBulkBanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdEmojisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdEmojisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdEmojisEmojiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdEmojisEmojiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdEmojisEmojiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdIncidentActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdIntegrationsIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdMembersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdMembersSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdMembersUserIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdMembersUserIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdMessagesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdNewMemberWelcomeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdOnboardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdOnboardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdPermissionsMemberUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdPermissionsRoleRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdPruneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdPruneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRolesMemberCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdScheduledEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdScheduledEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledEventExceptionIdUsersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGuildsGuildIdSoundboardSoundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdSoundboardSoundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdSoundboardSoundsSoundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdSoundboardSoundsSoundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdSoundboardSoundsSoundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdStickersStickerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdStickersStickerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdStickersStickerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGuildsGuildIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGuildsGuildIdTemplatesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGuildsGuildIdTemplatesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdTemplatesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdThreadsActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdVanityUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdVoiceStatesMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdVoiceStatesMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdVoiceStatesUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdVoiceStatesUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdWelcomeScreenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdWelcomeScreenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdWidgetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGuildsGuildIdWidgetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdWidgetJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGuildsGuildIdWidgetPngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGuildsGuildIdRouteHandler: RouteHandler<typeof getGuildsGuildIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdRouteHandler: RouteHandler<typeof patchGuildsGuildIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdAuditLogsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdAuditLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdAutoModerationRulesRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdAutoModerationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdAutoModerationRulesRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdAutoModerationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdAutoModerationRulesRuleIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdAutoModerationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdAutoModerationRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdAutoModerationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdAutoModerationRulesRuleIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdAutoModerationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdBansRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdBansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdBansUserIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdBansUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdBansUserIdRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdBansUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdBansUserIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdBansUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdBulkBanRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdBulkBanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdChannelsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdChannelsRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdChannelsRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdEmojisRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdEmojisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdEmojisRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdEmojisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdEmojisEmojiIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdEmojisEmojiIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdEmojisEmojiIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdEmojisEmojiIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdEmojisEmojiIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdEmojisEmojiIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdIncidentActionsRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdIncidentActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdIntegrationsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdInvitesRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdMembersRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdMembersMeRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdMembersMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdMembersSearchRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdMembersSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdMembersUserIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdMembersUserIdRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdMembersUserIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdMembersUserIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdMembersUserIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdMembersUserIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdMembersUserIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdMembersUserIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdMessagesSearchRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdMessagesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdNewMemberWelcomeRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdNewMemberWelcomeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdOnboardingRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdOnboardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdOnboardingRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdOnboardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdPermissionsMemberUserIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdPermissionsMemberUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdPermissionsRoleRoleIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdPermissionsRoleRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdPreviewRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdPruneRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdPruneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdPruneRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdPruneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdRegionsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdRequestsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdRequestsRequestIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdRolesRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdRolesRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdRolesRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdRolesMemberCountsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdRolesMemberCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdScheduledEventsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdScheduledEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdScheduledEventsRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdScheduledEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdScheduledEventsGuildScheduledEventIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdScheduledEventsGuildScheduledEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExceptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledEventExceptionIdUsersRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledEventExceptionIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdSoundboardSoundsRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdSoundboardSoundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdSoundboardSoundsRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdSoundboardSoundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdSoundboardSoundsSoundIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdSoundboardSoundsSoundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdSoundboardSoundsSoundIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdSoundboardSoundsSoundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdSoundboardSoundsSoundIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdSoundboardSoundsSoundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdStickersRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdStickersRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdStickersStickerIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdStickersStickerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdStickersStickerIdRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdStickersStickerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdStickersStickerIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdStickersStickerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdTemplatesRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGuildsGuildIdTemplatesRouteHandler: RouteHandler<
+  typeof postGuildsGuildIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGuildsGuildIdTemplatesCodeRouteHandler: RouteHandler<
+  typeof putGuildsGuildIdTemplatesCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGuildsGuildIdTemplatesCodeRouteHandler: RouteHandler<
+  typeof deleteGuildsGuildIdTemplatesCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdTemplatesCodeRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdTemplatesCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdThreadsActiveRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdThreadsActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdVanityUrlRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdVanityUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdVoiceStatesMeRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdVoiceStatesMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdVoiceStatesMeRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdVoiceStatesMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdVoiceStatesUserIdRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdVoiceStatesUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdVoiceStatesUserIdRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdVoiceStatesUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdWebhooksRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdWelcomeScreenRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdWelcomeScreenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdWelcomeScreenRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdWelcomeScreenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdWidgetRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdWidgetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGuildsGuildIdWidgetRouteHandler: RouteHandler<
+  typeof patchGuildsGuildIdWidgetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdWidgetJsonRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdWidgetJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGuildsGuildIdWidgetPngRouteHandler: RouteHandler<
+  typeof getGuildsGuildIdWidgetPngRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

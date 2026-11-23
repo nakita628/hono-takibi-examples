@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaAccountsAccountIdFundingWalletRecipientBankRoute,
   getV1betaAccountsAccountIdFundingWalletFundingDetailsRoute,
   getV1betaAccountsAccountIdFundingWalletRecipientBankRoute,
@@ -13,39 +13,68 @@ import {
   postV1betaDemoBankingFundingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1betaAccountsAccountIdFundingWalletRouteHandler: RouteHandler<
+  typeof getV1betaAccountsAccountIdFundingWalletRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(getV1betaAccountsAccountIdFundingWalletRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAccountsAccountIdFundingWalletRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAccountsAccountIdFundingWalletFundingDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaAccountsAccountIdFundingWalletRecipientBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAccountsAccountIdFundingWalletRecipientBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAccountsAccountIdFundingWalletRecipientBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAccountsAccountIdFundingWalletTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaAccountsAccountIdFundingWalletTransfersTransferIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAccountsAccountIdFundingWalletWithdrawalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAccountsFundingWalletRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaDemoBankingFundingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1betaAccountsAccountIdFundingWalletRouteHandler: RouteHandler<
+  typeof postV1betaAccountsAccountIdFundingWalletRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAccountsAccountIdFundingWalletFundingDetailsRouteHandler: RouteHandler<
+  typeof getV1betaAccountsAccountIdFundingWalletFundingDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaAccountsAccountIdFundingWalletRecipientBankRouteHandler: RouteHandler<
+  typeof deleteV1betaAccountsAccountIdFundingWalletRecipientBankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAccountsAccountIdFundingWalletRecipientBankRouteHandler: RouteHandler<
+  typeof getV1betaAccountsAccountIdFundingWalletRecipientBankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAccountsAccountIdFundingWalletRecipientBankRouteHandler: RouteHandler<
+  typeof postV1betaAccountsAccountIdFundingWalletRecipientBankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAccountsAccountIdFundingWalletTransfersRouteHandler: RouteHandler<
+  typeof getV1betaAccountsAccountIdFundingWalletTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaAccountsAccountIdFundingWalletTransfersTransferIdRouteHandler: RouteHandler<
+  typeof getV1betaAccountsAccountIdFundingWalletTransfersTransferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAccountsAccountIdFundingWalletWithdrawalRouteHandler: RouteHandler<
+  typeof postV1betaAccountsAccountIdFundingWalletWithdrawalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaAccountsFundingWalletRouteHandler: RouteHandler<
+  typeof postV1betaAccountsFundingWalletRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaDemoBankingFundingRouteHandler: RouteHandler<
+  typeof postV1betaDemoBankingFundingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

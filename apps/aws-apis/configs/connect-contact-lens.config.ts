@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/connect-contact-lens/2020-08-21/openapi.yaml',
   output: './src/connect-contact-lens/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/connect-contact-lens/types.ts' },
   client: { output: './src/connect-contact-lens/client.ts', baseUrl: '/' },
   rpc: { output: './src/connect-contact-lens/rpc.ts', parseResponse: true },

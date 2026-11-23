@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteIncidentRecordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteIncidentRecordRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteIncidentRecordHandler = app.openapi(postDeleteIncidentRecordRoute, (c) => {
+export const postDeleteIncidentRecordRouteHandler: RouteHandler<
+  typeof postDeleteIncidentRecordRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

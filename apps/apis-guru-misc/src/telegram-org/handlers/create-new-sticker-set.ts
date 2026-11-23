@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCreateNewStickerSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCreateNewStickerSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createNewStickerSetHandler = app.openapi(postCreateNewStickerSetRoute, (c) => {
+export const postCreateNewStickerSetRouteHandler: RouteHandler<
+  typeof postCreateNewStickerSetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -6,11 +6,6 @@ type BatchCreateCustomVocabularyItemResponse = {
   errors?: {} | undefined
   resources?: {} | undefined
 }
-type ThrottlingException = { [x: string]: unknown }
-type ServiceQuotaExceededException = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type CustomVocabularyEntryId = { itemId: {} }
 type BatchDeleteCustomVocabularyItemResponse = {
   botId?: {} | undefined
@@ -39,8 +34,6 @@ type BuildBotLocaleResponse = {
   botLocaleStatus?: {} | undefined
   lastBuildSubmittedDateTime?: {} | undefined
 }
-type PreconditionFailedException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
 type DeleteBotLocaleResponse = {
   botId?: {} | undefined
   botVersion?: {} | undefined
@@ -2263,16697 +2256,2631 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary/DEFAULT/batchcreate': {
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: BatchCreateCustomVocabularyItemResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { customVocabularyItemList: NewCustomVocabularyItem[] } }
+        output: BatchCreateCustomVocabularyItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary/DEFAULT/batchdelete': {
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: BatchDeleteCustomVocabularyItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { customVocabularyItemList: CustomVocabularyEntryId[] } }
+        output: BatchDeleteCustomVocabularyItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary/DEFAULT/batchupdate': {
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: BatchUpdateCustomVocabularyItemResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { customVocabularyItemList: CustomVocabularyItem[] } }
+        output: BatchUpdateCustomVocabularyItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/': {
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BuildBotLocaleResponse
-            outputFormat: 'json'
-            status: 202
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: BuildBotLocaleResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $delete: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DeleteBotLocaleResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: DescribeBotLocaleResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
+        } & {
+          json: {
+            description?: string | undefined
+            nluIntentConfidenceThreshold: number
+            voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $delete:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteBotLocaleResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBotLocaleResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: UpdateBotLocaleResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateBotLocaleResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: CreateBotResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            botName: string
+            description?: string | undefined
+            roleArn: string
+            dataPrivacy: { childDirected?: {} | undefined }
+            idleSessionTTLInSeconds: number
+            botTags?: { [x: string]: TagValue } | undefined
+            testBotAliasTags?: { [x: string]: TagValue } | undefined
+            botType?: 'Bot' | 'BotNetwork' | undefined
+            botMembers?: BotMember[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBotResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: BotFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botTags?: { [x: string]: TagValue } | undefined
-                testBotAliasTags?: { [x: string]: TagValue } | undefined
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListBotsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBotsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botaliases/': {
-      $put:
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateBotAliasResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: { param: { botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            botAliasName: string
+            description?: string | undefined
+            botVersion?: string | undefined
+            botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
+            conversationLogSettings?:
+              | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
+              | undefined
+            sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
+            tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBotAliasResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $post: {
+        input: { param: { botId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ListBotAliasesResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
+        output: ListBotAliasesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/': {
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: CreateBotLocaleResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: { param: { botId: string; botVersion: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            localeId: string
+            description?: string | undefined
+            nluIntentConfidenceThreshold: number
+            voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBotLocaleResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $post: {
+        input: { param: { botId: string; botVersion: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: BotLocaleFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                localeId: string
-                description?: string | undefined
-                nluIntentConfidenceThreshold: number
-                voiceSettings?: { voiceId?: {} | undefined; engine?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotLocaleFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListBotLocalesResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotLocaleFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotLocaleFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotLocaleFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: BotLocaleFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBotLocalesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/': {
-      $put:
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: CreateBotVersionResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: { param: { botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            description?: string | undefined
+            botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBotVersionResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $post: {
+        input: { param: { botId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersionLocaleSpecification: { [x: string]: BotVersionLocaleDetails }
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListBotVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBotVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/exports/': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: CreateExportResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
+        } & {
+          json: {
+            resourceSpecification: {
+              botExportSpecification?: { botId: {}; botVersion: {} } | undefined
+              botLocaleExportSpecification?: { botId: {}; botVersion: {}; localeId: {} } | undefined
+              customVocabularyExportSpecification?:
+                | { botId: {}; botVersion: {}; localeId: {} }
+                | undefined
             }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+            fileFormat: 'LexJson' | 'TSV'
+            filePassword?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateExportResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            botId?: string | undefined
+            botVersion?: string | undefined
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: ExportFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            localeId?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                resourceSpecification: {
-                  botExportSpecification?: { botId: {}; botVersion: {} } | undefined
-                  botLocaleExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                  customVocabularyExportSpecification?:
-                    | { botId: {}; botVersion: {}; localeId: {} }
-                    | undefined
-                }
-                fileFormat: 'LexJson' | 'TSV'
-                filePassword?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ExportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ListExportsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ExportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ExportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ExportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListExportsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/intents/': {
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: CreateIntentResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
+        } & {
+          json: {
+            intentName: string
+            description?: string | undefined
+            parentIntentSignature?: string | undefined
+            sampleUtterances?: SampleUtterance[] | undefined
+            dialogCodeHook?: { enabled?: {} | undefined } | undefined
+            fulfillmentCodeHook?:
+              | {
+                  enabled?: {} | undefined
+                  postFulfillmentStatusSpecification?:
+                    | {
+                        successResponse?: ResponseSpecification | undefined
+                        failureResponse?: ResponseSpecification | undefined
+                        timeoutResponse?: ResponseSpecification | undefined
+                        successNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
                             }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
+                          | undefined
+                        successConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
                                     }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
                             }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
+                          | undefined
+                        failureNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
                             }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+                          | undefined
+                        failureConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
+                                    }
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
+                            }
+                          | undefined
+                        timeoutNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
+                            }
+                          | undefined
+                        timeoutConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
+                                    }
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
+                            }
+                          | undefined
+                      }
+                    | undefined
+                  fulfillmentUpdatesSpecification?:
+                    | {
+                        active: {}
+                        startResponse?:
+                          | {
+                              delayInSeconds: {}
+                              messageGroups: {}
+                              allowInterrupt?: {} | undefined
+                            }
+                          | undefined
+                        updateResponse?:
+                          | {
+                              frequencyInSeconds: {}
+                              messageGroups: {}
+                              allowInterrupt?: {} | undefined
+                            }
+                          | undefined
+                        timeoutInSeconds?: {} | undefined
+                      }
+                    | undefined
+                  active?: {} | undefined
+                }
+              | undefined
+            intentConfirmationSetting?:
+              | {
+                  promptSpecification?:
+                    | {
+                        messageGroups: {}
+                        maxRetries: {}
+                        allowInterrupt?: {} | undefined
+                        messageSelectionStrategy?: {} | undefined
+                        promptAttemptsSpecification?: {} | undefined
+                      }
+                    | undefined
+                  declinationResponse?:
+                    | { messageGroups: {}; allowInterrupt?: {} | undefined }
+                    | undefined
+                  active?: {} | undefined
+                  confirmationResponse?: ResponseSpecification | undefined
+                  confirmationNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  confirmationConditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                  declinationNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  declinationConditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                  failureResponse?: ResponseSpecification | undefined
+                  failureNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  failureConditional?: ConditionalSpecification | undefined
+                  codeHook?:
+                    | {
+                        enableCodeHookInvocation: {}
+                        active: {}
+                        invocationLabel?: {} | undefined
+                        postCodeHookSpecification: {
+                          successResponse?: ResponseSpecification | undefined
+                          successNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          successConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                          failureResponse?: ResponseSpecification | undefined
+                          failureNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          failureConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                          timeoutResponse?: ResponseSpecification | undefined
+                          timeoutNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          timeoutConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                        }
+                      }
+                    | undefined
+                  elicitationCodeHook?:
+                    | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
+                    | undefined
+                }
+              | undefined
+            intentClosingSetting?:
+              | {
+                  closingResponse?:
+                    | { messageGroups: {}; allowInterrupt?: {} | undefined }
+                    | undefined
+                  active?: {} | undefined
+                  nextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  conditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                }
+              | undefined
+            inputContexts?: InputContext[] | undefined
+            outputContexts?: OutputContext[] | undefined
+            kendraConfiguration?:
+              | {
+                  kendraIndex?: {} | undefined
+                  queryFilterStringEnabled?: {} | undefined
+                  queryFilterString?: {} | undefined
+                }
+              | undefined
+            initialResponseSetting?:
+              | {
+                  initialResponse?: ResponseSpecification | undefined
+                  nextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  conditional?: ConditionalSpecification | undefined
+                  codeHook?: DialogCodeHookInvocationSetting | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: IntentFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: IntentFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListIntentsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: IntentFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: IntentFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: IntentFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: IntentFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListIntentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/policy/:resourceArn/': {
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: CreateResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { policy: string } }
+        output: CreateResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: { param: { resourceArn: string } } & {
+          query: { expectedRevisionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DeleteResourcePolicyResponse
+        outputFormat: 'json'
+        status: 204
+      }
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: DescribeResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { resourceArn: string } } & {
+          query: { expectedRevisionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteResourcePolicyResponse
-            outputFormat: 'json'
-            status: 204
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 482
-          }
-      $put:
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: UpdateResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { policy: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { policy: string } }
+        output: UpdateResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/policy/:resourceArn/statements/': {
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: CreateResourcePolicyStatementResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          query: { expectedRevisionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            statementId: string
+            effect: 'Allow' | 'Deny'
+            principal: Principal[]
+            action: Operation[]
+            condition?: { [x: string]: ConditionKeyValueMap } | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                statementId: string
-                effect: 'Allow' | 'Deny'
-                principal: Principal[]
-                action: Operation[]
-                condition?: { [x: string]: ConditionKeyValueMap } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateResourcePolicyStatementResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/intents/:intentId/slots/': {
-      $put:
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: CreateSlotResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          param: { botId: string; botVersion: string; localeId: string; intentId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
+        } & {
+          json: {
+            slotName: string
+            description?: string | undefined
+            slotTypeId?: string | undefined
+            valueElicitationSetting: {
+              defaultValueSpecification?: { defaultValueList: {} } | undefined
+              slotConstraint?: {} | undefined
+              promptSpecification?:
+                | {
+                    messageGroups: {}
+                    maxRetries: {}
+                    allowInterrupt?: {} | undefined
+                    messageSelectionStrategy?: {} | undefined
+                    promptAttemptsSpecification?: {} | undefined
+                  }
+                | undefined
+              sampleUtterances?: {} | undefined
+              waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
+              slotCaptureSetting?:
+                | {
+                    captureResponse?: ResponseSpecification | undefined
+                    captureNextStep?:
+                      | {
+                          dialogAction?: DialogAction | undefined
+                          intent?: IntentOverride | undefined
+                          sessionAttributes?: {} | undefined
+                        }
+                      | undefined
+                    captureConditional?:
+                      | {
+                          active: {}
+                          conditionalBranches: {}
+                          defaultBranch: {
+                            nextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            response?: ResponseSpecification | undefined
+                          }
+                        }
+                      | undefined
+                    failureResponse?: ResponseSpecification | undefined
+                    failureNextStep?:
+                      | {
+                          dialogAction?: DialogAction | undefined
+                          intent?: IntentOverride | undefined
+                          sessionAttributes?: {} | undefined
+                        }
+                      | undefined
+                    failureConditional?:
+                      | {
+                          active: {}
+                          conditionalBranches: {}
+                          defaultBranch: {
+                            nextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            response?: ResponseSpecification | undefined
+                          }
+                        }
+                      | undefined
+                    codeHook?:
+                      | {
+                          enableCodeHookInvocation: {}
+                          active: {}
+                          invocationLabel?: {} | undefined
+                          postCodeHookSpecification: {
+                            successResponse?: ResponseSpecification | undefined
+                            successNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            successConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                            failureResponse?: ResponseSpecification | undefined
+                            failureNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            failureConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                            timeoutResponse?: ResponseSpecification | undefined
+                            timeoutNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            timeoutConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                          }
+                        }
+                      | undefined
+                    elicitationCodeHook?:
+                      | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+            obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
+            multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
+            subSlotSetting?:
+              | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
+              | undefined
           }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateSlotResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: {
+          param: { botId: string; botVersion: string; localeId: string; intentId: string }
+        } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: SlotFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListSlotsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: { botId: string; botVersion: string; localeId: string; intentId: string }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListSlotsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/slottypes/': {
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: CreateSlotTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            slotTypeName: string
+            description?: string | undefined
+            slotTypeValues?: SlotTypeValue[] | undefined
+            valueSelectionSetting?:
+              | {
+                  resolutionStrategy?: {} | undefined
+                  regexFilter?: { pattern: {} } | undefined
+                  advancedRecognitionSetting?:
+                    | { audioRecognitionStrategy?: {} | undefined }
+                    | undefined
+                }
+              | undefined
+            parentSlotTypeSignature?: string | undefined
+            externalSourceSetting?:
+              | {
+                  grammarSlotTypeSetting?:
+                    | {
+                        source?:
+                          | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateSlotTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: SlotTypeFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotTypeFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListSlotTypesResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotTypeFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotTypeFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotTypeFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: SlotTypeFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListSlotTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/createuploadurl/': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateUploadUrlResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: CreateUploadUrlResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/': {
-      $delete:
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteBotResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { botId: string } } & {
+          query: { skipResourceInUseCheck?: boolean | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteBotResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeBotResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            botName: string
+            description?: string | undefined
+            roleArn: string
+            dataPrivacy: { childDirected?: {} | undefined }
+            idleSessionTTLInSeconds: number
+            botType?: 'Bot' | 'BotNetwork' | undefined
+            botMembers?: BotMember[] | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBotResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: UpdateBotResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botName: string
-                description?: string | undefined
-                roleArn: string
-                dataPrivacy: { childDirected?: {} | undefined }
-                idleSessionTTLInSeconds: number
-                botType?: 'Bot' | 'BotNetwork' | undefined
-                botMembers?: BotMember[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateBotResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/:botId/botaliases/:botAliasId/': {
-      $delete:
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteBotAliasResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { botAliasId: string; botId: string } } & {
+          query: { skipResourceInUseCheck?: boolean | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteBotAliasResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { botAliasId: string; botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeBotAliasResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { botAliasId: string; botId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            botAliasName: string
+            description?: string | undefined
+            botVersion?: string | undefined
+            botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
+            conversationLogSettings?:
+              | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
+              | undefined
+            sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
           }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBotAliasResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: UpdateBotAliasResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botAliasId: string; botId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasName: string
-                description?: string | undefined
-                botVersion?: string | undefined
-                botAliasLocaleSettings?: { [x: string]: BotAliasLocaleSettings } | undefined
-                conversationLogSettings?:
-                  | { textLogSettings?: {} | undefined; audioLogSettings?: {} | undefined }
-                  | undefined
-                sentimentAnalysisSettings?: { detectSentiment?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateBotAliasResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/': {
-      $delete:
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteBotVersionResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { botId: string; botVersion: string } } & {
+          query: { skipResourceInUseCheck?: boolean | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteBotVersionResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { botId: string; botVersion: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              query: { skipResourceInUseCheck?: boolean | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBotVersionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeBotVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary': {
-      $delete:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteCustomVocabularyResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: DeleteCustomVocabularyResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/exports/:exportId/': {
-      $delete:
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteExportResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { exportId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteExportResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { exportId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeExportResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { exportId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeExportResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: UpdateExportResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { exportId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { filePassword?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { filePassword?: string | undefined } }
+        output: UpdateExportResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/imports/:importId/': {
-      $delete:
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteImportResponse
-            outputFormat: 'json'
-            status: 202
+      $delete: {
+        input: { param: { importId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteImportResponse
+        outputFormat: 'json'
+        status: 202
+      }
+      $get: {
+        input: { param: { importId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeImportResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: DescribeImportResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/intents/:intentId/': {
-      $delete:
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: {
+          param: { intentId: string; botId: string; botVersion: string; localeId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: {
+          param: { intentId: string; botId: string; botVersion: string; localeId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          param: { intentId: string; botId: string; botVersion: string; localeId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            intentName: string
+            description?: string | undefined
+            parentIntentSignature?: string | undefined
+            sampleUtterances?: SampleUtterance[] | undefined
+            dialogCodeHook?: { enabled?: {} | undefined } | undefined
+            fulfillmentCodeHook?:
+              | {
+                  enabled?: {} | undefined
+                  postFulfillmentStatusSpecification?:
+                    | {
+                        successResponse?: ResponseSpecification | undefined
+                        failureResponse?: ResponseSpecification | undefined
+                        timeoutResponse?: ResponseSpecification | undefined
+                        successNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
+                            }
+                          | undefined
+                        successConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
+                                    }
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
+                            }
+                          | undefined
+                        failureNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
+                            }
+                          | undefined
+                        failureConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
+                                    }
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
+                            }
+                          | undefined
+                        timeoutNextStep?:
+                          | {
+                              dialogAction?: DialogAction | undefined
+                              intent?: IntentOverride | undefined
+                              sessionAttributes?: {} | undefined
+                            }
+                          | undefined
+                        timeoutConditional?:
+                          | {
+                              active: {}
+                              conditionalBranches: {}
+                              defaultBranch: {
+                                nextStep?:
+                                  | {
+                                      dialogAction?: DialogAction | undefined
+                                      intent?: IntentOverride | undefined
+                                      sessionAttributes?: {} | undefined
+                                    }
+                                  | undefined
+                                response?: ResponseSpecification | undefined
+                              }
+                            }
+                          | undefined
+                      }
+                    | undefined
+                  fulfillmentUpdatesSpecification?:
+                    | {
+                        active: {}
+                        startResponse?:
+                          | {
+                              delayInSeconds: {}
+                              messageGroups: {}
+                              allowInterrupt?: {} | undefined
+                            }
+                          | undefined
+                        updateResponse?:
+                          | {
+                              frequencyInSeconds: {}
+                              messageGroups: {}
+                              allowInterrupt?: {} | undefined
+                            }
+                          | undefined
+                        timeoutInSeconds?: {} | undefined
+                      }
+                    | undefined
+                  active?: {} | undefined
+                }
+              | undefined
+            slotPriorities?: SlotPriority[] | undefined
+            intentConfirmationSetting?:
+              | {
+                  promptSpecification?:
+                    | {
+                        messageGroups: {}
+                        maxRetries: {}
+                        allowInterrupt?: {} | undefined
+                        messageSelectionStrategy?: {} | undefined
+                        promptAttemptsSpecification?: {} | undefined
+                      }
+                    | undefined
+                  declinationResponse?:
+                    | { messageGroups: {}; allowInterrupt?: {} | undefined }
+                    | undefined
+                  active?: {} | undefined
+                  confirmationResponse?: ResponseSpecification | undefined
+                  confirmationNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  confirmationConditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                  declinationNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  declinationConditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                  failureResponse?: ResponseSpecification | undefined
+                  failureNextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  failureConditional?: ConditionalSpecification | undefined
+                  codeHook?:
+                    | {
+                        enableCodeHookInvocation: {}
+                        active: {}
+                        invocationLabel?: {} | undefined
+                        postCodeHookSpecification: {
+                          successResponse?: ResponseSpecification | undefined
+                          successNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          successConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                          failureResponse?: ResponseSpecification | undefined
+                          failureNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          failureConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                          timeoutResponse?: ResponseSpecification | undefined
+                          timeoutNextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          timeoutConditional?:
+                            | {
+                                active: {}
+                                conditionalBranches: {}
+                                defaultBranch: {
+                                  nextStep?:
+                                    | {
+                                        dialogAction?: DialogAction | undefined
+                                        intent?: IntentOverride | undefined
+                                        sessionAttributes?: {} | undefined
+                                      }
+                                    | undefined
+                                  response?: ResponseSpecification | undefined
+                                }
+                              }
+                            | undefined
+                        }
+                      }
+                    | undefined
+                  elicitationCodeHook?:
+                    | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
+                    | undefined
+                }
+              | undefined
+            intentClosingSetting?:
+              | {
+                  closingResponse?:
+                    | { messageGroups: {}; allowInterrupt?: {} | undefined }
+                    | undefined
+                  active?: {} | undefined
+                  nextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  conditional?:
+                    | {
+                        active: {}
+                        conditionalBranches: {}
+                        defaultBranch: {
+                          nextStep?:
+                            | {
+                                dialogAction?: DialogAction | undefined
+                                intent?: IntentOverride | undefined
+                                sessionAttributes?: {} | undefined
+                              }
+                            | undefined
+                          response?: ResponseSpecification | undefined
+                        }
+                      }
+                    | undefined
+                }
+              | undefined
+            inputContexts?: InputContext[] | undefined
+            outputContexts?: OutputContext[] | undefined
+            kendraConfiguration?:
+              | {
+                  kendraIndex?: {} | undefined
+                  queryFilterStringEnabled?: {} | undefined
+                  queryFilterString?: {} | undefined
+                }
+              | undefined
+            initialResponseSetting?:
+              | {
+                  initialResponse?: ResponseSpecification | undefined
+                  nextStep?:
+                    | {
+                        dialogAction?: DialogAction | undefined
+                        intent?: IntentOverride | undefined
+                        sessionAttributes?: {} | undefined
+                      }
+                    | undefined
+                  conditional?: ConditionalSpecification | undefined
+                  codeHook?: DialogCodeHookInvocationSetting | undefined
+                }
+              | undefined
           }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeIntentResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UpdateIntentResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: { intentId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                intentName: string
-                description?: string | undefined
-                parentIntentSignature?: string | undefined
-                sampleUtterances?: SampleUtterance[] | undefined
-                dialogCodeHook?: { enabled?: {} | undefined } | undefined
-                fulfillmentCodeHook?:
-                  | {
-                      enabled?: {} | undefined
-                      postFulfillmentStatusSpecification?:
-                        | {
-                            successResponse?: ResponseSpecification | undefined
-                            failureResponse?: ResponseSpecification | undefined
-                            timeoutResponse?: ResponseSpecification | undefined
-                            successNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            successConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            failureNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            failureConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                            timeoutNextStep?:
-                              | {
-                                  dialogAction?: DialogAction | undefined
-                                  intent?: IntentOverride | undefined
-                                  sessionAttributes?: {} | undefined
-                                }
-                              | undefined
-                            timeoutConditional?:
-                              | {
-                                  active: {}
-                                  conditionalBranches: {}
-                                  defaultBranch: {
-                                    nextStep?:
-                                      | {
-                                          dialogAction?: DialogAction | undefined
-                                          intent?: IntentOverride | undefined
-                                          sessionAttributes?: {} | undefined
-                                        }
-                                      | undefined
-                                    response?: ResponseSpecification | undefined
-                                  }
-                                }
-                              | undefined
-                          }
-                        | undefined
-                      fulfillmentUpdatesSpecification?:
-                        | {
-                            active: {}
-                            startResponse?:
-                              | {
-                                  delayInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            updateResponse?:
-                              | {
-                                  frequencyInSeconds: {}
-                                  messageGroups: {}
-                                  allowInterrupt?: {} | undefined
-                                }
-                              | undefined
-                            timeoutInSeconds?: {} | undefined
-                          }
-                        | undefined
-                      active?: {} | undefined
-                    }
-                  | undefined
-                slotPriorities?: SlotPriority[] | undefined
-                intentConfirmationSetting?:
-                  | {
-                      promptSpecification?:
-                        | {
-                            messageGroups: {}
-                            maxRetries: {}
-                            allowInterrupt?: {} | undefined
-                            messageSelectionStrategy?: {} | undefined
-                            promptAttemptsSpecification?: {} | undefined
-                          }
-                        | undefined
-                      declinationResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      confirmationResponse?: ResponseSpecification | undefined
-                      confirmationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      confirmationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      declinationNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      declinationConditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                      failureResponse?: ResponseSpecification | undefined
-                      failureNextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      failureConditional?: ConditionalSpecification | undefined
-                      codeHook?:
-                        | {
-                            enableCodeHookInvocation: {}
-                            active: {}
-                            invocationLabel?: {} | undefined
-                            postCodeHookSpecification: {
-                              successResponse?: ResponseSpecification | undefined
-                              successNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              successConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              failureResponse?: ResponseSpecification | undefined
-                              failureNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              failureConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                              timeoutResponse?: ResponseSpecification | undefined
-                              timeoutNextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              timeoutConditional?:
-                                | {
-                                    active: {}
-                                    conditionalBranches: {}
-                                    defaultBranch: {
-                                      nextStep?:
-                                        | {
-                                            dialogAction?: DialogAction | undefined
-                                            intent?: IntentOverride | undefined
-                                            sessionAttributes?: {} | undefined
-                                          }
-                                        | undefined
-                                      response?: ResponseSpecification | undefined
-                                    }
-                                  }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      elicitationCodeHook?:
-                        | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                intentClosingSetting?:
-                  | {
-                      closingResponse?:
-                        | { messageGroups: {}; allowInterrupt?: {} | undefined }
-                        | undefined
-                      active?: {} | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?:
-                        | {
-                            active: {}
-                            conditionalBranches: {}
-                            defaultBranch: {
-                              nextStep?:
-                                | {
-                                    dialogAction?: DialogAction | undefined
-                                    intent?: IntentOverride | undefined
-                                    sessionAttributes?: {} | undefined
-                                  }
-                                | undefined
-                              response?: ResponseSpecification | undefined
-                            }
-                          }
-                        | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterStringEnabled?: {} | undefined
-                      queryFilterString?: {} | undefined
-                    }
-                  | undefined
-                initialResponseSetting?:
-                  | {
-                      initialResponse?: ResponseSpecification | undefined
-                      nextStep?:
-                        | {
-                            dialogAction?: DialogAction | undefined
-                            intent?: IntentOverride | undefined
-                            sessionAttributes?: {} | undefined
-                          }
-                        | undefined
-                      conditional?: ConditionalSpecification | undefined
-                      codeHook?: DialogCodeHookInvocationSetting | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/policy/:resourceArn/statements/:statementId/': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string; statementId: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteResourcePolicyStatementResponse
-            outputFormat: 'json'
-            status: 204
+      $delete: {
+        input: { param: { resourceArn: string; statementId: string } } & {
+          query: { expectedRevisionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string; statementId: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string; statementId: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string; statementId: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string; statementId: string } } & {
-              query: { expectedRevisionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: DeleteResourcePolicyStatementResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/intents/:intentId/slots/:slotId/': {
-      $delete:
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: {
+          param: {
+            slotId: string
+            botId: string
+            botVersion: string
+            localeId: string
+            intentId: string
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: {
+          param: {
+            slotId: string
+            botId: string
+            botVersion: string
+            localeId: string
+            intentId: string
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
+        }
+        output: DescribeSlotResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          param: {
+            slotId: string
+            botId: string
+            botVersion: string
+            localeId: string
+            intentId: string
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+        } & {
+          json: {
+            slotName: string
+            description?: string | undefined
+            slotTypeId?: string | undefined
+            valueElicitationSetting: {
+              defaultValueSpecification?: { defaultValueList: {} } | undefined
+              slotConstraint?: {} | undefined
+              promptSpecification?:
+                | {
+                    messageGroups: {}
+                    maxRetries: {}
+                    allowInterrupt?: {} | undefined
+                    messageSelectionStrategy?: {} | undefined
+                    promptAttemptsSpecification?: {} | undefined
+                  }
+                | undefined
+              sampleUtterances?: {} | undefined
+              waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
+              slotCaptureSetting?:
+                | {
+                    captureResponse?: ResponseSpecification | undefined
+                    captureNextStep?:
+                      | {
+                          dialogAction?: DialogAction | undefined
+                          intent?: IntentOverride | undefined
+                          sessionAttributes?: {} | undefined
+                        }
+                      | undefined
+                    captureConditional?:
+                      | {
+                          active: {}
+                          conditionalBranches: {}
+                          defaultBranch: {
+                            nextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            response?: ResponseSpecification | undefined
+                          }
+                        }
+                      | undefined
+                    failureResponse?: ResponseSpecification | undefined
+                    failureNextStep?:
+                      | {
+                          dialogAction?: DialogAction | undefined
+                          intent?: IntentOverride | undefined
+                          sessionAttributes?: {} | undefined
+                        }
+                      | undefined
+                    failureConditional?:
+                      | {
+                          active: {}
+                          conditionalBranches: {}
+                          defaultBranch: {
+                            nextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            response?: ResponseSpecification | undefined
+                          }
+                        }
+                      | undefined
+                    codeHook?:
+                      | {
+                          enableCodeHookInvocation: {}
+                          active: {}
+                          invocationLabel?: {} | undefined
+                          postCodeHookSpecification: {
+                            successResponse?: ResponseSpecification | undefined
+                            successNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            successConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                            failureResponse?: ResponseSpecification | undefined
+                            failureNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            failureConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                            timeoutResponse?: ResponseSpecification | undefined
+                            timeoutNextStep?:
+                              | {
+                                  dialogAction?: DialogAction | undefined
+                                  intent?: IntentOverride | undefined
+                                  sessionAttributes?: {} | undefined
+                                }
+                              | undefined
+                            timeoutConditional?:
+                              | {
+                                  active: {}
+                                  conditionalBranches: {}
+                                  defaultBranch: {
+                                    nextStep?:
+                                      | {
+                                          dialogAction?: DialogAction | undefined
+                                          intent?: IntentOverride | undefined
+                                          sessionAttributes?: {} | undefined
+                                        }
+                                      | undefined
+                                    response?: ResponseSpecification | undefined
+                                  }
+                                }
+                              | undefined
+                          }
+                        }
+                      | undefined
+                    elicitationCodeHook?:
+                      | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
+                      | undefined
+                  }
+                | undefined
             }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
+            obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
+            multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
+            subSlotSetting?:
+              | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
+              | undefined
           }
-      $get:
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeSlotResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: UpdateSlotResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: {
-                slotId: string
-                botId: string
-                botVersion: string
-                localeId: string
-                intentId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotName: string
-                description?: string | undefined
-                slotTypeId?: string | undefined
-                valueElicitationSetting: {
-                  defaultValueSpecification?: { defaultValueList: {} } | undefined
-                  slotConstraint?: {} | undefined
-                  promptSpecification?:
-                    | {
-                        messageGroups: {}
-                        maxRetries: {}
-                        allowInterrupt?: {} | undefined
-                        messageSelectionStrategy?: {} | undefined
-                        promptAttemptsSpecification?: {} | undefined
-                      }
-                    | undefined
-                  sampleUtterances?: {} | undefined
-                  waitAndContinueSpecification?: WaitAndContinueSpecification | undefined
-                  slotCaptureSetting?:
-                    | {
-                        captureResponse?: ResponseSpecification | undefined
-                        captureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        captureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        failureResponse?: ResponseSpecification | undefined
-                        failureNextStep?:
-                          | {
-                              dialogAction?: DialogAction | undefined
-                              intent?: IntentOverride | undefined
-                              sessionAttributes?: {} | undefined
-                            }
-                          | undefined
-                        failureConditional?:
-                          | {
-                              active: {}
-                              conditionalBranches: {}
-                              defaultBranch: {
-                                nextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                response?: ResponseSpecification | undefined
-                              }
-                            }
-                          | undefined
-                        codeHook?:
-                          | {
-                              enableCodeHookInvocation: {}
-                              active: {}
-                              invocationLabel?: {} | undefined
-                              postCodeHookSpecification: {
-                                successResponse?: ResponseSpecification | undefined
-                                successNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                successConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                failureResponse?: ResponseSpecification | undefined
-                                failureNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                failureConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                                timeoutResponse?: ResponseSpecification | undefined
-                                timeoutNextStep?:
-                                  | {
-                                      dialogAction?: DialogAction | undefined
-                                      intent?: IntentOverride | undefined
-                                      sessionAttributes?: {} | undefined
-                                    }
-                                  | undefined
-                                timeoutConditional?:
-                                  | {
-                                      active: {}
-                                      conditionalBranches: {}
-                                      defaultBranch: {
-                                        nextStep?:
-                                          | {
-                                              dialogAction?: DialogAction | undefined
-                                              intent?: IntentOverride | undefined
-                                              sessionAttributes?: {} | undefined
-                                            }
-                                          | undefined
-                                        response?: ResponseSpecification | undefined
-                                      }
-                                    }
-                                  | undefined
-                              }
-                            }
-                          | undefined
-                        elicitationCodeHook?:
-                          | { enableCodeHookInvocation: {}; invocationLabel?: {} | undefined }
-                          | undefined
-                      }
-                    | undefined
-                }
-                obfuscationSetting?: { obfuscationSettingType?: {} | undefined } | undefined
-                multipleValuesSetting?: { allowMultipleValues?: {} | undefined } | undefined
-                subSlotSetting?:
-                  | { expression?: {} | undefined; slotSpecifications?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateSlotResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/slottypes/:slotTypeId/': {
-      $delete:
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: {
+          param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
+        } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: {
+          param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeSlotTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            slotTypeName: string
+            description?: string | undefined
+            slotTypeValues?: SlotTypeValue[] | undefined
+            valueSelectionSetting?:
+              | {
+                  resolutionStrategy?: {} | undefined
+                  regexFilter?: { pattern: {} } | undefined
+                  advancedRecognitionSetting?:
+                    | { audioRecognitionStrategy?: {} | undefined }
+                    | undefined
+                }
+              | undefined
+            parentSlotTypeSignature?: string | undefined
+            externalSourceSetting?:
+              | {
+                  grammarSlotTypeSetting?:
+                    | {
+                        source?:
+                          | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
           }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & { query: { skipResourceInUseCheck?: boolean | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeSlotTypeResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: UpdateSlotTypeResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: { slotTypeId: string; botId: string; botVersion: string; localeId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                slotTypeName: string
-                description?: string | undefined
-                slotTypeValues?: SlotTypeValue[] | undefined
-                valueSelectionSetting?:
-                  | {
-                      resolutionStrategy?: {} | undefined
-                      regexFilter?: { pattern: {} } | undefined
-                      advancedRecognitionSetting?:
-                        | { audioRecognitionStrategy?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                parentSlotTypeSignature?: string | undefined
-                externalSourceSetting?:
-                  | {
-                      grammarSlotTypeSetting?:
-                        | {
-                            source?:
-                              | { s3BucketName: {}; s3ObjectKey: {}; kmsKeyArn?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                compositeSlotTypeSetting?: { subSlots?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateSlotTypeResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/:botId/utterances/': {
-      $delete:
-        | {
-            input: { param: { botId: string } } & {
-              query: { localeId?: string | undefined; sessionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteUtterancesResponse
-            outputFormat: 'json'
-            status: 204
+      $delete: {
+        input: { param: { botId: string } } & {
+          query: { localeId?: string | undefined; sessionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { localeId?: string | undefined; sessionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { localeId?: string | undefined; sessionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { localeId?: string | undefined; sessionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: DeleteUtterancesResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/botrecommendations/:botRecommendationId/': {
-      $get:
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBotRecommendationResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          param: {
+            botId: string
+            botVersion: string
+            localeId: string
+            botRecommendationId: string
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeBotRecommendationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          param: {
+            botId: string
+            botVersion: string
+            localeId: string
+            botRecommendationId: string
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+        } & {
+          json: {
+            encryptionSetting: {
+              kmsKeyArn?: {} | undefined
+              botLocaleExportPassword?: {} | undefined
+              associatedTranscriptsPassword?: {} | undefined
             }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
           }
-      $put:
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: UpdateBotRecommendationResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                encryptionSetting: {
-                  kmsKeyArn?: {} | undefined
-                  botLocaleExportPassword?: {} | undefined
-                  associatedTranscriptsPassword?: {} | undefined
-                }
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        }
+        output: UpdateBotRecommendationResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary/DEFAULT/metadata': {
-      $get:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeCustomVocabularyMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeCustomVocabularyMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/aggregatedutterances/': {
-      $post:
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasId?: string | undefined
-                botVersion?: string | undefined
-                localeId: string
-                aggregationDuration: {
-                  relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
-                }
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: AggregatedUtterancesFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListAggregatedUtterancesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { botId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasId?: string | undefined
-                botVersion?: string | undefined
-                localeId: string
-                aggregationDuration: {
-                  relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
-                }
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: AggregatedUtterancesFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
+        } & {
+          json: {
+            botAliasId?: string | undefined
+            botVersion?: string | undefined
+            localeId: string
+            aggregationDuration: {
+              relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: AggregatedUtterancesFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasId?: string | undefined
-                botVersion?: string | undefined
-                localeId: string
-                aggregationDuration: {
-                  relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
-                }
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: AggregatedUtterancesFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasId?: string | undefined
-                botVersion?: string | undefined
-                localeId: string
-                aggregationDuration: {
-                  relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
-                }
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: AggregatedUtterancesFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botAliasId?: string | undefined
-                botVersion?: string | undefined
-                localeId: string
-                aggregationDuration: {
-                  relativeAggregationDuration?: { timeDimension: {}; timeValue: {} } | undefined
-                }
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: AggregatedUtterancesFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListAggregatedUtterancesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/botrecommendations/': {
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ListBotRecommendationsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
+        output: ListBotRecommendationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
+        } & {
+          json: {
+            transcriptSourceSetting: {
+              s3BucketTranscriptSource?:
+                | {
+                    s3BucketName: {}
+                    pathFormat?: { objectPrefixes?: {} | undefined } | undefined
+                    transcriptFormat: {}
+                    transcriptFilter?:
+                      | {
+                          lexTranscriptFilter?:
+                            | {
+                                dateRangeFilter?: { startDateTime: {}; endDateTime: {} } | undefined
+                              }
+                            | undefined
+                        }
+                      | undefined
+                    kmsKeyArn?: {} | undefined
+                  }
+                | undefined
             }
-            output: StartBotRecommendationResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
+            encryptionSetting?:
+              | {
+                  kmsKeyArn?: {} | undefined
+                  botLocaleExportPassword?: {} | undefined
+                  associatedTranscriptsPassword?: {} | undefined
                 }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+              | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                transcriptSourceSetting: {
-                  s3BucketTranscriptSource?:
-                    | {
-                        s3BucketName: {}
-                        pathFormat?: { objectPrefixes?: {} | undefined } | undefined
-                        transcriptFormat: {}
-                        transcriptFilter?:
-                          | {
-                              lexTranscriptFilter?:
-                                | {
-                                    dateRangeFilter?:
-                                      | { startDateTime: {}; endDateTime: {} }
-                                      | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                        kmsKeyArn?: {} | undefined
-                      }
-                    | undefined
-                }
-                encryptionSetting?:
-                  | {
-                      kmsKeyArn?: {} | undefined
-                      botLocaleExportPassword?: {} | undefined
-                      associatedTranscriptsPassword?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        }
+        output: StartBotRecommendationResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/builtins/locales/:localeId/intents/': {
-      $post:
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListBuiltInIntentsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBuiltInIntentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/builtins/locales/:localeId/slottypes/': {
-      $post:
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListBuiltInSlotTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBuiltInSlotTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/customvocabulary/DEFAULT/list': {
-      $post:
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ListCustomVocabularyItemsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { botId: string; botVersion: string; localeId: string } } & {
+          query: { maxResults?: string | undefined; nextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { botId: string; botVersion: string; localeId: string } } & {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
+        output: ListCustomVocabularyItemsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/imports/': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ImportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ListImportsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ImportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            botId?: string | undefined
+            botVersion?: string | undefined
+            sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
+            filters?: ImportFilter[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            localeId?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ImportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: ListImportsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                botId?: string | undefined
-                botVersion?: string | undefined
-                sortBy?: { attribute?: {} | undefined; order?: {} | undefined } | undefined
-                filters?: ImportFilter[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                localeId?: string | undefined
-              }
+        } & {
+          json: {
+            importId: string
+            resourceSpecification: {
+              botImportSpecification?:
+                | {
+                    botName: {}
+                    roleArn: {}
+                    dataPrivacy: DataPrivacy
+                    idleSessionTTLInSeconds?: {} | undefined
+                    botTags?: {} | undefined
+                    testBotAliasTags?: {} | undefined
+                  }
+                | undefined
+              botLocaleImportSpecification?:
+                | {
+                    botId: {}
+                    botVersion: {}
+                    localeId: {}
+                    nluIntentConfidenceThreshold?: {} | undefined
+                    voiceSettings?: VoiceSettings | undefined
+                  }
+                | undefined
+              customVocabularyImportSpecification?: CustomVocabularyImportSpecification | undefined
             }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
+            mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
+            filePassword?: string | undefined
           }
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: StartImportResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                importId: string
-                resourceSpecification: {
-                  botImportSpecification?:
-                    | {
-                        botName: {}
-                        roleArn: {}
-                        dataPrivacy: DataPrivacy
-                        idleSessionTTLInSeconds?: {} | undefined
-                        botTags?: {} | undefined
-                        testBotAliasTags?: {} | undefined
-                      }
-                    | undefined
-                  botLocaleImportSpecification?:
-                    | {
-                        botId: {}
-                        botVersion: {}
-                        localeId: {}
-                        nluIntentConfidenceThreshold?: {} | undefined
-                        voiceSettings?: VoiceSettings | undefined
-                      }
-                    | undefined
-                  customVocabularyImportSpecification?:
-                    | CustomVocabularyImportSpecification
-                    | undefined
-                }
-                mergeStrategy: 'Overwrite' | 'FailOnConflict' | 'Append'
-                filePassword?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: StartImportResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/botrecommendations/:botRecommendationId/intents': {
-      $post:
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: ListRecommendedIntentsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          param: {
+            botId: string
+            botVersion: string
+            localeId: string
+            botRecommendationId: string
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { nextToken?: string | undefined; maxResults?: number | undefined } }
+        output: ListRecommendedIntentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceARN': {
-      $get:
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceARN: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceARN: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
-      $post:
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceARN: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/botrecommendations/:botRecommendationId/associatedtranscripts': {
-      $post:
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: SearchAssociatedTranscriptsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          param: {
+            botId: string
+            botVersion: string
+            localeId: string
+            botRecommendationId: string
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          json: {
+            searchOrder?: 'Ascending' | 'Descending' | undefined
+            filters: AssociatedTranscriptFilter[]
+            maxResults?: number | undefined
+            nextIndex?: number | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                searchOrder?: 'Ascending' | 'Descending' | undefined
-                filters: AssociatedTranscriptFilter[]
-                maxResults?: number | undefined
-                nextIndex?: number | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: SearchAssociatedTranscriptsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botId/botversions/:botVersion/botlocales/:localeId/botrecommendations/:botRecommendationId/stopbotrecommendation': {
-      $put:
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: StopBotRecommendationResponse
-            outputFormat: 'json'
-            status: 202
+      $put: {
+        input: {
+          param: {
+            botId: string
+            botVersion: string
+            localeId: string
+            botRecommendationId: string
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              param: {
-                botId: string
-                botVersion: string
-                localeId: string
-                botRecommendationId: string
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        }
+        output: StopBotRecommendationResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/tags/:resourceARN#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceARN: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

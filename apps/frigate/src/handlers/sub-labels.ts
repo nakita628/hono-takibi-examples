@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSubLabelsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSubLabelsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const subLabelsHandler = app.openapi(getSubLabelsRoute, (c) => {
+export const getSubLabelsRouteHandler: RouteHandler<typeof getSubLabelsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

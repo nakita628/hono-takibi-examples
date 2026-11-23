@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVehiclesRoute,
   getVehiclesVehicleIdChargeStateRoute,
   getVehiclesVehicleIdInformationRoute,
@@ -12,36 +12,60 @@ import {
   putVehiclesVehicleIdSmartChargingPolicyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVehiclesRouteHandler: RouteHandler<typeof getVehiclesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vehiclesHandler = app
-  .openapi(getVehiclesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdChargeStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVehiclesVehicleIdChargingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdInformationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdOdometerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVehiclesVehicleIdSmartChargingPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVehiclesVehicleIdSmartChargingPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVehiclesVehicleIdWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVehiclesVehicleIdRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVehiclesVehicleIdChargeStateRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdChargeStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVehiclesVehicleIdChargingRouteHandler: RouteHandler<
+  typeof postVehiclesVehicleIdChargingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVehiclesVehicleIdInformationRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdInformationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVehiclesVehicleIdLocationRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVehiclesVehicleIdOdometerRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdOdometerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVehiclesVehicleIdSmartChargingPolicyRouteHandler: RouteHandler<
+  typeof getVehiclesVehicleIdSmartChargingPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVehiclesVehicleIdSmartChargingPolicyRouteHandler: RouteHandler<
+  typeof putVehiclesVehicleIdSmartChargingPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVehiclesVehicleIdWatchRouteHandler: RouteHandler<
+  typeof postVehiclesVehicleIdWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

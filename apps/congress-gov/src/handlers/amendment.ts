@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAmendmentCongressAmendmentTypeAmendmentNumberActionsRoute,
   getAmendmentCongressAmendmentTypeAmendmentNumberAmendmentsRoute,
   getAmendmentCongressAmendmentTypeAmendmentNumberCosponsorsRoute,
@@ -10,30 +10,48 @@ import {
   getAmendmentRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAmendmentRouteHandler: RouteHandler<typeof getAmendmentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const amendmentHandler = app
-  .openapi(getAmendmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeAmendmentNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeAmendmentNumberActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeAmendmentNumberCosponsorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeAmendmentNumberAmendmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAmendmentCongressAmendmentTypeAmendmentNumberTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAmendmentCongressRouteHandler: RouteHandler<
+  typeof getAmendmentCongressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeAmendmentNumberRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeAmendmentNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeAmendmentNumberActionsRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeAmendmentNumberActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeAmendmentNumberCosponsorsRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeAmendmentNumberCosponsorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeAmendmentNumberAmendmentsRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeAmendmentNumberAmendmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAmendmentCongressAmendmentTypeAmendmentNumberTextRouteHandler: RouteHandler<
+  typeof getAmendmentCongressAmendmentTypeAmendmentNumberTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

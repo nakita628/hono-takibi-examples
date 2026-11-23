@@ -146,8 +146,8 @@ const ResultFrameSchema = z
 const RecordsUpdatedSchema = z.int().openapi('RecordsUpdated')
 
 type SqlStatementResultType = {
-  resultFrame?: z.infer<typeof ResultFrameSchema> & unknown
-  numberOfRecordsUpdated?: z.infer<typeof RecordsUpdatedSchema> & unknown
+  resultFrame?: z.infer<typeof ResultFrameSchema>
+  numberOfRecordsUpdated?: z.infer<typeof RecordsUpdatedSchema>
 }
 
 const SqlStatementResultSchema: z.ZodType<SqlStatementResultType> = z
@@ -172,9 +172,7 @@ const SqlStatementResultsSchema: z.ZodType<SqlStatementResultsType> = z
   .array(SqlStatementResultSchema)
   .openapi('SqlStatementResults')
 
-type ExecuteSqlResponseType = {
-  sqlStatementResults?: z.infer<typeof SqlStatementResultsSchema> & unknown
-}
+type ExecuteSqlResponseType = { sqlStatementResults?: z.infer<typeof SqlStatementResultsSchema> }
 
 type BoxedBooleanType = boolean
 
@@ -240,11 +238,11 @@ const ArrayOfArraySchema: z.ZodType<ArrayOfArrayType> = z
   .openapi('ArrayOfArray')
 
 type ArrayValueType = {
-  booleanValues?: z.infer<typeof BooleanArraySchema> & unknown
-  longValues?: z.infer<typeof LongArraySchema> & unknown
-  doubleValues?: z.infer<typeof DoubleArraySchema> & unknown
-  stringValues?: z.infer<typeof StringArraySchema> & unknown
-  arrayValues?: z.infer<typeof ArrayOfArraySchema> & unknown
+  booleanValues?: z.infer<typeof BooleanArraySchema>
+  longValues?: z.infer<typeof LongArraySchema>
+  doubleValues?: z.infer<typeof DoubleArraySchema>
+  stringValues?: z.infer<typeof StringArraySchema>
+  arrayValues?: z.infer<typeof ArrayOfArraySchema>
 }
 
 const ArrayValueSchema: z.ZodType<ArrayValueType> = z
@@ -306,21 +304,21 @@ const StructValueSchema: z.ZodType<StructValueType> = z
   .openapi('StructValue')
 
 type ValueType = {
-  isNull?: z.infer<typeof BoxedBooleanSchema> & unknown
-  bitValue?: z.infer<typeof BoxedBooleanSchema> & unknown
-  bigIntValue?: z.infer<typeof BoxedLongSchema> & unknown
-  intValue?: z.infer<typeof BoxedIntegerSchema> & unknown
-  doubleValue?: z.infer<typeof BoxedDoubleSchema> & unknown
-  realValue?: z.infer<typeof BoxedFloatSchema> & unknown
-  stringValue?: z.infer<typeof StringSchema> & unknown
-  blobValue?: z.infer<typeof BlobSchema> & unknown
-  arrayValues?: z.infer<typeof ArrayValueListSchema> & unknown
-  structValue?: z.infer<typeof StructValueSchema> & unknown
+  isNull?: z.infer<typeof BoxedBooleanSchema>
+  bitValue?: z.infer<typeof BoxedBooleanSchema>
+  bigIntValue?: z.infer<typeof BoxedLongSchema>
+  intValue?: z.infer<typeof BoxedIntegerSchema>
+  doubleValue?: z.infer<typeof BoxedDoubleSchema>
+  realValue?: z.infer<typeof BoxedFloatSchema>
+  stringValue?: z.infer<typeof StringSchema>
+  blobValue?: z.infer<typeof BlobSchema>
+  arrayValues?: z.infer<typeof ArrayValueListSchema>
+  structValue?: z.infer<typeof StructValueSchema>
 }
 
 type ArrayValueListType = z.infer<typeof ValueSchema>[]
 
-type StructValueType = { attributes?: z.infer<typeof ArrayValueListSchema> & unknown }
+type StructValueType = { attributes?: z.infer<typeof ArrayValueListSchema> }
 
 const FieldSchema = z
   .object({

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDealersCarRoute,
   getDealersCarUkRoute,
   getDealersHeavyEquipmentRoute,
@@ -7,21 +7,26 @@ import {
   getDealersRvRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDealersCarRouteHandler: RouteHandler<typeof getDealersCarRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dealersHandler = app
-  .openapi(getDealersCarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDealersCarUkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDealersHeavyEquipmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDealersMotorcycleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDealersRvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDealersCarUkRouteHandler: RouteHandler<typeof getDealersCarUkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDealersHeavyEquipmentRouteHandler: RouteHandler<
+  typeof getDealersHeavyEquipmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDealersMotorcycleRouteHandler: RouteHandler<
+  typeof getDealersMotorcycleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDealersRvRouteHandler: RouteHandler<typeof getDealersRvRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

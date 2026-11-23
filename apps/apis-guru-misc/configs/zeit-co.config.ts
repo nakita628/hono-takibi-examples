@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/zeit.co/v2019-01-07/openapi.yaml',
   output: './src/zeit-co/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/zeit-co/types.ts' },
   client: { output: './src/zeit-co/client.ts', baseUrl: '/' },
   rpc: { output: './src/zeit-co/rpc.ts', parseResponse: true },

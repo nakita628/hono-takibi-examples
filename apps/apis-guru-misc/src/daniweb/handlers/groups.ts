@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGroupsIDMembershipsRoute,
   deleteGroupsMessagesIDRoute,
   getGroupsIDMembershipsRoute,
@@ -22,66 +22,114 @@ import {
   postGroupsSchedulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGroupsRouteHandler: RouteHandler<typeof getGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const groupsHandler = app
-  .openapi(getGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsMessagesMetadataFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGroupsMessagesIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsMessagesIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsMessagesIDMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsMessagesIDMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsMessagesIDMetadataCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGroupsIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGroupsIDMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsIDMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGroupsIDMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsIDMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsIDMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsIDMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupsIDSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsIDStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGroupsRouteHandler: RouteHandler<typeof postGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsMessagesMetadataFiltersRouteHandler: RouteHandler<
+  typeof postGroupsMessagesMetadataFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGroupsMessagesIDRouteHandler: RouteHandler<
+  typeof deleteGroupsMessagesIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsMessagesIDRouteHandler: RouteHandler<
+  typeof getGroupsMessagesIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsMessagesIDMetadataRouteHandler: RouteHandler<
+  typeof getGroupsMessagesIDMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsMessagesIDMetadataRouteHandler: RouteHandler<
+  typeof postGroupsMessagesIDMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsMessagesIDMetadataCollectionsRouteHandler: RouteHandler<
+  typeof getGroupsMessagesIDMetadataCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsSchedulesRouteHandler: RouteHandler<
+  typeof postGroupsSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsStatusesRouteHandler: RouteHandler<typeof getGroupsStatusesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsIDRouteHandler: RouteHandler<typeof getGroupsIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGroupsIDRouteHandler: RouteHandler<typeof patchGroupsIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGroupsIDMembershipsRouteHandler: RouteHandler<
+  typeof deleteGroupsIDMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsIDMembershipsRouteHandler: RouteHandler<
+  typeof getGroupsIDMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGroupsIDMembershipsRouteHandler: RouteHandler<
+  typeof patchGroupsIDMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsIDMembershipsRouteHandler: RouteHandler<
+  typeof postGroupsIDMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsIDMessagesRouteHandler: RouteHandler<
+  typeof getGroupsIDMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsIDMessagesRouteHandler: RouteHandler<
+  typeof postGroupsIDMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupsIDSchedulesRouteHandler: RouteHandler<
+  typeof postGroupsIDSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupsIDStatusesRouteHandler: RouteHandler<
+  typeof getGroupsIDStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

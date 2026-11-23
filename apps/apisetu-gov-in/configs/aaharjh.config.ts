@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/aaharjh/3.0.0/openapi.yaml',
   output: './src/aaharjh/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/aaharjh/types.ts' },
   client: { output: './src/aaharjh/client.ts', baseUrl: '/' },
   rpc: { output: './src/aaharjh/rpc.ts', parseResponse: true },

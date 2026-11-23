@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTimezoneAreaLocationRegionRoute,
   getTimezoneAreaLocationRegionTxtRoute,
   getTimezoneAreaLocationRoute,
@@ -9,27 +9,40 @@ import {
   getTimezoneRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimezoneRouteHandler: RouteHandler<typeof getTimezoneRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const timezoneHandler = app
-  .openapi(getTimezoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaLocationTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaLocationRegionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimezoneAreaLocationRegionTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTimezoneAreaRouteHandler: RouteHandler<typeof getTimezoneAreaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimezoneAreaTxtRouteHandler: RouteHandler<typeof getTimezoneAreaTxtRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimezoneAreaLocationRouteHandler: RouteHandler<
+  typeof getTimezoneAreaLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimezoneAreaLocationTxtRouteHandler: RouteHandler<
+  typeof getTimezoneAreaLocationTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimezoneAreaLocationRegionRouteHandler: RouteHandler<
+  typeof getTimezoneAreaLocationRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimezoneAreaLocationRegionTxtRouteHandler: RouteHandler<
+  typeof getTimezoneAreaLocationRegionTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

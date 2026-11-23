@@ -13,7 +13,6 @@ export const postHooksRoute = createRoute({
   responses: {
     201: {
       description: 'Successfully subscribed',
-      content: {},
       links: {
         unsubscribe: {
           operationId: 'cancelHookCallback',

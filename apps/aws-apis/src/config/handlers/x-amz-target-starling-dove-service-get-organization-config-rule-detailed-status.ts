@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusHandler =
-  app.openapi(
-    postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

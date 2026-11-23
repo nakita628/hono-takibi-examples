@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePhoneNumbersPhoneNumberIdRoute,
   getPhoneNumbersPhoneNumberIdRoute,
   patchPhoneNumbersPhoneNumberIdRoute,
@@ -8,24 +8,38 @@ import {
   postPhoneNumbersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPhoneNumbersRouteHandler: RouteHandler<typeof postPhoneNumbersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const phoneNumbersHandler = app
-  .openapi(postPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersPhoneNumberIdPrepareVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersPhoneNumberIdAttemptVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof getPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersPhoneNumberIdPrepareVerificationRouteHandler: RouteHandler<
+  typeof postPhoneNumbersPhoneNumberIdPrepareVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersPhoneNumberIdAttemptVerificationRouteHandler: RouteHandler<
+  typeof postPhoneNumbersPhoneNumberIdAttemptVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

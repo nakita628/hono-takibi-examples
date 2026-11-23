@@ -1606,28 +1606,28 @@ const VideoSelectorSchema = z
   .openapi('VideoSelector')
 
 type InputType = {
-  AudioSelectorGroups?: z.infer<typeof MapOfAudioSelectorGroupSchema> & unknown
-  AudioSelectors?: z.infer<typeof MapOfAudioSelectorSchema> & unknown
-  CaptionSelectors?: z.infer<typeof MapOfCaptionSelectorSchema> & unknown
-  Crop?: z.infer<typeof RectangleSchema> & unknown
-  DeblockFilter?: z.infer<typeof InputDeblockFilterSchema> & unknown
-  DecryptionSettings?: z.infer<typeof InputDecryptionSettingsSchema> & unknown
-  DenoiseFilter?: z.infer<typeof InputDenoiseFilterSchema> & unknown
-  DolbyVisionMetadataXml?: z.infer<typeof StringMin14PatternS3XmlXMLHttpsXmlXMLSchema> & unknown
-  FileInput?: z.infer<typeof StringPatternS3HttpsSchema> & unknown
-  FilterEnable?: z.infer<typeof InputFilterEnableSchema> & unknown
-  FilterStrength?: z.infer<typeof IntegerMin0Max5Schema> & unknown
-  ImageInserter?: z.infer<typeof ImageInserterSchema> & unknown
-  InputClippings?: z.infer<typeof ListOfInputClippingSchema> & unknown
-  InputScanType?: z.infer<typeof InputScanTypeSchema> & unknown
-  Position?: z.infer<typeof RectangleSchema> & unknown
-  ProgramNumber?: z.infer<typeof IntegerMin1Max2147483647Schema> & unknown
-  PsiControl?: z.infer<typeof InputPsiControlSchema> & unknown
-  SupplementalImps?: z.infer<typeof ListOfStringPatternS3ASSETMAPXmlSchema> & unknown
-  TimecodeSource?: z.infer<typeof InputTimecodeSourceSchema> & unknown
-  TimecodeStart?: z.infer<typeof StringMin11Max11Pattern01D20305D205DSchema> & unknown
-  VideoGenerator?: z.infer<typeof InputVideoGeneratorSchema> & unknown
-  VideoSelector?: z.infer<typeof VideoSelectorSchema> & unknown
+  AudioSelectorGroups?: z.infer<typeof MapOfAudioSelectorGroupSchema>
+  AudioSelectors?: z.infer<typeof MapOfAudioSelectorSchema>
+  CaptionSelectors?: z.infer<typeof MapOfCaptionSelectorSchema>
+  Crop?: z.infer<typeof RectangleSchema>
+  DeblockFilter?: z.infer<typeof InputDeblockFilterSchema>
+  DecryptionSettings?: z.infer<typeof InputDecryptionSettingsSchema>
+  DenoiseFilter?: z.infer<typeof InputDenoiseFilterSchema>
+  DolbyVisionMetadataXml?: z.infer<typeof StringMin14PatternS3XmlXMLHttpsXmlXMLSchema>
+  FileInput?: z.infer<typeof StringPatternS3HttpsSchema>
+  FilterEnable?: z.infer<typeof InputFilterEnableSchema>
+  FilterStrength?: z.infer<typeof IntegerMin0Max5Schema>
+  ImageInserter?: z.infer<typeof ImageInserterSchema>
+  InputClippings?: z.infer<typeof ListOfInputClippingSchema>
+  InputScanType?: z.infer<typeof InputScanTypeSchema>
+  Position?: z.infer<typeof RectangleSchema>
+  ProgramNumber?: z.infer<typeof IntegerMin1Max2147483647Schema>
+  PsiControl?: z.infer<typeof InputPsiControlSchema>
+  SupplementalImps?: z.infer<typeof ListOfStringPatternS3ASSETMAPXmlSchema>
+  TimecodeSource?: z.infer<typeof InputTimecodeSourceSchema>
+  TimecodeStart?: z.infer<typeof StringMin11Max11Pattern01D20305D205DSchema>
+  VideoGenerator?: z.infer<typeof InputVideoGeneratorSchema>
+  VideoSelector?: z.infer<typeof VideoSelectorSchema>
 }
 
 const InputSchema: z.ZodType<InputType> = z
@@ -10378,14 +10378,14 @@ const VideoDescriptionSchema = z
   .openapi('VideoDescription')
 
 type OutputType = {
-  AudioDescriptions?: z.infer<typeof ListOfAudioDescriptionSchema> & unknown
-  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionSchema> & unknown
-  ContainerSettings?: z.infer<typeof ContainerSettingsSchema> & unknown
-  Extension?: z.infer<typeof StringSchema> & unknown
-  NameModifier?: z.infer<typeof StringMin1Schema> & unknown
-  OutputSettings?: z.infer<typeof OutputSettingsSchema> & unknown
-  Preset?: z.infer<typeof StringMin0Schema> & unknown
-  VideoDescription?: z.infer<typeof VideoDescriptionSchema> & unknown
+  AudioDescriptions?: z.infer<typeof ListOfAudioDescriptionSchema>
+  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionSchema>
+  ContainerSettings?: z.infer<typeof ContainerSettingsSchema>
+  Extension?: z.infer<typeof StringSchema>
+  NameModifier?: z.infer<typeof StringMin1Schema>
+  OutputSettings?: z.infer<typeof OutputSettingsSchema>
+  Preset?: z.infer<typeof StringMin0Schema>
+  VideoDescription?: z.infer<typeof VideoDescriptionSchema>
 }
 
 const OutputSchema: z.ZodType<OutputType> = z
@@ -10443,11 +10443,11 @@ const ListOfOutputSchema: z.ZodType<ListOfOutputType> = z
   .openapi('ListOfOutput')
 
 type OutputGroupType = {
-  AutomatedEncodingSettings?: z.infer<typeof AutomatedEncodingSettingsSchema> & unknown
-  CustomName?: z.infer<typeof StringSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  OutputGroupSettings?: z.infer<typeof OutputGroupSettingsSchema> & unknown
-  Outputs?: z.infer<typeof ListOfOutputSchema> & unknown
+  AutomatedEncodingSettings?: z.infer<typeof AutomatedEncodingSettingsSchema>
+  CustomName?: z.infer<typeof StringSchema>
+  Name?: z.infer<typeof StringSchema>
+  OutputGroupSettings?: z.infer<typeof OutputGroupSettingsSchema>
+  Outputs?: z.infer<typeof ListOfOutputSchema>
 }
 
 const OutputGroupSchema: z.ZodType<OutputGroupType> = z
@@ -10563,18 +10563,18 @@ const TimedMetadataInsertionSchema = z
   .openapi('TimedMetadataInsertion')
 
 type JobSettingsType = {
-  AdAvailOffset?: z.infer<typeof IntegerMinNegative1000Max1000Schema> & unknown
-  AvailBlanking?: z.infer<typeof AvailBlankingSchema> & unknown
-  Esam?: z.infer<typeof EsamSettingsSchema> & unknown
-  ExtendedDataServices?: z.infer<typeof ExtendedDataServicesSchema> & unknown
-  Inputs?: z.infer<typeof ListOfInputSchema> & unknown
-  KantarWatermark?: z.infer<typeof KantarWatermarkSettingsSchema> & unknown
-  MotionImageInserter?: z.infer<typeof MotionImageInserterSchema> & unknown
-  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema> & unknown
-  NielsenNonLinearWatermark?: z.infer<typeof NielsenNonLinearWatermarkSettingsSchema> & unknown
-  OutputGroups?: z.infer<typeof ListOfOutputGroupSchema> & unknown
-  TimecodeConfig?: z.infer<typeof TimecodeConfigSchema> & unknown
-  TimedMetadataInsertion?: z.infer<typeof TimedMetadataInsertionSchema> & unknown
+  AdAvailOffset?: z.infer<typeof IntegerMinNegative1000Max1000Schema>
+  AvailBlanking?: z.infer<typeof AvailBlankingSchema>
+  Esam?: z.infer<typeof EsamSettingsSchema>
+  ExtendedDataServices?: z.infer<typeof ExtendedDataServicesSchema>
+  Inputs?: z.infer<typeof ListOfInputSchema>
+  KantarWatermark?: z.infer<typeof KantarWatermarkSettingsSchema>
+  MotionImageInserter?: z.infer<typeof MotionImageInserterSchema>
+  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema>
+  NielsenNonLinearWatermark?: z.infer<typeof NielsenNonLinearWatermarkSettingsSchema>
+  OutputGroups?: z.infer<typeof ListOfOutputGroupSchema>
+  TimecodeConfig?: z.infer<typeof TimecodeConfigSchema>
+  TimedMetadataInsertion?: z.infer<typeof TimedMetadataInsertionSchema>
 }
 
 const JobSettingsSchema: z.ZodType<JobSettingsType> = z
@@ -10730,33 +10730,33 @@ const WarningGroupSchema = z
 const ListOfWarningGroupSchema = z.array(WarningGroupSchema).openapi('ListOfWarningGroup')
 
 type JobType = {
-  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema> & unknown
-  AccelerationStatus?: z.infer<typeof AccelerationStatusSchema> & unknown
-  Arn?: z.infer<typeof StringSchema> & unknown
-  BillingTagsSource?: z.infer<typeof BillingTagsSourceSchema> & unknown
-  ClientRequestToken?: z.infer<typeof StringSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampUnixSchema> & unknown
-  CurrentPhase?: z.infer<typeof JobPhaseSchema> & unknown
-  ErrorCode?: z.infer<typeof IntegerSchema> & unknown
-  ErrorMessage?: z.infer<typeof StringSchema> & unknown
-  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  JobPercentComplete?: z.infer<typeof IntegerSchema> & unknown
-  JobTemplate?: z.infer<typeof StringSchema> & unknown
-  Messages?: z.infer<typeof JobMessagesSchema> & unknown
-  OutputGroupDetails?: z.infer<typeof ListOfOutputGroupDetailSchema> & unknown
-  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema> & unknown
-  Queue?: z.infer<typeof StringSchema> & unknown
-  QueueTransitions?: z.infer<typeof ListOfQueueTransitionSchema> & unknown
-  RetryCount?: z.infer<typeof IntegerSchema> & unknown
-  Role: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof JobSettingsSchema> & unknown
-  SimulateReservedQueue?: z.infer<typeof SimulateReservedQueueSchema> & unknown
-  Status?: z.infer<typeof JobStatusSchema> & unknown
-  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema> & unknown
-  Timing?: z.infer<typeof TimingSchema> & unknown
-  UserMetadata?: z.infer<typeof MapOfStringSchema> & unknown
-  Warnings?: z.infer<typeof ListOfWarningGroupSchema> & unknown
+  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema>
+  AccelerationStatus?: z.infer<typeof AccelerationStatusSchema>
+  Arn?: z.infer<typeof StringSchema>
+  BillingTagsSource?: z.infer<typeof BillingTagsSourceSchema>
+  ClientRequestToken?: z.infer<typeof StringSchema>
+  CreatedAt?: z.infer<typeof TimestampUnixSchema>
+  CurrentPhase?: z.infer<typeof JobPhaseSchema>
+  ErrorCode?: z.infer<typeof IntegerSchema>
+  ErrorMessage?: z.infer<typeof StringSchema>
+  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema>
+  Id?: z.infer<typeof StringSchema>
+  JobPercentComplete?: z.infer<typeof IntegerSchema>
+  JobTemplate?: z.infer<typeof StringSchema>
+  Messages?: z.infer<typeof JobMessagesSchema>
+  OutputGroupDetails?: z.infer<typeof ListOfOutputGroupDetailSchema>
+  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema>
+  Queue?: z.infer<typeof StringSchema>
+  QueueTransitions?: z.infer<typeof ListOfQueueTransitionSchema>
+  RetryCount?: z.infer<typeof IntegerSchema>
+  Role: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof JobSettingsSchema>
+  SimulateReservedQueue?: z.infer<typeof SimulateReservedQueueSchema>
+  Status?: z.infer<typeof JobStatusSchema>
+  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema>
+  Timing?: z.infer<typeof TimingSchema>
+  UserMetadata?: z.infer<typeof MapOfStringSchema>
+  Warnings?: z.infer<typeof ListOfWarningGroupSchema>
 }
 
 const JobSchema: z.ZodType<JobType> = z
@@ -10893,27 +10893,27 @@ const JobSchema: z.ZodType<JobType> = z
   })
   .openapi('Job')
 
-type CreateJobResponseType = { Job?: z.infer<typeof JobSchema> & unknown }
+type CreateJobResponseType = { Job?: z.infer<typeof JobSchema> }
 
 type InputTemplateType = {
-  AudioSelectorGroups?: z.infer<typeof MapOfAudioSelectorGroupSchema> & unknown
-  AudioSelectors?: z.infer<typeof MapOfAudioSelectorSchema> & unknown
-  CaptionSelectors?: z.infer<typeof MapOfCaptionSelectorSchema> & unknown
-  Crop?: z.infer<typeof RectangleSchema> & unknown
-  DeblockFilter?: z.infer<typeof InputDeblockFilterSchema> & unknown
-  DenoiseFilter?: z.infer<typeof InputDenoiseFilterSchema> & unknown
-  DolbyVisionMetadataXml?: z.infer<typeof StringMin14PatternS3XmlXMLHttpsXmlXMLSchema> & unknown
-  FilterEnable?: z.infer<typeof InputFilterEnableSchema> & unknown
-  FilterStrength?: z.infer<typeof IntegerMin0Max5Schema> & unknown
-  ImageInserter?: z.infer<typeof ImageInserterSchema> & unknown
-  InputClippings?: z.infer<typeof ListOfInputClippingSchema> & unknown
-  InputScanType?: z.infer<typeof InputScanTypeSchema> & unknown
-  Position?: z.infer<typeof RectangleSchema> & unknown
-  ProgramNumber?: z.infer<typeof IntegerMin1Max2147483647Schema> & unknown
-  PsiControl?: z.infer<typeof InputPsiControlSchema> & unknown
-  TimecodeSource?: z.infer<typeof InputTimecodeSourceSchema> & unknown
-  TimecodeStart?: z.infer<typeof StringMin11Max11Pattern01D20305D205DSchema> & unknown
-  VideoSelector?: z.infer<typeof VideoSelectorSchema> & unknown
+  AudioSelectorGroups?: z.infer<typeof MapOfAudioSelectorGroupSchema>
+  AudioSelectors?: z.infer<typeof MapOfAudioSelectorSchema>
+  CaptionSelectors?: z.infer<typeof MapOfCaptionSelectorSchema>
+  Crop?: z.infer<typeof RectangleSchema>
+  DeblockFilter?: z.infer<typeof InputDeblockFilterSchema>
+  DenoiseFilter?: z.infer<typeof InputDenoiseFilterSchema>
+  DolbyVisionMetadataXml?: z.infer<typeof StringMin14PatternS3XmlXMLHttpsXmlXMLSchema>
+  FilterEnable?: z.infer<typeof InputFilterEnableSchema>
+  FilterStrength?: z.infer<typeof IntegerMin0Max5Schema>
+  ImageInserter?: z.infer<typeof ImageInserterSchema>
+  InputClippings?: z.infer<typeof ListOfInputClippingSchema>
+  InputScanType?: z.infer<typeof InputScanTypeSchema>
+  Position?: z.infer<typeof RectangleSchema>
+  ProgramNumber?: z.infer<typeof IntegerMin1Max2147483647Schema>
+  PsiControl?: z.infer<typeof InputPsiControlSchema>
+  TimecodeSource?: z.infer<typeof InputTimecodeSourceSchema>
+  TimecodeStart?: z.infer<typeof StringMin11Max11Pattern01D20305D205DSchema>
+  VideoSelector?: z.infer<typeof VideoSelectorSchema>
 }
 
 const InputTemplateSchema: z.ZodType<InputTemplateType> = z
@@ -11019,18 +11019,18 @@ const ListOfInputTemplateSchema: z.ZodType<ListOfInputTemplateType> = z
   .openapi('ListOfInputTemplate')
 
 type JobTemplateSettingsType = {
-  AdAvailOffset?: z.infer<typeof IntegerMinNegative1000Max1000Schema> & unknown
-  AvailBlanking?: z.infer<typeof AvailBlankingSchema> & unknown
-  Esam?: z.infer<typeof EsamSettingsSchema> & unknown
-  ExtendedDataServices?: z.infer<typeof ExtendedDataServicesSchema> & unknown
-  Inputs?: z.infer<typeof ListOfInputTemplateSchema> & unknown
-  KantarWatermark?: z.infer<typeof KantarWatermarkSettingsSchema> & unknown
-  MotionImageInserter?: z.infer<typeof MotionImageInserterSchema> & unknown
-  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema> & unknown
-  NielsenNonLinearWatermark?: z.infer<typeof NielsenNonLinearWatermarkSettingsSchema> & unknown
-  OutputGroups?: z.infer<typeof ListOfOutputGroupSchema> & unknown
-  TimecodeConfig?: z.infer<typeof TimecodeConfigSchema> & unknown
-  TimedMetadataInsertion?: z.infer<typeof TimedMetadataInsertionSchema> & unknown
+  AdAvailOffset?: z.infer<typeof IntegerMinNegative1000Max1000Schema>
+  AvailBlanking?: z.infer<typeof AvailBlankingSchema>
+  Esam?: z.infer<typeof EsamSettingsSchema>
+  ExtendedDataServices?: z.infer<typeof ExtendedDataServicesSchema>
+  Inputs?: z.infer<typeof ListOfInputTemplateSchema>
+  KantarWatermark?: z.infer<typeof KantarWatermarkSettingsSchema>
+  MotionImageInserter?: z.infer<typeof MotionImageInserterSchema>
+  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema>
+  NielsenNonLinearWatermark?: z.infer<typeof NielsenNonLinearWatermarkSettingsSchema>
+  OutputGroups?: z.infer<typeof ListOfOutputGroupSchema>
+  TimecodeConfig?: z.infer<typeof TimecodeConfigSchema>
+  TimedMetadataInsertion?: z.infer<typeof TimedMetadataInsertionSchema>
 }
 
 const JobTemplateSettingsSchema: z.ZodType<JobTemplateSettingsType> = z
@@ -11106,19 +11106,19 @@ const JobTemplateSettingsSchema: z.ZodType<JobTemplateSettingsType> = z
 const TypeSchema = z.enum(['SYSTEM', 'CUSTOM']).openapi('Type')
 
 type JobTemplateType = {
-  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema> & unknown
-  Arn?: z.infer<typeof StringSchema> & unknown
-  Category?: z.infer<typeof StringSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampUnixSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema> & unknown
-  LastUpdated?: z.infer<typeof TimestampUnixSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema> & unknown
-  Queue?: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof JobTemplateSettingsSchema> & unknown
-  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema> & unknown
-  Type?: z.infer<typeof TypeSchema> & unknown
+  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema>
+  Arn?: z.infer<typeof StringSchema>
+  Category?: z.infer<typeof StringSchema>
+  CreatedAt?: z.infer<typeof TimestampUnixSchema>
+  Description?: z.infer<typeof StringSchema>
+  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema>
+  LastUpdated?: z.infer<typeof TimestampUnixSchema>
+  Name: z.infer<typeof StringSchema>
+  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema>
+  Queue?: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof JobTemplateSettingsSchema>
+  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema>
+  Type?: z.infer<typeof TypeSchema>
 }
 
 const JobTemplateSchema: z.ZodType<JobTemplateType> = z
@@ -11189,7 +11189,7 @@ const JobTemplateSchema: z.ZodType<JobTemplateType> = z
   })
   .openapi('JobTemplate')
 
-type CreateJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> & unknown }
+type CreateJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> }
 
 const CaptionDescriptionPresetSchema = z
   .object({
@@ -11222,10 +11222,10 @@ const ListOfCaptionDescriptionPresetSchema = z
   .openapi('ListOfCaptionDescriptionPreset')
 
 type PresetSettingsType = {
-  AudioDescriptions?: z.infer<typeof ListOfAudioDescriptionSchema> & unknown
-  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionPresetSchema> & unknown
-  ContainerSettings?: z.infer<typeof ContainerSettingsSchema> & unknown
-  VideoDescription?: z.infer<typeof VideoDescriptionSchema> & unknown
+  AudioDescriptions?: z.infer<typeof ListOfAudioDescriptionSchema>
+  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionPresetSchema>
+  ContainerSettings?: z.infer<typeof ContainerSettingsSchema>
+  VideoDescription?: z.infer<typeof VideoDescriptionSchema>
 }
 
 const PresetSettingsSchema: z.ZodType<PresetSettingsType> = z
@@ -11254,14 +11254,14 @@ const PresetSettingsSchema: z.ZodType<PresetSettingsType> = z
   .openapi('PresetSettings')
 
 type PresetType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  Category?: z.infer<typeof StringSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampUnixSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  LastUpdated?: z.infer<typeof TimestampUnixSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof PresetSettingsSchema> & unknown
-  Type?: z.infer<typeof TypeSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  Category?: z.infer<typeof StringSchema>
+  CreatedAt?: z.infer<typeof TimestampUnixSchema>
+  Description?: z.infer<typeof StringSchema>
+  LastUpdated?: z.infer<typeof TimestampUnixSchema>
+  Name: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof PresetSettingsSchema>
+  Type?: z.infer<typeof TypeSchema>
 }
 
 const PresetSchema: z.ZodType<PresetType> = z
@@ -11308,13 +11308,13 @@ const PresetSchema: z.ZodType<PresetType> = z
   })
   .openapi('Preset')
 
-type CreatePresetResponseType = { Preset?: z.infer<typeof PresetSchema> & unknown }
+type CreatePresetResponseType = { Preset?: z.infer<typeof PresetSchema> }
 
-type GetJobResponseType = { Job?: z.infer<typeof JobSchema> & unknown }
+type GetJobResponseType = { Job?: z.infer<typeof JobSchema> }
 
-type GetJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> & unknown }
+type GetJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> }
 
-type GetPresetResponseType = { Preset?: z.infer<typeof PresetSchema> & unknown }
+type GetPresetResponseType = { Preset?: z.infer<typeof PresetSchema> }
 
 type ListOfJobTemplateType = z.infer<typeof JobTemplateSchema>[]
 
@@ -11323,8 +11323,8 @@ const ListOfJobTemplateSchema: z.ZodType<ListOfJobTemplateType> = z
   .openapi('ListOfJobTemplate')
 
 type ListJobTemplatesResponseType = {
-  JobTemplates?: z.infer<typeof ListOfJobTemplateSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  JobTemplates?: z.infer<typeof ListOfJobTemplateSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type ListOfJobType = z.infer<typeof JobSchema>[]
@@ -11332,8 +11332,8 @@ type ListOfJobType = z.infer<typeof JobSchema>[]
 const ListOfJobSchema: z.ZodType<ListOfJobType> = z.array(JobSchema).openapi('ListOfJob')
 
 type ListJobsResponseType = {
-  Jobs?: z.infer<typeof ListOfJobSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Jobs?: z.infer<typeof ListOfJobSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type ListOfPresetType = z.infer<typeof PresetSchema>[]
@@ -11343,66 +11343,66 @@ const ListOfPresetSchema: z.ZodType<ListOfPresetType> = z
   .openapi('ListOfPreset')
 
 type ListPresetsResponseType = {
-  NextToken?: z.infer<typeof StringSchema> & unknown
-  Presets?: z.infer<typeof ListOfPresetSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema>
+  Presets?: z.infer<typeof ListOfPresetSchema>
 }
 
-type UpdateJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> & unknown }
+type UpdateJobTemplateResponseType = { JobTemplate?: z.infer<typeof JobTemplateSchema> }
 
-type UpdatePresetResponseType = { Preset?: z.infer<typeof PresetSchema> & unknown }
+type UpdatePresetResponseType = { Preset?: z.infer<typeof PresetSchema> }
 
 type CreateJobRequestType = {
-  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema> & unknown
-  BillingTagsSource?: z.infer<typeof BillingTagsSourceSchema> & unknown
-  ClientRequestToken?: z.infer<typeof StringSchema> & unknown
-  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema> & unknown
-  JobTemplate?: z.infer<typeof StringSchema> & unknown
-  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema> & unknown
-  Queue?: z.infer<typeof StringSchema> & unknown
-  Role: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof JobSettingsSchema> & unknown
-  SimulateReservedQueue?: z.infer<typeof SimulateReservedQueueSchema> & unknown
-  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema> & unknown
-  Tags?: z.infer<typeof MapOfStringSchema> & unknown
-  UserMetadata?: z.infer<typeof MapOfStringSchema> & unknown
+  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema>
+  BillingTagsSource?: z.infer<typeof BillingTagsSourceSchema>
+  ClientRequestToken?: z.infer<typeof StringSchema>
+  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema>
+  JobTemplate?: z.infer<typeof StringSchema>
+  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema>
+  Queue?: z.infer<typeof StringSchema>
+  Role: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof JobSettingsSchema>
+  SimulateReservedQueue?: z.infer<typeof SimulateReservedQueueSchema>
+  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema>
+  Tags?: z.infer<typeof MapOfStringSchema>
+  UserMetadata?: z.infer<typeof MapOfStringSchema>
 }
 
 type CreateJobTemplateRequestType = {
-  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema> & unknown
-  Category?: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema> & unknown
-  Queue?: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof JobTemplateSettingsSchema> & unknown
-  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema> & unknown
-  Tags?: z.infer<typeof MapOfStringSchema> & unknown
+  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema>
+  Category?: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema>
+  Name: z.infer<typeof StringSchema>
+  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema>
+  Queue?: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof JobTemplateSettingsSchema>
+  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema>
+  Tags?: z.infer<typeof MapOfStringSchema>
 }
 
 type CreatePresetRequestType = {
-  Category?: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Settings: z.infer<typeof PresetSettingsSchema> & unknown
-  Tags?: z.infer<typeof MapOfStringSchema> & unknown
+  Category?: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  Name: z.infer<typeof StringSchema>
+  Settings: z.infer<typeof PresetSettingsSchema>
+  Tags?: z.infer<typeof MapOfStringSchema>
 }
 
 type UpdateJobTemplateRequestType = {
-  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema> & unknown
-  Category?: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema> & unknown
-  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema> & unknown
-  Queue?: z.infer<typeof StringSchema> & unknown
-  Settings?: z.infer<typeof JobTemplateSettingsSchema> & unknown
-  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema> & unknown
+  AccelerationSettings?: z.infer<typeof AccelerationSettingsSchema>
+  Category?: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  HopDestinations?: z.infer<typeof ListOfHopDestinationSchema>
+  Priority?: z.infer<typeof IntegerMinNegative50Max50Schema>
+  Queue?: z.infer<typeof StringSchema>
+  Settings?: z.infer<typeof JobTemplateSettingsSchema>
+  StatusUpdateInterval?: z.infer<typeof StatusUpdateIntervalSchema>
 }
 
 type UpdatePresetRequestType = {
-  Category?: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  Settings?: z.infer<typeof PresetSettingsSchema> & unknown
+  Category?: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  Settings?: z.infer<typeof PresetSettingsSchema>
 }
 
 const AssociateCertificateResponseSchema = z.looseObject({}).openapi('AssociateCertificateResponse')

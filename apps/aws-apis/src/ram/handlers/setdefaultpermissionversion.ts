@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSetdefaultpermissionversionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSetdefaultpermissionversionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const setdefaultpermissionversionHandler = app.openapi(
-  postSetdefaultpermissionversionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postSetdefaultpermissionversionRouteHandler: RouteHandler<
+  typeof postSetdefaultpermissionversionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

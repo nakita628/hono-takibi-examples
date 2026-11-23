@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/statisticsrajasthan/3.0.0/openapi.yaml',
   output: './src/statisticsrajasthan/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/statisticsrajasthan/types.ts' },
   client: { output: './src/statisticsrajasthan/client.ts', baseUrl: '/' },
   rpc: { output: './src/statisticsrajasthan/rpc.ts', parseResponse: true },

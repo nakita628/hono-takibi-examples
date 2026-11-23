@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV4PayeesPayeeIdRoute,
   getV4PayeesBatchBatchIdRoute,
   getV4PayeesDeltasRoute,
@@ -20,60 +20,106 @@ import {
   postV4PayeesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV4PayeesRouteHandler: RouteHandler<typeof getV4PayeesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v4Handler = app
-  .openapi(getV4PayeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4PayeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PayeesBatchBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PayeesDeltasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PayeesPayorsPayorIdInvitationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV4PayeesPayeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PayeesPayeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4PayeesPayeeIdInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4PayeesPayeeIdPayeeDetailsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4PayeesPayeeIdRemoteIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditFundingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditPayoutStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditPayoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditPayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentauditTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4PaymentsDeltasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV4PayeesRouteHandler: RouteHandler<typeof postV4PayeesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PayeesBatchBatchIdRouteHandler: RouteHandler<
+  typeof getV4PayeesBatchBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PayeesDeltasRouteHandler: RouteHandler<typeof getV4PayeesDeltasRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PayeesPayorsPayorIdInvitationStatusRouteHandler: RouteHandler<
+  typeof getV4PayeesPayorsPayorIdInvitationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV4PayeesPayeeIdRouteHandler: RouteHandler<
+  typeof deleteV4PayeesPayeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PayeesPayeeIdRouteHandler: RouteHandler<typeof getV4PayeesPayeeIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4PayeesPayeeIdInviteRouteHandler: RouteHandler<
+  typeof postV4PayeesPayeeIdInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4PayeesPayeeIdPayeeDetailsUpdateRouteHandler: RouteHandler<
+  typeof postV4PayeesPayeeIdPayeeDetailsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4PayeesPayeeIdRemoteIdUpdateRouteHandler: RouteHandler<
+  typeof postV4PayeesPayeeIdRemoteIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditFundingsRouteHandler: RouteHandler<
+  typeof getV4PaymentauditFundingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditPaymentsRouteHandler: RouteHandler<
+  typeof getV4PaymentauditPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getV4PaymentauditPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditPayoutStatisticsRouteHandler: RouteHandler<
+  typeof getV4PaymentauditPayoutStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditPayoutsRouteHandler: RouteHandler<
+  typeof getV4PaymentauditPayoutsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditPayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof getV4PaymentauditPayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentauditTransactionsRouteHandler: RouteHandler<
+  typeof getV4PaymentauditTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4PaymentsDeltasRouteHandler: RouteHandler<
+  typeof getV4PaymentsDeltasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

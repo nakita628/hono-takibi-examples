@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMacieRoute,
   getMacieRoute,
   patchMacieMembersIdRoute,
@@ -7,21 +7,24 @@ import {
   postMacieRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteMacieRouteHandler: RouteHandler<typeof deleteMacieRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const macieHandler = app
-  .openapi(deleteMacieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMacieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMacieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMacieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMacieMembersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMacieRouteHandler: RouteHandler<typeof postMacieRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMacieRouteHandler: RouteHandler<typeof getMacieRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMacieRouteHandler: RouteHandler<typeof patchMacieRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMacieMembersIdRouteHandler: RouteHandler<
+  typeof patchMacieMembersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

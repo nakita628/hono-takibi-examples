@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePrincipalPoliciesPolicyNameXAmznIotPrincipalRoute,
   putPrincipalPoliciesPolicyNameXAmznIotPrincipalRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putPrincipalPoliciesPolicyNameXAmznIotPrincipalRouteHandler: RouteHandler<
+  typeof putPrincipalPoliciesPolicyNameXAmznIotPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const principalPoliciesHandler = app
-  .openapi(putPrincipalPoliciesPolicyNameXAmznIotPrincipalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePrincipalPoliciesPolicyNameXAmznIotPrincipalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deletePrincipalPoliciesPolicyNameXAmznIotPrincipalRouteHandler: RouteHandler<
+  typeof deletePrincipalPoliciesPolicyNameXAmznIotPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

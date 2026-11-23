@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsAwsAccountIdAnalysesAnalysisIdRoute,
   deleteAccountsAwsAccountIdCustomizationsRoute,
   deleteAccountsAwsAccountIdDashboardsDashboardIdRoute,
@@ -130,405 +130,770 @@ import {
   putAccountsAwsAccountIdThemesThemeIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(deleteAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdCustomizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdCustomizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdCustomizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdCustomizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDashboardsDashboardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdDashboardsDashboardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsDashboardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDashboardsDashboardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDataSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdNamespacesNamespaceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdThemesThemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdThemesThemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesThemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdThemesThemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdDataSetsDataSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDataSetsDataSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteAccountsAwsAccountIdNamespaceNamespaceIamPolicyAssignmentsAssignmentNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteAccountsAwsAccountIdNamespacesNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAwsAccountIdNamespacesNamespaceUserPrincipalsPrincipalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdAnalysesAnalysisIdDefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsDashboardIdDefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsDashboardIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDashboardsDashboardIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDataSetsDataSetIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdFoldersFolderIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdFoldersFolderIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdFoldersFolderIdResolvedPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAccountsAwsAccountIdIpRestrictionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdIpRestrictionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdDefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdTemplatesTemplateIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesThemeIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdThemesThemeIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdEmbedUrlAnonymousUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdEmbedUrlRegisteredUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsDashboardIdEmbedUrlCredsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdSessionEmbedUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsDashboardIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdFoldersFolderIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameIamPolicyAssignmentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAccountsAwsAccountIdDataSetsDataSetIdIngestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesTemplateIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesThemeIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesThemeIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdThemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAwsAccountIdNamespacesNamespaceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdNamespacesNamespaceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdRestoreAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdSearchAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdSearchDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdSearchDataSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdSearchDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdSearchFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAwsAccountIdNamespacesNamespaceGroupsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdDashboardsDashboardIdVersionsVersionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAwsAccountIdPublicSharingSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdIngestionsIngestionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdCustomizationsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdCustomizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdCustomizationsRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdCustomizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdCustomizationsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdCustomizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdCustomizationsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdCustomizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDashboardsDashboardIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDashboardsDashboardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdDashboardsDashboardIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDashboardsDashboardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsDashboardIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsDashboardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDashboardsDashboardIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDashboardsDashboardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDataSetsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDataSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDataSourcesRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSourcesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdFoldersFolderIdMembersMemberTypeMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdNamespacesNamespaceGroupsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdNamespacesNamespaceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceGroupsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersMemberNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsIndexRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdTemplatesTemplateIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdThemesThemeIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdThemesThemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdThemesThemeIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdThemesThemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesThemeIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesThemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdThemesThemeIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdThemesThemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdThemesThemeIdAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdDataSetsDataSetIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDataSetsDataSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDataSetsDataSetIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDataSetsDataSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDataSetsDataSetIdRefreshPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespaceNamespaceIamPolicyAssignmentsAssignmentNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespaceNamespaceIamPolicyAssignmentsAssignmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespacesNamespaceRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespacesNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdRefreshSchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdNamespacesNamespaceUsersUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAwsAccountIdNamespacesNamespaceUserPrincipalsPrincipalIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAwsAccountIdNamespacesNamespaceUserPrincipalsPrincipalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdAnalysesAnalysisIdDefinitionRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdAnalysesAnalysisIdDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdAnalysesAnalysisIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsDashboardIdDefinitionRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsDashboardIdDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsDashboardIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsDashboardIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDashboardsDashboardIdPermissionsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDashboardsDashboardIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDataSetsDataSetIdPermissionsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDataSetsDataSetIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdDataSourcesDataSourceIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdFoldersFolderIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdFoldersFolderIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdFoldersFolderIdPermissionsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdFoldersFolderIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdFoldersFolderIdResolvedPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdFoldersFolderIdResolvedPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsAssignmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdIpRestrictionRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdIpRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdIpRestrictionRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdIpRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdDefinitionRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdTemplatesTemplateIdPermissionsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdTemplatesTemplateIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesThemeIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesThemeIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdThemesThemeIdPermissionsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdThemesThemeIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdEmbedUrlAnonymousUserRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdEmbedUrlAnonymousUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdEmbedUrlRegisteredUserRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdEmbedUrlRegisteredUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsDashboardIdEmbedUrlCredsTypeRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsDashboardIdEmbedUrlCredsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdSessionEmbedUrlRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdSessionEmbedUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdAnalysesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsDashboardIdVersionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsDashboardIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDashboardsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdFoldersFolderIdMembersRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdFoldersFolderIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdFoldersRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceGroupsGroupNameMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceIamPolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameIamPolicyAssignmentsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameIamPolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdDataSetsDataSetIdIngestionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdDataSetsDataSetIdIngestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdAliasesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesTemplateIdVersionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesTemplateIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdTemplatesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesThemeIdAliasesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesThemeIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesThemeIdVersionsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesThemeIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdThemesRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdThemesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameGroupsRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceUsersUserNameGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAwsAccountIdNamespacesNamespaceUsersRouteHandler: RouteHandler<
+  typeof getAccountsAwsAccountIdNamespacesNamespaceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdNamespacesNamespaceUsersRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdNamespacesNamespaceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdRestoreAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdRestoreAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdSearchAnalysesRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdSearchAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdSearchDashboardsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdSearchDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdSearchDataSetsRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdSearchDataSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdSearchDataSourcesRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdSearchDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdSearchFoldersRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdSearchFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAwsAccountIdNamespacesNamespaceGroupsSearchRouteHandler: RouteHandler<
+  typeof postAccountsAwsAccountIdNamespacesNamespaceGroupsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdDashboardsDashboardIdVersionsVersionNumberRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdDashboardsDashboardIdVersionsVersionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAwsAccountIdPublicSharingSettingsRouteHandler: RouteHandler<
+  typeof putAccountsAwsAccountIdPublicSharingSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

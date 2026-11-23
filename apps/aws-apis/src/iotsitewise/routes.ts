@@ -417,16 +417,16 @@ const AssetModelStatusSchema = z
   .openapi('AssetModelStatus')
 
 type DescribeAssetModelResponseType = {
-  assetModelId: z.infer<typeof IDSchema> & unknown
-  assetModelArn: z.infer<typeof ARNSchema> & unknown
-  assetModelName: z.infer<typeof NameSchema> & unknown
-  assetModelDescription: z.infer<typeof DescriptionSchema> & unknown
-  assetModelProperties: z.infer<typeof AssetModelPropertiesSchema> & unknown
-  assetModelHierarchies: z.infer<typeof AssetModelHierarchiesSchema> & unknown
-  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema> & unknown
-  assetModelCreationDate: z.infer<typeof TimestampSchema> & unknown
-  assetModelLastUpdateDate: z.infer<typeof TimestampSchema> & unknown
-  assetModelStatus: z.infer<typeof AssetModelStatusSchema> & unknown
+  assetModelId: z.infer<typeof IDSchema>
+  assetModelArn: z.infer<typeof ARNSchema>
+  assetModelName: z.infer<typeof NameSchema>
+  assetModelDescription: z.infer<typeof DescriptionSchema>
+  assetModelProperties: z.infer<typeof AssetModelPropertiesSchema>
+  assetModelHierarchies: z.infer<typeof AssetModelHierarchiesSchema>
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema>
+  assetModelCreationDate: z.infer<typeof TimestampSchema>
+  assetModelLastUpdateDate: z.infer<typeof TimestampSchema>
+  assetModelStatus: z.infer<typeof AssetModelStatusSchema>
 }
 
 const PropertyAliasSchema = z
@@ -504,11 +504,11 @@ const CompositeModelPropertySchema = z
   .openapi('CompositeModelProperty')
 
 type DescribeAssetPropertyResponseType = {
-  assetId: z.infer<typeof IDSchema> & unknown
-  assetName: z.infer<typeof NameSchema> & unknown
-  assetModelId: z.infer<typeof IDSchema> & unknown
-  assetProperty?: z.infer<typeof PropertySchema> & unknown
-  compositeModel?: z.infer<typeof CompositeModelPropertySchema> & unknown
+  assetId: z.infer<typeof IDSchema>
+  assetName: z.infer<typeof NameSchema>
+  assetModelId: z.infer<typeof IDSchema>
+  assetProperty?: z.infer<typeof PropertySchema>
+  compositeModel?: z.infer<typeof CompositeModelPropertySchema>
 }
 
 const AssetModelPropertySummarySchema = z
@@ -546,8 +546,8 @@ const NextTokenSchema = z
   .openapi('NextToken')
 
 type ListAssetModelPropertiesResponseType = {
-  assetModelPropertySummaries: z.infer<typeof AssetModelPropertySummariesSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  assetModelPropertySummaries: z.infer<typeof AssetModelPropertySummariesSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const AssetModelPropertyDefinitionSchema = z
@@ -644,22 +644,22 @@ const TagMapSchema = z
   .openapi('TagMap')
 
 type CreateAssetModelRequestType = {
-  assetModelName: z.infer<typeof NameSchema> & unknown
-  assetModelDescription?: z.infer<typeof DescriptionSchema> & unknown
-  assetModelProperties?: z.infer<typeof AssetModelPropertyDefinitionsSchema> & unknown
-  assetModelHierarchies?: z.infer<typeof AssetModelHierarchyDefinitionsSchema> & unknown
-  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelDefinitionsSchema> & unknown
-  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  assetModelName: z.infer<typeof NameSchema>
+  assetModelDescription?: z.infer<typeof DescriptionSchema>
+  assetModelProperties?: z.infer<typeof AssetModelPropertyDefinitionsSchema>
+  assetModelHierarchies?: z.infer<typeof AssetModelHierarchyDefinitionsSchema>
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelDefinitionsSchema>
+  clientToken?: z.infer<typeof ClientTokenSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 type UpdateAssetModelRequestType = {
-  assetModelName: z.infer<typeof NameSchema> & unknown
-  assetModelDescription?: z.infer<typeof DescriptionSchema> & unknown
-  assetModelProperties?: z.infer<typeof AssetModelPropertiesSchema> & unknown
-  assetModelHierarchies?: z.infer<typeof AssetModelHierarchiesSchema> & unknown
-  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema> & unknown
-  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
+  assetModelName: z.infer<typeof NameSchema>
+  assetModelDescription?: z.infer<typeof DescriptionSchema>
+  assetModelProperties?: z.infer<typeof AssetModelPropertiesSchema>
+  assetModelHierarchies?: z.infer<typeof AssetModelHierarchiesSchema>
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema>
+  clientToken?: z.infer<typeof ClientTokenSchema>
 }
 
 const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')

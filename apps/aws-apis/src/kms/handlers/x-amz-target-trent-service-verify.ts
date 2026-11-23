@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceVerifyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceVerifyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceVerifyHandler = app.openapi(
-  postXAmzTargetTrentServiceVerifyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceVerifyRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

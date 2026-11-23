@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchableSnapshotsCacheStatsRoute,
   getSearchableSnapshotsNodeIdCacheStatsRoute,
   getSearchableSnapshotsStatsRoute,
   postSearchableSnapshotsCacheClearRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchableSnapshotsCacheStatsRouteHandler: RouteHandler<
+  typeof getSearchableSnapshotsCacheStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchableSnapshotsHandler = app
-  .openapi(getSearchableSnapshotsCacheStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchableSnapshotsNodeIdCacheStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchableSnapshotsCacheClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchableSnapshotsStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchableSnapshotsNodeIdCacheStatsRouteHandler: RouteHandler<
+  typeof getSearchableSnapshotsNodeIdCacheStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchableSnapshotsCacheClearRouteHandler: RouteHandler<
+  typeof postSearchableSnapshotsCacheClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchableSnapshotsStatsRouteHandler: RouteHandler<
+  typeof getSearchableSnapshotsStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getValidateNameNameRoute, getValidateUuidUuidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getValidateNameNameRoute, getValidateUuidUuidRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getValidateNameNameRouteHandler: RouteHandler<
+  typeof getValidateNameNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const validateHandler = app
-  .openapi(getValidateNameNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValidateUuidUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getValidateUuidUuidRouteHandler: RouteHandler<
+  typeof getValidateUuidUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/dracoon.team/4.42.2/openapi.yaml',
   output: './src/dracoon-team/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dracoon-team/types.ts' },
   client: { output: './src/dracoon-team/client.ts', baseUrl: '/' },
   rpc: { output: './src/dracoon-team/rpc.ts', parseResponse: true },

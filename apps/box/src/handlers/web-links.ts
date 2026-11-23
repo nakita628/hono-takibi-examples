@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebLinksWebLinkIdRoute,
   deleteWebLinksWebLinkIdTrashRoute,
   getWebLinksWebLinkIdGetSharedLinkRoute,
@@ -13,39 +13,66 @@ import {
   putWebLinksWebLinkIdUpdateSharedLinkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWebLinksRouteHandler: RouteHandler<typeof postWebLinksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webLinksHandler = app
-  .openapi(postWebLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebLinksWebLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebLinksWebLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebLinksWebLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebLinksWebLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebLinksWebLinkIdTrashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebLinksWebLinkIdTrashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebLinksWebLinkIdGetSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebLinksWebLinkIdAddSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebLinksWebLinkIdUpdateSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebLinksWebLinkIdRemoveSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebLinksWebLinkIdRouteHandler: RouteHandler<
+  typeof getWebLinksWebLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebLinksWebLinkIdRouteHandler: RouteHandler<
+  typeof postWebLinksWebLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebLinksWebLinkIdRouteHandler: RouteHandler<
+  typeof putWebLinksWebLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebLinksWebLinkIdRouteHandler: RouteHandler<
+  typeof deleteWebLinksWebLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebLinksWebLinkIdTrashRouteHandler: RouteHandler<
+  typeof getWebLinksWebLinkIdTrashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebLinksWebLinkIdTrashRouteHandler: RouteHandler<
+  typeof deleteWebLinksWebLinkIdTrashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebLinksWebLinkIdGetSharedLinkRouteHandler: RouteHandler<
+  typeof getWebLinksWebLinkIdGetSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebLinksWebLinkIdAddSharedLinkRouteHandler: RouteHandler<
+  typeof putWebLinksWebLinkIdAddSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebLinksWebLinkIdUpdateSharedLinkRouteHandler: RouteHandler<
+  typeof putWebLinksWebLinkIdUpdateSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebLinksWebLinkIdRemoveSharedLinkRouteHandler: RouteHandler<
+  typeof putWebLinksWebLinkIdRemoveSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

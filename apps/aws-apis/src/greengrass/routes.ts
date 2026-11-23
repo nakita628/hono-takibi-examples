@@ -176,12 +176,12 @@ const FunctionDefinitionVersionSchema = z
   .openapi('FunctionDefinitionVersion')
 
 type GetFunctionDefinitionVersionResponseType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CreationTimestamp?: z.infer<typeof StringSchema> & unknown
-  Definition?: z.infer<typeof FunctionDefinitionVersionSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
-  Version?: z.infer<typeof StringSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CreationTimestamp?: z.infer<typeof StringSchema>
+  Definition?: z.infer<typeof FunctionDefinitionVersionSchema>
+  Id?: z.infer<typeof StringSchema>
+  NextToken?: z.infer<typeof StringSchema>
+  Version?: z.infer<typeof StringSchema>
 }
 
 const TagsSchema = z
@@ -190,9 +190,9 @@ const TagsSchema = z
   .openapi('Tags')
 
 type CreateFunctionDefinitionRequestType = {
-  InitialVersion?: z.infer<typeof FunctionDefinitionVersionSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
+  InitialVersion?: z.infer<typeof FunctionDefinitionVersionSchema>
+  Name?: z.infer<typeof StringSchema>
+  tags?: z.infer<typeof TagsSchema>
 }
 
 const AssociateRoleToGroupResponseSchema = z

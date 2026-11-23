@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSupport20130415AddAttachmentsToSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSupport20130415AddAttachmentsToSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSupport20130415AddAttachmentsToSetHandler = app.openapi(
-  postXAmzTargetAWSSupport20130415AddAttachmentsToSetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSSupport20130415AddAttachmentsToSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSupport20130415AddAttachmentsToSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

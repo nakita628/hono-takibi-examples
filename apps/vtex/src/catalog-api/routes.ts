@@ -18148,7 +18148,7 @@ export const getApiCatalogSystemPvtProductsGetIndexedInfoProductIdRoute = create
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getApiCatalogSystemPvtProductsGetProductAndSkuIdsRoute = createRoute({

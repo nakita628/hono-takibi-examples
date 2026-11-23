@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getArtistsIdAlbumsRoute,
   getArtistsIdRelatedArtistsRoute,
   getArtistsIdRoute,
@@ -7,21 +7,28 @@ import {
   getArtistsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getArtistsIdRouteHandler: RouteHandler<typeof getArtistsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const artistsHandler = app
-  .openapi(getArtistsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsIdAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsIdTopTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsIdRelatedArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getArtistsRouteHandler: RouteHandler<typeof getArtistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsIdAlbumsRouteHandler: RouteHandler<typeof getArtistsIdAlbumsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsIdTopTracksRouteHandler: RouteHandler<
+  typeof getArtistsIdTopTracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsIdRelatedArtistsRouteHandler: RouteHandler<
+  typeof getArtistsIdRelatedArtistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLinearregslopeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLinearregslopeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const linearregslopeHandler = app.openapi(getLinearregslopeRoute, (c) => {
+export const getLinearregslopeRouteHandler: RouteHandler<typeof getLinearregslopeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

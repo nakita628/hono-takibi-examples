@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePaymentCardIdDeleteRoute,
   getPaymentCardIdRoute,
   getPaymentRoute,
@@ -9,27 +9,40 @@ import {
   postPaymentToggleCorporateAutoChargeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentRouteHandler: RouteHandler<typeof getPaymentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentHandler = app
-  .openapi(getPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentResetCorporatePaymentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentToggleCorporateAutoChargeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentCardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePaymentCardIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentCardIdResetPaymentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentRouteHandler: RouteHandler<typeof postPaymentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentResetCorporatePaymentCodeRouteHandler: RouteHandler<
+  typeof postPaymentResetCorporatePaymentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentToggleCorporateAutoChargeRouteHandler: RouteHandler<
+  typeof postPaymentToggleCorporateAutoChargeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentCardIdRouteHandler: RouteHandler<typeof getPaymentCardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePaymentCardIdDeleteRouteHandler: RouteHandler<
+  typeof deletePaymentCardIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentCardIdResetPaymentCodeRouteHandler: RouteHandler<
+  typeof postPaymentCardIdResetPaymentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

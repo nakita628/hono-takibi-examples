@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEarlyDayMotionIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEarlyDayMotionIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const earlyDayMotionHandler = app.openapi(getEarlyDayMotionIdRoute, (c) => {
+export const getEarlyDayMotionIdRouteHandler: RouteHandler<
+  typeof getEarlyDayMotionIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

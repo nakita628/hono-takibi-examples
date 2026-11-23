@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/graphhopper.com/1.0.0/openapi.yaml',
   output: './src/graphhopper/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/graphhopper/types.ts' },
   client: { output: './src/graphhopper/client.ts', baseUrl: '/' },
   rpc: { output: './src/graphhopper/rpc.ts', parseResponse: true },

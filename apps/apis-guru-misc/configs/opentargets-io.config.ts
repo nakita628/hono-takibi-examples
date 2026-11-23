@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/opentargets.io/19.02.1/openapi.yaml',
   output: './src/opentargets-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/opentargets-io/types.ts' },
   client: { output: './src/opentargets-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/opentargets-io/rpc.ts', parseResponse: true },

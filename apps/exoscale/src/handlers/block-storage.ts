@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBlockStorageIdRoute,
   getBlockStorageIdRoute,
   getBlockStorageRoute,
@@ -11,33 +11,54 @@ import {
   putBlockStorageIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putBlockStorageIdAttachRouteHandler: RouteHandler<
+  typeof putBlockStorageIdAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const blockStorageHandler = app
-  .openapi(putBlockStorageIdAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlockStorageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBlockStorageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBlockStorageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlockStorageIdCreateSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBlockStorageIdResizeVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBlockStorageIdDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlockStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlockStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBlockStorageIdRouteHandler: RouteHandler<typeof getBlockStorageIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putBlockStorageIdRouteHandler: RouteHandler<typeof putBlockStorageIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBlockStorageIdRouteHandler: RouteHandler<
+  typeof deleteBlockStorageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlockStorageIdCreateSnapshotRouteHandler: RouteHandler<
+  typeof postBlockStorageIdCreateSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBlockStorageIdResizeVolumeRouteHandler: RouteHandler<
+  typeof putBlockStorageIdResizeVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBlockStorageIdDetachRouteHandler: RouteHandler<
+  typeof putBlockStorageIdDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlockStorageRouteHandler: RouteHandler<typeof getBlockStorageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlockStorageRouteHandler: RouteHandler<typeof postBlockStorageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

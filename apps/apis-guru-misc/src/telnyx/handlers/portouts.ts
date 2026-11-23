@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPortoutsIdCommentsRoute,
   getPortoutsIdRoute,
   getPortoutsRoute,
@@ -7,21 +7,28 @@ import {
   postPortoutsIdCommentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPortoutsRouteHandler: RouteHandler<typeof getPortoutsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const portoutsHandler = app
-  .openapi(getPortoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortoutsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortoutsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortoutsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPortoutsIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPortoutsIdRouteHandler: RouteHandler<typeof getPortoutsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortoutsIdCommentsRouteHandler: RouteHandler<
+  typeof getPortoutsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortoutsIdCommentsRouteHandler: RouteHandler<
+  typeof postPortoutsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPortoutsIdStatusRouteHandler: RouteHandler<
+  typeof patchPortoutsIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

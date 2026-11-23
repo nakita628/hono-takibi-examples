@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTranscribeDeleteLanguageModelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTranscribeDeleteLanguageModelRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTranscribeDeleteLanguageModelHandler = app.openapi(
-  postXAmzTargetTranscribeDeleteLanguageModelRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTranscribeDeleteLanguageModelRouteHandler: RouteHandler<
+  typeof postXAmzTargetTranscribeDeleteLanguageModelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

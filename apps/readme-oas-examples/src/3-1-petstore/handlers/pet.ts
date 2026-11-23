@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePetPetIdRoute,
   getPetFindByStatusRoute,
   getPetFindByTagsRoute,
@@ -10,30 +10,40 @@ import {
   putPetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPetRouteHandler: RouteHandler<typeof postPetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const petHandler = app
-  .openapi(postPetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPetFindByStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPetFindByTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPetPetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPetPetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePetPetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPetPetIdUploadImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putPetRouteHandler: RouteHandler<typeof putPetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPetFindByStatusRouteHandler: RouteHandler<typeof getPetFindByStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPetFindByTagsRouteHandler: RouteHandler<typeof getPetFindByTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPetPetIdRouteHandler: RouteHandler<typeof getPetPetIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPetPetIdRouteHandler: RouteHandler<typeof postPetPetIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePetPetIdRouteHandler: RouteHandler<typeof deletePetPetIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPetPetIdUploadImageRouteHandler: RouteHandler<
+  typeof postPetPetIdUploadImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -125,12 +125,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { id: bigint } }; output: Error; outputFormat: 'text'; status: 200 }
-      $delete: {
-        input: { param: { id: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { id: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: bigint } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   },
   '/'

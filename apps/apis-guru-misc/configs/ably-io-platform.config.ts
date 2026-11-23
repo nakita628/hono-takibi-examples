@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ably.io/platform/1.1.0/openapi.yaml',
   output: './src/ably-io-platform/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ably-io-platform/types.ts' },
   client: { output: './src/ably-io-platform/client.ts', baseUrl: '/' },
   rpc: { output: './src/ably-io-platform/rpc.ts', parseResponse: true },

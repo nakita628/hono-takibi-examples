@@ -35,10 +35,7 @@ export const getPirateGenerateInsultRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -83,10 +80,7 @@ export const getPirateGenerateLoremIpsumRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -131,10 +125,7 @@ export const getPirateGenerateNameRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -158,9 +149,6 @@ export const getPirateTranslateRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })

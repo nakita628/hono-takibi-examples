@@ -1,18 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRoute,
   postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRouteHandler: RouteHandler<
+  typeof postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const portalVtexcommercestableComBrHandler = app
-  .openapi(
-    postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRouteHandler: RouteHandler<
+  typeof postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/nbg.gr/v3.1.5/openapi.yaml',
   output: './src/nbg-gr/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nbg-gr/types.ts' },
   client: { output: './src/nbg-gr/client.ts', baseUrl: '/' },
   rpc: { output: './src/nbg-gr/rpc.ts', parseResponse: true },

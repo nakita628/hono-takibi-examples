@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePermissionPermissionIdRoute,
   deletePermissionPermissionIdTagTagIdRoute,
   getPermissionPermissionIdRoute,
@@ -10,30 +10,50 @@ import {
   putPermissionPermissionIdTagTagIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePermissionPermissionIdRouteHandler: RouteHandler<
+  typeof deletePermissionPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const permissionHandler = app
-  .openapi(deletePermissionPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPermissionPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPermissionPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPermissionPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePermissionPermissionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPermissionPermissionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPermissionPermissionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPermissionPermissionIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPermissionPermissionIdRouteHandler: RouteHandler<
+  typeof getPermissionPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPermissionPermissionIdRouteHandler: RouteHandler<
+  typeof patchPermissionPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPermissionPermissionIdRouteHandler: RouteHandler<
+  typeof putPermissionPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePermissionPermissionIdTagTagIdRouteHandler: RouteHandler<
+  typeof deletePermissionPermissionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPermissionPermissionIdTagTagIdRouteHandler: RouteHandler<
+  typeof getPermissionPermissionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPermissionPermissionIdTagTagIdRouteHandler: RouteHandler<
+  typeof putPermissionPermissionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPermissionPermissionIdTagsRouteHandler: RouteHandler<
+  typeof getPermissionPermissionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

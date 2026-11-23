@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteVlmMonitorRoute, getVlmMonitorRoute, postVlmMonitorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteVlmMonitorRoute, getVlmMonitorRoute, postVlmMonitorRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVlmMonitorRouteHandler: RouteHandler<typeof postVlmMonitorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vlmHandler = app
-  .openapi(postVlmMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVlmMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVlmMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVlmMonitorRouteHandler: RouteHandler<typeof getVlmMonitorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVlmMonitorRouteHandler: RouteHandler<typeof deleteVlmMonitorRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

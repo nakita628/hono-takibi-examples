@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSectionFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSectionFormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sectionFormatHandler = app.openapi(getSectionFormatRoute, (c) => {
+export const getSectionFormatRouteHandler: RouteHandler<typeof getSectionFormatRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

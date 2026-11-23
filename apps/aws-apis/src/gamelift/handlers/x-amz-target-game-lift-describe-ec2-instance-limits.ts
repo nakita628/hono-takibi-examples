@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGameLiftDescribeEc2InstanceLimitsHandler = app.openapi(
-  postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGameLiftDescribeEC2InstanceLimitsRouteHandler: RouteHandler<
+  typeof postXAmzTargetGameLiftDescribeEC2InstanceLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

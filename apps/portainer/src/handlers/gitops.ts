@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGitopsSourcesIdRoute,
   getGitopsSourcesIdRoute,
   getGitopsSourcesIdWorkflowsRoute,
@@ -16,48 +16,86 @@ import {
   putGitopsSourcesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGitopsRepoFilePreviewRouteHandler: RouteHandler<
+  typeof postGitopsRepoFilePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gitopsHandler = app
-  .openapi(postGitopsRepoFilePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGitopsSourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsSourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGitopsSourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGitopsSourcesIdAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGitopsSourcesIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsSourcesIdWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGitopsSourcesGitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsSourcesSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGitopsSourcesTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitopsWorkflowsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGitopsSourcesRouteHandler: RouteHandler<typeof getGitopsSourcesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGitopsSourcesIdRouteHandler: RouteHandler<
+  typeof deleteGitopsSourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsSourcesIdRouteHandler: RouteHandler<typeof getGitopsSourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putGitopsSourcesIdRouteHandler: RouteHandler<typeof putGitopsSourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putGitopsSourcesIdAccessRouteHandler: RouteHandler<
+  typeof putGitopsSourcesIdAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGitopsSourcesIdTestRouteHandler: RouteHandler<
+  typeof postGitopsSourcesIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsSourcesIdWorkflowsRouteHandler: RouteHandler<
+  typeof getGitopsSourcesIdWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGitopsSourcesGitRouteHandler: RouteHandler<
+  typeof postGitopsSourcesGitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsSourcesSummaryRouteHandler: RouteHandler<
+  typeof getGitopsSourcesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGitopsSourcesTestRouteHandler: RouteHandler<
+  typeof postGitopsSourcesTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsWorkflowsRouteHandler: RouteHandler<typeof getGitopsWorkflowsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsWorkflowsIdRouteHandler: RouteHandler<
+  typeof getGitopsWorkflowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGitopsWorkflowsSummaryRouteHandler: RouteHandler<
+  typeof getGitopsWorkflowsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

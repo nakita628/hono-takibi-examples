@@ -29,6 +29,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { DOB: string; RegistrationID: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -151,6 +164,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/dtcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { DOB: string; RegistrationID: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -291,6 +317,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { DOB: string; DSN: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -413,6 +452,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/obcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | { DOB: string; DSNNo: string; Father: string; FullName: string; UID: string }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -567,6 +621,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { DOB: string; DSN: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -689,6 +756,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/rscer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | {
+                      DOB: string
+                      DSNNo: string
+                      FatherName: string
+                      FullName: string
+                      UID: string
+                    }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -876,6 +964,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/shcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | { DOB: string; DSNNo: string; Father: string; FullName: string; UID: string }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {

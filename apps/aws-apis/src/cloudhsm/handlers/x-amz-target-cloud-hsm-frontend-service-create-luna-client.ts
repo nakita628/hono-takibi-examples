@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCloudHsmFrontendServiceCreateLunaClientHandler = app.openapi(
-  postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRouteHandler: RouteHandler<
+  typeof postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

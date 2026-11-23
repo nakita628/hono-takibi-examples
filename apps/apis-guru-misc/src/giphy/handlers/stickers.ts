@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStickersRandomRoute,
   getStickersSearchRoute,
   getStickersTranslateRoute,
   getStickersTrendingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStickersRandomRouteHandler: RouteHandler<typeof getStickersRandomRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const stickersHandler = app
-  .openapi(getStickersRandomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStickersSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStickersTranslateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStickersTrendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStickersSearchRouteHandler: RouteHandler<typeof getStickersSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getStickersTranslateRouteHandler: RouteHandler<
+  typeof getStickersTranslateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStickersTrendingRouteHandler: RouteHandler<
+  typeof getStickersTrendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

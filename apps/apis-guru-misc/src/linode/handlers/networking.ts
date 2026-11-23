@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworkingFirewallsFirewallIdDevicesDeviceIdRoute,
   deleteNetworkingFirewallsFirewallIdRoute,
   deleteNetworkingIpv6RangesRangeRoute,
@@ -27,81 +27,152 @@ import {
   putNetworkingIpsAddressRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworkingFirewallsRouteHandler: RouteHandler<
+  typeof getNetworkingFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const networkingHandler = app
-  .openapi(getNetworkingFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkingFirewallsFirewallIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingFirewallsFirewallIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworkingFirewallsFirewallIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingFirewallsFirewallIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingFirewallsFirewallIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkingFirewallsFirewallIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingFirewallsFirewallIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingFirewallsFirewallIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworkingFirewallsFirewallIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpsAssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpsShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingIpsAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworkingIpsAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpv4AssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpv4ShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingIpv6PoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingIpv6RangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkingIpv6RangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkingIpv6RangesRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingIpv6RangesRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkingVlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNetworkingFirewallsRouteHandler: RouteHandler<
+  typeof postNetworkingFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkingFirewallsFirewallIdRouteHandler: RouteHandler<
+  typeof deleteNetworkingFirewallsFirewallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingFirewallsFirewallIdRouteHandler: RouteHandler<
+  typeof getNetworkingFirewallsFirewallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworkingFirewallsFirewallIdRouteHandler: RouteHandler<
+  typeof putNetworkingFirewallsFirewallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingFirewallsFirewallIdDevicesRouteHandler: RouteHandler<
+  typeof getNetworkingFirewallsFirewallIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingFirewallsFirewallIdDevicesRouteHandler: RouteHandler<
+  typeof postNetworkingFirewallsFirewallIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkingFirewallsFirewallIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof deleteNetworkingFirewallsFirewallIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingFirewallsFirewallIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getNetworkingFirewallsFirewallIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingFirewallsFirewallIdRulesRouteHandler: RouteHandler<
+  typeof getNetworkingFirewallsFirewallIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworkingFirewallsFirewallIdRulesRouteHandler: RouteHandler<
+  typeof putNetworkingFirewallsFirewallIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingIpsRouteHandler: RouteHandler<typeof getNetworkingIpsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpsRouteHandler: RouteHandler<typeof postNetworkingIpsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpsAssignRouteHandler: RouteHandler<
+  typeof postNetworkingIpsAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpsShareRouteHandler: RouteHandler<
+  typeof postNetworkingIpsShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingIpsAddressRouteHandler: RouteHandler<
+  typeof getNetworkingIpsAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworkingIpsAddressRouteHandler: RouteHandler<
+  typeof putNetworkingIpsAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpv4AssignRouteHandler: RouteHandler<
+  typeof postNetworkingIpv4AssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpv4ShareRouteHandler: RouteHandler<
+  typeof postNetworkingIpv4ShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingIpv6PoolsRouteHandler: RouteHandler<
+  typeof getNetworkingIpv6PoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingIpv6RangesRouteHandler: RouteHandler<
+  typeof getNetworkingIpv6RangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkingIpv6RangesRouteHandler: RouteHandler<
+  typeof postNetworkingIpv6RangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkingIpv6RangesRangeRouteHandler: RouteHandler<
+  typeof deleteNetworkingIpv6RangesRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingIpv6RangesRangeRouteHandler: RouteHandler<
+  typeof getNetworkingIpv6RangesRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkingVlansRouteHandler: RouteHandler<typeof getNetworkingVlansRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteModelsModelIdDataBundlesDataBundleIdRoute,
   deleteModelsModelIdRoute,
   getModelsModelIdDataBundlesRoute,
@@ -20,60 +20,104 @@ import {
   postModelsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getModelsRouteHandler: RouteHandler<typeof getModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const modelsHandler = app
-  .openapi(getModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsModelIdDataBundlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsModelIdDataBundlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModelsModelIdDataBundlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModelsModelIdDataBundlesDataBundleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsModelIdDataBundlesDataBundleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsModelIdDataBundlesDataBundleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsModelIdTrainingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsModelIdTrainingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModelsModelIdTrainingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsModelsModelIdTrainingsTrainingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsModelIdTrainingsTrainingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsModelsRouteHandler: RouteHandler<typeof optionsModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModelsRouteHandler: RouteHandler<typeof postModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModelsModelIdRouteHandler: RouteHandler<
+  typeof deleteModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsModelIdRouteHandler: RouteHandler<typeof getModelsModelIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsModelsModelIdRouteHandler: RouteHandler<
+  typeof optionsModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsModelIdRouteHandler: RouteHandler<typeof patchModelsModelIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsModelIdDataBundlesRouteHandler: RouteHandler<
+  typeof getModelsModelIdDataBundlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsModelsModelIdDataBundlesRouteHandler: RouteHandler<
+  typeof optionsModelsModelIdDataBundlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModelsModelIdDataBundlesRouteHandler: RouteHandler<
+  typeof postModelsModelIdDataBundlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModelsModelIdDataBundlesDataBundleIdRouteHandler: RouteHandler<
+  typeof deleteModelsModelIdDataBundlesDataBundleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsModelsModelIdDataBundlesDataBundleIdRouteHandler: RouteHandler<
+  typeof optionsModelsModelIdDataBundlesDataBundleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsModelIdDataBundlesDataBundleIdRouteHandler: RouteHandler<
+  typeof patchModelsModelIdDataBundlesDataBundleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsModelIdTrainingsRouteHandler: RouteHandler<
+  typeof getModelsModelIdTrainingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsModelsModelIdTrainingsRouteHandler: RouteHandler<
+  typeof optionsModelsModelIdTrainingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModelsModelIdTrainingsRouteHandler: RouteHandler<
+  typeof postModelsModelIdTrainingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsModelsModelIdTrainingsTrainingIdRouteHandler: RouteHandler<
+  typeof optionsModelsModelIdTrainingsTrainingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsModelIdTrainingsTrainingIdRouteHandler: RouteHandler<
+  typeof patchModelsModelIdTrainingsTrainingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

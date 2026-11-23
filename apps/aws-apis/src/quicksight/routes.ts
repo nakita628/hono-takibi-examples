@@ -1301,8 +1301,8 @@ const MeasureFieldListSchema: z.ZodType<MeasureFieldListType> = z
   .openapi('MeasureFieldList')
 
 type TableAggregatedFieldWellsType = {
-  GroupBy?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
+  GroupBy?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const TableAggregatedFieldWellsSchema: z.ZodType<TableAggregatedFieldWellsType> = z
@@ -1354,9 +1354,7 @@ const UnaggregatedFieldListSchema: z.ZodType<UnaggregatedFieldListType> = z
   .max(200)
   .openapi('UnaggregatedFieldList')
 
-type TableUnaggregatedFieldWellsType = {
-  Values?: z.infer<typeof UnaggregatedFieldListSchema> & unknown
-}
+type TableUnaggregatedFieldWellsType = { Values?: z.infer<typeof UnaggregatedFieldListSchema> }
 
 const TableUnaggregatedFieldWellsSchema: z.ZodType<TableUnaggregatedFieldWellsType> = z
   .object({
@@ -1369,8 +1367,8 @@ const TableUnaggregatedFieldWellsSchema: z.ZodType<TableUnaggregatedFieldWellsTy
   .openapi('TableUnaggregatedFieldWells')
 
 type TableFieldWellsType = {
-  TableAggregatedFieldWells?: z.infer<typeof TableAggregatedFieldWellsSchema> & unknown
-  TableUnaggregatedFieldWells?: z.infer<typeof TableUnaggregatedFieldWellsSchema> & unknown
+  TableAggregatedFieldWells?: z.infer<typeof TableAggregatedFieldWellsSchema>
+  TableUnaggregatedFieldWells?: z.infer<typeof TableUnaggregatedFieldWellsSchema>
 }
 
 const TableFieldWellsSchema: z.ZodType<TableFieldWellsType> = z
@@ -1783,8 +1781,8 @@ const TableFieldOptionListSchema: z.ZodType<TableFieldOptionListType> = z
 const FieldOrderListSchema = z.array(FieldIdSchema).max(100).openapi('FieldOrderList')
 
 type TableFieldOptionsType = {
-  SelectedFieldOptions?: z.infer<typeof TableFieldOptionListSchema> & unknown
-  Order?: z.infer<typeof FieldOrderListSchema> & unknown
+  SelectedFieldOptions?: z.infer<typeof TableFieldOptionListSchema>
+  Order?: z.infer<typeof FieldOrderListSchema>
 }
 
 const TableFieldOptionsSchema: z.ZodType<TableFieldOptionsType> = z
@@ -1842,13 +1840,13 @@ const TableInlineVisualizationListSchema = z
   .openapi('TableInlineVisualizationList')
 
 type TableConfigurationType = {
-  FieldWells?: z.infer<typeof TableFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof TableSortConfigurationSchema> & unknown
-  TableOptions?: z.infer<typeof TableOptionsSchema> & unknown
-  TotalOptions?: z.infer<typeof TotalOptionsSchema> & unknown
-  FieldOptions?: z.infer<typeof TableFieldOptionsSchema> & unknown
-  PaginatedReportOptions?: z.infer<typeof TablePaginatedReportOptionsSchema> & unknown
-  TableInlineVisualizations?: z.infer<typeof TableInlineVisualizationListSchema> & unknown
+  FieldWells?: z.infer<typeof TableFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof TableSortConfigurationSchema>
+  TableOptions?: z.infer<typeof TableOptionsSchema>
+  TotalOptions?: z.infer<typeof TotalOptionsSchema>
+  FieldOptions?: z.infer<typeof TableFieldOptionsSchema>
+  PaginatedReportOptions?: z.infer<typeof TablePaginatedReportOptionsSchema>
+  TableInlineVisualizations?: z.infer<typeof TableInlineVisualizationListSchema>
 }
 
 const TableConfigurationSchema: z.ZodType<TableConfigurationType> = z
@@ -2103,8 +2101,8 @@ const TableRowConditionalFormattingSchema = z
   .openapi('TableRowConditionalFormatting')
 
 type TableConditionalFormattingOptionType = {
-  Cell?: z.infer<typeof TableCellConditionalFormattingSchema> & unknown
-  Row?: z.infer<typeof TableRowConditionalFormattingSchema> & unknown
+  Cell?: z.infer<typeof TableCellConditionalFormattingSchema>
+  Row?: z.infer<typeof TableRowConditionalFormattingSchema>
 }
 
 const TableConditionalFormattingOptionSchema: z.ZodType<TableConditionalFormattingOptionType> = z
@@ -2133,8 +2131,7 @@ const TableConditionalFormattingOptionListSchema: z.ZodType<TableConditionalForm
     .openapi('TableConditionalFormattingOptionList')
 
 type TableConditionalFormattingType = {
-  ConditionalFormattingOptions?: z.infer<typeof TableConditionalFormattingOptionListSchema> &
-    unknown
+  ConditionalFormattingOptions?: z.infer<typeof TableConditionalFormattingOptionListSchema>
 }
 
 const TableConditionalFormattingSchema: z.ZodType<TableConditionalFormattingType> = z
@@ -2402,10 +2399,10 @@ const CustomActionSetParametersOperationSchema = z
   .openapi('CustomActionSetParametersOperation')
 
 type VisualCustomActionOperationType = {
-  FilterOperation?: z.infer<typeof CustomActionFilterOperationSchema> & unknown
-  NavigationOperation?: z.infer<typeof CustomActionNavigationOperationSchema> & unknown
-  URLOperation?: z.infer<typeof CustomActionURLOperationSchema> & unknown
-  SetParametersOperation?: z.infer<typeof CustomActionSetParametersOperationSchema> & unknown
+  FilterOperation?: z.infer<typeof CustomActionFilterOperationSchema>
+  NavigationOperation?: z.infer<typeof CustomActionNavigationOperationSchema>
+  URLOperation?: z.infer<typeof CustomActionURLOperationSchema>
+  SetParametersOperation?: z.infer<typeof CustomActionSetParametersOperationSchema>
 }
 
 const VisualCustomActionOperationSchema: z.ZodType<VisualCustomActionOperationType> = z
@@ -2441,11 +2438,11 @@ const VisualCustomActionOperationListSchema: z.ZodType<VisualCustomActionOperati
   .openapi('VisualCustomActionOperationList')
 
 type VisualCustomActionType = {
-  CustomActionId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name: z.infer<typeof VisualCustomActionNameSchema> & unknown
-  Status?: z.infer<typeof WidgetStatusSchema> & unknown
-  Trigger: z.infer<typeof VisualCustomActionTriggerSchema> & unknown
-  ActionOperations: z.infer<typeof VisualCustomActionOperationListSchema> & unknown
+  CustomActionId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name: z.infer<typeof VisualCustomActionNameSchema>
+  Status?: z.infer<typeof WidgetStatusSchema>
+  Trigger: z.infer<typeof VisualCustomActionTriggerSchema>
+  ActionOperations: z.infer<typeof VisualCustomActionOperationListSchema>
 }
 
 const VisualCustomActionSchema: z.ZodType<VisualCustomActionType> = z
@@ -2482,12 +2479,12 @@ const VisualCustomActionListSchema: z.ZodType<VisualCustomActionListType> = z
   .openapi('VisualCustomActionList')
 
 type TableVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof TableConfigurationSchema> & unknown
-  ConditionalFormatting?: z.infer<typeof TableConditionalFormattingSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof TableConfigurationSchema>
+  ConditionalFormatting?: z.infer<typeof TableConditionalFormattingSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const TableVisualSchema: z.ZodType<TableVisualType> = z
@@ -2534,9 +2531,9 @@ const PivotMeasureFieldListSchema: z.ZodType<PivotMeasureFieldListType> = z
   .openapi('PivotMeasureFieldList')
 
 type PivotTableAggregatedFieldWellsType = {
-  Rows?: z.infer<typeof PivotTableDimensionListSchema> & unknown
-  Columns?: z.infer<typeof PivotTableDimensionListSchema> & unknown
-  Values?: z.infer<typeof PivotMeasureFieldListSchema> & unknown
+  Rows?: z.infer<typeof PivotTableDimensionListSchema>
+  Columns?: z.infer<typeof PivotTableDimensionListSchema>
+  Values?: z.infer<typeof PivotMeasureFieldListSchema>
 }
 
 const PivotTableAggregatedFieldWellsSchema: z.ZodType<PivotTableAggregatedFieldWellsType> = z
@@ -2557,7 +2554,7 @@ const PivotTableAggregatedFieldWellsSchema: z.ZodType<PivotTableAggregatedFieldW
   .openapi('PivotTableAggregatedFieldWells')
 
 type PivotTableFieldWellsType = {
-  PivotTableAggregatedFieldWells?: z.infer<typeof PivotTableAggregatedFieldWellsSchema> & unknown
+  PivotTableAggregatedFieldWells?: z.infer<typeof PivotTableAggregatedFieldWellsSchema>
 }
 
 const PivotTableFieldWellsSchema: z.ZodType<PivotTableFieldWellsType> = z
@@ -2640,7 +2637,7 @@ const PivotFieldSortOptionsListSchema = z
   .openapi('PivotFieldSortOptionsList')
 
 type PivotTableSortConfigurationType = {
-  FieldSortOptions?: z.infer<typeof PivotFieldSortOptionsListSchema> & unknown
+  FieldSortOptions?: z.infer<typeof PivotFieldSortOptionsListSchema>
 }
 
 const PivotTableSortConfigurationSchema: z.ZodType<PivotTableSortConfigurationType> = z
@@ -2855,12 +2852,12 @@ const PivotTablePaginatedReportOptionsSchema = z
   .openapi('PivotTablePaginatedReportOptions')
 
 type PivotTableConfigurationType = {
-  FieldWells?: z.infer<typeof PivotTableFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof PivotTableSortConfigurationSchema> & unknown
-  TableOptions?: z.infer<typeof PivotTableOptionsSchema> & unknown
-  TotalOptions?: z.infer<typeof PivotTableTotalOptionsSchema> & unknown
-  FieldOptions?: z.infer<typeof PivotTableFieldOptionsSchema> & unknown
-  PaginatedReportOptions?: z.infer<typeof PivotTablePaginatedReportOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof PivotTableFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof PivotTableSortConfigurationSchema>
+  TableOptions?: z.infer<typeof PivotTableOptionsSchema>
+  TotalOptions?: z.infer<typeof PivotTableTotalOptionsSchema>
+  FieldOptions?: z.infer<typeof PivotTableFieldOptionsSchema>
+  PaginatedReportOptions?: z.infer<typeof PivotTablePaginatedReportOptionsSchema>
 }
 
 const PivotTableConfigurationSchema: z.ZodType<PivotTableConfigurationType> = z
@@ -2920,7 +2917,7 @@ const PivotTableCellConditionalFormattingSchema = z
   .openapi('PivotTableCellConditionalFormatting')
 
 type PivotTableConditionalFormattingOptionType = {
-  Cell?: z.infer<typeof PivotTableCellConditionalFormattingSchema> & unknown
+  Cell?: z.infer<typeof PivotTableCellConditionalFormattingSchema>
 }
 
 const PivotTableConditionalFormattingOptionSchema: z.ZodType<PivotTableConditionalFormattingOptionType> =
@@ -2947,8 +2944,7 @@ const PivotTableConditionalFormattingOptionListSchema: z.ZodType<PivotTableCondi
     .openapi('PivotTableConditionalFormattingOptionList')
 
 type PivotTableConditionalFormattingType = {
-  ConditionalFormattingOptions?: z.infer<typeof PivotTableConditionalFormattingOptionListSchema> &
-    unknown
+  ConditionalFormattingOptions?: z.infer<typeof PivotTableConditionalFormattingOptionListSchema>
 }
 
 const PivotTableConditionalFormattingSchema: z.ZodType<PivotTableConditionalFormattingType> = z
@@ -2965,12 +2961,12 @@ const PivotTableConditionalFormattingSchema: z.ZodType<PivotTableConditionalForm
   .openapi('PivotTableConditionalFormatting')
 
 type PivotTableVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof PivotTableConfigurationSchema> & unknown
-  ConditionalFormatting?: z.infer<typeof PivotTableConditionalFormattingSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof PivotTableConfigurationSchema>
+  ConditionalFormatting?: z.infer<typeof PivotTableConditionalFormattingSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const PivotTableVisualSchema: z.ZodType<PivotTableVisualType> = z
@@ -3010,10 +3006,10 @@ const SmallMultiplesDimensionFieldListSchema: z.ZodType<SmallMultiplesDimensionF
   .openapi('SmallMultiplesDimensionFieldList')
 
 type BarChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Colors?: z.infer<typeof DimensionFieldListSchema> & unknown
-  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema> & unknown
+  Category?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  Colors?: z.infer<typeof DimensionFieldListSchema>
+  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema>
 }
 
 const BarChartAggregatedFieldWellsSchema: z.ZodType<BarChartAggregatedFieldWellsType> = z
@@ -3035,7 +3031,7 @@ const BarChartAggregatedFieldWellsSchema: z.ZodType<BarChartAggregatedFieldWells
   .openapi('BarChartAggregatedFieldWells')
 
 type BarChartFieldWellsType = {
-  BarChartAggregatedFieldWells?: z.infer<typeof BarChartAggregatedFieldWellsSchema> & unknown
+  BarChartAggregatedFieldWells?: z.infer<typeof BarChartAggregatedFieldWellsSchema>
 }
 
 const BarChartFieldWellsSchema: z.ZodType<BarChartFieldWellsType> = z
@@ -3696,9 +3692,9 @@ const FieldBasedTooltipSchema = z
   .openapi('FieldBasedTooltip')
 
 type TooltipOptionsType = {
-  TooltipVisibility?: z.infer<typeof VisibilitySchema> & unknown
-  SelectedTooltipType?: z.infer<typeof SelectedTooltipTypeSchema> & unknown
-  FieldBasedTooltip?: z.infer<typeof FieldBasedTooltipSchema> & unknown
+  TooltipVisibility?: z.infer<typeof VisibilitySchema>
+  SelectedTooltipType?: z.infer<typeof SelectedTooltipTypeSchema>
+  FieldBasedTooltip?: z.infer<typeof FieldBasedTooltipSchema>
 }
 
 const TooltipOptionsSchema: z.ZodType<TooltipOptionsType> = z
@@ -3912,22 +3908,22 @@ const ContributionAnalysisDefaultListSchema = z
   .openapi('ContributionAnalysisDefaultList')
 
 type BarChartConfigurationType = {
-  FieldWells?: z.infer<typeof BarChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof BarChartSortConfigurationSchema> & unknown
-  Orientation?: z.infer<typeof BarChartOrientationSchema> & unknown
-  BarsArrangement?: z.infer<typeof BarsArrangementSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
-  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema> & unknown
-  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ValueAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  ReferenceLines?: z.infer<typeof ReferenceLineListSchema> & unknown
-  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema> & unknown
+  FieldWells?: z.infer<typeof BarChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof BarChartSortConfigurationSchema>
+  Orientation?: z.infer<typeof BarChartOrientationSchema>
+  BarsArrangement?: z.infer<typeof BarsArrangementSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
+  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema>
+  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ValueAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  ReferenceLines?: z.infer<typeof ReferenceLineListSchema>
+  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema>
 }
 
 const BarChartConfigurationSchema: z.ZodType<BarChartConfigurationType> = z
@@ -4169,12 +4165,12 @@ const ColumnHierarchyListSchema = z
   .openapi('ColumnHierarchyList')
 
 type BarChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof BarChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof BarChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const BarChartVisualSchema: z.ZodType<BarChartVisualType> = z
@@ -4207,9 +4203,9 @@ const BarChartVisualSchema: z.ZodType<BarChartVisualType> = z
   .openapi('BarChartVisual')
 
 type KPIFieldWellsType = {
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  TargetValues?: z.infer<typeof MeasureFieldListSchema> & unknown
-  TrendGroups?: z.infer<typeof DimensionFieldListSchema> & unknown
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  TargetValues?: z.infer<typeof MeasureFieldListSchema>
+  TrendGroups?: z.infer<typeof DimensionFieldListSchema>
 }
 
 const KPIFieldWellsSchema: z.ZodType<KPIFieldWellsType> = z
@@ -4348,9 +4344,9 @@ const KPIOptionsSchema = z
   .openapi('KPIOptions')
 
 type KPIConfigurationType = {
-  FieldWells?: z.infer<typeof KPIFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof KPISortConfigurationSchema> & unknown
-  KPIOptions?: z.infer<typeof KPIOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof KPIFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof KPISortConfigurationSchema>
+  KPIOptions?: z.infer<typeof KPIOptionsSchema>
 }
 
 const KPIConfigurationSchema: z.ZodType<KPIConfigurationType> = z
@@ -4416,7 +4412,7 @@ const KPIConditionalFormattingOptionListSchema: z.ZodType<KPIConditionalFormatti
     .openapi('KPIConditionalFormattingOptionList')
 
 type KPIConditionalFormattingType = {
-  ConditionalFormattingOptions?: z.infer<typeof KPIConditionalFormattingOptionListSchema> & unknown
+  ConditionalFormattingOptions?: z.infer<typeof KPIConditionalFormattingOptionListSchema>
 }
 
 const KPIConditionalFormattingSchema: z.ZodType<KPIConditionalFormattingType> = z
@@ -4429,13 +4425,13 @@ const KPIConditionalFormattingSchema: z.ZodType<KPIConditionalFormattingType> = 
   .openapi('KPIConditionalFormatting')
 
 type KPIVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof KPIConfigurationSchema> & unknown
-  ConditionalFormatting?: z.infer<typeof KPIConditionalFormattingSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof KPIConfigurationSchema>
+  ConditionalFormatting?: z.infer<typeof KPIConditionalFormattingSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const KPIVisualSchema: z.ZodType<KPIVisualType> = z
@@ -4471,9 +4467,9 @@ const KPIVisualSchema: z.ZodType<KPIVisualType> = z
   .openapi('KPIVisual')
 
 type PieChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema> & unknown
+  Category?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema>
 }
 
 const PieChartAggregatedFieldWellsSchema: z.ZodType<PieChartAggregatedFieldWellsType> = z
@@ -4493,7 +4489,7 @@ const PieChartAggregatedFieldWellsSchema: z.ZodType<PieChartAggregatedFieldWells
   .openapi('PieChartAggregatedFieldWells')
 
 type PieChartFieldWellsType = {
-  PieChartAggregatedFieldWells?: z.infer<typeof PieChartAggregatedFieldWellsSchema> & unknown
+  PieChartAggregatedFieldWells?: z.infer<typeof PieChartAggregatedFieldWellsSchema>
 }
 
 const PieChartFieldWellsSchema: z.ZodType<PieChartFieldWellsType> = z
@@ -4570,17 +4566,17 @@ const DonutOptionsSchema = z
   .openapi('DonutOptions')
 
 type PieChartConfigurationType = {
-  FieldWells?: z.infer<typeof PieChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof PieChartSortConfigurationSchema> & unknown
-  DonutOptions?: z.infer<typeof DonutOptionsSchema> & unknown
-  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
-  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema> & unknown
+  FieldWells?: z.infer<typeof PieChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof PieChartSortConfigurationSchema>
+  DonutOptions?: z.infer<typeof DonutOptionsSchema>
+  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
+  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema>
 }
 
 const PieChartConfigurationSchema: z.ZodType<PieChartConfigurationType> = z
@@ -4624,12 +4620,12 @@ const PieChartConfigurationSchema: z.ZodType<PieChartConfigurationType> = z
   .openapi('PieChartConfiguration')
 
 type PieChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof PieChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof PieChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const PieChartVisualSchema: z.ZodType<PieChartVisualType> = z
@@ -4662,8 +4658,8 @@ const PieChartVisualSchema: z.ZodType<PieChartVisualType> = z
   .openapi('PieChartVisual')
 
 type GaugeChartFieldWellsType = {
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  TargetValues?: z.infer<typeof MeasureFieldListSchema> & unknown
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  TargetValues?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const GaugeChartFieldWellsSchema: z.ZodType<GaugeChartFieldWellsType> = z
@@ -4754,11 +4750,11 @@ const GaugeChartOptionsSchema = z
   .openapi('GaugeChartOptions')
 
 type GaugeChartConfigurationType = {
-  FieldWells?: z.infer<typeof GaugeChartFieldWellsSchema> & unknown
-  GaugeChartOptions?: z.infer<typeof GaugeChartOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  TooltipOptions?: z.infer<typeof TooltipOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof GaugeChartFieldWellsSchema>
+  GaugeChartOptions?: z.infer<typeof GaugeChartOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  TooltipOptions?: z.infer<typeof TooltipOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const GaugeChartConfigurationSchema: z.ZodType<GaugeChartConfigurationType> = z
@@ -4840,8 +4836,7 @@ const GaugeChartConditionalFormattingOptionListSchema: z.ZodType<GaugeChartCondi
     .openapi('GaugeChartConditionalFormattingOptionList')
 
 type GaugeChartConditionalFormattingType = {
-  ConditionalFormattingOptions?: z.infer<typeof GaugeChartConditionalFormattingOptionListSchema> &
-    unknown
+  ConditionalFormattingOptions?: z.infer<typeof GaugeChartConditionalFormattingOptionListSchema>
 }
 
 const GaugeChartConditionalFormattingSchema: z.ZodType<GaugeChartConditionalFormattingType> = z
@@ -4858,12 +4853,12 @@ const GaugeChartConditionalFormattingSchema: z.ZodType<GaugeChartConditionalForm
   .openapi('GaugeChartConditionalFormatting')
 
 type GaugeChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof GaugeChartConfigurationSchema> & unknown
-  ConditionalFormatting?: z.infer<typeof GaugeChartConditionalFormattingSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof GaugeChartConfigurationSchema>
+  ConditionalFormatting?: z.infer<typeof GaugeChartConditionalFormattingSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const GaugeChartVisualSchema: z.ZodType<GaugeChartVisualType> = z
@@ -4896,10 +4891,10 @@ const GaugeChartVisualSchema: z.ZodType<GaugeChartVisualType> = z
   .openapi('GaugeChartVisual')
 
 type LineChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Colors?: z.infer<typeof DimensionFieldListSchema> & unknown
-  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema> & unknown
+  Category?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  Colors?: z.infer<typeof DimensionFieldListSchema>
+  SmallMultiples?: z.infer<typeof SmallMultiplesDimensionFieldListSchema>
 }
 
 const LineChartAggregatedFieldWellsSchema: z.ZodType<LineChartAggregatedFieldWellsType> = z
@@ -4923,7 +4918,7 @@ const LineChartAggregatedFieldWellsSchema: z.ZodType<LineChartAggregatedFieldWel
   .openapi('LineChartAggregatedFieldWells')
 
 type LineChartFieldWellsType = {
-  LineChartAggregatedFieldWells?: z.infer<typeof LineChartAggregatedFieldWellsSchema> & unknown
+  LineChartAggregatedFieldWells?: z.infer<typeof LineChartAggregatedFieldWellsSchema>
 }
 
 const LineChartFieldWellsSchema: z.ZodType<LineChartFieldWellsType> = z
@@ -5245,25 +5240,25 @@ const SeriesItemSchema = z
 const SeriesItemListSchema = z.array(SeriesItemSchema).max(10).openapi('SeriesItemList')
 
 type LineChartConfigurationType = {
-  FieldWells?: z.infer<typeof LineChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof LineChartSortConfigurationSchema> & unknown
-  ForecastConfigurations?: z.infer<typeof ForecastConfigurationListSchema> & unknown
-  Type?: z.infer<typeof LineChartTypeSchema> & unknown
-  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema> & unknown
-  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  PrimaryYAxisDisplayOptions?: z.infer<typeof LineSeriesAxisDisplayOptionsSchema> & unknown
-  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  SecondaryYAxisDisplayOptions?: z.infer<typeof LineSeriesAxisDisplayOptionsSchema> & unknown
-  SecondaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  DefaultSeriesSettings?: z.infer<typeof LineChartDefaultSeriesSettingsSchema> & unknown
-  Series?: z.infer<typeof SeriesItemListSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  ReferenceLines?: z.infer<typeof ReferenceLineListSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof LineChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof LineChartSortConfigurationSchema>
+  ForecastConfigurations?: z.infer<typeof ForecastConfigurationListSchema>
+  Type?: z.infer<typeof LineChartTypeSchema>
+  SmallMultiplesOptions?: z.infer<typeof SmallMultiplesOptionsSchema>
+  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  PrimaryYAxisDisplayOptions?: z.infer<typeof LineSeriesAxisDisplayOptionsSchema>
+  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  SecondaryYAxisDisplayOptions?: z.infer<typeof LineSeriesAxisDisplayOptionsSchema>
+  SecondaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  DefaultSeriesSettings?: z.infer<typeof LineChartDefaultSeriesSettingsSchema>
+  Series?: z.infer<typeof SeriesItemListSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  ReferenceLines?: z.infer<typeof ReferenceLineListSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  ContributionAnalysisDefaults?: z.infer<typeof ContributionAnalysisDefaultListSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const LineChartConfigurationSchema: z.ZodType<LineChartConfigurationType> = z
@@ -5331,12 +5326,12 @@ const LineChartConfigurationSchema: z.ZodType<LineChartConfigurationType> = z
   .openapi('LineChartConfiguration')
 
 type LineChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof LineChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof LineChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const LineChartVisualSchema: z.ZodType<LineChartVisualType> = z
@@ -5383,9 +5378,9 @@ const HeatMapMeasureFieldListSchema: z.ZodType<HeatMapMeasureFieldListType> = z
   .openapi('HeatMapMeasureFieldList')
 
 type HeatMapAggregatedFieldWellsType = {
-  Rows?: z.infer<typeof HeatMapDimensionFieldListSchema> & unknown
-  Columns?: z.infer<typeof HeatMapDimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof HeatMapMeasureFieldListSchema> & unknown
+  Rows?: z.infer<typeof HeatMapDimensionFieldListSchema>
+  Columns?: z.infer<typeof HeatMapDimensionFieldListSchema>
+  Values?: z.infer<typeof HeatMapMeasureFieldListSchema>
 }
 
 const HeatMapAggregatedFieldWellsSchema: z.ZodType<HeatMapAggregatedFieldWellsType> = z
@@ -5404,7 +5399,7 @@ const HeatMapAggregatedFieldWellsSchema: z.ZodType<HeatMapAggregatedFieldWellsTy
   .openapi('HeatMapAggregatedFieldWells')
 
 type HeatMapFieldWellsType = {
-  HeatMapAggregatedFieldWells?: z.infer<typeof HeatMapAggregatedFieldWellsSchema> & unknown
+  HeatMapAggregatedFieldWells?: z.infer<typeof HeatMapAggregatedFieldWellsSchema>
 }
 
 const HeatMapFieldWellsSchema: z.ZodType<HeatMapFieldWellsType> = z
@@ -5479,14 +5474,14 @@ const ColorScaleSchema = z
   .openapi('ColorScale')
 
 type HeatMapConfigurationType = {
-  FieldWells?: z.infer<typeof HeatMapFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof HeatMapSortConfigurationSchema> & unknown
-  RowLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColumnLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorScale?: z.infer<typeof ColorScaleSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof HeatMapFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof HeatMapSortConfigurationSchema>
+  RowLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColumnLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorScale?: z.infer<typeof ColorScaleSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
 }
 
 const HeatMapConfigurationSchema: z.ZodType<HeatMapConfigurationType> = z
@@ -5520,12 +5515,12 @@ const HeatMapConfigurationSchema: z.ZodType<HeatMapConfigurationType> = z
   .openapi('HeatMapConfiguration')
 
 type HeatMapVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof HeatMapConfigurationSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof HeatMapConfigurationSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const HeatMapVisualSchema: z.ZodType<HeatMapVisualType> = z
@@ -5572,9 +5567,9 @@ const TreeMapMeasureFieldListSchema: z.ZodType<TreeMapMeasureFieldListType> = z
   .openapi('TreeMapMeasureFieldList')
 
 type TreeMapAggregatedFieldWellsType = {
-  Groups?: z.infer<typeof TreeMapDimensionFieldListSchema> & unknown
-  Sizes?: z.infer<typeof TreeMapMeasureFieldListSchema> & unknown
-  Colors?: z.infer<typeof TreeMapMeasureFieldListSchema> & unknown
+  Groups?: z.infer<typeof TreeMapDimensionFieldListSchema>
+  Sizes?: z.infer<typeof TreeMapMeasureFieldListSchema>
+  Colors?: z.infer<typeof TreeMapMeasureFieldListSchema>
 }
 
 const TreeMapAggregatedFieldWellsSchema: z.ZodType<TreeMapAggregatedFieldWellsType> = z
@@ -5596,7 +5591,7 @@ const TreeMapAggregatedFieldWellsSchema: z.ZodType<TreeMapAggregatedFieldWellsTy
   .openapi('TreeMapAggregatedFieldWells')
 
 type TreeMapFieldWellsType = {
-  TreeMapAggregatedFieldWells?: z.infer<typeof TreeMapAggregatedFieldWellsSchema> & unknown
+  TreeMapAggregatedFieldWells?: z.infer<typeof TreeMapAggregatedFieldWellsSchema>
 }
 
 const TreeMapFieldWellsSchema: z.ZodType<TreeMapFieldWellsType> = z
@@ -5625,15 +5620,15 @@ const TreeMapSortConfigurationSchema = z
   .openapi('TreeMapSortConfiguration')
 
 type TreeMapConfigurationType = {
-  FieldWells?: z.infer<typeof TreeMapFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof TreeMapSortConfigurationSchema> & unknown
-  GroupLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  SizeLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorScale?: z.infer<typeof ColorScaleSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof TreeMapFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof TreeMapSortConfigurationSchema>
+  GroupLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  SizeLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorScale?: z.infer<typeof ColorScaleSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
 }
 
 const TreeMapConfigurationSchema: z.ZodType<TreeMapConfigurationType> = z
@@ -5673,12 +5668,12 @@ const TreeMapConfigurationSchema: z.ZodType<TreeMapConfigurationType> = z
   .openapi('TreeMapConfiguration')
 
 type TreeMapVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof TreeMapConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof TreeMapConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const TreeMapVisualSchema: z.ZodType<TreeMapVisualType> = z
@@ -5711,9 +5706,9 @@ const TreeMapVisualSchema: z.ZodType<TreeMapVisualType> = z
   .openapi('TreeMapVisual')
 
 type GeospatialMapAggregatedFieldWellsType = {
-  Geospatial?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Colors?: z.infer<typeof DimensionFieldListSchema> & unknown
+  Geospatial?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  Colors?: z.infer<typeof DimensionFieldListSchema>
 }
 
 const GeospatialMapAggregatedFieldWellsSchema: z.ZodType<GeospatialMapAggregatedFieldWellsType> = z
@@ -5734,8 +5729,7 @@ const GeospatialMapAggregatedFieldWellsSchema: z.ZodType<GeospatialMapAggregated
   .openapi('GeospatialMapAggregatedFieldWells')
 
 type GeospatialMapFieldWellsType = {
-  GeospatialMapAggregatedFieldWells?: z.infer<typeof GeospatialMapAggregatedFieldWellsSchema> &
-    unknown
+  GeospatialMapAggregatedFieldWells?: z.infer<typeof GeospatialMapAggregatedFieldWellsSchema>
 }
 
 const GeospatialMapFieldWellsSchema: z.ZodType<GeospatialMapFieldWellsType> = z
@@ -5855,12 +5849,12 @@ const GeospatialPointStyleOptionsSchema = z
   .openapi('GeospatialPointStyleOptions')
 
 type GeospatialMapConfigurationType = {
-  FieldWells?: z.infer<typeof GeospatialMapFieldWellsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  WindowOptions?: z.infer<typeof GeospatialWindowOptionsSchema> & unknown
-  MapStyleOptions?: z.infer<typeof GeospatialMapStyleOptionsSchema> & unknown
-  PointStyleOptions?: z.infer<typeof GeospatialPointStyleOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof GeospatialMapFieldWellsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  WindowOptions?: z.infer<typeof GeospatialWindowOptionsSchema>
+  MapStyleOptions?: z.infer<typeof GeospatialMapStyleOptionsSchema>
+  PointStyleOptions?: z.infer<typeof GeospatialPointStyleOptionsSchema>
   VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
@@ -5893,12 +5887,12 @@ const GeospatialMapConfigurationSchema: z.ZodType<GeospatialMapConfigurationType
   .openapi('GeospatialMapConfiguration')
 
 type GeospatialMapVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof GeospatialMapConfigurationSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof GeospatialMapConfigurationSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const GeospatialMapVisualSchema: z.ZodType<GeospatialMapVisualType> = z
@@ -5945,8 +5939,8 @@ const FilledMapMeasureFieldListSchema: z.ZodType<FilledMapMeasureFieldListType> 
   .openapi('FilledMapMeasureFieldList')
 
 type FilledMapAggregatedFieldWellsType = {
-  Geospatial?: z.infer<typeof FilledMapDimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof FilledMapMeasureFieldListSchema> & unknown
+  Geospatial?: z.infer<typeof FilledMapDimensionFieldListSchema>
+  Values?: z.infer<typeof FilledMapMeasureFieldListSchema>
 }
 
 const FilledMapAggregatedFieldWellsSchema: z.ZodType<FilledMapAggregatedFieldWellsType> = z
@@ -5964,7 +5958,7 @@ const FilledMapAggregatedFieldWellsSchema: z.ZodType<FilledMapAggregatedFieldWel
   .openapi('FilledMapAggregatedFieldWells')
 
 type FilledMapFieldWellsType = {
-  FilledMapAggregatedFieldWells?: z.infer<typeof FilledMapAggregatedFieldWellsSchema> & unknown
+  FilledMapAggregatedFieldWells?: z.infer<typeof FilledMapAggregatedFieldWellsSchema>
 }
 
 const FilledMapFieldWellsSchema: z.ZodType<FilledMapFieldWellsType> = z
@@ -5993,12 +5987,12 @@ const FilledMapSortConfigurationSchema = z
   .openapi('FilledMapSortConfiguration')
 
 type FilledMapConfigurationType = {
-  FieldWells?: z.infer<typeof FilledMapFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof FilledMapSortConfigurationSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  WindowOptions?: z.infer<typeof GeospatialWindowOptionsSchema> & unknown
-  MapStyleOptions?: z.infer<typeof GeospatialMapStyleOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof FilledMapFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof FilledMapSortConfigurationSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  WindowOptions?: z.infer<typeof GeospatialWindowOptionsSchema>
+  MapStyleOptions?: z.infer<typeof GeospatialMapStyleOptionsSchema>
 }
 
 const FilledMapConfigurationSchema: z.ZodType<FilledMapConfigurationType> = z
@@ -6053,7 +6047,7 @@ const FilledMapShapeConditionalFormattingSchema = z
   .openapi('FilledMapShapeConditionalFormatting')
 
 type FilledMapConditionalFormattingOptionType = {
-  Shape: z.infer<typeof FilledMapShapeConditionalFormattingSchema> & unknown
+  Shape: z.infer<typeof FilledMapShapeConditionalFormattingSchema>
 }
 
 const FilledMapConditionalFormattingOptionSchema: z.ZodType<FilledMapConditionalFormattingOptionType> =
@@ -6080,8 +6074,7 @@ const FilledMapConditionalFormattingOptionListSchema: z.ZodType<FilledMapConditi
     .openapi('FilledMapConditionalFormattingOptionList')
 
 type FilledMapConditionalFormattingType = {
-  ConditionalFormattingOptions: z.infer<typeof FilledMapConditionalFormattingOptionListSchema> &
-    unknown
+  ConditionalFormattingOptions: z.infer<typeof FilledMapConditionalFormattingOptionListSchema>
 }
 
 const FilledMapConditionalFormattingSchema: z.ZodType<FilledMapConditionalFormattingType> = z
@@ -6097,13 +6090,13 @@ const FilledMapConditionalFormattingSchema: z.ZodType<FilledMapConditionalFormat
   .openapi('FilledMapConditionalFormatting')
 
 type FilledMapVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof FilledMapConfigurationSchema> & unknown
-  ConditionalFormatting?: z.infer<typeof FilledMapConditionalFormattingSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof FilledMapConfigurationSchema>
+  ConditionalFormatting?: z.infer<typeof FilledMapConditionalFormattingSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const FilledMapVisualSchema: z.ZodType<FilledMapVisualType> = z
@@ -6153,8 +6146,8 @@ const FunnelChartMeasureFieldListSchema: z.ZodType<FunnelChartMeasureFieldListTy
   .openapi('FunnelChartMeasureFieldList')
 
 type FunnelChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof FunnelChartDimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof FunnelChartMeasureFieldListSchema> & unknown
+  Category?: z.infer<typeof FunnelChartDimensionFieldListSchema>
+  Values?: z.infer<typeof FunnelChartMeasureFieldListSchema>
 }
 
 const FunnelChartAggregatedFieldWellsSchema: z.ZodType<FunnelChartAggregatedFieldWellsType> = z
@@ -6175,7 +6168,7 @@ const FunnelChartAggregatedFieldWellsSchema: z.ZodType<FunnelChartAggregatedFiel
   .openapi('FunnelChartAggregatedFieldWells')
 
 type FunnelChartFieldWellsType = {
-  FunnelChartAggregatedFieldWells?: z.infer<typeof FunnelChartAggregatedFieldWellsSchema> & unknown
+  FunnelChartAggregatedFieldWells?: z.infer<typeof FunnelChartAggregatedFieldWellsSchema>
 }
 
 const FunnelChartFieldWellsSchema: z.ZodType<FunnelChartFieldWellsType> = z
@@ -6249,13 +6242,13 @@ const FunnelChartDataLabelOptionsSchema = z
   .openapi('FunnelChartDataLabelOptions')
 
 type FunnelChartConfigurationType = {
-  FieldWells?: z.infer<typeof FunnelChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof FunnelChartSortConfigurationSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  DataLabelOptions?: z.infer<typeof FunnelChartDataLabelOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof FunnelChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof FunnelChartSortConfigurationSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ValueLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  DataLabelOptions?: z.infer<typeof FunnelChartDataLabelOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const FunnelChartConfigurationSchema: z.ZodType<FunnelChartConfigurationType> = z
@@ -6288,12 +6281,12 @@ const FunnelChartConfigurationSchema: z.ZodType<FunnelChartConfigurationType> = 
   .openapi('FunnelChartConfiguration')
 
 type FunnelChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof FunnelChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof FunnelChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const FunnelChartVisualSchema: z.ZodType<FunnelChartVisualType> = z
@@ -6326,10 +6319,10 @@ const FunnelChartVisualSchema: z.ZodType<FunnelChartVisualType> = z
   .openapi('FunnelChartVisual')
 
 type ScatterPlotCategoricallyAggregatedFieldWellsType = {
-  XAxis?: z.infer<typeof MeasureFieldListSchema> & unknown
-  YAxis?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Category?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Size?: z.infer<typeof MeasureFieldListSchema> & unknown
+  XAxis?: z.infer<typeof MeasureFieldListSchema>
+  YAxis?: z.infer<typeof MeasureFieldListSchema>
+  Category?: z.infer<typeof DimensionFieldListSchema>
+  Size?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const ScatterPlotCategoricallyAggregatedFieldWellsSchema: z.ZodType<ScatterPlotCategoricallyAggregatedFieldWellsType> =
@@ -6354,9 +6347,9 @@ const ScatterPlotCategoricallyAggregatedFieldWellsSchema: z.ZodType<ScatterPlotC
     .openapi('ScatterPlotCategoricallyAggregatedFieldWells')
 
 type ScatterPlotUnaggregatedFieldWellsType = {
-  XAxis?: z.infer<typeof DimensionFieldListSchema> & unknown
-  YAxis?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Size?: z.infer<typeof MeasureFieldListSchema> & unknown
+  XAxis?: z.infer<typeof DimensionFieldListSchema>
+  YAxis?: z.infer<typeof DimensionFieldListSchema>
+  Size?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const ScatterPlotUnaggregatedFieldWellsSchema: z.ZodType<ScatterPlotUnaggregatedFieldWellsType> = z
@@ -6379,10 +6372,8 @@ const ScatterPlotUnaggregatedFieldWellsSchema: z.ZodType<ScatterPlotUnaggregated
 type ScatterPlotFieldWellsType = {
   ScatterPlotCategoricallyAggregatedFieldWells?: z.infer<
     typeof ScatterPlotCategoricallyAggregatedFieldWellsSchema
-  > &
-    unknown
-  ScatterPlotUnaggregatedFieldWells?: z.infer<typeof ScatterPlotUnaggregatedFieldWellsSchema> &
-    unknown
+  >
+  ScatterPlotUnaggregatedFieldWells?: z.infer<typeof ScatterPlotUnaggregatedFieldWellsSchema>
 }
 
 const ScatterPlotFieldWellsSchema: z.ZodType<ScatterPlotFieldWellsType> = z
@@ -6406,15 +6397,15 @@ const ScatterPlotFieldWellsSchema: z.ZodType<ScatterPlotFieldWellsType> = z
   .openapi('ScatterPlotFieldWells')
 
 type ScatterPlotConfigurationType = {
-  FieldWells?: z.infer<typeof ScatterPlotFieldWellsSchema> & unknown
-  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  YAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  YAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof ScatterPlotFieldWellsSchema>
+  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  YAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  YAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const ScatterPlotConfigurationSchema: z.ZodType<ScatterPlotConfigurationType> = z
@@ -6455,12 +6446,12 @@ const ScatterPlotConfigurationSchema: z.ZodType<ScatterPlotConfigurationType> = 
   .openapi('ScatterPlotConfiguration')
 
 type ScatterPlotVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof ScatterPlotConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof ScatterPlotConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const ScatterPlotVisualSchema: z.ZodType<ScatterPlotVisualType> = z
@@ -6493,10 +6484,10 @@ const ScatterPlotVisualSchema: z.ZodType<ScatterPlotVisualType> = z
   .openapi('ScatterPlotVisual')
 
 type ComboChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof DimensionFieldListSchema> & unknown
-  BarValues?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Colors?: z.infer<typeof DimensionFieldListSchema> & unknown
-  LineValues?: z.infer<typeof MeasureFieldListSchema> & unknown
+  Category?: z.infer<typeof DimensionFieldListSchema>
+  BarValues?: z.infer<typeof MeasureFieldListSchema>
+  Colors?: z.infer<typeof DimensionFieldListSchema>
+  LineValues?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const ComboChartAggregatedFieldWellsSchema: z.ZodType<ComboChartAggregatedFieldWellsType> = z
@@ -6518,7 +6509,7 @@ const ComboChartAggregatedFieldWellsSchema: z.ZodType<ComboChartAggregatedFieldW
   .openapi('ComboChartAggregatedFieldWells')
 
 type ComboChartFieldWellsType = {
-  ComboChartAggregatedFieldWells?: z.infer<typeof ComboChartAggregatedFieldWellsSchema> & unknown
+  ComboChartAggregatedFieldWells?: z.infer<typeof ComboChartAggregatedFieldWellsSchema>
 }
 
 const ComboChartFieldWellsSchema: z.ZodType<ComboChartFieldWellsType> = z
@@ -6557,22 +6548,22 @@ const ComboChartSortConfigurationSchema = z
   .openapi('ComboChartSortConfiguration')
 
 type ComboChartConfigurationType = {
-  FieldWells?: z.infer<typeof ComboChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof ComboChartSortConfigurationSchema> & unknown
-  BarsArrangement?: z.infer<typeof BarsArrangementSchema> & unknown
-  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  SecondaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  SecondaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  BarDataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  LineDataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  ReferenceLines?: z.infer<typeof ReferenceLineListSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof ComboChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof ComboChartSortConfigurationSchema>
+  BarsArrangement?: z.infer<typeof BarsArrangementSchema>
+  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  SecondaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  SecondaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  BarDataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  LineDataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  ReferenceLines?: z.infer<typeof ReferenceLineListSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const ComboChartConfigurationSchema: z.ZodType<ComboChartConfigurationType> = z
@@ -6639,12 +6630,12 @@ const ComboChartConfigurationSchema: z.ZodType<ComboChartConfigurationType> = z
   .openapi('ComboChartConfiguration')
 
 type ComboChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof ComboChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof ComboChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const ComboChartVisualSchema: z.ZodType<ComboChartVisualType> = z
@@ -6691,8 +6682,8 @@ const BoxPlotMeasureFieldListSchema: z.ZodType<BoxPlotMeasureFieldListType> = z
   .openapi('BoxPlotMeasureFieldList')
 
 type BoxPlotAggregatedFieldWellsType = {
-  GroupBy?: z.infer<typeof BoxPlotDimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof BoxPlotMeasureFieldListSchema> & unknown
+  GroupBy?: z.infer<typeof BoxPlotDimensionFieldListSchema>
+  Values?: z.infer<typeof BoxPlotMeasureFieldListSchema>
 }
 
 const BoxPlotAggregatedFieldWellsSchema: z.ZodType<BoxPlotAggregatedFieldWellsType> = z
@@ -6710,7 +6701,7 @@ const BoxPlotAggregatedFieldWellsSchema: z.ZodType<BoxPlotAggregatedFieldWellsTy
   .openapi('BoxPlotAggregatedFieldWells')
 
 type BoxPlotFieldWellsType = {
-  BoxPlotAggregatedFieldWells?: z.infer<typeof BoxPlotAggregatedFieldWellsSchema> & unknown
+  BoxPlotAggregatedFieldWells?: z.infer<typeof BoxPlotAggregatedFieldWellsSchema>
 }
 
 const BoxPlotFieldWellsSchema: z.ZodType<BoxPlotFieldWellsType> = z
@@ -6765,17 +6756,17 @@ const BoxPlotOptionsSchema = z
   .openapi('BoxPlotOptions')
 
 type BoxPlotChartConfigurationType = {
-  FieldWells?: z.infer<typeof BoxPlotFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof BoxPlotSortConfigurationSchema> & unknown
-  BoxPlotOptions?: z.infer<typeof BoxPlotOptionsSchema> & unknown
-  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof BoxPlotFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof BoxPlotSortConfigurationSchema>
+  BoxPlotOptions?: z.infer<typeof BoxPlotOptionsSchema>
+  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
   Legend?: z.infer<typeof LegendOptionsSchema>
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  ReferenceLines?: z.infer<typeof ReferenceLineListSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  ReferenceLines?: z.infer<typeof ReferenceLineListSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const BoxPlotChartConfigurationSchema: z.ZodType<BoxPlotChartConfigurationType> = z
@@ -6820,12 +6811,12 @@ const BoxPlotChartConfigurationSchema: z.ZodType<BoxPlotChartConfigurationType> 
   .openapi('BoxPlotChartConfiguration')
 
 type BoxPlotVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof BoxPlotChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof BoxPlotChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const BoxPlotVisualSchema: z.ZodType<BoxPlotVisualType> = z
@@ -6858,9 +6849,9 @@ const BoxPlotVisualSchema: z.ZodType<BoxPlotVisualType> = z
   .openapi('BoxPlotVisual')
 
 type WaterfallChartAggregatedFieldWellsType = {
-  Categories?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Values?: z.infer<typeof MeasureFieldListSchema> & unknown
-  Breakdowns?: z.infer<typeof DimensionFieldListSchema> & unknown
+  Categories?: z.infer<typeof DimensionFieldListSchema>
+  Values?: z.infer<typeof MeasureFieldListSchema>
+  Breakdowns?: z.infer<typeof DimensionFieldListSchema>
 }
 
 const WaterfallChartAggregatedFieldWellsSchema: z.ZodType<WaterfallChartAggregatedFieldWellsType> =
@@ -6880,8 +6871,7 @@ const WaterfallChartAggregatedFieldWellsSchema: z.ZodType<WaterfallChartAggregat
     .openapi('WaterfallChartAggregatedFieldWells')
 
 type WaterfallChartFieldWellsType = {
-  WaterfallChartAggregatedFieldWells?: z.infer<typeof WaterfallChartAggregatedFieldWellsSchema> &
-    unknown
+  WaterfallChartAggregatedFieldWells?: z.infer<typeof WaterfallChartAggregatedFieldWellsSchema>
 }
 
 const WaterfallChartFieldWellsSchema: z.ZodType<WaterfallChartFieldWellsType> = z
@@ -6919,16 +6909,16 @@ const WaterfallChartOptionsSchema = z
   .openapi('WaterfallChartOptions')
 
 type WaterfallChartConfigurationType = {
-  FieldWells?: z.infer<typeof WaterfallChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof WaterfallChartSortConfigurationSchema> & unknown
-  WaterfallChartOptions?: z.infer<typeof WaterfallChartOptionsSchema> & unknown
-  CategoryAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  CategoryAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof WaterfallChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof WaterfallChartSortConfigurationSchema>
+  WaterfallChartOptions?: z.infer<typeof WaterfallChartOptionsSchema>
+  CategoryAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  CategoryAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  PrimaryYAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  PrimaryYAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const WaterfallChartConfigurationSchema: z.ZodType<WaterfallChartConfigurationType> = z
@@ -6968,12 +6958,12 @@ const WaterfallChartConfigurationSchema: z.ZodType<WaterfallChartConfigurationTy
   .openapi('WaterfallChartConfiguration')
 
 type WaterfallVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof WaterfallChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof WaterfallChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const WaterfallVisualSchema: z.ZodType<WaterfallVisualType> = z
@@ -7013,7 +7003,7 @@ const HistogramMeasureFieldListSchema: z.ZodType<HistogramMeasureFieldListType> 
   .openapi('HistogramMeasureFieldList')
 
 type HistogramAggregatedFieldWellsType = {
-  Values?: z.infer<typeof HistogramMeasureFieldListSchema> & unknown
+  Values?: z.infer<typeof HistogramMeasureFieldListSchema>
 }
 
 const HistogramAggregatedFieldWellsSchema: z.ZodType<HistogramAggregatedFieldWellsType> = z
@@ -7027,7 +7017,7 @@ const HistogramAggregatedFieldWellsSchema: z.ZodType<HistogramAggregatedFieldWel
   .openapi('HistogramAggregatedFieldWells')
 
 type HistogramFieldWellsType = {
-  HistogramAggregatedFieldWells?: z.infer<typeof HistogramAggregatedFieldWellsSchema> & unknown
+  HistogramAggregatedFieldWells?: z.infer<typeof HistogramAggregatedFieldWellsSchema>
 }
 
 const HistogramFieldWellsSchema: z.ZodType<HistogramFieldWellsType> = z
@@ -7096,14 +7086,14 @@ const HistogramBinOptionsSchema = z
   .openapi('HistogramBinOptions')
 
 type HistogramConfigurationType = {
-  FieldWells?: z.infer<typeof HistogramFieldWellsSchema> & unknown
-  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  YAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  BinOptions?: z.infer<typeof HistogramBinOptionsSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
-  Tooltip?: z.infer<typeof TooltipOptionsSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
+  FieldWells?: z.infer<typeof HistogramFieldWellsSchema>
+  XAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  XAxisLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  YAxisDisplayOptions?: z.infer<typeof AxisDisplayOptionsSchema>
+  BinOptions?: z.infer<typeof HistogramBinOptionsSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
+  Tooltip?: z.infer<typeof TooltipOptionsSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
 }
 
 const HistogramConfigurationSchema: z.ZodType<HistogramConfigurationType> = z
@@ -7137,11 +7127,11 @@ const HistogramConfigurationSchema: z.ZodType<HistogramConfigurationType> = z
   .openapi('HistogramConfiguration')
 
 type HistogramVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof HistogramConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof HistogramConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const HistogramVisualSchema: z.ZodType<HistogramVisualType> = z
@@ -7185,8 +7175,8 @@ const WordCloudMeasureFieldListSchema: z.ZodType<WordCloudMeasureFieldListType> 
   .openapi('WordCloudMeasureFieldList')
 
 type WordCloudAggregatedFieldWellsType = {
-  GroupBy?: z.infer<typeof WordCloudDimensionFieldListSchema> & unknown
-  Size?: z.infer<typeof WordCloudMeasureFieldListSchema> & unknown
+  GroupBy?: z.infer<typeof WordCloudDimensionFieldListSchema>
+  Size?: z.infer<typeof WordCloudMeasureFieldListSchema>
 }
 
 const WordCloudAggregatedFieldWellsSchema: z.ZodType<WordCloudAggregatedFieldWellsType> = z
@@ -7204,7 +7194,7 @@ const WordCloudAggregatedFieldWellsSchema: z.ZodType<WordCloudAggregatedFieldWel
   .openapi('WordCloudAggregatedFieldWells')
 
 type WordCloudFieldWellsType = {
-  WordCloudAggregatedFieldWells?: z.infer<typeof WordCloudAggregatedFieldWellsSchema> & unknown
+  WordCloudAggregatedFieldWells?: z.infer<typeof WordCloudAggregatedFieldWellsSchema>
 }
 
 const WordCloudFieldWellsSchema: z.ZodType<WordCloudFieldWellsType> = z
@@ -7282,10 +7272,10 @@ const WordCloudOptionsSchema = z
   .openapi('WordCloudOptions')
 
 type WordCloudChartConfigurationType = {
-  FieldWells?: z.infer<typeof WordCloudFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof WordCloudSortConfigurationSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  WordCloudOptions?: z.infer<typeof WordCloudOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof WordCloudFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof WordCloudSortConfigurationSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  WordCloudOptions?: z.infer<typeof WordCloudOptionsSchema>
 }
 
 const WordCloudChartConfigurationSchema: z.ZodType<WordCloudChartConfigurationType> = z
@@ -7308,12 +7298,12 @@ const WordCloudChartConfigurationSchema: z.ZodType<WordCloudChartConfigurationTy
   .openapi('WordCloudChartConfiguration')
 
 type WordCloudVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof WordCloudChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof WordCloudChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const WordCloudVisualSchema: z.ZodType<WordCloudVisualType> = z
@@ -7354,12 +7344,12 @@ const TopBottomRankedComputationResultSizeSchema = z
 const TopBottomComputationTypeSchema = z.enum(['TOP', 'BOTTOM']).openapi('TopBottomComputationType')
 
 type TopBottomRankedComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Category: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  ResultSize?: z.infer<typeof TopBottomRankedComputationResultSizeSchema> & unknown
-  Type: z.infer<typeof TopBottomComputationTypeSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Category: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  ResultSize?: z.infer<typeof TopBottomRankedComputationResultSizeSchema>
+  Type: z.infer<typeof TopBottomComputationTypeSchema>
 }
 
 const TopBottomRankedComputationSchema: z.ZodType<TopBottomRankedComputationType> = z
@@ -7399,14 +7389,14 @@ const TopBottomSortOrderSchema = z
   .openapi('TopBottomSortOrder')
 
 type TopBottomMoversComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Category: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  MoverSize?: z.infer<typeof TopBottomMoversComputationMoverSizeSchema> & unknown
-  SortOrder?: z.infer<typeof TopBottomSortOrderSchema> & unknown
-  Type: z.infer<typeof TopBottomComputationTypeSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Category: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  MoverSize?: z.infer<typeof TopBottomMoversComputationMoverSizeSchema>
+  SortOrder?: z.infer<typeof TopBottomSortOrderSchema>
+  Type: z.infer<typeof TopBottomComputationTypeSchema>
 }
 
 const TopBottomMoversComputationSchema: z.ZodType<TopBottomMoversComputationType> = z
@@ -7442,9 +7432,9 @@ const TopBottomMoversComputationSchema: z.ZodType<TopBottomMoversComputationType
   .openapi('TopBottomMoversComputation')
 
 type TotalAggregationComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Value: z.infer<typeof MeasureFieldSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Value: z.infer<typeof MeasureFieldSchema>
 }
 
 const TotalAggregationComputationSchema: z.ZodType<TotalAggregationComputationType> = z
@@ -7468,11 +7458,11 @@ const MaximumMinimumComputationTypeSchema = z
   .openapi('MaximumMinimumComputationType')
 
 type MaximumMinimumComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  Type: z.infer<typeof MaximumMinimumComputationTypeSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  Type: z.infer<typeof MaximumMinimumComputationTypeSchema>
 }
 
 const MaximumMinimumComputationSchema: z.ZodType<MaximumMinimumComputationType> = z
@@ -7499,11 +7489,11 @@ const MaximumMinimumComputationSchema: z.ZodType<MaximumMinimumComputationType> 
   .openapi('MaximumMinimumComputation')
 
 type MetricComparisonComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  FromValue: z.infer<typeof MeasureFieldSchema> & unknown
-  TargetValue: z.infer<typeof MeasureFieldSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  FromValue: z.infer<typeof MeasureFieldSchema>
+  TargetValue: z.infer<typeof MeasureFieldSchema>
 }
 
 const MetricComparisonComputationSchema: z.ZodType<MetricComparisonComputationType> = z
@@ -7529,10 +7519,10 @@ const MetricComparisonComputationSchema: z.ZodType<MetricComparisonComputationTy
   .openapi('MetricComparisonComputation')
 
 type PeriodOverPeriodComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
 }
 
 const PeriodOverPeriodComputationSchema: z.ZodType<PeriodOverPeriodComputationType> = z
@@ -7555,11 +7545,11 @@ const PeriodOverPeriodComputationSchema: z.ZodType<PeriodOverPeriodComputationTy
   .openapi('PeriodOverPeriodComputation')
 
 type PeriodToDateComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  PeriodTimeGranularity?: z.infer<typeof TimeGranularitySchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  PeriodTimeGranularity?: z.infer<typeof TimeGranularitySchema>
 }
 
 const PeriodToDateComputationSchema: z.ZodType<PeriodToDateComputationType> = z
@@ -7588,11 +7578,11 @@ const PeriodToDateComputationSchema: z.ZodType<PeriodToDateComputationType> = z
 const GrowthRatePeriodSizeSchema = z.int().min(2).max(52).openapi('GrowthRatePeriodSize')
 
 type GrowthRateComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  PeriodSize?: z.infer<typeof GrowthRatePeriodSizeSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  PeriodSize?: z.infer<typeof GrowthRatePeriodSizeSchema>
 }
 
 const GrowthRateComputationSchema: z.ZodType<GrowthRateComputationType> = z
@@ -7618,9 +7608,9 @@ const GrowthRateComputationSchema: z.ZodType<GrowthRateComputationType> = z
   .openapi('GrowthRateComputation')
 
 type UniqueValuesComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Category: z.infer<typeof DimensionFieldSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Category: z.infer<typeof DimensionFieldSchema>
 }
 
 const UniqueValuesComputationSchema: z.ZodType<UniqueValuesComputationType> = z
@@ -7650,17 +7640,17 @@ const ForecastComputationCustomSeasonalityValueSchema = z
   .openapi('ForecastComputationCustomSeasonalityValue')
 
 type ForecastComputationType = {
-  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Time: z.infer<typeof DimensionFieldSchema> & unknown
-  Value?: z.infer<typeof MeasureFieldSchema> & unknown
-  PeriodsForward?: z.infer<typeof PeriodsForwardSchema> & unknown
-  PeriodsBackward?: z.infer<typeof PeriodsBackwardSchema> & unknown
-  UpperBoundary?: z.infer<typeof DoubleSchema> & unknown
-  LowerBoundary?: z.infer<typeof DoubleSchema> & unknown
-  PredictionInterval?: z.infer<typeof PredictionIntervalSchema> & unknown
-  Seasonality?: z.infer<typeof ForecastComputationSeasonalitySchema> & unknown
-  CustomSeasonalityValue?: z.infer<typeof ForecastComputationCustomSeasonalityValueSchema> & unknown
+  ComputationId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Time: z.infer<typeof DimensionFieldSchema>
+  Value?: z.infer<typeof MeasureFieldSchema>
+  PeriodsForward?: z.infer<typeof PeriodsForwardSchema>
+  PeriodsBackward?: z.infer<typeof PeriodsBackwardSchema>
+  UpperBoundary?: z.infer<typeof DoubleSchema>
+  LowerBoundary?: z.infer<typeof DoubleSchema>
+  PredictionInterval?: z.infer<typeof PredictionIntervalSchema>
+  Seasonality?: z.infer<typeof ForecastComputationSeasonalitySchema>
+  CustomSeasonalityValue?: z.infer<typeof ForecastComputationCustomSeasonalityValueSchema>
 }
 
 const ForecastComputationSchema: z.ZodType<ForecastComputationType> = z
@@ -7705,16 +7695,16 @@ const ForecastComputationSchema: z.ZodType<ForecastComputationType> = z
   .openapi('ForecastComputation')
 
 type ComputationType = {
-  TopBottomRanked?: z.infer<typeof TopBottomRankedComputationSchema> & unknown
-  TopBottomMovers?: z.infer<typeof TopBottomMoversComputationSchema> & unknown
-  TotalAggregation?: z.infer<typeof TotalAggregationComputationSchema> & unknown
-  MaximumMinimum?: z.infer<typeof MaximumMinimumComputationSchema> & unknown
-  MetricComparison?: z.infer<typeof MetricComparisonComputationSchema> & unknown
-  PeriodOverPeriod?: z.infer<typeof PeriodOverPeriodComputationSchema> & unknown
-  PeriodToDate?: z.infer<typeof PeriodToDateComputationSchema> & unknown
-  GrowthRate?: z.infer<typeof GrowthRateComputationSchema> & unknown
-  UniqueValues?: z.infer<typeof UniqueValuesComputationSchema> & unknown
-  Forecast?: z.infer<typeof ForecastComputationSchema> & unknown
+  TopBottomRanked?: z.infer<typeof TopBottomRankedComputationSchema>
+  TopBottomMovers?: z.infer<typeof TopBottomMoversComputationSchema>
+  TotalAggregation?: z.infer<typeof TotalAggregationComputationSchema>
+  MaximumMinimum?: z.infer<typeof MaximumMinimumComputationSchema>
+  MetricComparison?: z.infer<typeof MetricComparisonComputationSchema>
+  PeriodOverPeriod?: z.infer<typeof PeriodOverPeriodComputationSchema>
+  PeriodToDate?: z.infer<typeof PeriodToDateComputationSchema>
+  GrowthRate?: z.infer<typeof GrowthRateComputationSchema>
+  UniqueValues?: z.infer<typeof UniqueValuesComputationSchema>
+  Forecast?: z.infer<typeof ForecastComputationSchema>
 }
 
 const ComputationSchema: z.ZodType<ComputationType> = z
@@ -7776,8 +7766,8 @@ const CustomNarrativeOptionsSchema = z
   .openapi('CustomNarrativeOptions')
 
 type InsightConfigurationType = {
-  Computations?: z.infer<typeof ComputationListSchema> & unknown
-  CustomNarrative?: z.infer<typeof CustomNarrativeOptionsSchema> & unknown
+  Computations?: z.infer<typeof ComputationListSchema>
+  CustomNarrative?: z.infer<typeof CustomNarrativeOptionsSchema>
 }
 
 const InsightConfigurationSchema: z.ZodType<InsightConfigurationType> = z
@@ -7793,12 +7783,12 @@ const InsightConfigurationSchema: z.ZodType<InsightConfigurationType> = z
   .openapi('InsightConfiguration')
 
 type InsightVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  InsightConfiguration?: z.infer<typeof InsightConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  InsightConfiguration?: z.infer<typeof InsightConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema>
 }
 
 const InsightVisualSchema: z.ZodType<InsightVisualType> = z
@@ -7831,9 +7821,9 @@ const InsightVisualSchema: z.ZodType<InsightVisualType> = z
   .openapi('InsightVisual')
 
 type SankeyDiagramAggregatedFieldWellsType = {
-  Source?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Destination?: z.infer<typeof DimensionFieldListSchema> & unknown
-  Weight?: z.infer<typeof MeasureFieldListSchema> & unknown
+  Source?: z.infer<typeof DimensionFieldListSchema>
+  Destination?: z.infer<typeof DimensionFieldListSchema>
+  Weight?: z.infer<typeof MeasureFieldListSchema>
 }
 
 const SankeyDiagramAggregatedFieldWellsSchema: z.ZodType<SankeyDiagramAggregatedFieldWellsType> = z
@@ -7852,8 +7842,7 @@ const SankeyDiagramAggregatedFieldWellsSchema: z.ZodType<SankeyDiagramAggregated
   .openapi('SankeyDiagramAggregatedFieldWells')
 
 type SankeyDiagramFieldWellsType = {
-  SankeyDiagramAggregatedFieldWells?: z.infer<typeof SankeyDiagramAggregatedFieldWellsSchema> &
-    unknown
+  SankeyDiagramAggregatedFieldWells?: z.infer<typeof SankeyDiagramAggregatedFieldWellsSchema>
 }
 
 const SankeyDiagramFieldWellsSchema: z.ZodType<SankeyDiagramFieldWellsType> = z
@@ -7884,9 +7873,9 @@ const SankeyDiagramSortConfigurationSchema = z
   .openapi('SankeyDiagramSortConfiguration')
 
 type SankeyDiagramChartConfigurationType = {
-  FieldWells?: z.infer<typeof SankeyDiagramFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof SankeyDiagramSortConfigurationSchema> & unknown
-  DataLabels?: z.infer<typeof DataLabelOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof SankeyDiagramFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof SankeyDiagramSortConfigurationSchema>
+  DataLabels?: z.infer<typeof DataLabelOptionsSchema>
 }
 
 const SankeyDiagramChartConfigurationSchema: z.ZodType<SankeyDiagramChartConfigurationType> = z
@@ -7905,11 +7894,11 @@ const SankeyDiagramChartConfigurationSchema: z.ZodType<SankeyDiagramChartConfigu
   .openapi('SankeyDiagramChartConfiguration')
 
 type SankeyDiagramVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof SankeyDiagramChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof SankeyDiagramChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const SankeyDiagramVisualSchema: z.ZodType<SankeyDiagramVisualType> = z
@@ -7968,12 +7957,12 @@ const CustomContentConfigurationSchema = z
   .openapi('CustomContentConfiguration')
 
 type CustomContentVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof CustomContentConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof CustomContentConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema>
 }
 
 const CustomContentVisualSchema: z.ZodType<CustomContentVisualType> = z
@@ -8007,9 +7996,9 @@ const CustomContentVisualSchema: z.ZodType<CustomContentVisualType> = z
   .openapi('CustomContentVisual')
 
 type EmptyVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  DataSetIdentifier: z.infer<typeof DataSetIdentifierSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
 }
 
 const EmptyVisualSchema: z.ZodType<EmptyVisualType> = z
@@ -8055,9 +8044,9 @@ const RadarChartValuesFieldListSchema: z.ZodType<RadarChartValuesFieldListType> 
   .openapi('RadarChartValuesFieldList')
 
 type RadarChartAggregatedFieldWellsType = {
-  Category?: z.infer<typeof RadarChartCategoryFieldListSchema> & unknown
-  Color?: z.infer<typeof RadarChartColorFieldListSchema> & unknown
-  Values?: z.infer<typeof RadarChartValuesFieldListSchema> & unknown
+  Category?: z.infer<typeof RadarChartCategoryFieldListSchema>
+  Color?: z.infer<typeof RadarChartColorFieldListSchema>
+  Values?: z.infer<typeof RadarChartValuesFieldListSchema>
 }
 
 const RadarChartAggregatedFieldWellsSchema: z.ZodType<RadarChartAggregatedFieldWellsType> = z
@@ -8079,7 +8068,7 @@ const RadarChartAggregatedFieldWellsSchema: z.ZodType<RadarChartAggregatedFieldW
   .openapi('RadarChartAggregatedFieldWells')
 
 type RadarChartFieldWellsType = {
-  RadarChartAggregatedFieldWells?: z.infer<typeof RadarChartAggregatedFieldWellsSchema> & unknown
+  RadarChartAggregatedFieldWells?: z.infer<typeof RadarChartAggregatedFieldWellsSchema>
 }
 
 const RadarChartFieldWellsSchema: z.ZodType<RadarChartFieldWellsType> = z
@@ -8135,20 +8124,20 @@ const RadarChartSeriesSettingsSchema = z
 const RadarChartStartAngleSchema = z.float64().min(-360).max(360).openapi('RadarChartStartAngle')
 
 type RadarChartConfigurationType = {
-  FieldWells?: z.infer<typeof RadarChartFieldWellsSchema> & unknown
-  SortConfiguration?: z.infer<typeof RadarChartSortConfigurationSchema> & unknown
-  Shape?: z.infer<typeof RadarChartShapeSchema> & unknown
-  BaseSeriesSettings?: z.infer<typeof RadarChartSeriesSettingsSchema> & unknown
-  StartAngle?: z.infer<typeof RadarChartStartAngleSchema> & unknown
-  VisualPalette?: z.infer<typeof VisualPaletteSchema> & unknown
-  AlternateBandColorsVisibility?: z.infer<typeof VisibilitySchema> & unknown
-  AlternateBandEvenColor?: z.infer<typeof HexColorSchema> & unknown
-  AlternateBandOddColor?: z.infer<typeof HexColorSchema> & unknown
-  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  ColorAxis?: z.infer<typeof AxisDisplayOptionsSchema> & unknown
-  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema> & unknown
-  Legend?: z.infer<typeof LegendOptionsSchema> & unknown
+  FieldWells?: z.infer<typeof RadarChartFieldWellsSchema>
+  SortConfiguration?: z.infer<typeof RadarChartSortConfigurationSchema>
+  Shape?: z.infer<typeof RadarChartShapeSchema>
+  BaseSeriesSettings?: z.infer<typeof RadarChartSeriesSettingsSchema>
+  StartAngle?: z.infer<typeof RadarChartStartAngleSchema>
+  VisualPalette?: z.infer<typeof VisualPaletteSchema>
+  AlternateBandColorsVisibility?: z.infer<typeof VisibilitySchema>
+  AlternateBandEvenColor?: z.infer<typeof HexColorSchema>
+  AlternateBandOddColor?: z.infer<typeof HexColorSchema>
+  CategoryAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  CategoryLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  ColorAxis?: z.infer<typeof AxisDisplayOptionsSchema>
+  ColorLabelOptions?: z.infer<typeof ChartAxisLabelOptionsSchema>
+  Legend?: z.infer<typeof LegendOptionsSchema>
 }
 
 const RadarChartConfigurationSchema: z.ZodType<RadarChartConfigurationType> = z
@@ -8200,12 +8189,12 @@ const RadarChartConfigurationSchema: z.ZodType<RadarChartConfigurationType> = z
   .openapi('RadarChartConfiguration')
 
 type RadarChartVisualType = {
-  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof VisualTitleLabelOptionsSchema> & unknown
-  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema> & unknown
-  ChartConfiguration?: z.infer<typeof RadarChartConfigurationSchema> & unknown
-  Actions?: z.infer<typeof VisualCustomActionListSchema> & unknown
-  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema> & unknown
+  VisualId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof VisualTitleLabelOptionsSchema>
+  Subtitle?: z.infer<typeof VisualSubtitleLabelOptionsSchema>
+  ChartConfiguration?: z.infer<typeof RadarChartConfigurationSchema>
+  Actions?: z.infer<typeof VisualCustomActionListSchema>
+  ColumnHierarchies?: z.infer<typeof ColumnHierarchyListSchema>
 }
 
 const RadarChartVisualSchema: z.ZodType<RadarChartVisualType> = z
@@ -8234,29 +8223,29 @@ const RadarChartVisualSchema: z.ZodType<RadarChartVisualType> = z
   .openapi('RadarChartVisual')
 
 type VisualType = {
-  TableVisual?: z.infer<typeof TableVisualSchema> & unknown
-  PivotTableVisual?: z.infer<typeof PivotTableVisualSchema> & unknown
-  BarChartVisual?: z.infer<typeof BarChartVisualSchema> & unknown
-  KPIVisual?: z.infer<typeof KPIVisualSchema> & unknown
-  PieChartVisual?: z.infer<typeof PieChartVisualSchema> & unknown
-  GaugeChartVisual?: z.infer<typeof GaugeChartVisualSchema> & unknown
-  LineChartVisual?: z.infer<typeof LineChartVisualSchema> & unknown
-  HeatMapVisual?: z.infer<typeof HeatMapVisualSchema> & unknown
-  TreeMapVisual?: z.infer<typeof TreeMapVisualSchema> & unknown
-  GeospatialMapVisual?: z.infer<typeof GeospatialMapVisualSchema> & unknown
-  FilledMapVisual?: z.infer<typeof FilledMapVisualSchema> & unknown
-  FunnelChartVisual?: z.infer<typeof FunnelChartVisualSchema> & unknown
-  ScatterPlotVisual?: z.infer<typeof ScatterPlotVisualSchema> & unknown
-  ComboChartVisual?: z.infer<typeof ComboChartVisualSchema> & unknown
-  BoxPlotVisual?: z.infer<typeof BoxPlotVisualSchema> & unknown
-  WaterfallVisual?: z.infer<typeof WaterfallVisualSchema> & unknown
-  HistogramVisual?: z.infer<typeof HistogramVisualSchema> & unknown
-  WordCloudVisual?: z.infer<typeof WordCloudVisualSchema> & unknown
-  InsightVisual?: z.infer<typeof InsightVisualSchema> & unknown
-  SankeyDiagramVisual?: z.infer<typeof SankeyDiagramVisualSchema> & unknown
-  CustomContentVisual?: z.infer<typeof CustomContentVisualSchema> & unknown
-  EmptyVisual?: z.infer<typeof EmptyVisualSchema> & unknown
-  RadarChartVisual?: z.infer<typeof RadarChartVisualSchema> & unknown
+  TableVisual?: z.infer<typeof TableVisualSchema>
+  PivotTableVisual?: z.infer<typeof PivotTableVisualSchema>
+  BarChartVisual?: z.infer<typeof BarChartVisualSchema>
+  KPIVisual?: z.infer<typeof KPIVisualSchema>
+  PieChartVisual?: z.infer<typeof PieChartVisualSchema>
+  GaugeChartVisual?: z.infer<typeof GaugeChartVisualSchema>
+  LineChartVisual?: z.infer<typeof LineChartVisualSchema>
+  HeatMapVisual?: z.infer<typeof HeatMapVisualSchema>
+  TreeMapVisual?: z.infer<typeof TreeMapVisualSchema>
+  GeospatialMapVisual?: z.infer<typeof GeospatialMapVisualSchema>
+  FilledMapVisual?: z.infer<typeof FilledMapVisualSchema>
+  FunnelChartVisual?: z.infer<typeof FunnelChartVisualSchema>
+  ScatterPlotVisual?: z.infer<typeof ScatterPlotVisualSchema>
+  ComboChartVisual?: z.infer<typeof ComboChartVisualSchema>
+  BoxPlotVisual?: z.infer<typeof BoxPlotVisualSchema>
+  WaterfallVisual?: z.infer<typeof WaterfallVisualSchema>
+  HistogramVisual?: z.infer<typeof HistogramVisualSchema>
+  WordCloudVisual?: z.infer<typeof WordCloudVisualSchema>
+  InsightVisual?: z.infer<typeof InsightVisualSchema>
+  SankeyDiagramVisual?: z.infer<typeof SankeyDiagramVisualSchema>
+  CustomContentVisual?: z.infer<typeof CustomContentVisualSchema>
+  EmptyVisual?: z.infer<typeof EmptyVisualSchema>
+  RadarChartVisual?: z.infer<typeof RadarChartVisualSchema>
 }
 
 const VisualSchema: z.ZodType<VisualType> = z
@@ -8699,9 +8688,9 @@ const SectionStyleSchema = z
   .openapi('SectionStyle')
 
 type HeaderFooterSectionConfigurationType = {
-  SectionId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Layout: z.infer<typeof SectionLayoutConfigurationSchema> & unknown
-  Style?: z.infer<typeof SectionStyleSchema> & unknown
+  SectionId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Layout: z.infer<typeof SectionLayoutConfigurationSchema>
+  Style?: z.infer<typeof SectionStyleSchema>
 }
 
 const HeaderFooterSectionConfigurationSchema: z.ZodType<HeaderFooterSectionConfigurationType> = z
@@ -8732,9 +8721,7 @@ const HeaderFooterSectionConfigurationListSchema: z.ZodType<HeaderFooterSectionC
     .max(1)
     .openapi('HeaderFooterSectionConfigurationList')
 
-type BodySectionContentType = {
-  Layout?: z.infer<typeof SectionLayoutConfigurationSchema> & unknown
-}
+type BodySectionContentType = { Layout?: z.infer<typeof SectionLayoutConfigurationSchema> }
 
 const BodySectionContentSchema: z.ZodType<BodySectionContentType> = z
   .object({
@@ -8768,10 +8755,10 @@ const SectionPageBreakConfigurationSchema = z
   .openapi('SectionPageBreakConfiguration')
 
 type BodySectionConfigurationType = {
-  SectionId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Content: z.infer<typeof BodySectionContentSchema> & unknown
-  Style?: z.infer<typeof SectionStyleSchema> & unknown
-  PageBreakConfiguration?: z.infer<typeof SectionPageBreakConfigurationSchema> & unknown
+  SectionId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Content: z.infer<typeof BodySectionContentSchema>
+  Style?: z.infer<typeof SectionStyleSchema>
+  PageBreakConfiguration?: z.infer<typeof SectionPageBreakConfigurationSchema>
 }
 
 const BodySectionConfigurationSchema: z.ZodType<BodySectionConfigurationType> = z
@@ -8850,10 +8837,10 @@ const SectionBasedLayoutCanvasSizeOptionsSchema = z
   .openapi('SectionBasedLayoutCanvasSizeOptions')
 
 type SectionBasedLayoutConfigurationType = {
-  HeaderSections: z.infer<typeof HeaderFooterSectionConfigurationListSchema> & unknown
-  BodySections: z.infer<typeof BodySectionConfigurationListSchema> & unknown
-  FooterSections: z.infer<typeof HeaderFooterSectionConfigurationListSchema> & unknown
-  CanvasSizeOptions: z.infer<typeof SectionBasedLayoutCanvasSizeOptionsSchema> & unknown
+  HeaderSections: z.infer<typeof HeaderFooterSectionConfigurationListSchema>
+  BodySections: z.infer<typeof BodySectionConfigurationListSchema>
+  FooterSections: z.infer<typeof HeaderFooterSectionConfigurationListSchema>
+  CanvasSizeOptions: z.infer<typeof SectionBasedLayoutCanvasSizeOptionsSchema>
 }
 
 const SectionBasedLayoutConfigurationSchema: z.ZodType<SectionBasedLayoutConfigurationType> = z
@@ -8878,9 +8865,9 @@ const SectionBasedLayoutConfigurationSchema: z.ZodType<SectionBasedLayoutConfigu
   .openapi('SectionBasedLayoutConfiguration')
 
 type LayoutConfigurationType = {
-  GridLayout?: z.infer<typeof GridLayoutConfigurationSchema> & unknown
-  FreeFormLayout?: z.infer<typeof FreeFormLayoutConfigurationSchema> & unknown
-  SectionBasedLayout?: z.infer<typeof SectionBasedLayoutConfigurationSchema> & unknown
+  GridLayout?: z.infer<typeof GridLayoutConfigurationSchema>
+  FreeFormLayout?: z.infer<typeof FreeFormLayoutConfigurationSchema>
+  SectionBasedLayout?: z.infer<typeof SectionBasedLayoutConfigurationSchema>
 }
 
 const LayoutConfigurationSchema: z.ZodType<LayoutConfigurationType> = z
@@ -8905,7 +8892,7 @@ const LayoutConfigurationSchema: z.ZodType<LayoutConfigurationType> = z
   })
   .openapi('LayoutConfiguration')
 
-type LayoutType = { Configuration: z.infer<typeof LayoutConfigurationSchema> & unknown }
+type LayoutType = { Configuration: z.infer<typeof LayoutConfigurationSchema> }
 
 const LayoutSchema: z.ZodType<LayoutType> = z
   .object({
@@ -8963,17 +8950,17 @@ const SheetControlLayoutListSchema = z
 const SheetContentTypeSchema = z.enum(['PAGINATED', 'INTERACTIVE']).openapi('SheetContentType')
 
 type SheetDefinitionType = {
-  SheetId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Title?: z.infer<typeof SheetTitleSchema> & unknown
-  Description?: z.infer<typeof SheetDescriptionSchema> & unknown
-  Name?: z.infer<typeof SheetNameSchema> & unknown
-  ParameterControls?: z.infer<typeof ParameterControlListSchema> & unknown
-  FilterControls?: z.infer<typeof FilterControlListSchema> & unknown
-  Visuals?: z.infer<typeof VisualListSchema> & unknown
-  TextBoxes?: z.infer<typeof SheetTextBoxListSchema> & unknown
-  Layouts?: z.infer<typeof LayoutListSchema> & unknown
-  SheetControlLayouts?: z.infer<typeof SheetControlLayoutListSchema> & unknown
-  ContentType?: z.infer<typeof SheetContentTypeSchema> & unknown
+  SheetId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Title?: z.infer<typeof SheetTitleSchema>
+  Description?: z.infer<typeof SheetDescriptionSchema>
+  Name?: z.infer<typeof SheetNameSchema>
+  ParameterControls?: z.infer<typeof ParameterControlListSchema>
+  FilterControls?: z.infer<typeof FilterControlListSchema>
+  Visuals?: z.infer<typeof VisualListSchema>
+  TextBoxes?: z.infer<typeof SheetTextBoxListSchema>
+  Layouts?: z.infer<typeof LayoutListSchema>
+  SheetControlLayouts?: z.infer<typeof SheetControlLayoutListSchema>
+  ContentType?: z.infer<typeof SheetContentTypeSchema>
 }
 
 const SheetDefinitionSchema: z.ZodType<SheetDefinitionType> = z
@@ -9603,11 +9590,11 @@ const CrossDatasetTypesSchema = z
   .openapi('CrossDatasetTypes')
 
 type FilterGroupType = {
-  FilterGroupId: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Filters: z.infer<typeof FilterListSchema> & unknown
-  ScopeConfiguration: z.infer<typeof FilterScopeConfigurationSchema> & unknown
-  Status?: z.infer<typeof WidgetStatusSchema> & unknown
-  CrossDataset: z.infer<typeof CrossDatasetTypesSchema> & unknown
+  FilterGroupId: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Filters: z.infer<typeof FilterListSchema>
+  ScopeConfiguration: z.infer<typeof FilterScopeConfigurationSchema>
+  Status?: z.infer<typeof WidgetStatusSchema>
+  CrossDataset: z.infer<typeof CrossDatasetTypesSchema>
 }
 
 const FilterGroupSchema: z.ZodType<FilterGroupType> = z
@@ -10158,12 +10145,12 @@ const AnalysisDefaultsSchema = z
   .openapi('AnalysisDefaults')
 
 type AnalysisDefinitionType = {
-  DataSetIdentifierDeclarations: z.infer<typeof DataSetIdentifierDeclarationListSchema> & unknown
-  Sheets?: z.infer<typeof SheetDefinitionListSchema> & unknown
-  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema> & unknown
-  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema> & unknown
-  FilterGroups?: z.infer<typeof FilterGroupListSchema> & unknown
-  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema> & unknown
+  DataSetIdentifierDeclarations: z.infer<typeof DataSetIdentifierDeclarationListSchema>
+  Sheets?: z.infer<typeof SheetDefinitionListSchema>
+  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema>
+  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema>
+  FilterGroups?: z.infer<typeof FilterGroupListSchema>
+  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema>
   AnalysisDefaults?: z.infer<typeof AnalysisDefaultsSchema>
 }
 
@@ -10203,14 +10190,14 @@ const AnalysisDefinitionSchema: z.ZodType<AnalysisDefinitionType> = z
 const StatusCodeSchema = z.int().openapi('StatusCode')
 
 type DescribeAnalysisDefinitionResponseType = {
-  AnalysisId?: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Name?: z.infer<typeof AnalysisNameSchema> & unknown
-  Errors?: z.infer<typeof AnalysisErrorListSchema> & unknown
-  ResourceStatus?: z.infer<typeof ResourceStatusSchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof AnalysisDefinitionSchema> & unknown
-  Status?: z.infer<typeof StatusCodeSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
+  AnalysisId?: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Name?: z.infer<typeof AnalysisNameSchema>
+  Errors?: z.infer<typeof AnalysisErrorListSchema>
+  ResourceStatus?: z.infer<typeof ResourceStatusSchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof AnalysisDefinitionSchema>
+  Status?: z.infer<typeof StatusCodeSchema>
+  RequestId?: z.infer<typeof StringSchema>
 }
 
 const DashboardErrorTypeSchema = z
@@ -10244,12 +10231,12 @@ const DashboardErrorListSchema = z.array(DashboardErrorSchema).min(1).openapi('D
 const DashboardNameSchema = z.string().min(1).max(2048).openapi('DashboardName')
 
 type DashboardVersionDefinitionType = {
-  DataSetIdentifierDeclarations: z.infer<typeof DataSetIdentifierDeclarationListSchema> & unknown
-  Sheets?: z.infer<typeof SheetDefinitionListSchema> & unknown
-  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema> & unknown
-  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema> & unknown
-  FilterGroups?: z.infer<typeof FilterGroupListSchema> & unknown
-  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema> & unknown
+  DataSetIdentifierDeclarations: z.infer<typeof DataSetIdentifierDeclarationListSchema>
+  Sheets?: z.infer<typeof SheetDefinitionListSchema>
+  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema>
+  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema>
+  FilterGroups?: z.infer<typeof FilterGroupListSchema>
+  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema>
   AnalysisDefaults?: z.infer<typeof AnalysisDefaultsSchema>
 }
 
@@ -10446,15 +10433,15 @@ const DashboardPublishOptionsSchema = z
   .openapi('DashboardPublishOptions')
 
 type DescribeDashboardDefinitionResponseType = {
-  DashboardId?: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Errors?: z.infer<typeof DashboardErrorListSchema> & unknown
-  Name?: z.infer<typeof DashboardNameSchema> & unknown
-  ResourceStatus?: z.infer<typeof ResourceStatusSchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof DashboardVersionDefinitionSchema> & unknown
-  Status?: z.infer<typeof StatusCodeSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
-  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema> & unknown
+  DashboardId?: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Errors?: z.infer<typeof DashboardErrorListSchema>
+  Name?: z.infer<typeof DashboardNameSchema>
+  ResourceStatus?: z.infer<typeof ResourceStatusSchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof DashboardVersionDefinitionSchema>
+  Status?: z.infer<typeof StatusCodeSchema>
+  RequestId?: z.infer<typeof StringSchema>
+  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema>
 }
 
 const ResourceIdSchema = z.string().openapi('ResourceId')
@@ -11141,23 +11128,22 @@ const DataSetUsageConfigurationSchema = z
   .openapi('DataSetUsageConfiguration')
 
 type DataSetType = {
-  Arn?: z.infer<typeof ArnSchema> & unknown
-  DataSetId?: z.infer<typeof ResourceIdSchema> & unknown
-  Name?: z.infer<typeof ResourceNameSchema> & unknown
-  CreatedTime?: z.infer<typeof TimestampSchema> & unknown
-  LastUpdatedTime?: z.infer<typeof TimestampSchema> & unknown
-  PhysicalTableMap?: z.infer<typeof PhysicalTableMapSchema> & unknown
-  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema> & unknown
-  OutputColumns?: z.infer<typeof OutputColumnListSchema> & unknown
-  ImportMode?: z.infer<typeof DataSetImportModeSchema> & unknown
-  ConsumedSpiceCapacityInBytes?: z.infer<typeof LongSchema> & unknown
-  ColumnGroups?: z.infer<typeof ColumnGroupListSchema> & unknown
-  FieldFolders?: z.infer<typeof FieldFolderMapSchema> & unknown
-  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema> & unknown
-  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema> &
-    unknown
-  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema> & unknown
-  DataSetUsageConfiguration?: z.infer<typeof DataSetUsageConfigurationSchema> & unknown
+  Arn?: z.infer<typeof ArnSchema>
+  DataSetId?: z.infer<typeof ResourceIdSchema>
+  Name?: z.infer<typeof ResourceNameSchema>
+  CreatedTime?: z.infer<typeof TimestampSchema>
+  LastUpdatedTime?: z.infer<typeof TimestampSchema>
+  PhysicalTableMap?: z.infer<typeof PhysicalTableMapSchema>
+  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema>
+  OutputColumns?: z.infer<typeof OutputColumnListSchema>
+  ImportMode?: z.infer<typeof DataSetImportModeSchema>
+  ConsumedSpiceCapacityInBytes?: z.infer<typeof LongSchema>
+  ColumnGroups?: z.infer<typeof ColumnGroupListSchema>
+  FieldFolders?: z.infer<typeof FieldFolderMapSchema>
+  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema>
+  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema>
+  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema>
+  DataSetUsageConfiguration?: z.infer<typeof DataSetUsageConfigurationSchema>
 }
 
 const DataSetSchema: z.ZodType<DataSetType> = z
@@ -11221,9 +11207,9 @@ const DataSetSchema: z.ZodType<DataSetType> = z
   .openapi('DataSet')
 
 type DescribeDataSetResponseType = {
-  DataSet?: z.infer<typeof DataSetSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
-  Status?: z.infer<typeof StatusCodeSchema> & unknown
+  DataSet?: z.infer<typeof DataSetSchema>
+  RequestId?: z.infer<typeof StringSchema>
+  Status?: z.infer<typeof StatusCodeSchema>
 }
 
 const TemplateNameSchema = z.string().min(1).max(2048).openapi('TemplateName')
@@ -11385,12 +11371,12 @@ const TemplateVersionSchema = z
   .openapi('TemplateVersion')
 
 type TemplateType = {
-  Arn?: z.infer<typeof ArnSchema> & unknown
-  Name?: z.infer<typeof TemplateNameSchema> & unknown
-  Version?: z.infer<typeof TemplateVersionSchema> & unknown
-  TemplateId?: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  LastUpdatedTime?: z.infer<typeof TimestampSchema> & unknown
-  CreatedTime?: z.infer<typeof TimestampSchema> & unknown
+  Arn?: z.infer<typeof ArnSchema>
+  Name?: z.infer<typeof TemplateNameSchema>
+  Version?: z.infer<typeof TemplateVersionSchema>
+  TemplateId?: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  LastUpdatedTime?: z.infer<typeof TimestampSchema>
+  CreatedTime?: z.infer<typeof TimestampSchema>
 }
 
 const TemplateSchema: z.ZodType<TemplateType> = z
@@ -11423,18 +11409,18 @@ const TemplateSchema: z.ZodType<TemplateType> = z
   .openapi('Template')
 
 type DescribeTemplateResponseType = {
-  Template?: z.infer<typeof TemplateSchema> & unknown
-  Status?: z.infer<typeof StatusCodeSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
+  Template?: z.infer<typeof TemplateSchema>
+  Status?: z.infer<typeof StatusCodeSchema>
+  RequestId?: z.infer<typeof StringSchema>
 }
 
 type TemplateVersionDefinitionType = {
-  DataSetConfigurations: z.infer<typeof DataSetConfigurationListSchema> & unknown
-  Sheets?: z.infer<typeof SheetDefinitionListSchema> & unknown
-  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema> & unknown
-  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema> & unknown
-  FilterGroups?: z.infer<typeof FilterGroupListSchema> & unknown
-  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema> & unknown
+  DataSetConfigurations: z.infer<typeof DataSetConfigurationListSchema>
+  Sheets?: z.infer<typeof SheetDefinitionListSchema>
+  CalculatedFields?: z.infer<typeof CalculatedFieldsSchema>
+  ParameterDeclarations?: z.infer<typeof ParameterDeclarationListSchema>
+  FilterGroups?: z.infer<typeof FilterGroupListSchema>
+  ColumnConfigurations?: z.infer<typeof ColumnConfigurationListSchema>
   AnalysisDefaults?: z.infer<typeof AnalysisDefaultsSchema>
 }
 
@@ -11471,14 +11457,14 @@ const TemplateVersionDefinitionSchema: z.ZodType<TemplateVersionDefinitionType> 
   .openapi('TemplateVersionDefinition')
 
 type DescribeTemplateDefinitionResponseType = {
-  Name?: z.infer<typeof TemplateNameSchema> & unknown
-  TemplateId?: z.infer<typeof ShortRestrictiveResourceIdSchema> & unknown
-  Errors?: z.infer<typeof TemplateErrorListSchema> & unknown
-  ResourceStatus?: z.infer<typeof ResourceStatusSchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof TemplateVersionDefinitionSchema> & unknown
-  Status?: z.infer<typeof StatusCodeSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
+  Name?: z.infer<typeof TemplateNameSchema>
+  TemplateId?: z.infer<typeof ShortRestrictiveResourceIdSchema>
+  Errors?: z.infer<typeof TemplateErrorListSchema>
+  ResourceStatus?: z.infer<typeof ResourceStatusSchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof TemplateVersionDefinitionSchema>
+  Status?: z.infer<typeof StatusCodeSchema>
+  RequestId?: z.infer<typeof StringSchema>
 }
 
 const SensitiveStringListSchema = z.array(SensitiveStringSchema).openapi('SensitiveStringList')
@@ -11653,13 +11639,13 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).min(1).max(200).openapi('TagList')
 
 type CreateAnalysisRequestType = {
-  Name: z.infer<typeof AnalysisNameSchema> & unknown
-  Parameters?: z.infer<typeof ParametersSchema> & unknown
-  Permissions?: z.infer<typeof ResourcePermissionListSchema> & unknown
-  SourceEntity?: z.infer<typeof AnalysisSourceEntitySchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  Definition?: z.infer<typeof AnalysisDefinitionSchema> & unknown
+  Name: z.infer<typeof AnalysisNameSchema>
+  Parameters?: z.infer<typeof ParametersSchema>
+  Permissions?: z.infer<typeof ResourcePermissionListSchema>
+  SourceEntity?: z.infer<typeof AnalysisSourceEntitySchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  Definition?: z.infer<typeof AnalysisDefinitionSchema>
 }
 
 const DashboardSourceTemplateSchema = z
@@ -11680,31 +11666,30 @@ const DashboardSourceEntitySchema = z
   .openapi('DashboardSourceEntity')
 
 type CreateDashboardRequestType = {
-  Name: z.infer<typeof DashboardNameSchema> & unknown
-  Parameters?: z.infer<typeof ParametersSchema> & unknown
-  Permissions?: z.infer<typeof ResourcePermissionListSchema> & unknown
-  SourceEntity?: z.infer<typeof DashboardSourceEntitySchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  VersionDescription?: z.infer<typeof VersionDescriptionSchema> & unknown
-  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof DashboardVersionDefinitionSchema> & unknown
+  Name: z.infer<typeof DashboardNameSchema>
+  Parameters?: z.infer<typeof ParametersSchema>
+  Permissions?: z.infer<typeof ResourcePermissionListSchema>
+  SourceEntity?: z.infer<typeof DashboardSourceEntitySchema>
+  Tags?: z.infer<typeof TagListSchema>
+  VersionDescription?: z.infer<typeof VersionDescriptionSchema>
+  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof DashboardVersionDefinitionSchema>
 }
 
 type CreateDataSetRequestType = {
-  DataSetId: z.infer<typeof ResourceIdSchema> & unknown
-  Name: z.infer<typeof ResourceNameSchema> & unknown
-  PhysicalTableMap: z.infer<typeof PhysicalTableMapSchema> & unknown
-  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema> & unknown
-  ImportMode: z.infer<typeof DataSetImportModeSchema> & unknown
-  ColumnGroups?: z.infer<typeof ColumnGroupListSchema> & unknown
-  FieldFolders?: z.infer<typeof FieldFolderMapSchema> & unknown
-  Permissions?: z.infer<typeof ResourcePermissionListSchema> & unknown
-  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema> & unknown
-  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema> &
-    unknown
-  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  DataSetId: z.infer<typeof ResourceIdSchema>
+  Name: z.infer<typeof ResourceNameSchema>
+  PhysicalTableMap: z.infer<typeof PhysicalTableMapSchema>
+  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema>
+  ImportMode: z.infer<typeof DataSetImportModeSchema>
+  ColumnGroups?: z.infer<typeof ColumnGroupListSchema>
+  FieldFolders?: z.infer<typeof FieldFolderMapSchema>
+  Permissions?: z.infer<typeof ResourcePermissionListSchema>
+  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema>
+  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema>
+  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema>
+  Tags?: z.infer<typeof TagListSchema>
   DataSetUsageConfiguration?: z.infer<typeof DataSetUsageConfigurationSchema>
 }
 
@@ -11742,51 +11727,50 @@ const TemplateSourceEntitySchema = z
   .openapi('TemplateSourceEntity')
 
 type CreateTemplateRequestType = {
-  Name?: z.infer<typeof TemplateNameSchema> & unknown
-  Permissions?: z.infer<typeof ResourcePermissionListSchema> & unknown
-  SourceEntity?: z.infer<typeof TemplateSourceEntitySchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  VersionDescription?: z.infer<typeof VersionDescriptionSchema> & unknown
-  Definition?: z.infer<typeof TemplateVersionDefinitionSchema> & unknown
+  Name?: z.infer<typeof TemplateNameSchema>
+  Permissions?: z.infer<typeof ResourcePermissionListSchema>
+  SourceEntity?: z.infer<typeof TemplateSourceEntitySchema>
+  Tags?: z.infer<typeof TagListSchema>
+  VersionDescription?: z.infer<typeof VersionDescriptionSchema>
+  Definition?: z.infer<typeof TemplateVersionDefinitionSchema>
 }
 
 type UpdateAnalysisRequestType = {
-  Name: z.infer<typeof AnalysisNameSchema> & unknown
-  Parameters?: z.infer<typeof ParametersSchema> & unknown
-  SourceEntity?: z.infer<typeof AnalysisSourceEntitySchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof AnalysisDefinitionSchema> & unknown
+  Name: z.infer<typeof AnalysisNameSchema>
+  Parameters?: z.infer<typeof ParametersSchema>
+  SourceEntity?: z.infer<typeof AnalysisSourceEntitySchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof AnalysisDefinitionSchema>
 }
 
 type UpdateDashboardRequestType = {
-  Name: z.infer<typeof DashboardNameSchema> & unknown
-  SourceEntity?: z.infer<typeof DashboardSourceEntitySchema> & unknown
-  Parameters?: z.infer<typeof ParametersSchema> & unknown
-  VersionDescription?: z.infer<typeof VersionDescriptionSchema> & unknown
-  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema> & unknown
-  ThemeArn?: z.infer<typeof ArnSchema> & unknown
-  Definition?: z.infer<typeof DashboardVersionDefinitionSchema> & unknown
+  Name: z.infer<typeof DashboardNameSchema>
+  SourceEntity?: z.infer<typeof DashboardSourceEntitySchema>
+  Parameters?: z.infer<typeof ParametersSchema>
+  VersionDescription?: z.infer<typeof VersionDescriptionSchema>
+  DashboardPublishOptions?: z.infer<typeof DashboardPublishOptionsSchema>
+  ThemeArn?: z.infer<typeof ArnSchema>
+  Definition?: z.infer<typeof DashboardVersionDefinitionSchema>
 }
 
 type UpdateDataSetRequestType = {
-  Name: z.infer<typeof ResourceNameSchema> & unknown
-  PhysicalTableMap: z.infer<typeof PhysicalTableMapSchema> & unknown
-  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema> & unknown
-  ImportMode: z.infer<typeof DataSetImportModeSchema> & unknown
-  ColumnGroups?: z.infer<typeof ColumnGroupListSchema> & unknown
-  FieldFolders?: z.infer<typeof FieldFolderMapSchema> & unknown
-  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema> & unknown
-  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema> &
-    unknown
-  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema> & unknown
+  Name: z.infer<typeof ResourceNameSchema>
+  PhysicalTableMap: z.infer<typeof PhysicalTableMapSchema>
+  LogicalTableMap?: z.infer<typeof LogicalTableMapSchema>
+  ImportMode: z.infer<typeof DataSetImportModeSchema>
+  ColumnGroups?: z.infer<typeof ColumnGroupListSchema>
+  FieldFolders?: z.infer<typeof FieldFolderMapSchema>
+  RowLevelPermissionDataSet?: z.infer<typeof RowLevelPermissionDataSetSchema>
+  RowLevelPermissionTagConfiguration?: z.infer<typeof RowLevelPermissionTagConfigurationSchema>
+  ColumnLevelPermissionRules?: z.infer<typeof ColumnLevelPermissionRuleListSchema>
   DataSetUsageConfiguration?: z.infer<typeof DataSetUsageConfigurationSchema>
 }
 
 type UpdateTemplateRequestType = {
-  SourceEntity?: z.infer<typeof TemplateSourceEntitySchema> & unknown
-  VersionDescription?: z.infer<typeof VersionDescriptionSchema> & unknown
-  Name?: z.infer<typeof TemplateNameSchema> & unknown
-  Definition?: z.infer<typeof TemplateVersionDefinitionSchema> & unknown
+  SourceEntity?: z.infer<typeof TemplateSourceEntitySchema>
+  VersionDescription?: z.infer<typeof VersionDescriptionSchema>
+  Name?: z.infer<typeof TemplateNameSchema>
+  Definition?: z.infer<typeof TemplateVersionDefinitionSchema>
 }
 
 const IngestionIdSchema = z

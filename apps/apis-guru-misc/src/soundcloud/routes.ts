@@ -813,7 +813,7 @@ const WebProfilesSchema = z
   .openapi({ description: "User's links added to their profile" })
   .openapi('WebProfiles')
 
-const AcceptedResponse = { description: 'Accepted', content: {} }
+const AcceptedResponse = { description: 'Accepted' }
 
 const ActivitiesExample = {
   value: {
@@ -1230,7 +1230,7 @@ const ConnectionsResponse = {
   },
 }
 
-const CreatedResponse = { description: 'Created', content: {} }
+const CreatedResponse = { description: 'Created' }
 
 const ForbiddenExample = {
   value: {
@@ -1850,9 +1850,9 @@ const StreamsResponse = {
   },
 }
 
-const SuccessResponse = { description: 'Success', content: {} }
+const SuccessResponse = { description: 'Success' }
 
-const SuccessfulResponse = { description: 'Success', content: {} }
+const SuccessfulResponse = { description: 'Success' }
 
 const TooManyRequestsExample = {
   value: {
@@ -3246,7 +3246,7 @@ export const deleteMeFollowingsUserIdRoute = createRoute({
   summary: 'Deletes a user who is followed by the authenticated user.',
   request: { params: z.object({ user_id: UserIdToFollowParamsSchema }) },
   responses: {
-    200: { description: 'Success', content: {} },
+    200: { description: 'Success' },
     401: UnauthorizedResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
@@ -3341,7 +3341,7 @@ export const postOauth2TokenRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: {} },
+    200: { description: 'Success' },
     400: {
       description: 'Bad Request',
       content: {

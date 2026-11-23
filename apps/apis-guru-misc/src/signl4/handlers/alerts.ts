@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAlertsAlertIdAnnotationsRoute,
   getAlertsAlertIdAttachmentsAttachmentIdRoute,
   getAlertsAlertIdAttachmentsRoute,
@@ -22,66 +22,116 @@ import {
   postAlertsUndoCloseMultipleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAlertsRouteHandler: RouteHandler<typeof postAlertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alertsHandler = app
-  .openapi(postAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAcknowledgeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAcknowledgeMultipleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsCloseAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsCloseMultipleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsPagedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsUndoAcknowledgeMultipleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsUndoCloseMultipleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdAnnotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdAttachmentsAttachmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdUndoAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdUndoCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlertsAcknowledgeAllRouteHandler: RouteHandler<
+  typeof postAlertsAcknowledgeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAcknowledgeMultipleRouteHandler: RouteHandler<
+  typeof postAlertsAcknowledgeMultipleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsCloseAllRouteHandler: RouteHandler<typeof postAlertsCloseAllRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsCloseMultipleRouteHandler: RouteHandler<
+  typeof postAlertsCloseMultipleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsPagedRouteHandler: RouteHandler<typeof postAlertsPagedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsReportRouteHandler: RouteHandler<typeof getAlertsReportRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsUndoAcknowledgeMultipleRouteHandler: RouteHandler<
+  typeof postAlertsUndoAcknowledgeMultipleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsUndoCloseMultipleRouteHandler: RouteHandler<
+  typeof postAlertsUndoCloseMultipleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdRouteHandler: RouteHandler<typeof getAlertsAlertIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdAnnotateRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdAnnotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdAnnotationsRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdAttachmentsRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdCloseRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdNotificationsRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdOverviewRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdUndoAcknowledgeRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdUndoAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdUndoCloseRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdUndoCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

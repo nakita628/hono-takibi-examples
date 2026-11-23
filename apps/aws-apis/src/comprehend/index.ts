@@ -1,177 +1,515 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetComprehend20171127BatchDetectDominantLanguageHandler,
-  xAmzTargetComprehend20171127BatchDetectEntitiesHandler,
-  xAmzTargetComprehend20171127BatchDetectKeyPhrasesHandler,
-  xAmzTargetComprehend20171127BatchDetectSentimentHandler,
-  xAmzTargetComprehend20171127BatchDetectSyntaxHandler,
-  xAmzTargetComprehend20171127BatchDetectTargetedSentimentHandler,
-  xAmzTargetComprehend20171127ClassifyDocumentHandler,
-  xAmzTargetComprehend20171127ContainsPiiEntitiesHandler,
-  xAmzTargetComprehend20171127CreateDatasetHandler,
-  xAmzTargetComprehend20171127CreateDocumentClassifierHandler,
-  xAmzTargetComprehend20171127CreateEndpointHandler,
-  xAmzTargetComprehend20171127CreateEntityRecognizerHandler,
-  xAmzTargetComprehend20171127CreateFlywheelHandler,
-  xAmzTargetComprehend20171127DeleteDocumentClassifierHandler,
-  xAmzTargetComprehend20171127DeleteEndpointHandler,
-  xAmzTargetComprehend20171127DeleteEntityRecognizerHandler,
-  xAmzTargetComprehend20171127DeleteFlywheelHandler,
-  xAmzTargetComprehend20171127DeleteResourcePolicyHandler,
-  xAmzTargetComprehend20171127DescribeDatasetHandler,
-  xAmzTargetComprehend20171127DescribeDocumentClassificationJobHandler,
-  xAmzTargetComprehend20171127DescribeDocumentClassifierHandler,
-  xAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeEndpointHandler,
-  xAmzTargetComprehend20171127DescribeEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeEntityRecognizerHandler,
-  xAmzTargetComprehend20171127DescribeEventsDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeFlywheelHandler,
-  xAmzTargetComprehend20171127DescribeFlywheelIterationHandler,
-  xAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeResourcePolicyHandler,
-  xAmzTargetComprehend20171127DescribeSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127DescribeTopicsDetectionJobHandler,
-  xAmzTargetComprehend20171127DetectDominantLanguageHandler,
-  xAmzTargetComprehend20171127DetectEntitiesHandler,
-  xAmzTargetComprehend20171127DetectKeyPhrasesHandler,
-  xAmzTargetComprehend20171127DetectPiiEntitiesHandler,
-  xAmzTargetComprehend20171127DetectSentimentHandler,
-  xAmzTargetComprehend20171127DetectSyntaxHandler,
-  xAmzTargetComprehend20171127DetectTargetedSentimentHandler,
-  xAmzTargetComprehend20171127ImportModelHandler,
-  xAmzTargetComprehend20171127ListDatasetsHandler,
-  xAmzTargetComprehend20171127ListDocumentClassificationJobsHandler,
-  xAmzTargetComprehend20171127ListDocumentClassifiersHandler,
-  xAmzTargetComprehend20171127ListDocumentClassifierSummariesHandler,
-  xAmzTargetComprehend20171127ListDominantLanguageDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListEndpointsHandler,
-  xAmzTargetComprehend20171127ListEntitiesDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListEntityRecognizersHandler,
-  xAmzTargetComprehend20171127ListEntityRecognizerSummariesHandler,
-  xAmzTargetComprehend20171127ListEventsDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListFlywheelIterationHistoryHandler,
-  xAmzTargetComprehend20171127ListFlywheelsHandler,
-  xAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListSentimentDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListTagsForResourceHandler,
-  xAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsHandler,
-  xAmzTargetComprehend20171127ListTopicsDetectionJobsHandler,
-  xAmzTargetComprehend20171127PutResourcePolicyHandler,
-  xAmzTargetComprehend20171127StartDocumentClassificationJobHandler,
-  xAmzTargetComprehend20171127StartDominantLanguageDetectionJobHandler,
-  xAmzTargetComprehend20171127StartEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127StartEventsDetectionJobHandler,
-  xAmzTargetComprehend20171127StartFlywheelIterationHandler,
-  xAmzTargetComprehend20171127StartKeyPhrasesDetectionJobHandler,
-  xAmzTargetComprehend20171127StartPiiEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127StartSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127StartTargetedSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127StartTopicsDetectionJobHandler,
-  xAmzTargetComprehend20171127StopDominantLanguageDetectionJobHandler,
-  xAmzTargetComprehend20171127StopEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127StopEventsDetectionJobHandler,
-  xAmzTargetComprehend20171127StopKeyPhrasesDetectionJobHandler,
-  xAmzTargetComprehend20171127StopPiiEntitiesDetectionJobHandler,
-  xAmzTargetComprehend20171127StopSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127StopTargetedSentimentDetectionJobHandler,
-  xAmzTargetComprehend20171127StopTrainingDocumentClassifierHandler,
-  xAmzTargetComprehend20171127StopTrainingEntityRecognizerHandler,
-  xAmzTargetComprehend20171127TagResourceHandler,
-  xAmzTargetComprehend20171127UntagResourceHandler,
-  xAmzTargetComprehend20171127UpdateEndpointHandler,
-  xAmzTargetComprehend20171127UpdateFlywheelHandler,
+  postXAmzTargetComprehend20171127BatchDetectDominantLanguageRoute,
+  postXAmzTargetComprehend20171127BatchDetectEntitiesRoute,
+  postXAmzTargetComprehend20171127BatchDetectKeyPhrasesRoute,
+  postXAmzTargetComprehend20171127BatchDetectSentimentRoute,
+  postXAmzTargetComprehend20171127BatchDetectSyntaxRoute,
+  postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute,
+  postXAmzTargetComprehend20171127ClassifyDocumentRoute,
+  postXAmzTargetComprehend20171127ContainsPiiEntitiesRoute,
+  postXAmzTargetComprehend20171127CreateDatasetRoute,
+  postXAmzTargetComprehend20171127CreateDocumentClassifierRoute,
+  postXAmzTargetComprehend20171127CreateEndpointRoute,
+  postXAmzTargetComprehend20171127CreateEntityRecognizerRoute,
+  postXAmzTargetComprehend20171127CreateFlywheelRoute,
+  postXAmzTargetComprehend20171127DeleteDocumentClassifierRoute,
+  postXAmzTargetComprehend20171127DeleteEndpointRoute,
+  postXAmzTargetComprehend20171127DeleteEntityRecognizerRoute,
+  postXAmzTargetComprehend20171127DeleteFlywheelRoute,
+  postXAmzTargetComprehend20171127DeleteResourcePolicyRoute,
+  postXAmzTargetComprehend20171127DescribeDatasetRoute,
+  postXAmzTargetComprehend20171127DescribeDocumentClassificationJobRoute,
+  postXAmzTargetComprehend20171127DescribeDocumentClassifierRoute,
+  postXAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeEndpointRoute,
+  postXAmzTargetComprehend20171127DescribeEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeEntityRecognizerRoute,
+  postXAmzTargetComprehend20171127DescribeEventsDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeFlywheelIterationRoute,
+  postXAmzTargetComprehend20171127DescribeFlywheelRoute,
+  postXAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeResourcePolicyRoute,
+  postXAmzTargetComprehend20171127DescribeSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127DescribeTopicsDetectionJobRoute,
+  postXAmzTargetComprehend20171127DetectDominantLanguageRoute,
+  postXAmzTargetComprehend20171127DetectEntitiesRoute,
+  postXAmzTargetComprehend20171127DetectKeyPhrasesRoute,
+  postXAmzTargetComprehend20171127DetectPiiEntitiesRoute,
+  postXAmzTargetComprehend20171127DetectSentimentRoute,
+  postXAmzTargetComprehend20171127DetectSyntaxRoute,
+  postXAmzTargetComprehend20171127DetectTargetedSentimentRoute,
+  postXAmzTargetComprehend20171127ImportModelRoute,
+  postXAmzTargetComprehend20171127ListDatasetsRoute,
+  postXAmzTargetComprehend20171127ListDocumentClassificationJobsRoute,
+  postXAmzTargetComprehend20171127ListDocumentClassifiersRoute,
+  postXAmzTargetComprehend20171127ListDocumentClassifierSummariesRoute,
+  postXAmzTargetComprehend20171127ListDominantLanguageDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListEndpointsRoute,
+  postXAmzTargetComprehend20171127ListEntitiesDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListEntityRecognizersRoute,
+  postXAmzTargetComprehend20171127ListEntityRecognizerSummariesRoute,
+  postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListFlywheelIterationHistoryRoute,
+  postXAmzTargetComprehend20171127ListFlywheelsRoute,
+  postXAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListSentimentDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListTagsForResourceRoute,
+  postXAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsRoute,
+  postXAmzTargetComprehend20171127ListTopicsDetectionJobsRoute,
+  postXAmzTargetComprehend20171127PutResourcePolicyRoute,
+  postXAmzTargetComprehend20171127StartDocumentClassificationJobRoute,
+  postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartEventsDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartFlywheelIterationRoute,
+  postXAmzTargetComprehend20171127StartKeyPhrasesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartPiiEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartTargetedSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127StartTopicsDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopDominantLanguageDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopEventsDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopKeyPhrasesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopPiiEntitiesDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopTargetedSentimentDetectionJobRoute,
+  postXAmzTargetComprehend20171127StopTrainingDocumentClassifierRoute,
+  postXAmzTargetComprehend20171127StopTrainingEntityRecognizerRoute,
+  postXAmzTargetComprehend20171127TagResourceRoute,
+  postXAmzTargetComprehend20171127UntagResourceRoute,
+  postXAmzTargetComprehend20171127UpdateEndpointRoute,
+  postXAmzTargetComprehend20171127UpdateFlywheelRoute,
+} from './routes'
+import {
+  postXAmzTargetComprehend20171127BatchDetectDominantLanguageRouteHandler,
+  postXAmzTargetComprehend20171127BatchDetectEntitiesRouteHandler,
+  postXAmzTargetComprehend20171127BatchDetectKeyPhrasesRouteHandler,
+  postXAmzTargetComprehend20171127BatchDetectSentimentRouteHandler,
+  postXAmzTargetComprehend20171127BatchDetectSyntaxRouteHandler,
+  postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRouteHandler,
+  postXAmzTargetComprehend20171127ClassifyDocumentRouteHandler,
+  postXAmzTargetComprehend20171127ContainsPiiEntitiesRouteHandler,
+  postXAmzTargetComprehend20171127CreateDatasetRouteHandler,
+  postXAmzTargetComprehend20171127CreateDocumentClassifierRouteHandler,
+  postXAmzTargetComprehend20171127CreateEndpointRouteHandler,
+  postXAmzTargetComprehend20171127CreateEntityRecognizerRouteHandler,
+  postXAmzTargetComprehend20171127CreateFlywheelRouteHandler,
+  postXAmzTargetComprehend20171127DeleteDocumentClassifierRouteHandler,
+  postXAmzTargetComprehend20171127DeleteEndpointRouteHandler,
+  postXAmzTargetComprehend20171127DeleteEntityRecognizerRouteHandler,
+  postXAmzTargetComprehend20171127DeleteFlywheelRouteHandler,
+  postXAmzTargetComprehend20171127DeleteResourcePolicyRouteHandler,
+  postXAmzTargetComprehend20171127DescribeDatasetRouteHandler,
+  postXAmzTargetComprehend20171127DescribeDocumentClassificationJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeDocumentClassifierRouteHandler,
+  postXAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeEndpointRouteHandler,
+  postXAmzTargetComprehend20171127DescribeEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeEntityRecognizerRouteHandler,
+  postXAmzTargetComprehend20171127DescribeEventsDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeFlywheelIterationRouteHandler,
+  postXAmzTargetComprehend20171127DescribeFlywheelRouteHandler,
+  postXAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeResourcePolicyRouteHandler,
+  postXAmzTargetComprehend20171127DescribeSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DescribeTopicsDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127DetectDominantLanguageRouteHandler,
+  postXAmzTargetComprehend20171127DetectEntitiesRouteHandler,
+  postXAmzTargetComprehend20171127DetectKeyPhrasesRouteHandler,
+  postXAmzTargetComprehend20171127DetectPiiEntitiesRouteHandler,
+  postXAmzTargetComprehend20171127DetectSentimentRouteHandler,
+  postXAmzTargetComprehend20171127DetectSyntaxRouteHandler,
+  postXAmzTargetComprehend20171127DetectTargetedSentimentRouteHandler,
+  postXAmzTargetComprehend20171127ImportModelRouteHandler,
+  postXAmzTargetComprehend20171127ListDatasetsRouteHandler,
+  postXAmzTargetComprehend20171127ListDocumentClassificationJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListDocumentClassifiersRouteHandler,
+  postXAmzTargetComprehend20171127ListDocumentClassifierSummariesRouteHandler,
+  postXAmzTargetComprehend20171127ListDominantLanguageDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListEndpointsRouteHandler,
+  postXAmzTargetComprehend20171127ListEntitiesDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListEntityRecognizersRouteHandler,
+  postXAmzTargetComprehend20171127ListEntityRecognizerSummariesRouteHandler,
+  postXAmzTargetComprehend20171127ListEventsDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListFlywheelIterationHistoryRouteHandler,
+  postXAmzTargetComprehend20171127ListFlywheelsRouteHandler,
+  postXAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListSentimentDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListTagsForResourceRouteHandler,
+  postXAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127ListTopicsDetectionJobsRouteHandler,
+  postXAmzTargetComprehend20171127PutResourcePolicyRouteHandler,
+  postXAmzTargetComprehend20171127StartDocumentClassificationJobRouteHandler,
+  postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartEventsDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartFlywheelIterationRouteHandler,
+  postXAmzTargetComprehend20171127StartKeyPhrasesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartPiiEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartTargetedSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StartTopicsDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopDominantLanguageDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopEventsDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopKeyPhrasesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopPiiEntitiesDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopTargetedSentimentDetectionJobRouteHandler,
+  postXAmzTargetComprehend20171127StopTrainingDocumentClassifierRouteHandler,
+  postXAmzTargetComprehend20171127StopTrainingEntityRecognizerRouteHandler,
+  postXAmzTargetComprehend20171127TagResourceRouteHandler,
+  postXAmzTargetComprehend20171127UntagResourceRouteHandler,
+  postXAmzTargetComprehend20171127UpdateEndpointRouteHandler,
+  postXAmzTargetComprehend20171127UpdateFlywheelRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetComprehend20171127BatchDetectDominantLanguageHandler)
-  .route('/', xAmzTargetComprehend20171127BatchDetectEntitiesHandler)
-  .route('/', xAmzTargetComprehend20171127BatchDetectKeyPhrasesHandler)
-  .route('/', xAmzTargetComprehend20171127BatchDetectSentimentHandler)
-  .route('/', xAmzTargetComprehend20171127BatchDetectSyntaxHandler)
-  .route('/', xAmzTargetComprehend20171127BatchDetectTargetedSentimentHandler)
-  .route('/', xAmzTargetComprehend20171127ClassifyDocumentHandler)
-  .route('/', xAmzTargetComprehend20171127ContainsPiiEntitiesHandler)
-  .route('/', xAmzTargetComprehend20171127CreateDatasetHandler)
-  .route('/', xAmzTargetComprehend20171127CreateDocumentClassifierHandler)
-  .route('/', xAmzTargetComprehend20171127CreateEndpointHandler)
-  .route('/', xAmzTargetComprehend20171127CreateEntityRecognizerHandler)
-  .route('/', xAmzTargetComprehend20171127CreateFlywheelHandler)
-  .route('/', xAmzTargetComprehend20171127DeleteDocumentClassifierHandler)
-  .route('/', xAmzTargetComprehend20171127DeleteEndpointHandler)
-  .route('/', xAmzTargetComprehend20171127DeleteEntityRecognizerHandler)
-  .route('/', xAmzTargetComprehend20171127DeleteFlywheelHandler)
-  .route('/', xAmzTargetComprehend20171127DeleteResourcePolicyHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeDatasetHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeDocumentClassificationJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeDocumentClassifierHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeEndpointHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeEntityRecognizerHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeEventsDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeFlywheelHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeFlywheelIterationHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeResourcePolicyHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DescribeTopicsDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127DetectDominantLanguageHandler)
-  .route('/', xAmzTargetComprehend20171127DetectEntitiesHandler)
-  .route('/', xAmzTargetComprehend20171127DetectKeyPhrasesHandler)
-  .route('/', xAmzTargetComprehend20171127DetectPiiEntitiesHandler)
-  .route('/', xAmzTargetComprehend20171127DetectSentimentHandler)
-  .route('/', xAmzTargetComprehend20171127DetectSyntaxHandler)
-  .route('/', xAmzTargetComprehend20171127DetectTargetedSentimentHandler)
-  .route('/', xAmzTargetComprehend20171127ImportModelHandler)
-  .route('/', xAmzTargetComprehend20171127ListDatasetsHandler)
-  .route('/', xAmzTargetComprehend20171127ListDocumentClassificationJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListDocumentClassifierSummariesHandler)
-  .route('/', xAmzTargetComprehend20171127ListDocumentClassifiersHandler)
-  .route('/', xAmzTargetComprehend20171127ListDominantLanguageDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListEndpointsHandler)
-  .route('/', xAmzTargetComprehend20171127ListEntitiesDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListEntityRecognizerSummariesHandler)
-  .route('/', xAmzTargetComprehend20171127ListEntityRecognizersHandler)
-  .route('/', xAmzTargetComprehend20171127ListEventsDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListFlywheelIterationHistoryHandler)
-  .route('/', xAmzTargetComprehend20171127ListFlywheelsHandler)
-  .route('/', xAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListSentimentDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListTagsForResourceHandler)
-  .route('/', xAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127ListTopicsDetectionJobsHandler)
-  .route('/', xAmzTargetComprehend20171127PutResourcePolicyHandler)
-  .route('/', xAmzTargetComprehend20171127StartDocumentClassificationJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartDominantLanguageDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartEventsDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartFlywheelIterationHandler)
-  .route('/', xAmzTargetComprehend20171127StartKeyPhrasesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartPiiEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartTargetedSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StartTopicsDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopDominantLanguageDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopEventsDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopKeyPhrasesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopPiiEntitiesDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopTargetedSentimentDetectionJobHandler)
-  .route('/', xAmzTargetComprehend20171127StopTrainingDocumentClassifierHandler)
-  .route('/', xAmzTargetComprehend20171127StopTrainingEntityRecognizerHandler)
-  .route('/', xAmzTargetComprehend20171127TagResourceHandler)
-  .route('/', xAmzTargetComprehend20171127UntagResourceHandler)
-  .route('/', xAmzTargetComprehend20171127UpdateEndpointHandler)
-  .route('/', xAmzTargetComprehend20171127UpdateFlywheelHandler)
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectDominantLanguageRoute,
+    postXAmzTargetComprehend20171127BatchDetectDominantLanguageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectEntitiesRoute,
+    postXAmzTargetComprehend20171127BatchDetectEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectKeyPhrasesRoute,
+    postXAmzTargetComprehend20171127BatchDetectKeyPhrasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectSentimentRoute,
+    postXAmzTargetComprehend20171127BatchDetectSentimentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectSyntaxRoute,
+    postXAmzTargetComprehend20171127BatchDetectSyntaxRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute,
+    postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ClassifyDocumentRoute,
+    postXAmzTargetComprehend20171127ClassifyDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ContainsPiiEntitiesRoute,
+    postXAmzTargetComprehend20171127ContainsPiiEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127CreateDatasetRoute,
+    postXAmzTargetComprehend20171127CreateDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127CreateDocumentClassifierRoute,
+    postXAmzTargetComprehend20171127CreateDocumentClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127CreateEndpointRoute,
+    postXAmzTargetComprehend20171127CreateEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127CreateEntityRecognizerRoute,
+    postXAmzTargetComprehend20171127CreateEntityRecognizerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127CreateFlywheelRoute,
+    postXAmzTargetComprehend20171127CreateFlywheelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DeleteDocumentClassifierRoute,
+    postXAmzTargetComprehend20171127DeleteDocumentClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DeleteEndpointRoute,
+    postXAmzTargetComprehend20171127DeleteEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DeleteEntityRecognizerRoute,
+    postXAmzTargetComprehend20171127DeleteEntityRecognizerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DeleteFlywheelRoute,
+    postXAmzTargetComprehend20171127DeleteFlywheelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DeleteResourcePolicyRoute,
+    postXAmzTargetComprehend20171127DeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeDatasetRoute,
+    postXAmzTargetComprehend20171127DescribeDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeDocumentClassificationJobRoute,
+    postXAmzTargetComprehend20171127DescribeDocumentClassificationJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeDocumentClassifierRoute,
+    postXAmzTargetComprehend20171127DescribeDocumentClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeDominantLanguageDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeEndpointRoute,
+    postXAmzTargetComprehend20171127DescribeEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeEntityRecognizerRoute,
+    postXAmzTargetComprehend20171127DescribeEntityRecognizerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeEventsDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeEventsDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeFlywheelRoute,
+    postXAmzTargetComprehend20171127DescribeFlywheelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeFlywheelIterationRoute,
+    postXAmzTargetComprehend20171127DescribeFlywheelIterationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeKeyPhrasesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribePiiEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeResourcePolicyRoute,
+    postXAmzTargetComprehend20171127DescribeResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeTargetedSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DescribeTopicsDetectionJobRoute,
+    postXAmzTargetComprehend20171127DescribeTopicsDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectDominantLanguageRoute,
+    postXAmzTargetComprehend20171127DetectDominantLanguageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectEntitiesRoute,
+    postXAmzTargetComprehend20171127DetectEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectKeyPhrasesRoute,
+    postXAmzTargetComprehend20171127DetectKeyPhrasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectPiiEntitiesRoute,
+    postXAmzTargetComprehend20171127DetectPiiEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectSentimentRoute,
+    postXAmzTargetComprehend20171127DetectSentimentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectSyntaxRoute,
+    postXAmzTargetComprehend20171127DetectSyntaxRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127DetectTargetedSentimentRoute,
+    postXAmzTargetComprehend20171127DetectTargetedSentimentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ImportModelRoute,
+    postXAmzTargetComprehend20171127ImportModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListDatasetsRoute,
+    postXAmzTargetComprehend20171127ListDatasetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListDocumentClassificationJobsRoute,
+    postXAmzTargetComprehend20171127ListDocumentClassificationJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListDocumentClassifierSummariesRoute,
+    postXAmzTargetComprehend20171127ListDocumentClassifierSummariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListDocumentClassifiersRoute,
+    postXAmzTargetComprehend20171127ListDocumentClassifiersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListDominantLanguageDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListDominantLanguageDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListEndpointsRoute,
+    postXAmzTargetComprehend20171127ListEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListEntitiesDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListEntitiesDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListEntityRecognizerSummariesRoute,
+    postXAmzTargetComprehend20171127ListEntityRecognizerSummariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListEntityRecognizersRoute,
+    postXAmzTargetComprehend20171127ListEntityRecognizersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListEventsDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListFlywheelIterationHistoryRoute,
+    postXAmzTargetComprehend20171127ListFlywheelIterationHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListFlywheelsRoute,
+    postXAmzTargetComprehend20171127ListFlywheelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListKeyPhrasesDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListPiiEntitiesDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListSentimentDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListSentimentDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListTagsForResourceRoute,
+    postXAmzTargetComprehend20171127ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListTargetedSentimentDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127ListTopicsDetectionJobsRoute,
+    postXAmzTargetComprehend20171127ListTopicsDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127PutResourcePolicyRoute,
+    postXAmzTargetComprehend20171127PutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartDocumentClassificationJobRoute,
+    postXAmzTargetComprehend20171127StartDocumentClassificationJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartEventsDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartEventsDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartFlywheelIterationRoute,
+    postXAmzTargetComprehend20171127StartFlywheelIterationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartKeyPhrasesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartKeyPhrasesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartPiiEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartPiiEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartTargetedSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartTargetedSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StartTopicsDetectionJobRoute,
+    postXAmzTargetComprehend20171127StartTopicsDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopDominantLanguageDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopDominantLanguageDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopEventsDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopEventsDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopKeyPhrasesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopKeyPhrasesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopPiiEntitiesDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopPiiEntitiesDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopTargetedSentimentDetectionJobRoute,
+    postXAmzTargetComprehend20171127StopTargetedSentimentDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopTrainingDocumentClassifierRoute,
+    postXAmzTargetComprehend20171127StopTrainingDocumentClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127StopTrainingEntityRecognizerRoute,
+    postXAmzTargetComprehend20171127StopTrainingEntityRecognizerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127TagResourceRoute,
+    postXAmzTargetComprehend20171127TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127UntagResourceRoute,
+    postXAmzTargetComprehend20171127UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127UpdateEndpointRoute,
+    postXAmzTargetComprehend20171127UpdateEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehend20171127UpdateFlywheelRoute,
+    postXAmzTargetComprehend20171127UpdateFlywheelRouteHandler,
+  )
 
 export default app

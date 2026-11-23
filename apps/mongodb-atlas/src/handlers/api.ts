@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute,
   deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute,
   deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdJwksRoute,
@@ -580,1989 +580,3468 @@ import {
   putApiAtlasV2OrgsOrgIdUsersUserIdRolesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiAtlasV2RouteHandler: RouteHandler<typeof getApiAtlasV2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiAtlasV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2AlertConfigsMatchersFieldNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2DefaultGroupLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2DefaultGroupLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2EventTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2FederationSettingsFederationSettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdJwksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdMetadataXmlRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdAccessListEntryValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAccessListEntryValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAccessListEntryValueStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdActivityFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsResetRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdAiModelApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdAiModelApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAiModelApiRateLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdAiModelApiRateLimitsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdAlertConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAlertsAlertIdAlertConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAuditLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdAuditLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdAwsCustomDNSRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdAwsCustomDNSRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdBackupExportBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdBackupExportBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdCloudProviderAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdCloudProviderAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdCloudProviderAccessCloudProviderRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClusterConfigurationsValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewDatabaseNameCollectionNameCollStatsMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewCollStatsNamespacesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsOperationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameAutoScalingConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsCollectionNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClustersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsCheckpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsUnpinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsSourceNamespaceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesDatabaseNameCollectionNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesQueryLogsGzRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorDropIndexSuggestionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSchemaAdviceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSuggestedIndexesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsQueryShapeHashDetailsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsSummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameRestartPrimariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsOperationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsListMeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardingInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameShardingRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersClusterNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameGrantMongoDBEmployeeAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postApiAtlasV2GroupsGroupIdClustersClusterNamePinFeatureCompatibilityVersionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdClustersClusterNameRevokeMongoDBEmployeeAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postApiAtlasV2GroupsGroupIdClustersClusterNameUnpinFeatureCompatibilityVersionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdClustersHostNameLogsLogNameGzRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdClustersProviderRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersTenantUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdClustersTenantUpgradeToServerlessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdCollStatsMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdContainersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdContainersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdContainersContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdContainersContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdContainersContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdContainersAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDataFederationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdDataFederationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDataFederationTenantNameQueryLogsGzRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDatabaseUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdDatabaseUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDbAccessHistoryClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdDbAccessHistoryProcessesHostnameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdEncryptionAtRestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdEncryptionAtRestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdFlexClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdFlexClustersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdFlexClustersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdFlexClustersNameBackupDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRestoreJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdFlexClustersTenantUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameIndexNameMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsMeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdIpAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdLimitsLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdLiveMigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdCutoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdLiveMigrationsValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLiveMigrationsValidateValidationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLogIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdLogIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdMaintenanceWindowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMaintenanceWindowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdMaintenanceWindowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMaintenanceWindowAutoDeferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMaintenanceWindowDeferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdManagedSlowMsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdManagedSlowMsDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdManagedSlowMsEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMcpConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMcpConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMetricIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMetricIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMongoDBVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMongosTopologiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMongosTopologiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPeersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdPeersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdPeersPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPeersPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdPeersPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceEndpointServiceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdPrivateIpModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdPrivateIpModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabaseNameCollectionNameCollStatsMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdCollStatsNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameMeasurementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameMeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdMeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSlowQueryLogsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSuggestedIndexesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteApiAtlasV2GroupsGroupIdPushBasedLogExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdPushBasedLogExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdPushBasedLogExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdPushBasedLogExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdSampleDatasetLoadNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdSampleDatasetLoadSampleDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdSandboxSandboxConfigIdGenerateClusterDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdServerlessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdServerlessNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdServiceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdServiceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdServiceAccountsClientIdInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStandbyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStandbyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversFailoverIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdInspectFailoverReadinessRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdStreamsTenantNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameAuditLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartWithRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsTenantNameDownloadOperationalLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsAccountDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsActiveVpcPeeringConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsWithSampleConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdUserSecurityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2GroupsGroupIdUserSecurityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdUserSecurityCustomerX509Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdUserSecurityLdapUserToDNMappingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2GroupsGroupIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsGroupIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2GroupsGroupIdUsersUserIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdUsersUserIdAddRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdUsersUserIdRemoveRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2GroupsGroupIdMigrateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2GroupsByNameGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdActivityFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiAtlasV2OrgsOrgIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiAtlasV2OrgsOrgIdAiModelApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdAiModelApiKeysApiKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdAiModelApiRateLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdAssociatedInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdBillingCostExplorerUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdBillingCostExplorerUsageTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdDelegationSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdDelegationSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdFederationSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdLineItemsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdGenerateAndDownloadReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdInvoicesPendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdLiveMigrationsAvailableProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdLogIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdLogIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdMaintenanceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdMaintenanceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdMaintenanceSettingsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdMcpConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdMcpConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdNonCompliantResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdResourcePoliciesValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdSandboxConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdSandboxConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdServiceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdServiceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdServiceAccountsClientIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdTeamsTeamIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdTeamsTeamIdAddUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdTeamsTeamIdRemoveUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdTeamsByNameTeamNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAtlasV2OrgsOrgIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2OrgsOrgIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAtlasV2OrgsOrgIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAtlasV2OrgsOrgIdUsersUserIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdUsersUserIdAddRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2OrgsOrgIdUsersUserIdRemoveRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2RateLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2RateLimitsEndpointSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2SkuServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2SkusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2SkusSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2UnauthControlPlaneIPAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2UnauthEphemeralClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2UnauthEphemeralClustersCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAtlasV2UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAtlasV2UsersByNameUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiAtlasV2AlertConfigsMatchersFieldNamesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2AlertConfigsMatchersFieldNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2ClustersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2ClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2DefaultGroupLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2DefaultGroupLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2DefaultGroupLimitsLimitNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2DefaultGroupLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2EventTypesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2EventTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2FederationSettingsFederationSettingsIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2FederationSettingsFederationSettingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRouteHandler: RouteHandler<
+  typeof putApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgConfigsOrgIdRoleMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdJwksRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdJwksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdMetadataXmlRouteHandler: RouteHandler<
+  typeof getApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvidersIdentityProviderIdMetadataXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAccessRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAccessListRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAccessListRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdAccessListEntryValueRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdAccessListEntryValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAccessListEntryValueRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAccessListEntryValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAccessListEntryValueStatusRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAccessListEntryValueStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdActivityFeedRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdActivityFeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsResetRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAiModelApiKeysRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAiModelApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAiModelApiKeysRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAiModelApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAiModelApiRateLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAiModelApiRateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAiModelApiRateLimitsResetRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAiModelApiRateLimitsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertConfigsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdAlertConfigsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdAlertConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdAlertsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertsAlertIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertsAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAlertsAlertIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAlertsAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAlertsAlertIdAlertConfigsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAlertsAlertIdAlertConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdApiKeysRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdApiKeysRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAuditLogRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAuditLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAuditLogRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAuditLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdAwsCustomDNSRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdAwsCustomDNSRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdAwsCustomDNSRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdAwsCustomDNSRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdBackupExportBucketsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdBackupExportBucketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdBackupExportBucketsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdBackupExportBucketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdBackupCompliancePolicyRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdBackupCompliancePolicyRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdBackupCompliancePolicyRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdCloudProviderAccessRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdCloudProviderAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdCloudProviderAccessRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdCloudProviderAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdCloudProviderAccessCloudProviderRoleIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdCloudProviderAccessCloudProviderRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClusterConfigurationsValidateRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClusterConfigurationsValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewDatabaseNameCollectionNameCollStatsMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewDatabaseNameCollectionNameCollStatsMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewCollStatsNamespacesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameClusterViewCollStatsNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameAdaptiveSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsOperationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceOperationsOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceResetRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenceResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameAutoScalingConfigurationRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameAutoScalingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsExportIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupExportsExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRestoreJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnapshotIdDatabasesDatabaseNameCollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClusterSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClustersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShardedClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsCheckpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameBackupCheckpointsCheckpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsPinnedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsUnpinRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameCollStatsUnpinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsSourceNamespaceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameCollectionRestoreJobsJobIdCollectionsSourceNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesDatabaseNameCollectionNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesDatabaseNameCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesCustomZoneMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameGlobalWritesManagedNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameIndexRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesQueryLogsGzRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesQueryLogsGzRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameOutageSimulationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulationsSimulationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorDropIndexSuggestionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorDropIndexSuggestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSchemaAdviceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSchemaAdviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSuggestedIndexesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNamePerformanceAdvisorSuggestedIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConnectionStringsConnectionStringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameProcessArgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsQueryShapeHashDetailsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsQueryShapeHashDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsSummariesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsSummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapesQueryShapeHashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameRestartPrimariesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameRestartPrimariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsJobIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameRestoreJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDatabaseNameCollectionNameIndexNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesAnalysisIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsOperationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesOperationsOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsReplicaSetNameMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsListMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardMetricsListMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardingInsightsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardingInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameShardingRecommendationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameShardingRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdClustersClusterNameSqlInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersClusterNameStatusRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersClusterNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameGrantMongoDBEmployeeAccessRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameGrantMongoDBEmployeeAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNamePinFeatureCompatibilityVersionRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNamePinFeatureCompatibilityVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameRevokeMongoDBEmployeeAccessRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameRevokeMongoDBEmployeeAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersClusterNameUnpinFeatureCompatibilityVersionRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersClusterNameUnpinFeatureCompatibilityVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersHostNameLogsLogNameGzRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersHostNameLogsLogNameGzRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdClustersProviderRegionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdClustersProviderRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersTenantUpgradeRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersTenantUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdClustersTenantUpgradeToServerlessRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdClustersTenantUpgradeToServerlessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdCollStatsMetricsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdCollStatsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdContainersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdContainersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdContainersContainerIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdContainersContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdContainersContainerIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdContainersContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdContainersContainerIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdContainersContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdContainersAllRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdContainersAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdCustomDBRolesRolesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDataFederationRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDataFederationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdDataFederationRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdDataFederationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDataFederationTenantNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdDataFederationTenantNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDataFederationTenantNameQueryLogsGzRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDataFederationTenantNameQueryLogsGzRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDatabaseUsersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDatabaseUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdDatabaseUsersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdDatabaseUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdDatabaseUsersUsernameCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDbAccessHistoryClustersClusterNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDbAccessHistoryClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdDbAccessHistoryProcessesHostnameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdDbAccessHistoryProcessesHostnameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdEncryptionAtRestRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdEncryptionAtRestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdEncryptionAtRestRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdEncryptionAtRestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdEventsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdEventsEventIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdFlexClustersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdFlexClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdFlexClustersNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdFlexClustersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdFlexClustersNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdFlexClustersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdFlexClustersNameBackupDownloadRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdFlexClustersNameBackupDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRestoreJobIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersNameBackupRestoreJobsRestoreJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdFlexClustersNameBackupSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdFlexClustersTenantUpgradeRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdFlexClustersTenantUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameIndexNameMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameIndexNameMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsIndexesDatabaseNameCollectionNameMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdHostsProcessIdFtsMetricsMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdIntegrationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdInvitesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdInvitesRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdInvitesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdIpAddressesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdIpAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdLimitsLimitNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLimitsLimitNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdLimitsLimitNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdLimitsLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdLiveMigrationsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdLiveMigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdCutoverRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdCutoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdLiveMigrationsValidateRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdLiveMigrationsValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLiveMigrationsValidateValidationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLiveMigrationsValidateValidationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLogIntegrationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLogIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdLogIntegrationsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdLogIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdLogIntegrationsIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdLogIntegrationsIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdLogIntegrationsIdRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdMaintenanceWindowRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdMaintenanceWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMaintenanceWindowRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMaintenanceWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdMaintenanceWindowRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdMaintenanceWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMaintenanceWindowAutoDeferRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMaintenanceWindowAutoDeferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMaintenanceWindowDeferRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMaintenanceWindowDeferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdManagedSlowMsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdManagedSlowMsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdManagedSlowMsDisableRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdManagedSlowMsDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdManagedSlowMsEnableRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdManagedSlowMsEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMcpConfigsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMcpConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMcpConfigsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMcpConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMetricIntegrationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMetricIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMetricIntegrationsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMetricIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMongoDBVersionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMongoDBVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMongosTopologiesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMongosTopologiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMongosTopologiesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMongosTopologiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPeersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPeersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPeersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPeersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPeersPeerIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPeersPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPeersPeerIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPeersPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPeersPeerIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPeersPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServiceEndpointServiceIdEndpointEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceEndpointServiceIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPrivateEndpointEndpointServiceEndpointServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPrivateEndpointRegionalModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInstanceNameEndpointEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateIpModeRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateIpModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPrivateIpModeRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPrivateIpModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabaseNameCollectionNameCollStatsMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabaseNameCollectionNameCollStatsMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdCollStatsNamespacesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdCollStatsNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDatabasesDatabaseNameMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdDisksPartitionNameMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdMeasurementsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdMeasurementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorNamespacesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSlowQueryLogsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSlowQueryLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSuggestedIndexesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSuggestedIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdPushBasedLogExportRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdPushBasedLogExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdPushBasedLogExportRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdPushBasedLogExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdPushBasedLogExportRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdPushBasedLogExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdPushBasedLogExportRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdPushBasedLogExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdSampleDatasetLoadNameRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdSampleDatasetLoadNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdSampleDatasetLoadSampleDatasetIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdSampleDatasetLoadSampleDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdSandboxSandboxConfigIdGenerateClusterDescriptionRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdSandboxSandboxConfigIdGenerateClusterDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServerlessRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServerlessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorAutoIndexingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServerlessNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServerlessNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServiceAccountsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServiceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdServiceAccountsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdServiceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListIpAddressRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdServiceAccountsClientIdInviteRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdServiceAccountsClientIdInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdSettingsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStandbyLinksRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStandbyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStandbyLinksRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStandbyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversFailoverIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdFailoversFailoverIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdInspectFailoverReadinessRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdInspectFailoverReadinessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdStreamsTenantNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdStreamsTenantNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameAuditLogsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameAuditLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnectionNameFailoverConnectionsFailoverConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartWithRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStartWithRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStopRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsTenantNameDownloadOperationalLogsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsTenantNameDownloadOperationalLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsAccountDetailsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsAccountDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsActiveVpcPeeringConnectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsActiveVpcPeeringConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdAcceptRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRejectRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsWithSampleConnectionsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsWithSampleConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdTeamsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdTeamsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdUserSecurityRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdUserSecurityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2GroupsGroupIdUserSecurityRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2GroupsGroupIdUserSecurityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdUserSecurityCustomerX509RouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdUserSecurityCustomerX509Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdUserSecurityLdapUserToDNMappingRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdUserSecurityLdapUserToDNMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRequestIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdUserSecurityLdapVerifyRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2GroupsGroupIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2GroupsGroupIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsGroupIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsGroupIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2GroupsGroupIdUsersUserIdRolesRouteHandler: RouteHandler<
+  typeof putApiAtlasV2GroupsGroupIdUsersUserIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdUsersUserIdAddRoleRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdUsersUserIdAddRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdUsersUserIdRemoveRoleRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdUsersUserIdRemoveRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2GroupsGroupIdMigrateRouteHandler: RouteHandler<
+  typeof postApiAtlasV2GroupsGroupIdMigrateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2GroupsByNameGroupNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2GroupsByNameGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsRouteHandler: RouteHandler<typeof getApiAtlasV2OrgsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsRouteHandler: RouteHandler<typeof postApiAtlasV2OrgsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdActivityFeedRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdActivityFeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdAiModelApiCloudsCloudGeographiesGeographyModelGroupNamesModelGroupNameRateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdAiModelApiKeysRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdAiModelApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdAiModelApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdAiModelApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdAiModelApiRateLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdAiModelApiRateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdApiKeysRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdApiKeysRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdApiKeysApiUserIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdAssociatedInvoicesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdAssociatedInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdBillingCostExplorerUsageRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdBillingCostExplorerUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdBillingCostExplorerUsageTokenRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdBillingCostExplorerUsageTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdDelegationSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdDelegationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdDelegationSettingsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdDelegationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdEventsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdEventsEventIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdFederationSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdFederationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdGroupsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvitesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdInvitesRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdInvitesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdInvitesInvitationIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdCsvRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdLineItemsSearchRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdLineItemsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsReportIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesInvoiceIdReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdGenerateAndDownloadReportRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdInvoicesInvoiceIdGenerateAndDownloadReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdInvoicesPendingRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdInvoicesPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdLiveMigrationsAvailableProjectsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdLiveMigrationsAvailableProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdLogIntegrationsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdLogIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdLogIntegrationsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdLogIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRouteHandler: RouteHandler<
+  typeof putApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdMaintenanceSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdMaintenanceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdMaintenanceSettingsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdMaintenanceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdMaintenanceSettingsResetRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdMaintenanceSettingsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdMcpConfigsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdMcpConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdMcpConfigsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdMcpConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdNonCompliantResourcesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdNonCompliantResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdResourcePoliciesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdResourcePoliciesRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdResourcePoliciesValidateRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdResourcePoliciesValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdSandboxConfigRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdSandboxConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdSandboxConfigRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdSandboxConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdServiceAccountsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdServiceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdServiceAccountsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdServiceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdServiceAccountsClientIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListIpAddressRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdServiceAccountsClientIdGroupsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdServiceAccountsClientIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsSecretIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdSettingsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdSettingsRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdTeamsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdTeamsRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdTeamsTeamIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdTeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdTeamsTeamIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdTeamsTeamIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdTeamsTeamIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdTeamsTeamIdAddUserRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdTeamsTeamIdAddUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdTeamsTeamIdRemoveUserRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdTeamsTeamIdRemoveUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdTeamsByNameTeamNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdTeamsByNameTeamNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdUsersRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdUsersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAtlasV2OrgsOrgIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiAtlasV2OrgsOrgIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2OrgsOrgIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2OrgsOrgIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAtlasV2OrgsOrgIdUsersUserIdRouteHandler: RouteHandler<
+  typeof patchApiAtlasV2OrgsOrgIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAtlasV2OrgsOrgIdUsersUserIdRolesRouteHandler: RouteHandler<
+  typeof putApiAtlasV2OrgsOrgIdUsersUserIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdUsersUserIdAddRoleRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdUsersUserIdAddRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2OrgsOrgIdUsersUserIdRemoveRoleRouteHandler: RouteHandler<
+  typeof postApiAtlasV2OrgsOrgIdUsersUserIdRemoveRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2RateLimitsRouteHandler: RouteHandler<
+  typeof getApiAtlasV2RateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2RateLimitsEndpointSetIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2RateLimitsEndpointSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2SkuServicesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2SkuServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2SkusRouteHandler: RouteHandler<typeof getApiAtlasV2SkusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2SkusSkuIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2SkusSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2UnauthControlPlaneIPAddressesRouteHandler: RouteHandler<
+  typeof getApiAtlasV2UnauthControlPlaneIPAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2UnauthEphemeralClustersClusterIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2UnauthEphemeralClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2UnauthEphemeralClustersCreateRouteHandler: RouteHandler<
+  typeof postApiAtlasV2UnauthEphemeralClustersCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAtlasV2UsersRouteHandler: RouteHandler<
+  typeof postApiAtlasV2UsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2UsersUserIdRouteHandler: RouteHandler<
+  typeof getApiAtlasV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAtlasV2UsersByNameUserNameRouteHandler: RouteHandler<
+  typeof getApiAtlasV2UsersByNameUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

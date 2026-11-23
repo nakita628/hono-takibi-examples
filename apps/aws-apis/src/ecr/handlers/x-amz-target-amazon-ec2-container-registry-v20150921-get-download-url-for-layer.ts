@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerRegistryV20150921GetDownloadUrlForLayerHandler =
-  app.openapi(postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

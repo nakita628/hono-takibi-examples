@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSSMContactsActivateContactChannelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSSMContactsActivateContactChannelRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSsmContactsActivateContactChannelHandler = app.openapi(
-  postXAmzTargetSSMContactsActivateContactChannelRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSSMContactsActivateContactChannelRouteHandler: RouteHandler<
+  typeof postXAmzTargetSSMContactsActivateContactChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

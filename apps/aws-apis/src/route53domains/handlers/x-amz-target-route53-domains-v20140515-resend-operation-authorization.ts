@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationHandler = app.openapi(
-  postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

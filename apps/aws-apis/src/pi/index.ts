@@ -1,21 +1,47 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysHandler,
-  xAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsHandler,
-  xAmzTargetPerformanceInsightsv20180227GetResourceMetadataHandler,
-  xAmzTargetPerformanceInsightsv20180227GetResourceMetricsHandler,
-  xAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsHandler,
-  xAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsHandler,
+  postXAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysRoute,
+  postXAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsRoute,
+  postXAmzTargetPerformanceInsightsv20180227GetResourceMetadataRoute,
+  postXAmzTargetPerformanceInsightsv20180227GetResourceMetricsRoute,
+  postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsRoute,
+  postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsRoute,
+} from './routes'
+import {
+  postXAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysRouteHandler,
+  postXAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsRouteHandler,
+  postXAmzTargetPerformanceInsightsv20180227GetResourceMetadataRouteHandler,
+  postXAmzTargetPerformanceInsightsv20180227GetResourceMetricsRouteHandler,
+  postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsRouteHandler,
+  postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysHandler)
-  .route('/', xAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsHandler)
-  .route('/', xAmzTargetPerformanceInsightsv20180227GetResourceMetadataHandler)
-  .route('/', xAmzTargetPerformanceInsightsv20180227GetResourceMetricsHandler)
-  .route('/', xAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsHandler)
-  .route('/', xAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsHandler)
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysRoute,
+    postXAmzTargetPerformanceInsightsv20180227DescribeDimensionKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsRoute,
+    postXAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227GetResourceMetadataRoute,
+    postXAmzTargetPerformanceInsightsv20180227GetResourceMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227GetResourceMetricsRoute,
+    postXAmzTargetPerformanceInsightsv20180227GetResourceMetricsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsRoute,
+    postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsRoute,
+    postXAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetricsRouteHandler,
+  )
 
 export default app

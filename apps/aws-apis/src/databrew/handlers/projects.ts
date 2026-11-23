@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsNameRoute,
   getProjectsNameRoute,
   getProjectsRoute,
@@ -9,27 +9,36 @@ import {
   putProjectsNameStartProjectSessionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postProjectsRouteHandler: RouteHandler<typeof postProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(postProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsNameSendProjectSessionActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsNameStartProjectSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProjectsRouteHandler: RouteHandler<typeof getProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsNameRouteHandler: RouteHandler<typeof deleteProjectsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsNameRouteHandler: RouteHandler<typeof getProjectsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsNameRouteHandler: RouteHandler<typeof putProjectsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsNameSendProjectSessionActionRouteHandler: RouteHandler<
+  typeof putProjectsNameSendProjectSessionActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsNameStartProjectSessionRouteHandler: RouteHandler<
+  typeof putProjectsNameStartProjectSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

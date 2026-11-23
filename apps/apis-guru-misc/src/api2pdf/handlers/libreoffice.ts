@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postLibreofficeConvertRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postLibreofficeConvertRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const libreofficeHandler = app.openapi(postLibreofficeConvertRoute, (c) => {
+export const postLibreofficeConvertRouteHandler: RouteHandler<
+  typeof postLibreofficeConvertRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

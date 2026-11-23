@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAgentsAgentIdRoute,
   deleteAgentsAutomationsAutomationIdRoute,
   deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
@@ -49,147 +49,280 @@ import {
   postAgentsSessionsSessionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAgentsAutomationsRouteHandler: RouteHandler<
+  typeof postAgentsAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const agentsHandler = app
-  .openapi(postAgentsAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsAutomationsAutomationIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsAutomationsAutomationIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsAutomationsAutomationIdInvocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsAutomationsAutomationIdInvocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsAutomationsAutomationIdInvocationsInvocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsEnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsEnvironmentsEnvironmentIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsEnvironmentsEnvironmentIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsSubagentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsSubagentIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsAgentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsAgentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsAgentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsEnvironmentsTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsEnvironmentsTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdArtifactsArtifactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsSessionsSessionIdArtifactsArtifactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdArtifactsArtifactIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsSessionsSessionIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdTurnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdTurnsTurnIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsSessionsSessionIdTurnsTurnIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAgentsAutomationsRouteHandler: RouteHandler<
+  typeof getAgentsAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof getAgentsAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof postAgentsAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof deleteAgentsAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsAutomationsAutomationIdPauseRouteHandler: RouteHandler<
+  typeof postAgentsAutomationsAutomationIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsAutomationsAutomationIdResumeRouteHandler: RouteHandler<
+  typeof postAgentsAutomationsAutomationIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsAutomationsAutomationIdInvocationsRouteHandler: RouteHandler<
+  typeof postAgentsAutomationsAutomationIdInvocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsAutomationsAutomationIdInvocationsRouteHandler: RouteHandler<
+  typeof getAgentsAutomationsAutomationIdInvocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsAutomationsAutomationIdInvocationsInvocationIdRouteHandler: RouteHandler<
+  typeof getAgentsAutomationsAutomationIdInvocationsInvocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsEnvironmentsRouteHandler: RouteHandler<
+  typeof getAgentsEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsEnvironmentsRouteHandler: RouteHandler<
+  typeof postAgentsEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getAgentsEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsEnvironmentsEnvironmentIdFilesRouteHandler: RouteHandler<
+  typeof getAgentsEnvironmentsEnvironmentIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsEnvironmentsEnvironmentIdFilesRouteHandler: RouteHandler<
+  typeof postAgentsEnvironmentsEnvironmentIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsSubagentIdRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsSubagentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsSubagentIdItemsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsSubagentIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsRouteHandler: RouteHandler<typeof getAgentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsRouteHandler: RouteHandler<typeof postAgentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsAgentIdRouteHandler: RouteHandler<typeof getAgentsAgentIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsAgentIdRouteHandler: RouteHandler<typeof postAgentsAgentIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsAgentIdRouteHandler: RouteHandler<
+  typeof deleteAgentsAgentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsEnvironmentsTemplatesRouteHandler: RouteHandler<
+  typeof getAgentsEnvironmentsTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsEnvironmentsTemplatesRouteHandler: RouteHandler<
+  typeof postAgentsEnvironmentsTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler: RouteHandler<
+  typeof getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler: RouteHandler<
+  typeof postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler: RouteHandler<
+  typeof deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsRouteHandler: RouteHandler<typeof getAgentsSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsSessionsRouteHandler: RouteHandler<typeof postAgentsSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsSessionsSessionIdRouteHandler: RouteHandler<
+  typeof postAgentsSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsSessionsSessionIdRouteHandler: RouteHandler<
+  typeof deleteAgentsSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdArtifactsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdArtifactsArtifactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler: RouteHandler<
+  typeof deleteAgentsSessionsSessionIdArtifactsArtifactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdArtifactsArtifactIdContentRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdArtifactsArtifactIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdEventsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsSessionsSessionIdEventsRouteHandler: RouteHandler<
+  typeof postAgentsSessionsSessionIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdItemsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdTracesRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdTurnsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdTurnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdTurnsTurnIdRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdTurnsTurnIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsSessionsSessionIdTurnsTurnIdItemsRouteHandler: RouteHandler<
+  typeof getAgentsSessionsSessionIdTurnsTurnIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

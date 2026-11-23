@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSwatchIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSwatchIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const swatchHandler = app.openapi(getSwatchIndexRoute, (c) => {
+export const getSwatchIndexRouteHandler: RouteHandler<typeof getSwatchIndexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/manage-audience.yml',
   output: './src/manage-audience/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/manage-audience/types.ts' },
   client: { output: './src/manage-audience/client.ts', baseUrl: '/' },
   rpc: { output: './src/manage-audience/rpc.ts', parseResponse: true },

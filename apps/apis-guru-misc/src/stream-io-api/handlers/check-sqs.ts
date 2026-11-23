@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCheckSqsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCheckSqsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checkSqsHandler = app.openapi(postCheckSqsRoute, (c) => {
+export const postCheckSqsRouteHandler: RouteHandler<typeof postCheckSqsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getClusteringDataPlanesRoute, getClusteringStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getClusteringDataPlanesRoute, getClusteringStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getClusteringDataPlanesRouteHandler: RouteHandler<
+  typeof getClusteringDataPlanesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const clusteringHandler = app
-  .openapi(getClusteringDataPlanesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusteringStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getClusteringStatusRouteHandler: RouteHandler<
+  typeof getClusteringStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

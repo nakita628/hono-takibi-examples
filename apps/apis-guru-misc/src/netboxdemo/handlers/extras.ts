@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteExtrasConfigContextsIdIndexRoute,
   deleteExtrasExportTemplatesIdIndexRoute,
   deleteExtrasGraphsIdIndexRoute,
@@ -41,123 +41,236 @@ import {
   putExtrasTagsIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getExtrasCustomFieldChoicesIndexRouteHandler: RouteHandler<
+  typeof getExtrasCustomFieldChoicesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const extrasHandler = app
-  .openapi(getExtrasCustomFieldChoicesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasCustomFieldChoicesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasConfigContextsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasConfigContextsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteExtrasConfigContextsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasConfigContextsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExtrasConfigContextsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtrasConfigContextsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasExportTemplatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasExportTemplatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteExtrasExportTemplatesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasExportTemplatesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExtrasExportTemplatesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtrasExportTemplatesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasGraphsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasGraphsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteExtrasGraphsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasGraphsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExtrasGraphsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtrasGraphsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasImageAttachmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasImageAttachmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteExtrasImageAttachmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasImageAttachmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExtrasImageAttachmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtrasImageAttachmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasObjectChangesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasObjectChangesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasReportsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasReportsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasReportsIdRunIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasScriptsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasScriptsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasTagsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtrasTagsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteExtrasTagsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtrasTagsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExtrasTagsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtrasTagsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getExtrasCustomFieldChoicesIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasCustomFieldChoicesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasConfigContextsIndexRouteHandler: RouteHandler<
+  typeof getExtrasConfigContextsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasConfigContextsIndexRouteHandler: RouteHandler<
+  typeof postExtrasConfigContextsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteExtrasConfigContextsIdIndexRouteHandler: RouteHandler<
+  typeof deleteExtrasConfigContextsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasConfigContextsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasConfigContextsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchExtrasConfigContextsIdIndexRouteHandler: RouteHandler<
+  typeof patchExtrasConfigContextsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtrasConfigContextsIdIndexRouteHandler: RouteHandler<
+  typeof putExtrasConfigContextsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasExportTemplatesIndexRouteHandler: RouteHandler<
+  typeof getExtrasExportTemplatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasExportTemplatesIndexRouteHandler: RouteHandler<
+  typeof postExtrasExportTemplatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteExtrasExportTemplatesIdIndexRouteHandler: RouteHandler<
+  typeof deleteExtrasExportTemplatesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasExportTemplatesIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasExportTemplatesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchExtrasExportTemplatesIdIndexRouteHandler: RouteHandler<
+  typeof patchExtrasExportTemplatesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtrasExportTemplatesIdIndexRouteHandler: RouteHandler<
+  typeof putExtrasExportTemplatesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasGraphsIndexRouteHandler: RouteHandler<
+  typeof getExtrasGraphsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasGraphsIndexRouteHandler: RouteHandler<
+  typeof postExtrasGraphsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteExtrasGraphsIdIndexRouteHandler: RouteHandler<
+  typeof deleteExtrasGraphsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasGraphsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasGraphsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchExtrasGraphsIdIndexRouteHandler: RouteHandler<
+  typeof patchExtrasGraphsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtrasGraphsIdIndexRouteHandler: RouteHandler<
+  typeof putExtrasGraphsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasImageAttachmentsIndexRouteHandler: RouteHandler<
+  typeof getExtrasImageAttachmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasImageAttachmentsIndexRouteHandler: RouteHandler<
+  typeof postExtrasImageAttachmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteExtrasImageAttachmentsIdIndexRouteHandler: RouteHandler<
+  typeof deleteExtrasImageAttachmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasImageAttachmentsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasImageAttachmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchExtrasImageAttachmentsIdIndexRouteHandler: RouteHandler<
+  typeof patchExtrasImageAttachmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtrasImageAttachmentsIdIndexRouteHandler: RouteHandler<
+  typeof putExtrasImageAttachmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasObjectChangesIndexRouteHandler: RouteHandler<
+  typeof getExtrasObjectChangesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasObjectChangesIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasObjectChangesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasReportsIndexRouteHandler: RouteHandler<
+  typeof getExtrasReportsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasReportsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasReportsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasReportsIdRunIndexRouteHandler: RouteHandler<
+  typeof postExtrasReportsIdRunIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasScriptsIndexRouteHandler: RouteHandler<
+  typeof getExtrasScriptsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasScriptsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasScriptsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasTagsIndexRouteHandler: RouteHandler<typeof getExtrasTagsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtrasTagsIndexRouteHandler: RouteHandler<
+  typeof postExtrasTagsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteExtrasTagsIdIndexRouteHandler: RouteHandler<
+  typeof deleteExtrasTagsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtrasTagsIdIndexRouteHandler: RouteHandler<
+  typeof getExtrasTagsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchExtrasTagsIdIndexRouteHandler: RouteHandler<
+  typeof patchExtrasTagsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtrasTagsIdIndexRouteHandler: RouteHandler<
+  typeof putExtrasTagsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

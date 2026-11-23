@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountAccessConsentsConsentIdRoute,
   getAccountAccessConsentsConsentIdRoute,
   postAccountAccessConsentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountAccessConsentsRouteHandler: RouteHandler<
+  typeof postAccountAccessConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountAccessConsentsHandler = app
-  .openapi(postAccountAccessConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountAccessConsentsConsentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountAccessConsentsConsentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAccountAccessConsentsConsentIdRouteHandler: RouteHandler<
+  typeof deleteAccountAccessConsentsConsentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountAccessConsentsConsentIdRouteHandler: RouteHandler<
+  typeof getAccountAccessConsentsConsentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

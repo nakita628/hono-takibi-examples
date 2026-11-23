@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDevicesSerialCameraAnalyticsLiveRoute,
   getDevicesSerialCameraAnalyticsOverviewRoute,
   getDevicesSerialCameraAnalyticsRecentRoute,
@@ -20,60 +20,110 @@ import {
   putDevicesSerialWirelessBluetoothSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDevicesSerialCameraAnalyticsLiveRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const devicesHandler = app
-  .openapi(getDevicesSerialCameraAnalyticsLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsRecentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsZonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraQualityAndRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraQualityAndRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCameraVideoSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCameraVideoSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCellularGatewaySettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularGatewaySettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesSerialSwitchPortsCycleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesSerialSwitchPortStatusesPacketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesSerialWirelessBluetoothSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDevicesSerialCameraAnalyticsOverviewRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsRecentRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsRecentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsZonesRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsZonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraQualityAndRetentionSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraQualityAndRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraQualityAndRetentionSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraQualityAndRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCameraVideoSettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCameraVideoSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCameraVideoSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCameraVideoSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCellularGatewaySettingsRouteHandler: RouteHandler<
+  typeof getDevicesSerialCellularGatewaySettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularGatewaySettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularGatewaySettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialCellularGatewaySettingsPortForwardingRulesRouteHandler: RouteHandler<
+  typeof getDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialCellularGatewaySettingsPortForwardingRulesRouteHandler: RouteHandler<
+  typeof putDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialClientsRouteHandler: RouteHandler<
+  typeof getDevicesSerialClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesSerialSwitchPortsCycleRouteHandler: RouteHandler<
+  typeof postDevicesSerialSwitchPortsCycleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortStatusesRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesSerialSwitchPortStatusesPacketsRouteHandler: RouteHandler<
+  typeof getDevicesSerialSwitchPortStatusesPacketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesSerialWirelessBluetoothSettingsRouteHandler: RouteHandler<
+  typeof putDevicesSerialWirelessBluetoothSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

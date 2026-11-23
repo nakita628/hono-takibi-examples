@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchPublishV2AttractionsIdRoute,
   patchPublishV2EventsIdRoute,
   patchPublishV2VenuesIdRoute,
@@ -12,36 +12,62 @@ import {
   postPublishV2VenuesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPublishV2AttractionsRouteHandler: RouteHandler<
+  typeof postPublishV2AttractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const publishHandler = app
-  .openapi(postPublishV2AttractionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPublishV2AttractionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2AttractionsIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2EntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPublishV2EventsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2EventsIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2ExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublishV2VenuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPublishV2VenuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchPublishV2AttractionsIdRouteHandler: RouteHandler<
+  typeof patchPublishV2AttractionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2AttractionsIdVideosRouteHandler: RouteHandler<
+  typeof postPublishV2AttractionsIdVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2EntitlementsRouteHandler: RouteHandler<
+  typeof postPublishV2EntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2EventsRouteHandler: RouteHandler<
+  typeof postPublishV2EventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPublishV2EventsIdRouteHandler: RouteHandler<
+  typeof patchPublishV2EventsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2EventsIdVideosRouteHandler: RouteHandler<
+  typeof postPublishV2EventsIdVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2ExtensionsRouteHandler: RouteHandler<
+  typeof postPublishV2ExtensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublishV2VenuesRouteHandler: RouteHandler<
+  typeof postPublishV2VenuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPublishV2VenuesIdRouteHandler: RouteHandler<
+  typeof patchPublishV2VenuesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

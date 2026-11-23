@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1LexiconsLexiconNameRoute,
   getV1LexiconsLexiconNameRoute,
   getV1LexiconsRoute,
@@ -11,33 +11,50 @@ import {
   putV1LexiconsLexiconNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1LexiconsLexiconNameRouteHandler: RouteHandler<
+  typeof deleteV1LexiconsLexiconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(deleteV1LexiconsLexiconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LexiconsLexiconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1LexiconsLexiconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SynthesisTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LexiconsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SynthesisTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SynthesisTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SpeechRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1LexiconsLexiconNameRouteHandler: RouteHandler<
+  typeof getV1LexiconsLexiconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1LexiconsLexiconNameRouteHandler: RouteHandler<
+  typeof putV1LexiconsLexiconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesRouteHandler: RouteHandler<typeof getV1VoicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SynthesisTasksTaskIdRouteHandler: RouteHandler<
+  typeof getV1SynthesisTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LexiconsRouteHandler: RouteHandler<typeof getV1LexiconsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SynthesisTasksRouteHandler: RouteHandler<
+  typeof getV1SynthesisTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SynthesisTasksRouteHandler: RouteHandler<
+  typeof postV1SynthesisTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SpeechRouteHandler: RouteHandler<typeof postV1SpeechRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

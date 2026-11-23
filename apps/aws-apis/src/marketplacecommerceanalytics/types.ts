@@ -8,7 +8,6 @@ type GenerateDataSetRequest = {
   customerDefinedValues?: {} | undefined
 }
 type GenerateDataSetResult = { dataSetRequestId?: {} | undefined }
-type MarketplaceCommerceAnalyticsException = { [x: string]: unknown }
 type StartSupportDataExportRequest = {
   dataSetType: {}
   fromDate: {}
@@ -23,79 +22,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=MarketplaceCommerceAnalytics20150701.GenerateDataSet': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.GenerateDataSet'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GenerateDataSetRequest }
-            output: GenerateDataSetResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.GenerateDataSet'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.GenerateDataSet'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GenerateDataSetRequest }
-            output: MarketplaceCommerceAnalyticsException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GenerateDataSetRequest }
+        output: GenerateDataSetResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MarketplaceCommerceAnalytics20150701.StartSupportDataExport': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.StartSupportDataExport'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSupportDataExportRequest }
-            output: StartSupportDataExportResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.StartSupportDataExport'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MarketplaceCommerceAnalytics20150701.StartSupportDataExport'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSupportDataExportRequest }
-            output: MarketplaceCommerceAnalyticsException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: StartSupportDataExportRequest }
+        output: StartSupportDataExportResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

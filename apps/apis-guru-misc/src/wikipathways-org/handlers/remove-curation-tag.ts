@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRemoveCurationTagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRemoveCurationTagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const removeCurationTagHandler = app.openapi(getRemoveCurationTagRoute, (c) => {
+export const getRemoveCurationTagRouteHandler: RouteHandler<
+  typeof getRemoveCurationTagRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

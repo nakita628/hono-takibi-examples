@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBulkIntlVerificationsRoute, postBulkUsVerificationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBulkIntlVerificationsRoute, postBulkUsVerificationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBulkUsVerificationsRouteHandler: RouteHandler<
+  typeof postBulkUsVerificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bulkHandler = app
-  .openapi(postBulkUsVerificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkIntlVerificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBulkIntlVerificationsRouteHandler: RouteHandler<
+  typeof postBulkIntlVerificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

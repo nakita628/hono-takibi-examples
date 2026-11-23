@@ -22454,15 +22454,15 @@ export function usePostApiPostsUsernamePostSlugCommentCommentIdReply<
 
 export function getApiCollectionsNamespaceSlugIdQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>
+    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>
   >,
 ) {
-  return ['api', '/api/collections/:namespace/:slug-:id', toValue(args)] as const
+  return ['api', '/api/collections/:namespace/:slug-{id}', toValue(args)] as const
 }
 
 export function getApiCollectionsNamespaceSlugIdQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>
+    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -22470,7 +22470,7 @@ export function getApiCollectionsNamespaceSlugIdQueryOptions(
     queryKey: computed(() => getApiCollectionsNamespaceSlugIdQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api.collections[':namespace'][':slug-:id'].$get(toValue(args), {
+        client.api.collections[':namespace'][':slug-{id}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -22483,14 +22483,14 @@ export function useApiCollectionsNamespaceSlugId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>>
+        Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>
+    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -22500,7 +22500,7 @@ export function useApiCollectionsNamespaceSlugId<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>
+                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>
                 >
               >
             >
@@ -22511,7 +22511,7 @@ export function useApiCollectionsNamespaceSlugId<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>
+                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>
                 >
               >
             >
@@ -22531,7 +22531,7 @@ export function useApiCollectionsNamespaceSlugId<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>>
+          Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>>
         >
       >
     >,
@@ -22544,7 +22544,7 @@ export function useApiCollectionsNamespaceSlugId<
       queryKey: computed(() => getApiCollectionsNamespaceSlugIdQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api.collections[':namespace'][':slug-:id'].$get(toValue(args), {
+          client.api.collections[':namespace'][':slug-{id}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -22556,7 +22556,7 @@ export function useApiCollectionsNamespaceSlugId<
 }
 
 export function getPatchApiCollectionsNamespaceSlugIdMutationKey() {
-  return ['api', '/api/collections/:namespace/:slug-:id', 'PATCH'] as const
+  return ['api', '/api/collections/:namespace/:slug-{id}', 'PATCH'] as const
 }
 
 export function getPatchApiCollectionsNamespaceSlugIdMutationOptions<
@@ -22567,19 +22567,19 @@ export function getPatchApiCollectionsNamespaceSlugIdMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>>
+          Awaited<ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>,
+    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>,
     TOnMutateResult
   >({
     mutationKey: getPatchApiCollectionsNamespaceSlugIdMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>,
+      args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>,
     ) {
-      return parseResponse(client.api.collections[':namespace'][':slug-:id'].$patch(args, options))
+      return parseResponse(client.api.collections[':namespace'][':slug-{id}'].$patch(args, options))
     },
   })
 }
@@ -22596,13 +22596,13 @@ export function usePatchApiCollectionsNamespaceSlugId<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>
+                  ReturnType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>
                 >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>,
+          InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -22801,7 +22801,7 @@ export function usePatchApiCollectionsNamespaceSlug<
 }
 
 export function getPostApiCollectionsNamespaceSlugIdItemsMutationKey() {
-  return ['api', '/api/collections/:namespace/:slug-:id/items', 'POST'] as const
+  return ['api', '/api/collections/:namespace/:slug-{id}/items', 'POST'] as const
 }
 
 export function getPostApiCollectionsNamespaceSlugIdItemsMutationOptions<
@@ -22813,23 +22813,25 @@ export function getPostApiCollectionsNamespaceSlugIdItemsMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']>
+            ReturnType<
+              (typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']
+            >
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']>,
+    InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostApiCollectionsNamespaceSlugIdItemsMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']
+        (typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']
       >,
     ) {
       return parseResponse(
-        client.api.collections[':namespace'][':slug-:id'].items.$post(args, options),
+        client.api.collections[':namespace'][':slug-{id}'].items.$post(args, options),
       )
     },
   })
@@ -22848,7 +22850,7 @@ export function usePostApiCollectionsNamespaceSlugIdItems<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']
+                    (typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']
                   >
                 >
               >
@@ -22856,7 +22858,7 @@ export function usePostApiCollectionsNamespaceSlugIdItems<
           >,
           TError,
           InferRequestType<
-            (typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']
+            (typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']
           >,
           TOnMutateResult
         >,
@@ -23107,17 +23109,17 @@ export function usePostApiCollections<TError = DefaultError, TOnMutateResult = u
 export function getApiCollectionsNamespaceSlugIdResourceGroupQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+      (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
     >
   >,
 ) {
-  return ['api', '/api/collections/:namespace/:slug-:id/resource-group', toValue(args)] as const
+  return ['api', '/api/collections/:namespace/:slug-{id}/resource-group', toValue(args)] as const
 }
 
 export function getApiCollectionsNamespaceSlugIdResourceGroupQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+      (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -23126,7 +23128,7 @@ export function getApiCollectionsNamespaceSlugIdResourceGroupQueryOptions(
     queryKey: computed(() => getApiCollectionsNamespaceSlugIdResourceGroupQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api.collections[':namespace'][':slug-:id']['resource-group'].$get(toValue(args), {
+        client.api.collections[':namespace'][':slug-{id}']['resource-group'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -23141,7 +23143,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+            (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
           >
         >
       >
@@ -23151,7 +23153,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+      (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
     >
   >,
   options?: {
@@ -23163,7 +23165,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+                    (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
                   >
                 >
               >
@@ -23176,7 +23178,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+                    (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
                   >
                 >
               >
@@ -23199,7 +23201,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+              (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
             >
           >
         >
@@ -23214,7 +23216,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
       queryKey: computed(() => getApiCollectionsNamespaceSlugIdResourceGroupQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api.collections[':namespace'][':slug-:id']['resource-group'].$get(toValue(args), {
+          client.api.collections[':namespace'][':slug-{id}']['resource-group'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -23226,7 +23228,7 @@ export function useApiCollectionsNamespaceSlugIdResourceGroup<
 }
 
 export function getPostApiCollectionsNamespaceSlugIdResourceGroupMutationKey() {
-  return ['api', '/api/collections/:namespace/:slug-:id/resource-group', 'POST'] as const
+  return ['api', '/api/collections/:namespace/:slug-{id}/resource-group', 'POST'] as const
 }
 
 export function getPostApiCollectionsNamespaceSlugIdResourceGroupMutationOptions<
@@ -23239,7 +23241,7 @@ export function getPostApiCollectionsNamespaceSlugIdResourceGroupMutationOptions
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+              (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
             >
           >
         >
@@ -23247,18 +23249,18 @@ export function getPostApiCollectionsNamespaceSlugIdResourceGroupMutationOptions
     >,
     TError,
     InferRequestType<
-      (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+      (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostApiCollectionsNamespaceSlugIdResourceGroupMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+        (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
       >,
     ) {
       return parseResponse(
-        client.api.collections[':namespace'][':slug-:id']['resource-group'].$post(args, options),
+        client.api.collections[':namespace'][':slug-{id}']['resource-group'].$post(args, options),
       )
     },
   })
@@ -23277,7 +23279,7 @@ export function usePostApiCollectionsNamespaceSlugIdResourceGroup<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+                    (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
                   >
                 >
               >
@@ -23285,7 +23287,7 @@ export function usePostApiCollectionsNamespaceSlugIdResourceGroup<
           >,
           TError,
           InferRequestType<
-            (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+            (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
           >,
           TOnMutateResult
         >,

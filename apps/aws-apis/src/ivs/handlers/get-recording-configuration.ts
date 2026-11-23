@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetRecordingConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetRecordingConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getRecordingConfigurationHandler = app.openapi(
-  postGetRecordingConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGetRecordingConfigurationRouteHandler: RouteHandler<
+  typeof postGetRecordingConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

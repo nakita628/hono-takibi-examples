@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPsd2RegistrationsIdPsd2registrationLogsRoute,
   getPsd2RegistrationsIdPsd2RegistrationRoute,
   getPsd2RegistrationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPsd2RegistrationsRouteHandler: RouteHandler<
+  typeof getPsd2RegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const psd2RegistrationsHandler = app
-  .openapi(getPsd2RegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPsd2RegistrationsIdPsd2RegistrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPsd2RegistrationsIdPsd2registrationLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPsd2RegistrationsIdPsd2RegistrationRouteHandler: RouteHandler<
+  typeof getPsd2RegistrationsIdPsd2RegistrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPsd2RegistrationsIdPsd2registrationLogsRouteHandler: RouteHandler<
+  typeof getPsd2RegistrationsIdPsd2registrationLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

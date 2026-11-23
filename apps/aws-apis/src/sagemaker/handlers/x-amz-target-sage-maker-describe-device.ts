@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerDescribeDeviceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerDescribeDeviceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerDescribeDeviceHandler = app.openapi(
-  postXAmzTargetSageMakerDescribeDeviceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerDescribeDeviceRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerDescribeDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

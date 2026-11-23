@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBillingGroupsBillingGroupNameRoute,
   getBillingGroupsBillingGroupNameRoute,
   getBillingGroupsBillingGroupNameThingsRoute,
@@ -10,30 +10,50 @@ import {
   putBillingGroupsRemoveThingFromBillingGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putBillingGroupsAddThingToBillingGroupRouteHandler: RouteHandler<
+  typeof putBillingGroupsAddThingToBillingGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billingGroupsHandler = app
-  .openapi(putBillingGroupsAddThingToBillingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupsBillingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBillingGroupsBillingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupsBillingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBillingGroupsBillingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupsBillingGroupNameThingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBillingGroupsRemoveThingFromBillingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBillingGroupsBillingGroupNameRouteHandler: RouteHandler<
+  typeof postBillingGroupsBillingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBillingGroupsBillingGroupNameRouteHandler: RouteHandler<
+  typeof deleteBillingGroupsBillingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupsBillingGroupNameRouteHandler: RouteHandler<
+  typeof getBillingGroupsBillingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBillingGroupsBillingGroupNameRouteHandler: RouteHandler<
+  typeof patchBillingGroupsBillingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupsRouteHandler: RouteHandler<typeof getBillingGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupsBillingGroupNameThingsRouteHandler: RouteHandler<
+  typeof getBillingGroupsBillingGroupNameThingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBillingGroupsRemoveThingFromBillingGroupRouteHandler: RouteHandler<
+  typeof putBillingGroupsRemoveThingFromBillingGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

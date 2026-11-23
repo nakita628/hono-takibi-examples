@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postInsightSummariesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postInsightSummariesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const insightSummariesHandler = app.openapi(postInsightSummariesRoute, (c) => {
+export const postInsightSummariesRouteHandler: RouteHandler<
+  typeof postInsightSummariesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

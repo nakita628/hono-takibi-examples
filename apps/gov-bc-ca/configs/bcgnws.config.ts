@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/bcgnws/3.x.x/openapi.yaml',
   output: './src/bcgnws/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bcgnws/types.ts' },
   client: { output: './src/bcgnws/client.ts', baseUrl: '/' },
   rpc: { output: './src/bcgnws/rpc.ts', parseResponse: true },

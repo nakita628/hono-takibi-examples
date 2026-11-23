@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVpclinksVpclinkIdRoute,
   getVpclinksRoute,
   getVpclinksVpclinkIdRoute,
@@ -7,21 +7,28 @@ import {
   postVpclinksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVpclinksRouteHandler: RouteHandler<typeof postVpclinksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vpclinksHandler = app
-  .openapi(postVpclinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpclinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVpclinksVpclinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpclinksVpclinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVpclinksVpclinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVpclinksRouteHandler: RouteHandler<typeof getVpclinksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVpclinksVpclinkIdRouteHandler: RouteHandler<
+  typeof deleteVpclinksVpclinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpclinksVpclinkIdRouteHandler: RouteHandler<
+  typeof getVpclinksVpclinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVpclinksVpclinkIdRouteHandler: RouteHandler<
+  typeof patchVpclinksVpclinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1348,19 +1348,19 @@ export function useImmutableGetGlossary<TError = unknown>(options?: {
 }
 
 export function getGetGridpointsWfoXYKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y', args] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}', args] as const
 }
 
 export function useGetGridpointsWfoXY<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
           >
         >
       >,
@@ -1383,27 +1383,27 @@ export function useGetGridpointsWfoXY<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.gridpoints[':wfo'][':x,:y'].$get(args, clientOptions)),
+      async () => parseResponse(client.gridpoints[':wfo'][':x,{y}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetGridpointsWfoXY<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
           >
         >
       >,
@@ -1426,34 +1426,34 @@ export function useImmutableGetGridpointsWfoXY<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.gridpoints[':wfo'][':x,:y'].$get(args, clientOptions)),
+      async () => parseResponse(client.gridpoints[':wfo'][':x,{y}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetGridpointsWfoXYForecastKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast', keyArgs] as const
 }
 
 export function useGetGridpointsWfoXYForecast<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
           >
         >
       >,
@@ -1476,7 +1476,7 @@ export function useGetGridpointsWfoXYForecast<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
           >
         >
       >,
@@ -1484,20 +1484,20 @@ export function useGetGridpointsWfoXYForecast<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.$get(args, clientOptions)),
+        parseResponse(client.gridpoints[':wfo'][':x,{y}'].forecast.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetGridpointsWfoXYForecast<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
           >
         >
       >,
@@ -1520,7 +1520,7 @@ export function useImmutableGetGridpointsWfoXYForecast<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
           >
         >
       >,
@@ -1528,28 +1528,32 @@ export function useImmutableGetGridpointsWfoXYForecast<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.$get(args, clientOptions)),
+        parseResponse(client.gridpoints[':wfo'][':x,{y}'].forecast.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetGridpointsWfoXYForecastHourlyKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast/hourly', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast/hourly', keyArgs] as const
 }
 
 export function useGetGridpointsWfoXYForecastHourly<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+              ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
             >
           >
         >
@@ -1574,7 +1578,7 @@ export function useGetGridpointsWfoXYForecastHourly<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+              ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
             >
           >
         >
@@ -1583,21 +1587,25 @@ export function useGetGridpointsWfoXYForecastHourly<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(args, clientOptions)),
+        parseResponse(
+          client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetGridpointsWfoXYForecastHourly<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+              ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
             >
           >
         >
@@ -1622,7 +1630,7 @@ export function useImmutableGetGridpointsWfoXYForecastHourly<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+              ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
             >
           >
         >
@@ -1631,26 +1639,28 @@ export function useImmutableGetGridpointsWfoXYForecastHourly<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(args, clientOptions)),
+        parseResponse(
+          client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetGridpointsWfoXYStationsKey(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/stations', args] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/stations', args] as const
 }
 
 export function useGetGridpointsWfoXYStations<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
           >
         >
       >,
@@ -1673,7 +1683,7 @@ export function useGetGridpointsWfoXYStations<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
           >
         >
       >,
@@ -1681,20 +1691,20 @@ export function useGetGridpointsWfoXYStations<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].stations.$get(args, clientOptions)),
+        parseResponse(client.gridpoints[':wfo'][':x,{y}'].stations.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetGridpointsWfoXYStations<TError = unknown>(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
           >
         >
       >,
@@ -1717,7 +1727,7 @@ export function useImmutableGetGridpointsWfoXYStations<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
           >
         >
       >,
@@ -1725,7 +1735,7 @@ export function useImmutableGetGridpointsWfoXYStations<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.gridpoints[':wfo'][':x,:y'].stations.$get(args, clientOptions)),
+        parseResponse(client.gridpoints[':wfo'][':x,{y}'].stations.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -3536,19 +3546,19 @@ export function useImmutableGetOfficesOfficeIdWeatherstoriesDownloadImageId<TErr
 }
 
 export function getGetPointsLatitudeLongitudeKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude', args] as const
+  return ['points', '/points/:latitude,{longitude}', args] as const
 }
 
 export function useGetPointsLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -3571,27 +3581,27 @@ export function useGetPointsLatitudeLongitude<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.points[':latitude,:longitude'].$get(args, clientOptions)),
+      async () => parseResponse(client.points[':latitude,{longitude}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPointsLatitudeLongitude<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
@@ -3614,33 +3624,33 @@ export function useImmutableGetPointsLatitudeLongitude<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.points[':latitude,:longitude'].$get(args, clientOptions)),
+      async () => parseResponse(client.points[':latitude,{longitude}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetPointsLatitudeLongitudeRadioKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude/radio', args] as const
+  return ['points', '/points/:latitude,{longitude}/radio', args] as const
 }
 
 export function useGetPointsLatitudeLongitudeRadio<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
           >
         >
       >,
@@ -3663,7 +3673,7 @@ export function useGetPointsLatitudeLongitudeRadio<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
           >
         >
       >,
@@ -3671,20 +3681,20 @@ export function useGetPointsLatitudeLongitudeRadio<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.points[':latitude,:longitude'].radio.$get(args, clientOptions)),
+        parseResponse(client.points[':latitude,{longitude}'].radio.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPointsLatitudeLongitudeRadio<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
           >
         >
       >,
@@ -3707,7 +3717,7 @@ export function useImmutableGetPointsLatitudeLongitudeRadio<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
           >
         >
       >,
@@ -3715,26 +3725,26 @@ export function useImmutableGetPointsLatitudeLongitudeRadio<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.points[':latitude,:longitude'].radio.$get(args, clientOptions)),
+        parseResponse(client.points[':latitude,{longitude}'].radio.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetPointsLatitudeLongitudeStationsKey(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
 ) {
-  return ['points', '/points/:latitude,:longitude/stations', args] as const
+  return ['points', '/points/:latitude,{longitude}/stations', args] as const
 }
 
 export function useGetPointsLatitudeLongitudeStations<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
           >
         >
       >,
@@ -3757,7 +3767,7 @@ export function useGetPointsLatitudeLongitudeStations<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
           >
         >
       >,
@@ -3765,20 +3775,20 @@ export function useGetPointsLatitudeLongitudeStations<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.points[':latitude,:longitude'].stations.$get(args, clientOptions)),
+        parseResponse(client.points[':latitude,{longitude}'].stations.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPointsLatitudeLongitudeStations<TError = unknown>(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
           >
         >
       >,
@@ -3801,7 +3811,7 @@ export function useImmutableGetPointsLatitudeLongitudeStations<TError = unknown>
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+            Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
           >
         >
       >,
@@ -3809,7 +3819,7 @@ export function useImmutableGetPointsLatitudeLongitudeStations<TError = unknown>
     >(
       swrKey,
       async () =>
-        parseResponse(client.points[':latitude,:longitude'].stations.$get(args, clientOptions)),
+        parseResponse(client.points[':latitude,{longitude}'].stations.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

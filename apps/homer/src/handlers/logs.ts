@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLogsLokiLabelsRoute, getLogsLokiValuesRoute, postLogsLokiQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getLogsLokiLabelsRoute,
+  getLogsLokiValuesRoute,
+  postLogsLokiQueryRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getLogsLokiLabelsRouteHandler: RouteHandler<typeof getLogsLokiLabelsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const logsHandler = app
-  .openapi(getLogsLokiLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsLokiValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLogsLokiQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLogsLokiValuesRouteHandler: RouteHandler<typeof getLogsLokiValuesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postLogsLokiQueryRouteHandler: RouteHandler<typeof postLogsLokiQueryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

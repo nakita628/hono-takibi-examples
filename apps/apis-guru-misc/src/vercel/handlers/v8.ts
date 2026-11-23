@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV8ArtifactsHashRoute,
   getV8ArtifactsStatusRoute,
   headV8ArtifactsHashRoute,
@@ -8,24 +8,36 @@ import {
   putV8ArtifactsHashRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV8ArtifactsRouteHandler: RouteHandler<typeof postV8ArtifactsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v8Handler = app
-  .openapi(postV8ArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV8ArtifactsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV8ArtifactsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV8ArtifactsHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headV8ArtifactsHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV8ArtifactsHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV8ArtifactsEventsRouteHandler: RouteHandler<
+  typeof postV8ArtifactsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV8ArtifactsStatusRouteHandler: RouteHandler<
+  typeof getV8ArtifactsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV8ArtifactsHashRouteHandler: RouteHandler<typeof getV8ArtifactsHashRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const headV8ArtifactsHashRouteHandler: RouteHandler<
+  typeof headV8ArtifactsHashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV8ArtifactsHashRouteHandler: RouteHandler<typeof putV8ArtifactsHashRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/elasticache/2015-02-02/openapi.yaml',
   output: './src/elasticache/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elasticache/types.ts' },
   client: { output: './src/elasticache/client.ts', baseUrl: '/' },
   rpc: { output: './src/elasticache/rpc.ts', parseResponse: true },

@@ -376,8 +376,8 @@ export const getForecastSettings202609ForecastTypesRoute = createRoute({
         'application/json': { schema: ForecastTypeSettingPublicResponseSchema, example: null },
       },
     },
-    401: { description: 'Unauthorized - missing or invalid authentication', content: {} },
-    403: { description: 'Forbidden - insufficient permissions', content: {} },
+    401: { description: 'Unauthorized - missing or invalid authentication' },
+    403: { description: 'Forbidden - insufficient permissions' },
     default: ErrorResponse,
   },
   security: [
@@ -426,9 +426,9 @@ export const getForecastSettings202609ForecastTypesForecastTypeIdRoute = createR
         'application/json': { schema: ForecastTypeSettingPublicResponseSchema, example: null },
       },
     },
-    401: { description: 'Unauthorized - missing or invalid authentication', content: {} },
-    403: { description: 'Forbidden - insufficient permissions', content: {} },
-    404: { description: 'Forecast type not found', content: {} },
+    401: { description: 'Unauthorized - missing or invalid authentication' },
+    403: { description: 'Forbidden - insufficient permissions' },
+    404: { description: 'Forecast type not found' },
     default: ErrorResponse,
   },
   security: [

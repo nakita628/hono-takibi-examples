@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPostcodesPostcodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPostcodesPostcodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const postcodesHandler = app.openapi(getPostcodesPostcodeRoute, (c) => {
+export const getPostcodesPostcodeRouteHandler: RouteHandler<
+  typeof getPostcodesPostcodeRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

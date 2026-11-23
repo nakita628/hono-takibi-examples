@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAuthenticationAuthenticationIdEligibilityCheckRoute,
   postAuthenticationAuthenticationIdAuthenticateRoute,
   postAuthenticationAuthenticationIdEligibilityCheckRoute,
@@ -10,30 +10,50 @@ import {
   postAuthenticationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthenticationRouteHandler: RouteHandler<typeof postAuthenticationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const authenticationHandler = app
-  .openapi(postAuthenticationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdEligibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdRedirectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdEnabledAuthnMethodsTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthenticationIdEligibilityCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticationAuthenticationIdEligibilityCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthenticationAuthenticationIdEligibilityRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdEligibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthenticationIdAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthenticationIdRedirectRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdRedirectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthenticationIdSyncRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthenticationIdEnabledAuthnMethodsTokenRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdEnabledAuthnMethodsTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthenticationIdEligibilityCheckRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthenticationIdEligibilityCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticationAuthenticationIdEligibilityCheckRouteHandler: RouteHandler<
+  typeof getAuthenticationAuthenticationIdEligibilityCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

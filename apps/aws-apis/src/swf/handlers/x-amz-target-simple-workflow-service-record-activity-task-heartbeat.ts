@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatHandler = app.openapi(
-  postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRouteHandler: RouteHandler<
+  typeof postXAmzTargetSimpleWorkflowServiceRecordActivityTaskHeartbeatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

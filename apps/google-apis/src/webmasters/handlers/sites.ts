@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSitesSiteUrlRoute,
   deleteSitesSiteUrlSitemapsFeedpathRoute,
   getSitesRoute,
@@ -11,33 +11,50 @@ import {
   putSitesSiteUrlSitemapsFeedpathRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSitesRouteHandler: RouteHandler<typeof getSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sitesHandler = app
-  .openapi(getSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteUrlSearchAnalyticsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteUrlSitemapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSitesSiteUrlRouteHandler: RouteHandler<typeof deleteSitesSiteUrlRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteUrlRouteHandler: RouteHandler<typeof getSitesSiteUrlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteUrlRouteHandler: RouteHandler<typeof putSitesSiteUrlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteUrlSearchAnalyticsQueryRouteHandler: RouteHandler<
+  typeof postSitesSiteUrlSearchAnalyticsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteUrlSitemapsRouteHandler: RouteHandler<
+  typeof getSitesSiteUrlSitemapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof deleteSitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof getSitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof putSitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

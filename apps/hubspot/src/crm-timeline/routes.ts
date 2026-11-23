@@ -475,7 +475,6 @@ export const postIntegratorsTimeline202609EventsRoute = createRoute({
     200: {
       description:
         'App Event Occurrence was accepted and persisted successfully. Mirrored to UnifiedEvents async.',
-      content: {},
     },
     201: {
       description: 'successful operation',
@@ -494,12 +493,10 @@ export const postIntegratorsTimeline202609EventsRoute = createRoute({
     400: {
       description:
         'The occurrence has a validation error that prevented us from accepting it for persistence. The response body will contain details about the validation error. Occurrence insert request rejected.',
-      content: {},
     },
     409: {
       description:
         'An occurrence for this event type and occurrence ID already exists. Occurrences are immutable. Occurrence insert request rejected.',
-      content: {},
     },
     default: ErrorResponse,
   },
@@ -553,12 +550,10 @@ export const postIntegratorsTimeline202609EventsBatchRoute = createRoute({
     400: {
       description:
         'One or more occurrences has a validation error that prevented us from accepting them for persistence. The response body will contain details about the validation error. Occurrence batch insert request rejected, none were accepted.',
-      content: {},
     },
     409: {
       description:
         'One or more occurrence in the batch already exist. Occurrences are immutable. Occurrence insert request rejected, none were accepted.',
-      content: {},
     },
     default: ErrorResponse,
   },
@@ -610,7 +605,6 @@ export const postIntegratorsTimeline202609TypesProjectsRoute = createRoute({
     404: {
       description:
         'There is no App Event Type for the provided coordinates. Did you provide them correctly?',
-      content: {},
     },
     default: ErrorResponse,
   },

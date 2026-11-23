@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/youtubereporting/v1/openapi.yaml',
   output: './src/youtubereporting/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/youtubereporting/types.ts' },
   client: { output: './src/youtubereporting/client.ts', baseUrl: '/' },
   rpc: { output: './src/youtubereporting/rpc.ts', parseResponse: true },

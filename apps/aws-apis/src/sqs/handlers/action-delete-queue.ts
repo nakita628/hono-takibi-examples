@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionDeleteQueueRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionDeleteQueueRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionDeleteQueueHandler = app.openapi(postActionDeleteQueueRoute, (c) => {
+export const postActionDeleteQueueRouteHandler: RouteHandler<
+  typeof postActionDeleteQueueRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

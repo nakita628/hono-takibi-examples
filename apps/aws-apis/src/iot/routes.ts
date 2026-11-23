@@ -1384,7 +1384,7 @@ const OTAUpdateInfoSchema = z
   .openapi({ description: 'Information about an OTA update.', required: [] })
   .openapi('OTAUpdateInfo')
 
-type GetOTAUpdateResponseType = { otaUpdateInfo?: z.infer<typeof OTAUpdateInfoSchema> & unknown }
+type GetOTAUpdateResponseType = { otaUpdateInfo?: z.infer<typeof OTAUpdateInfoSchema> }
 
 const RuleArnSchema = z.string().openapi('RuleArn')
 
@@ -1412,14 +1412,14 @@ const IsDisabledSchema = z.boolean().openapi('IsDisabled')
 const AwsIotSqlVersionSchema = z.string().openapi('AwsIotSqlVersion')
 
 type TopicRuleType = {
-  ruleName?: z.infer<typeof RuleNameSchema> & unknown
-  sql?: z.infer<typeof SQLSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  createdAt?: z.infer<typeof CreatedAtDateSchema> & unknown
-  actions?: z.infer<typeof ActionListSchema> & unknown
-  ruleDisabled?: z.infer<typeof IsDisabledSchema> & unknown
-  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema> & unknown
-  errorAction?: z.infer<typeof ActionSchema> & unknown
+  ruleName?: z.infer<typeof RuleNameSchema>
+  sql?: z.infer<typeof SQLSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  createdAt?: z.infer<typeof CreatedAtDateSchema>
+  actions?: z.infer<typeof ActionListSchema>
+  ruleDisabled?: z.infer<typeof IsDisabledSchema>
+  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema>
+  errorAction?: z.infer<typeof ActionSchema>
 }
 
 const TopicRuleSchema: z.ZodType<TopicRuleType> = z
@@ -1452,8 +1452,8 @@ const TopicRuleSchema: z.ZodType<TopicRuleType> = z
   .openapi('TopicRule')
 
 type GetTopicRuleResponseType = {
-  ruleArn?: z.infer<typeof RuleArnSchema> & unknown
-  rule?: z.infer<typeof TopicRuleSchema> & unknown
+  ruleArn?: z.infer<typeof RuleArnSchema>
+  rule?: z.infer<typeof TopicRuleSchema>
 }
 
 const MitigationActionsTaskIdSchema = z
@@ -1774,17 +1774,17 @@ const DetectMitigationActionsTaskSummaryListSchema = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type ListDetectMitigationActionsTasksResponseType = {
-  tasks?: z.infer<typeof DetectMitigationActionsTaskSummaryListSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  tasks?: z.infer<typeof DetectMitigationActionsTaskSummaryListSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type TopicRulePayloadType = {
-  sql: z.infer<typeof SQLSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  actions: z.infer<typeof ActionListSchema> & unknown
-  ruleDisabled?: z.infer<typeof IsDisabledSchema> & unknown
-  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema> & unknown
-  errorAction?: z.infer<typeof ActionSchema> & unknown
+  sql: z.infer<typeof SQLSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  actions: z.infer<typeof ActionListSchema>
+  ruleDisabled?: z.infer<typeof IsDisabledSchema>
+  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema>
+  errorAction?: z.infer<typeof ActionSchema>
 }
 
 const TopicRulePayloadSchema: z.ZodType<TopicRulePayloadType> = z
@@ -1810,13 +1810,9 @@ const TopicRulePayloadSchema: z.ZodType<TopicRulePayloadType> = z
   .openapi({ required: ['sql', 'actions'], description: 'Describes a rule.' })
   .openapi('TopicRulePayload')
 
-type CreateTopicRuleRequestType = {
-  topicRulePayload: z.infer<typeof TopicRulePayloadSchema> & unknown
-}
+type CreateTopicRuleRequestType = { topicRulePayload: z.infer<typeof TopicRulePayloadSchema> }
 
-type ReplaceTopicRuleRequestType = {
-  topicRulePayload: z.infer<typeof TopicRulePayloadSchema> & unknown
-}
+type ReplaceTopicRuleRequestType = { topicRulePayload: z.infer<typeof TopicRulePayloadSchema> }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 

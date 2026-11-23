@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/comprehendmedical/2018-10-30/openapi.yaml',
   output: './src/comprehendmedical/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/comprehendmedical/types.ts' },
   client: { output: './src/comprehendmedical/client.ts', baseUrl: '/' },
   rpc: { output: './src/comprehendmedical/rpc.ts', parseResponse: true },

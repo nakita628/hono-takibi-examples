@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmGetPatchBaselineForPatchGroupHandler = app.openapi(
-  postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

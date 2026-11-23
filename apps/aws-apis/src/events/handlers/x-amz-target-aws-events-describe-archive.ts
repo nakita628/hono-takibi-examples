@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsDescribeArchiveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsDescribeArchiveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsDescribeArchiveHandler = app.openapi(
-  postXAmzTargetAWSEventsDescribeArchiveRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsDescribeArchiveRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsDescribeArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

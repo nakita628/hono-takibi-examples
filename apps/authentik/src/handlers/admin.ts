@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminFileIndexRoute,
   getAdminAppsIndexRoute,
   getAdminFileIndexRoute,
@@ -16,48 +16,86 @@ import {
   putAdminSettingsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminAppsIndexRouteHandler: RouteHandler<typeof getAdminAppsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminAppsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminFileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminFileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminFileIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminFileUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminModelsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminSettingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminSettingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminSettingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminSystemIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminSystemIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminVersionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminVersionHistoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminVersionHistoryIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdminFileIndexRouteHandler: RouteHandler<typeof getAdminFileIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminFileIndexRouteHandler: RouteHandler<typeof postAdminFileIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminFileIndexRouteHandler: RouteHandler<
+  typeof deleteAdminFileIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminFileUsedByIndexRouteHandler: RouteHandler<
+  typeof getAdminFileUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminModelsIndexRouteHandler: RouteHandler<
+  typeof getAdminModelsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminSettingsIndexRouteHandler: RouteHandler<
+  typeof getAdminSettingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminSettingsIndexRouteHandler: RouteHandler<
+  typeof putAdminSettingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminSettingsIndexRouteHandler: RouteHandler<
+  typeof patchAdminSettingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminSystemIndexRouteHandler: RouteHandler<
+  typeof getAdminSystemIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminSystemIndexRouteHandler: RouteHandler<
+  typeof postAdminSystemIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminVersionIndexRouteHandler: RouteHandler<
+  typeof getAdminVersionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminVersionHistoryIndexRouteHandler: RouteHandler<
+  typeof getAdminVersionHistoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminVersionHistoryIdIndexRouteHandler: RouteHandler<
+  typeof getAdminVersionHistoryIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

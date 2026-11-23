@@ -2027,8 +2027,8 @@ const LegalHoldPolicyAssignmentSchema = LegalHoldPolicyAssignmentBaseSchema.and(
 
 type FileVersionLegalHoldType = {
   deleted_at?: string
-  file?: z.infer<typeof FileMiniSchema> & unknown
-  file_version?: z.infer<typeof FileVersionMiniSchema> & unknown
+  file?: z.infer<typeof FileMiniSchema>
+  file_version?: z.infer<typeof FileVersionMiniSchema>
   id?: string
   legal_hold_policy_assignments?: z.infer<typeof LegalHoldPolicyAssignmentSchema>[]
   type?: 'file_version_legal_hold'

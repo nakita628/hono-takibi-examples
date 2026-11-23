@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getQodCategoriesRoute, getQodLanguagesRoute, getQodRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getQodCategoriesRoute, getQodLanguagesRoute, getQodRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQodRouteHandler: RouteHandler<typeof getQodRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const qodHandler = app
-  .openapi(getQodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQodCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQodLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQodCategoriesRouteHandler: RouteHandler<typeof getQodCategoriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getQodLanguagesRouteHandler: RouteHandler<typeof getQodLanguagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

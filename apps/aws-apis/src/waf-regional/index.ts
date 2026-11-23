@@ -1,171 +1,497 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwswafRegional20161128AssociateWebAclHandler,
-  xAmzTargetAwswafRegional20161128CreateByteMatchSetHandler,
-  xAmzTargetAwswafRegional20161128CreateGeoMatchSetHandler,
-  xAmzTargetAwswafRegional20161128CreateIpSetHandler,
-  xAmzTargetAwswafRegional20161128CreateRateBasedRuleHandler,
-  xAmzTargetAwswafRegional20161128CreateRegexMatchSetHandler,
-  xAmzTargetAwswafRegional20161128CreateRegexPatternSetHandler,
-  xAmzTargetAwswafRegional20161128CreateRuleGroupHandler,
-  xAmzTargetAwswafRegional20161128CreateRuleHandler,
-  xAmzTargetAwswafRegional20161128CreateSizeConstraintSetHandler,
-  xAmzTargetAwswafRegional20161128CreateSqlInjectionMatchSetHandler,
-  xAmzTargetAwswafRegional20161128CreateWebAclHandler,
-  xAmzTargetAwswafRegional20161128CreateWebAclMigrationStackHandler,
-  xAmzTargetAwswafRegional20161128CreateXssMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteByteMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteGeoMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteIpSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteLoggingConfigurationHandler,
-  xAmzTargetAwswafRegional20161128DeletePermissionPolicyHandler,
-  xAmzTargetAwswafRegional20161128DeleteRateBasedRuleHandler,
-  xAmzTargetAwswafRegional20161128DeleteRegexMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteRegexPatternSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteRuleGroupHandler,
-  xAmzTargetAwswafRegional20161128DeleteRuleHandler,
-  xAmzTargetAwswafRegional20161128DeleteSizeConstraintSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteSqlInjectionMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DeleteWebAclHandler,
-  xAmzTargetAwswafRegional20161128DeleteXssMatchSetHandler,
-  xAmzTargetAwswafRegional20161128DisassociateWebAclHandler,
-  xAmzTargetAwswafRegional20161128GetByteMatchSetHandler,
-  xAmzTargetAwswafRegional20161128GetChangeTokenHandler,
-  xAmzTargetAwswafRegional20161128GetChangeTokenStatusHandler,
-  xAmzTargetAwswafRegional20161128GetGeoMatchSetHandler,
-  xAmzTargetAwswafRegional20161128GetIpSetHandler,
-  xAmzTargetAwswafRegional20161128GetLoggingConfigurationHandler,
-  xAmzTargetAwswafRegional20161128GetPermissionPolicyHandler,
-  xAmzTargetAwswafRegional20161128GetRateBasedRuleHandler,
-  xAmzTargetAwswafRegional20161128GetRateBasedRuleManagedKeysHandler,
-  xAmzTargetAwswafRegional20161128GetRegexMatchSetHandler,
-  xAmzTargetAwswafRegional20161128GetRegexPatternSetHandler,
-  xAmzTargetAwswafRegional20161128GetRuleGroupHandler,
-  xAmzTargetAwswafRegional20161128GetRuleHandler,
-  xAmzTargetAwswafRegional20161128GetSampledRequestsHandler,
-  xAmzTargetAwswafRegional20161128GetSizeConstraintSetHandler,
-  xAmzTargetAwswafRegional20161128GetSqlInjectionMatchSetHandler,
-  xAmzTargetAwswafRegional20161128GetWebAclForResourceHandler,
-  xAmzTargetAwswafRegional20161128GetWebAclHandler,
-  xAmzTargetAwswafRegional20161128GetXssMatchSetHandler,
-  xAmzTargetAwswafRegional20161128ListActivatedRulesInRuleGroupHandler,
-  xAmzTargetAwswafRegional20161128ListByteMatchSetsHandler,
-  xAmzTargetAwswafRegional20161128ListGeoMatchSetsHandler,
-  xAmzTargetAwswafRegional20161128ListIpSetsHandler,
-  xAmzTargetAwswafRegional20161128ListLoggingConfigurationsHandler,
-  xAmzTargetAwswafRegional20161128ListRateBasedRulesHandler,
-  xAmzTargetAwswafRegional20161128ListRegexMatchSetsHandler,
-  xAmzTargetAwswafRegional20161128ListRegexPatternSetsHandler,
-  xAmzTargetAwswafRegional20161128ListResourcesForWebAclHandler,
-  xAmzTargetAwswafRegional20161128ListRuleGroupsHandler,
-  xAmzTargetAwswafRegional20161128ListRulesHandler,
-  xAmzTargetAwswafRegional20161128ListSizeConstraintSetsHandler,
-  xAmzTargetAwswafRegional20161128ListSqlInjectionMatchSetsHandler,
-  xAmzTargetAwswafRegional20161128ListSubscribedRuleGroupsHandler,
-  xAmzTargetAwswafRegional20161128ListTagsForResourceHandler,
-  xAmzTargetAwswafRegional20161128ListWebAcLsHandler,
-  xAmzTargetAwswafRegional20161128ListXssMatchSetsHandler,
-  xAmzTargetAwswafRegional20161128PutLoggingConfigurationHandler,
-  xAmzTargetAwswafRegional20161128PutPermissionPolicyHandler,
-  xAmzTargetAwswafRegional20161128TagResourceHandler,
-  xAmzTargetAwswafRegional20161128UntagResourceHandler,
-  xAmzTargetAwswafRegional20161128UpdateByteMatchSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateGeoMatchSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateIpSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateRateBasedRuleHandler,
-  xAmzTargetAwswafRegional20161128UpdateRegexMatchSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateRegexPatternSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateRuleGroupHandler,
-  xAmzTargetAwswafRegional20161128UpdateRuleHandler,
-  xAmzTargetAwswafRegional20161128UpdateSizeConstraintSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateSqlInjectionMatchSetHandler,
-  xAmzTargetAwswafRegional20161128UpdateWebAclHandler,
-  xAmzTargetAwswafRegional20161128UpdateXssMatchSetHandler,
+  postXAmzTargetAWSWAFRegional20161128AssociateWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateByteMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateGeoMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateIPSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateRateBasedRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateRegexMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateRegexPatternSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateRuleGroupRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateSizeConstraintSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateWebACLMigrationStackRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128CreateXssMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteByteMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteGeoMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteIPSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteLoggingConfigurationRoute,
+  postXAmzTargetAWSWAFRegional20161128DeletePermissionPolicyRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteRateBasedRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteRegexMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteRegexPatternSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteRuleGroupRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteSizeConstraintSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128DeleteXssMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128DisassociateWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128GetByteMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetChangeTokenRoute,
+  postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute,
+  postXAmzTargetAWSWAFRegional20161128GetGeoMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetIPSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetLoggingConfigurationRoute,
+  postXAmzTargetAWSWAFRegional20161128GetPermissionPolicyRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleManagedKeysRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRegexMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRegexPatternSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRuleGroupRoute,
+  postXAmzTargetAWSWAFRegional20161128GetRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128GetSampledRequestsRoute,
+  postXAmzTargetAWSWAFRegional20161128GetSizeConstraintSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128GetWebACLForResourceRoute,
+  postXAmzTargetAWSWAFRegional20161128GetWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128GetXssMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128ListActivatedRulesInRuleGroupRoute,
+  postXAmzTargetAWSWAFRegional20161128ListByteMatchSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListGeoMatchSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListIPSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListLoggingConfigurationsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListRateBasedRulesRoute,
+  postXAmzTargetAWSWAFRegional20161128ListRegexMatchSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListRegexPatternSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListResourcesForWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128ListRuleGroupsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListRulesRoute,
+  postXAmzTargetAWSWAFRegional20161128ListSizeConstraintSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListSqlInjectionMatchSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListSubscribedRuleGroupsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListTagsForResourceRoute,
+  postXAmzTargetAWSWAFRegional20161128ListWebACLsRoute,
+  postXAmzTargetAWSWAFRegional20161128ListXssMatchSetsRoute,
+  postXAmzTargetAWSWAFRegional20161128PutLoggingConfigurationRoute,
+  postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute,
+  postXAmzTargetAWSWAFRegional20161128TagResourceRoute,
+  postXAmzTargetAWSWAFRegional20161128UntagResourceRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateByteMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateGeoMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateIPSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateRateBasedRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateRegexMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateRegexPatternSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateRuleRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateSizeConstraintSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateWebACLRoute,
+  postXAmzTargetAWSWAFRegional20161128UpdateXssMatchSetRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSWAFRegional20161128AssociateWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateIPSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateWebACLMigrationStackRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128CreateXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteIPSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeletePermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteRuleGroupRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DeleteXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128DisassociateWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetChangeTokenRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetIPSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleManagedKeysRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRuleGroupRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetSampledRequestsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetWebACLForResourceRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128GetXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListActivatedRulesInRuleGroupRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListByteMatchSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListGeoMatchSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListIPSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListLoggingConfigurationsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListRateBasedRulesRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListRegexMatchSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListRegexPatternSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListResourcesForWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListRulesRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListSizeConstraintSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListSqlInjectionMatchSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListSubscribedRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListWebACLsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128ListXssMatchSetsRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128PutLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128TagResourceRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UntagResourceRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateIPSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateRuleRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateWebACLRouteHandler,
+  postXAmzTargetAWSWAFRegional20161128UpdateXssMatchSetRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwswafRegional20161128AssociateWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateByteMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateIpSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateRuleGroupHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateWebAclMigrationStackHandler)
-  .route('/', xAmzTargetAwswafRegional20161128CreateXssMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteByteMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteIpSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeletePermissionPolicyHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteRuleGroupHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DeleteXssMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128DisassociateWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetByteMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetChangeTokenHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetChangeTokenStatusHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetIpSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRateBasedRuleManagedKeysHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetRuleGroupHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetSampledRequestsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetWebAclForResourceHandler)
-  .route('/', xAmzTargetAwswafRegional20161128GetXssMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListActivatedRulesInRuleGroupHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListByteMatchSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListGeoMatchSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListIpSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListLoggingConfigurationsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListRateBasedRulesHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListRegexMatchSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListRegexPatternSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListResourcesForWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListRuleGroupsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListRulesHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListSizeConstraintSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListSqlInjectionMatchSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListSubscribedRuleGroupsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListWebAcLsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128ListXssMatchSetsHandler)
-  .route('/', xAmzTargetAwswafRegional20161128PutLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswafRegional20161128PutPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswafRegional20161128TagResourceHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UntagResourceHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateByteMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateIpSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateRuleHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateRuleGroupHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateWebAclHandler)
-  .route('/', xAmzTargetAwswafRegional20161128UpdateXssMatchSetHandler)
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128AssociateWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128AssociateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateByteMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateGeoMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateIPSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateRateBasedRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateRegexMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateRegexPatternSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateRuleGroupRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateSizeConstraintSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateWebACLMigrationStackRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateWebACLMigrationStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128CreateXssMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128CreateXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteByteMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteGeoMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteIPSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteLoggingConfigurationRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeletePermissionPolicyRoute,
+    postXAmzTargetAWSWAFRegional20161128DeletePermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteRateBasedRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteRegexMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteRegexPatternSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteRuleGroupRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteSizeConstraintSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DeleteXssMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128DeleteXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128DisassociateWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128DisassociateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetByteMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetChangeTokenRoute,
+    postXAmzTargetAWSWAFRegional20161128GetChangeTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRoute,
+    postXAmzTargetAWSWAFRegional20161128GetChangeTokenStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetGeoMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetIPSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetLoggingConfigurationRoute,
+    postXAmzTargetAWSWAFRegional20161128GetLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetPermissionPolicyRoute,
+    postXAmzTargetAWSWAFRegional20161128GetPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleManagedKeysRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRateBasedRuleManagedKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRegexMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRegexPatternSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetRuleGroupRoute,
+    postXAmzTargetAWSWAFRegional20161128GetRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetSampledRequestsRoute,
+    postXAmzTargetAWSWAFRegional20161128GetSampledRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetSizeConstraintSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128GetWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetWebACLForResourceRoute,
+    postXAmzTargetAWSWAFRegional20161128GetWebACLForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128GetXssMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128GetXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListActivatedRulesInRuleGroupRoute,
+    postXAmzTargetAWSWAFRegional20161128ListActivatedRulesInRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListByteMatchSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListByteMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListGeoMatchSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListGeoMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListIPSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListIPSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListLoggingConfigurationsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListLoggingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListRateBasedRulesRoute,
+    postXAmzTargetAWSWAFRegional20161128ListRateBasedRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListRegexMatchSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListRegexMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListRegexPatternSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListRegexPatternSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListResourcesForWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128ListResourcesForWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListRuleGroupsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListRulesRoute,
+    postXAmzTargetAWSWAFRegional20161128ListRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListSizeConstraintSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListSizeConstraintSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListSqlInjectionMatchSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListSqlInjectionMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListSubscribedRuleGroupsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListSubscribedRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListTagsForResourceRoute,
+    postXAmzTargetAWSWAFRegional20161128ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListWebACLsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListWebACLsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128ListXssMatchSetsRoute,
+    postXAmzTargetAWSWAFRegional20161128ListXssMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128PutLoggingConfigurationRoute,
+    postXAmzTargetAWSWAFRegional20161128PutLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute,
+    postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128TagResourceRoute,
+    postXAmzTargetAWSWAFRegional20161128TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UntagResourceRoute,
+    postXAmzTargetAWSWAFRegional20161128UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateByteMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateGeoMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateIPSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateRateBasedRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateRegexMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateRegexPatternSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateRuleRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateSizeConstraintSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateWebACLRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAFRegional20161128UpdateXssMatchSetRoute,
+    postXAmzTargetAWSWAFRegional20161128UpdateXssMatchSetRouteHandler,
+  )
 
 export default app

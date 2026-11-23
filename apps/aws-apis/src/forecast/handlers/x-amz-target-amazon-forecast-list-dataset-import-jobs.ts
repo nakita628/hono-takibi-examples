@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonForecastListDatasetImportJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonForecastListDatasetImportJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonForecastListDatasetImportJobsHandler = app.openapi(
-  postXAmzTargetAmazonForecastListDatasetImportJobsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonForecastListDatasetImportJobsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonForecastListDatasetImportJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mozilla.com/kinto/1.22/openapi.yaml',
   output: './src/mozilla-kinto/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mozilla-kinto/types.ts' },
   client: { output: './src/mozilla-kinto/client.ts', baseUrl: '/' },
   rpc: { output: './src/mozilla-kinto/rpc.ts', parseResponse: true },

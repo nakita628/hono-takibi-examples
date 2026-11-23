@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEntitiesClustersIdRoute,
   getEntitiesClustersRoute,
   getEntitiesDatastoresIdRoute,
@@ -48,144 +48,276 @@ import {
   postEntitiesNamesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEntitiesClustersRouteHandler: RouteHandler<
+  typeof getEntitiesClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const entitiesHandler = app
-  .openapi(getEntitiesClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesClustersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDatastoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDatastoresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDistributedVirtualPortgroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDistributedVirtualPortgroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDistributedVirtualSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesDistributedVirtualSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFirewallRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFlowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFlowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesFoldersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesHostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesHostsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesIpSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesIpSetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesLayer2NetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesLayer2NetworksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEntitiesNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesNamesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesNsxManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesNsxManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesProblemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesProblemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesSecurityGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesSecurityGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesSecurityTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesSecurityTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesServiceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesServiceGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVcDatacentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVcDatacentersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVcenterManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVcenterManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVmknicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVmknicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVmsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVnicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntitiesVnicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEntitiesClustersIdRouteHandler: RouteHandler<
+  typeof getEntitiesClustersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDatastoresRouteHandler: RouteHandler<
+  typeof getEntitiesDatastoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDatastoresIdRouteHandler: RouteHandler<
+  typeof getEntitiesDatastoresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDistributedVirtualPortgroupsRouteHandler: RouteHandler<
+  typeof getEntitiesDistributedVirtualPortgroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDistributedVirtualPortgroupsIdRouteHandler: RouteHandler<
+  typeof getEntitiesDistributedVirtualPortgroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDistributedVirtualSwitchesRouteHandler: RouteHandler<
+  typeof getEntitiesDistributedVirtualSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesDistributedVirtualSwitchesIdRouteHandler: RouteHandler<
+  typeof getEntitiesDistributedVirtualSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFirewallRulesRouteHandler: RouteHandler<
+  typeof getEntitiesFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFirewallRulesIdRouteHandler: RouteHandler<
+  typeof getEntitiesFirewallRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFirewallsRouteHandler: RouteHandler<
+  typeof getEntitiesFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFirewallsIdRouteHandler: RouteHandler<
+  typeof getEntitiesFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFlowsRouteHandler: RouteHandler<typeof getEntitiesFlowsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFlowsIdRouteHandler: RouteHandler<typeof getEntitiesFlowsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFoldersRouteHandler: RouteHandler<typeof getEntitiesFoldersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesFoldersIdRouteHandler: RouteHandler<
+  typeof getEntitiesFoldersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesHostsRouteHandler: RouteHandler<typeof getEntitiesHostsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesHostsIdRouteHandler: RouteHandler<typeof getEntitiesHostsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesIpSetsRouteHandler: RouteHandler<typeof getEntitiesIpSetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesIpSetsIdRouteHandler: RouteHandler<
+  typeof getEntitiesIpSetsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesLayer2NetworksRouteHandler: RouteHandler<
+  typeof getEntitiesLayer2NetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesLayer2NetworksIdRouteHandler: RouteHandler<
+  typeof getEntitiesLayer2NetworksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEntitiesNamesRouteHandler: RouteHandler<typeof postEntitiesNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesNamesIdRouteHandler: RouteHandler<typeof getEntitiesNamesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesNsxManagersRouteHandler: RouteHandler<
+  typeof getEntitiesNsxManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesNsxManagersIdRouteHandler: RouteHandler<
+  typeof getEntitiesNsxManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesProblemsRouteHandler: RouteHandler<
+  typeof getEntitiesProblemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesProblemsIdRouteHandler: RouteHandler<
+  typeof getEntitiesProblemsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesSecurityGroupsRouteHandler: RouteHandler<
+  typeof getEntitiesSecurityGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesSecurityGroupsIdRouteHandler: RouteHandler<
+  typeof getEntitiesSecurityGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesSecurityTagsRouteHandler: RouteHandler<
+  typeof getEntitiesSecurityTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesSecurityTagsIdRouteHandler: RouteHandler<
+  typeof getEntitiesSecurityTagsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesServiceGroupsRouteHandler: RouteHandler<
+  typeof getEntitiesServiceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesServiceGroupsIdRouteHandler: RouteHandler<
+  typeof getEntitiesServiceGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesServicesRouteHandler: RouteHandler<
+  typeof getEntitiesServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesServicesIdRouteHandler: RouteHandler<
+  typeof getEntitiesServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVcDatacentersRouteHandler: RouteHandler<
+  typeof getEntitiesVcDatacentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVcDatacentersIdRouteHandler: RouteHandler<
+  typeof getEntitiesVcDatacentersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVcenterManagersRouteHandler: RouteHandler<
+  typeof getEntitiesVcenterManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVcenterManagersIdRouteHandler: RouteHandler<
+  typeof getEntitiesVcenterManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVmknicsRouteHandler: RouteHandler<typeof getEntitiesVmknicsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVmknicsIdRouteHandler: RouteHandler<
+  typeof getEntitiesVmknicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVmsRouteHandler: RouteHandler<typeof getEntitiesVmsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVmsIdRouteHandler: RouteHandler<typeof getEntitiesVmsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVnicsRouteHandler: RouteHandler<typeof getEntitiesVnicsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntitiesVnicsIdRouteHandler: RouteHandler<typeof getEntitiesVnicsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

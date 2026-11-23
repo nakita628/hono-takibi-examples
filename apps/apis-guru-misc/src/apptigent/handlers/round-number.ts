@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRoundNumberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRoundNumberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const roundNumberHandler = app.openapi(postRoundNumberRoute, (c) => {
+export const postRoundNumberRouteHandler: RouteHandler<typeof postRoundNumberRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

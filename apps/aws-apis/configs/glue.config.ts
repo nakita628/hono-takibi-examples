@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/glue/2017-03-31/openapi.yaml',
   output: './src/glue/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/glue/types.ts' },
   client: { output: './src/glue/client.ts', baseUrl: '/' },
   rpc: { output: './src/glue/rpc.ts', parseResponse: true },

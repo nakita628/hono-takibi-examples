@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/swavlambancard/3.0.0/openapi.yaml',
   output: './src/swavlambancard/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/swavlambancard/types.ts' },
   client: { output: './src/swavlambancard/client.ts', baseUrl: '/' },
   rpc: { output: './src/swavlambancard/rpc.ts', parseResponse: true },

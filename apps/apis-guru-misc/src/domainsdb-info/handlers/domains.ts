@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDomainsSearchRoute,
   getDomainsTldZoneIdDownloadRoute,
   getDomainsTldZoneIdRoute,
@@ -11,33 +11,56 @@ import {
   getDomainsUpdatesListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDomainsSearchRouteHandler: RouteHandler<typeof getDomainsSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const domainsHandler = app
-  .openapi(getDomainsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsTldZoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsTldZoneIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsTldZoneIdSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsUpdatesAddedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsUpdatesAddedDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsUpdatesDeletedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsUpdatesDeletedDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsUpdatesListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDomainsTldZoneIdRouteHandler: RouteHandler<
+  typeof getDomainsTldZoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsTldZoneIdDownloadRouteHandler: RouteHandler<
+  typeof getDomainsTldZoneIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsTldZoneIdSearchRouteHandler: RouteHandler<
+  typeof getDomainsTldZoneIdSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsUpdatesAddedRouteHandler: RouteHandler<
+  typeof getDomainsUpdatesAddedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsUpdatesAddedDownloadRouteHandler: RouteHandler<
+  typeof getDomainsUpdatesAddedDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsUpdatesDeletedRouteHandler: RouteHandler<
+  typeof getDomainsUpdatesDeletedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsUpdatesDeletedDownloadRouteHandler: RouteHandler<
+  typeof getDomainsUpdatesDeletedDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsUpdatesListRouteHandler: RouteHandler<
+  typeof getDomainsUpdatesListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

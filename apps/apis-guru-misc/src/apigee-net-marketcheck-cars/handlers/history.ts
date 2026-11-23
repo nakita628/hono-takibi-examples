@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHistoryCarUkVrmRoute, getHistoryCarVinRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHistoryCarUkVrmRoute, getHistoryCarVinRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHistoryCarUkVrmRouteHandler: RouteHandler<typeof getHistoryCarUkVrmRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const historyHandler = app
-  .openapi(getHistoryCarUkVrmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHistoryCarVinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHistoryCarVinRouteHandler: RouteHandler<typeof getHistoryCarVinRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

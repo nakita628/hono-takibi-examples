@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/accesscontextmanager/v1beta/openapi.yaml',
   output: './src/accesscontextmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/accesscontextmanager/types.ts' },
   client: { output: './src/accesscontextmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/accesscontextmanager/rpc.ts', parseResponse: true },

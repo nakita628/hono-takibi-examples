@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChromeUrlRoute, postChromeHtmlRoute, postChromeUrlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChromeUrlRoute, postChromeHtmlRoute, postChromeUrlRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChromeHtmlRouteHandler: RouteHandler<typeof postChromeHtmlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chromeHandler = app
-  .openapi(postChromeHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChromeUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChromeUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getChromeUrlRouteHandler: RouteHandler<typeof getChromeUrlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChromeUrlRouteHandler: RouteHandler<typeof postChromeUrlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

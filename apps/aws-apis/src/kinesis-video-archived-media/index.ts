@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  getClipHandler,
-  getDashStreamingSessionUrlHandler,
-  getHlsStreamingSessionUrlHandler,
-  getImagesHandler,
-  getMediaForFragmentListHandler,
-  listFragmentsHandler,
+  postGetClipRoute,
+  postGetDASHStreamingSessionURLRoute,
+  postGetHLSStreamingSessionURLRoute,
+  postGetImagesRoute,
+  postGetMediaForFragmentListRoute,
+  postListFragmentsRoute,
+} from './routes'
+import {
+  postGetClipRouteHandler,
+  postGetDASHStreamingSessionURLRouteHandler,
+  postGetHLSStreamingSessionURLRouteHandler,
+  postGetImagesRouteHandler,
+  postGetMediaForFragmentListRouteHandler,
+  postListFragmentsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', getClipHandler)
-  .route('/', getDashStreamingSessionUrlHandler)
-  .route('/', getHlsStreamingSessionUrlHandler)
-  .route('/', getImagesHandler)
-  .route('/', getMediaForFragmentListHandler)
-  .route('/', listFragmentsHandler)
+  .openapi(postGetClipRoute, postGetClipRouteHandler)
+  .openapi(postGetDASHStreamingSessionURLRoute, postGetDASHStreamingSessionURLRouteHandler)
+  .openapi(postGetHLSStreamingSessionURLRoute, postGetHLSStreamingSessionURLRouteHandler)
+  .openapi(postGetImagesRoute, postGetImagesRouteHandler)
+  .openapi(postGetMediaForFragmentListRoute, postGetMediaForFragmentListRouteHandler)
+  .openapi(postListFragmentsRoute, postListFragmentsRouteHandler)
 
 export default app

@@ -1,79 +1,221 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetEntitiesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceSearchThingsHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceTagResourceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceUntagResourceHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateHandler,
-  xAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetEntitiesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchThingsRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceTagResourceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceUntagResourceRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateRoute,
+  postXAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsRoute,
+} from './routes'
+import {
+  postXAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetEntitiesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceSearchThingsRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceTagResourceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceUntagResourceRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateRouteHandler,
+  postXAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetEntitiesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceSearchThingsHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceTagResourceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceUntagResourceHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateHandler)
-  .route('/', xAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsHandler)
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceAssociateEntityToThingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateFlowTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceCreateSystemTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteFlowTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeploySystemInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeprecateFlowTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDeprecateSystemTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDescribeNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceDissociateEntityFromThingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetEntitiesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetFlowTemplateRevisionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetSystemTemplateRevisionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceGetUploadStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchFlowTemplatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchSystemTemplatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchThingsRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceSearchThingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceTagResourceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceUndeploySystemInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceUntagResourceRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceUpdateFlowTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceUpdateSystemTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsRoute,
+    postXAmzTargetIotThingsGraphFrontEndServiceUploadEntityDefinitionsRouteHandler,
+  )
 
 export default app

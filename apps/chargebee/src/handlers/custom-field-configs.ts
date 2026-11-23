@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCustomFieldConfigsRetrieveRoute, getCustomFieldConfigsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCustomFieldConfigsRetrieveRoute, getCustomFieldConfigsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCustomFieldConfigsRetrieveRouteHandler: RouteHandler<
+  typeof getCustomFieldConfigsRetrieveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const customFieldConfigsHandler = app
-  .openapi(getCustomFieldConfigsRetrieveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomFieldConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCustomFieldConfigsRouteHandler: RouteHandler<
+  typeof getCustomFieldConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

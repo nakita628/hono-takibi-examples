@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mailboxvalidator.com/disposable/1.0.0/openapi.yaml',
   output: './src/mailboxvalidator-disposable/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mailboxvalidator-disposable/types.ts' },
   client: { output: './src/mailboxvalidator-disposable/client.ts', baseUrl: '/' },
   rpc: { output: './src/mailboxvalidator-disposable/rpc.ts', parseResponse: true },

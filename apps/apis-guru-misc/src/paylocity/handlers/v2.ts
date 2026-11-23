@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRoute,
   deleteV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRoute,
   getV2CompaniesCompanyIdCodesCodeResourceRoute,
@@ -32,96 +32,182 @@ import {
   putV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2CompaniesCompanyIdCodesCodeResourceRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdCodesCodeResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2CompaniesCompanyIdCodesCodeResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdCustomfieldsCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CompaniesCompanyIdEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CompaniesCompanyIdEmployeesEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdAdditionalRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdBenefitSetupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdDirectDepositRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdEmergencyContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdNonprimaryStateTaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearCheckDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearCheckDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdPrimaryStateTaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CompaniesCompanyIdOpenapiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CredentialsSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WeblinkstagingCompaniesCompanyIdEmployeesNewemployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CompaniesCompanyIdCustomfieldsCategoryRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdCustomfieldsCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CompaniesCompanyIdEmployeesRouteHandler: RouteHandler<
+  typeof postV2CompaniesCompanyIdEmployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesIndexRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CompaniesCompanyIdEmployeesEmployeeIdRouteHandler: RouteHandler<
+  typeof patchV2CompaniesCompanyIdEmployeesEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdAdditionalRatesRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdAdditionalRatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdBenefitSetupRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdBenefitSetupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdDirectDepositRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdDirectDepositRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdEarningsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRouteHandler: RouteHandler<
+  typeof deleteV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdEarningsEarningCodeStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdEmergencyContactsRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdEmergencyContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRouteHandler: RouteHandler<
+  typeof postV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRouteHandler: RouteHandler<
+  typeof deleteV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdLocalTaxesTaxCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdNonprimaryStateTaxRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdNonprimaryStateTaxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearCheckDateRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementDetailsYearCheckDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearCheckDateRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdPaystatementSummaryYearCheckDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdPrimaryStateTaxRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdPrimaryStateTaxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRouteHandler: RouteHandler<
+  typeof putV2CompaniesCompanyIdEmployeesEmployeeIdSensitivedataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CompaniesCompanyIdOpenapiRouteHandler: RouteHandler<
+  typeof getV2CompaniesCompanyIdOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CredentialsSecretsRouteHandler: RouteHandler<
+  typeof postV2CredentialsSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WeblinkstagingCompaniesCompanyIdEmployeesNewemployeesRouteHandler: RouteHandler<
+  typeof postV2WeblinkstagingCompaniesCompanyIdEmployeesNewemployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/vault_payment_tokens_v3.json',
   output: './src/vault_payment_tokens_v3/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vault_payment_tokens_v3/types.ts' },
   client: { output: './src/vault_payment_tokens_v3/client.ts', baseUrl: '/' },
   rpc: { output: './src/vault_payment_tokens_v3/rpc.ts', parseResponse: true },

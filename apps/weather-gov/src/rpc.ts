@@ -110,31 +110,35 @@ export async function getGlossary(options?: ClientRequestOptions) {
 }
 
 export async function getGridpointsWfoXY(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.gridpoints[':wfo'][':x,:y'].$get(args, options))
+  return await parseResponse(client.gridpoints[':wfo'][':x,{y}'].$get(args, options))
 }
 
 export async function getGridpointsWfoXYForecast(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.$get(args, options))
+  return await parseResponse(client.gridpoints[':wfo'][':x,{y}'].forecast.$get(args, options))
 }
 
 export async function getGridpointsWfoXYForecastHourly(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>,
+  args: InferRequestType<
+    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(args, options))
+  return await parseResponse(
+    client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(args, options),
+  )
 }
 
 export async function getGridpointsWfoXYStations(
-  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>,
+  args: InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.gridpoints[':wfo'][':x,:y'].stations.$get(args, options))
+  return await parseResponse(client.gridpoints[':wfo'][':x,{y}'].stations.$get(args, options))
 }
 
 export async function getIconsSetTimeOfDayFirst(
@@ -288,24 +292,24 @@ export async function getOfficesOfficeIdWeatherstoriesDownloadImageId(
 }
 
 export async function getPointsLatitudeLongitude(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.points[':latitude,:longitude'].$get(args, options))
+  return await parseResponse(client.points[':latitude,{longitude}'].$get(args, options))
 }
 
 export async function getPointsLatitudeLongitudeRadio(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.points[':latitude,:longitude'].radio.$get(args, options))
+  return await parseResponse(client.points[':latitude,{longitude}'].radio.$get(args, options))
 }
 
 export async function getPointsLatitudeLongitudeStations(
-  args: InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>,
+  args: InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.points[':latitude,:longitude'].stations.$get(args, options))
+  return await parseResponse(client.points[':latitude,{longitude}'].stations.$get(args, options))
 }
 
 export async function getRadarServers(

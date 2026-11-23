@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPayoutsListRoute,
   getPayoutsPayoutIdRoute,
   postPayoutsCreateRoute,
@@ -11,33 +11,52 @@ import {
   postPayoutsPayoutIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPayoutsCreateRouteHandler: RouteHandler<typeof postPayoutsCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const payoutsHandler = app
-  .openapi(postPayoutsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsPayoutIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsPayoutIdFulfillRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPayoutsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsPayoutIdConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayoutsFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPayoutsPayoutIdRouteHandler: RouteHandler<typeof getPayoutsPayoutIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof postPayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsPayoutIdCancelRouteHandler: RouteHandler<
+  typeof postPayoutsPayoutIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsPayoutIdFulfillRouteHandler: RouteHandler<
+  typeof postPayoutsPayoutIdFulfillRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPayoutsListRouteHandler: RouteHandler<typeof getPayoutsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsListRouteHandler: RouteHandler<typeof postPayoutsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsPayoutIdConfirmRouteHandler: RouteHandler<
+  typeof postPayoutsPayoutIdConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPayoutsFilterRouteHandler: RouteHandler<typeof postPayoutsFilterRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

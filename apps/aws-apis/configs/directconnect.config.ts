@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/directconnect/2012-10-25/openapi.yaml',
   output: './src/directconnect/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/directconnect/types.ts' },
   client: { output: './src/directconnect/client.ts', baseUrl: '/' },
   rpc: { output: './src/directconnect/rpc.ts', parseResponse: true },

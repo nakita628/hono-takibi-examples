@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTechnologyRoute, getTechnologySearchRoute, postTechnologySearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getTechnologyRoute,
+  getTechnologySearchRoute,
+  postTechnologySearchRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getTechnologyRouteHandler: RouteHandler<typeof getTechnologyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const technologyHandler = app
-  .openapi(getTechnologyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechnologySearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTechnologySearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTechnologySearchRouteHandler: RouteHandler<
+  typeof getTechnologySearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTechnologySearchRouteHandler: RouteHandler<
+  typeof postTechnologySearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

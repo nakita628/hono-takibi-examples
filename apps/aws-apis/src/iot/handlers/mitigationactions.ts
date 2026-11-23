@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMitigationactionsActionsActionNameRoute,
   getMitigationactionsActionsActionNameRoute,
   getMitigationactionsActionsRoute,
@@ -7,21 +7,32 @@ import {
   postMitigationactionsActionsActionNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMitigationactionsActionsActionNameRouteHandler: RouteHandler<
+  typeof postMitigationactionsActionsActionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mitigationactionsHandler = app
-  .openapi(postMitigationactionsActionsActionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMitigationactionsActionsActionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMitigationactionsActionsActionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMitigationactionsActionsActionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMitigationactionsActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMitigationactionsActionsActionNameRouteHandler: RouteHandler<
+  typeof deleteMitigationactionsActionsActionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMitigationactionsActionsActionNameRouteHandler: RouteHandler<
+  typeof getMitigationactionsActionsActionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMitigationactionsActionsActionNameRouteHandler: RouteHandler<
+  typeof patchMitigationactionsActionsActionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMitigationactionsActionsRouteHandler: RouteHandler<
+  typeof getMitigationactionsActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

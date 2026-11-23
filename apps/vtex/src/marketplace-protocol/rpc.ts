@@ -66,26 +66,25 @@ export async function putAccountNameVtexcommercestableComBrApiOrderIntegrationOr
 
 export async function postAccountNameEnvironmentComBrApiFulfillmentPvtOrders(
   args: InferRequestType<
-    (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+    (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders.$post(args, options),
+    client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders.$post(args, options),
   )
 }
 
 export async function postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfill(
   args: InferRequestType<
-    (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+    (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders[':orderId'].fulfill.$post(
-      args,
-      options,
-    ),
+    client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders[
+      ':orderId'
+    ].fulfill.$post(args, options),
   )
 }
 

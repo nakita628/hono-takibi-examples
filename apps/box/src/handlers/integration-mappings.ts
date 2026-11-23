@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIntegrationMappingsSlackIntegrationMappingIdRoute,
   deleteIntegrationMappingsTeamsIntegrationMappingIdRoute,
   getIntegrationMappingsSlackRoute,
@@ -10,30 +10,50 @@ import {
   putIntegrationMappingsTeamsIntegrationMappingIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationMappingsSlackRouteHandler: RouteHandler<
+  typeof getIntegrationMappingsSlackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationMappingsHandler = app
-  .openapi(getIntegrationMappingsSlackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationMappingsSlackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIntegrationMappingsSlackIntegrationMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationMappingsSlackIntegrationMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationMappingsTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationMappingsTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIntegrationMappingsTeamsIntegrationMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationMappingsTeamsIntegrationMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegrationMappingsSlackRouteHandler: RouteHandler<
+  typeof postIntegrationMappingsSlackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIntegrationMappingsSlackIntegrationMappingIdRouteHandler: RouteHandler<
+  typeof putIntegrationMappingsSlackIntegrationMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationMappingsSlackIntegrationMappingIdRouteHandler: RouteHandler<
+  typeof deleteIntegrationMappingsSlackIntegrationMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationMappingsTeamsRouteHandler: RouteHandler<
+  typeof getIntegrationMappingsTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationMappingsTeamsRouteHandler: RouteHandler<
+  typeof postIntegrationMappingsTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIntegrationMappingsTeamsIntegrationMappingIdRouteHandler: RouteHandler<
+  typeof putIntegrationMappingsTeamsIntegrationMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationMappingsTeamsIntegrationMappingIdRouteHandler: RouteHandler<
+  typeof deleteIntegrationMappingsTeamsIntegrationMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

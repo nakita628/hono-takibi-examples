@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFoldersFolderUidRoute,
   getFoldersFolderUidCountsRoute,
   getFoldersFolderUidPermissionsRoute,
@@ -11,33 +11,52 @@ import {
   putFoldersFolderUidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFoldersRouteHandler: RouteHandler<typeof getFoldersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const foldersHandler = app
-  .openapi(getFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderUidCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderUidMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderUidPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderUidPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFoldersRouteHandler: RouteHandler<typeof postFoldersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderUidRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderUidRouteHandler: RouteHandler<
+  typeof getFoldersFolderUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderUidRouteHandler: RouteHandler<
+  typeof putFoldersFolderUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderUidCountsRouteHandler: RouteHandler<
+  typeof getFoldersFolderUidCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderUidMoveRouteHandler: RouteHandler<
+  typeof postFoldersFolderUidMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderUidPermissionsRouteHandler: RouteHandler<
+  typeof getFoldersFolderUidPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderUidPermissionsRouteHandler: RouteHandler<
+  typeof postFoldersFolderUidPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

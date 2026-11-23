@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sendgrid.com/1.0.0/openapi.yaml',
   output: './src/sendgrid/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sendgrid/types.ts' },
   client: { output: './src/sendgrid/client.ts', baseUrl: '/' },
   rpc: { output: './src/sendgrid/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAnalyticsRulesRuleNameRoute,
   getAnalyticsEventsRoute,
   getAnalyticsRulesRoute,
@@ -11,33 +11,56 @@ import {
   putAnalyticsRulesRuleNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAnalyticsEventsRouteHandler: RouteHandler<
+  typeof postAnalyticsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analyticsHandler = app
-  .openapi(postAnalyticsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsFlushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnalyticsRulesRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsRulesRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnalyticsRulesRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnalyticsEventsRouteHandler: RouteHandler<typeof getAnalyticsEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsFlushRouteHandler: RouteHandler<typeof postAnalyticsFlushRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsStatusRouteHandler: RouteHandler<typeof getAnalyticsStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsRulesRouteHandler: RouteHandler<typeof postAnalyticsRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsRulesRouteHandler: RouteHandler<typeof getAnalyticsRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnalyticsRulesRuleNameRouteHandler: RouteHandler<
+  typeof putAnalyticsRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsRulesRuleNameRouteHandler: RouteHandler<
+  typeof getAnalyticsRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnalyticsRulesRuleNameRouteHandler: RouteHandler<
+  typeof deleteAnalyticsRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

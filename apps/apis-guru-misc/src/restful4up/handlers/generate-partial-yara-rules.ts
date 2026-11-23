@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGeneratePartialYaraRulesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGeneratePartialYaraRulesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const generatePartialYaraRulesHandler = app.openapi(
-  postGeneratePartialYaraRulesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGeneratePartialYaraRulesRouteHandler: RouteHandler<
+  typeof postGeneratePartialYaraRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

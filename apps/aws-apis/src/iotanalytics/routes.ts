@@ -516,7 +516,7 @@ const DatasetSchema = z
   .openapi({ description: 'Information about a dataset.', required: [] })
   .openapi('Dataset')
 
-type DescribeDatasetResponseType = { dataset?: z.infer<typeof DatasetSchema> & unknown }
+type DescribeDatasetResponseType = { dataset?: z.infer<typeof DatasetSchema> }
 
 const MessageIdSchema = z
   .string()

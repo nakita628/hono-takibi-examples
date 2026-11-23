@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/unitycatalog/unitycatalog/blob/dcec3cfff1bb58147198cce64e4c2a036a67f742/api/all.yaml
   input: 'https://raw.githubusercontent.com/unitycatalog/unitycatalog/main/api/all.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

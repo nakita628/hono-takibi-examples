@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postResendPhoneNumberAuthRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postResendPhoneNumberAuthRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const resendPhoneNumberAuthHandler = app.openapi(postResendPhoneNumberAuthRoute, (c) => {
+export const postResendPhoneNumberAuthRouteHandler: RouteHandler<
+  typeof postResendPhoneNumberAuthRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

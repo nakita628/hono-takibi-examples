@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute,
   deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute,
   deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute,
@@ -60,192 +60,350 @@ import {
   putApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisAdmissionregistrationK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisAdmissionregistrationK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof postApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof deleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof patchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof putApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

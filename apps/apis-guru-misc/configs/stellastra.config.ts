@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/stellastra.com/1.0/openapi.yaml',
   output: './src/stellastra/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/stellastra/types.ts' },
   client: { output: './src/stellastra/client.ts', baseUrl: '/' },
   rpc: { output: './src/stellastra/rpc.ts', parseResponse: true },

@@ -1,13 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { cemstHandler, cfmstHandler, hscerHandler, micerHandler, sscerHandler } from './handlers'
+import {
+  postCemstCertificateRoute,
+  postCfmstCertificateRoute,
+  postHscerCertificateRoute,
+  postMicerCertificateRoute,
+  postSscerCertificateRoute,
+} from './routes'
+import {
+  postCemstCertificateRouteHandler,
+  postCfmstCertificateRouteHandler,
+  postHscerCertificateRouteHandler,
+  postMicerCertificateRouteHandler,
+  postSscerCertificateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', cemstHandler)
-  .route('/', cfmstHandler)
-  .route('/', hscerHandler)
-  .route('/', micerHandler)
-  .route('/', sscerHandler)
+  .openapi(postCemstCertificateRoute, postCemstCertificateRouteHandler)
+  .openapi(postCfmstCertificateRoute, postCfmstCertificateRouteHandler)
+  .openapi(postHscerCertificateRoute, postHscerCertificateRouteHandler)
+  .openapi(postMicerCertificateRoute, postMicerCertificateRouteHandler)
+  .openapi(postSscerCertificateRoute, postSscerCertificateRouteHandler)
 
 export default app

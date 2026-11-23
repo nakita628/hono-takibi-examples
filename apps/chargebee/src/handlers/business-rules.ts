@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBusinessRulesBusinessRuleIdDraftRoute,
   getBusinessRulesBusinessRuleIdRoute,
   getBusinessRulesRoute,
@@ -13,39 +13,68 @@ import {
   postBusinessRulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBusinessRulesApplyRulesRouteHandler: RouteHandler<
+  typeof postBusinessRulesApplyRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const businessRulesHandler = app
-  .openapi(postBusinessRulesApplyRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdDeleteDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdReleaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessRulesBusinessRuleIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesBusinessRuleIdDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessRulesBusinessRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBusinessRulesBusinessRuleIdDeleteDraftRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdDeleteDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesBusinessRuleIdReleaseRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdReleaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesBusinessRuleIdActivateRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessRulesBusinessRuleIdDraftRouteHandler: RouteHandler<
+  typeof getBusinessRulesBusinessRuleIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesBusinessRuleIdDraftRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesBusinessRuleIdDeleteRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesBusinessRuleIdDeactivateRouteHandler: RouteHandler<
+  typeof postBusinessRulesBusinessRuleIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessRulesBusinessRuleIdRouteHandler: RouteHandler<
+  typeof getBusinessRulesBusinessRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessRulesRouteHandler: RouteHandler<typeof getBusinessRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessRulesRouteHandler: RouteHandler<typeof postBusinessRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

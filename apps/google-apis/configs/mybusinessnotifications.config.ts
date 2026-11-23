@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/mybusinessnotifications/v1/openapi.yaml',
   output: './src/mybusinessnotifications/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mybusinessnotifications/types.ts' },
   client: { output: './src/mybusinessnotifications/client.ts', baseUrl: '/' },
   rpc: { output: './src/mybusinessnotifications/rpc.ts', parseResponse: true },

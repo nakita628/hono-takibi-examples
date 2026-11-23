@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/lifesciences/v2beta/openapi.yaml',
   output: './src/lifesciences/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lifesciences/types.ts' },
   client: { output: './src/lifesciences/client.ts', baseUrl: '/' },
   rpc: { output: './src/lifesciences/rpc.ts', parseResponse: true },

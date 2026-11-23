@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/thebluealliance.com/3.8.2/openapi.yaml',
   output: './src/thebluealliance/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/thebluealliance/types.ts' },
   client: { output: './src/thebluealliance/client.ts', baseUrl: '/' },
   rpc: { output: './src/thebluealliance/rpc.ts', parseResponse: true },

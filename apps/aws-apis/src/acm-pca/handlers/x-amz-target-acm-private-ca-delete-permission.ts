@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetACMPrivateCADeletePermissionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetACMPrivateCADeletePermissionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAcmPrivateCaDeletePermissionHandler = app.openapi(
-  postXAmzTargetACMPrivateCADeletePermissionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetACMPrivateCADeletePermissionRouteHandler: RouteHandler<
+  typeof postXAmzTargetACMPrivateCADeletePermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

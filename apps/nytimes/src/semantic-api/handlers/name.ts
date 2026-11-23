@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNameConceptTypeSpecificConceptJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNameConceptTypeSpecificConceptJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const nameHandler = app.openapi(getNameConceptTypeSpecificConceptJsonRoute, (c) => {
+export const getNameConceptTypeSpecificConceptJsonRouteHandler: RouteHandler<
+  typeof getNameConceptTypeSpecificConceptJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

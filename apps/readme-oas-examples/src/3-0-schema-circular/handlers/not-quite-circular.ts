@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postNotQuiteCircularRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postNotQuiteCircularRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const notQuiteCircularHandler = app.openapi(postNotQuiteCircularRoute, (c) => {
+export const postNotQuiteCircularRouteHandler: RouteHandler<
+  typeof postNotQuiteCircularRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

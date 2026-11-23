@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateHsmConfigurationRoute,
   postActionCreateHsmConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateHsmConfigurationRouteHandler: RouteHandler<
+  typeof getActionCreateHsmConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateHsmConfigurationHandler = app
-  .openapi(getActionCreateHsmConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateHsmConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateHsmConfigurationRouteHandler: RouteHandler<
+  typeof postActionCreateHsmConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

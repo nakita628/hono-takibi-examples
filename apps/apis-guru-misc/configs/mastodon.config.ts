@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mastodon.local/1.0/openapi.yaml',
   output: './src/mastodon/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mastodon/types.ts' },
   client: { output: './src/mastodon/client.ts', baseUrl: '/' },
   rpc: { output: './src/mastodon/rpc.ts', parseResponse: true },

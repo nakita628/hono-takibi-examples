@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEgipcCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEgipcCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const egipcHandler = app.openapi(postEgipcCertificateRoute, (c) => {
+export const postEgipcCertificateRouteHandler: RouteHandler<
+  typeof postEgipcCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

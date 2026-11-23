@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTsfRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTsfRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const tsfHandler = app.openapi(getTsfRoute, (c) => {
+export const getTsfRouteHandler: RouteHandler<typeof getTsfRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

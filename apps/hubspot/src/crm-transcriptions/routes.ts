@@ -765,6 +765,6 @@ export const deleteCrmExtensionsCalling202609TranscriptsTranscriptIdRoute = crea
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.extensions_calling_transcripts.write'] }],
 })

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPathwaysDiagramsForCategoryCategoryRoute,
   getPathwaysDiagramsSearchSearchStringRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPathwaysDiagramsSearchSearchStringRouteHandler: RouteHandler<
+  typeof getPathwaysDiagramsSearchSearchStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pathwaysHandler = app
-  .openapi(getPathwaysDiagramsSearchSearchStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPathwaysDiagramsForCategoryCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPathwaysDiagramsForCategoryCategoryRouteHandler: RouteHandler<
+  typeof getPathwaysDiagramsForCategoryCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

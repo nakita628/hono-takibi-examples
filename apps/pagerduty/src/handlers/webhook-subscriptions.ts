@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhookSubscriptionsIdRoute,
   deleteWebhookSubscriptionsOauthClientsIdRoute,
   getWebhookSubscriptionsIdRoute,
@@ -14,42 +14,74 @@ import {
   putWebhookSubscriptionsOauthClientsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebhookSubscriptionsRouteHandler: RouteHandler<
+  typeof getWebhookSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhookSubscriptionsHandler = app
-  .openapi(getWebhookSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhookSubscriptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebhookSubscriptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhookSubscriptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookSubscriptionsIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookSubscriptionsIdPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhookSubscriptionsOauthClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookSubscriptionsOauthClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhookSubscriptionsOauthClientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebhookSubscriptionsOauthClientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhookSubscriptionsOauthClientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWebhookSubscriptionsRouteHandler: RouteHandler<
+  typeof postWebhookSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhookSubscriptionsIdRouteHandler: RouteHandler<
+  typeof getWebhookSubscriptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebhookSubscriptionsIdRouteHandler: RouteHandler<
+  typeof putWebhookSubscriptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhookSubscriptionsIdRouteHandler: RouteHandler<
+  typeof deleteWebhookSubscriptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookSubscriptionsIdEnableRouteHandler: RouteHandler<
+  typeof postWebhookSubscriptionsIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookSubscriptionsIdPingRouteHandler: RouteHandler<
+  typeof postWebhookSubscriptionsIdPingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhookSubscriptionsOauthClientsRouteHandler: RouteHandler<
+  typeof getWebhookSubscriptionsOauthClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookSubscriptionsOauthClientsRouteHandler: RouteHandler<
+  typeof postWebhookSubscriptionsOauthClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhookSubscriptionsOauthClientsIdRouteHandler: RouteHandler<
+  typeof getWebhookSubscriptionsOauthClientsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebhookSubscriptionsOauthClientsIdRouteHandler: RouteHandler<
+  typeof putWebhookSubscriptionsOauthClientsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhookSubscriptionsOauthClientsIdRouteHandler: RouteHandler<
+  typeof deleteWebhookSubscriptionsOauthClientsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

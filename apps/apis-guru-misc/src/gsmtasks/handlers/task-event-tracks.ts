@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTaskEventTracksIdIndexRoute, getTaskEventTracksIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTaskEventTracksIdIndexRoute, getTaskEventTracksIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaskEventTracksIndexRouteHandler: RouteHandler<
+  typeof getTaskEventTracksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const taskEventTracksHandler = app
-  .openapi(getTaskEventTracksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskEventTracksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTaskEventTracksIdIndexRouteHandler: RouteHandler<
+  typeof getTaskEventTracksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

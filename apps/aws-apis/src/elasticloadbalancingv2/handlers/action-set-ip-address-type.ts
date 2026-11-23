@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSetIpAddressTypeRoute, postActionSetIpAddressTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSetIpAddressTypeRoute, postActionSetIpAddressTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetIpAddressTypeRouteHandler: RouteHandler<
+  typeof getActionSetIpAddressTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetIpAddressTypeHandler = app
-  .openapi(getActionSetIpAddressTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetIpAddressTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetIpAddressTypeRouteHandler: RouteHandler<
+  typeof postActionSetIpAddressTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

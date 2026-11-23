@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionVerifyEmailAddressRoute, postActionVerifyEmailAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionVerifyEmailAddressRoute, postActionVerifyEmailAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionVerifyEmailAddressRouteHandler: RouteHandler<
+  typeof getActionVerifyEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionVerifyEmailAddressHandler = app
-  .openapi(getActionVerifyEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionVerifyEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionVerifyEmailAddressRouteHandler: RouteHandler<
+  typeof postActionVerifyEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

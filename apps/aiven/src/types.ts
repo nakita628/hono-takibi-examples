@@ -14763,6 +14763,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { project: string; key_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { project: string; key_id: string } }
             output: {
               message?: string | undefined
               errors?:
@@ -15886,7 +15892,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string; user_id: string; token_prefix: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -15910,7 +15916,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string; user_id: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
       $get:
         | {
@@ -16032,6 +16038,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string; authentication_method_id: string } } & {
               json: OrganizationAuthDomainLinkRequestBody
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; authentication_method_id: string } } & {
+              json: OrganizationAuthDomainLinkRequestBody
+            }
             output: {
               message?: string | undefined
               errors?:
@@ -16101,6 +16115,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/organization/:organization_id/authentication-methods/:authentication_method_id/domains/:domain_id': {
       $delete:
+        | {
+            input: {
+              param: {
+                organization_id: string
+                authentication_method_id: string
+                domain_id: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: {
@@ -16833,7 +16859,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string; domain_id: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -16862,20 +16888,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/organization/:organization_id/user-groups/:user_group_id': {
-      $delete: {
-        input: { param: { organization_id: string; user_group_id: string } }
-        output: {
-          message?: string | undefined
-          errors?:
-            | {
-                message?: string | undefined
-                error_code?: 'resource_managed_by_scim' | undefined
-              }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 409
-      }
+      $delete:
+        | {
+            input: { param: { organization_id: string; user_group_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; user_group_id: string } }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'resource_managed_by_scim' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 409
+          }
       $get: {
         input: { param: { organization_id: string; user_group_id: string } }
         output: UserGroupGetResponse
@@ -16916,22 +16949,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $patch: {
-        input: { param: { organization_id: string; user_group_id: string } } & {
-          json: UserGroupMembersUpdateRequestBody
-        }
-        output: {
-          message?: string | undefined
-          errors?:
-            | {
-                message?: string | undefined
-                error_code?: 'resource_managed_by_scim' | undefined
-              }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 409
-      }
+      $patch:
+        | {
+            input: { param: { organization_id: string; user_group_id: string } } & {
+              json: UserGroupMembersUpdateRequestBody
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; user_group_id: string } } & {
+              json: UserGroupMembersUpdateRequestBody
+            }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'resource_managed_by_scim' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 409
+          }
     }
   } & {
     '/organization/:organization_id/kafka-connect/custom-connectors': {
@@ -17068,6 +17110,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/organization/:organization_id/kafka-connect/custom-plugins/:plugin_name': {
       $delete:
+        | {
+            input: { param: { organization_id: string; plugin_name: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { organization_id: string; plugin_name: string } }
             output: {
@@ -17242,6 +17290,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/organization/:organization_id/kafka-connect/custom-plugin-files/:plugin_file_id': {
       $delete:
+        | {
+            input: { param: { organization_id: string; plugin_file_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { organization_id: string; plugin_file_id: string } }
             output: {
@@ -17520,17 +17574,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/organization/:organization_id/billing-group/:billing_group_id': {
-      $delete: {
-        input: { param: { organization_id: string; billing_group_id: string } }
-        output: {
-          message?: string | undefined
-          errors?:
-            | { message?: string | undefined; error_code?: 'billing_group_not_found' | undefined }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 404
-      }
+      $delete:
+        | {
+            input: { param: { organization_id: string; billing_group_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; billing_group_id: string } }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'billing_group_not_found' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 404
+          }
       $get:
         | {
             input: { param: { organization_id: string; billing_group_id: string } }
@@ -18410,17 +18474,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/organization/:organization_id': {
-      $delete: {
-        input: { param: { organization_id: string } } & { query: { recursive: boolean } }
-        output: {
-          message?: string | undefined
-          errors?:
-            | { message?: string | undefined; error_code?: 'organization_not_found' | undefined }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 404
-      }
+      $delete:
+        | {
+            input: { param: { organization_id: string } } & { query: { recursive: boolean } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string } } & { query: { recursive: boolean } }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'organization_not_found' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 404
+          }
       $get: {
         input: { param: { organization_id: string } }
         output: OrganizationGetResponse
@@ -18828,6 +18902,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: OrganizationIPAllowListSetRequestBody
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: OrganizationIPAllowListSetRequestBody
+            }
             output: {
               message?: string | undefined
               errors?:
@@ -18942,6 +19024,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/organization/:organization_id/project/:project_id': {
       $delete:
+        | {
+            input: { param: { organization_id: string; project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { organization_id: string; project_id: string } }
             output: {
@@ -19213,13 +19301,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
       $delete: {
         input: { param: { organization_id: string; user_email: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -19234,7 +19322,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string } } & { json: OrganizationUserInviteRequestBody }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -19789,46 +19877,72 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-      $put: {
-        input: {
-          param: {
-            organization_id: string
-            resource_type: 'project' | 'organization' | 'organization_unit'
-            resource_id: string
+      $put:
+        | {
+            input: {
+              param: {
+                organization_id: string
+                resource_type: 'project' | 'organization' | 'organization_unit'
+                resource_id: string
+              }
+            } & { json: PermissionsSetRequestBody }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        } & { json: PermissionsSetRequestBody }
-        output: {
-          message?: string | undefined
-          errors?:
-            | {
-                message?: string | undefined
-                error_code?: 'unsupported_resource_type' | undefined
-              }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 400
-      }
-      $patch: {
-        input: {
-          param: {
-            organization_id: string
-            resource_type: 'project' | 'organization' | 'organization_unit'
-            resource_id: string
+        | {
+            input: {
+              param: {
+                organization_id: string
+                resource_type: 'project' | 'organization' | 'organization_unit'
+                resource_id: string
+              }
+            } & { json: PermissionsSetRequestBody }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'unsupported_resource_type' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 400
           }
-        } & { json: PermissionsUpdateRequestBody }
-        output: {
-          message?: string | undefined
-          errors?:
-            | {
-                message?: string | undefined
-                error_code?: 'unsupported_resource_type' | undefined
-              }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+      $patch:
+        | {
+            input: {
+              param: {
+                organization_id: string
+                resource_type: 'project' | 'organization' | 'organization_unit'
+                resource_id: string
+              }
+            } & { json: PermissionsUpdateRequestBody }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                organization_id: string
+                resource_type: 'project' | 'organization' | 'organization_unit'
+                resource_id: string
+              }
+            } & { json: PermissionsUpdateRequestBody }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'unsupported_resource_type' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/project/:project/vpc-peering-connection-types': {
@@ -20514,6 +20628,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/project/:project/service/:service_name/application/redeploy': {
       $post:
+        | {
+            input: { param: { project: string; service_name: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { project: string; service_name: string } }
             output: {
@@ -24928,17 +25048,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/organization/:organization_id/upgrade-pipeline/steps/:step_id': {
-      $delete: {
-        input: { param: { organization_id: string; step_id: string } }
-        output: {
-          message?: string | undefined
-          errors?:
-            | { message?: string | undefined; error_code?: 'upgrade_step_not_found' | undefined }[]
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 404
-      }
+      $delete:
+        | {
+            input: { param: { organization_id: string; step_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; step_id: string } }
+            output: {
+              message?: string | undefined
+              errors?:
+                | {
+                    message?: string | undefined
+                    error_code?: 'upgrade_step_not_found' | undefined
+                  }[]
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 404
+          }
       $get:
         | {
             input: { param: { organization_id: string; step_id: string } }
@@ -24989,6 +25119,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/project/:project/service/:service_name/upgrade-validation': {
       $post:
+        | {
+            input: { param: { project: string; service_name: string } } & {
+              json: UpgradePipelineStepValidateRequestBody
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { project: string; service_name: string } } & {
               json: UpgradePipelineStepValidateRequestBody
@@ -25111,6 +25249,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { organization_id: string; member_user_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; member_user_id: string } }
             output: {
               message?: string | undefined
               errors?:
@@ -25172,7 +25316,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string; member_user_id: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -25181,7 +25325,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { organization_id: string; member_user_id: string; token_prefix: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
     }
   } & {
@@ -25214,6 +25358,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/user/:user_id': {
       $delete:
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { user_id: string } }
             output: {

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postImageResizeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postImageResizeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const imageResizeHandler = app.openapi(postImageResizeRoute, (c) => {
+export const postImageResizeRouteHandler: RouteHandler<typeof postImageResizeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

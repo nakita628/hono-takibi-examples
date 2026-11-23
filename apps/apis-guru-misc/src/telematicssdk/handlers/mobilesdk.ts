@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMobilesdkStageTrackGetTrackV1Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMobilesdkStageTrackGetTrackV1Route } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mobilesdkHandler = app.openapi(getMobilesdkStageTrackGetTrackV1Route, (c) => {
+export const getMobilesdkStageTrackGetTrackV1RouteHandler: RouteHandler<
+  typeof getMobilesdkStageTrackGetTrackV1Route
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

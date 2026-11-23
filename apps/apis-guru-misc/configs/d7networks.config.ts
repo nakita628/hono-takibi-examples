@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/d7networks.com/1.0.2/openapi.yaml',
   output: './src/d7networks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/d7networks/types.ts' },
   client: { output: './src/d7networks/client.ts', baseUrl: '/' },
   rpc: { output: './src/d7networks/rpc.ts', parseResponse: true },

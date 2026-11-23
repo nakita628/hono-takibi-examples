@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postV1UrlInspectionIndexInspectRoute,
   postV1UrlTestingToolsMobileFriendlyTestRunRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1UrlInspectionIndexInspectRouteHandler: RouteHandler<
+  typeof postV1UrlInspectionIndexInspectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1UrlInspectionIndexInspectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UrlTestingToolsMobileFriendlyTestRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1UrlTestingToolsMobileFriendlyTestRunRouteHandler: RouteHandler<
+  typeof postV1UrlTestingToolsMobileFriendlyTestRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

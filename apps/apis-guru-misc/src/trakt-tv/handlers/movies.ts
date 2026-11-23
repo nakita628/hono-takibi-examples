@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMoviesAnticipatedRoute,
   getMoviesBoxofficeRoute,
   getMoviesCollectedPeriodRoute,
@@ -24,72 +24,132 @@ import {
   getMoviesWatchedPeriodRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMoviesAnticipatedRouteHandler: RouteHandler<
+  typeof getMoviesAnticipatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moviesHandler = app
-  .openapi(getMoviesAnticipatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesBoxofficeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesCollectedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesPlayedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesPopularRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesRecommendedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesTrendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesUpdatesIdStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesUpdatesStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesWatchedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdCommentsSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdListsTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdReleasesCountryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdStudiosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdTranslationsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMoviesIdWatchingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMoviesBoxofficeRouteHandler: RouteHandler<typeof getMoviesBoxofficeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesCollectedPeriodRouteHandler: RouteHandler<
+  typeof getMoviesCollectedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesPlayedPeriodRouteHandler: RouteHandler<
+  typeof getMoviesPlayedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesPopularRouteHandler: RouteHandler<typeof getMoviesPopularRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesRecommendedPeriodRouteHandler: RouteHandler<
+  typeof getMoviesRecommendedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesTrendingRouteHandler: RouteHandler<typeof getMoviesTrendingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesUpdatesIdStartDateRouteHandler: RouteHandler<
+  typeof getMoviesUpdatesIdStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesUpdatesStartDateRouteHandler: RouteHandler<
+  typeof getMoviesUpdatesStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesWatchedPeriodRouteHandler: RouteHandler<
+  typeof getMoviesWatchedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdRouteHandler: RouteHandler<typeof getMoviesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdAliasesRouteHandler: RouteHandler<typeof getMoviesIdAliasesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdCommentsSortRouteHandler: RouteHandler<
+  typeof getMoviesIdCommentsSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdListsTypeSortRouteHandler: RouteHandler<
+  typeof getMoviesIdListsTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdPeopleRouteHandler: RouteHandler<typeof getMoviesIdPeopleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdRatingsRouteHandler: RouteHandler<typeof getMoviesIdRatingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdRelatedRouteHandler: RouteHandler<typeof getMoviesIdRelatedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdReleasesCountryRouteHandler: RouteHandler<
+  typeof getMoviesIdReleasesCountryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdStatsRouteHandler: RouteHandler<typeof getMoviesIdStatsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdStudiosRouteHandler: RouteHandler<typeof getMoviesIdStudiosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdTranslationsLanguageRouteHandler: RouteHandler<
+  typeof getMoviesIdTranslationsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMoviesIdWatchingRouteHandler: RouteHandler<
+  typeof getMoviesIdWatchingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

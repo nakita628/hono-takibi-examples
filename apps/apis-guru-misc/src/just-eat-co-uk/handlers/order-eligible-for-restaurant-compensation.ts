@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOrderEligibleForRestaurantCompensationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOrderEligibleForRestaurantCompensationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const orderEligibleForRestaurantCompensationHandler = app.openapi(
-  postOrderEligibleForRestaurantCompensationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postOrderEligibleForRestaurantCompensationRouteHandler: RouteHandler<
+  typeof postOrderEligibleForRestaurantCompensationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStickersStickerIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStickersStickerIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stickersHandler = app.openapi(getStickersStickerIdRoute, (c) => {
+export const getStickersStickerIdRouteHandler: RouteHandler<
+  typeof getStickersStickerIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

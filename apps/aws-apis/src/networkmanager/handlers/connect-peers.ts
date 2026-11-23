@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectPeersConnectPeerIdRoute,
   getConnectPeersConnectPeerIdRoute,
   getConnectPeersRoute,
   postConnectPeersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postConnectPeersRouteHandler: RouteHandler<typeof postConnectPeersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const connectPeersHandler = app
-  .openapi(postConnectPeersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectPeersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectPeersConnectPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectPeersConnectPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConnectPeersRouteHandler: RouteHandler<typeof getConnectPeersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectPeersConnectPeerIdRouteHandler: RouteHandler<
+  typeof deleteConnectPeersConnectPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectPeersConnectPeerIdRouteHandler: RouteHandler<
+  typeof getConnectPeersConnectPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

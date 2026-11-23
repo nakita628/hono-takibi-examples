@@ -1,55 +1,149 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsCognitoIdentityServiceCreateIdentityPoolHandler,
-  xAmzTargetAwsCognitoIdentityServiceDeleteIdentitiesHandler,
-  xAmzTargetAwsCognitoIdentityServiceDeleteIdentityPoolHandler,
-  xAmzTargetAwsCognitoIdentityServiceDescribeIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceDescribeIdentityPoolHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetCredentialsForIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetIdentityPoolRolesHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetIdHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetOpenIdTokenHandler,
-  xAmzTargetAwsCognitoIdentityServiceGetPrincipalTagAttributeMapHandler,
-  xAmzTargetAwsCognitoIdentityServiceListIdentitiesHandler,
-  xAmzTargetAwsCognitoIdentityServiceListIdentityPoolsHandler,
-  xAmzTargetAwsCognitoIdentityServiceListTagsForResourceHandler,
-  xAmzTargetAwsCognitoIdentityServiceLookupDeveloperIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceMergeDeveloperIdentitiesHandler,
-  xAmzTargetAwsCognitoIdentityServiceSetIdentityPoolRolesHandler,
-  xAmzTargetAwsCognitoIdentityServiceSetPrincipalTagAttributeMapHandler,
-  xAmzTargetAwsCognitoIdentityServiceTagResourceHandler,
-  xAmzTargetAwsCognitoIdentityServiceUnlinkDeveloperIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceUnlinkIdentityHandler,
-  xAmzTargetAwsCognitoIdentityServiceUntagResourceHandler,
-  xAmzTargetAwsCognitoIdentityServiceUpdateIdentityPoolHandler,
+  postXAmzTargetAWSCognitoIdentityServiceCreateIdentityPoolRoute,
+  postXAmzTargetAWSCognitoIdentityServiceDeleteIdentitiesRoute,
+  postXAmzTargetAWSCognitoIdentityServiceDeleteIdentityPoolRoute,
+  postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityPoolRoute,
+  postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetCredentialsForIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetIdentityPoolRolesRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetIdRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenRoute,
+  postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute,
+  postXAmzTargetAWSCognitoIdentityServiceListIdentitiesRoute,
+  postXAmzTargetAWSCognitoIdentityServiceListIdentityPoolsRoute,
+  postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute,
+  postXAmzTargetAWSCognitoIdentityServiceLookupDeveloperIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceMergeDeveloperIdentitiesRoute,
+  postXAmzTargetAWSCognitoIdentityServiceSetIdentityPoolRolesRoute,
+  postXAmzTargetAWSCognitoIdentityServiceSetPrincipalTagAttributeMapRoute,
+  postXAmzTargetAWSCognitoIdentityServiceTagResourceRoute,
+  postXAmzTargetAWSCognitoIdentityServiceUnlinkDeveloperIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceUnlinkIdentityRoute,
+  postXAmzTargetAWSCognitoIdentityServiceUntagResourceRoute,
+  postXAmzTargetAWSCognitoIdentityServiceUpdateIdentityPoolRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSCognitoIdentityServiceCreateIdentityPoolRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceDeleteIdentitiesRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceDeleteIdentityPoolRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityPoolRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetCredentialsForIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetIdentityPoolRolesRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetIdRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceListIdentitiesRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceListIdentityPoolsRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceLookupDeveloperIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceMergeDeveloperIdentitiesRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceSetIdentityPoolRolesRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceSetPrincipalTagAttributeMapRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceTagResourceRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceUnlinkDeveloperIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceUnlinkIdentityRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceUntagResourceRouteHandler,
+  postXAmzTargetAWSCognitoIdentityServiceUpdateIdentityPoolRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsCognitoIdentityServiceCreateIdentityPoolHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceDeleteIdentitiesHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceDeleteIdentityPoolHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceDescribeIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceDescribeIdentityPoolHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetCredentialsForIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetIdHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetIdentityPoolRolesHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetOpenIdTokenHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceGetPrincipalTagAttributeMapHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceListIdentitiesHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceListIdentityPoolsHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceLookupDeveloperIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceMergeDeveloperIdentitiesHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceSetIdentityPoolRolesHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceSetPrincipalTagAttributeMapHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceTagResourceHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceUnlinkDeveloperIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceUnlinkIdentityHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceUntagResourceHandler)
-  .route('/', xAmzTargetAwsCognitoIdentityServiceUpdateIdentityPoolHandler)
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceCreateIdentityPoolRoute,
+    postXAmzTargetAWSCognitoIdentityServiceCreateIdentityPoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceDeleteIdentitiesRoute,
+    postXAmzTargetAWSCognitoIdentityServiceDeleteIdentitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceDeleteIdentityPoolRoute,
+    postXAmzTargetAWSCognitoIdentityServiceDeleteIdentityPoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityPoolRoute,
+    postXAmzTargetAWSCognitoIdentityServiceDescribeIdentityPoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetCredentialsForIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetCredentialsForIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetIdRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetIdentityPoolRolesRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetIdentityPoolRolesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetOpenIdTokenForDeveloperIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute,
+    postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceListIdentitiesRoute,
+    postXAmzTargetAWSCognitoIdentityServiceListIdentitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceListIdentityPoolsRoute,
+    postXAmzTargetAWSCognitoIdentityServiceListIdentityPoolsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRoute,
+    postXAmzTargetAWSCognitoIdentityServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceLookupDeveloperIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceLookupDeveloperIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceMergeDeveloperIdentitiesRoute,
+    postXAmzTargetAWSCognitoIdentityServiceMergeDeveloperIdentitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceSetIdentityPoolRolesRoute,
+    postXAmzTargetAWSCognitoIdentityServiceSetIdentityPoolRolesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceSetPrincipalTagAttributeMapRoute,
+    postXAmzTargetAWSCognitoIdentityServiceSetPrincipalTagAttributeMapRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceTagResourceRoute,
+    postXAmzTargetAWSCognitoIdentityServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceUnlinkDeveloperIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceUnlinkDeveloperIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceUnlinkIdentityRoute,
+    postXAmzTargetAWSCognitoIdentityServiceUnlinkIdentityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceUntagResourceRoute,
+    postXAmzTargetAWSCognitoIdentityServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSCognitoIdentityServiceUpdateIdentityPoolRoute,
+    postXAmzTargetAWSCognitoIdentityServiceUpdateIdentityPoolRouteHandler,
+  )
 
 export default app

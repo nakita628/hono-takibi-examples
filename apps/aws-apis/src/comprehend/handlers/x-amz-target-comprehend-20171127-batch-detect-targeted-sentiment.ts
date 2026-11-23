@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComprehend20171127BatchDetectTargetedSentimentHandler = app.openapi(
-  postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRouteHandler: RouteHandler<
+  typeof postXAmzTargetComprehend20171127BatchDetectTargetedSentimentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDevFetchApiKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDevFetchApiKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const devFetchApiKeyHandler = app.openapi(postDevFetchApiKeyRoute, (c) => {
+export const postDevFetchApiKeyRouteHandler: RouteHandler<typeof postDevFetchApiKeyRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

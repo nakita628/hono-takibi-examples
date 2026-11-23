@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionTerminateInstancesRoute, postActionTerminateInstancesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionTerminateInstancesRoute, postActionTerminateInstancesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionTerminateInstancesRouteHandler: RouteHandler<
+  typeof getActionTerminateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionTerminateInstancesHandler = app
-  .openapi(getActionTerminateInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionTerminateInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionTerminateInstancesRouteHandler: RouteHandler<
+  typeof postActionTerminateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

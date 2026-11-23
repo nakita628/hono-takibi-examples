@@ -188,10 +188,10 @@ const SourceServerIDSchema = z
   .openapi('SourceServerID')
 
 type ParticipatingServerType = {
-  launchStatus?: z.infer<typeof LaunchStatusSchema> & unknown
-  launchedEc2InstanceID?: z.infer<typeof EC2InstanceIDSchema> & unknown
-  postLaunchActionsStatus?: z.infer<typeof PostLaunchActionsStatusSchema> & unknown
-  sourceServerID: z.infer<typeof SourceServerIDSchema> & unknown
+  launchStatus?: z.infer<typeof LaunchStatusSchema>
+  launchedEc2InstanceID?: z.infer<typeof EC2InstanceIDSchema>
+  postLaunchActionsStatus?: z.infer<typeof PostLaunchActionsStatusSchema>
+  sourceServerID: z.infer<typeof SourceServerIDSchema>
 }
 
 const ParticipatingServerSchema: z.ZodType<ParticipatingServerType> = z
@@ -227,15 +227,15 @@ const TagsMapSchema = z.record(z.string(), TagValueSchema).openapi('TagsMap')
 const JobTypeSchema = z.enum(['LAUNCH', 'TERMINATE']).openapi('JobType')
 
 type JobType = {
-  arn?: z.infer<typeof ARNSchema> & unknown
-  creationDateTime?: z.infer<typeof ISO8601DatetimeStringSchema> & unknown
-  endDateTime?: z.infer<typeof ISO8601DatetimeStringSchema> & unknown
-  initiatedBy?: z.infer<typeof InitiatedBySchema> & unknown
-  jobID: z.infer<typeof JobIDSchema> & unknown
-  participatingServers?: z.infer<typeof ParticipatingServersSchema> & unknown
-  status?: z.infer<typeof JobStatusSchema> & unknown
-  tags?: z.infer<typeof TagsMapSchema> & unknown
-  type?: z.infer<typeof JobTypeSchema> & unknown
+  arn?: z.infer<typeof ARNSchema>
+  creationDateTime?: z.infer<typeof ISO8601DatetimeStringSchema>
+  endDateTime?: z.infer<typeof ISO8601DatetimeStringSchema>
+  initiatedBy?: z.infer<typeof InitiatedBySchema>
+  jobID: z.infer<typeof JobIDSchema>
+  participatingServers?: z.infer<typeof ParticipatingServersSchema>
+  status?: z.infer<typeof JobStatusSchema>
+  tags?: z.infer<typeof TagsMapSchema>
+  type?: z.infer<typeof JobTypeSchema>
 }
 
 const JobSchema: z.ZodType<JobType> = z
@@ -270,8 +270,8 @@ const JobsListSchema: z.ZodType<JobsListType> = z.array(JobSchema).openapi('Jobs
 const PaginationTokenSchema = z.string().min(0).max(2048).openapi('PaginationToken')
 
 type DescribeJobsResponseType = {
-  items?: z.infer<typeof JobsListSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  items?: z.infer<typeof JobsListSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const BootModeSchema = z.enum(['LEGACY_BIOS', 'UEFI']).openapi('BootMode')
@@ -422,15 +422,15 @@ const LaunchConfigurationTemplatesSchema: z.ZodType<LaunchConfigurationTemplates
   .openapi('LaunchConfigurationTemplates')
 
 type DescribeLaunchConfigurationTemplatesResponseType = {
-  items?: z.infer<typeof LaunchConfigurationTemplatesSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  items?: z.infer<typeof LaunchConfigurationTemplatesSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
-type StartCutoverResponseType = { job?: z.infer<typeof JobSchema> & unknown }
+type StartCutoverResponseType = { job?: z.infer<typeof JobSchema> }
 
-type StartTestResponseType = { job?: z.infer<typeof JobSchema> & unknown }
+type StartTestResponseType = { job?: z.infer<typeof JobSchema> }
 
-type TerminateTargetInstancesResponseType = { job?: z.infer<typeof JobSchema> & unknown }
+type TerminateTargetInstancesResponseType = { job?: z.infer<typeof JobSchema> }
 
 const ApplicationHealthStatusSchema = z
   .enum(['HEALTHY', 'LAGGING', 'ERROR'])

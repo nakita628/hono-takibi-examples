@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStartupConfigurationRoute,
   getStartupFirstUserRoute,
   getStartupUserRoute,
@@ -9,27 +9,40 @@ import {
   postStartupUserRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postStartupCompleteRouteHandler: RouteHandler<
+  typeof postStartupCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const startupHandler = app
-  .openapi(postStartupCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStartupConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStartupConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStartupFirstUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStartupRemoteAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStartupUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStartupUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStartupConfigurationRouteHandler: RouteHandler<
+  typeof getStartupConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStartupConfigurationRouteHandler: RouteHandler<
+  typeof postStartupConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStartupFirstUserRouteHandler: RouteHandler<
+  typeof getStartupFirstUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStartupRemoteAccessRouteHandler: RouteHandler<
+  typeof postStartupRemoteAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStartupUserRouteHandler: RouteHandler<typeof getStartupUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStartupUserRouteHandler: RouteHandler<typeof postStartupUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

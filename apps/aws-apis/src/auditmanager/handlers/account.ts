@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAccountOrganizationAdminAccountRoute,
   getAccountStatusRoute,
   postAccountDeregisterAccountRoute,
@@ -8,24 +8,38 @@ import {
   postAccountRegisterOrganizationAdminAccountRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountDeregisterAccountRouteHandler: RouteHandler<
+  typeof postAccountDeregisterAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountHandler = app
-  .openapi(postAccountDeregisterAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountDeregisterOrganizationAdminAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountOrganizationAdminAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountRegisterAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountRegisterOrganizationAdminAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountDeregisterOrganizationAdminAccountRouteHandler: RouteHandler<
+  typeof postAccountDeregisterOrganizationAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountStatusRouteHandler: RouteHandler<typeof getAccountStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountOrganizationAdminAccountRouteHandler: RouteHandler<
+  typeof getAccountOrganizationAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountRegisterAccountRouteHandler: RouteHandler<
+  typeof postAccountRegisterAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountRegisterOrganizationAdminAccountRouteHandler: RouteHandler<
+  typeof postAccountRegisterOrganizationAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

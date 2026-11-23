@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getManualJournalsManualJournalIDAttachmentsAttachmentIDRoute,
   getManualJournalsManualJournalIDAttachmentsFileNameRoute,
   getManualJournalsManualJournalIDAttachmentsRoute,
@@ -14,42 +14,74 @@ import {
   putManualJournalsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getManualJournalsRouteHandler: RouteHandler<typeof getManualJournalsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const manualJournalsHandler = app
-  .openapi(getManualJournalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManualJournalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManualJournalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManualJournalsManualJournalIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManualJournalsManualJournalIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManualJournalsManualJournalIDAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManualJournalsManualJournalIDAttachmentsAttachmentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManualJournalsManualJournalIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManualJournalsManualJournalIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManualJournalsManualJournalIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManualJournalsManualJournalIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManualJournalsManualJournalIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putManualJournalsRouteHandler: RouteHandler<typeof putManualJournalsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postManualJournalsRouteHandler: RouteHandler<typeof postManualJournalsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getManualJournalsManualJournalIDRouteHandler: RouteHandler<
+  typeof getManualJournalsManualJournalIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManualJournalsManualJournalIDRouteHandler: RouteHandler<
+  typeof postManualJournalsManualJournalIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManualJournalsManualJournalIDAttachmentsRouteHandler: RouteHandler<
+  typeof getManualJournalsManualJournalIDAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManualJournalsManualJournalIDAttachmentsAttachmentIDRouteHandler: RouteHandler<
+  typeof getManualJournalsManualJournalIDAttachmentsAttachmentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManualJournalsManualJournalIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof getManualJournalsManualJournalIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManualJournalsManualJournalIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof postManualJournalsManualJournalIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManualJournalsManualJournalIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof putManualJournalsManualJournalIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManualJournalsManualJournalIDHistoryRouteHandler: RouteHandler<
+  typeof getManualJournalsManualJournalIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManualJournalsManualJournalIDHistoryRouteHandler: RouteHandler<
+  typeof putManualJournalsManualJournalIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

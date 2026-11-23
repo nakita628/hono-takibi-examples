@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGistsGistIdCommentsCommentIdRoute,
   deleteGistsGistIdRoute,
   deleteGistsGistIdStarRoute,
@@ -21,63 +21,106 @@ import {
   putGistsGistIdStarRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGistsRouteHandler: RouteHandler<typeof getGistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gistsHandler = app
-  .openapi(getGistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsStarredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGistsGistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGistsGistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGistsGistIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGistsGistIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGistsGistIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdForksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGistsGistIdForksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGistsGistIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGistsGistIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGistsGistIdShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGistsRouteHandler: RouteHandler<typeof postGistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsPublicRouteHandler: RouteHandler<typeof getGistsPublicRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsStarredRouteHandler: RouteHandler<typeof getGistsStarredRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdRouteHandler: RouteHandler<typeof getGistsGistIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGistsGistIdRouteHandler: RouteHandler<typeof patchGistsGistIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGistsGistIdRouteHandler: RouteHandler<typeof deleteGistsGistIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdCommentsRouteHandler: RouteHandler<
+  typeof getGistsGistIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGistsGistIdCommentsRouteHandler: RouteHandler<
+  typeof postGistsGistIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof getGistsGistIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGistsGistIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof patchGistsGistIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGistsGistIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteGistsGistIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdCommitsRouteHandler: RouteHandler<
+  typeof getGistsGistIdCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdForksRouteHandler: RouteHandler<
+  typeof getGistsGistIdForksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGistsGistIdForksRouteHandler: RouteHandler<
+  typeof postGistsGistIdForksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdStarRouteHandler: RouteHandler<typeof getGistsGistIdStarRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putGistsGistIdStarRouteHandler: RouteHandler<typeof putGistsGistIdStarRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGistsGistIdStarRouteHandler: RouteHandler<
+  typeof deleteGistsGistIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGistsGistIdShaRouteHandler: RouteHandler<typeof getGistsGistIdShaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

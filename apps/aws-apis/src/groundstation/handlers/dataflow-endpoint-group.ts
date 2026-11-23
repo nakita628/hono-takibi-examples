@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataflowEndpointGroupDataflowEndpointGroupIdRoute,
   getDataflowEndpointGroupDataflowEndpointGroupIdRoute,
   getDataflowEndpointGroupRoute,
   postDataflowEndpointGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDataflowEndpointGroupRouteHandler: RouteHandler<
+  typeof postDataflowEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataflowEndpointGroupHandler = app
-  .openapi(postDataflowEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataflowEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataflowEndpointGroupDataflowEndpointGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataflowEndpointGroupDataflowEndpointGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataflowEndpointGroupRouteHandler: RouteHandler<
+  typeof getDataflowEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataflowEndpointGroupDataflowEndpointGroupIdRouteHandler: RouteHandler<
+  typeof deleteDataflowEndpointGroupDataflowEndpointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataflowEndpointGroupDataflowEndpointGroupIdRouteHandler: RouteHandler<
+  typeof getDataflowEndpointGroupDataflowEndpointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

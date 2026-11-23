@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetDataQualityMetricsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetDataQualityMetricsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getDataQualityMetricsHandler = app.openapi(postGetDataQualityMetricsRoute, (c) => {
+export const postGetDataQualityMetricsRouteHandler: RouteHandler<
+  typeof postGetDataQualityMetricsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

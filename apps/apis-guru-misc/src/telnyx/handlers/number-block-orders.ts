@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNumberBlockOrdersNumberBlockOrderIdRoute,
   getNumberBlockOrdersRoute,
   postNumberBlockOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNumberBlockOrdersRouteHandler: RouteHandler<
+  typeof getNumberBlockOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const numberBlockOrdersHandler = app
-  .openapi(getNumberBlockOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNumberBlockOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNumberBlockOrdersNumberBlockOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNumberBlockOrdersRouteHandler: RouteHandler<
+  typeof postNumberBlockOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNumberBlockOrdersNumberBlockOrderIdRouteHandler: RouteHandler<
+  typeof getNumberBlockOrdersNumberBlockOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

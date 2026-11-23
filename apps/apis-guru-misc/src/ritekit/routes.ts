@@ -33,7 +33,7 @@ export const getV1EmojiAutoEmojifyRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1EmojiSuggestionsRoute = createRoute({
@@ -59,7 +59,7 @@ export const getV1EmojiSuggestionsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1ImagesAnimateRoute = createRoute({
@@ -97,7 +97,7 @@ export const getV1ImagesAnimateRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1ImagesLogoRoute = createRoute({
@@ -124,7 +124,7 @@ export const getV1ImagesLogoRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1ImagesQuoteRoute = createRoute({
@@ -366,7 +366,7 @@ export const getV1ImagesQuoteRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1LinkCtaRoute = createRoute({
@@ -377,7 +377,7 @@ export const getV1LinkCtaRoute = createRoute({
   description:
     'Returns list of available CTA for current user. Requires each user to authenticate with RiteKit',
   operationId: 'List of CTAs',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1LinkShortLinkRoute = createRoute({
@@ -423,7 +423,7 @@ export const getV1LinkShortLinkRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1SearchTrendingRoute = createRoute({
@@ -463,7 +463,7 @@ export const getV1SearchTrendingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1StatsAutoHashtagRoute = createRoute({
@@ -523,7 +523,7 @@ export const getV1StatsAutoHashtagRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1StatsHashtagSuggestionsRoute = createRoute({
@@ -550,7 +550,7 @@ export const getV1StatsHashtagSuggestionsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1StatsHistoryHashtagRoute = createRoute({
@@ -576,7 +576,7 @@ export const getV1StatsHistoryHashtagRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV1StatsMultipleHashtagsRoute = createRoute({
@@ -612,7 +612,7 @@ export const getV1StatsMultipleHashtagsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getV2InstagramHashtagsCleanerRoute = createRoute({
@@ -639,5 +639,5 @@ export const getV2InstagramHashtagsCleanerRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

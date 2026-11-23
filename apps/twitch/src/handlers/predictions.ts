@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPredictionsRoute, patchPredictionsRoute, postPredictionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPredictionsRoute, patchPredictionsRoute, postPredictionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPredictionsRouteHandler: RouteHandler<typeof getPredictionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const predictionsHandler = app
-  .openapi(getPredictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPredictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPredictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPredictionsRouteHandler: RouteHandler<typeof postPredictionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPredictionsRouteHandler: RouteHandler<typeof patchPredictionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

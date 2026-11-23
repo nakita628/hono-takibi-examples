@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetEbsDefaultKmsKeyIdRoute,
   postActionGetEbsDefaultKmsKeyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetEbsDefaultKmsKeyIdRouteHandler: RouteHandler<
+  typeof getActionGetEbsDefaultKmsKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetEbsDefaultKmsKeyIdHandler = app
-  .openapi(getActionGetEbsDefaultKmsKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetEbsDefaultKmsKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetEbsDefaultKmsKeyIdRouteHandler: RouteHandler<
+  typeof postActionGetEbsDefaultKmsKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

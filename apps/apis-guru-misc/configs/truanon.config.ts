@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/truanon.com/1.0.0/openapi.yaml',
   output: './src/truanon/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/truanon/types.ts' },
   client: { output: './src/truanon/client.ts', baseUrl: '/' },
   rpc: { output: './src/truanon/rpc.ts', parseResponse: true },

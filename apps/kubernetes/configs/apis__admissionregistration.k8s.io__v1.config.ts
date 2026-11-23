@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__admissionregistration.k8s.io__v1_openapi.json',
   output: './src/apis__admissionregistration.k8s.io__v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apis__admissionregistration.k8s.io__v1/types.ts' },
   client: { output: './src/apis__admissionregistration.k8s.io__v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/apis__admissionregistration.k8s.io__v1/rpc.ts', parseResponse: true },

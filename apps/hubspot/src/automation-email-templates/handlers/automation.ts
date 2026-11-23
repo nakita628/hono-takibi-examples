@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAutomationEmailTemplates202609FoldersRoute,
   getAutomationEmailTemplates202609Route,
   getAutomationEmailTemplates202609TemplateIdRoute,
@@ -7,21 +7,32 @@ import {
   postAutomationEmailTemplates202609Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAutomationEmailTemplates202609RouteHandler: RouteHandler<
+  typeof getAutomationEmailTemplates202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const automationHandler = app
-  .openapi(getAutomationEmailTemplates202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationEmailTemplates202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationEmailTemplates202609FoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationEmailTemplates202609TemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAutomationEmailTemplates202609TemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAutomationEmailTemplates202609RouteHandler: RouteHandler<
+  typeof postAutomationEmailTemplates202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationEmailTemplates202609FoldersRouteHandler: RouteHandler<
+  typeof getAutomationEmailTemplates202609FoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationEmailTemplates202609TemplateIdRouteHandler: RouteHandler<
+  typeof getAutomationEmailTemplates202609TemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAutomationEmailTemplates202609TemplateIdRouteHandler: RouteHandler<
+  typeof patchAutomationEmailTemplates202609TemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

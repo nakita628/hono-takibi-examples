@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUsageEventsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUsageEventsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const usageEventsHandler = app.openapi(postUsageEventsRoute, (c) => {
+export const postUsageEventsRouteHandler: RouteHandler<typeof postUsageEventsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

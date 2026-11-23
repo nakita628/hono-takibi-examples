@@ -9754,29 +9754,29 @@ export function createCameraNamePtzInfo<
 }
 
 export function getCameraNameLatestExtensionQueryKey(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
 ) {
-  return [':camera_name', '/:camera_name/latest.:extension', args] as const
+  return [':camera_name', '/:camera_name/latest.{extension}', args] as const
 }
 
 export function getCameraNameLatestExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+          Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
         >
       >
     >,
@@ -9787,7 +9787,7 @@ export function getCameraNameLatestExtensionQueryOptions<
     queryKey: getCameraNameLatestExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client[':camera_name']['latest.:extension'].$get(args, {
+        client[':camera_name']['latest.{extension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -9800,20 +9800,20 @@ export function createCameraNameLatestExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: () => InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+              Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
             >
           >
         >,
@@ -9838,10 +9838,10 @@ export function createCameraNameLatestExtension<
 
 export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryKey(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
 ) {
-  return [':camera_name', '/:camera_name/recordings/:frame_time/snapshot.:format', args] as const
+  return [':camera_name', '/:camera_name/recordings/:frame_time/snapshot.{format}', args] as const
 }
 
 export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryOptions<
@@ -9850,7 +9850,7 @@ export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+            (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
           >
         >
       >
@@ -9859,7 +9859,7 @@ export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -9869,7 +9869,7 @@ export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+              (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
             >
           >
         >
@@ -9882,7 +9882,7 @@ export function getCameraNameRecordingsFrameTimeSnapshotFormatQueryOptions<
     queryKey: getCameraNameRecordingsFrameTimeSnapshotFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client[':camera_name'].recordings[':frame_time']['snapshot.:format'].$get(args, {
+        client[':camera_name'].recordings[':frame_time']['snapshot.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -9897,7 +9897,7 @@ export function createCameraNameRecordingsFrameTimeSnapshotFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+            (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
           >
         >
       >
@@ -9906,7 +9906,7 @@ export function createCameraNameRecordingsFrameTimeSnapshotFormat<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -9916,7 +9916,7 @@ export function createCameraNameRecordingsFrameTimeSnapshotFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+                  (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
                 >
               >
             >
@@ -10792,29 +10792,29 @@ export function createEventsEventIdSnapshotJpg<
 }
 
 export function getEventsEventIdThumbnailExtensionQueryKey(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
 ) {
-  return ['events', '/events/:event_id/thumbnail.:extension', args] as const
+  return ['events', '/events/:event_id/thumbnail.{extension}', args] as const
 }
 
 export function getEventsEventIdThumbnailExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+          Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>>
         >
       >
     >,
@@ -10825,7 +10825,7 @@ export function getEventsEventIdThumbnailExtensionQueryOptions<
     queryKey: getEventsEventIdThumbnailExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.events[':event_id']['thumbnail.:extension'].$get(args, {
+        client.events[':event_id']['thumbnail.{extension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -10838,13 +10838,15 @@ export function createEventsEventIdThumbnailExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: () => InferRequestType<
+    (typeof client.events)[':event_id']['thumbnail.{extension}']['$get']
+  >,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -10852,7 +10854,7 @@ export function createEventsEventIdThumbnailExtension<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>
+                ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>
               >
             >
           >

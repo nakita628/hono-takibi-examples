@@ -1,13 +1,5 @@
 type Links = { href?: string | undefined }
-type Applications = {
-  _embedded: unknown
-  _links: Links
-  count: unknown
-  page_index: unknown
-  page_size: unknown
-}
-type ApiKey = string
-type ApiSecret = string
+type ApplicationBaseId = string
 type Keys = { public_key?: string | undefined }
 type Messages = {
   webhooks?:
@@ -18,26 +10,40 @@ type Messages = {
       }[]
     | undefined
 }
+type ApplicationBaseName = string
 type Voice = {
   webhooks?:
     | { endpoint: string; endpoint_type: 'answer_url' | 'event_url'; http_method: 'GET' | 'POST' }[]
     | undefined
 }
+type Application = {
+  _links?: Links | undefined
+  id?: ApplicationBaseId | undefined
+  keys?: Keys | undefined
+  messages: Messages
+  name: ApplicationBaseName
+  voice: Voice
+}
+type ApplicationsBaseEmbedded = { applications?: Application[] | undefined }
+type ApplicationsBaseCount = number
+type ApplicationsBasePageIndex = number
+type ApplicationsBasePageSize = number
+type Applications = {
+  _embedded: ApplicationsBaseEmbedded
+  _links: Links
+  count: ApplicationsBaseCount
+  page_index: ApplicationsBasePageIndex
+  page_size: ApplicationsBasePageSize
+}
+type ApiKey = string
+type ApiSecret = string
 type KeysWithPrivateKey = { public_key?: string | undefined; private_key?: string | undefined }
 type ApplicationCreated = {
   _links?: Links | undefined
-  id?: unknown | undefined
+  id?: ApplicationBaseId | undefined
   keys?: KeysWithPrivateKey | undefined
   messages: Messages
-  name: unknown
-  voice: Voice
-}
-type Application = {
-  _links?: Links | undefined
-  id?: unknown | undefined
-  keys?: Keys | undefined
-  messages: Messages
-  name: unknown
+  name: ApplicationBaseName
   voice: Voice
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/reverb.com/3.0/openapi.yaml',
   output: './src/reverb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/reverb/types.ts' },
   client: { output: './src/reverb/client.ts', baseUrl: '/' },
   rpc: { output: './src/reverb/rpc.ts', parseResponse: true },

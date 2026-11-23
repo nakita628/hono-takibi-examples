@@ -41643,7 +41643,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                         subject?: string | undefined
                         body?: string | undefined
                         attachmentFormat?: string | undefined
-                        attachmentTransformation?: unknown | undefined
+                        attachmentTransformation?:
+                          | { fields?: string[] | undefined; omit?: string[] | undefined }
+                          | undefined
                       }
                     | undefined
                   googleDrive?:
@@ -114814,7 +114816,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                         subject?: string | undefined
                         body?: string | undefined
                         attachmentFormat?: string | undefined
-                        attachmentTransformation?: unknown | undefined
+                        attachmentTransformation?:
+                          | { fields?: string[] | undefined; omit?: string[] | undefined }
+                          | undefined
                       }
                     | undefined
                   googleDrive?:
@@ -178848,19 +178852,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v2/key-value-stores/:storeId/records/:recordKey': {
-      $head:
-        | {
-            input: { param: { storeId: string; recordKey: string } }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { storeId: string; recordKey: string } }
-            output: {}
-            outputFormat: string
-            status: NaN
-          }
+      $head: {
+        input: { param: { storeId: string; recordKey: string } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/v2/datasets': {
@@ -183206,6 +183203,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v2/datasets/:datasetId/items': {
       $head:
+        | { input: { param: { datasetId: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { datasetId: string } }
             output: {
@@ -183623,7 +183621,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-        | { input: { param: { datasetId: string } }; output: {}; outputFormat: string; status: NaN }
     }
   } & {
     '/v2/request-queues': {
@@ -188030,7 +188027,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                         subject?: string | undefined
                         body?: string | undefined
                         attachmentFormat?: string | undefined
-                        attachmentTransformation?: unknown | undefined
+                        attachmentTransformation?:
+                          | { fields?: string[] | undefined; omit?: string[] | undefined }
+                          | undefined
                       }
                     | undefined
                   googleDrive?:
@@ -190239,7 +190238,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                       subject?: string | undefined
                       body?: string | undefined
                       attachmentFormat?: string | undefined
-                      attachmentTransformation?: unknown | undefined
+                      attachmentTransformation?:
+                        | { fields?: string[] | undefined; omit?: string[] | undefined }
+                        | undefined
                     }
                   | undefined
                 googleDrive?:
@@ -193918,7 +193919,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                       subject?: string | undefined
                       body?: string | undefined
                       attachmentFormat?: string | undefined
-                      attachmentTransformation?: unknown | undefined
+                      attachmentTransformation?:
+                        | { fields?: string[] | undefined; omit?: string[] | undefined }
+                        | undefined
                     }
                   | undefined
                 googleDrive?:
@@ -196550,7 +196553,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                       subject?: string | undefined
                       body?: string | undefined
                       attachmentFormat?: string | undefined
-                      attachmentTransformation?: unknown | undefined
+                      attachmentTransformation?:
+                        | { fields?: string[] | undefined; omit?: string[] | undefined }
+                        | undefined
                     }
                   | undefined
                 googleDrive?:
@@ -202799,7 +202804,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                             subject?: string | undefined
                             body?: string | undefined
                             attachmentFormat?: string | undefined
-                            attachmentTransformation?: unknown | undefined
+                            attachmentTransformation?:
+                              | { fields?: string[] | undefined; omit?: string[] | undefined }
+                              | undefined
                           }
                         | undefined
                       googleDrive?:
@@ -205410,7 +205417,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                               subject?: string | undefined
                               body?: string | undefined
                               attachmentFormat?: string | undefined
-                              attachmentTransformation?: unknown | undefined
+                              attachmentTransformation?:
+                                | { fields?: string[] | undefined; omit?: string[] | undefined }
+                                | undefined
                             }
                           | undefined
                         googleDrive?:
@@ -208032,7 +208041,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                               subject?: string | undefined
                               body?: string | undefined
                               attachmentFormat?: string | undefined
-                              attachmentTransformation?: unknown | undefined
+                              attachmentTransformation?:
+                                | { fields?: string[] | undefined; omit?: string[] | undefined }
+                                | undefined
                             }
                           | undefined
                         googleDrive?:
@@ -210219,7 +210230,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                             subject?: string | undefined
                             body?: string | undefined
                             attachmentFormat?: string | undefined
-                            attachmentTransformation?: unknown | undefined
+                            attachmentTransformation?:
+                              | { fields?: string[] | undefined; omit?: string[] | undefined }
+                              | undefined
                           }
                         | undefined
                       googleDrive?:

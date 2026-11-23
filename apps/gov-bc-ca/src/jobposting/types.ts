@@ -80,7 +80,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 city?: 'Victoria' | 'Vancouver' | undefined
-                jobTypes?: 1 | 2 | undefined
+                jobTypes?: [1] | [2] | undefined
                 lastRequestDate?: '2018-08-29T00:00:00.000Z' | undefined
                 majorProjects?: boolean | undefined
                 region?: 1 | 2 | undefined
@@ -94,7 +94,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 city?: 'Victoria' | 'Vancouver' | undefined
-                jobTypes?: 1 | 2 | undefined
+                jobTypes?: [1] | [2] | undefined
                 lastRequestDate?: '2018-08-29T00:00:00.000Z' | undefined
                 majorProjects?: boolean | undefined
                 region?: 1 | 2 | undefined

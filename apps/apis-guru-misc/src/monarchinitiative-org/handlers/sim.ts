@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSimCompareRoute,
   getSimScoreRoute,
   getSimSearchRoute,
@@ -7,21 +7,22 @@ import {
   postSimScoreRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimCompareRouteHandler: RouteHandler<typeof getSimCompareRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const simHandler = app
-  .openapi(getSimCompareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCompareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimScoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimScoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSimCompareRouteHandler: RouteHandler<typeof postSimCompareRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimScoreRouteHandler: RouteHandler<typeof getSimScoreRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimScoreRouteHandler: RouteHandler<typeof postSimScoreRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimSearchRouteHandler: RouteHandler<typeof getSimSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

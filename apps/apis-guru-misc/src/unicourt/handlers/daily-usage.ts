@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDailyUsageDateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDailyUsageDateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dailyUsageHandler = app.openapi(getDailyUsageDateRoute, (c) => {
+export const getDailyUsageDateRouteHandler: RouteHandler<typeof getDailyUsageDateRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

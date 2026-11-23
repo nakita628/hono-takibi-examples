@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/api-with-examples.yaml',
   output: './src/3-0-oai-api-with-examples/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-oai-api-with-examples/types.ts' },
   client: { output: './src/3-0-oai-api-with-examples/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-oai-api-with-examples/rpc.ts', parseResponse: true },

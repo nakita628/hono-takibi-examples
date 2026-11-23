@@ -446,7 +446,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/entries/:source_lang/:word_id/regions=:region': {
+    '/entries/:source_lang/:word_id/regions={region}': {
       $get:
         | {
             input: { param: { source_lang: 'en'; word_id: string; region: 'gb' | 'us' } } & {
@@ -570,7 +570,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/entries/:source_translation_language/:word_id/translations=:target_translation_language': {
+    '/entries/:source_translation_language/:word_id/translations={target_translation_language}': {
       $get:
         | {
             input: {
@@ -1255,7 +1255,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/search/:source_search_language/translations=:target_search_language': {
+    '/search/:source_search_language/translations={target_search_language}': {
       $get:
         | {
             input: {

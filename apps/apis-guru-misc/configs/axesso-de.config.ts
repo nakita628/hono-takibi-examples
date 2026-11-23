@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/axesso.de/1.0.0/openapi.yaml',
   output: './src/axesso-de/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/axesso-de/types.ts' },
   client: { output: './src/axesso-de/client.ts', baseUrl: '/' },
   rpc: { output: './src/axesso-de/rpc.ts', parseResponse: true },

@@ -1,25 +1,44 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  archiveHandler,
-  areaHandler,
-  clutterHandler,
-  interferenceHandler,
-  meshHandler,
-  networkHandler,
-  pathHandler,
-  pointsHandler,
+  getArchiveDeleteNetworkRoute,
+  getArchiveDeleteRoute,
+  getArchiveExportRoute,
+  getArchiveListRoute,
+  getInterferenceRoute,
+  getMeshRoute,
+  getNetworkRoute,
+  postAreaRoute,
+  postClutterAddRoute,
+  postPathRoute,
+  postPointsRoute,
+} from './routes'
+import {
+  getArchiveDeleteNetworkRouteHandler,
+  getArchiveDeleteRouteHandler,
+  getArchiveExportRouteHandler,
+  getArchiveListRouteHandler,
+  getInterferenceRouteHandler,
+  getMeshRouteHandler,
+  getNetworkRouteHandler,
+  postAreaRouteHandler,
+  postClutterAddRouteHandler,
+  postPathRouteHandler,
+  postPointsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', archiveHandler)
-  .route('/', areaHandler)
-  .route('/', clutterHandler)
-  .route('/', interferenceHandler)
-  .route('/', meshHandler)
-  .route('/', networkHandler)
-  .route('/', pathHandler)
-  .route('/', pointsHandler)
+  .openapi(getArchiveDeleteRoute, getArchiveDeleteRouteHandler)
+  .openapi(getArchiveDeleteNetworkRoute, getArchiveDeleteNetworkRouteHandler)
+  .openapi(getArchiveExportRoute, getArchiveExportRouteHandler)
+  .openapi(getArchiveListRoute, getArchiveListRouteHandler)
+  .openapi(postAreaRoute, postAreaRouteHandler)
+  .openapi(postClutterAddRoute, postClutterAddRouteHandler)
+  .openapi(getInterferenceRoute, getInterferenceRouteHandler)
+  .openapi(getMeshRoute, getMeshRouteHandler)
+  .openapi(getNetworkRoute, getNetworkRouteHandler)
+  .openapi(postPathRoute, postPathRouteHandler)
+  .openapi(postPointsRoute, postPointsRouteHandler)
 
 export default app

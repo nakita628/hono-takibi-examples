@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRoleSetsRoleSetKeyOrIdRoute,
   getRoleSetsRoute,
   patchRoleSetsRoleSetKeyOrIdRoute,
@@ -9,27 +9,40 @@ import {
   postRoleSetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRoleSetsRouteHandler: RouteHandler<typeof getRoleSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const roleSetsHandler = app
-  .openapi(getRoleSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoleSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoleSetsRoleSetKeyOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoleSetsRoleSetKeyOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoleSetsRoleSetKeyOrIdReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoleSetsRoleSetKeyOrIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoleSetsRoleSetKeyOrIdRolesReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRoleSetsRouteHandler: RouteHandler<typeof postRoleSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleSetsRoleSetKeyOrIdRouteHandler: RouteHandler<
+  typeof getRoleSetsRoleSetKeyOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleSetsRoleSetKeyOrIdRouteHandler: RouteHandler<
+  typeof patchRoleSetsRoleSetKeyOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleSetsRoleSetKeyOrIdReplaceRouteHandler: RouteHandler<
+  typeof postRoleSetsRoleSetKeyOrIdReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleSetsRoleSetKeyOrIdRolesRouteHandler: RouteHandler<
+  typeof postRoleSetsRoleSetKeyOrIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleSetsRoleSetKeyOrIdRolesReplaceRouteHandler: RouteHandler<
+  typeof postRoleSetsRoleSetKeyOrIdRolesReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

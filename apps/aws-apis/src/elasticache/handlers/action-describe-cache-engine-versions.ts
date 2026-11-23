@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeCacheEngineVersionsRoute,
   postActionDescribeCacheEngineVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeCacheEngineVersionsRouteHandler: RouteHandler<
+  typeof getActionDescribeCacheEngineVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeCacheEngineVersionsHandler = app
-  .openapi(getActionDescribeCacheEngineVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeCacheEngineVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeCacheEngineVersionsRouteHandler: RouteHandler<
+  typeof postActionDescribeCacheEngineVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

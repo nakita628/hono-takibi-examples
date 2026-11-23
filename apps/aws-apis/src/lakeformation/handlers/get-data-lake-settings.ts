@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetDataLakeSettingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetDataLakeSettingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getDataLakeSettingsHandler = app.openapi(postGetDataLakeSettingsRoute, (c) => {
+export const postGetDataLakeSettingsRouteHandler: RouteHandler<
+  typeof postGetDataLakeSettingsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSysAuditPathRoute,
   deleteSysAuthPathRoute,
   deleteSysConfigAuditingRequestHeadersHeaderRoute,
@@ -276,828 +276,1586 @@ import {
   postSysWrappingWrapRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSysAuditRouteHandler: RouteHandler<typeof getSysAuditRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sysHandler = app
-  .openapi(getSysAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysAuditHashPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysAuditPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysAuditPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysAuthPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysAuthPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysAuthPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysAuthPathTuneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysAuthPathTuneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysCapabilitiesAccessorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysCapabilitiesSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigAuditingRequestHeadersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigAuditingRequestHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigAuditingRequestHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysConfigAuditingRequestHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigControlGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigControlGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysConfigControlGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysConfigCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigGroupPolicyApplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigGroupPolicyApplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigReloadSubsystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigStateSanitizedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigUiHeadersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysConfigUiHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysConfigUiHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysConfigUiHeadersHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysControlGroupAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysControlGroupRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysDecodeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysExperimentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysGenerateRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysGenerateRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysGenerateRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysGenerateRootAttemptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysGenerateRootAttemptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysGenerateRootAttemptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysGenerateRootUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysHaStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysHostInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInFlightReqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersActivityExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersActivityMonthlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysInternalCountersConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalCountersTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalInspectRouterTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalSpecsOpenapiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysInternalSpecsOpenapiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalUiFeatureFlagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalUiMountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalUiMountsPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalUiNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysInternalUiResultantAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysKeyStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLeasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLeasesCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLeasesLookupPrefixIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRenewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRenewUrlLeaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRevokeForcePrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRevokePrefixPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesRevokeUrlLeaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLeasesTidyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLicenseStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLockedUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLockedUsersMountAccessorUnlockAliasIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysLoggersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysLoggersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysLoggersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysManagedKeysTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysManagedKeysTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysManagedKeysTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysManagedKeysTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysManagedKeysTypeNameTestSignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodDuoNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodDuoNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysMfaMethodDuoNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodOktaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodOktaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysMfaMethodOktaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodPingidNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodPingidNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysMfaMethodPingidNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodTotpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodTotpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysMfaMethodTotpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodTotpNameAdminDestroyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaMethodTotpNameAdminGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMfaMethodTotpNameGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMfaValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMountsPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMountsPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysMountsPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysMountsPathTuneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysMountsPathTuneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysNamespacesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysNamespacesApiLockLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysNamespacesApiLockLockPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysNamespacesApiLockUnlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysNamespacesApiLockUnlockPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysNamespacesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysNamespacesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysNamespacesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsCatalogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsCatalogNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPluginsCatalogNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPluginsCatalogNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsCatalogTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPluginsCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPluginsCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPluginsReloadBackendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsReloadBackendStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsRuntimesCatalogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPluginsRuntimesCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPluginsRuntimesCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPluginsRuntimesCatalogTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesAclIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesAclNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPoliciesAclNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPoliciesAclNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesEgpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesEgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPoliciesEgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPoliciesEgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesPasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesPasswordNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPoliciesPasswordNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPoliciesPasswordNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesPasswordNameGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesRgpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPoliciesRgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPoliciesRgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPoliciesRgpNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPolicyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofAllocsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofCmdlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofGoroutineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofHeapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofMutexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofSymbolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofThreadcreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysPprofTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysQuotasConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysQuotasConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysQuotasLeaseCountIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysQuotasLeaseCountNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysQuotasLeaseCountNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysQuotasLeaseCountNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysQuotasRateLimitIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysQuotasRateLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysQuotasRateLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysQuotasRateLimitNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRawPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRawPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysRawPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRawPathIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRekeyBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysRekeyBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRekeyInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRekeyInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysRekeyInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRekeyRecoveryKeyBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysRekeyRecoveryKeyBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRekeyUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRekeyVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRekeyVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysRekeyVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRemountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRemountStatusMigrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRenewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRenewUrlLeaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrPrimaryDemoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrPrimaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrPrimaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrPrimaryRevokeSecondaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrPrimarySecondaryTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryConfigReloadSubsystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryGeneratePublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationDrSecondaryLicenseStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryOperationTokenDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryReindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationDrSecondaryUpdatePrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationDrStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimaryDemoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationPerformancePrimaryDynamicFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationPerformancePrimaryPathsFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimaryPathsFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysReplicationPerformancePrimaryPathsFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimaryRevokeSecondaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformancePrimarySecondaryTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformanceSecondaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationPerformanceSecondaryDynamicFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformanceSecondaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformanceSecondaryGeneratePublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformanceSecondaryPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPerformanceSecondaryUpdatePrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationPerformanceStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPrimaryDemoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPrimaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPrimaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPrimaryRevokeSecondaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationPrimarySecondaryTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationReindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationSecondaryDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationSecondaryEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationSecondaryPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysReplicationSecondaryUpdatePrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysReplicationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRevokeForcePrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRevokePrefixPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRevokeUrlLeaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysRotateConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysRotateConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysSealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysSealStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysSealwrapRewrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysSealwrapRewrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysStepDownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysStorageRaftSnapshotAutoConfigIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysStorageRaftSnapshotAutoConfigNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysStorageRaftSnapshotAutoConfigNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSysStorageRaftSnapshotAutoConfigNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysStorageRaftSnapshotAutoStatusNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsHashUrlalgorithmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsRandomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsRandomSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsRandomSourceUrlbytesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysToolsRandomUrlbytesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysUnsealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysVersionHistoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSysWrappingLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysWrappingLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysWrappingRewrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysWrappingUnwrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSysWrappingWrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSysAuditHashPathRouteHandler: RouteHandler<
+  typeof postSysAuditHashPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysAuditPathRouteHandler: RouteHandler<typeof postSysAuditPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysAuditPathRouteHandler: RouteHandler<typeof deleteSysAuditPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysAuthRouteHandler: RouteHandler<typeof getSysAuthRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysAuthPathRouteHandler: RouteHandler<typeof getSysAuthPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysAuthPathRouteHandler: RouteHandler<typeof postSysAuthPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysAuthPathRouteHandler: RouteHandler<typeof deleteSysAuthPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysAuthPathTuneRouteHandler: RouteHandler<typeof getSysAuthPathTuneRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysAuthPathTuneRouteHandler: RouteHandler<
+  typeof postSysAuthPathTuneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysCapabilitiesRouteHandler: RouteHandler<
+  typeof postSysCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysCapabilitiesAccessorRouteHandler: RouteHandler<
+  typeof postSysCapabilitiesAccessorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysCapabilitiesSelfRouteHandler: RouteHandler<
+  typeof postSysCapabilitiesSelfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigAuditingRequestHeadersRouteHandler: RouteHandler<
+  typeof getSysConfigAuditingRequestHeadersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigAuditingRequestHeadersHeaderRouteHandler: RouteHandler<
+  typeof getSysConfigAuditingRequestHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigAuditingRequestHeadersHeaderRouteHandler: RouteHandler<
+  typeof postSysConfigAuditingRequestHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysConfigAuditingRequestHeadersHeaderRouteHandler: RouteHandler<
+  typeof deleteSysConfigAuditingRequestHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigControlGroupRouteHandler: RouteHandler<
+  typeof getSysConfigControlGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigControlGroupRouteHandler: RouteHandler<
+  typeof postSysConfigControlGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysConfigControlGroupRouteHandler: RouteHandler<
+  typeof deleteSysConfigControlGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigCorsRouteHandler: RouteHandler<typeof getSysConfigCorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigCorsRouteHandler: RouteHandler<typeof postSysConfigCorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysConfigCorsRouteHandler: RouteHandler<
+  typeof deleteSysConfigCorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigGroupPolicyApplicationRouteHandler: RouteHandler<
+  typeof getSysConfigGroupPolicyApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigGroupPolicyApplicationRouteHandler: RouteHandler<
+  typeof postSysConfigGroupPolicyApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigReloadSubsystemRouteHandler: RouteHandler<
+  typeof postSysConfigReloadSubsystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigStateSanitizedRouteHandler: RouteHandler<
+  typeof getSysConfigStateSanitizedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigUiHeadersIndexRouteHandler: RouteHandler<
+  typeof getSysConfigUiHeadersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysConfigUiHeadersHeaderRouteHandler: RouteHandler<
+  typeof getSysConfigUiHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysConfigUiHeadersHeaderRouteHandler: RouteHandler<
+  typeof postSysConfigUiHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysConfigUiHeadersHeaderRouteHandler: RouteHandler<
+  typeof deleteSysConfigUiHeadersHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysControlGroupAuthorizeRouteHandler: RouteHandler<
+  typeof postSysControlGroupAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysControlGroupRequestRouteHandler: RouteHandler<
+  typeof postSysControlGroupRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysDecodeTokenRouteHandler: RouteHandler<typeof postSysDecodeTokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysExperimentsRouteHandler: RouteHandler<typeof getSysExperimentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysGenerateRootRouteHandler: RouteHandler<typeof getSysGenerateRootRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysGenerateRootRouteHandler: RouteHandler<
+  typeof postSysGenerateRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysGenerateRootRouteHandler: RouteHandler<
+  typeof deleteSysGenerateRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysGenerateRootAttemptRouteHandler: RouteHandler<
+  typeof getSysGenerateRootAttemptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysGenerateRootAttemptRouteHandler: RouteHandler<
+  typeof postSysGenerateRootAttemptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysGenerateRootAttemptRouteHandler: RouteHandler<
+  typeof deleteSysGenerateRootAttemptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysGenerateRootUpdateRouteHandler: RouteHandler<
+  typeof postSysGenerateRootUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysHaStatusRouteHandler: RouteHandler<typeof getSysHaStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysHealthRouteHandler: RouteHandler<typeof getSysHealthRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysHostInfoRouteHandler: RouteHandler<typeof getSysHostInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInFlightReqRouteHandler: RouteHandler<typeof getSysInFlightReqRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInitRouteHandler: RouteHandler<typeof getSysInitRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysInitRouteHandler: RouteHandler<typeof postSysInitRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersActivityRouteHandler: RouteHandler<
+  typeof getSysInternalCountersActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersActivityExportRouteHandler: RouteHandler<
+  typeof getSysInternalCountersActivityExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersActivityMonthlyRouteHandler: RouteHandler<
+  typeof getSysInternalCountersActivityMonthlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersConfigRouteHandler: RouteHandler<
+  typeof getSysInternalCountersConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysInternalCountersConfigRouteHandler: RouteHandler<
+  typeof postSysInternalCountersConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersEntitiesRouteHandler: RouteHandler<
+  typeof getSysInternalCountersEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersRequestsRouteHandler: RouteHandler<
+  typeof getSysInternalCountersRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalCountersTokensRouteHandler: RouteHandler<
+  typeof getSysInternalCountersTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalInspectRouterTagRouteHandler: RouteHandler<
+  typeof getSysInternalInspectRouterTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalSpecsOpenapiRouteHandler: RouteHandler<
+  typeof getSysInternalSpecsOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysInternalSpecsOpenapiRouteHandler: RouteHandler<
+  typeof postSysInternalSpecsOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalUiFeatureFlagsRouteHandler: RouteHandler<
+  typeof getSysInternalUiFeatureFlagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalUiMountsRouteHandler: RouteHandler<
+  typeof getSysInternalUiMountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalUiMountsPathRouteHandler: RouteHandler<
+  typeof getSysInternalUiMountsPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalUiNamespacesRouteHandler: RouteHandler<
+  typeof getSysInternalUiNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysInternalUiResultantAclRouteHandler: RouteHandler<
+  typeof getSysInternalUiResultantAclRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysKeyStatusRouteHandler: RouteHandler<typeof getSysKeyStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLeaderRouteHandler: RouteHandler<typeof getSysLeaderRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLeasesRouteHandler: RouteHandler<typeof getSysLeasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLeasesCountRouteHandler: RouteHandler<typeof getSysLeasesCountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesLookupRouteHandler: RouteHandler<
+  typeof postSysLeasesLookupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLeasesLookupPrefixIndexRouteHandler: RouteHandler<
+  typeof getSysLeasesLookupPrefixIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRenewRouteHandler: RouteHandler<typeof postSysLeasesRenewRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRenewUrlLeaseIdRouteHandler: RouteHandler<
+  typeof postSysLeasesRenewUrlLeaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRevokeRouteHandler: RouteHandler<
+  typeof postSysLeasesRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRevokeForcePrefixRouteHandler: RouteHandler<
+  typeof postSysLeasesRevokeForcePrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRevokePrefixPrefixRouteHandler: RouteHandler<
+  typeof postSysLeasesRevokePrefixPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesRevokeUrlLeaseIdRouteHandler: RouteHandler<
+  typeof postSysLeasesRevokeUrlLeaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLeasesTidyRouteHandler: RouteHandler<typeof postSysLeasesTidyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLicenseStatusRouteHandler: RouteHandler<
+  typeof getSysLicenseStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLockedUsersRouteHandler: RouteHandler<typeof getSysLockedUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLockedUsersMountAccessorUnlockAliasIdentifierRouteHandler: RouteHandler<
+  typeof postSysLockedUsersMountAccessorUnlockAliasIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLoggersRouteHandler: RouteHandler<typeof getSysLoggersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLoggersRouteHandler: RouteHandler<typeof postSysLoggersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysLoggersRouteHandler: RouteHandler<typeof deleteSysLoggersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysLoggersNameRouteHandler: RouteHandler<typeof getSysLoggersNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysLoggersNameRouteHandler: RouteHandler<typeof postSysLoggersNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysLoggersNameRouteHandler: RouteHandler<
+  typeof deleteSysLoggersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysManagedKeysTypeIndexRouteHandler: RouteHandler<
+  typeof getSysManagedKeysTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysManagedKeysTypeNameRouteHandler: RouteHandler<
+  typeof getSysManagedKeysTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysManagedKeysTypeNameRouteHandler: RouteHandler<
+  typeof postSysManagedKeysTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysManagedKeysTypeNameRouteHandler: RouteHandler<
+  typeof deleteSysManagedKeysTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysManagedKeysTypeNameTestSignRouteHandler: RouteHandler<
+  typeof postSysManagedKeysTypeNameTestSignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMetricsRouteHandler: RouteHandler<typeof getSysMetricsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodIndexRouteHandler: RouteHandler<
+  typeof getSysMfaMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodDuoNameRouteHandler: RouteHandler<
+  typeof getSysMfaMethodDuoNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodDuoNameRouteHandler: RouteHandler<
+  typeof postSysMfaMethodDuoNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysMfaMethodDuoNameRouteHandler: RouteHandler<
+  typeof deleteSysMfaMethodDuoNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodOktaNameRouteHandler: RouteHandler<
+  typeof getSysMfaMethodOktaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodOktaNameRouteHandler: RouteHandler<
+  typeof postSysMfaMethodOktaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysMfaMethodOktaNameRouteHandler: RouteHandler<
+  typeof deleteSysMfaMethodOktaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodPingidNameRouteHandler: RouteHandler<
+  typeof getSysMfaMethodPingidNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodPingidNameRouteHandler: RouteHandler<
+  typeof postSysMfaMethodPingidNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysMfaMethodPingidNameRouteHandler: RouteHandler<
+  typeof deleteSysMfaMethodPingidNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodTotpNameRouteHandler: RouteHandler<
+  typeof getSysMfaMethodTotpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodTotpNameRouteHandler: RouteHandler<
+  typeof postSysMfaMethodTotpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysMfaMethodTotpNameRouteHandler: RouteHandler<
+  typeof deleteSysMfaMethodTotpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodTotpNameAdminDestroyRouteHandler: RouteHandler<
+  typeof postSysMfaMethodTotpNameAdminDestroyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaMethodTotpNameAdminGenerateRouteHandler: RouteHandler<
+  typeof postSysMfaMethodTotpNameAdminGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMfaMethodTotpNameGenerateRouteHandler: RouteHandler<
+  typeof getSysMfaMethodTotpNameGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMfaValidateRouteHandler: RouteHandler<typeof postSysMfaValidateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMonitorRouteHandler: RouteHandler<typeof getSysMonitorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMountsRouteHandler: RouteHandler<typeof getSysMountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMountsPathRouteHandler: RouteHandler<typeof getSysMountsPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMountsPathRouteHandler: RouteHandler<typeof postSysMountsPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysMountsPathRouteHandler: RouteHandler<
+  typeof deleteSysMountsPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysMountsPathTuneRouteHandler: RouteHandler<
+  typeof getSysMountsPathTuneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysMountsPathTuneRouteHandler: RouteHandler<
+  typeof postSysMountsPathTuneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysNamespacesIndexRouteHandler: RouteHandler<
+  typeof getSysNamespacesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysNamespacesApiLockLockRouteHandler: RouteHandler<
+  typeof postSysNamespacesApiLockLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysNamespacesApiLockLockPathRouteHandler: RouteHandler<
+  typeof postSysNamespacesApiLockLockPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysNamespacesApiLockUnlockRouteHandler: RouteHandler<
+  typeof postSysNamespacesApiLockUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysNamespacesApiLockUnlockPathRouteHandler: RouteHandler<
+  typeof postSysNamespacesApiLockUnlockPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysNamespacesPathRouteHandler: RouteHandler<
+  typeof getSysNamespacesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysNamespacesPathRouteHandler: RouteHandler<
+  typeof postSysNamespacesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysNamespacesPathRouteHandler: RouteHandler<
+  typeof deleteSysNamespacesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsCatalogRouteHandler: RouteHandler<
+  typeof getSysPluginsCatalogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsCatalogNameRouteHandler: RouteHandler<
+  typeof getSysPluginsCatalogNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPluginsCatalogNameRouteHandler: RouteHandler<
+  typeof postSysPluginsCatalogNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPluginsCatalogNameRouteHandler: RouteHandler<
+  typeof deleteSysPluginsCatalogNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsCatalogTypeIndexRouteHandler: RouteHandler<
+  typeof getSysPluginsCatalogTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsCatalogTypeNameRouteHandler: RouteHandler<
+  typeof getSysPluginsCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPluginsCatalogTypeNameRouteHandler: RouteHandler<
+  typeof postSysPluginsCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPluginsCatalogTypeNameRouteHandler: RouteHandler<
+  typeof deleteSysPluginsCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPluginsReloadBackendRouteHandler: RouteHandler<
+  typeof postSysPluginsReloadBackendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsReloadBackendStatusRouteHandler: RouteHandler<
+  typeof getSysPluginsReloadBackendStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsRuntimesCatalogIndexRouteHandler: RouteHandler<
+  typeof getSysPluginsRuntimesCatalogIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPluginsRuntimesCatalogTypeNameRouteHandler: RouteHandler<
+  typeof getSysPluginsRuntimesCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPluginsRuntimesCatalogTypeNameRouteHandler: RouteHandler<
+  typeof postSysPluginsRuntimesCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPluginsRuntimesCatalogTypeNameRouteHandler: RouteHandler<
+  typeof deleteSysPluginsRuntimesCatalogTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesAclIndexRouteHandler: RouteHandler<
+  typeof getSysPoliciesAclIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesAclNameRouteHandler: RouteHandler<
+  typeof getSysPoliciesAclNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPoliciesAclNameRouteHandler: RouteHandler<
+  typeof postSysPoliciesAclNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPoliciesAclNameRouteHandler: RouteHandler<
+  typeof deleteSysPoliciesAclNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesEgpIndexRouteHandler: RouteHandler<
+  typeof getSysPoliciesEgpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesEgpNameRouteHandler: RouteHandler<
+  typeof getSysPoliciesEgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPoliciesEgpNameRouteHandler: RouteHandler<
+  typeof postSysPoliciesEgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPoliciesEgpNameRouteHandler: RouteHandler<
+  typeof deleteSysPoliciesEgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesPasswordIndexRouteHandler: RouteHandler<
+  typeof getSysPoliciesPasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesPasswordNameRouteHandler: RouteHandler<
+  typeof getSysPoliciesPasswordNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPoliciesPasswordNameRouteHandler: RouteHandler<
+  typeof postSysPoliciesPasswordNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPoliciesPasswordNameRouteHandler: RouteHandler<
+  typeof deleteSysPoliciesPasswordNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesPasswordNameGenerateRouteHandler: RouteHandler<
+  typeof getSysPoliciesPasswordNameGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesRgpIndexRouteHandler: RouteHandler<
+  typeof getSysPoliciesRgpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPoliciesRgpNameRouteHandler: RouteHandler<
+  typeof getSysPoliciesRgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPoliciesRgpNameRouteHandler: RouteHandler<
+  typeof postSysPoliciesRgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPoliciesRgpNameRouteHandler: RouteHandler<
+  typeof deleteSysPoliciesRgpNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPolicyRouteHandler: RouteHandler<typeof getSysPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPolicyIndexRouteHandler: RouteHandler<typeof getSysPolicyIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPolicyNameRouteHandler: RouteHandler<typeof getSysPolicyNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysPolicyNameRouteHandler: RouteHandler<typeof postSysPolicyNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysPolicyNameRouteHandler: RouteHandler<
+  typeof deleteSysPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofRouteHandler: RouteHandler<typeof getSysPprofRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofAllocsRouteHandler: RouteHandler<typeof getSysPprofAllocsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofBlockRouteHandler: RouteHandler<typeof getSysPprofBlockRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofCmdlineRouteHandler: RouteHandler<typeof getSysPprofCmdlineRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofGoroutineRouteHandler: RouteHandler<
+  typeof getSysPprofGoroutineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofHeapRouteHandler: RouteHandler<typeof getSysPprofHeapRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofMutexRouteHandler: RouteHandler<typeof getSysPprofMutexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofProfileRouteHandler: RouteHandler<typeof getSysPprofProfileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofSymbolRouteHandler: RouteHandler<typeof getSysPprofSymbolRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofThreadcreateRouteHandler: RouteHandler<
+  typeof getSysPprofThreadcreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysPprofTraceRouteHandler: RouteHandler<typeof getSysPprofTraceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysQuotasConfigRouteHandler: RouteHandler<typeof getSysQuotasConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysQuotasConfigRouteHandler: RouteHandler<
+  typeof postSysQuotasConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysQuotasLeaseCountIndexRouteHandler: RouteHandler<
+  typeof getSysQuotasLeaseCountIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysQuotasLeaseCountNameRouteHandler: RouteHandler<
+  typeof getSysQuotasLeaseCountNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysQuotasLeaseCountNameRouteHandler: RouteHandler<
+  typeof postSysQuotasLeaseCountNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysQuotasLeaseCountNameRouteHandler: RouteHandler<
+  typeof deleteSysQuotasLeaseCountNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysQuotasRateLimitIndexRouteHandler: RouteHandler<
+  typeof getSysQuotasRateLimitIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysQuotasRateLimitNameRouteHandler: RouteHandler<
+  typeof getSysQuotasRateLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysQuotasRateLimitNameRouteHandler: RouteHandler<
+  typeof postSysQuotasRateLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysQuotasRateLimitNameRouteHandler: RouteHandler<
+  typeof deleteSysQuotasRateLimitNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRawPathRouteHandler: RouteHandler<typeof getSysRawPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRawPathRouteHandler: RouteHandler<typeof postSysRawPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysRawPathRouteHandler: RouteHandler<typeof deleteSysRawPathRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRawPathIndexRouteHandler: RouteHandler<typeof getSysRawPathIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRekeyBackupRouteHandler: RouteHandler<typeof getSysRekeyBackupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysRekeyBackupRouteHandler: RouteHandler<
+  typeof deleteSysRekeyBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRekeyInitRouteHandler: RouteHandler<typeof getSysRekeyInitRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRekeyInitRouteHandler: RouteHandler<typeof postSysRekeyInitRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysRekeyInitRouteHandler: RouteHandler<typeof deleteSysRekeyInitRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRekeyRecoveryKeyBackupRouteHandler: RouteHandler<
+  typeof getSysRekeyRecoveryKeyBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysRekeyRecoveryKeyBackupRouteHandler: RouteHandler<
+  typeof deleteSysRekeyRecoveryKeyBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRekeyUpdateRouteHandler: RouteHandler<typeof postSysRekeyUpdateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRekeyVerifyRouteHandler: RouteHandler<typeof getSysRekeyVerifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRekeyVerifyRouteHandler: RouteHandler<typeof postSysRekeyVerifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysRekeyVerifyRouteHandler: RouteHandler<
+  typeof deleteSysRekeyVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRemountRouteHandler: RouteHandler<typeof postSysRemountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRemountStatusMigrationIdRouteHandler: RouteHandler<
+  typeof getSysRemountStatusMigrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRenewRouteHandler: RouteHandler<typeof postSysRenewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRenewUrlLeaseIdRouteHandler: RouteHandler<
+  typeof postSysRenewUrlLeaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrPrimaryDemoteRouteHandler: RouteHandler<
+  typeof postSysReplicationDrPrimaryDemoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrPrimaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationDrPrimaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrPrimaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationDrPrimaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrPrimaryRevokeSecondaryRouteHandler: RouteHandler<
+  typeof postSysReplicationDrPrimaryRevokeSecondaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrPrimarySecondaryTokenRouteHandler: RouteHandler<
+  typeof postSysReplicationDrPrimarySecondaryTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryConfigReloadSubsystemRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryConfigReloadSubsystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryGeneratePublicKeyRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryGeneratePublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationDrSecondaryLicenseStatusRouteHandler: RouteHandler<
+  typeof getSysReplicationDrSecondaryLicenseStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryOperationTokenDeleteRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryOperationTokenDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryPromoteRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryRecoverRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryReindexRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryReindexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationDrSecondaryUpdatePrimaryRouteHandler: RouteHandler<
+  typeof postSysReplicationDrSecondaryUpdatePrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationDrStatusRouteHandler: RouteHandler<
+  typeof getSysReplicationDrStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimaryDemoteRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimaryDemoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationPerformancePrimaryDynamicFilterIdRouteHandler: RouteHandler<
+  typeof getSysReplicationPerformancePrimaryDynamicFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationPerformancePrimaryPathsFilterIdRouteHandler: RouteHandler<
+  typeof getSysReplicationPerformancePrimaryPathsFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimaryPathsFilterIdRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimaryPathsFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysReplicationPerformancePrimaryPathsFilterIdRouteHandler: RouteHandler<
+  typeof deleteSysReplicationPerformancePrimaryPathsFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimaryRevokeSecondaryRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimaryRevokeSecondaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformancePrimarySecondaryTokenRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformancePrimarySecondaryTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformanceSecondaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformanceSecondaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationPerformanceSecondaryDynamicFilterIdRouteHandler: RouteHandler<
+  typeof getSysReplicationPerformanceSecondaryDynamicFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformanceSecondaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformanceSecondaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformanceSecondaryGeneratePublicKeyRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformanceSecondaryGeneratePublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformanceSecondaryPromoteRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformanceSecondaryPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPerformanceSecondaryUpdatePrimaryRouteHandler: RouteHandler<
+  typeof postSysReplicationPerformanceSecondaryUpdatePrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationPerformanceStatusRouteHandler: RouteHandler<
+  typeof getSysReplicationPerformanceStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPrimaryDemoteRouteHandler: RouteHandler<
+  typeof postSysReplicationPrimaryDemoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPrimaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationPrimaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPrimaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationPrimaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPrimaryRevokeSecondaryRouteHandler: RouteHandler<
+  typeof postSysReplicationPrimaryRevokeSecondaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationPrimarySecondaryTokenRouteHandler: RouteHandler<
+  typeof postSysReplicationPrimarySecondaryTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationRecoverRouteHandler: RouteHandler<
+  typeof postSysReplicationRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationReindexRouteHandler: RouteHandler<
+  typeof postSysReplicationReindexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationSecondaryDisableRouteHandler: RouteHandler<
+  typeof postSysReplicationSecondaryDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationSecondaryEnableRouteHandler: RouteHandler<
+  typeof postSysReplicationSecondaryEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationSecondaryPromoteRouteHandler: RouteHandler<
+  typeof postSysReplicationSecondaryPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysReplicationSecondaryUpdatePrimaryRouteHandler: RouteHandler<
+  typeof postSysReplicationSecondaryUpdatePrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysReplicationStatusRouteHandler: RouteHandler<
+  typeof getSysReplicationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRevokeRouteHandler: RouteHandler<typeof postSysRevokeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRevokeForcePrefixRouteHandler: RouteHandler<
+  typeof postSysRevokeForcePrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRevokePrefixPrefixRouteHandler: RouteHandler<
+  typeof postSysRevokePrefixPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRevokeUrlLeaseIdRouteHandler: RouteHandler<
+  typeof postSysRevokeUrlLeaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRotateRouteHandler: RouteHandler<typeof postSysRotateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysRotateConfigRouteHandler: RouteHandler<typeof getSysRotateConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysRotateConfigRouteHandler: RouteHandler<
+  typeof postSysRotateConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysSealRouteHandler: RouteHandler<typeof postSysSealRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysSealStatusRouteHandler: RouteHandler<typeof getSysSealStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysSealwrapRewrapRouteHandler: RouteHandler<
+  typeof getSysSealwrapRewrapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysSealwrapRewrapRouteHandler: RouteHandler<
+  typeof postSysSealwrapRewrapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysStepDownRouteHandler: RouteHandler<typeof postSysStepDownRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysStorageRaftSnapshotAutoConfigIndexRouteHandler: RouteHandler<
+  typeof getSysStorageRaftSnapshotAutoConfigIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysStorageRaftSnapshotAutoConfigNameRouteHandler: RouteHandler<
+  typeof getSysStorageRaftSnapshotAutoConfigNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysStorageRaftSnapshotAutoConfigNameRouteHandler: RouteHandler<
+  typeof postSysStorageRaftSnapshotAutoConfigNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSysStorageRaftSnapshotAutoConfigNameRouteHandler: RouteHandler<
+  typeof deleteSysStorageRaftSnapshotAutoConfigNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysStorageRaftSnapshotAutoStatusNameRouteHandler: RouteHandler<
+  typeof getSysStorageRaftSnapshotAutoStatusNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsHashRouteHandler: RouteHandler<typeof postSysToolsHashRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsHashUrlalgorithmRouteHandler: RouteHandler<
+  typeof postSysToolsHashUrlalgorithmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsRandomRouteHandler: RouteHandler<typeof postSysToolsRandomRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsRandomSourceRouteHandler: RouteHandler<
+  typeof postSysToolsRandomSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsRandomSourceUrlbytesRouteHandler: RouteHandler<
+  typeof postSysToolsRandomSourceUrlbytesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysToolsRandomUrlbytesRouteHandler: RouteHandler<
+  typeof postSysToolsRandomUrlbytesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysUnsealRouteHandler: RouteHandler<typeof postSysUnsealRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysVersionHistoryIndexRouteHandler: RouteHandler<
+  typeof getSysVersionHistoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSysWrappingLookupRouteHandler: RouteHandler<
+  typeof getSysWrappingLookupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysWrappingLookupRouteHandler: RouteHandler<
+  typeof postSysWrappingLookupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysWrappingRewrapRouteHandler: RouteHandler<
+  typeof postSysWrappingRewrapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysWrappingUnwrapRouteHandler: RouteHandler<
+  typeof postSysWrappingUnwrapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSysWrappingWrapRouteHandler: RouteHandler<
+  typeof postSysWrappingWrapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

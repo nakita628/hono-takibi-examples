@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSelectedMultipleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSelectedMultipleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const selectedMultipleHandler = app.openapi(getSelectedMultipleRoute, (c) => {
+export const getSelectedMultipleRouteHandler: RouteHandler<
+  typeof getSelectedMultipleRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

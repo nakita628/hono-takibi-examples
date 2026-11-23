@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworkServicesIdChangeRequestRoute,
   deleteNetworkServicesIdRoute,
   getNetworkServicesIdCancellationPolicyRoute,
@@ -12,36 +12,62 @@ import {
   putNetworkServicesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworkServicesRouteHandler: RouteHandler<typeof getNetworkServicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const networkServicesHandler = app
-  .openapi(getNetworkServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNetworkServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworkServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkServicesIdCancellationPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkServicesIdChangeRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkServicesIdChangeRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkServicesIdChangeRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNetworkServicesRouteHandler: RouteHandler<
+  typeof postNetworkServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkServicesIdRouteHandler: RouteHandler<
+  typeof deleteNetworkServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkServicesIdRouteHandler: RouteHandler<
+  typeof getNetworkServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNetworkServicesIdRouteHandler: RouteHandler<
+  typeof patchNetworkServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworkServicesIdRouteHandler: RouteHandler<
+  typeof putNetworkServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkServicesIdCancellationPolicyRouteHandler: RouteHandler<
+  typeof getNetworkServicesIdCancellationPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkServicesIdChangeRequestRouteHandler: RouteHandler<
+  typeof deleteNetworkServicesIdChangeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkServicesIdChangeRequestRouteHandler: RouteHandler<
+  typeof getNetworkServicesIdChangeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworkServicesIdChangeRequestRouteHandler: RouteHandler<
+  typeof postNetworkServicesIdChangeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

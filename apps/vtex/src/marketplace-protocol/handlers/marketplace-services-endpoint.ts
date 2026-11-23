@@ -1,29 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute,
   postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute,
   postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute,
   postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRouteHandler: RouteHandler<
+  typeof postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const marketplaceServicesEndpointHandler = app
-  .openapi(postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRouteHandler: RouteHandler<
+  typeof postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRouteHandler: RouteHandler<
+  typeof postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRouteHandler: RouteHandler<
+  typeof postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

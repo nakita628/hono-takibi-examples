@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/webflow.com/2023-03-01T164537Z/openapi.yaml',
   output: './src/webflow/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/webflow/types.ts' },
   client: { output: './src/webflow/client.ts', baseUrl: '/' },
   rpc: { output: './src/webflow/rpc.ts', parseResponse: true },

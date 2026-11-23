@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMultipleResponsesObjectRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMultipleResponsesObjectRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const multipleResponsesHandler = app.openapi(getMultipleResponsesObjectRoute, (c) => {
+export const getMultipleResponsesObjectRouteHandler: RouteHandler<
+  typeof getMultipleResponsesObjectRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

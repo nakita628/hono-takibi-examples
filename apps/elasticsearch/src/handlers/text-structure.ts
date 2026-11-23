@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTextStructureFindFieldStructureRoute,
   getTextStructureFindMessageStructureRoute,
   getTextStructureTestGrokPatternRoute,
@@ -8,24 +8,38 @@ import {
   postTextStructureTestGrokPatternRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTextStructureFindFieldStructureRouteHandler: RouteHandler<
+  typeof getTextStructureFindFieldStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const textStructureHandler = app
-  .openapi(getTextStructureFindFieldStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTextStructureFindMessageStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTextStructureFindMessageStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTextStructureFindStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTextStructureTestGrokPatternRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTextStructureTestGrokPatternRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTextStructureFindMessageStructureRouteHandler: RouteHandler<
+  typeof getTextStructureFindMessageStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTextStructureFindMessageStructureRouteHandler: RouteHandler<
+  typeof postTextStructureFindMessageStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTextStructureFindStructureRouteHandler: RouteHandler<
+  typeof postTextStructureFindStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTextStructureTestGrokPatternRouteHandler: RouteHandler<
+  typeof getTextStructureTestGrokPatternRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTextStructureTestGrokPatternRouteHandler: RouteHandler<
+  typeof postTextStructureTestGrokPatternRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

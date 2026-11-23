@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStarlingDoveServiceBatchGetResourceConfigHandler = app.openapi(
-  postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRouteHandler: RouteHandler<
+  typeof postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

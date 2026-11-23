@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOauth2V21TokensKidRoute,
   getOauth2V21VerifyRoute,
   postOauth2V21RevokeRoute,
@@ -7,21 +7,32 @@ import {
   postOauth2V3TokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOauth2V3TokenRouteHandler: RouteHandler<typeof postOauth2V3TokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(postOauth2V3TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2V21TokensKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2V21TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2V21VerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2V21RevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOauth2V21TokensKidRouteHandler: RouteHandler<
+  typeof getOauth2V21TokensKidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2V21TokenRouteHandler: RouteHandler<typeof postOauth2V21TokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2V21VerifyRouteHandler: RouteHandler<typeof getOauth2V21VerifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2V21RevokeRouteHandler: RouteHandler<
+  typeof postOauth2V21RevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

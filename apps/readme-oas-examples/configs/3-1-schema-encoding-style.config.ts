@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-encoding-style.yaml',
   output: './src/3-1-schema-encoding-style/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-1-schema-encoding-style/types.ts' },
   client: { output: './src/3-1-schema-encoding-style/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-1-schema-encoding-style/rpc.ts', parseResponse: true },

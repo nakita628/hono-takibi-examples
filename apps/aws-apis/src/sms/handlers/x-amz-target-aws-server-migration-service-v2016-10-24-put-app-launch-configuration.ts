@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSServerMigrationServiceV20161024PutAppLaunchConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSServerMigrationServiceV20161024PutAppLaunchConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsServerMigrationServiceV20161024PutAppLaunchConfigurationHandler =
-  app.openapi(
-    postXAmzTargetAWSServerMigrationServiceV20161024PutAppLaunchConfigurationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSServerMigrationServiceV20161024PutAppLaunchConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSServerMigrationServiceV20161024PutAppLaunchConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

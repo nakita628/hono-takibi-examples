@@ -1,15 +1,20 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAudiobooksIdChaptersRoute, getAudiobooksIdRoute, getAudiobooksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getAudiobooksIdChaptersRoute,
+  getAudiobooksIdRoute,
+  getAudiobooksRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getAudiobooksIdRouteHandler: RouteHandler<typeof getAudiobooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const audiobooksHandler = app
-  .openapi(getAudiobooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudiobooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAudiobooksIdChaptersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAudiobooksRouteHandler: RouteHandler<typeof getAudiobooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAudiobooksIdChaptersRouteHandler: RouteHandler<
+  typeof getAudiobooksIdChaptersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

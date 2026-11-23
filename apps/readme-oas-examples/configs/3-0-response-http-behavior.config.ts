@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-http-behavior.yaml',
   output: './src/3-0-response-http-behavior/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-response-http-behavior/types.ts' },
   client: { output: './src/3-0-response-http-behavior/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-response-http-behavior/rpc.ts', parseResponse: true },

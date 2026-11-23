@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAuthGetRoute, postAuthVerifyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAuthGetRoute, postAuthVerifyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthGetRouteHandler: RouteHandler<typeof postAuthGetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authHandler = app
-  .openapi(postAuthGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthVerifyRouteHandler: RouteHandler<typeof postAuthVerifyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionRestoreDBClusterFromSnapshotRoute,
   postActionRestoreDBClusterFromSnapshotRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRestoreDBClusterFromSnapshotRouteHandler: RouteHandler<
+  typeof getActionRestoreDBClusterFromSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRestoreDbClusterFromSnapshotHandler = app
-  .openapi(getActionRestoreDBClusterFromSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRestoreDBClusterFromSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRestoreDBClusterFromSnapshotRouteHandler: RouteHandler<
+  typeof postActionRestoreDBClusterFromSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

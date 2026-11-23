@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/lgtm.com/v1.0/openapi.yaml',
   output: './src/lgtm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lgtm/types.ts' },
   client: { output: './src/lgtm/client.ts', baseUrl: '/' },
   rpc: { output: './src/lgtm/rpc.ts', parseResponse: true },

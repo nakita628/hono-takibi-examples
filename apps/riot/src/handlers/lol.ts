@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLolChallengesV1ChallengesChallengeIdConfigRoute,
   getLolChallengesV1ChallengesChallengeIdLeaderboardsByLevelLevelRoute,
   getLolChallengesV1ChallengesChallengeIdPercentilesRoute,
@@ -48,147 +48,278 @@ import {
   putLolTournamentV5CodesTournamentCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lolHandler = app
-  .openapi(getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDByChampionChampionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChampionMasteryV4ScoresByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolPlatformV3ChampionRotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolClashV1PlayersByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolClashV1TeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolClashV1TournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolClashV1TournamentsByTeamTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolClashV1TournamentsTournamentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueExpV4EntriesQueueTierDivisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueV4ChallengerleaguesByQueueQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueV4EntriesByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueV4EntriesQueueTierDivisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueV4GrandmasterleaguesByQueueQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolLeagueV4MasterleaguesByQueueQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1ChallengesConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1ChallengesPercentilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1ChallengesChallengeIdConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1ChallengesChallengeIdLeaderboardsByLevelLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1ChallengesChallengeIdPercentilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolChallengesV1PlayerDataPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolRsoMatchV1MatchesIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolRsoMatchV1MatchesMatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolRsoMatchV1MatchesMatchIdTimelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolStatusV4PlatformDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolMatchV5MatchesByPuuidPuuidIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolMatchV5MatchesReplaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolMatchV5MatchesMatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolMatchV5MatchesMatchIdTimelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolSpectatorTftV5ActiveGamesByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolSpectatorV5ActiveGamesBySummonerEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolSummonerV4SummonersByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolSummonerV4SummonersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentStubV5CodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolTournamentStubV5CodesTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolTournamentStubV5LobbyEventsByCodeTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentStubV5ProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentStubV5TournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentV5CodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolTournamentV5CodesTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLolTournamentV5CodesTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolTournamentV5GamesByCodeTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLolTournamentV5LobbyEventsByCodeTournamentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentV5ProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLolTournamentV5TournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDByChampionChampionIdRouteHandler: RouteHandler<
+  typeof getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDByChampionChampionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDTopRouteHandler: RouteHandler<
+  typeof getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDTopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChampionMasteryV4ScoresByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolChampionMasteryV4ScoresByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolPlatformV3ChampionRotationsRouteHandler: RouteHandler<
+  typeof getLolPlatformV3ChampionRotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolClashV1PlayersByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getLolClashV1PlayersByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolClashV1TeamsTeamIdRouteHandler: RouteHandler<
+  typeof getLolClashV1TeamsTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolClashV1TournamentsRouteHandler: RouteHandler<
+  typeof getLolClashV1TournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolClashV1TournamentsByTeamTeamIdRouteHandler: RouteHandler<
+  typeof getLolClashV1TournamentsByTeamTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolClashV1TournamentsTournamentIdRouteHandler: RouteHandler<
+  typeof getLolClashV1TournamentsTournamentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueExpV4EntriesQueueTierDivisionRouteHandler: RouteHandler<
+  typeof getLolLeagueExpV4EntriesQueueTierDivisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueV4ChallengerleaguesByQueueQueueRouteHandler: RouteHandler<
+  typeof getLolLeagueV4ChallengerleaguesByQueueQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueV4EntriesByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolLeagueV4EntriesByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueV4EntriesQueueTierDivisionRouteHandler: RouteHandler<
+  typeof getLolLeagueV4EntriesQueueTierDivisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueV4GrandmasterleaguesByQueueQueueRouteHandler: RouteHandler<
+  typeof getLolLeagueV4GrandmasterleaguesByQueueQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolLeagueV4MasterleaguesByQueueQueueRouteHandler: RouteHandler<
+  typeof getLolLeagueV4MasterleaguesByQueueQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1ChallengesConfigRouteHandler: RouteHandler<
+  typeof getLolChallengesV1ChallengesConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1ChallengesPercentilesRouteHandler: RouteHandler<
+  typeof getLolChallengesV1ChallengesPercentilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1ChallengesChallengeIdConfigRouteHandler: RouteHandler<
+  typeof getLolChallengesV1ChallengesChallengeIdConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1ChallengesChallengeIdLeaderboardsByLevelLevelRouteHandler: RouteHandler<
+  typeof getLolChallengesV1ChallengesChallengeIdLeaderboardsByLevelLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1ChallengesChallengeIdPercentilesRouteHandler: RouteHandler<
+  typeof getLolChallengesV1ChallengesChallengeIdPercentilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolChallengesV1PlayerDataPuuidRouteHandler: RouteHandler<
+  typeof getLolChallengesV1PlayerDataPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolRsoMatchV1MatchesIdsRouteHandler: RouteHandler<
+  typeof getLolRsoMatchV1MatchesIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolRsoMatchV1MatchesMatchIdRouteHandler: RouteHandler<
+  typeof getLolRsoMatchV1MatchesMatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolRsoMatchV1MatchesMatchIdTimelineRouteHandler: RouteHandler<
+  typeof getLolRsoMatchV1MatchesMatchIdTimelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolStatusV4PlatformDataRouteHandler: RouteHandler<
+  typeof getLolStatusV4PlatformDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolMatchV5MatchesByPuuidPuuidIdsRouteHandler: RouteHandler<
+  typeof getLolMatchV5MatchesByPuuidPuuidIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolMatchV5MatchesReplaysRouteHandler: RouteHandler<
+  typeof getLolMatchV5MatchesReplaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolMatchV5MatchesMatchIdRouteHandler: RouteHandler<
+  typeof getLolMatchV5MatchesMatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolMatchV5MatchesMatchIdTimelineRouteHandler: RouteHandler<
+  typeof getLolMatchV5MatchesMatchIdTimelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolSpectatorTftV5ActiveGamesByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolSpectatorTftV5ActiveGamesByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolSpectatorV5ActiveGamesBySummonerEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolSpectatorV5ActiveGamesBySummonerEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolSummonerV4SummonersByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getLolSummonerV4SummonersByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolSummonerV4SummonersMeRouteHandler: RouteHandler<
+  typeof getLolSummonerV4SummonersMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentStubV5CodesRouteHandler: RouteHandler<
+  typeof postLolTournamentStubV5CodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolTournamentStubV5CodesTournamentCodeRouteHandler: RouteHandler<
+  typeof getLolTournamentStubV5CodesTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolTournamentStubV5LobbyEventsByCodeTournamentCodeRouteHandler: RouteHandler<
+  typeof getLolTournamentStubV5LobbyEventsByCodeTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentStubV5ProvidersRouteHandler: RouteHandler<
+  typeof postLolTournamentStubV5ProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentStubV5TournamentsRouteHandler: RouteHandler<
+  typeof postLolTournamentStubV5TournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentV5CodesRouteHandler: RouteHandler<
+  typeof postLolTournamentV5CodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolTournamentV5CodesTournamentCodeRouteHandler: RouteHandler<
+  typeof getLolTournamentV5CodesTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLolTournamentV5CodesTournamentCodeRouteHandler: RouteHandler<
+  typeof putLolTournamentV5CodesTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolTournamentV5GamesByCodeTournamentCodeRouteHandler: RouteHandler<
+  typeof getLolTournamentV5GamesByCodeTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLolTournamentV5LobbyEventsByCodeTournamentCodeRouteHandler: RouteHandler<
+  typeof getLolTournamentV5LobbyEventsByCodeTournamentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentV5ProvidersRouteHandler: RouteHandler<
+  typeof postLolTournamentV5ProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLolTournamentV5TournamentsRouteHandler: RouteHandler<
+  typeof postLolTournamentV5TournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

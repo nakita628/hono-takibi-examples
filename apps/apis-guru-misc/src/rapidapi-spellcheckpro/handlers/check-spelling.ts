@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCheckSpellingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCheckSpellingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checkSpellingHandler = app.openapi(postCheckSpellingRoute, (c) => {
+export const postCheckSpellingRouteHandler: RouteHandler<typeof postCheckSpellingRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -5710,19 +5710,19 @@ export function useImmutableGetWorkerStatus<TError = unknown>(options?: {
 }
 
 export function getGetWorkerArchitectureNameWorkerIdKey(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
 ) {
-  return ['worker', '/worker/:architecture_name::worker_id', args] as const
+  return ['worker', '/worker/:architecture_name:{worker_id}', args] as const
 }
 
 export function useGetWorkerArchitectureNameWorkerId<TError = unknown>(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+            Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
           >
         >
       >,
@@ -5745,7 +5745,7 @@ export function useGetWorkerArchitectureNameWorkerId<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+            Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
           >
         >
       >,
@@ -5753,20 +5753,20 @@ export function useGetWorkerArchitectureNameWorkerId<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.worker[':architecture_name::worker_id'].$get(args, clientOptions)),
+        parseResponse(client.worker[':architecture_name:{worker_id}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetWorkerArchitectureNameWorkerId<TError = unknown>(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+            Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
           >
         >
       >,
@@ -5789,7 +5789,7 @@ export function useImmutableGetWorkerArchitectureNameWorkerId<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+            Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
           >
         >
       >,
@@ -5797,7 +5797,7 @@ export function useImmutableGetWorkerArchitectureNameWorkerId<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.worker[':architecture_name::worker_id'].$get(args, clientOptions)),
+        parseResponse(client.worker[':architecture_name:{worker_id}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

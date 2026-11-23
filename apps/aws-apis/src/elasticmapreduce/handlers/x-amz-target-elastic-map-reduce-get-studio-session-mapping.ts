@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetElasticMapReduceGetStudioSessionMappingHandler = app.openapi(
-  postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetElasticMapReduceGetStudioSessionMappingRouteHandler: RouteHandler<
+  typeof postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOperatorRaftPeerRoute,
   getOperatorAutopilotConfigurationRoute,
   getOperatorAutopilotHealthRoute,
@@ -9,27 +9,44 @@ import {
   putOperatorAutopilotConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOperatorAutopilotConfigurationRouteHandler: RouteHandler<
+  typeof getOperatorAutopilotConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const operatorHandler = app
-  .openapi(getOperatorAutopilotConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOperatorAutopilotConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperatorAutopilotHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperatorRaftConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOperatorRaftPeerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperatorSchedulerConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOperatorSchedulerConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putOperatorAutopilotConfigurationRouteHandler: RouteHandler<
+  typeof putOperatorAutopilotConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperatorAutopilotHealthRouteHandler: RouteHandler<
+  typeof getOperatorAutopilotHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperatorRaftConfigurationRouteHandler: RouteHandler<
+  typeof getOperatorRaftConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOperatorRaftPeerRouteHandler: RouteHandler<
+  typeof deleteOperatorRaftPeerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperatorSchedulerConfigurationRouteHandler: RouteHandler<
+  typeof getOperatorSchedulerConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOperatorSchedulerConfigurationRouteHandler: RouteHandler<
+  typeof postOperatorSchedulerConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

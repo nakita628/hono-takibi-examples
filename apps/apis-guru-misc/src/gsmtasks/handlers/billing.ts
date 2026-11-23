@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBillingCustomersIdClientTokenIndexRoute,
   getBillingCustomersIdIndexRoute,
   getBillingCustomersIndexRoute,
@@ -17,51 +17,92 @@ import {
   putBillingInvoicesIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBillingCustomersIndexRouteHandler: RouteHandler<
+  typeof getBillingCustomersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billingHandler = app
-  .openapi(getBillingCustomersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingCustomersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingCustomersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBillingCustomersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBillingCustomersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingCustomersIdClientTokenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingInvoicesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingInvoicesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBillingInvoicesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBillingInvoicesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingInvoicesIdMarkAsPaidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingStripePaymentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingStripePaymentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingTransactionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingTransactionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBillingCustomersIndexRouteHandler: RouteHandler<
+  typeof postBillingCustomersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingCustomersIdIndexRouteHandler: RouteHandler<
+  typeof getBillingCustomersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBillingCustomersIdIndexRouteHandler: RouteHandler<
+  typeof patchBillingCustomersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBillingCustomersIdIndexRouteHandler: RouteHandler<
+  typeof putBillingCustomersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingCustomersIdClientTokenIndexRouteHandler: RouteHandler<
+  typeof getBillingCustomersIdClientTokenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingInvoicesIndexRouteHandler: RouteHandler<
+  typeof getBillingInvoicesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingInvoicesIdIndexRouteHandler: RouteHandler<
+  typeof getBillingInvoicesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBillingInvoicesIdIndexRouteHandler: RouteHandler<
+  typeof patchBillingInvoicesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBillingInvoicesIdIndexRouteHandler: RouteHandler<
+  typeof putBillingInvoicesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingInvoicesIdMarkAsPaidIndexRouteHandler: RouteHandler<
+  typeof postBillingInvoicesIdMarkAsPaidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingStripePaymentsIndexRouteHandler: RouteHandler<
+  typeof getBillingStripePaymentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingStripePaymentsIdIndexRouteHandler: RouteHandler<
+  typeof getBillingStripePaymentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingTransactionsIndexRouteHandler: RouteHandler<
+  typeof getBillingTransactionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingTransactionsIdIndexRouteHandler: RouteHandler<
+  typeof getBillingTransactionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

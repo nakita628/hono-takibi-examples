@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/i-cue.solutions/v1/openapi.yaml',
   output: './src/i-cue-solutions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/i-cue-solutions/types.ts' },
   client: { output: './src/i-cue-solutions/client.ts', baseUrl: '/' },
   rpc: { output: './src/i-cue-solutions/rpc.ts', parseResponse: true },

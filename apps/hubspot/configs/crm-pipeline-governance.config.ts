@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Pipeline%20Governance/Rollouts/320924/2026-09/pipelineGovernance.json',
   output: './src/crm-pipeline-governance/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-pipeline-governance/types.ts' },
   client: { output: './src/crm-pipeline-governance/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-pipeline-governance/rpc.ts', parseResponse: true },

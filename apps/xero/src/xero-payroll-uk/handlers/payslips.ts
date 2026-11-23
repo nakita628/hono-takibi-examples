@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPayslipsPayslipIDRoute, getPayslipsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPayslipsPayslipIDRoute, getPayslipsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPayslipsRouteHandler: RouteHandler<typeof getPayslipsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const payslipsHandler = app
-  .openapi(getPayslipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPayslipsPayslipIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPayslipsPayslipIDRouteHandler: RouteHandler<
+  typeof getPayslipsPayslipIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

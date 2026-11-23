@@ -2505,7 +2505,7 @@ export const deleteAutomationSequences202609ServiceaccountsSequencesSequenceIdRo
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [],
 })
 

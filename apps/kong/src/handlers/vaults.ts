@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVaultsVaultIdOrPrefixRoute,
   getVaultsRoute,
   getVaultsVaultIdOrPrefixRoute,
@@ -8,24 +8,34 @@ import {
   putVaultsVaultIdOrPrefixRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVaultsRouteHandler: RouteHandler<typeof getVaultsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vaultsHandler = app
-  .openapi(getVaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVaultsVaultIdOrPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultIdOrPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVaultsVaultIdOrPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVaultsVaultIdOrPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVaultsRouteHandler: RouteHandler<typeof postVaultsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVaultsVaultIdOrPrefixRouteHandler: RouteHandler<
+  typeof deleteVaultsVaultIdOrPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultIdOrPrefixRouteHandler: RouteHandler<
+  typeof getVaultsVaultIdOrPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVaultsVaultIdOrPrefixRouteHandler: RouteHandler<
+  typeof patchVaultsVaultIdOrPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVaultsVaultIdOrPrefixRouteHandler: RouteHandler<
+  typeof putVaultsVaultIdOrPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

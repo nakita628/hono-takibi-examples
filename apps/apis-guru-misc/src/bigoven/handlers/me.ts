@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMePreferencesOptionsRoute,
   getMeRoute,
   getMeSkinnyRoute,
@@ -9,27 +9,34 @@ import {
   putMeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMeRouteHandler: RouteHandler<typeof getMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const meHandler = app
-  .openapi(getMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMePersonalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMePreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMePreferencesOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeSkinnyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putMeRouteHandler: RouteHandler<typeof putMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMePersonalRouteHandler: RouteHandler<typeof putMePersonalRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMePreferencesRouteHandler: RouteHandler<typeof putMePreferencesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMePreferencesOptionsRouteHandler: RouteHandler<
+  typeof getMePreferencesOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeProfileRouteHandler: RouteHandler<typeof putMeProfileRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeSkinnyRouteHandler: RouteHandler<typeof getMeSkinnyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

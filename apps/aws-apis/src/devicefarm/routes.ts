@@ -235,8 +235,8 @@ const DevicePoolCompatibilityResultsSchema = z
   .openapi('DevicePoolCompatibilityResults')
 
 type GetDevicePoolCompatibilityResultType = {
-  compatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema> & unknown
-  incompatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema> & unknown
+  compatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema>
+  incompatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema>
 }
 
 const TestTypeSchema = z
@@ -380,8 +380,8 @@ const JobsSchema = z.array(JobSchema).openapi('Jobs')
 const PaginationTokenSchema = z.string().min(4).max(1024).openapi('PaginationToken')
 
 type ListJobsResultType = {
-  jobs?: z.infer<typeof JobsSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  jobs?: z.infer<typeof JobsSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const OfferingTransactionTypeSchema = z
@@ -496,8 +496,8 @@ const OfferingTransactionsSchema = z
   .openapi('OfferingTransactions')
 
 type ListOfferingTransactionsResultType = {
-  offeringTransactions?: z.infer<typeof OfferingTransactionsSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  offeringTransactions?: z.infer<typeof OfferingTransactionsSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const HostAddressSchema = z.string().max(1024).openapi('HostAddress')
@@ -646,8 +646,8 @@ const RemoteAccessSessionsSchema = z
   .openapi('RemoteAccessSessions')
 
 type ListRemoteAccessSessionsResultType = {
-  remoteAccessSessions?: z.infer<typeof RemoteAccessSessionsSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  remoteAccessSessions?: z.infer<typeof RemoteAccessSessionsSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const ProblemDetailSchema = z
@@ -691,8 +691,8 @@ const ProblemSchema = z
 const ProblemsSchema = z.array(ProblemSchema).openapi('Problems')
 
 type UniqueProblemType = {
-  message?: z.infer<typeof MessageSchema> & unknown
-  problems?: z.infer<typeof ProblemsSchema> & unknown
+  message?: z.infer<typeof MessageSchema>
+  problems?: z.infer<typeof ProblemsSchema>
 }
 
 const UniqueProblemSchema: z.ZodType<UniqueProblemType> = z
@@ -724,8 +724,8 @@ const UniqueProblemsByExecutionResultMapSchema: z.ZodType<UniqueProblemsByExecut
   z.record(z.string(), UniqueProblemsSchema).openapi('UniqueProblemsByExecutionResultMap')
 
 type ListUniqueProblemsResultType = {
-  uniqueProblems?: z.infer<typeof UniqueProblemsByExecutionResultMapSchema> & unknown
-  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  uniqueProblems?: z.infer<typeof UniqueProblemsByExecutionResultMapSchema>
+  nextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const DevicePoolTypeSchema = z.enum(['CURATED', 'PRIVATE']).openapi('DevicePoolType')

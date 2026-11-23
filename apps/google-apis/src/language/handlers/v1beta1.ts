@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postV1beta1DocumentsAnalyzeEntitiesRoute,
   postV1beta1DocumentsAnalyzeSentimentRoute,
   postV1beta1DocumentsAnalyzeSyntaxRoute,
   postV1beta1DocumentsAnnotateTextRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1beta1DocumentsAnalyzeEntitiesRouteHandler: RouteHandler<
+  typeof postV1beta1DocumentsAnalyzeEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(postV1beta1DocumentsAnalyzeEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1DocumentsAnalyzeSentimentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1DocumentsAnalyzeSyntaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1DocumentsAnnotateTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1beta1DocumentsAnalyzeSentimentRouteHandler: RouteHandler<
+  typeof postV1beta1DocumentsAnalyzeSentimentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1DocumentsAnalyzeSyntaxRouteHandler: RouteHandler<
+  typeof postV1beta1DocumentsAnalyzeSyntaxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1DocumentsAnnotateTextRouteHandler: RouteHandler<
+  typeof postV1beta1DocumentsAnnotateTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

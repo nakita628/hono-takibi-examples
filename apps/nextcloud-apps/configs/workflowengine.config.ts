@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/workflowengine/openapi-full.json',
   output: './src/workflowengine/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/workflowengine/types.ts' },
   client: { output: './src/workflowengine/client.ts', baseUrl: '/' },
   rpc: { output: './src/workflowengine/rpc.ts', parseResponse: true },

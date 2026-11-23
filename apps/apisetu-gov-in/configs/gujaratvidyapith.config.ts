@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/gujaratvidyapith/3.0.0/openapi.yaml',
   output: './src/gujaratvidyapith/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gujaratvidyapith/types.ts' },
   client: { output: './src/gujaratvidyapith/client.ts', baseUrl: '/' },
   rpc: { output: './src/gujaratvidyapith/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mist.com/0.36.1/openapi.yaml',
   output: './src/mist/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mist/types.ts' },
   client: { output: './src/mist/client.ts', baseUrl: '/' },
   rpc: { output: './src/mist/rpc.ts', parseResponse: true },

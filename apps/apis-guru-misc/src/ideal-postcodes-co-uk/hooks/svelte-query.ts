@@ -1504,24 +1504,26 @@ export function createPlaces<
 }
 
 export function getPlacesPlaceQueryKey(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
 ) {
-  return ['places', '/places/$:place', args] as const
+  return ['places', '/places/${place}', args] as const
 }
 
 export function getPlacesPlaceQueryOptions<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>>
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
+    >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
       >
     >,
     TError,
@@ -1531,7 +1533,7 @@ export function getPlacesPlaceQueryOptions<
     queryKey: getPlacesPlaceQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.places['$:place'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client.places['${place}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -1539,17 +1541,19 @@ export function getPlacesPlaceQueryOptions<
 
 export function createPlacesPlace<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>>
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
+    >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: () => InferRequestType<(typeof client.places)['${place}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
           >
         >,
         TError,

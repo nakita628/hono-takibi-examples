@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BinLookupService-v54.json',
   output: './src/BinLookupService-v54/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/BinLookupService-v54/types.ts' },
   client: { output: './src/BinLookupService-v54/client.ts', baseUrl: '/' },
   rpc: { output: './src/BinLookupService-v54/rpc.ts', parseResponse: true },

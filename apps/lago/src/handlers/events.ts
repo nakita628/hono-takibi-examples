@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEventsRoute,
   getEventsTransactionIdRoute,
   postEventsBatchEstimateInstantFeesRoute,
@@ -9,27 +9,38 @@ import {
   postEventsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEventsRouteHandler: RouteHandler<typeof postEventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsHandler = app
-  .openapi(postEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEstimateFeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEstimateInstantFeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsBatchEstimateInstantFeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEventsRouteHandler: RouteHandler<typeof getEventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsBatchRouteHandler: RouteHandler<typeof postEventsBatchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEstimateFeesRouteHandler: RouteHandler<
+  typeof postEventsEstimateFeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEstimateInstantFeesRouteHandler: RouteHandler<
+  typeof postEventsEstimateInstantFeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsBatchEstimateInstantFeesRouteHandler: RouteHandler<
+  typeof postEventsBatchEstimateInstantFeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsTransactionIdRouteHandler: RouteHandler<
+  typeof getEventsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

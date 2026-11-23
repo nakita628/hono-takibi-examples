@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/federatedfilesharing/openapi.json',
   output: './src/federatedfilesharing/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/federatedfilesharing/types.ts' },
   client: { output: './src/federatedfilesharing/client.ts', baseUrl: '/' },
   rpc: { output: './src/federatedfilesharing/rpc.ts', parseResponse: true },

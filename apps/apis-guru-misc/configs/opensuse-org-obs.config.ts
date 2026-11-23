@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/opensuse.org/obs/2.10.50/openapi.yaml',
   output: './src/opensuse-org-obs/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/opensuse-org-obs/types.ts' },
   client: { output: './src/opensuse-org-obs/client.ts', baseUrl: '/' },
   rpc: { output: './src/opensuse-org-obs/rpc.ts', parseResponse: true },

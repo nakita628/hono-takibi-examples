@@ -1,23 +1,32 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  btcerHandler,
-  ctcerHandler,
-  dtcerHandler,
-  ewcerHandler,
-  incerHandler,
-  rmcerHandler,
-  rscerHandler,
+  postBtcerCertificateRoute,
+  postCtcerCertificateRoute,
+  postDtcerCertificateRoute,
+  postEwcerCertificateRoute,
+  postIncerCertificateRoute,
+  postRmcerCertificateRoute,
+  postRscerCertificateRoute,
+} from './routes'
+import {
+  postBtcerCertificateRouteHandler,
+  postCtcerCertificateRouteHandler,
+  postDtcerCertificateRouteHandler,
+  postEwcerCertificateRouteHandler,
+  postIncerCertificateRouteHandler,
+  postRmcerCertificateRouteHandler,
+  postRscerCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', btcerHandler)
-  .route('/', ctcerHandler)
-  .route('/', dtcerHandler)
-  .route('/', ewcerHandler)
-  .route('/', incerHandler)
-  .route('/', rmcerHandler)
-  .route('/', rscerHandler)
+  .openapi(postBtcerCertificateRoute, postBtcerCertificateRouteHandler)
+  .openapi(postCtcerCertificateRoute, postCtcerCertificateRouteHandler)
+  .openapi(postDtcerCertificateRoute, postDtcerCertificateRouteHandler)
+  .openapi(postEwcerCertificateRoute, postEwcerCertificateRouteHandler)
+  .openapi(postIncerCertificateRoute, postIncerCertificateRouteHandler)
+  .openapi(postRmcerCertificateRoute, postRmcerCertificateRouteHandler)
+  .openapi(postRscerCertificateRoute, postRscerCertificateRouteHandler)
 
 export default app

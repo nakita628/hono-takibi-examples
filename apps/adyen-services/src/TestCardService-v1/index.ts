@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { createTestCardRangesHandler } from './handlers'
+import { postCreateTestCardRangesRoute } from './routes'
+import { postCreateTestCardRangesRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', createTestCardRangesHandler)
+export const api = app.openapi(postCreateTestCardRangesRoute, postCreateTestCardRangesRouteHandler)
 
 export default app

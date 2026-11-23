@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPostureFieldsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPostureFieldsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const postureFieldsHandler = app.openapi(getPostureFieldsRoute, (c) => {
+export const getPostureFieldsRouteHandler: RouteHandler<typeof getPostureFieldsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

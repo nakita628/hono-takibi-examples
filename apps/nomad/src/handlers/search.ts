@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSearchFuzzyRoute, postSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSearchFuzzyRoute, postSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSearchRouteHandler: RouteHandler<typeof postSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(postSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchFuzzyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSearchFuzzyRouteHandler: RouteHandler<typeof postSearchFuzzyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

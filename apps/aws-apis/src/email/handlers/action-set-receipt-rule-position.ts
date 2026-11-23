@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSetReceiptRulePositionRoute,
   postActionSetReceiptRulePositionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetReceiptRulePositionRouteHandler: RouteHandler<
+  typeof getActionSetReceiptRulePositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetReceiptRulePositionHandler = app
-  .openapi(getActionSetReceiptRulePositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetReceiptRulePositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetReceiptRulePositionRouteHandler: RouteHandler<
+  typeof postActionSetReceiptRulePositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

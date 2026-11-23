@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetricsCmcdRoute,
   optionsMetricsCmcdRoute,
   postMetricsCmcdRoute,
   postMetricsPlaybackRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMetricsCmcdRouteHandler: RouteHandler<typeof postMetricsCmcdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsHandler = app
-  .openapi(postMetricsCmcdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsCmcdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsMetricsCmcdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetricsPlaybackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetricsCmcdRouteHandler: RouteHandler<typeof getMetricsCmcdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsMetricsCmcdRouteHandler: RouteHandler<typeof optionsMetricsCmcdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetricsPlaybackRouteHandler: RouteHandler<
+  typeof postMetricsPlaybackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

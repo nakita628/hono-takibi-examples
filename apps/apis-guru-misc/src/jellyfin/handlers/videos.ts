@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVideosActiveEncodingsRoute,
   deleteVideosItemIdAlternateSourcesRoute,
   deleteVideosItemIdSubtitlesIndexRoute,
@@ -23,69 +23,128 @@ import {
   postVideosMergeVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteVideosActiveEncodingsRouteHandler: RouteHandler<
+  typeof deleteVideosActiveEncodingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const videosHandler = app
-  .openapi(deleteVideosActiveEncodingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosMergeVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdAdditionalPartsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVideosItemIdAlternateSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosItemIdSubtitlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVideosItemIdSubtitlesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdHlsPlaylistIdStreamM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdHlsPlaylistIdSegmentIdSegmentContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdHls1PlaylistIdSegmentIdContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdLiveM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdMainM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdMasterM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headVideosItemIdMasterM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headVideosItemIdStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdMediaSourceIdSubtitlesIndexStreamFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdMediaSourceIdSubtitlesIndexStartPositionTicksStreamFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosItemIdStreamContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headVideosItemIdStreamContainerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosVideoIdMediaSourceIdAttachmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVideosMergeVersionsRouteHandler: RouteHandler<
+  typeof postVideosMergeVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdAdditionalPartsRouteHandler: RouteHandler<
+  typeof getVideosItemIdAdditionalPartsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVideosItemIdAlternateSourcesRouteHandler: RouteHandler<
+  typeof deleteVideosItemIdAlternateSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVideosItemIdSubtitlesRouteHandler: RouteHandler<
+  typeof postVideosItemIdSubtitlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVideosItemIdSubtitlesIndexRouteHandler: RouteHandler<
+  typeof deleteVideosItemIdSubtitlesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdHlsPlaylistIdStreamM3u8RouteHandler: RouteHandler<
+  typeof getVideosItemIdHlsPlaylistIdStreamM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdHlsPlaylistIdSegmentIdSegmentContainerRouteHandler: RouteHandler<
+  typeof getVideosItemIdHlsPlaylistIdSegmentIdSegmentContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdHls1PlaylistIdSegmentIdContainerRouteHandler: RouteHandler<
+  typeof getVideosItemIdHls1PlaylistIdSegmentIdContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdLiveM3u8RouteHandler: RouteHandler<
+  typeof getVideosItemIdLiveM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdMainM3u8RouteHandler: RouteHandler<
+  typeof getVideosItemIdMainM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdMasterM3u8RouteHandler: RouteHandler<
+  typeof getVideosItemIdMasterM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headVideosItemIdMasterM3u8RouteHandler: RouteHandler<
+  typeof headVideosItemIdMasterM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdStreamRouteHandler: RouteHandler<
+  typeof getVideosItemIdStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headVideosItemIdStreamRouteHandler: RouteHandler<
+  typeof headVideosItemIdStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdMediaSourceIdSubtitlesIndexStreamFormatRouteHandler: RouteHandler<
+  typeof getVideosItemIdMediaSourceIdSubtitlesIndexStreamFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8RouteHandler: RouteHandler<
+  typeof getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdMediaSourceIdSubtitlesIndexStartPositionTicksStreamFormatRouteHandler: RouteHandler<
+  typeof getVideosItemIdMediaSourceIdSubtitlesIndexStartPositionTicksStreamFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosItemIdStreamContainerRouteHandler: RouteHandler<
+  typeof getVideosItemIdStreamContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headVideosItemIdStreamContainerRouteHandler: RouteHandler<
+  typeof headVideosItemIdStreamContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosVideoIdMediaSourceIdAttachmentsIndexRouteHandler: RouteHandler<
+  typeof getVideosVideoIdMediaSourceIdAttachmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

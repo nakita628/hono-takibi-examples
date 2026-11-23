@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRealmDomainsDomainRoute,
   deleteRealmEmojiEmojiNameRoute,
   deleteRealmFiltersFilterIdRoute,
@@ -25,75 +25,136 @@ import {
   postRealmTestWelcomeBotCustomMessageRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRealmEmojiEmojiNameRouteHandler: RouteHandler<
+  typeof postRealmEmojiEmojiNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const realmHandler = app
-  .openapi(postRealmEmojiEmojiNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRealmEmojiEmojiNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRealmEmojiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRealmPresenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRealmDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRealmDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRealmProfileFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmProfileFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmProfileFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmProfileFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRealmProfileFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmUserSettingsDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRealmLinkifiersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmLinkifiersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRealmFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRealmFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmPlaygroundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRealmPlaygroundsPlaygroundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealmTestWelcomeBotCustomMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteRealmEmojiEmojiNameRouteHandler: RouteHandler<
+  typeof deleteRealmEmojiEmojiNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRealmEmojiRouteHandler: RouteHandler<typeof getRealmEmojiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRealmPresenceRouteHandler: RouteHandler<typeof getRealmPresenceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRealmDomainsRouteHandler: RouteHandler<typeof getRealmDomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmDomainsRouteHandler: RouteHandler<typeof postRealmDomainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmDomainsDomainRouteHandler: RouteHandler<
+  typeof patchRealmDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRealmDomainsDomainRouteHandler: RouteHandler<
+  typeof deleteRealmDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmDeactivateRouteHandler: RouteHandler<
+  typeof postRealmDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRealmProfileFieldsRouteHandler: RouteHandler<
+  typeof getRealmProfileFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmProfileFieldsRouteHandler: RouteHandler<
+  typeof patchRealmProfileFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmProfileFieldsRouteHandler: RouteHandler<
+  typeof postRealmProfileFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmProfileFieldsFieldIdRouteHandler: RouteHandler<
+  typeof patchRealmProfileFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRealmProfileFieldsFieldIdRouteHandler: RouteHandler<
+  typeof deleteRealmProfileFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmUserSettingsDefaultsRouteHandler: RouteHandler<
+  typeof patchRealmUserSettingsDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRealmLinkifiersRouteHandler: RouteHandler<typeof getRealmLinkifiersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmLinkifiersRouteHandler: RouteHandler<
+  typeof patchRealmLinkifiersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmFiltersRouteHandler: RouteHandler<typeof postRealmFiltersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRealmFiltersFilterIdRouteHandler: RouteHandler<
+  typeof deleteRealmFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRealmFiltersFilterIdRouteHandler: RouteHandler<
+  typeof patchRealmFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmPlaygroundsRouteHandler: RouteHandler<
+  typeof postRealmPlaygroundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRealmPlaygroundsPlaygroundIdRouteHandler: RouteHandler<
+  typeof deleteRealmPlaygroundsPlaygroundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealmTestWelcomeBotCustomMessageRouteHandler: RouteHandler<
+  typeof postRealmTestWelcomeBotCustomMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

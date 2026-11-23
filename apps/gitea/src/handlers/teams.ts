@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTeamsIdMembersUsernameRoute,
   deleteTeamsIdReposOrgRepoRoute,
   deleteTeamsIdRoute,
@@ -14,42 +14,66 @@ import {
   putTeamsIdReposOrgRepoRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteTeamsIdRouteHandler: RouteHandler<typeof deleteTeamsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamsHandler = app
-  .openapi(deleteTeamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTeamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdActivitiesFeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTeamsIdMembersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdMembersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTeamsIdMembersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdReposRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTeamsIdReposOrgRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsIdReposOrgRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTeamsIdReposOrgRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamsIdRouteHandler: RouteHandler<typeof getTeamsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTeamsIdRouteHandler: RouteHandler<typeof patchTeamsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsIdActivitiesFeedsRouteHandler: RouteHandler<
+  typeof getTeamsIdActivitiesFeedsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsIdMembersRouteHandler: RouteHandler<typeof getTeamsIdMembersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTeamsIdMembersUsernameRouteHandler: RouteHandler<
+  typeof deleteTeamsIdMembersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsIdMembersUsernameRouteHandler: RouteHandler<
+  typeof getTeamsIdMembersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTeamsIdMembersUsernameRouteHandler: RouteHandler<
+  typeof putTeamsIdMembersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsIdReposRouteHandler: RouteHandler<typeof getTeamsIdReposRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTeamsIdReposOrgRepoRouteHandler: RouteHandler<
+  typeof deleteTeamsIdReposOrgRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsIdReposOrgRepoRouteHandler: RouteHandler<
+  typeof getTeamsIdReposOrgRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTeamsIdReposOrgRepoRouteHandler: RouteHandler<
+  typeof putTeamsIdReposOrgRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

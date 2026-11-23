@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getImageJpegRoute,
   getImagePngRoute,
   getImageRoute,
@@ -7,21 +7,22 @@ import {
   getImageWebpRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getImageRouteHandler: RouteHandler<typeof getImageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const imageHandler = app
-  .openapi(getImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImageJpegRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagePngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImageSvgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImageWebpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getImageJpegRouteHandler: RouteHandler<typeof getImageJpegRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagePngRouteHandler: RouteHandler<typeof getImagePngRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImageSvgRouteHandler: RouteHandler<typeof getImageSvgRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImageWebpRouteHandler: RouteHandler<typeof getImageWebpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

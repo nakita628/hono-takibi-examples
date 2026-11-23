@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCrossListingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCrossListingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const crossListingsHandler = app.openapi(getCrossListingsRoute, (c) => {
+export const getCrossListingsRouteHandler: RouteHandler<typeof getCrossListingsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

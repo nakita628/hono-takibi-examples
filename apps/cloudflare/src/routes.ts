@@ -131316,10 +131316,7 @@ const LogpullListKeysOKResponseResponse = {
   },
 }
 
-const LogpullRetrieveLogsOKResponseResponse = {
-  description: 'Newline-delimited JSON logs.',
-  content: {},
-}
+const LogpullRetrieveLogsOKResponseResponse = { description: 'Newline-delimited JSON logs.' }
 
 const LogpullUnauthorizedResponseResponse = {
   description: 'Authentication credentials are missing or invalid.',
@@ -223821,7 +223818,7 @@ export const deleteAccountsAccountIdCallsAppsAppIdRoute = createRoute({
       description: 'Delete app response',
       content: { 'application/json': { schema: CallsAppResponseSingleSchema } },
     },
-    '4XX': { description: 'Delete app response failure', content: {} },
+    '4XX': { description: 'Delete app response failure' },
   },
   security: [{ api_token: [] }],
 })
@@ -224010,7 +224007,7 @@ export const deleteAccountsAccountIdCallsTurnKeysKeyIdRoute = createRoute({
       description: 'Delete TURN key response',
       content: { 'application/json': { schema: CallsTurnKeyResponseSingleSchema } },
     },
-    '4XX': { description: 'Delete TURN key response failure', content: {} },
+    '4XX': { description: 'Delete TURN key response failure' },
   },
   security: [{ api_token: [] }],
 })
@@ -331059,7 +331056,7 @@ export const getAccountsAccountIdPcapsPcapIdDownloadRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Download Simple PCAP response.', content: {} },
+    200: { description: 'Download Simple PCAP response.' },
     '4XX': {
       description: 'Download Simple PCAP response failure (client error).',
       content: {
@@ -343512,7 +343509,7 @@ export const getAccountsAccountIdRealtimeKitAppIdWebhooksRoute = createRoute({
       description: 'Operation successful',
       content: { 'application/json': { schema: RealtimekitWebhooksListSuccessResponseSchema } },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -343569,7 +343566,7 @@ export const postAccountsAccountIdRealtimeKitAppIdWebhooksRoute = createRoute({
         },
       },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -343670,7 +343667,7 @@ export const getAccountsAccountIdRealtimeKitAppIdWebhooksWebhookIdRoute = create
         },
       },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -343771,7 +343768,7 @@ export const putAccountsAccountIdRealtimeKitAppIdWebhooksWebhookIdRoute = create
         },
       },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -343835,7 +343832,7 @@ export const deleteAccountsAccountIdRealtimeKitAppIdWebhooksWebhookIdRoute = cre
         },
       },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -343928,7 +343925,7 @@ export const patchAccountsAccountIdRealtimeKitAppIdWebhooksWebhookIdRoute = crea
         },
       },
     },
-    401: { description: 'Invalid credentials', content: {} },
+    401: { description: 'Invalid credentials' },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
@@ -358813,8 +358810,8 @@ export const deleteAccountsAccountIdStreamLiveInputsLiveInputIdentifierRoute = c
     }),
   },
   responses: {
-    200: { description: 'Delete a live input response.', content: {} },
-    '4XX': { description: 'Delete a live input response failure.', content: {} },
+    200: { description: 'Delete a live input response.' },
+    '4XX': { description: 'Delete a live input response failure.' },
   },
   security: [{ api_email: [], api_key: [], api_token: [] }],
 })
@@ -359075,8 +359072,8 @@ export const deleteAccountsAccountIdStreamLiveInputsLiveInputIdentifierOutputsOu
       }),
     },
     responses: {
-      200: { description: 'Delete an output response.', content: {} },
-      '4XX': { description: 'Delete an output response failure.', content: {} },
+      200: { description: 'Delete an output response.' },
+      '4XX': { description: 'Delete an output response failure.' },
     },
     security: [{ api_email: [], api_key: [], api_token: [] }],
   })

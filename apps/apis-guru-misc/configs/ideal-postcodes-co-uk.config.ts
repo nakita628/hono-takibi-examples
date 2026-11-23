@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ideal-postcodes.co.uk/3.7.0/openapi.yaml',
   output: './src/ideal-postcodes-co-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ideal-postcodes-co-uk/types.ts' },
   client: { output: './src/ideal-postcodes-co-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/ideal-postcodes-co-uk/rpc.ts', parseResponse: true },

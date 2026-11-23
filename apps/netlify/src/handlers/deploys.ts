@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDeploysDeployIdRoute,
   getDeploysDeployIdRoute,
   postDeploysDeployIdCancelRoute,
@@ -11,33 +11,56 @@ import {
   putDeploysDeployIdServerCodeShaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDeploysDeployIdCancelRouteHandler: RouteHandler<
+  typeof postDeploysDeployIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deploysHandler = app
-  .openapi(postDeploysDeployIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploysDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDeploysDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploysDeployIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploysDeployIdUnlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploysDeployIdFilesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploysDeployIdFunctionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploysDeployIdServerCodeShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploysDeployIdEdgeFunctionsCodeShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDeploysDeployIdRouteHandler: RouteHandler<typeof getDeploysDeployIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeploysDeployIdRouteHandler: RouteHandler<
+  typeof deleteDeploysDeployIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploysDeployIdLockRouteHandler: RouteHandler<
+  typeof postDeploysDeployIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploysDeployIdUnlockRouteHandler: RouteHandler<
+  typeof postDeploysDeployIdUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploysDeployIdFilesPathRouteHandler: RouteHandler<
+  typeof putDeploysDeployIdFilesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploysDeployIdFunctionsNameRouteHandler: RouteHandler<
+  typeof putDeploysDeployIdFunctionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploysDeployIdServerCodeShaRouteHandler: RouteHandler<
+  typeof putDeploysDeployIdServerCodeShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploysDeployIdEdgeFunctionsCodeShaRouteHandler: RouteHandler<
+  typeof putDeploysDeployIdEdgeFunctionsCodeShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

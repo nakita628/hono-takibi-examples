@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMinuteUsageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMinuteUsageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const minuteUsageHandler = app.openapi(postMinuteUsageRoute, (c) => {
+export const postMinuteUsageRouteHandler: RouteHandler<typeof postMinuteUsageRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

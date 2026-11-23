@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/microcks.local/1.7.0/openapi.yaml',
   output: './src/microcks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/microcks/types.ts' },
   client: { output: './src/microcks/client.ts', baseUrl: '/' },
   rpc: { output: './src/microcks/rpc.ts', parseResponse: true },

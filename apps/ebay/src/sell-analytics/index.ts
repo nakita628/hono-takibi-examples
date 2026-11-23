@@ -1,15 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  customerServiceMetricHandler,
-  sellerStandardsProfileHandler,
-  trafficReportHandler,
+  getCustomerServiceMetricCustomerServiceMetricTypeEvaluationTypeRoute,
+  getSellerStandardsProfileProgramCycleRoute,
+  getSellerStandardsProfileRoute,
+  getTrafficReportRoute,
+} from './routes'
+import {
+  getCustomerServiceMetricCustomerServiceMetricTypeEvaluationTypeRouteHandler,
+  getSellerStandardsProfileProgramCycleRouteHandler,
+  getSellerStandardsProfileRouteHandler,
+  getTrafficReportRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', customerServiceMetricHandler)
-  .route('/', sellerStandardsProfileHandler)
-  .route('/', trafficReportHandler)
+  .openapi(
+    getCustomerServiceMetricCustomerServiceMetricTypeEvaluationTypeRoute,
+    getCustomerServiceMetricCustomerServiceMetricTypeEvaluationTypeRouteHandler,
+  )
+  .openapi(getSellerStandardsProfileRoute, getSellerStandardsProfileRouteHandler)
+  .openapi(
+    getSellerStandardsProfileProgramCycleRoute,
+    getSellerStandardsProfileProgramCycleRouteHandler,
+  )
+  .openapi(getTrafficReportRoute, getTrafficReportRouteHandler)
 
 export default app

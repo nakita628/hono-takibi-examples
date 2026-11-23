@@ -1,7 +1,7 @@
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/lists.:format': {
+    '/lists.{format}': {
       $get: {
         input: { param: { format: 'json' | 'jsonp' } } & {
           query: {
@@ -124,7 +124,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/lists/names.:format': {
+    '/lists/names.{format}': {
       $get: {
         input: { param: { format: 'json' | 'jsonp' } } & {
           query: { 'api-key'?: string | undefined }
@@ -149,7 +149,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/lists/overview.:format': {
+    '/lists/overview.{format}': {
       $get: {
         input: { param: { format: 'json' | 'jsonp' } } & {
           query: { published_date?: string | undefined; 'api-key'?: string | undefined }
@@ -261,7 +261,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/reviews.:format': {
+    '/reviews.{format}': {
       $get: {
         input: { param: { format: 'json' | 'jsonp' } } & {
           query: {

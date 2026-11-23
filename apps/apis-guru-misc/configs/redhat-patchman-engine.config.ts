@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/redhat.local/patchman-engine/v1.15.3/openapi.yaml',
   output: './src/redhat-patchman-engine/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/redhat-patchman-engine/types.ts' },
   client: { output: './src/redhat-patchman-engine/client.ts', baseUrl: '/' },
   rpc: { output: './src/redhat-patchman-engine/rpc.ts', parseResponse: true },

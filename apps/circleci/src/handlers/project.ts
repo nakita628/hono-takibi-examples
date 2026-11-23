@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectProjectSlugCheckoutKeyFingerprintRoute,
   deleteProjectProjectSlugEnvvarNameRoute,
   deleteProjectProjectSlugRoute,
@@ -22,66 +22,122 @@ import {
   postProjectProviderOrganizationProjectPipelineRunRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteProjectProjectSlugRouteHandler: RouteHandler<
+  typeof deleteProjectProjectSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectHandler = app
-  .openapi(deleteProjectProjectSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProjectSlugCheckoutKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugCheckoutKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugCheckoutKeyFingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectProjectSlugCheckoutKeyFingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugEnvvarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProjectSlugEnvvarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugEnvvarNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectProjectSlugEnvvarNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProjectSlugJobJobNumberCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugPipelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProjectSlugPipelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugPipelineMineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugPipelinePipelineNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProjectSlugScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProjectSlugScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectProviderOrganizationProjectSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectProviderOrganizationProjectSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectProviderOrganizationProjectPipelineRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProjectProjectSlugRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProjectSlugCheckoutKeyRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugCheckoutKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugCheckoutKeyRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugCheckoutKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugCheckoutKeyFingerprintRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugCheckoutKeyFingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectProjectSlugCheckoutKeyFingerprintRouteHandler: RouteHandler<
+  typeof deleteProjectProjectSlugCheckoutKeyFingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugEnvvarRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugEnvvarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProjectSlugEnvvarRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugEnvvarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugEnvvarNameRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugEnvvarNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectProjectSlugEnvvarNameRouteHandler: RouteHandler<
+  typeof deleteProjectProjectSlugEnvvarNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProjectSlugJobJobNumberCancelRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugJobJobNumberCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugPipelineRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugPipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProjectSlugPipelineRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugPipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugPipelineMineRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugPipelineMineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugPipelinePipelineNumberRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugPipelinePipelineNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProjectSlugScheduleRouteHandler: RouteHandler<
+  typeof postProjectProjectSlugScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProjectSlugScheduleRouteHandler: RouteHandler<
+  typeof getProjectProjectSlugScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectProviderOrganizationProjectSettingsRouteHandler: RouteHandler<
+  typeof getProjectProviderOrganizationProjectSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectProviderOrganizationProjectSettingsRouteHandler: RouteHandler<
+  typeof patchProjectProviderOrganizationProjectSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectProviderOrganizationProjectPipelineRunRouteHandler: RouteHandler<
+  typeof postProjectProviderOrganizationProjectPipelineRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/authorizedbuyersmarketplace/v1/openapi.yaml',
   output: './src/authorizedbuyersmarketplace/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/authorizedbuyersmarketplace/types.ts' },
   client: { output: './src/authorizedbuyersmarketplace/client.ts', baseUrl: '/' },
   rpc: { output: './src/authorizedbuyersmarketplace/rpc.ts', parseResponse: true },

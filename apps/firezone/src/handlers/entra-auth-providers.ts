@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEntraAuthProvidersIdRoute, getEntraAuthProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEntraAuthProvidersIdRoute, getEntraAuthProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEntraAuthProvidersRouteHandler: RouteHandler<
+  typeof getEntraAuthProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const entraAuthProvidersHandler = app
-  .openapi(getEntraAuthProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntraAuthProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEntraAuthProvidersIdRouteHandler: RouteHandler<
+  typeof getEntraAuthProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

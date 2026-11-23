@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSystemActivityLogEntriesRoute,
   getSystemConfigurationKeyRoute,
   getSystemConfigurationMetadataOptionsDefaultRoute,
@@ -19,57 +19,96 @@ import {
   postSystemShutdownRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemActivityLogEntriesRouteHandler: RouteHandler<
+  typeof getSystemActivityLogEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(getSystemActivityLogEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemConfigurationKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemConfigurationKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemConfigurationBrandingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemConfigurationMetadataOptionsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemInfoPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemInfoStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemLogsLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemShutdownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSystemConfigurationRouteHandler: RouteHandler<
+  typeof getSystemConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemConfigurationRouteHandler: RouteHandler<
+  typeof postSystemConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemConfigurationKeyRouteHandler: RouteHandler<
+  typeof getSystemConfigurationKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemConfigurationKeyRouteHandler: RouteHandler<
+  typeof postSystemConfigurationKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemConfigurationBrandingRouteHandler: RouteHandler<
+  typeof postSystemConfigurationBrandingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemConfigurationMetadataOptionsDefaultRouteHandler: RouteHandler<
+  typeof getSystemConfigurationMetadataOptionsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemEndpointRouteHandler: RouteHandler<typeof getSystemEndpointRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemInfoRouteHandler: RouteHandler<typeof getSystemInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemInfoPublicRouteHandler: RouteHandler<
+  typeof getSystemInfoPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemInfoStorageRouteHandler: RouteHandler<
+  typeof getSystemInfoStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemLogsRouteHandler: RouteHandler<typeof getSystemLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemLogsLogRouteHandler: RouteHandler<typeof getSystemLogsLogRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemPingRouteHandler: RouteHandler<typeof getSystemPingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemPingRouteHandler: RouteHandler<typeof postSystemPingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemRestartRouteHandler: RouteHandler<typeof postSystemRestartRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemShutdownRouteHandler: RouteHandler<typeof postSystemShutdownRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

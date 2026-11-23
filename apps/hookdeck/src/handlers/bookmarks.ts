@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBookmarksIdRoute,
   getBookmarksIdRawBodyRoute,
   getBookmarksIdRoute,
@@ -9,27 +9,36 @@ import {
   putBookmarksIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBookmarksRouteHandler: RouteHandler<typeof getBookmarksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bookmarksHandler = app
-  .openapi(getBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBookmarksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBookmarksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBookmarksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBookmarksIdRawBodyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBookmarksIdTriggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBookmarksRouteHandler: RouteHandler<typeof postBookmarksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBookmarksIdRouteHandler: RouteHandler<typeof getBookmarksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBookmarksIdRouteHandler: RouteHandler<typeof putBookmarksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBookmarksIdRouteHandler: RouteHandler<typeof deleteBookmarksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBookmarksIdRawBodyRouteHandler: RouteHandler<
+  typeof getBookmarksIdRawBodyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBookmarksIdTriggerRouteHandler: RouteHandler<
+  typeof postBookmarksIdTriggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

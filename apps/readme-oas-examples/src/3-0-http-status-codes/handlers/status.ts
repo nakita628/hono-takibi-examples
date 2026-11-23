@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStatus100Route,
   getStatus101Route,
   getStatus102Route,
@@ -91,273 +91,358 @@ import {
   getStatus598Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatus200RouteHandler: RouteHandler<typeof getStatus200Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statusHandler = app
-  .openapi(getStatus200Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus201Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus202Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus203Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus204Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus205Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus206Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus207Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus208Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus218Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus226Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus300Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus301Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus302Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus303Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus304Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus305Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus306Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus307Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus308Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus400Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus401Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus402Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus403Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus404Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus405Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus406Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus407Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus408Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus409Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus410Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus411Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus412Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus413Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus414Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus415Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus416Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus417Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus418Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus419Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus420Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus421Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus422Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus423Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus424Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus425Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus426Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus428Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus429Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus430Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus431Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus440Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus444Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus449Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus450Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus451Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus494Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus495Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus496Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus497Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus498Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus499Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus500Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus501Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus502Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus503Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus504Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus505Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus506Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus507Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus508Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus509Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus510Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus511Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus520Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus512Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus522Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus523Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus524Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus525Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus526Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus527Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus529Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus530Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus598Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus100Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus101Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus102Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatus103Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatus201RouteHandler: RouteHandler<typeof getStatus201Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus202RouteHandler: RouteHandler<typeof getStatus202Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus203RouteHandler: RouteHandler<typeof getStatus203Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus204RouteHandler: RouteHandler<typeof getStatus204Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus205RouteHandler: RouteHandler<typeof getStatus205Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus206RouteHandler: RouteHandler<typeof getStatus206Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus207RouteHandler: RouteHandler<typeof getStatus207Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus208RouteHandler: RouteHandler<typeof getStatus208Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus218RouteHandler: RouteHandler<typeof getStatus218Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus226RouteHandler: RouteHandler<typeof getStatus226Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus300RouteHandler: RouteHandler<typeof getStatus300Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus301RouteHandler: RouteHandler<typeof getStatus301Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus302RouteHandler: RouteHandler<typeof getStatus302Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus303RouteHandler: RouteHandler<typeof getStatus303Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus304RouteHandler: RouteHandler<typeof getStatus304Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus305RouteHandler: RouteHandler<typeof getStatus305Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus306RouteHandler: RouteHandler<typeof getStatus306Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus307RouteHandler: RouteHandler<typeof getStatus307Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus308RouteHandler: RouteHandler<typeof getStatus308Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus400RouteHandler: RouteHandler<typeof getStatus400Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus401RouteHandler: RouteHandler<typeof getStatus401Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus402RouteHandler: RouteHandler<typeof getStatus402Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus403RouteHandler: RouteHandler<typeof getStatus403Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus404RouteHandler: RouteHandler<typeof getStatus404Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus405RouteHandler: RouteHandler<typeof getStatus405Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus406RouteHandler: RouteHandler<typeof getStatus406Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus407RouteHandler: RouteHandler<typeof getStatus407Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus408RouteHandler: RouteHandler<typeof getStatus408Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus409RouteHandler: RouteHandler<typeof getStatus409Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus410RouteHandler: RouteHandler<typeof getStatus410Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus411RouteHandler: RouteHandler<typeof getStatus411Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus412RouteHandler: RouteHandler<typeof getStatus412Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus413RouteHandler: RouteHandler<typeof getStatus413Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus414RouteHandler: RouteHandler<typeof getStatus414Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus415RouteHandler: RouteHandler<typeof getStatus415Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus416RouteHandler: RouteHandler<typeof getStatus416Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus417RouteHandler: RouteHandler<typeof getStatus417Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus418RouteHandler: RouteHandler<typeof getStatus418Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus419RouteHandler: RouteHandler<typeof getStatus419Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus420RouteHandler: RouteHandler<typeof getStatus420Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus421RouteHandler: RouteHandler<typeof getStatus421Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus422RouteHandler: RouteHandler<typeof getStatus422Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus423RouteHandler: RouteHandler<typeof getStatus423Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus424RouteHandler: RouteHandler<typeof getStatus424Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus425RouteHandler: RouteHandler<typeof getStatus425Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus426RouteHandler: RouteHandler<typeof getStatus426Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus428RouteHandler: RouteHandler<typeof getStatus428Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus429RouteHandler: RouteHandler<typeof getStatus429Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus430RouteHandler: RouteHandler<typeof getStatus430Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus431RouteHandler: RouteHandler<typeof getStatus431Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus440RouteHandler: RouteHandler<typeof getStatus440Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus444RouteHandler: RouteHandler<typeof getStatus444Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus449RouteHandler: RouteHandler<typeof getStatus449Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus450RouteHandler: RouteHandler<typeof getStatus450Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus451RouteHandler: RouteHandler<typeof getStatus451Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus494RouteHandler: RouteHandler<typeof getStatus494Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus495RouteHandler: RouteHandler<typeof getStatus495Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus496RouteHandler: RouteHandler<typeof getStatus496Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus497RouteHandler: RouteHandler<typeof getStatus497Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus498RouteHandler: RouteHandler<typeof getStatus498Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus499RouteHandler: RouteHandler<typeof getStatus499Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus500RouteHandler: RouteHandler<typeof getStatus500Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus501RouteHandler: RouteHandler<typeof getStatus501Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus502RouteHandler: RouteHandler<typeof getStatus502Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus503RouteHandler: RouteHandler<typeof getStatus503Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus504RouteHandler: RouteHandler<typeof getStatus504Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus505RouteHandler: RouteHandler<typeof getStatus505Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus506RouteHandler: RouteHandler<typeof getStatus506Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus507RouteHandler: RouteHandler<typeof getStatus507Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus508RouteHandler: RouteHandler<typeof getStatus508Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus509RouteHandler: RouteHandler<typeof getStatus509Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus510RouteHandler: RouteHandler<typeof getStatus510Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus511RouteHandler: RouteHandler<typeof getStatus511Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus520RouteHandler: RouteHandler<typeof getStatus520Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus512RouteHandler: RouteHandler<typeof getStatus512Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus522RouteHandler: RouteHandler<typeof getStatus522Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus523RouteHandler: RouteHandler<typeof getStatus523Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus524RouteHandler: RouteHandler<typeof getStatus524Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus525RouteHandler: RouteHandler<typeof getStatus525Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus526RouteHandler: RouteHandler<typeof getStatus526Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus527RouteHandler: RouteHandler<typeof getStatus527Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus529RouteHandler: RouteHandler<typeof getStatus529Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus530RouteHandler: RouteHandler<typeof getStatus530Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus598RouteHandler: RouteHandler<typeof getStatus598Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus100RouteHandler: RouteHandler<typeof getStatus100Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus101RouteHandler: RouteHandler<typeof getStatus101Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus102RouteHandler: RouteHandler<typeof getStatus102Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatus103RouteHandler: RouteHandler<typeof getStatus103Route> = async (c) => {
+  throw new Error('Not implemented')
+}

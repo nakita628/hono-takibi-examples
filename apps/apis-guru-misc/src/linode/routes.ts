@@ -401,77 +401,15 @@ const AuthorizedAppSchema = z
   })
   .openapi('AuthorizedApp')
 
-const DiskSchema = z
-  .object({
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Disk was created.',
-        example: '2018-01-01T00:01:01',
-        readOnly: true,
-      }),
-    filesystem: z
-      .enum(['raw', 'swap', 'ext3', 'ext4', 'initrd'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The Disk filesystem can be one of:\n\n  * raw - No filesystem, just a raw binary stream.\n  * swap - Linux swap area.\n  * ext3 - The ext3 journaling filesystem for Linux.\n  * ext4 - The ext4 journaling filesystem for Linux.\n  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).\n',
-        example: 'ext4',
-        'x-linode-cli-display': 5,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "This Disk's ID which must be provided for all operations impacting this Disk.\n",
-        example: 25674,
-        readOnly: true,
-        'x-linode-cli-display': 1,
-      }),
-    label: z
-      .string()
-      .min(1)
-      .max(48)
-      .exactOptional()
-      .openapi({
-        description: "The Disk's label is for display purposes only.\n",
-        example: 'Debian 9 Disk',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
-    size: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The size of the Disk in MB.',
-        example: 48640,
-        'x-linode-cli-display': 4,
-        'x-linode-filterable': true,
-      }),
-    status: z
-      .enum(['ready', 'not ready', 'deleting'])
-      .exactOptional()
-      .openapi({
-        description:
-          "A brief description of this Disk's current state. This field may change without direct action from you, as a result of operations performed to the Disk or the Linode containing the Disk.\n",
-        example: 'ready',
-        readOnly: true,
-        'x-linode-cli-color': { default_: 'yellow', 'not ready': 'red', ready: 'green' },
-        'x-linode-cli-display': 3,
-      }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Disk was last updated.',
-        example: '2018-01-01T00:01:01',
-        readOnly: true,
-      }),
+const DiskFilesystemSchema = z
+  .enum(['raw', 'swap', 'ext3', 'ext4', 'initrd'])
+  .openapi({
+    description:
+      'The Disk filesystem can be one of:\n\n  * raw - No filesystem, just a raw binary stream.\n  * swap - Linux swap area.\n  * ext3 - The ext3 journaling filesystem for Linux.\n  * ext4 - The ext4 journaling filesystem for Linux.\n  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).\n',
+    example: 'ext4',
+    'x-linode-cli-display': 5,
   })
-  .openapi({ required: [] })
-  .openapi('Disk')
+  .openapi('DiskFilesystem')
 
 const BackupSchema = z
   .object({
@@ -505,7 +443,7 @@ const BackupSchema = z
       .array(
         z
           .object({
-            filesystem: z.lazy(() => DiskSchema).exactOptional(),
+            filesystem: DiskFilesystemSchema.exactOptional(),
             label: z.string().exactOptional().openapi({ example: 'My Debian 9 Disk' }),
             size: z.int().exactOptional().openapi({ example: 9001 }),
           })
@@ -660,39 +598,208 @@ const CreditCardDataSchema = z
   .openapi({ description: 'Credit card information.', required: [] })
   .openapi('CreditCardData')
 
+const DatabaseAllowListSchema = z
+  .array(z.string().regex(/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/))
+  .openapi({
+    description:
+      'A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.\n\nBy default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.\n\nIf `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.\n',
+    example: ['203.0.113.1/32', '192.0.1.0/24'],
+  })
+  .openapi('DatabaseAllowList')
+
+const DatabaseClusterSizeSchema = z
+  .union([z.literal(1), z.literal(3)])
+  .default(1)
+  .openapi({
+    description:
+      'The number of Linode Instance nodes deployed to the Managed Database.\n\nChoosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.\n',
+    example: 3,
+    'x-linode-cli-display': 5,
+  })
+  .openapi('DatabaseClusterSize')
+
+const DatabaseCreatedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'When this Managed Database was created.',
+    example: '2022-01-01T00:01:01',
+    readOnly: true,
+  })
+  .openapi('DatabaseCreated')
+
+const DatabaseEncryptedSchema = z
+  .boolean()
+  .default(false)
+  .openapi({ description: 'Whether the Managed Databases is encrypted.', example: false })
+  .openapi('DatabaseEncrypted')
+
+const DatabaseHostsSchema = z
+  .object({
+    primary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The primary host for the Managed Database.',
+        example: 'lin-123-456-mysql-mysql-primary.servers.linodedb.net',
+      }),
+    secondary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The secondary/private network host for the Managed Database.\n\nA private network host and a private IP can only be used to access a Database Cluster from Linodes in the same data center and will not incur transfer costs.\n\n**Note**: The secondary hostname is publicly viewable and accessible.\n',
+        example: 'lin-123-456-mysql-primary-private.servers.linodedb.net',
+      }),
+  })
+  .openapi({
+    description:
+      'The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.',
+    readOnly: true,
+    required: [],
+  })
+  .openapi('DatabaseHosts')
+
+const DatabaseIdSchema = z
+  .int()
+  .openapi({
+    description: 'A unique ID that can be used to identify and reference the Managed Database.',
+    example: 123,
+    readOnly: true,
+    'x-linode-cli-display': 1,
+  })
+  .openapi('DatabaseId')
+
+const DatabaseLabelSchema = z
+  .string()
+  .min(3)
+  .max(32)
+  .openapi({
+    description: 'A unique, user-defined string referring to the Managed Database.',
+    example: 'example-db',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('DatabaseLabel')
+
+const DatabaseRegionSchema = z
+  .string()
+  .openapi({
+    description: 'The [Region](/docs/api/regions/) ID for the Managed Database.',
+    example: 'us-east',
+    'x-linode-cli-display': 3,
+    'x-linode-filterable': true,
+  })
+  .openapi('DatabaseRegion')
+
+const DatabaseStatusSchema = z
+  .enum([
+    'provisioning',
+    'active',
+    'suspending',
+    'suspended',
+    'resuming',
+    'restoring',
+    'failed',
+    'degraded',
+    'updating',
+    'backing_up',
+  ])
+  .openapi({
+    description: 'The operating status of the Managed Database.',
+    example: 'active',
+    readOnly: true,
+    'x-linode-cli-color': {
+      active: 'green',
+      default_: 'white',
+      degraded: 'red',
+      failed: 'red',
+      provisioning: 'yellow',
+      restoring: 'yellow',
+      resuming: 'yellow',
+      updating: 'yellow',
+    },
+    'x-linode-cli-display': 100,
+    'x-linode-filterable': true,
+  })
+  .openapi('DatabaseStatus')
+
+const DatabaseType2Schema = z
+  .string()
+  .openapi({
+    description: 'The Linode Instance type used by the Managed Database for its nodes.',
+    example: 'g6-dedicated-2',
+    'x-linode-cli-display': 4,
+    'x-linode-filterable': true,
+  })
+  .openapi('DatabaseType2')
+
+const DatabaseUpdatedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'When this Managed Database was last updated.',
+    example: '2022-01-01T00:01:01',
+    readOnly: true,
+  })
+  .openapi('DatabaseUpdated')
+
+const DatabaseUpdatesSchema = z
+  .object({
+    day_of_week: z
+      .int()
+      .min(1)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description: 'The day to perform maintenance. 1=Monday, 2=Tuesday, etc.',
+        example: 1,
+      }),
+    duration: z
+      .int()
+      .min(1)
+      .max(3)
+      .exactOptional()
+      .openapi({ description: 'The maximum maintenance window time in hours.', example: 3 }),
+    frequency: z
+      .enum(['weekly', 'monthly'])
+      .default('weekly')
+      .exactOptional()
+      .openapi({
+        description: 'Whether maintenance occurs on a weekly or monthly basis.',
+        example: 'weekly',
+      }),
+    hour_of_day: z
+      .int()
+      .min(0)
+      .max(23)
+      .exactOptional()
+      .openapi({ description: 'The hour to begin maintenance based in UTC time.', example: 0 }),
+    week_of_month: z
+      .int()
+      .min(1)
+      .max(4)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The week of the month to perform `monthly` frequency updates. Defaults to `null`.\n\n* Required for `monthly` frequency updates.\n\n* Must be `null` for `weekly` frequency updates.\n',
+        example: null,
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration settings for automated patch update maintenance for the Managed Database.',
+    required: [],
+  })
+  .openapi('DatabaseUpdates')
+
 const DatabaseSchema = z
   .object({
-    allow_list: z
-      .array(z.string().regex(/^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/))
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.\n\nBy default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.\n\nIf `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.\n',
-        example: ['203.0.113.1/32', '192.0.1.0/24'],
-      }),
-    cluster_size: z
-      .union([z.literal(1), z.literal(3)])
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of Linode Instance nodes deployed to the Managed Database.\n\nChoosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.\n',
-        example: 3,
-        'x-linode-cli-display': 5,
-      }),
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Managed Database was created.',
-        example: '2022-01-01T00:01:01',
-        readOnly: true,
-      }),
-    encrypted: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the Managed Databases is encrypted.', example: false }),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional(),
+    created: DatabaseCreatedSchema.exactOptional(),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .enum(['mongodb', 'mysql', 'postgresql'])
       .exactOptional()
@@ -703,42 +810,8 @@ const DatabaseSchema = z
         'x-linode-cli-display': 6,
         'x-linode-filterable': true,
       }),
-    hosts: z
-      .object({
-        primary: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The primary host for the Managed Database.',
-            example: 'lin-123-456-mysql-mysql-primary.servers.linodedb.net',
-          }),
-        secondary: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The secondary/private network host for the Managed Database.\n\nA private network host and a private IP can only be used to access a Database Cluster from Linodes in the same data center and will not incur transfer costs.\n\n**Note**: The secondary hostname is publicly viewable and accessible.\n',
-            example: 'lin-123-456-mysql-primary-private.servers.linodedb.net',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.',
-        readOnly: true,
-        required: [],
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'A unique ID that can be used to identify and reference the Managed Database.',
-        example: 123,
-        readOnly: true,
-        'x-linode-cli-display': 1,
-      }),
+    hosts: DatabaseHostsSchema.exactOptional(),
+    id: DatabaseIdSchema.exactOptional(),
     instance_uri: z
       .string()
       .exactOptional()
@@ -748,123 +821,12 @@ const DatabaseSchema = z
         example: '/v4/databases/mysql/instances/123',
         readOnly: true,
       }),
-    label: z
-      .string()
-      .min(3)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'A unique, user-defined string referring to the Managed Database.',
-        example: 'example-db',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The [Region](/docs/api/regions/) ID for the Managed Database.',
-        example: 'us-east',
-        'x-linode-cli-display': 3,
-        'x-linode-filterable': true,
-      }),
-    status: z
-      .enum([
-        'provisioning',
-        'active',
-        'suspending',
-        'suspended',
-        'resuming',
-        'restoring',
-        'failed',
-        'degraded',
-        'updating',
-        'backing_up',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The operating status of the Managed Database.',
-        example: 'active',
-        readOnly: true,
-        'x-linode-cli-color': {
-          active: 'green',
-          default_: 'white',
-          degraded: 'red',
-          failed: 'red',
-          provisioning: 'yellow',
-          restoring: 'yellow',
-          resuming: 'yellow',
-          updating: 'yellow',
-        },
-        'x-linode-cli-display': 100,
-        'x-linode-filterable': true,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Linode Instance type used by the Managed Database for its nodes.',
-        example: 'g6-dedicated-2',
-        'x-linode-cli-display': 4,
-        'x-linode-filterable': true,
-      }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Managed Database was last updated.',
-        example: '2022-01-01T00:01:01',
-        readOnly: true,
-      }),
-    updates: z
-      .object({
-        day_of_week: z
-          .int()
-          .min(1)
-          .max(7)
-          .exactOptional()
-          .openapi({
-            description: 'The day to perform maintenance. 1=Monday, 2=Tuesday, etc.',
-            example: 1,
-          }),
-        duration: z
-          .int()
-          .min(1)
-          .max(3)
-          .exactOptional()
-          .openapi({ description: 'The maximum maintenance window time in hours.', example: 3 }),
-        frequency: z
-          .enum(['weekly', 'monthly'])
-          .default('weekly')
-          .exactOptional()
-          .openapi({
-            description: 'Whether maintenance occurs on a weekly or monthly basis.',
-            example: 'weekly',
-          }),
-        hour_of_day: z
-          .int()
-          .min(0)
-          .max(23)
-          .exactOptional()
-          .openapi({ description: 'The hour to begin maintenance based in UTC time.', example: 0 }),
-        week_of_month: z
-          .int()
-          .min(1)
-          .max(4)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The week of the month to perform `monthly` frequency updates. Defaults to `null`.\n\n* Required for `monthly` frequency updates.\n\n* Must be `null` for `weekly` frequency updates.\n',
-            example: null,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Configuration settings for automated patch update maintenance for the Managed Database.',
-        required: [],
-      }),
+    label: DatabaseLabelSchema.exactOptional(),
+    region: DatabaseRegionSchema.exactOptional(),
+    status: DatabaseStatusSchema.exactOptional(),
+    type: DatabaseType2Schema.exactOptional(),
+    updated: DatabaseUpdatedSchema.exactOptional(),
+    updates: DatabaseUpdatesSchema.exactOptional(),
     version: z
       .string()
       .exactOptional()
@@ -1009,25 +971,56 @@ const DatabaseEngineSchema = z
   .openapi({ description: 'Managed Database engine object.', required: [] })
   .openapi('DatabaseEngine')
 
+const DatabaseMongoDBCompressionTypeSchema = z
+  .enum(['none', 'snappy', 'zlip'])
+  .default('none')
+  .openapi({
+    description:
+      'The type of data compression for this Database.\n\nSnappy has a lower comparative compression ratio and resource consumption rate.\n\nZlip has a higher comparative compression ratio and resource consumption rate.\n',
+    example: 'none',
+    'x-linode-cli-display': 99,
+  })
+  .openapi('DatabaseMongoDBCompressionType')
+
+const DatabaseMongoDBReplicaSetSchema = z
+  .string()
+  .max(64)
+  .nullable()
+  .default(null)
+  .openapi({
+    description:
+      'Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.\n\nIf `null`, the Database is not included in any replica set.\n',
+    example: null,
+  })
+  .openapi('DatabaseMongoDBReplicaSet')
+
+const DatabaseMongoDBSslConnectionSchema = z
+  .boolean()
+  .default(true)
+  .openapi({
+    description:
+      'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.\n',
+    example: true,
+  })
+  .openapi('DatabaseMongoDBSslConnection')
+
+const DatabaseMongoDBStorageEngineSchema = z
+  .enum(['mmapv1', 'wiredtiger'])
+  .default('wiredtiger')
+  .openapi({
+    description:
+      'The type of storage engine for this Database.\n\n**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.\n',
+    example: 'wiredtiger',
+  })
+  .openapi('DatabaseMongoDBStorageEngine')
+
 const DatabaseMongoDBSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 5 }),
-    compression_type: z
-      .enum(['none', 'snappy', 'zlip'])
-      .default('none')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of data compression for this Database.\n\nSnappy has a lower comparative compression ratio and resource consumption rate.\n\nZlip has a higher comparative compression ratio and resource consumption rate.\n',
-        example: 'none',
-        'x-linode-cli-display': 99,
-      }),
-    created: z.lazy(() => DatabaseSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    compression_type: DatabaseMongoDBCompressionTypeSchema.exactOptional(),
+    created: DatabaseCreatedSchema.exactOptional(),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .exactOptional()
@@ -1065,14 +1058,8 @@ const DatabaseMongoDBSchema = z
         readOnly: true,
         required: [],
       }),
-    id: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 1 }),
-    label: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 2 }),
+    id: DatabaseIdSchema.exactOptional().openapi({ 'x-linode-cli-display': 1 }),
+    label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
     peers: z
       .array(
         z
@@ -1099,60 +1086,25 @@ const DatabaseMongoDBSchema = z
         example: 27017,
         'x-linode-cli-display': 98,
       }),
-    region: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 3 }),
-    replica_set: z
-      .string()
-      .max(64)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({
-        description:
-          'Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.\n\nIf `null`, the Database is not included in any replica set.\n',
-        example: null,
-      }),
-    ssl_connection: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.\n',
-        example: true,
-      }),
-    status: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({
-        'x-linode-cli-color': {
-          active: 'green',
-          default_: 'white',
-          degraded: 'red',
-          failed: 'red',
-          provisioning: 'yellow',
-          restoring: 'yellow',
-          resuming: 'yellow',
-        },
-        'x-linode-cli-display': 100,
-      }),
-    storage_engine: z
-      .enum(['mmapv1', 'wiredtiger'])
-      .default('wiredtiger')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of storage engine for this Database.\n\n**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.\n',
-        example: 'wiredtiger',
-      }),
-    type: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 4 }),
-    updated: z.lazy(() => DatabaseSchema).exactOptional(),
-    updates: z.lazy(() => DatabaseSchema).exactOptional(),
+    region: DatabaseRegionSchema.exactOptional().openapi({ 'x-linode-cli-display': 3 }),
+    replica_set: DatabaseMongoDBReplicaSetSchema.exactOptional(),
+    ssl_connection: DatabaseMongoDBSslConnectionSchema.exactOptional(),
+    status: DatabaseStatusSchema.exactOptional().openapi({
+      'x-linode-cli-color': {
+        active: 'green',
+        default_: 'white',
+        degraded: 'red',
+        failed: 'red',
+        provisioning: 'yellow',
+        restoring: 'yellow',
+        resuming: 'yellow',
+      },
+      'x-linode-cli-display': 100,
+    }),
+    storage_engine: DatabaseMongoDBStorageEngineSchema.exactOptional(),
+    type: DatabaseType2Schema.exactOptional().openapi({ 'x-linode-cli-display': 4 }),
+    updated: DatabaseUpdatedSchema.exactOptional(),
+    updates: DatabaseUpdatesSchema.exactOptional(),
     version: z
       .string()
       .exactOptional()
@@ -1169,22 +1121,22 @@ const DatabaseMongoDBSchema = z
 
 const DatabaseMongoDBRequestSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-    compression_type: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    compression_type: DatabaseMongoDBCompressionTypeSchema.exactOptional(),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .openapi({
         description: 'The Managed Database engine in engine/version format.',
         example: 'mongodb/4.4.10',
       }),
-    label: z.lazy(() => DatabaseMongoDBSchema),
-    region: z.lazy(() => DatabaseMongoDBSchema),
-    replica_set: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-    ssl_connection: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-    storage_engine: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-    type: z.lazy(() => DatabaseMongoDBSchema),
+    label: DatabaseLabelSchema.openapi({ 'x-linode-cli-display': 2 }),
+    region: DatabaseRegionSchema.openapi({ 'x-linode-cli-display': 3 }),
+    replica_set: DatabaseMongoDBReplicaSetSchema.exactOptional(),
+    ssl_connection: DatabaseMongoDBSslConnectionSchema.exactOptional(),
+    storage_engine: DatabaseMongoDBStorageEngineSchema.exactOptional(),
+    type: DatabaseType2Schema.openapi({ 'x-linode-cli-display': 4 }),
   })
   .openapi({
     description: 'Managed MongoDB Database request object.',
@@ -1192,15 +1144,32 @@ const DatabaseMongoDBRequestSchema = z
   })
   .openapi('DatabaseMongoDBRequest')
 
+const DatabaseMySQLReplicationTypeSchema = z
+  .enum(['none', 'asynch', 'semi_synch'])
+  .openapi({
+    description:
+      'The replication method used for the Managed Database.\n\nDefaults to `none` for a single cluster and `semi_synch` for a high availability cluster.\n\nMust be `none` for a single node cluster.\n\nMust be `asynch` or `semi_synch` for a high availability cluster.\n',
+    example: 'semi_synch',
+    'x-linode-cli-display': 99,
+  })
+  .openapi('DatabaseMySQLReplicationType')
+
+const DatabaseMySQLSslConnectionSchema = z
+  .boolean()
+  .default(true)
+  .openapi({
+    description:
+      'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.\n',
+    example: true,
+  })
+  .openapi('DatabaseMySQLSslConnection')
+
 const DatabaseMySQLSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 5 }),
-    created: z.lazy(() => DatabaseSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    created: DatabaseCreatedSchema.exactOptional(),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .exactOptional()
@@ -1211,15 +1180,9 @@ const DatabaseMySQLSchema = z
         'x-linode-cli-display': 6,
         'x-linode-filterable': true,
       }),
-    hosts: z.lazy(() => DatabaseSchema).exactOptional(),
-    id: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 1 }),
-    label: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 2 }),
+    hosts: DatabaseHostsSchema.exactOptional(),
+    id: DatabaseIdSchema.exactOptional().openapi({ 'x-linode-cli-display': 1 }),
+    label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
     port: z
       .int()
       .exactOptional()
@@ -1228,49 +1191,24 @@ const DatabaseMySQLSchema = z
         example: 3306,
         'x-linode-cli-display': 98,
       }),
-    region: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 3 }),
-    replication_type: z
-      .enum(['none', 'asynch', 'semi_synch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The replication method used for the Managed Database.\n\nDefaults to `none` for a single cluster and `semi_synch` for a high availability cluster.\n\nMust be `none` for a single node cluster.\n\nMust be `asynch` or `semi_synch` for a high availability cluster.\n',
-        example: 'semi_synch',
-        'x-linode-cli-display': 99,
-      }),
-    ssl_connection: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.\n',
-        example: true,
-      }),
-    status: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({
-        'x-linode-cli-color': {
-          active: 'green',
-          default_: 'white',
-          degraded: 'red',
-          failed: 'red',
-          provisioning: 'yellow',
-          restoring: 'yellow',
-          resuming: 'yellow',
-        },
-        'x-linode-cli-display': 100,
-      }),
-    type: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 4 }),
-    updated: z.lazy(() => DatabaseSchema).exactOptional(),
-    updates: z.lazy(() => DatabaseSchema).exactOptional(),
+    region: DatabaseRegionSchema.exactOptional().openapi({ 'x-linode-cli-display': 3 }),
+    replication_type: DatabaseMySQLReplicationTypeSchema.exactOptional(),
+    ssl_connection: DatabaseMySQLSslConnectionSchema.exactOptional(),
+    status: DatabaseStatusSchema.exactOptional().openapi({
+      'x-linode-cli-color': {
+        active: 'green',
+        default_: 'white',
+        degraded: 'red',
+        failed: 'red',
+        provisioning: 'yellow',
+        restoring: 'yellow',
+        resuming: 'yellow',
+      },
+      'x-linode-cli-display': 100,
+    }),
+    type: DatabaseType2Schema.exactOptional().openapi({ 'x-linode-cli-display': 4 }),
+    updated: DatabaseUpdatedSchema.exactOptional(),
+    updates: DatabaseUpdatesSchema.exactOptional(),
     version: z
       .string()
       .exactOptional()
@@ -1287,20 +1225,20 @@ const DatabaseMySQLSchema = z
 
 const DatabaseMySQLRequestSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z.lazy(() => DatabaseMySQLSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .openapi({
         description: 'The Managed Database engine in engine/version format.',
         example: 'mysql/8.0.26',
       }),
-    label: z.lazy(() => DatabaseMySQLSchema),
-    region: z.lazy(() => DatabaseMySQLSchema),
-    replication_type: z.lazy(() => DatabaseMySQLSchema).exactOptional(),
-    ssl_connection: z.lazy(() => DatabaseMySQLSchema).exactOptional(),
-    type: z.lazy(() => DatabaseMySQLSchema),
+    label: DatabaseLabelSchema.openapi({ 'x-linode-cli-display': 2 }),
+    region: DatabaseRegionSchema.openapi({ 'x-linode-cli-display': 3 }),
+    replication_type: DatabaseMySQLReplicationTypeSchema.exactOptional(),
+    ssl_connection: DatabaseMySQLSslConnectionSchema.exactOptional(),
+    type: DatabaseType2Schema.openapi({ 'x-linode-cli-display': 4 }),
   })
   .openapi({
     description: 'Managed MySQL Database request object.',
@@ -1308,15 +1246,43 @@ const DatabaseMySQLRequestSchema = z
   })
   .openapi('DatabaseMySQLRequest')
 
+const DatabasePostgreSQLReplicationCommitTypeSchema = z
+  .enum(['on', 'local', 'remote_write', 'remote_apply', 'off'])
+  .default('local')
+  .openapi({
+    description:
+      'The synchronization level of the replicating server.\n\nMust be `local` or `off` for the `asynch` replication type.\n\nMust be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.\n',
+    example: 'local',
+    'x-linode-cli-display': 100,
+  })
+  .openapi('DatabasePostgreSQLReplicationCommitType')
+
+const DatabasePostgreSQLReplicationTypeSchema = z
+  .enum(['none', 'asynch', 'semi_synch'])
+  .openapi({
+    description:
+      'The replication method used for the Managed Database.\n\nDefaults to `none` for a single cluster and `semi_synch` for a high availability cluster.\n\nMust be `none` for a single node cluster.\n\nMust be `asynch` or `semi_synch` for a high availability cluster.\n',
+    example: 'semi_synch',
+    'x-linode-cli-display': 99,
+  })
+  .openapi('DatabasePostgreSQLReplicationType')
+
+const DatabasePostgreSQLSslConnectionSchema = z
+  .boolean()
+  .default(true)
+  .openapi({
+    description:
+      'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.\n',
+    example: true,
+  })
+  .openapi('DatabasePostgreSQLSslConnection')
+
 const DatabasePostgreSQLSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 5 }),
-    created: z.lazy(() => DatabaseSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    created: DatabaseCreatedSchema.exactOptional(),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .exactOptional()
@@ -1354,14 +1320,8 @@ const DatabasePostgreSQLSchema = z
         readOnly: true,
         required: [],
       }),
-    id: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 1 }),
-    label: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 2 }),
+    id: DatabaseIdSchema.exactOptional().openapi({ 'x-linode-cli-display': 1 }),
+    label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
     port: z
       .int()
       .exactOptional()
@@ -1370,59 +1330,25 @@ const DatabasePostgreSQLSchema = z
         example: 3306,
         'x-linode-cli-display': 98,
       }),
-    region: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 3 }),
-    replication_commit_type: z
-      .enum(['on', 'local', 'remote_write', 'remote_apply', 'off'])
-      .default('local')
-      .exactOptional()
-      .openapi({
-        description:
-          'The synchronization level of the replicating server.\n\nMust be `local` or `off` for the `asynch` replication type.\n\nMust be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.\n',
-        example: 'local',
-        'x-linode-cli-display': 100,
-      }),
-    replication_type: z
-      .enum(['none', 'asynch', 'semi_synch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The replication method used for the Managed Database.\n\nDefaults to `none` for a single cluster and `semi_synch` for a high availability cluster.\n\nMust be `none` for a single node cluster.\n\nMust be `asynch` or `semi_synch` for a high availability cluster.\n',
-        example: 'semi_synch',
-        'x-linode-cli-display': 99,
-      }),
-    ssl_connection: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to require SSL credentials to establish a connection to the Managed Database.\n\nUse the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.\n',
-        example: true,
-      }),
-    status: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({
-        'x-linode-cli-color': {
-          active: 'green',
-          default_: 'white',
-          degraded: 'red',
-          failed: 'red',
-          provisioning: 'yellow',
-          restoring: 'yellow',
-          resuming: 'yellow',
-        },
-        'x-linode-cli-display': 100,
-      }),
-    type: z
-      .lazy(() => DatabaseSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 4 }),
-    updated: z.lazy(() => DatabaseSchema).exactOptional(),
-    updates: z.lazy(() => DatabaseSchema).exactOptional(),
+    region: DatabaseRegionSchema.exactOptional().openapi({ 'x-linode-cli-display': 3 }),
+    replication_commit_type: DatabasePostgreSQLReplicationCommitTypeSchema.exactOptional(),
+    replication_type: DatabasePostgreSQLReplicationTypeSchema.exactOptional(),
+    ssl_connection: DatabasePostgreSQLSslConnectionSchema.exactOptional(),
+    status: DatabaseStatusSchema.exactOptional().openapi({
+      'x-linode-cli-color': {
+        active: 'green',
+        default_: 'white',
+        degraded: 'red',
+        failed: 'red',
+        provisioning: 'yellow',
+        restoring: 'yellow',
+        resuming: 'yellow',
+      },
+      'x-linode-cli-display': 100,
+    }),
+    type: DatabaseType2Schema.exactOptional().openapi({ 'x-linode-cli-display': 4 }),
+    updated: DatabaseUpdatedSchema.exactOptional(),
+    updates: DatabaseUpdatesSchema.exactOptional(),
     version: z
       .string()
       .exactOptional()
@@ -1439,21 +1365,21 @@ const DatabasePostgreSQLSchema = z
 
 const DatabasePostgreSQLRequestSchema = z
   .object({
-    allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-    cluster_size: z.lazy(() => DatabasePostgreSQLSchema).exactOptional(),
-    encrypted: z.lazy(() => DatabaseSchema).exactOptional(),
+    allow_list: DatabaseAllowListSchema.exactOptional(),
+    cluster_size: DatabaseClusterSizeSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    encrypted: DatabaseEncryptedSchema.exactOptional(),
     engine: z
       .string()
       .openapi({
         description: 'The Managed Database engine in engine/version format.',
         example: 'postgresql/13.2',
       }),
-    label: z.lazy(() => DatabasePostgreSQLSchema),
-    region: z.lazy(() => DatabasePostgreSQLSchema),
-    replication_commit_type: z.lazy(() => DatabasePostgreSQLSchema).exactOptional(),
-    replication_type: z.lazy(() => DatabasePostgreSQLSchema).exactOptional(),
-    ssl_connection: z.lazy(() => DatabasePostgreSQLSchema).exactOptional(),
-    type: z.lazy(() => DatabasePostgreSQLSchema),
+    label: DatabaseLabelSchema.openapi({ 'x-linode-cli-display': 2 }),
+    region: DatabaseRegionSchema.openapi({ 'x-linode-cli-display': 3 }),
+    replication_commit_type: DatabasePostgreSQLReplicationCommitTypeSchema.exactOptional(),
+    replication_type: DatabasePostgreSQLReplicationTypeSchema.exactOptional(),
+    ssl_connection: DatabasePostgreSQLSslConnectionSchema.exactOptional(),
+    type: DatabaseType2Schema.openapi({ 'x-linode-cli-display': 4 }),
   })
   .openapi({
     description: 'Managed PostgreSQL Database request object.',
@@ -1635,47 +1561,139 @@ const DevicesSchema = z
   })
   .openapi('Devices')
 
+const DiskLabelSchema = z
+  .string()
+  .min(1)
+  .max(48)
+  .openapi({
+    description: "The Disk's label is for display purposes only.\n",
+    example: 'Debian 9 Disk',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('DiskLabel')
+
+const DiskSchema = z
+  .object({
+    created: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When this Disk was created.',
+        example: '2018-01-01T00:01:01',
+        readOnly: true,
+      }),
+    filesystem: DiskFilesystemSchema.exactOptional(),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "This Disk's ID which must be provided for all operations impacting this Disk.\n",
+        example: 25674,
+        readOnly: true,
+        'x-linode-cli-display': 1,
+      }),
+    label: DiskLabelSchema.exactOptional(),
+    size: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The size of the Disk in MB.',
+        example: 48640,
+        'x-linode-cli-display': 4,
+        'x-linode-filterable': true,
+      }),
+    status: z
+      .enum(['ready', 'not ready', 'deleting'])
+      .exactOptional()
+      .openapi({
+        description:
+          "A brief description of this Disk's current state. This field may change without direct action from you, as a result of operations performed to the Disk or the Linode containing the Disk.\n",
+        example: 'ready',
+        readOnly: true,
+        'x-linode-cli-color': { default_: 'yellow', 'not ready': 'red', ready: 'green' },
+        'x-linode-cli-display': 3,
+      }),
+    updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When this Disk was last updated.',
+        example: '2018-01-01T00:01:01',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Disk')
+
+const DiskRequestAuthorizedKeysSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      "A list of public SSH keys that will be automatically appended\nto the root user's `~/.ssh/authorized_keys` file when deploying from an Image.\n",
+    example: ['ssh-rsa AAAA_valid_public_ssh_key_123456785== user@their-computer'],
+    writeOnly: true,
+  })
+  .openapi('DiskRequestAuthorizedKeys')
+
+const DiskRequestAuthorizedUsersSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.\n',
+    example: ['myUser', 'secondaryUser'],
+    writeOnly: true,
+  })
+  .openapi('DiskRequestAuthorizedUsers')
+
+const DiskRequestImageSchema = z
+  .string()
+  .openapi({
+    description:
+      "An Image ID to deploy the Linode Disk from.\n\nAccess the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view\nall available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating\na disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's\nGrant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to\nadjust permissions for an Account Image.\n",
+    example: 'linode/debian9',
+  })
+  .openapi('DiskRequestImage')
+
+const DiskRequestRootPassSchema = z
+  .string()
+  .min(7)
+  .max(128)
+  .openapi({
+    description:
+      "This sets the root user's password on a newly-created Linode Disk when deploying from an Image.\n\n* **Required** when creating a Linode Disk from an Image, including when using a StackScript.\n\n* Must meet a password strength score requirement that is calculated internally by the API.\nIf the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.\n",
+    example: 'aComplexP@ssword',
+    writeOnly: true,
+  })
+  .openapi('DiskRequestRootPass')
+
+const DiskRequestStackscriptDataSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.\n\nThis field is required to be valid JSON.\n\nTotal length cannot exceed 65,535 characters.\n',
+    example: { gh_username: 'linode' },
+  })
+  .openapi('DiskRequestStackscriptData')
+
+const DiskRequestStackscriptIdSchema = z
+  .int()
+  .openapi({
+    description:
+      'A StackScript ID that will cause the referenced StackScript to be run during\ndeployment of this Linode. A compatible `image` is required to use a\nStackScript. To get a list of available StackScript and their permitted Images\nsee [/stackscripts](/docs/api/stackscripts/#stackscripts-list).\nThis field cannot be used when deploying from a Backup or a Private Image.\n',
+    example: 10079,
+  })
+  .openapi('DiskRequestStackscriptId')
+
 const DiskRequestSchema = z
   .object({
-    authorized_keys: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of public SSH keys that will be automatically appended\nto the root user's `~/.ssh/authorized_keys` file when deploying from an Image.\n",
-        example: ['ssh-rsa AAAA_valid_public_ssh_key_123456785== user@their-computer'],
-        writeOnly: true,
-      }),
-    authorized_users: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.\n',
-        example: ['myUser', 'secondaryUser'],
-        writeOnly: true,
-      }),
-    filesystem: z.lazy(() => DiskSchema).exactOptional(),
-    image: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "An Image ID to deploy the Linode Disk from.\n\nAccess the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view\nall available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating\na disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's\nGrant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to\nadjust permissions for an Account Image.\n",
-        example: 'linode/debian9',
-      }),
-    label: z.lazy(() => DiskSchema).exactOptional(),
-    root_pass: z
-      .string()
-      .min(7)
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          "This sets the root user's password on a newly-created Linode Disk when deploying from an Image.\n\n* **Required** when creating a Linode Disk from an Image, including when using a StackScript.\n\n* Must meet a password strength score requirement that is calculated internally by the API.\nIf the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.\n",
-        example: 'aComplexP@ssword',
-        writeOnly: true,
-      }),
+    authorized_keys: DiskRequestAuthorizedKeysSchema.exactOptional(),
+    authorized_users: DiskRequestAuthorizedUsersSchema.exactOptional(),
+    filesystem: DiskFilesystemSchema.exactOptional(),
+    image: DiskRequestImageSchema.exactOptional(),
+    label: DiskLabelSchema.exactOptional(),
+    root_pass: DiskRequestRootPassSchema.exactOptional(),
     size: z
       .int()
       .exactOptional()
@@ -1685,22 +1703,8 @@ const DiskRequestSchema = z
         example: 48640,
         'x-linode-filterable': true,
       }),
-    stackscript_data: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.\n\nThis field is required to be valid JSON.\n\nTotal length cannot exceed 65,535 characters.\n',
-        example: { gh_username: 'linode' },
-      }),
-    stackscript_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'A StackScript ID that will cause the referenced StackScript to be run during\ndeployment of this Linode. A compatible `image` is required to use a\nStackScript. To get a list of available StackScript and their permitted Images\nsee [/stackscripts](/docs/api/stackscripts/#stackscripts-list).\nThis field cannot be used when deploying from a Backup or a Private Image.\n',
-        example: 10079,
-      }),
+    stackscript_data: DiskRequestStackscriptDataSchema.exactOptional(),
+    stackscript_id: DiskRequestStackscriptIdSchema.exactOptional(),
   })
   .openapi({ description: 'Disk object request.', required: [] })
   .openapi('DiskRequest')
@@ -1853,6 +1857,107 @@ const DomainSchema = z
   })
   .openapi('Domain')
 
+const DomainRecordNameSchema = z
+  .string()
+  .min(1)
+  .max(100)
+  .openapi({
+    description:
+      'The name of this Record. For requests, this property\'s actual usage and whether it is required depends\non the type of record this represents:\n\n`A` and `AAAA`: The hostname or FQDN of the Record.\n\n`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.\n\n`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`\nDomain. Must be an empty string (`""`) for a Null MX Record.\n\n`CNAME`: The hostname. Must be unique. Required.\n\n`TXT`: The hostname.\n\n`SRV`: Unused. Use the `service` property to set the service name for this record.\n\n`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.\n\n`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS\n(rDNS)](/docs/guides/configure-rdns/).\n',
+    example: 'test',
+    'x-linode-cli-display': 3,
+    'x-linode-filterable': true,
+  })
+  .openapi('DomainRecordName')
+
+const DomainRecordPortSchema = z
+  .int()
+  .min(0)
+  .max(65535)
+  .openapi({
+    description:
+      'The port this Record points to. Only valid and required for SRV record requests.\n',
+    example: 80,
+  })
+  .openapi('DomainRecordPort')
+
+const DomainRecordPrioritySchema = z
+  .int()
+  .min(0)
+  .max(255)
+  .openapi({
+    description:
+      'The priority of the target host for this Record. Lower values are preferred. Only valid for\nMX and SRV record requests. Required for SRV record requests.\n\nDefaults to `0` for MX record requests. Must be `0` for Null MX records.\n',
+    example: 50,
+    'x-linode-cli-display': 6,
+  })
+  .openapi('DomainRecordPriority')
+
+const DomainRecordProtocolSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      "The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.\n",
+    example: null,
+  })
+  .openapi('DomainRecordProtocol')
+
+const DomainRecordServiceSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.\n',
+    example: null,
+  })
+  .openapi('DomainRecordService')
+
+const DomainRecordTagSchema = z
+  .enum(['issue', 'issuewild', 'iodef'])
+  .nullable()
+  .openapi({
+    description:
+      'The tag portion of a CAA record. Only valid and required for CAA record requests.\n',
+    example: null,
+    'x-linode-filterable': true,
+  })
+  .openapi('DomainRecordTag')
+
+const DomainRecordTargetSchema = z
+  .string()
+  .max(65535)
+  .openapi({
+    description:
+      'The target for this Record. For requests, this property\'s actual usage and whether it is required depends\non the type of record this represents:\n\n`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.\n\n`NS`: The name server. Must be a valid domain. Required.\n\n`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a\n[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first\n[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings\n(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.\n\n`CNAME`: The alias. Must be a valid domain. Required.\n\n`TXT`: The value. Required.\n\n`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.\nTo configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for\n`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a\ntarget set to `sample.com`. Required.\n\n`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`\ntag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:\n  * `issue`: The domain of your certificate issuer. Must be a valid domain.\n  * `issuewild`: Must begin with `*`.\n  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.\n\n`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS\n(rDNS)](/docs/guides/configure-rdns/).\n\nWith the exception of A, AAAA, and CAA records, this field accepts a trailing period.\n',
+    example: '192.0.2.0',
+    'x-linode-cli-display': 4,
+    'x-linode-filterable': true,
+  })
+  .openapi('DomainRecordTarget')
+
+const DomainRecordTtlSecSchema = z
+  .int()
+  .openapi({
+    description:
+      '"Time to Live" - the amount of time in seconds that this Domain\'s records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.\n',
+    example: 604800,
+    'x-linode-cli-display': 5,
+  })
+  .openapi('DomainRecordTtlSec')
+
+const DomainRecordWeightSchema = z
+  .int()
+  .min(0)
+  .max(65535)
+  .openapi({
+    description:
+      'The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.\n',
+    example: 50,
+    'x-linode-cli-display': 7,
+  })
+  .openapi('DomainRecordWeight')
+
 const DomainRecordSchema = z
   .object({
     created: z.iso
@@ -1872,87 +1977,14 @@ const DomainRecordSchema = z
         readOnly: true,
         'x-linode-cli-display': 1,
       }),
-    name: z
-      .string()
-      .min(1)
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of this Record. For requests, this property\'s actual usage and whether it is required depends\non the type of record this represents:\n\n`A` and `AAAA`: The hostname or FQDN of the Record.\n\n`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.\n\n`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`\nDomain. Must be an empty string (`""`) for a Null MX Record.\n\n`CNAME`: The hostname. Must be unique. Required.\n\n`TXT`: The hostname.\n\n`SRV`: Unused. Use the `service` property to set the service name for this record.\n\n`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.\n\n`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS\n(rDNS)](/docs/guides/configure-rdns/).\n',
-        example: 'test',
-        'x-linode-cli-display': 3,
-        'x-linode-filterable': true,
-      }),
-    port: z
-      .int()
-      .min(0)
-      .max(65535)
-      .exactOptional()
-      .openapi({
-        description:
-          'The port this Record points to. Only valid and required for SRV record requests.\n',
-        example: 80,
-      }),
-    priority: z
-      .int()
-      .min(0)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The priority of the target host for this Record. Lower values are preferred. Only valid for\nMX and SRV record requests. Required for SRV record requests.\n\nDefaults to `0` for MX record requests. Must be `0` for Null MX records.\n',
-        example: 50,
-        'x-linode-cli-display': 6,
-      }),
-    protocol: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.\n",
-        example: null,
-      }),
-    service: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.\n',
-        example: null,
-      }),
-    tag: z
-      .enum(['issue', 'issuewild', 'iodef'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The tag portion of a CAA record. Only valid and required for CAA record requests.\n',
-        example: null,
-        'x-linode-filterable': true,
-      }),
-    target: z
-      .string()
-      .max(65535)
-      .exactOptional()
-      .openapi({
-        description:
-          'The target for this Record. For requests, this property\'s actual usage and whether it is required depends\non the type of record this represents:\n\n`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.\n\n`NS`: The name server. Must be a valid domain. Required.\n\n`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a\n[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first\n[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings\n(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.\n\n`CNAME`: The alias. Must be a valid domain. Required.\n\n`TXT`: The value. Required.\n\n`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.\nTo configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for\n`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a\ntarget set to `sample.com`. Required.\n\n`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`\ntag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:\n  * `issue`: The domain of your certificate issuer. Must be a valid domain.\n  * `issuewild`: Must begin with `*`.\n  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.\n\n`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS\n(rDNS)](/docs/guides/configure-rdns/).\n\nWith the exception of A, AAAA, and CAA records, this field accepts a trailing period.\n',
-        example: '192.0.2.0',
-        'x-linode-cli-display': 4,
-        'x-linode-filterable': true,
-      }),
-    ttl_sec: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          '"Time to Live" - the amount of time in seconds that this Domain\'s records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.\n',
-        example: 604800,
-        'x-linode-cli-display': 5,
-      }),
+    name: DomainRecordNameSchema.exactOptional(),
+    port: DomainRecordPortSchema.exactOptional(),
+    priority: DomainRecordPrioritySchema.exactOptional(),
+    protocol: DomainRecordProtocolSchema.exactOptional(),
+    service: DomainRecordServiceSchema.exactOptional(),
+    tag: DomainRecordTagSchema.exactOptional(),
+    target: DomainRecordTargetSchema.exactOptional(),
+    ttl_sec: DomainRecordTtlSecSchema.exactOptional(),
     type: z
       .enum(['A', 'AAAA', 'NS', 'MX', 'CNAME', 'TXT', 'SRV', 'PTR', 'CAA'])
       .exactOptional()
@@ -1971,20 +2003,29 @@ const DomainRecordSchema = z
         example: '2018-01-01T00:01:01',
         readOnly: true,
       }),
-    weight: z
-      .int()
-      .min(0)
-      .max(65535)
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.\n',
-        example: 50,
-        'x-linode-cli-display': 7,
-      }),
+    weight: DomainRecordWeightSchema.exactOptional(),
   })
   .openapi({ description: 'A single record on a Domain.\n', required: [] })
   .openapi('DomainRecord')
+
+const EntityTransferEntitiesSchema = z
+  .object({
+    linodes: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array containing the IDs of each of the Linodes included in this transfer.\n',
+        example: [111, 222],
+        'x-linode-cli-display': 5,
+      }),
+  })
+  .openapi({
+    description:
+      'A collection of the entities to include in this transfer request, separated by type.\n',
+    required: [],
+  })
+  .openapi('EntityTransferEntities')
 
 const EntityTransferSchema = z
   .object({
@@ -1995,24 +2036,7 @@ const EntityTransferSchema = z
         description: 'When this transfer was created.\n',
         example: '2021-02-11T16:37:03',
       }),
-    entities: z
-      .object({
-        linodes: z
-          .array(z.int())
-          .exactOptional()
-          .openapi({
-            description:
-              'An array containing the IDs of each of the Linodes included in this transfer.\n',
-            example: [111, 222],
-            'x-linode-cli-display': 5,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of the entities to include in this transfer request, separated by type.\n',
-        required: [],
-      }),
+    entities: EntityTransferEntitiesSchema.exactOptional(),
     expiry: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -2436,6 +2460,20 @@ const EventSchema = z
   })
   .openapi('Event')
 
+const FirewallLabelSchema = z
+  .string()
+  .regex(/^[a-zA-Z]((?!--|__|..)[a-zA-Z0-9-_.])+$/)
+  .min(3)
+  .max(32)
+  .openapi({
+    description:
+      "The Firewall's label, for display purposes only.\n\nFirewall labels have the following constraints:\n\n  * Must begin and end with an alphanumeric character.\n  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).\n  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.\n  * Must be between 3 and 32 characters.\n  * Must be unique.\n",
+    example: 'firewall123',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('FirewallLabel')
+
 const FirewallRuleConfigSchema = z
   .object({
     action: z
@@ -2507,6 +2545,56 @@ const FirewallRuleConfigSchema = z
   })
   .openapi('FirewallRuleConfig')
 
+const FirewallRulesSchema = z
+  .object({
+    inbound: z
+      .array(FirewallRuleConfigSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The inbound rules for the firewall, as a JSON array.\n',
+        'x-linode-cli-format': 'json',
+      }),
+    inbound_policy: z
+      .enum(['ACCEPT', 'DROP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.\n',
+        example: 'DROP',
+      }),
+    outbound: z
+      .array(FirewallRuleConfigSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The outbound rules for the firewall, as a JSON array.\n',
+        'x-linode-cli-format': 'json',
+      }),
+    outbound_policy: z
+      .enum(['ACCEPT', 'DROP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.\n',
+        example: 'DROP',
+      }),
+  })
+  .openapi({
+    description:
+      'The inbound and outbound access rules to apply to the Firewall.\n\nA Firewall may have up to 25 rules across its inbound and outbound rulesets.\n',
+    required: [],
+  })
+  .openapi('FirewallRules')
+
+const FirewallTagsSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'An array of tags applied to this object. Tags are for organizational purposes only.\n',
+    example: ['example tag', 'another example'],
+    'x-linode-filterable': true,
+  })
+  .openapi('FirewallTags')
+
 const FirewallSchema = z
   .object({
     created: z.iso
@@ -2529,58 +2617,8 @@ const FirewallSchema = z
         'x-linode-cli-display': 1,
         'x-linode-filterable': true,
       }),
-    label: z
-      .string()
-      .regex(/^[a-zA-Z]((?!--|__|..)[a-zA-Z0-9-_.])+$/)
-      .min(3)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description:
-          "The Firewall's label, for display purposes only.\n\nFirewall labels have the following constraints:\n\n  * Must begin and end with an alphanumeric character.\n  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).\n  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.\n  * Must be between 3 and 32 characters.\n  * Must be unique.\n",
-        example: 'firewall123',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
-    rules: z
-      .object({
-        inbound: z
-          .array(FirewallRuleConfigSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The inbound rules for the firewall, as a JSON array.\n',
-            'x-linode-cli-format': 'json',
-          }),
-        inbound_policy: z
-          .enum(['ACCEPT', 'DROP'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.\n',
-            example: 'DROP',
-          }),
-        outbound: z
-          .array(FirewallRuleConfigSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The outbound rules for the firewall, as a JSON array.\n',
-            'x-linode-cli-format': 'json',
-          }),
-        outbound_policy: z
-          .enum(['ACCEPT', 'DROP'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.\n',
-            example: 'DROP',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The inbound and outbound access rules to apply to the Firewall.\n\nA Firewall may have up to 25 rules across its inbound and outbound rulesets.\n',
-        required: [],
-      }),
+    label: FirewallLabelSchema.exactOptional(),
+    rules: FirewallRulesSchema.exactOptional(),
     status: z
       .enum(['enabled', 'disabled', 'deleted'])
       .exactOptional()
@@ -2591,15 +2629,7 @@ const FirewallSchema = z
         readOnly: true,
         'x-linode-cli-display': 3,
       }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of tags applied to this object. Tags are for organizational purposes only.\n',
-        example: ['example tag', 'another example'],
-        'x-linode-filterable': true,
-      }),
+    tags: FirewallTagsSchema.exactOptional(),
     updated: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -2618,6 +2648,33 @@ const FirewallSchema = z
   })
   .openapi('Firewall')
 
+const FirewallDevicesEntitySchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ description: "The entity's ID", example: 123 }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The entity's label.", example: 'my-linode', readOnly: true }),
+    type: z
+      .literal('linode')
+      .exactOptional()
+      .openapi({ description: "The entity's type.", example: 'linode' }),
+    url: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The URL you can use to access this entity.\n',
+        example: '/v4/linode/instances/123',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'The Linode service that this Firewall has been applied to.\n',
+    readOnly: true,
+    required: [],
+  })
+  .openapi('FirewallDevicesEntity')
+
 const FirewallDevicesSchema = z
   .object({
     created: z.iso
@@ -2630,32 +2687,7 @@ const FirewallDevicesSchema = z
         'x-linode-cli-display': 3,
         'x-linode-filterable': true,
       }),
-    entity: z
-      .object({
-        id: z.int().exactOptional().openapi({ description: "The entity's ID", example: 123 }),
-        label: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "The entity's label.", example: 'my-linode', readOnly: true }),
-        type: z
-          .literal('linode')
-          .exactOptional()
-          .openapi({ description: "The entity's type.", example: 'linode' }),
-        url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The URL you can use to access this entity.\n',
-            example: '/v4/linode/instances/123',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The Linode service that this Firewall has been applied to.\n',
-        readOnly: true,
-        required: [],
-      }),
+    entity: FirewallDevicesEntitySchema.exactOptional(),
     id: z
       .int()
       .exactOptional()
@@ -3819,6 +3851,68 @@ const KernelSchema = z
   .openapi({ description: 'Linux kernel object', required: [] })
   .openapi('Kernel')
 
+const LKEClusterCreatedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'When this Kubernetes cluster was created.',
+    example: '2019-09-12T21:25:30Z',
+    readOnly: true,
+  })
+  .openapi('LKEClusterCreated')
+
+const LKEClusterK8sVersionSchema = z
+  .string()
+  .openapi({
+    description:
+      'The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.\n',
+    example: '1.25',
+    'x-linode-cli-display': 4,
+    'x-linode-filterable': true,
+  })
+  .openapi('LKEClusterK8sVersion')
+
+const LKEClusterLabelSchema = z
+  .string()
+  .min(1)
+  .max(32)
+  .openapi({
+    description:
+      'This Kubernetes cluster\'s unique label for display purposes only.\nLabels have the following constraints:\n\n  * UTF-8 characters will be returned by the API using escape\n    sequences of their Unicode code points. For example, the\n    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its\n    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this\n    character and the API will return it as the escape sequence\n    using six 1 byte characters which represent 2 bytes of Unicode\n    code point (`"\\u30ab"`).\n  * 4 byte UTF-8 characters are not supported.\n  * If the label is entirely composed of UTF-8 characters, the API\n    response will return the code points using up to 193 1 byte\n    characters.\n',
+    example: 'lkecluster12345',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('LKEClusterLabel')
+
+const LKEClusterRegionSchema = z
+  .string()
+  .openapi({
+    description: "This Kubernetes cluster's location.",
+    example: 'us-central',
+    'x-linode-cli-display': 3,
+    'x-linode-filterable': true,
+  })
+  .openapi('LKEClusterRegion')
+
+const LKEClusterTagsSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.\n',
+    example: ['ecomm', 'blogs'],
+    'x-linode-filterable': true,
+  })
+  .openapi('LKEClusterTags')
+
+const LKEClusterUpdatedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'When this Kubernetes cluster was updated.',
+    example: '2019-09-13T21:24:16Z',
+    readOnly: true,
+  })
+  .openapi('LKEClusterUpdated')
+
 const LKEClusterSchema = z
   .object({
     control_plane: z
@@ -3839,14 +3933,7 @@ const LKEClusterSchema = z
           'Defines settings for the Kubernetes Control Plane. Allows for the enabling of High Availability (HA) for Control Plane Components. Enabling High Avaialability for LKE is an **irreversible** change.\n',
         required: [],
       }),
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Kubernetes cluster was created.',
-        example: '2019-09-12T21:25:30Z',
-        readOnly: true,
-      }),
+    created: LKEClusterCreatedSchema.exactOptional(),
     id: z
       .int()
       .exactOptional()
@@ -3856,57 +3943,45 @@ const LKEClusterSchema = z
         readOnly: true,
         'x-linode-cli-display': 1,
       }),
-    k8s_version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.\n',
-        example: '1.25',
-        'x-linode-cli-display': 4,
-        'x-linode-filterable': true,
-      }),
-    label: z
-      .string()
-      .min(1)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description:
-          'This Kubernetes cluster\'s unique label for display purposes only.\nLabels have the following constraints:\n\n  * UTF-8 characters will be returned by the API using escape\n    sequences of their Unicode code points. For example, the\n    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its\n    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this\n    character and the API will return it as the escape sequence\n    using six 1 byte characters which represent 2 bytes of Unicode\n    code point (`"\\u30ab"`).\n  * 4 byte UTF-8 characters are not supported.\n  * If the label is entirely composed of UTF-8 characters, the API\n    response will return the code points using up to 193 1 byte\n    characters.\n',
-        example: 'lkecluster12345',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "This Kubernetes cluster's location.",
-        example: 'us-central',
-        'x-linode-cli-display': 3,
-        'x-linode-filterable': true,
-      }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.\n',
-        example: ['ecomm', 'blogs'],
-        'x-linode-filterable': true,
-      }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this Kubernetes cluster was updated.',
-        example: '2019-09-13T21:24:16Z',
-        readOnly: true,
-      }),
+    k8s_version: LKEClusterK8sVersionSchema.exactOptional(),
+    label: LKEClusterLabelSchema.exactOptional(),
+    region: LKEClusterRegionSchema.exactOptional(),
+    tags: LKEClusterTagsSchema.exactOptional(),
+    updated: LKEClusterUpdatedSchema.exactOptional(),
   })
   .openapi({ description: 'A Kubernetes cluster.', required: [] })
   .openapi('LKECluster')
+
+const LKENodePoolCountSchema = z
+  .int()
+  .min(1)
+  .max(100)
+  .openapi({ description: 'The number of nodes in the Node Pool.', example: 6 })
+  .openapi('LKENodePoolCount')
+
+const LKENodePoolDisksItemsSchema = z
+  .object({
+    size: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The size of this custom disk partition in MB.\n\n  * The size of this disk partition must not exceed the capacity of the node's plan type.\n",
+        example: 1024,
+      }),
+    type: z
+      .enum(['raw', 'ext4'])
+      .exactOptional()
+      .openapi({
+        description: "This custom disk partition's filesystem type.\n",
+        example: 'ext-4',
+      }),
+  })
+  .openapi({
+    description: "The values to assign to each partition in this Node Pool's custom disk layout.\n",
+    required: [],
+  })
+  .openapi('LKENodePoolDisksItems')
 
 const LKENodeStatusSchema = z
   .object({
@@ -3933,6 +4008,24 @@ const LKENodeStatusSchema = z
     required: [],
   })
   .openapi('LKENodeStatus')
+
+const LKENodePoolTagsSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'An array of tags applied to this object. Tags are for organizational purposes only.\n',
+    example: ['example tag', 'another example'],
+    'x-linode-filterable': true,
+  })
+  .openapi('LKENodePoolTags')
+
+const LKENodePoolTypeSchema = z
+  .string()
+  .openapi({
+    description: 'The Linode Type for all of the nodes in the Node Pool.',
+    example: 'g6-standard-4',
+  })
+  .openapi('LKENodePoolType')
 
 const LKENodePoolSchema = z
   .object({
@@ -3972,38 +4065,9 @@ const LKENodePoolSchema = z
           'When enabled, the number of nodes autoscales within the defined minimum and maximum values.\n',
         required: [],
       }),
-    count: z
-      .int()
-      .min(1)
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The number of nodes in the Node Pool.', example: 6 }),
+    count: LKENodePoolCountSchema.exactOptional(),
     disks: z
-      .array(
-        z
-          .object({
-            size: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The size of this custom disk partition in MB.\n\n  * The size of this disk partition must not exceed the capacity of the node's plan type.\n",
-                example: 1024,
-              }),
-            type: z
-              .enum(['raw', 'ext4'])
-              .exactOptional()
-              .openapi({
-                description: "This custom disk partition's filesystem type.\n",
-                example: 'ext-4',
-              }),
-          })
-          .openapi({
-            description:
-              "The values to assign to each partition in this Node Pool's custom disk layout.\n",
-            required: [],
-          }),
-      )
+      .array(LKENodePoolDisksItemsSchema)
       .exactOptional()
       .openapi({
         description: "This Node Pool's custom disk layout.\n",
@@ -4024,22 +4088,8 @@ const LKENodePoolSchema = z
         description:
           'Status information for the Nodes which are members of this Node Pool. If a Linode has not been provisioned for a given Node slot, the instance_id will be returned as null.\n',
       }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of tags applied to this object. Tags are for organizational purposes only.\n',
-        example: ['example tag', 'another example'],
-        'x-linode-filterable': true,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Linode Type for all of the nodes in the Node Pool.',
-        example: 'g6-standard-4',
-      }),
+    tags: LKENodePoolTagsSchema.exactOptional(),
+    type: LKENodePoolTypeSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -4048,55 +4098,57 @@ const LKENodePoolSchema = z
   })
   .openapi('LKENodePool')
 
-const LKENodePoolRequestBodySchema = z
+const LKENodePoolRequestBodyAutoscalerSchema = z
   .object({
-    autoscaler: z
-      .object({
-        enabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether autoscaling is enabled for this Node Pool. Defaults to `false`.',
-            example: true,
-          }),
-        max: z
-          .int()
-          .min(1)
-          .max(100)
-          .exactOptional()
-          .openapi({
-            description:
-              "The maximum number of nodes to autoscale to. Defaults to the Node Pool's `count`. Defaults to the value provided by the `count` field.\n",
-            example: 12,
-          }),
-        min: z
-          .int()
-          .min(1)
-          .max(100)
-          .exactOptional()
-          .openapi({
-            description:
-              "The minimum number of nodes to autoscale to. Defaults to the Node Pool's `count`.",
-            example: 3,
-          }),
-      })
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether autoscaling is enabled for this Node Pool. Defaults to `false`.',
+        example: true,
+      }),
+    max: z
+      .int()
+      .min(1)
+      .max(100)
       .exactOptional()
       .openapi({
         description:
-          'When enabled, the number of nodes autoscales within the defined minimum and maximum values.\n\nWhen making a request, `max` and `min` require each other.\n',
-        required: [],
+          "The maximum number of nodes to autoscale to. Defaults to the Node Pool's `count`. Defaults to the value provided by the `count` field.\n",
+        example: 12,
       }),
-    count: z.lazy(() => LKENodePoolSchema).exactOptional(),
+    min: z
+      .int()
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          "The minimum number of nodes to autoscale to. Defaults to the Node Pool's `count`.",
+        example: 3,
+      }),
+  })
+  .openapi({
+    description:
+      'When enabled, the number of nodes autoscales within the defined minimum and maximum values.\n\nWhen making a request, `max` and `min` require each other.\n',
+    required: [],
+  })
+  .openapi('LKENodePoolRequestBodyAutoscaler')
+
+const LKENodePoolRequestBodySchema = z
+  .object({
+    autoscaler: LKENodePoolRequestBodyAutoscalerSchema.exactOptional(),
+    count: LKENodePoolCountSchema.exactOptional(),
     disks: z
-      .array(z.lazy(() => LKENodePoolSchema))
+      .array(LKENodePoolDisksItemsSchema)
       .exactOptional()
       .openapi({
         description:
           "**Note**: This field should be omitted except for special use cases. The disks specified here are\npartitions in *addition* to the primary partition and reduce the size of the primary partition,\nwhich can lead to stability problems for the Node.\n\nThis Node Pool's custom disk layout. Each item in this array will create a new disk\npartition for each node in this Node Pool.\n\n  * The custom disk layout is applied to each node in this Node Pool.\n  * The maximum number of custom disk partitions that can be configured is 7.\n  * Once the requested disk paritions are allocated, the remaining disk space is allocated to the node's boot disk.\n  * A Node Pool's custom disk layout is immutable over the lifetime of the Node Pool.\n",
         'x-linode-cli-format': 'json',
       }),
-    tags: z.lazy(() => LKENodePoolSchema).exactOptional(),
-    type: z.lazy(() => LKENodePoolSchema).exactOptional(),
+    tags: LKENodePoolTagsSchema.exactOptional(),
+    type: LKENodePoolTypeSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -4118,6 +4170,40 @@ const LKEVersionSchema = z
   })
   .openapi({ description: 'LKE versions\n', readOnly: true, required: [] })
   .openapi('LKEVersion')
+
+const LinodeGroupSchema = z
+  .string()
+  .openapi({
+    deprecated: true,
+    description: 'A deprecated property denoting a group label for this Linode.\n',
+    example: 'Linode-Group',
+    'x-linode-filterable': true,
+  })
+  .openapi('LinodeGroup')
+
+const LinodeLabelSchema = z
+  .string()
+  .regex(/^[a-zA-Z]((?!--|__|..)[a-zA-Z0-9-_.])+$/)
+  .min(3)
+  .max(64)
+  .openapi({
+    description:
+      "The Linode's label is for display purposes only. If no label is provided for a Linode,\na default will be assigned.\n\nLinode labels have the following constraints:\n\n  * Must begin and end with an alphanumeric character.\n  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).\n  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.\n",
+    example: 'linode123',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('LinodeLabel')
+
+const LinodeTagsSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'An array of tags applied to this object.  Tags are for organizational purposes only.\n',
+    example: ['example tag', 'another example'],
+    'x-linode-filterable': true,
+  })
+  .openapi('LinodeTags')
 
 const LinodeSchema = z
   .object({
@@ -4255,15 +4341,7 @@ const LinodeSchema = z
         example: '2018-01-01T00:01:01',
         readOnly: true,
       }),
-    group: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'A deprecated property denoting a group label for this Linode.\n',
-        example: 'Linode-Group',
-        'x-linode-filterable': true,
-      }),
+    group: LinodeGroupSchema.exactOptional(),
     host_uuid: z
       .uuid()
       .exactOptional()
@@ -4291,9 +4369,7 @@ const LinodeSchema = z
         'x-linode-cli-display': 1,
         'x-linode-filterable': true,
       }),
-    image: z
-      .lazy(() => DiskRequestSchema)
-      .nullable()
+    image: DiskRequestImageSchema.nullable()
       .exactOptional()
       .openapi({
         example: 'linode/debian10',
@@ -4322,19 +4398,7 @@ const LinodeSchema = z
         example: 'c001:d00d::1337/128',
         readOnly: true,
       }),
-    label: z
-      .string()
-      .regex(/^[a-zA-Z]((?!--|__|..)[a-zA-Z0-9-_.])+$/)
-      .min(3)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description:
-          "The Linode's label is for display purposes only. If no label is provided for a Linode,\na default will be assigned.\n\nLinode labels have the following constraints:\n\n  * Must begin and end with an alphanumeric character.\n  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).\n  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.\n",
-        example: 'linode123',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
+    label: LinodeLabelSchema.exactOptional(),
     region: z
       .string()
       .exactOptional()
@@ -4414,15 +4478,7 @@ const LinodeSchema = z
         'x-linode-cli-color': { default_: 'yellow', offline: 'red', running: 'green' },
         'x-linode-cli-display': 6,
       }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of tags applied to this object.  Tags are for organizational purposes only.\n',
-        example: ['example tag', 'another example'],
-        'x-linode-filterable': true,
-      }),
+    tags: LinodeTagsSchema.exactOptional(),
     type: z
       .string()
       .exactOptional()
@@ -4616,8 +4672,8 @@ const LinodeConfigSchema = z
 
 const LinodeRequestSchema = z
   .object({
-    authorized_keys: z.lazy(() => DiskRequestSchema).exactOptional(),
-    authorized_users: z.lazy(() => DiskRequestSchema).exactOptional(),
+    authorized_keys: DiskRequestAuthorizedKeysSchema.exactOptional(),
+    authorized_users: DiskRequestAuthorizedUsersSchema.exactOptional(),
     booted: z
       .boolean()
       .default(true)
@@ -4627,10 +4683,10 @@ const LinodeRequestSchema = z
           'This field defaults to `true` if the Linode is created with an Image or from a Backup.\nIf it is deployed from an Image or a Backup and you wish it to remain `offline` after deployment, set this to `false`.\n',
         writeOnly: true,
       }),
-    image: z.lazy(() => DiskRequestSchema).exactOptional(),
-    root_pass: z.lazy(() => DiskRequestSchema).exactOptional(),
-    stackscript_data: z.lazy(() => DiskRequestSchema).exactOptional(),
-    stackscript_id: z.lazy(() => DiskRequestSchema).exactOptional(),
+    image: DiskRequestImageSchema.exactOptional(),
+    root_pass: DiskRequestRootPassSchema.exactOptional(),
+    stackscript_data: DiskRequestStackscriptDataSchema.exactOptional(),
+    stackscript_id: DiskRequestStackscriptIdSchema.exactOptional(),
   })
   .openapi({ description: 'Common properties for creating and rebuilding Linodes.', required: [] })
   .openapi('LinodeRequest')
@@ -5620,18 +5676,33 @@ const ManagedServiceSchema = z
   })
   .openapi('ManagedService')
 
+const NodeBalancerClientConnThrottleSchema = z
+  .int()
+  .min(0)
+  .max(20)
+  .openapi({
+    description: 'Throttle connections per second.  Set to 0 (zero) to disable throttling.\n',
+    example: 0,
+    'x-linode-cli-display': 6,
+  })
+  .openapi('NodeBalancerClientConnThrottle')
+
+const NodeBalancerLabelSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9-_]{3,32}/)
+  .min(3)
+  .max(32)
+  .openapi({
+    description: "This NodeBalancer's label. These must be unique on your Account.\n",
+    example: 'balancer12345',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('NodeBalancerLabel')
+
 const NodeBalancerSchema = z
   .object({
-    client_conn_throttle: z
-      .int()
-      .min(0)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'Throttle connections per second.  Set to 0 (zero) to disable throttling.\n',
-        example: 0,
-        'x-linode-cli-display': 6,
-      }),
+    client_conn_throttle: NodeBalancerClientConnThrottleSchema.exactOptional(),
     created: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -5679,18 +5750,7 @@ const NodeBalancerSchema = z
         readOnly: true,
         'x-linode-cli-display': 6,
       }),
-    label: z
-      .string()
-      .regex(/[a-zA-Z0-9-_]{3,32}/)
-      .min(3)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: "This NodeBalancer's label. These must be unique on your Account.\n",
-        example: 'balancer12345',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
+    label: NodeBalancerLabelSchema.exactOptional(),
     region: z
       .string()
       .exactOptional()
@@ -5766,95 +5826,177 @@ const NodeBalancerSchema = z
   })
   .openapi('NodeBalancer')
 
+const NodeBalancerConfigAlgorithmSchema = z
+  .enum(['roundrobin', 'leastconn', 'source'])
+  .default('roundrobin')
+  .openapi({
+    description: 'What algorithm this NodeBalancer should use for routing traffic to backends.\n',
+    example: 'roundrobin',
+    'x-linode-cli-display': 4,
+  })
+  .openapi('NodeBalancerConfigAlgorithm')
+
+const NodeBalancerConfigCheckSchema = z
+  .enum(['none', 'connection', 'http', 'http_body'])
+  .default('none')
+  .openapi({
+    description:
+      'The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.\n* If `none` no check is performed.\n* `connection` requires only a connection to the backend to succeed.\n* `http` and `http_body` rely on the backend serving HTTP, and that\n  the response returned matches what is expected.\n',
+    example: 'http_body',
+  })
+  .openapi('NodeBalancerConfigCheck')
+
+const NodeBalancerConfigCheckAttemptsSchema = z
+  .int()
+  .min(1)
+  .max(30)
+  .default(3)
+  .openapi({
+    description: 'How many times to attempt a check before considering a backend to be down.\n',
+    example: 3,
+  })
+  .openapi('NodeBalancerConfigCheckAttempts')
+
+const NodeBalancerConfigCheckBodySchema = z
+  .string()
+  .openapi({
+    description:
+      'This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.\n',
+    example: 'it works',
+  })
+  .openapi('NodeBalancerConfigCheckBody')
+
+const NodeBalancerConfigCheckIntervalSchema = z
+  .int()
+  .default(31)
+  .openapi({
+    description:
+      'How often, in seconds, to check that backends are up and serving requests.\n\nMust be greater than `check_timeout`.\n',
+    example: 90,
+  })
+  .openapi('NodeBalancerConfigCheckInterval')
+
+const NodeBalancerConfigCheckPassiveSchema = z
+  .boolean()
+  .default(true)
+  .openapi({
+    description:
+      'If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.\n',
+    example: true,
+    'x-linode-cli-display': 6,
+  })
+  .openapi('NodeBalancerConfigCheckPassive')
+
+const NodeBalancerConfigCheckPathSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9\/\-%?&=.]*$/)
+  .openapi({
+    description:
+      'The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.\n',
+    example: '/test',
+  })
+  .openapi('NodeBalancerConfigCheckPath')
+
+const NodeBalancerConfigCheckTimeoutSchema = z
+  .int()
+  .min(1)
+  .max(30)
+  .default(30)
+  .openapi({
+    description:
+      'How long, in seconds, to wait for a check attempt before considering it failed.\n\nMust be less than `check_interval`.\n',
+    example: 10,
+  })
+  .openapi('NodeBalancerConfigCheckTimeout')
+
+const NodeBalancerConfigCipherSuiteSchema = z
+  .enum(['recommended', 'legacy'])
+  .default('recommended')
+  .openapi({
+    description:
+      'What ciphers to use for SSL connections served by this NodeBalancer.\n\n* `legacy` is considered insecure and should only be used if necessary.\n',
+    example: 'recommended',
+    'x-linode-cli-color': { default_: 'white', legacy: 'red' },
+    'x-linode-cli-display': 7,
+  })
+  .openapi('NodeBalancerConfigCipherSuite')
+
+const NodeBalancerConfigPortSchema = z
+  .int()
+  .min(1)
+  .max(65535)
+  .default(80)
+  .openapi({
+    description:
+      "The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.\n",
+    example: 80,
+    'x-linode-cli-display': 2,
+  })
+  .openapi('NodeBalancerConfigPort')
+
+const NodeBalancerConfigProtocolSchema = z
+  .enum(['http', 'https', 'tcp'])
+  .default('http')
+  .openapi({
+    description:
+      'The protocol this port is configured to serve.\n\n* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.\n\n* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.\n\nReview our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.\n',
+    example: 'http',
+    'x-linode-cli-display': 3,
+  })
+  .openapi('NodeBalancerConfigProtocol')
+
+const NodeBalancerConfigProxyProtocolSchema = z
+  .enum(['none', 'v1', 'v2'])
+  .default('none')
+  .openapi({
+    description:
+      "ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.\n\n* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.\n* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.\n* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.\n",
+    example: 'none',
+  })
+  .openapi('NodeBalancerConfigProxyProtocol')
+
+const NodeBalancerConfigSslCertSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL\ncertificate and Certificate Authority chain) that should be served on this\nNodeBalancerConfig\'s port.\n\nLine breaks must be represented as "\\n" in the string for requests (but not when using the Linode CLI).\n\n[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.\n\nThe contents of this field will not be shown in any responses that display\nthe NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field\nappears.\n\nThe read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig\nresponse are automatically derived from your certificate. Please refer to these fields to\nverify that the appropriate certificate was assigned to your NodeBalancerConfig.\n',
+    example: '<REDACTED>',
+  })
+  .openapi('NodeBalancerConfigSslCert')
+
+const NodeBalancerConfigSslKeySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.\n\nLine breaks must be represented as "\\n" in the string for requests (but not when using the Linode CLI).\n\nThe contents of this field will not be shown in any responses that display\nthe NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field\nappears.\n\nThe read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig\nresponse are automatically derived from your certificate. Please refer to these fields to\nverify that the appropriate certificate was assigned to your NodeBalancerConfig.\n',
+    example: '<REDACTED>',
+  })
+  .openapi('NodeBalancerConfigSslKey')
+
+const NodeBalancerConfigStickinessSchema = z
+  .enum(['none', 'table', 'http_cookie'])
+  .default('none')
+  .openapi({
+    description:
+      'Controls how session stickiness is handled on this port.\n* If set to `none` connections will always be assigned a backend based on the algorithm configured.\n* If set to `table` sessions from the same remote address will be routed to the same\n  backend.\n\n* For HTTP or HTTPS clients, `http_cookie` allows sessions to be\n  routed to the same backend based on a cookie set by the NodeBalancer.\n',
+    example: 'http_cookie',
+    'x-linode-cli-display': 5,
+  })
+  .openapi('NodeBalancerConfigStickiness')
+
 const NodeBalancerConfigSchema = z
   .object({
-    algorithm: z
-      .enum(['roundrobin', 'leastconn', 'source'])
-      .default('roundrobin')
-      .exactOptional()
-      .openapi({
-        description:
-          'What algorithm this NodeBalancer should use for routing traffic to backends.\n',
-        example: 'roundrobin',
-        'x-linode-cli-display': 4,
-      }),
-    check: z
-      .enum(['none', 'connection', 'http', 'http_body'])
-      .default('none')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.\n* If `none` no check is performed.\n* `connection` requires only a connection to the backend to succeed.\n* `http` and `http_body` rely on the backend serving HTTP, and that\n  the response returned matches what is expected.\n',
-        example: 'http_body',
-      }),
-    check_attempts: z
-      .int()
-      .min(1)
-      .max(30)
-      .default(3)
-      .exactOptional()
-      .openapi({
-        description: 'How many times to attempt a check before considering a backend to be down.\n',
-        example: 3,
-      }),
-    check_body: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.\n',
-        example: 'it works',
-      }),
-    check_interval: z
-      .int()
-      .default(31)
-      .exactOptional()
-      .openapi({
-        description:
-          'How often, in seconds, to check that backends are up and serving requests.\n\nMust be greater than `check_timeout`.\n',
-        example: 90,
-      }),
-    check_passive: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.\n',
-        example: true,
-        'x-linode-cli-display': 6,
-      }),
-    check_path: z
-      .string()
-      .regex(/^[a-zA-Z0-9\/\-%?&=.]*$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.\n',
-        example: '/test',
-      }),
-    check_timeout: z
-      .int()
-      .min(1)
-      .max(30)
-      .default(30)
-      .exactOptional()
-      .openapi({
-        description:
-          'How long, in seconds, to wait for a check attempt before considering it failed.\n\nMust be less than `check_interval`.\n',
-        example: 10,
-      }),
-    cipher_suite: z
-      .enum(['recommended', 'legacy'])
-      .default('recommended')
-      .exactOptional()
-      .openapi({
-        description:
-          'What ciphers to use for SSL connections served by this NodeBalancer.\n\n* `legacy` is considered insecure and should only be used if necessary.\n',
-        example: 'recommended',
-        'x-linode-cli-color': { default_: 'white', legacy: 'red' },
-        'x-linode-cli-display': 7,
-      }),
+    algorithm: NodeBalancerConfigAlgorithmSchema.exactOptional(),
+    check: NodeBalancerConfigCheckSchema.exactOptional(),
+    check_attempts: NodeBalancerConfigCheckAttemptsSchema.exactOptional(),
+    check_body: NodeBalancerConfigCheckBodySchema.exactOptional(),
+    check_interval: NodeBalancerConfigCheckIntervalSchema.exactOptional(),
+    check_passive: NodeBalancerConfigCheckPassiveSchema.exactOptional(),
+    check_path: NodeBalancerConfigCheckPathSchema.exactOptional(),
+    check_timeout: NodeBalancerConfigCheckTimeoutSchema.exactOptional(),
+    cipher_suite: NodeBalancerConfigCipherSuiteSchema.exactOptional(),
     id: z
       .int()
       .exactOptional()
@@ -5901,46 +6043,10 @@ const NodeBalancerConfigSchema = z
         'x-linode-cli-display': 10,
         required: [],
       }),
-    port: z
-      .int()
-      .min(1)
-      .max(65535)
-      .default(80)
-      .exactOptional()
-      .openapi({
-        description:
-          "The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.\n",
-        example: 80,
-        'x-linode-cli-display': 2,
-      }),
-    protocol: z
-      .enum(['http', 'https', 'tcp'])
-      .default('http')
-      .exactOptional()
-      .openapi({
-        description:
-          'The protocol this port is configured to serve.\n\n* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.\n\n* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.\n\nReview our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.\n',
-        example: 'http',
-        'x-linode-cli-display': 3,
-      }),
-    proxy_protocol: z
-      .enum(['none', 'v1', 'v2'])
-      .default('none')
-      .exactOptional()
-      .openapi({
-        description:
-          "ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.\n\n* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.\n* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.\n* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.\n",
-        example: 'none',
-      }),
-    ssl_cert: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL\ncertificate and Certificate Authority chain) that should be served on this\nNodeBalancerConfig\'s port.\n\nLine breaks must be represented as "\\n" in the string for requests (but not when using the Linode CLI).\n\n[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.\n\nThe contents of this field will not be shown in any responses that display\nthe NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field\nappears.\n\nThe read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig\nresponse are automatically derived from your certificate. Please refer to these fields to\nverify that the appropriate certificate was assigned to your NodeBalancerConfig.\n',
-        example: '<REDACTED>',
-      }),
+    port: NodeBalancerConfigPortSchema.exactOptional(),
+    protocol: NodeBalancerConfigProtocolSchema.exactOptional(),
+    proxy_protocol: NodeBalancerConfigProxyProtocolSchema.exactOptional(),
+    ssl_cert: NodeBalancerConfigSslCertSchema.exactOptional(),
     ssl_commonname: z
       .string()
       .exactOptional()
@@ -5961,25 +6067,8 @@ const NodeBalancerConfigSchema = z
         readOnly: true,
         'x-linode-cli-display': 9,
       }),
-    ssl_key: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.\n\nLine breaks must be represented as "\\n" in the string for requests (but not when using the Linode CLI).\n\nThe contents of this field will not be shown in any responses that display\nthe NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field\nappears.\n\nThe read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig\nresponse are automatically derived from your certificate. Please refer to these fields to\nverify that the appropriate certificate was assigned to your NodeBalancerConfig.\n',
-        example: '<REDACTED>',
-      }),
-    stickiness: z
-      .enum(['none', 'table', 'http_cookie'])
-      .default('none')
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls how session stickiness is handled on this port.\n* If set to `none` connections will always be assigned a backend based on the algorithm configured.\n* If set to `table` sessions from the same remote address will be routed to the same\n  backend.\n\n* For HTTP or HTTPS clients, `http_cookie` allows sessions to be\n  routed to the same backend based on a cookie set by the NodeBalancer.\n',
-        example: 'http_cookie',
-        'x-linode-cli-display': 5,
-      }),
+    ssl_key: NodeBalancerConfigSslKeySchema.exactOptional(),
+    stickiness: NodeBalancerConfigStickinessSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -5988,17 +6077,53 @@ const NodeBalancerConfigSchema = z
   })
   .openapi('NodeBalancerConfig')
 
+const NodeBalancerNodeAddressSchema = z
+  .string()
+  .openapi({
+    description:
+      'The private IP Address where this backend can be reached. This _must_ be a private IP address.\n',
+    example: '192.168.210.120:80',
+    'x-linode-cli-display': 3,
+  })
+  .openapi('NodeBalancerNodeAddress')
+
+const NodeBalancerNodeLabelSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9-_.]{3,32}/)
+  .min(3)
+  .max(32)
+  .openapi({
+    description: 'The label for this node.  This is for display purposes only.\n',
+    example: 'node54321',
+    'x-linode-cli-display': 2,
+  })
+  .openapi('NodeBalancerNodeLabel')
+
+const NodeBalancerNodeModeSchema = z
+  .enum(['accept', 'reject', 'drain', 'backup'])
+  .openapi({
+    description:
+      'The mode this NodeBalancer should use when sending traffic to this backend.\n* If set to `accept` this backend is accepting traffic.\n* If set to `reject` this backend will not receive traffic.\n* If set to `drain` this backend will not receive _new_ traffic, but connections already\n  pinned to it will continue to be routed to it.\n\n* If set to `backup`, this backend will only receive traffic if all `accept` nodes\n  are down.\n',
+    example: 'accept',
+    'x-linode-cli-display': 6,
+  })
+  .openapi('NodeBalancerNodeMode')
+
+const NodeBalancerNodeWeightSchema = z
+  .int()
+  .min(1)
+  .max(255)
+  .openapi({
+    description:
+      'Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.\n',
+    example: 50,
+    'x-linode-cli-display': 5,
+  })
+  .openapi('NodeBalancerNodeWeight')
+
 const NodeBalancerNodeSchema = z
   .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The private IP Address where this backend can be reached. This _must_ be a private IP address.\n',
-        example: '192.168.210.120:80',
-        'x-linode-cli-display': 3,
-      }),
+    address: NodeBalancerNodeAddressSchema.exactOptional(),
     config_id: z
       .int()
       .exactOptional()
@@ -6016,26 +6141,8 @@ const NodeBalancerNodeSchema = z
         readOnly: true,
         'x-linode-cli-display': 1,
       }),
-    label: z
-      .string()
-      .regex(/[a-zA-Z0-9-_.]{3,32}/)
-      .min(3)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'The label for this node.  This is for display purposes only.\n',
-        example: 'node54321',
-        'x-linode-cli-display': 2,
-      }),
-    mode: z
-      .enum(['accept', 'reject', 'drain', 'backup'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The mode this NodeBalancer should use when sending traffic to this backend.\n* If set to `accept` this backend is accepting traffic.\n* If set to `reject` this backend will not receive traffic.\n* If set to `drain` this backend will not receive _new_ traffic, but connections already\n  pinned to it will continue to be routed to it.\n\n* If set to `backup`, this backend will only receive traffic if all `accept` nodes\n  are down.\n',
-        example: 'accept',
-        'x-linode-cli-display': 6,
-      }),
+    label: NodeBalancerNodeLabelSchema.exactOptional(),
+    mode: NodeBalancerNodeModeSchema.exactOptional(),
     nodebalancer_id: z
       .int()
       .exactOptional()
@@ -6055,17 +6162,7 @@ const NodeBalancerNodeSchema = z
         'x-linode-cli-color': { DOWN: 'red', UP: 'green', default_: 'white', unknown: 'yellow' },
         'x-linode-cli-display': 4,
       }),
-    weight: z
-      .int()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.\n',
-        example: 50,
-        'x-linode-cli-display': 5,
-      }),
+    weight: NodeBalancerNodeWeightSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -6580,28 +6677,34 @@ const ObjectStorageSSLResponseSchema = z
   })
   .openapi('ObjectStorageSSLResponse')
 
+const PaginationEnvelopePageSchema = z
+  .int()
+  .openapi({
+    description: 'The current [page](/docs/api/#pagination).',
+    example: 1,
+    readOnly: true,
+  })
+  .openapi('PaginationEnvelopePage')
+
+const PaginationEnvelopePagesSchema = z
+  .int()
+  .openapi({
+    description: 'The total number of [pages](/docs/api/#pagination).',
+    example: 1,
+    readOnly: true,
+  })
+  .openapi('PaginationEnvelopePages')
+
+const PaginationEnvelopeResultsSchema = z
+  .int()
+  .openapi({ description: 'The total number of results.', example: 1, readOnly: true })
+  .openapi('PaginationEnvelopeResults')
+
 const PaginationEnvelopeSchema = z
   .object({
-    page: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The current [page](/docs/api/#pagination).',
-        example: 1,
-        readOnly: true,
-      }),
-    pages: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of [pages](/docs/api/#pagination).',
-        example: 1,
-        readOnly: true,
-      }),
-    results: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total number of results.', example: 1, readOnly: true }),
+    page: PaginationEnvelopePageSchema.exactOptional(),
+    pages: PaginationEnvelopePagesSchema.exactOptional(),
+    results: PaginationEnvelopeResultsSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -6717,6 +6820,16 @@ const PaymentSchema = z
   .openapi({ description: 'Payment object response.', required: [] })
   .openapi('Payment')
 
+const PaymentMethodIsDefaultSchema = z
+  .boolean()
+  .openapi({
+    description:
+      'Whether this Payment Method is the default method for automatically processing service charges.\n',
+    example: true,
+    'x-linode-cli-display': 3,
+  })
+  .openapi('PaymentMethodIsDefault')
+
 const PaymentMethodSchema = z
   .object({
     created: z.iso
@@ -6747,15 +6860,7 @@ const PaymentMethodSchema = z
         example: 123,
         'x-linode-cli-display': 1,
       }),
-    is_default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this Payment Method is the default method for automatically processing service charges.\n',
-        example: true,
-        'x-linode-cli-display': 3,
-      }),
+    is_default: PaymentMethodIsDefaultSchema.exactOptional(),
     type: z
       .enum(['credit_card', 'google_pay', 'paypal'])
       .exactOptional()
@@ -6797,6 +6902,19 @@ const PaymentRequestSchema = z
   .openapi({ description: 'Payment object request.', required: ['usd'] })
   .openapi('PaymentRequest')
 
+const PersonalAccessTokenLabelSchema = z
+  .string()
+  .min(1)
+  .max(100)
+  .openapi({
+    description:
+      "This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.\n",
+    example: 'linode-cli',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('PersonalAccessTokenLabel')
+
 const PersonalAccessTokenSchema = z
   .object({
     created: z.iso
@@ -6828,18 +6946,7 @@ const PersonalAccessTokenSchema = z
         readOnly: true,
         'x-linode-cli-display': 1,
       }),
-    label: z
-      .string()
-      .min(1)
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          "This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.\n",
-        example: 'linode-cli',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
+    label: PersonalAccessTokenLabelSchema.exactOptional(),
     scopes: z
       .string()
       .exactOptional()
@@ -7045,6 +7152,16 @@ const ProfileSchema = z
   })
   .openapi('Profile')
 
+const RegionIdSchema = z
+  .string()
+  .openapi({
+    description: 'The unique ID of this Region.',
+    example: 'us-east',
+    readOnly: true,
+    'x-linode-cli-display': 1,
+  })
+  .openapi('RegionId')
+
 const RegionSchema = z
   .object({
     capabilities: z
@@ -7065,15 +7182,7 @@ const RegionSchema = z
         readOnly: true,
         'x-linode-cli-display': 3,
       }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique ID of this Region.',
-        example: 'us-east',
-        readOnly: true,
-        'x-linode-cli-display': 1,
-      }),
+    id: RegionIdSchema.exactOptional(),
     label: z
       .string()
       .exactOptional()
@@ -7133,6 +7242,13 @@ const RescueDevicesSchema = z
   .openapi({ required: [] })
   .openapi('RescueDevices')
 
+const SSHKeyLabelSchema = z
+  .string()
+  .min(0)
+  .max(64)
+  .openapi({ description: 'A label for the SSH Key.\n', example: 'My SSH Key' })
+  .openapi('SSHKeyLabel')
+
 const SSHKeySchema = z
   .object({
     created: z.iso
@@ -7151,12 +7267,7 @@ const SSHKeySchema = z
         example: 42,
         readOnly: true,
       }),
-    label: z
-      .string()
-      .min(0)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'A label for the SSH Key.\n', example: 'My SSH Key' }),
+    label: SSHKeyLabelSchema.exactOptional(),
     ssh_key: z
       .string()
       .exactOptional()
@@ -7173,26 +7284,32 @@ const SSHKeySchema = z
   })
   .openapi('SSHKey')
 
+const SecurityQuestionIdSchema = z
+  .int()
+  .openapi({ description: 'The ID representing the security question.', example: 1 })
+  .openapi('SecurityQuestionId')
+
+const SecurityQuestionQuestionSchema = z
+  .string()
+  .openapi({
+    description: 'The security question.',
+    example: 'In what city were you born?',
+    readOnly: true,
+  })
+  .openapi('SecurityQuestionQuestion')
+
+const SecurityQuestionResponseSchema = z
+  .string()
+  .min(3)
+  .max(17)
+  .openapi({ description: 'The security question response.\n', example: 'Gotham City' })
+  .openapi('SecurityQuestionResponse')
+
 const SecurityQuestionSchema = z
   .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The ID representing the security question.', example: 1 }),
-    question: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The security question.',
-        example: 'In what city were you born?',
-        readOnly: true,
-      }),
-    response: z
-      .string()
-      .min(3)
-      .max(17)
-      .exactOptional()
-      .openapi({ description: 'The security question response.\n', example: 'Gotham City' }),
+    id: SecurityQuestionIdSchema.exactOptional(),
+    question: SecurityQuestionQuestionSchema.exactOptional(),
+    response: SecurityQuestionResponseSchema.exactOptional(),
   })
   .openapi({ description: 'Single security question and response object.', required: [] })
   .openapi('SecurityQuestion')
@@ -7203,9 +7320,9 @@ const SecurityQuestionsGetSchema = z
       .array(
         z
           .object({
-            id: z.lazy(() => SecurityQuestionSchema).exactOptional(),
-            question: z.lazy(() => SecurityQuestionSchema).exactOptional(),
-            response: z.lazy(() => SecurityQuestionSchema).exactOptional(),
+            id: SecurityQuestionIdSchema.exactOptional(),
+            question: SecurityQuestionQuestionSchema.exactOptional(),
+            response: SecurityQuestionResponseSchema.exactOptional(),
           })
           .openapi({
             description: 'Single security question and response object for GET operation.',
@@ -7226,9 +7343,9 @@ const SecurityQuestionsPostSchema = z
       .array(
         z
           .object({
-            question_id: z.lazy(() => SecurityQuestionSchema).exactOptional(),
-            response: z.lazy(() => SecurityQuestionSchema).exactOptional(),
-            security_question: z.lazy(() => SecurityQuestionSchema).exactOptional(),
+            question_id: SecurityQuestionIdSchema.exactOptional(),
+            response: SecurityQuestionResponseSchema.exactOptional(),
+            security_question: SecurityQuestionQuestionSchema.exactOptional(),
           })
           .openapi({
             description: 'Single security question and response object for POST operation.',
@@ -7243,6 +7360,25 @@ const SecurityQuestionsPostSchema = z
   })
   .openapi('SecurityQuestionsPost')
 
+const ServiceTransferEntitiesSchema = z
+  .object({
+    linodes: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array containing the IDs of each of the Linodes included in this transfer.\n',
+        example: [111, 222],
+        'x-linode-cli-display': 5,
+      }),
+  })
+  .openapi({
+    description:
+      'A collection of the services to include in this transfer request, separated by type.\n',
+    required: [],
+  })
+  .openapi('ServiceTransferEntities')
+
 const ServiceTransferSchema = z
   .object({
     created: z.iso
@@ -7252,24 +7388,7 @@ const ServiceTransferSchema = z
         description: 'When this transfer was created.\n',
         example: '2021-02-11T16:37:03',
       }),
-    entities: z
-      .object({
-        linodes: z
-          .array(z.int())
-          .exactOptional()
-          .openapi({
-            description:
-              'An array containing the IDs of each of the Linodes included in this transfer.\n',
-            example: [111, 222],
-            'x-linode-cli-display': 5,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of the services to include in this transfer request, separated by type.\n',
-        required: [],
-      }),
+    entities: ServiceTransferEntitiesSchema.exactOptional(),
     expiry: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -8117,6 +8236,25 @@ const VlansSchema = z
   })
   .openapi('Vlans')
 
+const VolumeLabelSchema = z
+  .string()
+  .regex(/^[a-zA-Z]((?!--|__)[a-zA-Z0-9-_])+$/)
+  .min(1)
+  .max(32)
+  .openapi({
+    description: "The Volume's label is for display purposes only.\n",
+    example: 'my-volume',
+    'x-linode-cli-display': 2,
+    'x-linode-filterable': true,
+  })
+  .openapi('VolumeLabel')
+
+const VolumeSizeSchema = z
+  .int()
+  .max(10240)
+  .openapi({ description: "The Volume's size, in GiB.\n", example: 30, 'x-linode-cli-display': 4 })
+  .openapi('VolumeSize')
+
 const VolumeSchema = z
   .object({
     created: z.iso
@@ -8153,18 +8291,7 @@ const VolumeSchema = z
         readOnly: true,
         'x-linode-cli-display': 1,
       }),
-    label: z
-      .string()
-      .regex(/^[a-zA-Z]((?!--|__)[a-zA-Z0-9-_])+$/)
-      .min(1)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: "The Volume's label is for display purposes only.\n",
-        example: 'my-volume',
-        'x-linode-cli-display': 2,
-        'x-linode-filterable': true,
-      }),
+    label: VolumeLabelSchema.exactOptional(),
     linode_id: z
       .int()
       .nullable()
@@ -8186,19 +8313,8 @@ const VolumeSchema = z
         readOnly: true,
         'x-linode-cli-display': 7,
       }),
-    region: z
-      .lazy(() => RegionSchema)
-      .exactOptional()
-      .openapi({ 'x-linode-cli-display': 5 }),
-    size: z
-      .int()
-      .max(10240)
-      .exactOptional()
-      .openapi({
-        description: "The Volume's size, in GiB.\n",
-        example: 30,
-        'x-linode-cli-display': 4,
-      }),
+    region: RegionIdSchema.exactOptional().openapi({ 'x-linode-cli-display': 5 }),
+    size: VolumeSizeSchema.exactOptional(),
     status: z
       .enum(['creating', 'active', 'resizing'])
       .exactOptional()
@@ -8637,7 +8753,7 @@ export const postAccountEntityTransfersRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ entities: z.lazy(() => EntityTransferSchema) })
+            .object({ entities: EntityTransferEntitiesSchema })
             .openapi({ required: ['entities'] }),
         },
       },
@@ -8774,9 +8890,9 @@ export const getAccountEventsRoute = createRoute({
           schema: z
             .object({
               data: z.array(EventSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -8923,9 +9039,9 @@ export const getAccountInvoicesRoute = createRoute({
           schema: z
             .object({
               data: z.array(InvoiceSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9015,9 +9131,9 @@ export const getAccountInvoicesInvoiceIdItemsRoute = createRoute({
           schema: z
             .object({
               data: z.array(InvoiceItemSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9045,9 +9161,9 @@ export const getAccountLoginsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LoginSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9115,9 +9231,9 @@ export const getAccountMaintenanceRoute = createRoute({
           schema: z
             .object({
               data: z.array(MaintenanceSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9145,9 +9261,9 @@ export const getAccountNotificationsRoute = createRoute({
           schema: z
             .object({
               data: z.array(NotificationSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9175,9 +9291,9 @@ export const getAccountOauthClientsRoute = createRoute({
           schema: z
             .object({
               data: z.array(OAuthClientSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9450,9 +9566,9 @@ export const getAccountPaymentMethodsRoute = createRoute({
           schema: z
             .object({
               data: z.array(PaymentMethodSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9480,7 +9596,7 @@ export const postAccountPaymentMethodsRoute = createRoute({
           schema: z
             .object({
               data: CreditCardSchema,
-              is_default: z.lazy(() => PaymentMethodSchema),
+              is_default: PaymentMethodIsDefaultSchema,
               type: z
                 .literal('credit_card')
                 .openapi({
@@ -9649,9 +9765,9 @@ export const getAccountPaymentsRoute = createRoute({
           schema: z
             .object({
               data: z.array(PaymentSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9856,9 +9972,9 @@ export const getAccountServiceTransfersRoute = createRoute({
           schema: z
             .object({
               data: z.array(ServiceTransferSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -9883,7 +9999,7 @@ export const postAccountServiceTransfersRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ entities: z.lazy(() => ServiceTransferSchema) })
+            .object({ entities: ServiceTransferEntitiesSchema })
             .openapi({ required: ['entities'] }),
         },
       },
@@ -10095,9 +10211,9 @@ export const getAccountUsersRoute = createRoute({
           schema: z
             .object({
               data: z.array(UserSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -10519,9 +10635,9 @@ export const putDatabasesMongodbInstancesInstanceIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-              label: z.lazy(() => DatabaseMongoDBSchema).exactOptional(),
-              updates: z.lazy(() => DatabaseSchema).exactOptional(),
+              allow_list: DatabaseAllowListSchema.exactOptional(),
+              label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
+              updates: DatabaseUpdatesSchema.exactOptional(),
             })
             .openapi({
               description: 'Updated information for the Managed MongoDB Database.',
@@ -11164,9 +11280,9 @@ export const putDatabasesMysqlInstancesInstanceIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-              label: z.lazy(() => DatabaseMySQLSchema).exactOptional(),
-              updates: z.lazy(() => DatabaseSchema).exactOptional(),
+              allow_list: DatabaseAllowListSchema.exactOptional(),
+              label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
+              updates: DatabaseUpdatesSchema.exactOptional(),
             })
             .openapi({
               description: 'Updated information for the Managed MySQL Database.',
@@ -11809,9 +11925,9 @@ export const putDatabasesPostgresqlInstancesInstanceIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              allow_list: z.lazy(() => DatabaseSchema).exactOptional(),
-              label: z.lazy(() => DatabasePostgreSQLSchema).exactOptional(),
-              updates: z.lazy(() => DatabaseSchema).exactOptional(),
+              allow_list: DatabaseAllowListSchema.exactOptional(),
+              label: DatabaseLabelSchema.exactOptional().openapi({ 'x-linode-cli-display': 2 }),
+              updates: DatabaseUpdatesSchema.exactOptional(),
             })
             .openapi({
               description: 'Updated information for the Managed PostgreSQL Database.',
@@ -12401,9 +12517,9 @@ export const getDomainsRoute = createRoute({
           schema: z
             .object({
               data: z.array(DomainSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -12719,9 +12835,9 @@ export const getDomainsDomainIdRecordsRoute = createRoute({
           schema: z
             .object({
               data: z.array(DomainRecordSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -12902,15 +13018,15 @@ export const putDomainsDomainIdRecordsRecordIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              name: z.lazy(() => DomainRecordSchema).exactOptional(),
-              port: z.lazy(() => DomainRecordSchema).exactOptional(),
-              priority: z.lazy(() => DomainRecordSchema).exactOptional(),
-              protocol: z.lazy(() => DomainRecordSchema).exactOptional(),
-              service: z.lazy(() => DomainRecordSchema).exactOptional(),
-              tag: z.lazy(() => DomainRecordSchema).exactOptional(),
-              target: z.lazy(() => DomainRecordSchema).exactOptional(),
-              ttl_sec: z.lazy(() => DomainRecordSchema).exactOptional(),
-              weight: z.lazy(() => DomainRecordSchema).exactOptional(),
+              name: DomainRecordNameSchema.exactOptional(),
+              port: DomainRecordPortSchema.exactOptional(),
+              priority: DomainRecordPrioritySchema.exactOptional(),
+              protocol: DomainRecordProtocolSchema.exactOptional(),
+              service: DomainRecordServiceSchema.exactOptional(),
+              tag: DomainRecordTagSchema.exactOptional(),
+              target: DomainRecordTargetSchema.exactOptional(),
+              ttl_sec: DomainRecordTtlSecSchema.exactOptional(),
+              weight: DomainRecordWeightSchema.exactOptional(),
             })
             .openapi({ description: 'A Domain Record Update request object.', required: [] }),
         },
@@ -13060,9 +13176,9 @@ export const getImagesRoute = createRoute({
           schema: z
             .object({
               data: z.array(ImageSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -13305,9 +13421,9 @@ export const getLinodeInstancesRoute = createRoute({
           schema: z
             .object({
               data: z.array(LinodeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -13362,9 +13478,9 @@ export const postLinodeInstancesRoute = createRoute({
                       description:
                         'If this field is set to `true`, the created Linode will automatically be\nenrolled in the Linode Backup service. This will incur an additional charge.\nThe cost for the Backup service is dependent on the Type of Linode deployed.\n\nThis option is always treated as `true` if the account-wide `backups_enabled`\nsetting is `true`.  See [account settings](/docs/api/account/#account-settings-view)\nfor more information.\n\nBackup pricing is included in the response from [/linodes/types](/docs/api/linode-types/#types-list)\n',
                     }),
-                  group: z.lazy(() => LinodeSchema).exactOptional(),
+                  group: LinodeGroupSchema.exactOptional(),
                   interfaces: LinodeConfigInterfacesSchema.exactOptional(),
-                  label: z.lazy(() => LinodeSchema).exactOptional(),
+                  label: LinodeLabelSchema.exactOptional(),
                   private_ip: z
                     .boolean()
                     .exactOptional()
@@ -13390,7 +13506,7 @@ export const postLinodeInstancesRoute = createRoute({
                         'When deploying from an Image, this field is optional, otherwise it is ignored. This is used to set the swap disk size for the newly-created Linode.\n',
                       example: 512,
                     }),
-                  tags: z.lazy(() => LinodeSchema).exactOptional(),
+                  tags: LinodeTagsSchema.exactOptional(),
                   type: z
                     .string()
                     .exactOptional()
@@ -14129,9 +14245,9 @@ export const getLinodeInstancesLinodeIdConfigsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LinodeConfigSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -14425,9 +14541,9 @@ export const getLinodeInstancesLinodeIdDisksRoute = createRoute({
           schema: z
             .object({
               data: z.array(DiskSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -14929,9 +15045,9 @@ export const getLinodeInstancesLinodeIdFirewallsRoute = createRoute({
           schema: z
             .object({
               data: z.array(FirewallSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -15450,9 +15566,9 @@ export const getLinodeInstancesLinodeIdNodebalancersRoute = createRoute({
           schema: z
             .object({
               data: z.array(NodeBalancerSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16153,9 +16269,9 @@ export const getLinodeInstancesLinodeIdVolumesRoute = createRoute({
           schema: z
             .object({
               data: z.array(VolumeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16182,9 +16298,9 @@ export const getLinodeKernelsRoute = createRoute({
           schema: z
             .object({
               data: z.array(KernelSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16243,9 +16359,9 @@ export const getLinodeStackscriptsRoute = createRoute({
           schema: z
             .object({
               data: z.array(StackScriptSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16419,9 +16535,9 @@ export const getLinodeTypesRoute = createRoute({
           schema: z
             .object({
               data: z.array(LinodeTypeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16478,9 +16594,9 @@ export const getLkeClustersRoute = createRoute({
           schema: z
             .object({
               data: z.array(LKEClusterSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16523,13 +16639,13 @@ export const postLkeClustersRoute = createRoute({
                     'Defines settings for the Kubernetes Control Plane. Allows for the enabling of High Availability (HA) for Control Plane Components. Enabling High Availability for LKE is an **irreversible** change.\n',
                   required: [],
                 }),
-              k8s_version: z.lazy(() => LKEClusterSchema),
-              label: z.lazy(() => LKEClusterSchema),
+              k8s_version: LKEClusterK8sVersionSchema,
+              label: LKEClusterLabelSchema,
               node_pools: z
                 .array(LKENodePoolRequestBodySchema)
                 .openapi({ required: ['type', 'count'] }),
-              region: z.lazy(() => LKEClusterSchema),
-              tags: z.lazy(() => LKEClusterSchema).exactOptional(),
+              region: LKEClusterRegionSchema,
+              tags: LKEClusterTagsSchema.exactOptional(),
             })
             .openapi({ required: ['label', 'region', 'k8s_version', 'node_pools'] }),
         },
@@ -16645,7 +16761,7 @@ export const putLkeClustersClusterIdRoute = createRoute({
                   description:
                     "The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;. New and recycled Nodes in this cluster will be installed with the latest available patch for the Cluster's Kubernetes version.\n\nWhen upgrading the Kubernetes version, only the next latest minor version following the current version can be deployed. For example, a cluster with Kubernetes version 1.19 can be upgraded to version 1.20, but not directly to 1.21.\n\nThe Kubernetes version of a cluster can not be downgraded.\n",
                 }),
-              label: z.lazy(() => LKEClusterSchema).exactOptional(),
+              label: LKEClusterLabelSchema.exactOptional(),
               tags: z
                 .array(z.string())
                 .exactOptional()
@@ -16667,10 +16783,10 @@ export const putLkeClustersClusterIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              created: z.lazy(() => LKEClusterSchema).exactOptional(),
-              k8s_version: z.lazy(() => LKEClusterSchema).exactOptional(),
-              label: z.lazy(() => LKEClusterSchema).exactOptional(),
-              region: z.lazy(() => LKEClusterSchema).exactOptional(),
+              created: LKEClusterCreatedSchema.exactOptional(),
+              k8s_version: LKEClusterK8sVersionSchema.exactOptional(),
+              label: LKEClusterLabelSchema.exactOptional(),
+              region: LKEClusterRegionSchema.exactOptional(),
               tags: z
                 .array(z.string())
                 .exactOptional()
@@ -16679,7 +16795,7 @@ export const putLkeClustersClusterIdRoute = createRoute({
                     'An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only. To delete a tag, exclude it from your `tags` array.\n',
                   example: ['prod', 'monitoring', 'ecomm', 'blog'],
                 }),
-              updated: z.lazy(() => LKEClusterSchema).exactOptional(),
+              updated: LKEClusterUpdatedSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -16787,9 +16903,9 @@ export const getLkeClustersClusterIdApiEndpointsRoute = createRoute({
                     }),
                 )
                 .exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -17175,9 +17291,9 @@ export const getLkeClustersClusterIdPoolsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LKENodePoolSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -17363,8 +17479,8 @@ export const putLkeClustersClusterIdPoolsPoolIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              autoscaler: z.lazy(() => LKENodePoolRequestBodySchema).exactOptional(),
-              count: z.lazy(() => LKENodePoolSchema).exactOptional(),
+              autoscaler: LKENodePoolRequestBodyAutoscalerSchema.exactOptional(),
+              count: LKENodePoolCountSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -17668,9 +17784,9 @@ export const getLkeVersionsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LKEVersionSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -17731,9 +17847,9 @@ export const getLongviewClientsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LongviewClientSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -17956,9 +18072,9 @@ export const getLongviewSubscriptionsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LongviewSubscriptionSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -18017,9 +18133,9 @@ export const getManagedContactsRoute = createRoute({
           schema: z
             .object({
               data: z.array(ManagedContactSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -18199,9 +18315,9 @@ export const getManagedCredentialsRoute = createRoute({
           schema: z
             .object({
               data: z.array(ManagedCredentialSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -18526,9 +18642,9 @@ export const getManagedIssuesRoute = createRoute({
           schema: z
             .object({
               data: z.array(ManagedIssueSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -18597,9 +18713,9 @@ export const getManagedLinodeSettingsRoute = createRoute({
           schema: z
             .object({
               data: z.array(ManagedLinodeSettingsSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -18713,9 +18829,9 @@ export const getManagedServicesRoute = createRoute({
           schema: z
             .object({
               data: z.array(ManagedServiceSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19039,9 +19155,9 @@ export const getNetworkingFirewallsRoute = createRoute({
           schema: z
             .object({
               data: z.array(FirewallSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19221,7 +19337,7 @@ export const putNetworkingFirewallsFirewallIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              label: z.lazy(() => FirewallSchema).exactOptional(),
+              label: FirewallLabelSchema.exactOptional(),
               status: z
                 .enum(['enabled', 'disabled'])
                 .exactOptional()
@@ -19231,7 +19347,7 @@ export const putNetworkingFirewallsFirewallIdRoute = createRoute({
                   example: 'enabled',
                   'x-linode-cli-display': 3,
                 }),
-              tags: z.lazy(() => FirewallSchema).exactOptional(),
+              tags: FirewallTagsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19331,9 +19447,9 @@ export const getNetworkingFirewallsFirewallIdDevicesRoute = createRoute({
           schema: z
             .object({
               data: z.array(FirewallDevicesSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19378,23 +19494,20 @@ export const postNetworkingFirewallsFirewallIdDevicesRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: (() => {
-            const Schema = z.lazy(() => FirewallDevicesSchema)
-            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-              ;((ctx) => {
-                const val = ctx.value
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'id')) {
-                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
-                  }
-                  if (!Object.hasOwn(val, 'type')) {
-                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
-                  }
+          schema: FirewallDevicesEntitySchema.and(
+            z.looseObject({}).openapi({ required: ['id', 'type'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'id')) {
+                  ctx.addIssue({ code: 'custom' })
                 }
-              })(ctx)
-              return val
-            }, Schema)
-          })().openapi({ required: ['id', 'type'] }),
+                if (!Object.hasOwn(val, 'type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['id', 'type'] }),
         },
       },
     },
@@ -19565,7 +19678,7 @@ export const getNetworkingFirewallsFirewallIdRulesRoute = createRoute({
   responses: {
     200: {
       description: 'The requested Firewall Rules.',
-      content: { 'application/json': { schema: z.lazy(() => FirewallSchema) } },
+      content: { 'application/json': { schema: FirewallRulesSchema } },
     },
     default: ErrorResponseResponse,
   },
@@ -19607,59 +19720,46 @@ export const putNetworkingFirewallsFirewallIdRulesRoute = createRoute({
       description: 'The Firewall Rules information to update.',
       content: {
         'application/json': {
-          schema: (() => {
-            const Schema = z.lazy(() => FirewallSchema)
-            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-              ;((ctx) => {
-                const val = ctx.value
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (Object.hasOwn(val, 'inbound')) {
-                    const Schema = z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'action')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                          if (!Object.hasOwn(val, 'addresses')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                          if (!Object.hasOwn(val, 'protocol')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['action', 'addresses', 'protocol'] })
-                    if (!Schema.safeParse(Reflect.get(val, 'inbound')).success) {
-                      ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          schema: FirewallRulesSchema.and(
+            z
+              .object({
+                inbound: z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'action')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'addresses')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'protocol')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                  if (Object.hasOwn(val, 'outbound')) {
-                    const Schema = z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'action')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                          if (!Object.hasOwn(val, 'addresses')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                          if (!Object.hasOwn(val, 'protocol')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['action', 'addresses', 'protocol'] })
-                    if (!Schema.safeParse(Reflect.get(val, 'outbound')).success) {
-                      ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  })
+                  .exactOptional()
+                  .openapi({ required: ['action', 'addresses', 'protocol'] }),
+                outbound: z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'action')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'addresses')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'protocol')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                }
-              })(ctx)
-              return val
-            }, Schema)
-          })(),
+                  })
+                  .exactOptional()
+                  .openapi({ required: ['action', 'addresses', 'protocol'] }),
+              })
+              .openapi({ required: [] }),
+          ),
         },
       },
     },
@@ -19667,7 +19767,7 @@ export const putNetworkingFirewallsFirewallIdRulesRoute = createRoute({
   responses: {
     200: {
       description: 'Firewall Rules updated successfully.',
-      content: { 'application/json': { schema: z.lazy(() => FirewallSchema) } },
+      content: { 'application/json': { schema: FirewallRulesSchema } },
     },
     default: ErrorResponseResponse,
   },
@@ -19691,9 +19791,9 @@ export const getNetworkingIpsRoute = createRoute({
           schema: z
             .object({
               data: z.array(IPAddressSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19961,9 +20061,9 @@ export const getNetworkingIpv6PoolsRoute = createRoute({
           schema: z
             .object({
               data: z.array(IPv6PoolSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -19991,9 +20091,9 @@ export const getNetworkingIpv6RangesRoute = createRoute({
           schema: z
             .object({
               data: z.array(IPv6RangeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -20161,9 +20261,9 @@ export const getNetworkingVlansRoute = createRoute({
           schema: z
             .object({
               data: z.array(VlansSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -20191,9 +20291,9 @@ export const getNodebalancersRoute = createRoute({
           schema: z
             .object({
               data: z.array(NodeBalancerSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -20219,32 +20319,32 @@ export const postNodebalancersRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              client_conn_throttle: z.lazy(() => NodeBalancerSchema).exactOptional(),
+              client_conn_throttle: NodeBalancerClientConnThrottleSchema.exactOptional(),
               configs: z
                 .array(
                   z
                     .object({
-                      algorithm: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_attempts: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_body: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_interval: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_passive: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_path: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      check_timeout: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      cipher_suite: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
+                      algorithm: NodeBalancerConfigAlgorithmSchema.exactOptional(),
+                      check: NodeBalancerConfigCheckSchema.exactOptional(),
+                      check_attempts: NodeBalancerConfigCheckAttemptsSchema.exactOptional(),
+                      check_body: NodeBalancerConfigCheckBodySchema.exactOptional(),
+                      check_interval: NodeBalancerConfigCheckIntervalSchema.exactOptional(),
+                      check_passive: NodeBalancerConfigCheckPassiveSchema.exactOptional(),
+                      check_path: NodeBalancerConfigCheckPathSchema.exactOptional(),
+                      check_timeout: NodeBalancerConfigCheckTimeoutSchema.exactOptional(),
+                      cipher_suite: NodeBalancerConfigCipherSuiteSchema.exactOptional(),
                       nodes: z
                         .array(NodeBalancerNodeSchema)
                         .exactOptional()
                         .openapi({
                           description: 'The NodeBalancer Node(s) that serve this Config.\n',
                         }),
-                      port: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      protocol: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      proxy_protocol: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      ssl_cert: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      ssl_key: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
-                      stickiness: z.lazy(() => NodeBalancerConfigSchema).exactOptional(),
+                      port: NodeBalancerConfigPortSchema.exactOptional(),
+                      protocol: NodeBalancerConfigProtocolSchema.exactOptional(),
+                      proxy_protocol: NodeBalancerConfigProxyProtocolSchema.exactOptional(),
+                      ssl_cert: NodeBalancerConfigSslCertSchema.exactOptional(),
+                      ssl_key: NodeBalancerConfigSslKeySchema.exactOptional(),
+                      stickiness: NodeBalancerConfigStickinessSchema.exactOptional(),
                     })
                     .openapi({
                       description:
@@ -20258,7 +20358,7 @@ export const postNodebalancersRoute = createRoute({
                     'The port Config(s) to create for this NodeBalancer.\n\nEach Config must have a unique port and at least one Node.\n',
                   required: ['nodes'],
                 }),
-              label: z.lazy(() => NodeBalancerSchema).exactOptional(),
+              label: NodeBalancerLabelSchema.exactOptional(),
               region: z
                 .string()
                 .openapi({
@@ -20448,9 +20548,9 @@ export const getNodebalancersNodeBalancerIdConfigsRoute = createRoute({
           schema: z
             .object({
               data: z.array(NodeBalancerConfigSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -20748,9 +20848,9 @@ export const getNodebalancersNodeBalancerIdConfigsConfigIdNodesRoute = createRou
           schema: z
             .object({
               data: z.array(NodeBalancerNodeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -21145,7 +21245,7 @@ export const postNodebalancersNodeBalancerIdConfigsConfigIdRebuildRoute = create
                   .array(
                     z
                       .object({
-                        address: z.lazy(() => NodeBalancerNodeSchema).exactOptional(),
+                        address: NodeBalancerNodeAddressSchema.exactOptional(),
                         id: z
                           .int()
                           .exactOptional()
@@ -21153,9 +21253,9 @@ export const postNodebalancersNodeBalancerIdConfigsConfigIdRebuildRoute = create
                             description: 'The unique ID of the Node to update.',
                             example: 54321,
                           }),
-                        label: z.lazy(() => NodeBalancerNodeSchema).exactOptional(),
-                        mode: z.lazy(() => NodeBalancerNodeSchema).exactOptional(),
-                        weight: z.lazy(() => NodeBalancerNodeSchema).exactOptional(),
+                        label: NodeBalancerNodeLabelSchema.exactOptional(),
+                        mode: NodeBalancerNodeModeSchema.exactOptional(),
+                        weight: NodeBalancerNodeWeightSchema.exactOptional(),
                       })
                       .openapi({
                         description: 'NodeBalancer Node request object including ID.',
@@ -21239,9 +21339,9 @@ export const getObjectStorageBucketsRoute = createRoute({
           schema: z
             .object({
               data: z.array(ObjectStorageBucketSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -21349,9 +21449,9 @@ export const getObjectStorageBucketsClusterIdRoute = createRoute({
           schema: z
             .object({
               data: z.array(ObjectStorageBucketSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -22178,9 +22278,9 @@ export const getObjectStorageClustersRoute = createRoute({
           schema: z
             .object({
               data: z.array(ObjectStorageClusterSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -22239,9 +22339,9 @@ export const getObjectStorageKeysRoute = createRoute({
           schema: z
             .object({
               data: z.array(ObjectStorageKeySchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -22516,9 +22616,9 @@ export const getProfileAppsRoute = createRoute({
           schema: z
             .object({
               data: z.array(AuthorizedAppSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -22625,9 +22725,9 @@ export const getProfileDevicesRoute = createRoute({
           schema: z
             .object({
               data: z.array(TrustedDeviceSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -22758,9 +22858,9 @@ export const getProfileLoginsRoute = createRoute({
           schema: z
             .object({
               data: z.array(LoginSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23038,9 +23138,9 @@ export const getProfileSshkeysRoute = createRoute({
           schema: z
             .object({
               data: z.array(SSHKeySchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23145,9 +23245,7 @@ export const putProfileSshkeysSshKeyIdRoute = createRoute({
       description: 'The fields to update.\n',
       content: {
         'application/json': {
-          schema: z
-            .object({ label: z.lazy(() => SSHKeySchema).exactOptional() })
-            .openapi({ required: [] }),
+          schema: z.object({ label: SSHKeyLabelSchema.exactOptional() }).openapi({ required: [] }),
         },
       },
       required: true,
@@ -23333,9 +23431,9 @@ export const getProfileTokensRoute = createRoute({
           schema: z
             .object({
               data: z.array(PersonalAccessTokenSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23369,7 +23467,7 @@ export const postProfileTokensRoute = createRoute({
                     'When this token should be valid until.  If omitted, the new token will be valid until it is manually revoked.\n',
                   example: null,
                 }),
-              label: z.lazy(() => PersonalAccessTokenSchema).exactOptional(),
+              label: PersonalAccessTokenLabelSchema.exactOptional(),
               scopes: z
                 .string()
                 .exactOptional()
@@ -23537,9 +23635,9 @@ export const getRegionsRoute = createRoute({
           schema: z
             .object({
               data: z.array(RegionSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23597,9 +23695,9 @@ export const getSupportTicketsRoute = createRoute({
           schema: z
             .object({
               data: z.array(SupportTicketSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23813,9 +23911,9 @@ export const getSupportTicketsTicketIdRepliesRoute = createRoute({
           schema: z
             .object({
               data: z.array(SupportTicketReplySchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -23904,9 +24002,9 @@ export const getTagsRoute = createRoute({
           schema: z
             .object({
               data: z.array(TagSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -24026,9 +24124,9 @@ export const getTagsLabelRoute = createRoute({
                     .openapi({ required: [] }),
                 )
                 .exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -24082,9 +24180,9 @@ export const getVolumesRoute = createRoute({
           schema: z
             .object({
               data: z.array(VolumeSchema).exactOptional(),
-              page: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              pages: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
-              results: z.lazy(() => PaginationEnvelopeSchema).exactOptional(),
+              page: PaginationEnvelopePageSchema.exactOptional(),
+              pages: PaginationEnvelopePagesSchema.exactOptional(),
+              results: PaginationEnvelopeResultsSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -24429,7 +24527,7 @@ export const postVolumesVolumeIdCloneRoute = createRoute({
       description: 'The requested state your Volume will be cloned into.',
       content: {
         'application/json': {
-          schema: z.object({ label: z.lazy(() => VolumeSchema) }).openapi({ required: ['label'] }),
+          schema: z.object({ label: VolumeLabelSchema }).openapi({ required: ['label'] }),
         },
       },
       required: true,
@@ -24520,7 +24618,7 @@ export const postVolumesVolumeIdResizeRoute = createRoute({
       description: 'The requested size to increase your Volume to.',
       content: {
         'application/json': {
-          schema: z.object({ size: z.lazy(() => VolumeSchema) }).openapi({ required: ['size'] }),
+          schema: z.object({ size: VolumeSizeSchema }).openapi({ required: ['size'] }),
         },
       },
       required: true,

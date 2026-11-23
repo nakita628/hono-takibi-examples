@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteNetworkInterfacePermissionRoute,
   postActionDeleteNetworkInterfacePermissionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteNetworkInterfacePermissionRouteHandler: RouteHandler<
+  typeof getActionDeleteNetworkInterfacePermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteNetworkInterfacePermissionHandler = app
-  .openapi(getActionDeleteNetworkInterfacePermissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteNetworkInterfacePermissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteNetworkInterfacePermissionRouteHandler: RouteHandler<
+  typeof postActionDeleteNetworkInterfacePermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

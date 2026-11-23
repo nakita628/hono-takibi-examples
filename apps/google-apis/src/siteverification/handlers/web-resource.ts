@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebResourceIdRoute,
   getWebResourceIdRoute,
   getWebResourceRoute,
@@ -8,24 +8,34 @@ import {
   putWebResourceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebResourceRouteHandler: RouteHandler<typeof getWebResourceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webResourceHandler = app
-  .openapi(getWebResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWebResourceRouteHandler: RouteHandler<typeof postWebResourceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebResourceIdRouteHandler: RouteHandler<
+  typeof deleteWebResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebResourceIdRouteHandler: RouteHandler<typeof getWebResourceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebResourceIdRouteHandler: RouteHandler<typeof patchWebResourceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebResourceIdRouteHandler: RouteHandler<typeof putWebResourceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

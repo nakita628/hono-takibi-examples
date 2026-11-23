@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAppRunnerCreateServiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAppRunnerCreateServiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAppRunnerCreateServiceHandler = app.openapi(
-  postXAmzTargetAppRunnerCreateServiceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAppRunnerCreateServiceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAppRunnerCreateServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetACMPrivateCAListTagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetACMPrivateCAListTagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAcmPrivateCaListTagsHandler = app.openapi(
-  postXAmzTargetACMPrivateCAListTagsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetACMPrivateCAListTagsRouteHandler: RouteHandler<
+  typeof postXAmzTargetACMPrivateCAListTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

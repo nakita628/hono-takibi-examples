@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionTestFailoverRoute, postActionTestFailoverRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionTestFailoverRoute, postActionTestFailoverRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionTestFailoverRouteHandler: RouteHandler<
+  typeof getActionTestFailoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionTestFailoverHandler = app
-  .openapi(getActionTestFailoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionTestFailoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionTestFailoverRouteHandler: RouteHandler<
+  typeof postActionTestFailoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

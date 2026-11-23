@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getToolresultsV1beta3NameAccessibilityClustersRoute,
   getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersClusterIdRoute,
   getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersRoute,
@@ -31,156 +31,176 @@ import {
   postToolresultsV1beta3ProjectsProjectIdInitializeSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const toolresultsHandler = app
-  .openapi(getToolresultsV1beta3ProjectsProjectIdHistoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolresultsV1beta3ProjectsProjectIdHistoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersClusterIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsEnvironmentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesBatchCreateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesTestCaseIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdThumbnailsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPublishXunitXmlFilesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getToolresultsV1beta3ProjectsProjectIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolresultsV1beta3ProjectsProjectIdInitializeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolresultsV1beta3NameAccessibilityClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersClusterIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRouteHandler: RouteHandler<
+  typeof patchToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfMetricsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesBatchCreateRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPerfSampleSeriesSampleSeriesIdSamplesBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesTestCaseIdRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdTestCasesTestCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdThumbnailsRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdThumbnailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPublishXunitXmlFilesRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdHistoriesHistoryIdExecutionsExecutionIdStepsStepIdPublishXunitXmlFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3ProjectsProjectIdSettingsRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3ProjectsProjectIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolresultsV1beta3ProjectsProjectIdInitializeSettingsRouteHandler: RouteHandler<
+  typeof postToolresultsV1beta3ProjectsProjectIdInitializeSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolresultsV1beta3NameAccessibilityClustersRouteHandler: RouteHandler<
+  typeof getToolresultsV1beta3NameAccessibilityClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

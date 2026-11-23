@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/vhseker/3.0.0/openapi.yaml',
   output: './src/vhseker/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vhseker/types.ts' },
   client: { output: './src/vhseker/client.ts', baseUrl: '/' },
   rpc: { output: './src/vhseker/rpc.ts', parseResponse: true },

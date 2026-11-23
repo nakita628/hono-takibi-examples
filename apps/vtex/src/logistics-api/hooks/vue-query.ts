@@ -19,14 +19,14 @@ export function getApiKey() {
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames',
     keyArgs,
   ] as const
 }
@@ -34,7 +34,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -45,7 +45,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+        client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
           'time-frames'
         ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
       )
@@ -59,7 +59,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
           >
         >
       >
@@ -69,7 +69,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
     >
   >,
   options?: {
@@ -81,7 +81,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
                   >
                 >
               >
@@ -94,7 +94,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
                   >
                 >
               >
@@ -119,7 +119,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+              (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
             >
           >
         >
@@ -138,7 +138,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
           ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
@@ -151,14 +151,14 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTimeQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames/:windowDayF:windowStartTimeT:windowEndTime',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames/:windowDayF{windowStartTime}T{windowEndTime}',
     keyArgs,
   ] as const
 }
@@ -166,7 +166,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTimeQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -179,9 +179,9 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+        client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
           'time-frames'
-        ][':windowDayF:windowStartTimeT:windowEndTime'].$get(toValue(args), {
+        ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -196,7 +196,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
           >
         >
       >
@@ -206,7 +206,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+      (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
     >
   >,
   options?: {
@@ -218,7 +218,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
                   >
                 >
               >
@@ -231,7 +231,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
                   >
                 >
               >
@@ -256,7 +256,7 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+              (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
             >
           >
         >
@@ -277,9 +277,9 @@ export function useApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
-          ][':windowDayF:windowStartTimeT:windowEndTime'].$get(toValue(args), {
+          ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

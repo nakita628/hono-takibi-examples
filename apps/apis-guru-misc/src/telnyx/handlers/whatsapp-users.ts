@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWhatsappUsersWhatsappUserIdRoute,
   patchWhatsappUsersWhatsappUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWhatsappUsersWhatsappUserIdRouteHandler: RouteHandler<
+  typeof getWhatsappUsersWhatsappUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const whatsappUsersHandler = app
-  .openapi(getWhatsappUsersWhatsappUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWhatsappUsersWhatsappUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchWhatsappUsersWhatsappUserIdRouteHandler: RouteHandler<
+  typeof patchWhatsappUsersWhatsappUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

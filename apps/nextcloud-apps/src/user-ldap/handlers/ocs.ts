@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute,
   getOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute,
   postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDCopyRoute,
@@ -10,30 +10,50 @@ import {
   putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOcsV2PhpAppsUserLdapApiV1ConfigRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsUserLdapApiV1ConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(postOcsV2PhpAppsUserLdapApiV1ConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsUserLdapApiV1WizardConfigIDWizardActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsUserLdapApiV1WizardClearMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDTestRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDCopyRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsUserLdapApiV1ConfigConfigIDCopyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsUserLdapApiV1WizardConfigIDWizardActionRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsUserLdapApiV1WizardConfigIDWizardActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsUserLdapApiV1WizardClearMappingsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsUserLdapApiV1WizardClearMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

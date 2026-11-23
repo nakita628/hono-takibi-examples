@@ -60747,7 +60747,7 @@ curl https://gitlab.com/api/v4/api/v4/groups \
   -F 'experiment_features_enabled=true' \
   -F 'model_prompt_cache_enabled=true' \
   -F 'foundational_agents_statuses=[{"reference":"string","enabled":true}]' \
-  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}'
+  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}'
 ```
 
 `POST /api/v4/groups`
@@ -60821,6 +60821,7 @@ ai_settings_attributes:
   ai_catalog_restricted_to_group_hierarchy: true
   web_search_enabled: true
   duo_workflow_file_attachments_enabled: true
+  external_agent_audit_event_content_enabled: true
   foundational_agents_default_enabled: true
   prompt_injection_protection_level: no_checks
   include_recommended_allowed: true
@@ -60899,6 +60900,7 @@ ai_settings_attributes:
 |» » ai_catalog_restricted_to_group_hierarchy|body|boolean \| null|false|Confine the AI Catalog to items within this top-level group hierarchy. Can only be set on top-level groups.|
 |» » web_search_enabled|body|boolean \| null|false|Allow web search in GitLab Duo Chat for this top-level group. Can only be set on top-level groups.|
 |» » duo_workflow_file_attachments_enabled|body|boolean \| null|false|Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.|
+|» » external_agent_audit_event_content_enabled|body|boolean \| null|false|Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.|
 |» » foundational_agents_default_enabled|body|boolean \| null|false|Whether new foundational agents are enabled by default|
 |» » prompt_injection_protection_level|body|string \| null|false|Prompt injection protection level. One of `no_checks`, `log_only` or `interrupt`|
 |» » include_recommended_allowed|body|boolean \| null|false|Whether to include recommended domains in the network access allowlist|
@@ -61836,6 +61838,7 @@ Retrieves a specified group by ID or path. Public groups can be retrieved withou
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -61929,7 +61932,7 @@ curl https://gitlab.com/api/v4/api/v4/groups/string \
   -F 'experiment_features_enabled=true' \
   -F 'model_prompt_cache_enabled=true' \
   -F 'foundational_agents_statuses=[{"reference":"string","enabled":true}]' \
-  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}' \
+  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}' \
   -F 'prevent_sharing_groups_outside_hierarchy=true' \
   -F 'step_up_auth_required_oauth_provider=string' \
   -F 'lock_math_rendering_limits_enabled=true' \
@@ -62041,6 +62044,7 @@ ai_settings_attributes:
   ai_catalog_restricted_to_group_hierarchy: true
   web_search_enabled: true
   duo_workflow_file_attachments_enabled: true
+  external_agent_audit_event_content_enabled: true
   foundational_agents_default_enabled: true
   prompt_injection_protection_level: no_checks
   include_recommended_allowed: true
@@ -62168,6 +62172,7 @@ create_code_review_flow_consent: true
 |» » ai_catalog_restricted_to_group_hierarchy|body|boolean \| null|false|Confine the AI Catalog to items within this top-level group hierarchy. Can only be set on top-level groups.|
 |» » web_search_enabled|body|boolean \| null|false|Allow web search in GitLab Duo Chat for this top-level group. Can only be set on top-level groups.|
 |» » duo_workflow_file_attachments_enabled|body|boolean \| null|false|Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.|
+|» » external_agent_audit_event_content_enabled|body|boolean \| null|false|Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.|
 |» » foundational_agents_default_enabled|body|boolean \| null|false|Whether new foundational agents are enabled by default|
 |» » prompt_injection_protection_level|body|string \| null|false|Prompt injection protection level. One of `no_checks`, `log_only` or `interrupt`|
 |» » include_recommended_allowed|body|boolean \| null|false|Whether to include recommended domains in the network access allowlist|
@@ -63007,6 +63012,7 @@ create_code_review_flow_consent: true
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -65669,6 +65675,7 @@ Transfers a specified project to another group. Administrators only. To transfer
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -66668,6 +66675,7 @@ Transfers a group to another organization asynchronously. Requires the Owner rol
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -67485,6 +67493,7 @@ Adds a group to a group.
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -216500,6 +216509,7 @@ http, oauth2, apiKey
   "prompt_injection_protection_level": "no_checks",
   "web_search_enabled": false,
   "duo_workflow_file_attachments_enabled": false,
+  "external_agent_audit_event_content_enabled": true,
   "include_recommended_allowed": false,
   "allow_all_unix_sockets": false,
   "allow_project_extension": true,
@@ -216523,6 +216533,7 @@ http, oauth2, apiKey
 |prompt_injection_protection_level|string|false|none|none|
 |web_search_enabled|boolean|false|none|none|
 |duo_workflow_file_attachments_enabled|boolean|false|none|none|
+|external_agent_audit_event_content_enabled|boolean|false|none|none|
 |include_recommended_allowed|boolean|false|none|none|
 |allow_all_unix_sockets|boolean|false|none|none|
 |allow_project_extension|boolean|false|none|none|
@@ -217252,6 +217263,7 @@ http, oauth2, apiKey
     "prompt_injection_protection_level": "no_checks",
     "web_search_enabled": false,
     "duo_workflow_file_attachments_enabled": false,
+    "external_agent_audit_event_content_enabled": true,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -241736,6 +241748,7 @@ http, oauth2, apiKey
     "ai_catalog_restricted_to_group_hierarchy": true,
     "web_search_enabled": true,
     "duo_workflow_file_attachments_enabled": true,
+    "external_agent_audit_event_content_enabled": true,
     "foundational_agents_default_enabled": true,
     "prompt_injection_protection_level": "no_checks",
     "include_recommended_allowed": true,
@@ -241916,6 +241929,7 @@ http, oauth2, apiKey
     "ai_catalog_restricted_to_group_hierarchy": true,
     "web_search_enabled": true,
     "duo_workflow_file_attachments_enabled": true,
+    "external_agent_audit_event_content_enabled": true,
     "foundational_agents_default_enabled": true,
     "prompt_injection_protection_level": "no_checks",
     "include_recommended_allowed": true,

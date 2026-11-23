@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20150824DeleteRegexMatchSetHandler = app.openapi(
-  postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

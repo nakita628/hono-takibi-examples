@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLangLangRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLangLangRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const langHandler = app.openapi(getLangLangRoute, (c) => {
+export const getLangLangRouteHandler: RouteHandler<typeof getLangLangRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

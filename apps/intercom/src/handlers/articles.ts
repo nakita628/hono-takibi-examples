@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteArticlesArticleIdRoute,
   deleteArticlesArticleIdTagsIdRoute,
   getArticlesArticleIdRoute,
@@ -15,45 +15,76 @@ import {
   putArticlesIdDraftRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getArticlesRouteHandler: RouteHandler<typeof getArticlesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const articlesHandler = app
-  .openapi(getArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArticlesArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putArticlesArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteArticlesArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArticlesIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putArticlesIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postArticlesIdDraftPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postArticlesArticleIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteArticlesArticleIdTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArticlesArticleIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArticlesArticleIdVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArticlesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postArticlesRouteHandler: RouteHandler<typeof postArticlesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArticlesArticleIdRouteHandler: RouteHandler<
+  typeof getArticlesArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putArticlesArticleIdRouteHandler: RouteHandler<
+  typeof putArticlesArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteArticlesArticleIdRouteHandler: RouteHandler<
+  typeof deleteArticlesArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArticlesIdDraftRouteHandler: RouteHandler<typeof getArticlesIdDraftRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putArticlesIdDraftRouteHandler: RouteHandler<typeof putArticlesIdDraftRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postArticlesIdDraftPublishRouteHandler: RouteHandler<
+  typeof postArticlesIdDraftPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postArticlesArticleIdTagsRouteHandler: RouteHandler<
+  typeof postArticlesArticleIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteArticlesArticleIdTagsIdRouteHandler: RouteHandler<
+  typeof deleteArticlesArticleIdTagsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArticlesArticleIdVersionsRouteHandler: RouteHandler<
+  typeof getArticlesArticleIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArticlesArticleIdVersionsIdRouteHandler: RouteHandler<
+  typeof getArticlesArticleIdVersionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArticlesSearchRouteHandler: RouteHandler<typeof getArticlesSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

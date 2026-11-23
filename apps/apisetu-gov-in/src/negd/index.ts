@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { govidHandler } from './handlers'
+import { postGovidCertificateRoute } from './routes'
+import { postGovidCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', govidHandler)
+export const api = app.openapi(postGovidCertificateRoute, postGovidCertificateRouteHandler)
 
 export default app

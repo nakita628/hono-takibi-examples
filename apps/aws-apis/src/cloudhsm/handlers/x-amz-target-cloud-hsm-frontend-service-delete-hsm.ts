@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCloudHsmFrontendServiceDeleteHsmHandler = app.openapi(
-  postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCloudHsmFrontendServiceDeleteHsmRouteHandler: RouteHandler<
+  typeof postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

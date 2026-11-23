@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSecretsmanagerStopReplicationToReplicaHandler = app.openapi(
-  postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSecretsmanagerStopReplicationToReplicaRouteHandler: RouteHandler<
+  typeof postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

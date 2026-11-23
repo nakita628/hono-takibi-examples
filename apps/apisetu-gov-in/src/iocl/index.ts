@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { lpgsvHandler, lpgtvHandler } from './handlers'
+import { postLpgsvCertificateRoute, postLpgtvCertificateRoute } from './routes'
+import { postLpgsvCertificateRouteHandler, postLpgtvCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', lpgsvHandler).route('/', lpgtvHandler)
+export const api = app
+  .openapi(postLpgsvCertificateRoute, postLpgsvCertificateRouteHandler)
+  .openapi(postLpgtvCertificateRoute, postLpgtvCertificateRouteHandler)
 
 export default app

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCollectionEndsWithStringRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCollectionEndsWithStringRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const collectionEndsWithStringHandler = app.openapi(
-  postCollectionEndsWithStringRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postCollectionEndsWithStringRouteHandler: RouteHandler<
+  typeof postCollectionEndsWithStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

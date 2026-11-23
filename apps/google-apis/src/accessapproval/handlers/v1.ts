@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1NameRoute,
   getV1ParentApprovalRequestsRoute,
@@ -9,27 +9,38 @@ import {
   postV1NameInvalidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameDismissRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameInvalidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentApprovalRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameApproveRouteHandler: RouteHandler<typeof postV1NameApproveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameDismissRouteHandler: RouteHandler<typeof postV1NameDismissRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameInvalidateRouteHandler: RouteHandler<
+  typeof postV1NameInvalidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentApprovalRequestsRouteHandler: RouteHandler<
+  typeof getV1ParentApprovalRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

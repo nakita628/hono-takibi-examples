@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putInvalidateTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putInvalidateTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const invalidateTokenHandler = app.openapi(putInvalidateTokenRoute, (c) => {
+export const putInvalidateTokenRouteHandler: RouteHandler<typeof putInvalidateTokenRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

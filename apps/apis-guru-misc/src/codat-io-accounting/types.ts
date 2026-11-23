@@ -1,21 +1,21 @@
+type BankAccountBankAccountRef = { id?: string | undefined; name?: string | undefined }
+type TransferTransferAccountCurrency = string
+type BillPaymentBillPaymentLineLinkCurrencyRate = number | null
 type DateTime = string
+type DirectCostTrackingInvoiceTo = { dataType?: string | undefined; id?: string | undefined }
+type AccountTransactionAccountTransactionLine = {
+  amount?: number | undefined
+  description?: (string | null) | undefined
+  recordRef?: DirectCostTrackingInvoiceTo | undefined
+}
 type Metadata = { isDeleted?: (boolean | null) | undefined }
 type AccountTransaction = {
-  bankAccountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  bankAccountRef?: BankAccountBankAccountRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   date?: DateTime | undefined
   id?: string | undefined
-  lines?:
-    | (
-        | {
-            amount?: number | undefined
-            description?: (string | null) | undefined
-            recordRef?: { dataType?: string | undefined; id?: string | undefined } | undefined
-          }[]
-        | null
-      )
-    | undefined
+  lines?: (AccountTransactionAccountTransactionLine[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
   status?: 'Unknown' | 'Unreconciled' | 'Reconciled' | 'Void' | undefined
@@ -44,7 +44,7 @@ type BankAccount = {
   accountType?: 'Unknown' | 'Credit' | 'Debit' | undefined
   availableBalance?: (number | null) | undefined
   balance?: (number | null) | undefined
-  currency?: string | undefined
+  currency?: TransferTransferAccountCurrency | undefined
   iBan?: (string | null) | undefined
   id?: string | undefined
   institution?: (string | null) | undefined
@@ -62,45 +62,41 @@ type BankAccounts = {
   pageSize: number
   totalResults: number
 }
+type BankTransactionsBankTransactionType =
+  | 'Unknown'
+  | 'Credit'
+  | 'Debit'
+  | 'Int'
+  | 'Div'
+  | 'Fee'
+  | 'SerChg'
+  | 'Dep'
+  | 'Atm'
+  | 'Pos'
+  | 'Xfer'
+  | 'Check'
+  | 'Payment'
+  | 'Cash'
+  | 'DirectDep'
+  | 'DirectDebit'
+  | 'RepeatPmt'
+  | 'Other'
+type BankTransactionsBankTransactionLine = {
+  amount?: number | undefined
+  balance?: number | undefined
+  clearedOnDate?: DateTime | undefined
+  counterparty?: (string | null) | undefined
+  description?: (string | null) | undefined
+  id?: string | undefined
+  reconciled?: boolean | undefined
+  reference?: (string | null) | undefined
+  transactionType?: BankTransactionsBankTransactionType | undefined
+  modifiedDate?: DateTime | undefined
+  sourceModifiedDate?: DateTime | undefined
+}
 type BankTransactions = {
   accountId?: (string | null) | undefined
-  transactions?:
-    | (
-        | {
-            amount?: number | undefined
-            balance?: number | undefined
-            clearedOnDate?: DateTime | undefined
-            counterparty?: (string | null) | undefined
-            description?: (string | null) | undefined
-            id?: string | undefined
-            reconciled?: boolean | undefined
-            reference?: (string | null) | undefined
-            transactionType?:
-              | 'Unknown'
-              | 'Credit'
-              | 'Debit'
-              | 'Int'
-              | 'Div'
-              | 'Fee'
-              | 'SerChg'
-              | 'Dep'
-              | 'Atm'
-              | 'Pos'
-              | 'Xfer'
-              | 'Check'
-              | 'Payment'
-              | 'Cash'
-              | 'DirectDep'
-              | 'DirectDebit'
-              | 'RepeatPmt'
-              | 'Other'
-              | undefined
-            modifiedDate?: DateTime | undefined
-            sourceModifiedDate?: DateTime | undefined
-          }[]
-        | null
-      )
-    | undefined
+  transactions?: (BankTransactionsBankTransactionLine[] | null) | undefined
 }
 type BankTransactionsResponse = {
   results?: BankTransactions[] | undefined
@@ -120,69 +116,69 @@ type Attachment = {
   sourceModifiedDate?: DateTime | undefined
 }
 type AttachmentsDataset = { attachments?: (Attachment[] | null) | undefined }
+type TransferAllOf0ContactRef = { dataType?: (string | null) | undefined; id: string }
+type AccountAccountRef = { id?: string | undefined; name?: string | undefined }
+type ItemItemRef = { id: string; name?: (string | null) | undefined }
+type TaxRateTaxRateRef = {
+  effectiveTaxRate?: number | undefined
+  id?: string | undefined
+  name?: string | undefined
+}
+type DirectCostTracking = {
+  invoiceTo?: DirectCostTrackingInvoiceTo | undefined
+  recordRefs: DirectCostTrackingInvoiceTo[]
+}
+type TrackingCategoryTrackingCategoryRef = { id: string; name?: (string | null) | undefined }
+type DirectCostDirectCostLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  tracking?: DirectCostTracking | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
+type BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment = {
+  accountRef?: AccountAccountRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  id?: string | undefined
+  note?: (string | null) | undefined
+  paidOnDate?: DateTime | undefined
+  reference?: (string | null) | undefined
+  totalAmount?: number | undefined
+}
+type BillAllOf0PaymentAllocationsItems = {
+  allocation: {
+    allocatedOnDate?: DateTime | undefined
+    currency?: TransferTransferAccountCurrency | undefined
+    currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+    totalAmount?: number | undefined
+  }
+  payment: BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment
+}
+type BillAllOf0SupplementalData = {
+  content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined
+}
 type DirectCost = {
-  contactRef?: { dataType?: (string | null) | undefined; id: string } | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  contactRef?: TransferAllOf0ContactRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   id?: string | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        description?: (string | null) | undefined
-        discountAmount?: (number | null) | undefined
-        discountPercentage?: (number | null) | undefined
-        itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-        quantity: number
-        subTotal?: (number | null) | undefined
-        taxAmount?: (number | null) | undefined
-        taxRateRef?:
-          | {
-              effectiveTaxRate?: number | undefined
-              id?: string | undefined
-              name?: string | undefined
-            }
-          | undefined
-        totalAmount?: (number | null) | undefined
-        tracking?:
-          | {
-              invoiceTo?: { dataType?: string | undefined; id?: string | undefined } | undefined
-              recordRefs: { dataType?: string | undefined; id?: string | undefined }[]
-            }
-          | undefined
-        trackingCategoryRefs?:
-          | ({ id: string; name?: (string | null) | undefined }[] | null)
-          | undefined
-        unitAmount: number
-      }[]
-    | undefined
+  lineItems?: DirectCostDirectCostLineItem[] | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentAllocations?:
-    | {
-        allocation: {
-          allocatedOnDate?: DateTime | undefined
-          currency?: string | undefined
-          currencyRate?: (number | null) | undefined
-          totalAmount?: number | undefined
-        }
-        payment: {
-          accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-          currency?: string | undefined
-          currencyRate?: (number | null) | undefined
-          id?: string | undefined
-          note?: (string | null) | undefined
-          paidOnDate?: DateTime | undefined
-          reference?: (string | null) | undefined
-          totalAmount?: number | undefined
-        }
-      }[]
-    | undefined
+  paymentAllocations?: BillAllOf0PaymentAllocationsItems[] | undefined
   reference?: (string | null) | undefined
   subTotal?: number | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   taxAmount?: number | undefined
   totalAmount?: number | undefined
   modifiedDate?: DateTime | undefined
@@ -195,63 +191,33 @@ type DirectCosts = {
   pageSize: number
   totalResults: number
 }
+type DirectIncomeDirectIncomeLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
 type DirectIncome = {
-  contactRef?: { dataType?: (string | null) | undefined; id: string } | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  contactRef?: TransferAllOf0ContactRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   id?: string | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        description?: (string | null) | undefined
-        discountAmount?: (number | null) | undefined
-        discountPercentage?: (number | null) | undefined
-        itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-        quantity: number
-        subTotal?: (number | null) | undefined
-        taxAmount?: (number | null) | undefined
-        taxRateRef?:
-          | {
-              effectiveTaxRate?: number | undefined
-              id?: string | undefined
-              name?: string | undefined
-            }
-          | undefined
-        totalAmount?: (number | null) | undefined
-        trackingCategoryRefs?:
-          | ({ id: string; name?: (string | null) | undefined }[] | null)
-          | undefined
-        unitAmount: number
-      }[]
-    | undefined
+  lineItems?: DirectIncomeDirectIncomeLineItem[] | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentAllocations?:
-    | {
-        allocation: {
-          allocatedOnDate?: DateTime | undefined
-          currency?: string | undefined
-          currencyRate?: (number | null) | undefined
-          totalAmount?: number | undefined
-        }
-        payment: {
-          accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-          currency?: string | undefined
-          currencyRate?: (number | null) | undefined
-          id?: string | undefined
-          note?: (string | null) | undefined
-          paidOnDate?: DateTime | undefined
-          reference?: (string | null) | undefined
-          totalAmount?: number | undefined
-        }
-      }[]
-    | undefined
+  paymentAllocations?: BillAllOf0PaymentAllocationsItems[] | undefined
   reference?: (string | null) | undefined
   subTotal?: number | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   taxAmount?: number | undefined
   totalAmount?: number | undefined
   modifiedDate?: DateTime | undefined
@@ -264,31 +230,22 @@ type DirectIncomes = {
   pageSize: number
   totalResults: number
 }
+type TransferTransferAccount = {
+  accountRef?: AccountAccountRef | undefined
+  amount?: number | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+}
 type Transfer = {
-  contactRef?: { dataType?: (string | null) | undefined; id: string } | undefined
+  contactRef?: TransferAllOf0ContactRef | undefined
   date?: DateTime | undefined
   depositedRecordRefs?: (string[] | null) | undefined
   description?: (string | null) | undefined
-  from?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        amount?: number | undefined
-        currency?: string | undefined
-      }
-    | undefined
+  from?: TransferTransferAccount | undefined
   id?: string | undefined
   metadata?: Metadata | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
-  to?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        amount?: number | undefined
-        currency?: string | undefined
-      }
-    | undefined
-  trackingCategoryRefs?: ({ id: string; name?: (string | null) | undefined }[] | null) | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
+  to?: TransferTransferAccount | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
@@ -299,100 +256,57 @@ type Transfers = {
   pageSize: number
   totalResults: number
 }
-type PushOptionProperty = {
+type PushOptionPushOptionType =
+  | 'Array'
+  | 'Object'
+  | 'String'
+  | 'Number'
+  | 'Boolean'
+  | 'DateTime'
+  | 'File'
+  | 'MultiPart'
+type PushOptionPushOptionChoice = {
+  description?: string | undefined
+  displayName?: string | undefined
+  required?: boolean | undefined
+  type?: PushOptionPushOptionType | undefined
+  value?: string | undefined
+}
+type PushOptionPushFieldValidation = {
+  details: string
+  field?: string | undefined
+  ref?: (string | null) | undefined
+}
+type PushOptionPushValidationInfo = {
+  information?: (PushOptionPushFieldValidation[] | null) | undefined
+  warnings?: (PushOptionPushFieldValidation[] | null) | undefined
+}
+type PushOptionPushOptionProperty = {
   description: string
   displayName: string
-  options?:
-    | (
-        | {
-            description?: string | undefined
-            displayName?: string | undefined
-            required?: boolean | undefined
-            type?:
-              | 'Array'
-              | 'Object'
-              | 'String'
-              | 'Number'
-              | 'Boolean'
-              | 'DateTime'
-              | 'File'
-              | 'MultiPart'
-              | undefined
-            value?: string | undefined
-          }[]
-        | null
-      )
-    | undefined
-  properties?: ({ [x: string]: PushOptionProperty } | null) | undefined
+  options?: (PushOptionPushOptionChoice[] | null) | undefined
+  properties?: ({ [x: string]: PushOptionPushOptionProperty } | null) | undefined
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?:
-    | {
-        information?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  type: PushOptionPushOptionType
+  validation?: PushOptionPushValidationInfo | undefined
 }
 type PushOption = {
   description?: string | undefined
   displayName: string
-  options?:
-    | (
-        | {
-            description?: string | undefined
-            displayName?: string | undefined
-            required?: boolean | undefined
-            type?:
-              | 'Array'
-              | 'Object'
-              | 'String'
-              | 'Number'
-              | 'Boolean'
-              | 'DateTime'
-              | 'File'
-              | 'MultiPart'
-              | undefined
-            value?: string | undefined
-          }[]
-        | null
-      )
-    | undefined
-  properties?: ({ [x: string]: PushOptionProperty } | null) | undefined
+  options?: (PushOptionPushOptionChoice[] | null) | undefined
+  properties?: ({ [x: string]: PushOptionPushOptionProperty } | null) | undefined
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?:
-    | ({
-        information?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-      } | null)
-    | undefined
+  type: PushOptionPushOptionType
+  validation?: PushOptionPushValidationInfo | undefined
 }
+type AccountAccountStatus = 'Unknown' | 'Active' | 'Archived' | 'Pending'
+type AccountAccountType = 'Unknown' | 'Asset' | 'Expense' | 'Income' | 'Liability' | 'Equity'
 type ValidDataTypeLinks = {
   links?: (string[] | null) | undefined
   property?: (string | null) | undefined
 }
 type Account = {
-  currency?: string | undefined
+  currency?: TransferTransferAccountCurrency | undefined
   currentBalance?: (number | null) | undefined
   description?: (string | null) | undefined
   fullyQualifiedCategory?: (string | null) | undefined
@@ -402,8 +316,8 @@ type Account = {
   metadata?: Metadata | undefined
   name?: (string | null) | undefined
   nominalCode?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | 'Pending' | undefined
-  type?: 'Unknown' | 'Asset' | 'Expense' | 'Income' | 'Liability' | 'Equity' | undefined
+  status?: AccountAccountStatus | undefined
+  type?: AccountAccountType | undefined
   validDatatypeLinks?: (ValidDataTypeLinks[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
@@ -451,18 +365,34 @@ type DataType =
   | 'commerce-products'
   | 'commerce-taxComponents'
   | 'commerce-transactions'
+type PushOperationSummaryPushOperationRef = {
+  dataType?: DataType | undefined
+  id?: string | undefined
+}
+type PushOperationSummaryPushChangeType =
+  | 'Unknown'
+  | 'Created'
+  | 'Modified'
+  | 'Deleted'
+  | 'AttachmentUploaded'
+type PushOperationSummaryPushOperationChange = {
+  attachmentId?: (string | null) | undefined
+  recordRef?: PushOperationSummaryPushOperationRef | undefined
+  type?: PushOperationSummaryPushChangeType | undefined
+}
+type PushOperationSummaryPushOperationStatus = 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+type PushOperationSummaryValidationItem = {
+  itemId?: (string | null) | undefined
+  message?: (string | null) | undefined
+  validatorName?: (string | null) | undefined
+}
+type PushOperationSummaryValidation = {
+  errors?: (PushOperationSummaryValidationItem[] | null) | undefined
+  warnings?: (PushOperationSummaryValidationItem[] | null) | undefined
+}
 type CreateAccountResponse = {
   data?: Account | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -470,47 +400,15 @@ type CreateAccountResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type CreateBankAccountResponse = {
   data?: Account | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -518,47 +416,15 @@ type CreateBankAccountResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type CreateBankTransactionsResponse = {
   data?: BankTransactions | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -566,47 +432,15 @@ type CreateBankTransactionsResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateBankAccountResponse = {
   data?: BankAccount | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -614,133 +448,77 @@ type UpdateBankAccountResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type CustomerCustomerRef = { companyName?: (string | null) | undefined; id: string }
+type BillCreditNoteBillCreditNoteLineItemTrackingBilledToType =
+  | 'Unknown'
+  | 'NotApplicable'
+  | 'Customer'
+  | 'Project'
 type ProjectRef = { id: string; name?: (string | null) | undefined }
+type BillCreditNoteBillCreditNoteLineItemTracking = {
+  categoryRefs: TrackingCategoryTrackingCategoryRef[]
+  customerRef?: CustomerCustomerRef | undefined
+  isBilledTo: BillCreditNoteBillCreditNoteLineItemTrackingBilledToType
+  isRebilledTo: BillCreditNoteBillCreditNoteLineItemTrackingBilledToType
+  projectRef?: ProjectRef | undefined
+}
+type BillCreditNoteBillCreditNoteLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  tracking?: BillCreditNoteBillCreditNoteLineItemTracking | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
+type BillCreditNoteBillCreditNoteStatus =
+  | 'Unknown'
+  | 'Draft'
+  | 'Submitted'
+  | 'Paid'
+  | 'Void'
+  | 'PartiallyPaid'
+type SupplierSupplierRef = { id: string; supplierName?: (string | null) | undefined }
+type BillAllOf0WithholdingTaxItems = { amount: number; name: string }
 type BillCreditNote = {
   allocatedOnDate?: DateTime | undefined
   billCreditNoteNumber?: (string | null) | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   discountPercentage?: number | undefined
   id?: string | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: (number | null) | undefined
-            discountPercentage?: (number | null) | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity: number
-            subTotal?: (number | null) | undefined
-            taxAmount?: (number | null) | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: (number | null) | undefined
-            tracking?:
-              | {
-                  categoryRefs: { id: string; name?: (string | null) | undefined }[]
-                  customerRef?:
-                    | { companyName?: (string | null) | undefined; id: string }
-                    | undefined
-                  isBilledTo: 'Unknown' | 'NotApplicable' | 'Customer' | 'Project'
-                  isRebilledTo: 'Unknown' | 'NotApplicable' | 'Customer' | 'Project'
-                  projectRef?: ProjectRef | undefined
-                }
-              | undefined
-            trackingCategoryRefs?:
-              | ({ id: string; name?: (string | null) | undefined }[] | null)
-              | undefined
-            unitAmount: number
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (BillCreditNoteBillCreditNoteLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentAllocations?:
-    | (
-        | {
-            allocation: {
-              allocatedOnDate?: DateTime | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              totalAmount?: number | undefined
-            }
-            payment: {
-              accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              id?: string | undefined
-              note?: (string | null) | undefined
-              paidOnDate?: DateTime | undefined
-              reference?: (string | null) | undefined
-              totalAmount?: number | undefined
-            }
-          }[]
-        | null
-      )
-    | undefined
+  paymentAllocations?: (BillAllOf0PaymentAllocationsItems[] | null) | undefined
   remainingCredit?: number | undefined
-  status?: 'Unknown' | 'Draft' | 'Submitted' | 'Paid' | 'Void' | 'PartiallyPaid' | undefined
+  status?: BillCreditNoteBillCreditNoteStatus | undefined
   subTotal?: number | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
-  supplierRef?: { id: string; supplierName?: (string | null) | undefined } | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
+  supplierRef?: SupplierSupplierRef | undefined
   totalAmount?: number | undefined
   totalDiscount?: number | undefined
   totalTaxAmount?: number | undefined
-  withholdingTax?: ({ amount: number; name: string }[] | null) | undefined
+  withholdingTax?: (BillAllOf0WithholdingTaxItems[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateBillCreditNoteResponse = {
   data?: BillCreditNote | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -748,47 +526,15 @@ type CreateBillCreditNoteResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateBillCreditNoteResponse = {
   data?: BillCreditNote | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -796,95 +542,55 @@ type UpdateBillCreditNoteResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type BillPaymentBillPaymentLineLinkType =
+  | 'Unknown'
+  | 'Unlinked'
+  | 'Bill'
+  | 'Other'
+  | 'CreditNote'
+  | 'BillPayment'
+  | 'PaymentOnAccount'
+  | 'Refund'
+  | 'ManualJournal'
+  | 'Discount'
+type BillPaymentBillPaymentLineLink = {
+  amount?: (number | null) | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  id?: (string | null) | undefined
+  type: BillPaymentBillPaymentLineLinkType
+}
+type BillPaymentBillPaymentLine = {
+  allocatedOnDate?: DateTime | undefined
+  amount: number
+  links?: (BillPaymentBillPaymentLineLink[] | null) | undefined
+}
+type PaymentMethodPaymentMethodRef = { id?: string | undefined; name?: (string | null) | undefined }
 type BillPayment = {
-  accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  accountRef?: AccountAccountRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   date?: DateTime | undefined
   id?: string | undefined
-  lines?:
-    | (
-        | {
-            allocatedOnDate?: DateTime | undefined
-            amount: number
-            links?:
-              | (
-                  | {
-                      amount?: (number | null) | undefined
-                      currencyRate?: (number | null) | undefined
-                      id?: (string | null) | undefined
-                      type:
-                        | 'Unknown'
-                        | 'Unlinked'
-                        | 'Bill'
-                        | 'Other'
-                        | 'CreditNote'
-                        | 'BillPayment'
-                        | 'PaymentOnAccount'
-                        | 'Refund'
-                        | 'ManualJournal'
-                        | 'Discount'
-                    }[]
-                  | null
-                )
-              | undefined
-          }[]
-        | null
-      )
-    | undefined
+  lines?: (BillPaymentBillPaymentLine[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentMethodRef?: { id?: string | undefined; name?: (string | null) | undefined } | undefined
+  paymentMethodRef?: PaymentMethodPaymentMethodRef | undefined
   reference?: (string | null) | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
-  supplierRef?: { id: string; supplierName?: (string | null) | undefined } | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
+  supplierRef?: SupplierSupplierRef | undefined
   totalAmount?: number | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateBillPaymentResponse = {
   data?: BillPayment | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -892,46 +598,14 @@ type CreateBillPaymentResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type PushOperationSummary = {
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -939,134 +613,59 @@ type PushOperationSummary = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type BillBillLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  isDirectCost?: boolean | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  tracking?: BillCreditNoteBillCreditNoteLineItemTracking | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
+type PurchaseOrderPurchaseOrderRef = {
+  id?: string | undefined
+  purchaseOrderNumber?: (string | null) | undefined
+}
+type BillBillStatus = 'Unknown' | 'Open' | 'PartiallyPaid' | 'Paid' | 'Void' | 'Draft'
 type Bill = {
   amountDue?: (number | null) | undefined
   currency?: {} | undefined
-  currencyRate?: (number | null) | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   dueDate?: {} | undefined
   id?: string | undefined
   issueDate?: {} | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: (number | null) | undefined
-            discountPercentage?: (number | null) | undefined
-            isDirectCost?: boolean | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity: number
-            subTotal?: (number | null) | undefined
-            taxAmount?: (number | null) | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: (number | null) | undefined
-            tracking?:
-              | {
-                  categoryRefs: { id: string; name?: (string | null) | undefined }[]
-                  customerRef?:
-                    | { companyName?: (string | null) | undefined; id: string }
-                    | undefined
-                  isBilledTo: 'Unknown' | 'NotApplicable' | 'Customer' | 'Project'
-                  isRebilledTo: 'Unknown' | 'NotApplicable' | 'Customer' | 'Project'
-                  projectRef?: ProjectRef | undefined
-                }
-              | undefined
-            trackingCategoryRefs?:
-              | ({ id: string; name?: (string | null) | undefined }[] | null)
-              | undefined
-            unitAmount: number
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (BillBillLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentAllocations?:
-    | (
-        | {
-            allocation: {
-              allocatedOnDate?: DateTime | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              totalAmount?: number | undefined
-            }
-            payment: {
-              accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              id?: string | undefined
-              note?: (string | null) | undefined
-              paidOnDate?: DateTime | undefined
-              reference?: (string | null) | undefined
-              totalAmount?: number | undefined
-            }
-          }[]
-        | null
-      )
-    | undefined
-  purchaseOrderRefs?:
-    | ({ id?: string | undefined; purchaseOrderNumber?: (string | null) | undefined }[] | null)
-    | undefined
+  paymentAllocations?: (BillAllOf0PaymentAllocationsItems[] | null) | undefined
+  purchaseOrderRefs?: (PurchaseOrderPurchaseOrderRef[] | null) | undefined
   reference?: (string | null) | undefined
-  status?: 'Unknown' | 'Open' | 'PartiallyPaid' | 'Paid' | 'Void' | 'Draft' | undefined
+  status?: BillBillStatus | undefined
   subTotal?: number | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
-  supplierRef?: { id: string; supplierName?: (string | null) | undefined } | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
+  supplierRef?: SupplierSupplierRef | undefined
   taxAmount?: number | undefined
   totalAmount?: number | undefined
-  withholdingTax?: ({ amount: number; name: string }[] | null) | undefined
+  withholdingTax?: (BillAllOf0WithholdingTaxItems[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateBillResponse = {
   data?: Bill | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1074,47 +673,15 @@ type CreateBillResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateBillResponse = {
   data?: Bill | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1122,135 +689,72 @@ type UpdateBillResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type CreditNoteCreditNoteLineItemTrackingBilledToType = 'Unknown' | 'NotApplicable' | 'Project'
+type CreditNoteCreditNoteLineItemTracking = {
+  categoryRefs: TrackingCategoryTrackingCategoryRef[]
+  customerRef?: CustomerCustomerRef | undefined
+  isBilledTo: CreditNoteCreditNoteLineItemTrackingBilledToType
+  isRebilledTo: CreditNoteCreditNoteLineItemTrackingBilledToType
+  projectRef?: ProjectRef | undefined
+}
+type CreditNoteCreditNoteLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  isDirectIncome?: boolean | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  tracking?: CreditNoteCreditNoteLineItemTracking | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
+type CreditNoteCreditNoteStatus =
+  | 'Unknown'
+  | 'Draft'
+  | 'Submitted'
+  | 'Paid'
+  | 'Void'
+  | 'PartiallyPaid'
 type CreditNote = {
   additionalTaxAmount?: number | undefined
   additionalTaxPercentage?: number | undefined
   allocatedOnDate?: DateTime | undefined
   creditNoteNumber?: (string | null) | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
-  customerRef?: { companyName?: (string | null) | undefined; id: string } | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  customerRef?: CustomerCustomerRef | undefined
   discountPercentage?: number | undefined
   id?: string | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: (number | null) | undefined
-            discountPercentage?: (number | null) | undefined
-            isDirectIncome?: boolean | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity: number
-            subTotal?: (number | null) | undefined
-            taxAmount?: (number | null) | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: (number | null) | undefined
-            tracking?:
-              | {
-                  categoryRefs: { id: string; name?: (string | null) | undefined }[]
-                  customerRef?:
-                    | { companyName?: (string | null) | undefined; id: string }
-                    | undefined
-                  isBilledTo: 'Unknown' | 'NotApplicable' | 'Project'
-                  isRebilledTo: 'Unknown' | 'NotApplicable' | 'Project'
-                  projectRef?: ProjectRef | undefined
-                }
-              | undefined
-            trackingCategoryRefs?:
-              | ({ id: string; name?: (string | null) | undefined }[] | null)
-              | undefined
-            unitAmount: number
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (CreditNoteCreditNoteLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentAllocations?:
-    | (
-        | {
-            allocation: {
-              allocatedOnDate?: DateTime | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              totalAmount?: number | undefined
-            }
-            payment: {
-              accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              id?: string | undefined
-              note?: (string | null) | undefined
-              paidOnDate?: DateTime | undefined
-              reference?: (string | null) | undefined
-              totalAmount?: number | undefined
-            }
-          }[]
-        | null
-      )
-    | undefined
+  paymentAllocations?: (BillAllOf0PaymentAllocationsItems[] | null) | undefined
   remainingCredit?: number | undefined
-  status?: 'Unknown' | 'Draft' | 'Submitted' | 'Paid' | 'Void' | 'PartiallyPaid' | undefined
+  status?: CreditNoteCreditNoteStatus | undefined
   subTotal?: number | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   totalAmount?: number | undefined
   totalDiscount?: number | undefined
   totalTaxAmount?: number | undefined
-  withholdingTax?: ({ amount: number; name: string }[] | null) | undefined
+  withholdingTax?: (BillAllOf0WithholdingTaxItems[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateCreditNoteResponse = {
   data?: CreditNote | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1258,47 +762,15 @@ type CreateCreditNoteResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateCreditNoteResponse = {
   data?: CreditNote | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1306,78 +778,61 @@ type UpdateCreditNoteResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
+}
+type CompanyDatasetAddressesItemsAddressType = 'Unknown' | 'Billing' | 'Delivery'
+type CompanyDatasetAddressesItems = {
+  city?: (string | null) | undefined
+  country?: (string | null) | undefined
+  line1?: (string | null) | undefined
+  line2?: (string | null) | undefined
+  postalCode?: (string | null) | undefined
+  region?: (string | null) | undefined
+  type: CompanyDatasetAddressesItemsAddressType
+}
+type CompanyDatasetPhoneNumbersItemsPhoneNumberType =
+  | 'Primary'
+  | 'Landline'
+  | 'Mobile'
+  | 'Fax'
+  | 'Unknown'
+type CompanyDatasetPhoneNumbersItems = {
+  number: string | null
+  type: CompanyDatasetPhoneNumbersItemsPhoneNumberType
+}
+type CustomerCustomerStatus = 'Unknown' | 'Active' | 'Archived'
+type CustomerContact = {
+  address?: CompanyDatasetAddressesItems | undefined
+  email?: (string | null) | undefined
+  modifiedDate?: DateTime | undefined
+  name?: (string | null) | undefined
+  phone?: (CompanyDatasetPhoneNumbersItems[] | null) | undefined
+  status: CustomerCustomerStatus
 }
 type Customer = {
-  addresses?: (unknown[] | null) | undefined
+  addresses?: (CompanyDatasetAddressesItems[] | null) | undefined
   contactName?: (string | null) | undefined
-  contacts?:
-    | (
-        | {
-            address?: unknown | undefined
-            email?: (string | null) | undefined
-            modifiedDate?: DateTime | undefined
-            name?: (string | null) | undefined
-            phone?: (unknown[] | null) | undefined
-            status: 'Unknown' | 'Active' | 'Archived'
-          }[]
-        | null
-      )
-    | undefined
+  contacts?: (CustomerContact[] | null) | undefined
   customerName?: (string | null) | undefined
-  defaultCurrency?: string | undefined
+  defaultCurrency?: TransferTransferAccountCurrency | undefined
   emailAddress?: (string | null) | undefined
   id?: string | undefined
   metadata?: Metadata | undefined
   phone?: (string | null) | undefined
   registrationNumber?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  status?: CustomerCustomerStatus | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   taxNumber?: (string | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateCustomerResponse = {
   data?: Customer | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1385,47 +840,15 @@ type CreateCustomerResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateCustomerResponse = {
   data?: Customer | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1433,47 +856,15 @@ type UpdateCustomerResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type CreateDirectCostResponse = {
   data?: DirectCost | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1481,47 +872,15 @@ type CreateDirectCostResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type CreateDirectIncomeResponse = {
   data?: DirectIncome | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1529,137 +888,60 @@ type CreateDirectIncomeResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type InvoiceInvoiceLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: (number | null) | undefined
+  discountPercentage?: (number | null) | undefined
+  isDirectIncome?: boolean | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity: number
+  subTotal?: (number | null) | undefined
+  taxAmount?: (number | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: (number | null) | undefined
+  tracking?: CreditNoteCreditNoteLineItemTracking | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount: number
+}
+type InvoiceInvoiceStatus = 'Unknown' | 'Draft' | 'Submitted' | 'PartiallyPaid' | 'Paid' | 'Void'
 type Invoice = {
   additionalTaxAmount?: number | undefined
   additionalTaxPercentage?: number | undefined
   amountDue?: number | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
-  customerRef?: { companyName?: (string | null) | undefined; id: string } | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  customerRef?: CustomerCustomerRef | undefined
   discountPercentage?: (number | null) | undefined
   dueDate?: DateTime | undefined
   id?: string | undefined
   invoiceNumber?: (string | null) | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: (number | null) | undefined
-            discountPercentage?: (number | null) | undefined
-            isDirectIncome?: boolean | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity: number
-            subTotal?: (number | null) | undefined
-            taxAmount?: (number | null) | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: (number | null) | undefined
-            tracking?:
-              | {
-                  categoryRefs: { id: string; name?: (string | null) | undefined }[]
-                  customerRef?:
-                    | { companyName?: (string | null) | undefined; id: string }
-                    | undefined
-                  isBilledTo: 'Unknown' | 'NotApplicable' | 'Project'
-                  isRebilledTo: 'Unknown' | 'NotApplicable' | 'Project'
-                  projectRef?: ProjectRef | undefined
-                }
-              | undefined
-            trackingCategoryRefs?:
-              | ({ id: string; name?: (string | null) | undefined }[] | null)
-              | undefined
-            unitAmount: number
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (InvoiceInvoiceLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
   paidOnDate?: DateTime | undefined
-  paymentAllocations?:
-    | (
-        | {
-            allocation: {
-              allocatedOnDate?: DateTime | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              totalAmount?: number | undefined
-            }
-            payment: {
-              accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-              currency?: string | undefined
-              currencyRate?: (number | null) | undefined
-              id?: string | undefined
-              note?: (string | null) | undefined
-              paidOnDate?: DateTime | undefined
-              reference?: (string | null) | undefined
-              totalAmount?: number | undefined
-            }
-          }[]
-        | null
-      )
-    | undefined
+  paymentAllocations?: (BillAllOf0PaymentAllocationsItems[] | null) | undefined
   salesOrderRefs?: (string[] | null) | undefined
-  status?: 'Unknown' | 'Draft' | 'Submitted' | 'PartiallyPaid' | 'Paid' | 'Void' | undefined
+  status?: InvoiceInvoiceStatus | undefined
   subTotal?: (number | null) | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   totalAmount?: number | undefined
   totalDiscount?: (number | null) | undefined
   totalTaxAmount?: number | undefined
-  withholdingTax?: ({ amount: number; name: string }[] | null) | undefined
+  withholdingTax?: (BillAllOf0WithholdingTaxItems[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateInvoiceResponse = {
   data?: Invoice | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1667,47 +949,15 @@ type CreateInvoiceResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdateInvoiceResponse = {
   data?: Invoice | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1715,87 +965,43 @@ type UpdateInvoiceResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type ItemBillItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  unitPrice?: (number | null) | undefined
+}
+type ItemInvoiceItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  unitPrice?: (number | null) | undefined
+}
+type ItemItemStatus = 'Unknown' | 'Active' | 'Archived'
+type ItemItemType = unknown
 type Item = {
-  billItem?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        description?: (string | null) | undefined
-        taxRateRef?:
-          | {
-              effectiveTaxRate?: number | undefined
-              id?: string | undefined
-              name?: string | undefined
-            }
-          | undefined
-        unitPrice?: (number | null) | undefined
-      }
-    | undefined
+  billItem?: ItemBillItem | undefined
   code?: (string | null) | undefined
   id?: string | undefined
-  invoiceItem?:
-    | {
-        accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-        description?: (string | null) | undefined
-        taxRateRef?:
-          | {
-              effectiveTaxRate?: number | undefined
-              id?: string | undefined
-              name?: string | undefined
-            }
-          | undefined
-        unitPrice?: (number | null) | undefined
-      }
-    | undefined
+  invoiceItem?: ItemInvoiceItem | undefined
   isBillItem?: boolean | undefined
   isInvoiceItem?: boolean | undefined
-  itemStatus?: 'Unknown' | 'Active' | 'Archived' | undefined
+  itemStatus?: ItemItemStatus | undefined
   metadata?: Metadata | undefined
   name?: (string | null) | undefined
-  type?: unknown | undefined
+  type?: ItemItemType | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateItemResponse = {
   data?: Item | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1803,80 +1009,40 @@ type CreateItemResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type SalesOrderSalesOrderLineItemTracking = {
+  recordRefs?: (DirectCostTrackingInvoiceTo[] | null) | undefined
+}
+type JournalEntryJournalLine = {
+  accountRef?: AccountAccountRef | undefined
+  currency?: (string | null) | undefined
+  description?: (string | null) | undefined
+  netAmount: number
+  tracking?: SalesOrderSalesOrderLineItemTracking | undefined
+}
+type JournalJournalRef = { id: string; name?: (string | null) | undefined }
 type JournalEntry = {
   createdOn?: DateTime | undefined
   description?: (string | null) | undefined
   id?: string | undefined
-  journalLines?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            currency?: (string | null) | undefined
-            description?: (string | null) | undefined
-            netAmount: number
-            tracking?:
-              | {
-                  recordRefs?:
-                    | ({ dataType?: string | undefined; id?: string | undefined }[] | null)
-                    | undefined
-                }
-              | undefined
-          }[]
-        | null
-      )
-    | undefined
-  journalRef?: { id: string; name?: (string | null) | undefined } | undefined
+  journalLines?: (JournalEntryJournalLine[] | null) | undefined
+  journalRef?: JournalJournalRef | undefined
   metadata?: Metadata | undefined
   postedOn?: DateTime | undefined
-  recordRef?: { dataType?: string | undefined; id?: string | undefined } | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  recordRef?: DirectCostTrackingInvoiceTo | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   updatedOn?: DateTime | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreateJournalEntryResponse = {
   data?: JournalEntry | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1884,35 +1050,13 @@ type CreateJournalEntryResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type JournalJournalStatus = 'Unknown' | 'Active' | 'Archived'
 type Journal = {
   createdOn?: DateTime | undefined
   hasChildren?: boolean | undefined
@@ -1921,71 +1065,53 @@ type Journal = {
   metadata?: Metadata | undefined
   name?: (string | null) | undefined
   parentId?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
+  status?: JournalJournalStatus | undefined
   type?: (string | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
+type PaymentPaymentLinkType =
+  | 'Unknown'
+  | 'Unlinked'
+  | 'Invoice'
+  | 'CreditNote'
+  | 'Other'
+  | 'Refund'
+  | 'Payment'
+  | 'PaymentOnAccount'
+  | 'ManualJournal'
+  | 'Discount'
+type PaymentPaymentLineLink = {
+  amount?: (number | null) | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  id?: string | undefined
+  type: PaymentPaymentLinkType
+}
+type PaymentPaymentLine = {
+  allocatedOnDate?: DateTime | undefined
+  amount: number
+  links?: (PaymentPaymentLineLink[] | null) | undefined
+}
 type Payment = {
-  accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
-  customerRef?: { companyName?: (string | null) | undefined; id: string } | undefined
+  accountRef?: AccountAccountRef | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
+  customerRef?: CustomerCustomerRef | undefined
   date?: DateTime | undefined
   id?: string | undefined
-  lines?:
-    | (
-        | {
-            allocatedOnDate?: DateTime | undefined
-            amount: number
-            links?:
-              | (
-                  | {
-                      amount?: (number | null) | undefined
-                      currencyRate?: (number | null) | undefined
-                      id?: string | undefined
-                      type:
-                        | 'Unknown'
-                        | 'Unlinked'
-                        | 'Invoice'
-                        | 'CreditNote'
-                        | 'Other'
-                        | 'Refund'
-                        | 'Payment'
-                        | 'PaymentOnAccount'
-                        | 'ManualJournal'
-                        | 'Discount'
-                    }[]
-                  | null
-                )
-              | undefined
-          }[]
-        | null
-      )
-    | undefined
+  lines?: (PaymentPaymentLine[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
-  paymentMethodRef?: { id?: string | undefined; name?: (string | null) | undefined } | undefined
+  paymentMethodRef?: PaymentMethodPaymentMethodRef | undefined
   reference?: (string | null) | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   totalAmount?: number | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
 type CreatePaymentResponse = {
   data?: Payment | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -1993,88 +1119,53 @@ type CreatePaymentResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
+  validation?: PushOperationSummaryValidation | undefined
+}
+type PurchaseOrderPurchaseOrderLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: number | undefined
+  discountPercentage?: number | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity?: number | undefined
+  subTotal?: number | undefined
+  taxAmount?: number | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: number | undefined
+  trackingCategoryRefs?: (TrackingCategoryTrackingCategoryRef[] | null) | undefined
+  unitAmount?: number | undefined
+}
+type SalesOrderAllOf0ShipTo = {
+  address?: CompanyDatasetAddressesItems | undefined
+  contact?:
     | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
+        email?: (string | null) | undefined
+        name?: (string | null) | undefined
+        phone?: (string | null) | undefined
       }
     | undefined
 }
+type PurchaseOrderPurchaseOrderStatus = 'Unknown' | 'Draft' | 'Open' | 'Closed' | 'Void'
 type PurchaseOrder = {
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   deliveryDate?: DateTime | undefined
   expectedDeliveryDate?: DateTime | undefined
   id?: string | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: number | undefined
-            discountPercentage?: number | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity?: number | undefined
-            subTotal?: number | undefined
-            taxAmount?: number | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: number | undefined
-            trackingCategoryRefs?:
-              | ({ id: string; name?: (string | null) | undefined }[] | null)
-              | undefined
-            unitAmount?: number | undefined
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (PurchaseOrderPurchaseOrderLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
   paymentDueDate?: DateTime | undefined
   purchaseOrderNumber?: (string | null) | undefined
-  shipTo?:
-    | {
-        address?: unknown | undefined
-        contact?:
-          | {
-              email?: (string | null) | undefined
-              name?: (string | null) | undefined
-              phone?: (string | null) | undefined
-            }
-          | undefined
-      }
-    | undefined
-  status?: 'Unknown' | 'Draft' | 'Open' | 'Closed' | 'Void' | undefined
+  shipTo?: SalesOrderAllOf0ShipTo | undefined
+  status?: PurchaseOrderPurchaseOrderStatus | undefined
   subTotal?: number | undefined
-  supplierRef?: { id: string; supplierName?: (string | null) | undefined } | undefined
+  supplierRef?: SupplierSupplierRef | undefined
   totalAmount?: number | undefined
   totalDiscount?: number | undefined
   totalTaxAmount?: number | undefined
@@ -2083,16 +1174,7 @@ type PurchaseOrder = {
 }
 type CreatePurchaseOrderResponse = {
   data?: PurchaseOrder | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -2100,47 +1182,15 @@ type CreatePurchaseOrderResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type UpdatePurchaseOrderResponse = {
   data?: PurchaseOrder | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -2148,37 +1198,15 @@ type UpdatePurchaseOrderResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
+type SupplierSupplierStatus = 'Unknown' | 'Active' | 'Archived'
 type Supplier = {
-  addresses?: (unknown[] | null) | undefined
+  addresses?: (CompanyDatasetAddressesItems[] | null) | undefined
   contactName?: (string | null) | undefined
   defaultCurrency?: (string | null) | undefined
   emailAddress?: (string | null) | undefined
@@ -2186,10 +1214,8 @@ type Supplier = {
   metadata?: Metadata | undefined
   phone?: (string | null) | undefined
   registrationNumber?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
-  supplementalData?:
-    | { content?: ({ [x: string]: { [x: string]: { [x: string]: unknown } } } | null) | undefined }
-    | undefined
+  status?: SupplierSupplierStatus | undefined
+  supplementalData?: BillAllOf0SupplementalData | undefined
   supplierName?: (string | null) | undefined
   taxNumber?: (string | null) | undefined
   modifiedDate?: DateTime | undefined
@@ -2197,16 +1223,7 @@ type Supplier = {
 }
 type CreateSupplierResponse = {
   data?: Supplier | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -2214,47 +1231,15 @@ type CreateSupplierResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type CreateTransferResponse = {
   data?: Transfer | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -2262,34 +1247,11 @@ type CreateTransferResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationSummaryPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationSummaryValidation | undefined
 }
 type Accounts = {
   results?: Account[] | undefined
@@ -2298,6 +1260,8 @@ type Accounts = {
   pageSize: number
   totalResults: number
 }
+type ModifiedDatesAllOf0 = { modifiedDate?: DateTime | undefined }
+type ModifiedDatesAllOf1 = { sourceModifiedDate?: DateTime | undefined }
 type BankStatementAccount = {
   accountName?: (string | null) | undefined
   accountNumber?: (string | null) | undefined
@@ -2308,48 +1272,15 @@ type BankStatementAccount = {
   iban?: (string | null) | undefined
   id?: string | undefined
   institution?: (string | null) | undefined
-  modifiedDate?: { modifiedDate?: DateTime | undefined } | undefined
+  modifiedDate?: ModifiedDatesAllOf0 | undefined
   nominalCode?: (string | null) | undefined
   overdraftLimit?: (number | null) | undefined
   sortCode?: (string | null) | undefined
-  sourceModifiedDate?: { sourceModifiedDate?: DateTime | undefined } | undefined
+  sourceModifiedDate?: ModifiedDatesAllOf1 | undefined
   toDate?: DateTime | undefined
 }
 type BankAccountTransactions = {
-  results?:
-    | {
-        amount?: number | undefined
-        balance?: number | undefined
-        clearedOnDate?: DateTime | undefined
-        counterparty?: (string | null) | undefined
-        description?: (string | null) | undefined
-        id?: string | undefined
-        reconciled?: boolean | undefined
-        reference?: (string | null) | undefined
-        transactionType?:
-          | 'Unknown'
-          | 'Credit'
-          | 'Debit'
-          | 'Int'
-          | 'Div'
-          | 'Fee'
-          | 'SerChg'
-          | 'Dep'
-          | 'Atm'
-          | 'Pos'
-          | 'Xfer'
-          | 'Check'
-          | 'Payment'
-          | 'Cash'
-          | 'DirectDep'
-          | 'DirectDebit'
-          | 'RepeatPmt'
-          | 'Other'
-          | undefined
-        modifiedDate?: DateTime | undefined
-        sourceModifiedDate?: DateTime | undefined
-      }[]
-    | undefined
+  results?: BankTransactionsBankTransactionLine[] | undefined
   _links: Links
   pageNumber: number
   pageSize: number
@@ -2396,73 +1327,66 @@ type ReportLine = {
   name?: (string | null) | undefined
   value: number
 }
+type BalanceSheetBalanceSheet = {
+  assets?: ReportLine | undefined
+  date?: DateTime | undefined
+  equity?: ReportLine | undefined
+  liabilities?: ReportLine | undefined
+  netAssets: number
+}
 type BalanceSheet = {
-  currency: string
+  currency: TransferTransferAccountCurrency
   earliestAvailableMonth?: DateTime | undefined
   mostRecentAvailableMonth?: DateTime | undefined
-  reports: {
-    assets?: ReportLine | undefined
-    date?: DateTime | undefined
-    equity?: ReportLine | undefined
-    liabilities?: ReportLine | undefined
-    netAssets: number
-  }[]
+  reports: BalanceSheetBalanceSheet[]
+}
+type CashFlowStatementReportBasis = 'Unknown' | 'Accrual' | 'Cash'
+type CashFlowStatementReportInput = 'Unknown' | 'Indirect' | 'Direct'
+type CashFlowStatementCashFlowStatement = {
+  cashPayments?: ReportLine | undefined
+  cashReceipts?: ReportLine | undefined
+  fromDate?: DateTime | undefined
+  toDate?: DateTime | undefined
 }
 type CashFlowStatement = {
-  currency: string
+  currency: TransferTransferAccountCurrency
   earliestAvailableMonth?: DateTime | undefined
   mostRecentAvailableMonth?: DateTime | undefined
-  reportBasis: 'Unknown' | 'Accrual' | 'Cash'
-  reportInput: 'Unknown' | 'Indirect' | 'Direct'
-  reports: {
-    cashPayments?: ReportLine | undefined
-    cashReceipts?: ReportLine | undefined
-    fromDate?: DateTime | undefined
-    toDate?: DateTime | undefined
-  }[]
+  reportBasis: CashFlowStatementReportBasis
+  reportInput: CashFlowStatementReportInput
+  reports: CashFlowStatementCashFlowStatement[]
+}
+type ProfitAndLossReportReportBasis = 'Unknown' | 'Accrual' | 'Cash'
+type ProfitAndLossReportProfitAndLossReport = {
+  costOfSales?: ReportLine | undefined
+  expenses?: ReportLine | undefined
+  fromDate?: DateTime | undefined
+  grossProfit: number
+  income?: ReportLine | undefined
+  netOperatingProfit: number
+  netOtherIncome: number
+  netProfit: number
+  otherExpenses?: ReportLine | undefined
+  otherIncome?: ReportLine | undefined
+  toDate?: DateTime | undefined
 }
 type ProfitAndLossReport = {
   currency: string
   earliestAvailableMonth?: DateTime | undefined
   mostRecentAvailableMonth?: DateTime | undefined
-  reportBasis: 'Unknown' | 'Accrual' | 'Cash'
-  reports: {
-    costOfSales?: ReportLine | undefined
-    expenses?: ReportLine | undefined
-    fromDate?: DateTime | undefined
-    grossProfit: number
-    income?: ReportLine | undefined
-    netOperatingProfit: number
-    netOtherIncome: number
-    netProfit: number
-    otherExpenses?: ReportLine | undefined
-    otherIncome?: ReportLine | undefined
-    toDate?: DateTime | undefined
-  }[]
+  reportBasis: ProfitAndLossReportReportBasis
+  reports: ProfitAndLossReportProfitAndLossReport[]
 }
 type CompanyDataset = {
   accountingPlatformRef?: (string | null) | undefined
-  addresses?:
-    | (
-        | {
-            city?: (string | null) | undefined
-            country?: (string | null) | undefined
-            line1?: (string | null) | undefined
-            line2?: (string | null) | undefined
-            postalCode?: (string | null) | undefined
-            region?: (string | null) | undefined
-            type: unknown
-          }[]
-        | null
-      )
-    | undefined
+  addresses?: (CompanyDatasetAddressesItems[] | null) | undefined
   baseCurrency?: (string | null) | undefined
   companyLegalName?: (string | null) | undefined
   companyName?: (string | null) | undefined
   createdDate?: DateTime | undefined
   financialYearStartDate?: DateTime | undefined
   ledgerLockDate?: DateTime | undefined
-  phoneNumbers?: ({ number: string | null; type: unknown }[] | null) | undefined
+  phoneNumbers?: (CompanyDatasetPhoneNumbersItems[] | null) | undefined
   registrationNumber?: (string | null) | undefined
   sourceUrls?: ({ [x: string]: string | null } | null) | undefined
   taxNumber?: (string | null) | undefined
@@ -2541,20 +1465,21 @@ type PaymentMethods = {
   pageSize: number
   totalResults: number
 }
+type PaymentMethodPaymentMethodStatus = 'Unknown' | 'Active' | 'Archived'
+type PaymentMethodPaymentMethodType =
+  | 'Unknown'
+  | 'Cash'
+  | 'Check'
+  | 'CreditCard'
+  | 'DebitCard'
+  | 'BankTransfer'
+  | 'Other'
 type PaymentMethod = {
   id?: string | undefined
   metadata?: Metadata | undefined
   name?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
-  type?:
-    | 'Unknown'
-    | 'Cash'
-    | 'Check'
-    | 'CreditCard'
-    | 'DebitCard'
-    | 'BankTransfer'
-    | 'Other'
-    | undefined
+  status?: PaymentMethodPaymentMethodStatus | undefined
+  type?: PaymentMethodPaymentMethodType | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
@@ -2572,62 +1497,41 @@ type PurchaseOrders = {
   pageSize: number
   totalResults: number
 }
+type SalesOrderSalesOrderInvoiceStatus =
+  | 'Unknown'
+  | 'PartiallyInvoiced'
+  | 'Invoiced'
+  | 'NotInvoiced'
+type SalesOrderSalesOrderLineItem = {
+  accountRef?: AccountAccountRef | undefined
+  description?: (string | null) | undefined
+  discountAmount?: number | undefined
+  discountPercentage?: number | undefined
+  itemRef?: ItemItemRef | undefined
+  quantity?: number | undefined
+  subTotal?: number | undefined
+  taxAmount?: number | undefined
+  taxRateRef?: TaxRateTaxRateRef | undefined
+  totalAmount?: number | undefined
+  tracking?: SalesOrderSalesOrderLineItemTracking | undefined
+  unitAmount?: number | undefined
+}
+type SalesOrderSalesOrderStatus = 'Unknown' | 'Draft' | 'Open' | 'Closed' | 'Void'
 type SalesOrder = {
-  currency?: string | undefined
-  currencyRate?: (number | null) | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+  currencyRate?: BillPaymentBillPaymentLineLinkCurrencyRate | undefined
   customerPurchaseOrderNumber?: (string | null) | undefined
-  customerRef?: { companyName?: (string | null) | undefined; id: string } | undefined
+  customerRef?: CustomerCustomerRef | undefined
   expectedDeliveryDate?: DateTime | undefined
   id?: string | undefined
-  invoicingStatus?: 'Unknown' | 'PartiallyInvoiced' | 'Invoiced' | 'NotInvoiced' | undefined
+  invoicingStatus?: SalesOrderSalesOrderInvoiceStatus | undefined
   issueDate?: DateTime | undefined
-  lineItems?:
-    | (
-        | {
-            accountRef?: { id?: string | undefined; name?: string | undefined } | undefined
-            description?: (string | null) | undefined
-            discountAmount?: number | undefined
-            discountPercentage?: number | undefined
-            itemRef?: { id: string; name?: (string | null) | undefined } | undefined
-            quantity?: number | undefined
-            subTotal?: number | undefined
-            taxAmount?: number | undefined
-            taxRateRef?:
-              | {
-                  effectiveTaxRate?: number | undefined
-                  id?: string | undefined
-                  name?: string | undefined
-                }
-              | undefined
-            totalAmount?: number | undefined
-            tracking?:
-              | {
-                  recordRefs?:
-                    | ({ dataType?: string | undefined; id?: string | undefined }[] | null)
-                    | undefined
-                }
-              | undefined
-            unitAmount?: number | undefined
-          }[]
-        | null
-      )
-    | undefined
+  lineItems?: (SalesOrderSalesOrderLineItem[] | null) | undefined
   metadata?: Metadata | undefined
   note?: (string | null) | undefined
   salesOrderNumber?: (string | null) | undefined
-  shipTo?:
-    | {
-        address?: unknown | undefined
-        contact?:
-          | {
-              email?: (string | null) | undefined
-              name?: (string | null) | undefined
-              phone?: (string | null) | undefined
-            }
-          | undefined
-      }
-    | undefined
-  status?: 'Unknown' | 'Draft' | 'Open' | 'Closed' | 'Void' | undefined
+  shipTo?: SalesOrderAllOf0ShipTo | undefined
+  status?: SalesOrderSalesOrderStatus | undefined
   subTotal?: number | undefined
   totalAmount?: number | undefined
   totalDiscount?: number | undefined
@@ -2649,23 +1553,20 @@ type Suppliers = {
   pageSize: number
   totalResults: number
 }
+type TaxRateTaxRateComponent = {
+  isCompound: boolean
+  name?: (string | null) | undefined
+  rate?: (number | null) | undefined
+}
+type TaxRateTaxRateStatus = 'Unknown' | 'Active' | 'Archived'
 type TaxRate = {
   code?: (string | null) | undefined
-  components?:
-    | (
-        | {
-            isCompound: boolean
-            name?: (string | null) | undefined
-            rate?: (number | null) | undefined
-          }[]
-        | null
-      )
-    | undefined
+  components?: (TaxRateTaxRateComponent[] | null) | undefined
   effectiveTaxRate?: (number | null) | undefined
   id?: string | undefined
   metadata?: Metadata | undefined
   name?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
+  status?: TaxRateTaxRateStatus | undefined
   totalTaxRate?: (number | null) | undefined
   validDatatypeLinks?: (ValidDataTypeLinks[] | null) | undefined
   modifiedDate?: DateTime | undefined
@@ -2678,12 +1579,13 @@ type TaxRates = {
   pageSize: number
   totalResults: number
 }
+type TrackingCategoryStatus = 'Unknown' | 'Active' | 'Archived'
 type TrackingCategory = {
   hasChildren?: boolean | undefined
   id?: (string | null) | undefined
   name?: (string | null) | undefined
   parentId?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
+  status?: TrackingCategoryStatus | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
@@ -2699,58 +1601,39 @@ type TrackingCategoryTree = {
   id?: (string | null) | undefined
   name?: (string | null) | undefined
   parentId?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
+  status?: TrackingCategoryStatus | undefined
   subCategories?: (TrackingCategoryTree[] | null) | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
-type AgedCreditorReport = {
-  data?:
+type AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems = {
+  agedOutstandingAmounts?:
     | {
-        agedCurrencyOutstanding?:
-          | {
-              agedOutstandingAmounts?:
-                | {
-                    amount?: number | undefined
-                    details?:
-                      | { amount?: number | undefined; name?: string | undefined }[]
-                      | undefined
-                    fromDate?: DateTime | undefined
-                    toDate?: DateTime | undefined
-                  }[]
-                | undefined
-              currency?: string | undefined
-            }[]
-          | undefined
-        supplierId?: string | undefined
-        supplierName?: string | undefined
+        amount?: number | undefined
+        details?: { amount?: number | undefined; name?: string | undefined }[] | undefined
+        fromDate?: DateTime | undefined
+        toDate?: DateTime | undefined
       }[]
     | undefined
+  currency?: TransferTransferAccountCurrency | undefined
+}
+type AgedCreditorReportAgedCreditor = {
+  agedCurrencyOutstanding?: AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems[] | undefined
+  supplierId?: string | undefined
+  supplierName?: string | undefined
+}
+type AgedCreditorReport = {
+  data?: AgedCreditorReportAgedCreditor[] | undefined
   generated?: DateTime | undefined
   reportDate?: DateTime | undefined
 }
+type AgedDebtorReportAgedDebtor = {
+  agedCurrencyOutstanding?: AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems[] | undefined
+  customerId?: string | undefined
+  customerName?: string | undefined
+}
 type AgedDebtorReport = {
-  data?:
-    | {
-        agedCurrencyOutstanding?:
-          | {
-              agedOutstandingAmounts?:
-                | {
-                    amount?: number | undefined
-                    details?:
-                      | { amount?: number | undefined; name?: string | undefined }[]
-                      | undefined
-                    fromDate?: DateTime | undefined
-                    toDate?: DateTime | undefined
-                  }[]
-                | undefined
-              currency?: string | undefined
-            }[]
-          | undefined
-        customerId?: string | undefined
-        customerName?: string | undefined
-      }[]
-    | undefined
+  data?: AgedDebtorReportAgedDebtor[] | undefined
   generated?: DateTime | undefined
   reportDate?: DateTime | undefined
 }
@@ -3592,24 +2475,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         } & { json: Journal }
         output: {
           data?: Journal | undefined
-          changes?:
-            | (
-                | {
-                    attachmentId?: (string | null) | undefined
-                    recordRef?:
-                      | { dataType?: DataType | undefined; id?: string | undefined }
-                      | undefined
-                    type?:
-                      | 'Unknown'
-                      | 'Created'
-                      | 'Modified'
-                      | 'Deleted'
-                      | 'AttachmentUploaded'
-                      | undefined
-                  }[]
-                | null
-              )
-            | undefined
+          changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
           companyId: string
           completedOnUtc?: DateTime | undefined
           dataConnectionKey: string
@@ -3617,34 +2483,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           errorMessage?: (string | null) | undefined
           pushOperationKey: string
           requestedOnUtc: DateTime
-          status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+          status: PushOperationSummaryPushOperationStatus
           statusCode: number
           timeoutInMinutes?: (number | null) | undefined
           timeoutInSeconds?: (number | null) | undefined
-          validation?:
-            | {
-                errors?:
-                  | (
-                      | {
-                          itemId?: (string | null) | undefined
-                          message?: (string | null) | undefined
-                          validatorName?: (string | null) | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
-                warnings?:
-                  | (
-                      | {
-                          itemId?: (string | null) | undefined
-                          message?: (string | null) | undefined
-                          validatorName?: (string | null) | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
-              }
-            | undefined
+          validation?: PushOperationSummaryValidation | undefined
         }
         outputFormat: 'json'
         status: 200
@@ -3702,24 +2545,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         } & { json: Supplier }
         output: {
           data?: Supplier | undefined
-          changes?:
-            | (
-                | {
-                    attachmentId?: (string | null) | undefined
-                    recordRef?:
-                      | { dataType?: DataType | undefined; id?: string | undefined }
-                      | undefined
-                    type?:
-                      | 'Unknown'
-                      | 'Created'
-                      | 'Modified'
-                      | 'Deleted'
-                      | 'AttachmentUploaded'
-                      | undefined
-                  }[]
-                | null
-              )
-            | undefined
+          changes?: (PushOperationSummaryPushOperationChange[] | null) | undefined
           companyId: string
           completedOnUtc?: DateTime | undefined
           dataConnectionKey: string
@@ -3727,34 +2553,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           errorMessage?: (string | null) | undefined
           pushOperationKey: string
           requestedOnUtc: DateTime
-          status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+          status: PushOperationSummaryPushOperationStatus
           statusCode: number
           timeoutInMinutes?: (number | null) | undefined
           timeoutInSeconds?: (number | null) | undefined
-          validation?:
-            | {
-                errors?:
-                  | (
-                      | {
-                          itemId?: (string | null) | undefined
-                          message?: (string | null) | undefined
-                          validatorName?: (string | null) | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
-                warnings?:
-                  | (
-                      | {
-                          itemId?: (string | null) | undefined
-                          message?: (string | null) | undefined
-                          validatorName?: (string | null) | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
-              }
-            | undefined
+          validation?: PushOperationSummaryValidation | undefined
         }
         outputFormat: 'json'
         status: 200

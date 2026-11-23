@@ -237,25 +237,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/history/:history_item_id/audio': {
-      $get: {
-        input: { param: { history_item_id: string } } & {
-          header: { 'xi-api-key'?: string | undefined }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $get:
+        | {
+            input: { param: { history_item_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { history_item_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/text-to-speech/:voice_id': {
-      $post: {
-        input: { param: { voice_id: string } } & {
-          header: { 'xi-api-key'?: string | undefined }
-        } & { json: BodyTextToSpeechV1TextToSpeechVoiceIdPost }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $post:
+        | {
+            input: { param: { voice_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            } & { json: BodyTextToSpeechV1TextToSpeechVoiceIdPost }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { voice_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            } & { json: BodyTextToSpeechV1TextToSpeechVoiceIdPost }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/text-to-speech/:voice_id/stream': {
@@ -428,14 +446,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/voices/:voice_id/samples/:sample_id/audio': {
-      $get: {
-        input: { param: { voice_id: string; sample_id: string } } & {
-          header: { 'xi-api-key'?: string | undefined }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $get:
+        | {
+            input: { param: { voice_id: string; sample_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { voice_id: string; sample_id: string } } & {
+              header: { 'xi-api-key'?: string | undefined }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/voices/:voice_id/settings': {

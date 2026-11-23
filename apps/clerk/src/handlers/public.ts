@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPublicInterstitialRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPublicInterstitialRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const publicHandler = app.openapi(getPublicInterstitialRoute, (c) => {
+export const getPublicInterstitialRouteHandler: RouteHandler<
+  typeof getPublicInterstitialRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

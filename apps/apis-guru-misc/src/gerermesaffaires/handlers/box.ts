@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBoxMenusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBoxMenusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const boxHandler = app.openapi(getBoxMenusRoute, (c) => {
+export const getBoxMenusRouteHandler: RouteHandler<typeof getBoxMenusRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

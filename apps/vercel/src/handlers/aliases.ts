@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchAliasesIdProtectionBypassRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchAliasesIdProtectionBypassRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const aliasesHandler = app.openapi(patchAliasesIdProtectionBypassRoute, (c) => {
+export const patchAliasesIdProtectionBypassRouteHandler: RouteHandler<
+  typeof patchAliasesIdProtectionBypassRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

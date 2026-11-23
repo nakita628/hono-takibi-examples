@@ -3,7 +3,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 export const getSpeakersRoute = createRoute({
   method: 'get',
   path: '/speakers',
-  responses: { 200: { description: 'List of speakers', content: {} } },
+  responses: { 200: { description: 'List of speakers' } },
 })
 
 export const postSpeakersRoute = createRoute({

@@ -22,7 +22,7 @@ export const getApiV1CloudPluginRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'The result of the Wolfram Language evaluation', content: {} },
+    200: { description: 'The result of the Wolfram Language evaluation' },
     400: { description: "The request is missing the 'input' parameter" },
     403: { description: 'Unauthorized' },
     500: { description: 'Wolfram Cloud was unable to generate a result' },
@@ -54,7 +54,7 @@ export const getApiV1LlmApiRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'The result of the Wolfram|Alpha query', content: {} },
+    200: { description: 'The result of the Wolfram|Alpha query' },
     400: { description: "The request is missing the 'input' parameter" },
     403: { description: 'Unauthorized' },
     500: { description: 'Wolfram|Alpha was unable to generate a result' },

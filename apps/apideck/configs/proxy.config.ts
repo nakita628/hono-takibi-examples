@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/proxy/9.3.0/openapi.yaml',
   output: './src/proxy/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/proxy/types.ts' },
   client: { output: './src/proxy/client.ts', baseUrl: '/' },
   rpc: { output: './src/proxy/rpc.ts', parseResponse: true },

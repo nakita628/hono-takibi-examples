@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTeamBillableInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTeamBillableInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const teamBillableInfoHandler = app.openapi(getTeamBillableInfoRoute, (c) => {
+export const getTeamBillableInfoRouteHandler: RouteHandler<
+  typeof getTeamBillableInfoRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

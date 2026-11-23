@@ -1,8 +1,170 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apisHandler } from './handlers'
+import {
+  deleteApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+  deleteApisBatchV1NamespacesNamespaceCronjobsRoute,
+  deleteApisBatchV1NamespacesNamespaceJobsNameRoute,
+  deleteApisBatchV1NamespacesNamespaceJobsRoute,
+  getApisBatchV1CronjobsRoute,
+  getApisBatchV1IndexRoute,
+  getApisBatchV1JobsRoute,
+  getApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+  getApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+  getApisBatchV1NamespacesNamespaceCronjobsRoute,
+  getApisBatchV1NamespacesNamespaceJobsNameRoute,
+  getApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+  getApisBatchV1NamespacesNamespaceJobsRoute,
+  getApisBatchV1WatchCronjobsRoute,
+  getApisBatchV1WatchJobsRoute,
+  getApisBatchV1WatchNamespacesNamespaceCronjobsNameRoute,
+  getApisBatchV1WatchNamespacesNamespaceCronjobsRoute,
+  getApisBatchV1WatchNamespacesNamespaceJobsNameRoute,
+  getApisBatchV1WatchNamespacesNamespaceJobsRoute,
+  patchApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+  patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+  patchApisBatchV1NamespacesNamespaceJobsNameRoute,
+  patchApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+  postApisBatchV1NamespacesNamespaceCronjobsRoute,
+  postApisBatchV1NamespacesNamespaceJobsRoute,
+  putApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+  putApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+  putApisBatchV1NamespacesNamespaceJobsNameRoute,
+  putApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+} from './routes'
+import {
+  deleteApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  deleteApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  deleteApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  deleteApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  getApisBatchV1CronjobsRouteHandler,
+  getApisBatchV1IndexRouteHandler,
+  getApisBatchV1JobsRouteHandler,
+  getApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  getApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  getApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  getApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  getApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+  getApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  getApisBatchV1WatchCronjobsRouteHandler,
+  getApisBatchV1WatchJobsRouteHandler,
+  getApisBatchV1WatchNamespacesNamespaceCronjobsNameRouteHandler,
+  getApisBatchV1WatchNamespacesNamespaceCronjobsRouteHandler,
+  getApisBatchV1WatchNamespacesNamespaceJobsNameRouteHandler,
+  getApisBatchV1WatchNamespacesNamespaceJobsRouteHandler,
+  patchApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  patchApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  patchApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+  postApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  postApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  putApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  putApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  putApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  putApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apisHandler)
+export const api = app
+  .openapi(getApisBatchV1IndexRoute, getApisBatchV1IndexRouteHandler)
+  .openapi(getApisBatchV1CronjobsRoute, getApisBatchV1CronjobsRouteHandler)
+  .openapi(getApisBatchV1JobsRoute, getApisBatchV1JobsRouteHandler)
+  .openapi(
+    deleteApisBatchV1NamespacesNamespaceCronjobsRoute,
+    deleteApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceCronjobsRoute,
+    getApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  )
+  .openapi(
+    postApisBatchV1NamespacesNamespaceCronjobsRoute,
+    postApisBatchV1NamespacesNamespaceCronjobsRouteHandler,
+  )
+  .openapi(
+    deleteApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+    deleteApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+    getApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  )
+  .openapi(
+    patchApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+    patchApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  )
+  .openapi(
+    putApisBatchV1NamespacesNamespaceCronjobsNameRoute,
+    putApisBatchV1NamespacesNamespaceCronjobsNameRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+    getApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  )
+  .openapi(
+    patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+    patchApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  )
+  .openapi(
+    putApisBatchV1NamespacesNamespaceCronjobsNameStatusRoute,
+    putApisBatchV1NamespacesNamespaceCronjobsNameStatusRouteHandler,
+  )
+  .openapi(
+    deleteApisBatchV1NamespacesNamespaceJobsRoute,
+    deleteApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceJobsRoute,
+    getApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  )
+  .openapi(
+    postApisBatchV1NamespacesNamespaceJobsRoute,
+    postApisBatchV1NamespacesNamespaceJobsRouteHandler,
+  )
+  .openapi(
+    deleteApisBatchV1NamespacesNamespaceJobsNameRoute,
+    deleteApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceJobsNameRoute,
+    getApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  )
+  .openapi(
+    patchApisBatchV1NamespacesNamespaceJobsNameRoute,
+    patchApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  )
+  .openapi(
+    putApisBatchV1NamespacesNamespaceJobsNameRoute,
+    putApisBatchV1NamespacesNamespaceJobsNameRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+    getApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+  )
+  .openapi(
+    patchApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+    patchApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+  )
+  .openapi(
+    putApisBatchV1NamespacesNamespaceJobsNameStatusRoute,
+    putApisBatchV1NamespacesNamespaceJobsNameStatusRouteHandler,
+  )
+  .openapi(getApisBatchV1WatchCronjobsRoute, getApisBatchV1WatchCronjobsRouteHandler)
+  .openapi(getApisBatchV1WatchJobsRoute, getApisBatchV1WatchJobsRouteHandler)
+  .openapi(
+    getApisBatchV1WatchNamespacesNamespaceCronjobsRoute,
+    getApisBatchV1WatchNamespacesNamespaceCronjobsRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1WatchNamespacesNamespaceCronjobsNameRoute,
+    getApisBatchV1WatchNamespacesNamespaceCronjobsNameRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1WatchNamespacesNamespaceJobsRoute,
+    getApisBatchV1WatchNamespacesNamespaceJobsRouteHandler,
+  )
+  .openapi(
+    getApisBatchV1WatchNamespacesNamespaceJobsNameRoute,
+    getApisBatchV1WatchNamespacesNamespaceJobsNameRouteHandler,
+  )
 
 export default app

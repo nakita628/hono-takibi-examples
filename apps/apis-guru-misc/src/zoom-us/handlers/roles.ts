@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRolesRoleIdMembersMemberIdRoute,
   deleteRolesRoleIdRoute,
   getRolesRoleIdMembersRoute,
@@ -10,30 +10,44 @@ import {
   postRolesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRolesRouteHandler: RouteHandler<typeof getRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rolesHandler = app
-  .openapi(getRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRolesRoleIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRolesRoleIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRolesRoleIdMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRolesRouteHandler: RouteHandler<typeof postRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRolesRoleIdRouteHandler: RouteHandler<typeof deleteRolesRoleIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRolesRoleIdRouteHandler: RouteHandler<typeof getRolesRoleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRolesRoleIdRouteHandler: RouteHandler<typeof patchRolesRoleIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRolesRoleIdMembersRouteHandler: RouteHandler<
+  typeof getRolesRoleIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRolesRoleIdMembersRouteHandler: RouteHandler<
+  typeof postRolesRoleIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRolesRoleIdMembersMemberIdRouteHandler: RouteHandler<
+  typeof deleteRolesRoleIdMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

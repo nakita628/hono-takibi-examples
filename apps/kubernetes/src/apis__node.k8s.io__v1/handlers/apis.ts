@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisNodeK8sIoV1RuntimeclassesNameRoute,
   deleteApisNodeK8sIoV1RuntimeclassesRoute,
   getApisNodeK8sIoV1IndexRoute,
@@ -12,36 +12,62 @@ import {
   putApisNodeK8sIoV1RuntimeclassesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisNodeK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisNodeK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisNodeK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisNodeK8sIoV1RuntimeclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisNodeK8sIoV1RuntimeclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisNodeK8sIoV1RuntimeclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisNodeK8sIoV1RuntimeclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisNodeK8sIoV1RuntimeclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisNodeK8sIoV1RuntimeclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisNodeK8sIoV1RuntimeclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisNodeK8sIoV1WatchRuntimeclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisNodeK8sIoV1WatchRuntimeclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApisNodeK8sIoV1RuntimeclassesRouteHandler: RouteHandler<
+  typeof deleteApisNodeK8sIoV1RuntimeclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisNodeK8sIoV1RuntimeclassesRouteHandler: RouteHandler<
+  typeof getApisNodeK8sIoV1RuntimeclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisNodeK8sIoV1RuntimeclassesRouteHandler: RouteHandler<
+  typeof postApisNodeK8sIoV1RuntimeclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisNodeK8sIoV1RuntimeclassesNameRouteHandler: RouteHandler<
+  typeof deleteApisNodeK8sIoV1RuntimeclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisNodeK8sIoV1RuntimeclassesNameRouteHandler: RouteHandler<
+  typeof getApisNodeK8sIoV1RuntimeclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisNodeK8sIoV1RuntimeclassesNameRouteHandler: RouteHandler<
+  typeof patchApisNodeK8sIoV1RuntimeclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisNodeK8sIoV1RuntimeclassesNameRouteHandler: RouteHandler<
+  typeof putApisNodeK8sIoV1RuntimeclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisNodeK8sIoV1WatchRuntimeclassesRouteHandler: RouteHandler<
+  typeof getApisNodeK8sIoV1WatchRuntimeclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisNodeK8sIoV1WatchRuntimeclassesNameRouteHandler: RouteHandler<
+  typeof getApisNodeK8sIoV1WatchRuntimeclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostHandler =
-  app.openapi(
-    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRouteHandler: RouteHandler<
+  typeof postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

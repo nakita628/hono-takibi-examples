@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStopScanIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStopScanIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stopHandler = app.openapi(getStopScanIdRoute, (c) => {
+export const getStopScanIdRouteHandler: RouteHandler<typeof getStopScanIdRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

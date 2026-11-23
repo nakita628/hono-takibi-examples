@@ -1,97 +1,1967 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  abilitiesHandler,
-  addonsHandler,
-  alertGroupingSettingsHandler,
-  analyticsHandler,
-  auditHandler,
-  automationActionsHandler,
-  businessServicesHandler,
-  changeEventsHandler,
-  enrichmentHandler,
-  entityTypeHandler,
-  escalationPoliciesHandler,
-  eventOrchestrationsHandler,
-  extensionSchemasHandler,
-  extensionsHandler,
-  incidentsHandler,
-  incidentWorkflowsHandler,
-  ipAllowListsHandler,
-  licenseAllocationsHandler,
-  licensesHandler,
-  logEntriesHandler,
-  maintenanceWindowsHandler,
-  notificationsHandler,
-  oauthDelegationsHandler,
-  oncallsHandler,
-  pausedIncidentReportsHandler,
-  prioritiesHandler,
-  recommendationsHandler,
-  rulesetsHandler,
-  schedulesHandler,
-  serviceDependenciesHandler,
-  servicesHandler,
-  sessionConfigurationsHandler,
-  sreAgentHandler,
-  standardsHandler,
-  statusDashboardsHandler,
-  statusPagesHandler,
-  tagsHandler,
-  teamsHandler,
-  templatesHandler,
-  usersHandler,
-  v3Handler,
-  vendorsHandler,
-  webhookSubscriptionsHandler,
-  workflowsHandler,
+  deleteAddonsIdRoute,
+  deleteAlertGroupingSettingsIdRoute,
+  deleteAutomationActionsActionsIdRoute,
+  deleteAutomationActionsActionsIdServicesServiceIdRoute,
+  deleteAutomationActionsActionsIdTeamsTeamIdRoute,
+  deleteAutomationActionsRunnersIdRoute,
+  deleteAutomationActionsRunnersIdTeamsTeamIdRoute,
+  deleteBusinessServicesIdAccountSubscriptionRoute,
+  deleteBusinessServicesIdRoute,
+  deleteBusinessServicesPriorityThresholdsRoute,
+  deleteEnrichmentEventEnrichmentsIdAssociationsRoute,
+  deleteEnrichmentEventEnrichmentsIdRoute,
+  deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+  deleteEnrichmentIntegrationsServicenowIntegrationIdRoute,
+  deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute,
+  deleteEnrichmentSchemasSchemaIdRecordsRecordIdRoute,
+  deleteEnrichmentSchemasSchemaIdRoute,
+  deleteEscalationPoliciesIdRoute,
+  deleteEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+  deleteEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+  deleteEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+  deleteEventOrchestrationsIdRoute,
+  deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+  deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+  deleteExtensionsIdRoute,
+  deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  deleteIncidentsCustomFieldsFieldIdRoute,
+  deleteIncidentsIdNotesNoteIdRoute,
+  deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+  deleteIncidentWorkflowsIdRoute,
+  deleteIncidentWorkflowsTriggersIdRoute,
+  deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRoute,
+  deleteIpAllowListsIdRoute,
+  deleteMaintenanceWindowsIdRoute,
+  deleteOauthDelegationsRoute,
+  deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRoute,
+  deleteRulesetsIdRoute,
+  deleteRulesetsIdRulesRuleIdRoute,
+  deleteSchedulesIdOverridesOverrideIdRoute,
+  deleteSchedulesIdRoute,
+  deleteServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  deleteServicesCustomFieldsFieldIdRoute,
+  deleteServicesIdRoute,
+  deleteServicesIdRulesRuleIdRoute,
+  deleteSessionConfigurationsRoute,
+  deleteSreAgentMemoriesIdRoute,
+  deleteStatusPagesIdPostsPostIdPostmortemRoute,
+  deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+  deleteStatusPagesIdPostsPostIdRoute,
+  deleteStatusPagesIdSubscriptionsSubscriptionIdRoute,
+  deleteTagsIdRoute,
+  deleteTeamsIdEscalationPoliciesEscalationPolicyIdRoute,
+  deleteTeamsIdRoute,
+  deleteTeamsIdUsersUserIdRoute,
+  deleteTemplatesIdRoute,
+  deleteUsersIdContactMethodsContactMethodIdRoute,
+  deleteUsersIdNotificationRulesNotificationRuleIdRoute,
+  deleteUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+  deleteUsersIdRoute,
+  deleteUsersIdSessionsRoute,
+  deleteUsersIdSessionsTypeSessionIdRoute,
+  deleteUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+  deleteV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+  deleteV3SchedulesIdOverridesOverrideIdRoute,
+  deleteV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+  deleteV3SchedulesIdRotationsRotationIdRoute,
+  deleteV3SchedulesIdRoute,
+  deleteWebhookSubscriptionsIdRoute,
+  deleteWebhookSubscriptionsOauthClientsIdRoute,
+  deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  getAbilitiesIdRoute,
+  getAbilitiesRoute,
+  getAddonsIdRoute,
+  getAddonsRoute,
+  getAlertGroupingSettingsIdRoute,
+  getAlertGroupingSettingsRoute,
+  getAnalyticsRawIncidentsIdResponsesRoute,
+  getAnalyticsRawIncidentsIdRoute,
+  getAuditRecordsRoute,
+  getAutomationActionsActionsIdRoute,
+  getAutomationActionsActionsIdServicesRoute,
+  getAutomationActionsActionsIdServicesServiceIdRoute,
+  getAutomationActionsActionsIdTeamsRoute,
+  getAutomationActionsActionsIdTeamsTeamIdRoute,
+  getAutomationActionsActionsRoute,
+  getAutomationActionsInvocationsIdRoute,
+  getAutomationActionsInvocationsRoute,
+  getAutomationActionsRunnersIdRoute,
+  getAutomationActionsRunnersIdTeamsRoute,
+  getAutomationActionsRunnersIdTeamsTeamIdRoute,
+  getAutomationActionsRunnersRoute,
+  getBusinessServicesIdRoute,
+  getBusinessServicesIdSubscribersRoute,
+  getBusinessServicesIdSupportingServicesImpactsRoute,
+  getBusinessServicesImpactorsRoute,
+  getBusinessServicesImpactsRoute,
+  getBusinessServicesPriorityThresholdsRoute,
+  getBusinessServicesRoute,
+  getChangeEventsIdRoute,
+  getChangeEventsRoute,
+  getEnrichmentEventEnrichmentsDefaultRoute,
+  getEnrichmentEventEnrichmentsIdAssociationsRoute,
+  getEnrichmentEventEnrichmentsIdRoute,
+  getEnrichmentEventEnrichmentsIdRulesRoute,
+  getEnrichmentEventEnrichmentsRoute,
+  getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+  getEnrichmentIntegrationsServicenowIntegrationIdRoute,
+  getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRoute,
+  getEnrichmentIntegrationsServicenowRoute,
+  getEnrichmentSchemasRoute,
+  getEnrichmentSchemasSchemaIdRecordsRoute,
+  getEnrichmentSchemasSchemaIdRoute,
+  getEntityTypeIdTagsRoute,
+  getEscalationPoliciesIdAuditRecordsRoute,
+  getEscalationPoliciesIdRoute,
+  getEscalationPoliciesRoute,
+  getEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+  getEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+  getEventOrchestrationsIdCacheVariablesRoute,
+  getEventOrchestrationsIdEnablementsRoute,
+  getEventOrchestrationsIdGlobalRoute,
+  getEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+  getEventOrchestrationsIdIntegrationsRoute,
+  getEventOrchestrationsIdRoute,
+  getEventOrchestrationsIdRouterRoute,
+  getEventOrchestrationsIdUnroutedRoute,
+  getEventOrchestrationsRoute,
+  getEventOrchestrationsServicesServiceIdActiveRoute,
+  getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+  getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+  getEventOrchestrationsServicesServiceIdCacheVariablesRoute,
+  getEventOrchestrationsServicesServiceIdRoute,
+  getExtensionSchemasIdRoute,
+  getExtensionSchemasRoute,
+  getExtensionsIdRoute,
+  getExtensionsRoute,
+  getIncidentsCustomFieldsFieldIdFieldOptionsRoute,
+  getIncidentsCustomFieldsFieldIdRoute,
+  getIncidentsCustomFieldsRoute,
+  getIncidentsIdAlertsAlertIdRoute,
+  getIncidentsIdAlertsRoute,
+  getIncidentsIdBusinessServicesImpactsRoute,
+  getIncidentsIdCustomFieldsValuesRoute,
+  getIncidentsIdLogEntriesRoute,
+  getIncidentsIdNotesRoute,
+  getIncidentsIdOutlierIncidentRoute,
+  getIncidentsIdPastIncidentsRoute,
+  getIncidentsIdRelatedChangeEventsRoute,
+  getIncidentsIdRelatedIncidentsRoute,
+  getIncidentsIdReviewActionItemsRoute,
+  getIncidentsIdReviewRoute,
+  getIncidentsIdRoute,
+  getIncidentsIdScribeTranscriptsRoute,
+  getIncidentsIdStatusUpdatesSubscribersRoute,
+  getIncidentsReviewsActionItemsRoute,
+  getIncidentsReviewsRoute,
+  getIncidentsRoute,
+  getIncidentsTypesRoute,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+  getIncidentsTypesTypeIdOrNameCustomFieldsRoute,
+  getIncidentsTypesTypeIdOrNameRoute,
+  getIncidentWorkflowsActionsIdRoute,
+  getIncidentWorkflowsActionsRoute,
+  getIncidentWorkflowsIdRoute,
+  getIncidentWorkflowsRoute,
+  getIncidentWorkflowsTriggersIdRoute,
+  getIncidentWorkflowsTriggersRoute,
+  getIpAllowListsIdAuditRecordsRoute,
+  getIpAllowListsIdRoute,
+  getIpAllowListsRoute,
+  getLicenseAllocationsRoute,
+  getLicensesRoute,
+  getLogEntriesIdRoute,
+  getLogEntriesRoute,
+  getMaintenanceWindowsIdRoute,
+  getMaintenanceWindowsRoute,
+  getNotificationsRoute,
+  getOauthDelegationsRevocationRequestsStatusRoute,
+  getOncallsRoute,
+  getPausedIncidentReportsAlertsRoute,
+  getPausedIncidentReportsCountsRoute,
+  getPrioritiesRoute,
+  getRecommendationsEventOrchestrationsRulesRoute,
+  getRulesetsIdRoute,
+  getRulesetsIdRulesRoute,
+  getRulesetsIdRulesRuleIdRoute,
+  getRulesetsRoute,
+  getSchedulesIdAuditRecordsRoute,
+  getSchedulesIdOverridesRoute,
+  getSchedulesIdRoute,
+  getSchedulesIdUsersRoute,
+  getSchedulesRoute,
+  getServiceDependenciesBusinessServicesIdRoute,
+  getServiceDependenciesTechnicalServicesIdRoute,
+  getServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  getServicesCustomFieldsFieldIdFieldOptionsRoute,
+  getServicesCustomFieldsFieldIdRoute,
+  getServicesCustomFieldsRoute,
+  getServicesIdAuditRecordsRoute,
+  getServicesIdChangeEventsRoute,
+  getServicesIdCustomFieldsValuesRoute,
+  getServicesIdEnablementsRoute,
+  getServicesIdIntegrationsIntegrationIdRoute,
+  getServicesIdRoute,
+  getServicesIdRulesRoute,
+  getServicesIdRulesRuleIdRoute,
+  getServicesRoute,
+  getSessionConfigurationsRoute,
+  getSreAgentMemoriesRoute,
+  getStandardsRoute,
+  getStandardsScoresResourceTypeIdRoute,
+  getStandardsScoresResourceTypeRoute,
+  getStatusDashboardsIdRoute,
+  getStatusDashboardsIdServiceImpactsRoute,
+  getStatusDashboardsRoute,
+  getStatusDashboardsUrlSlugsUrlSlugRoute,
+  getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRoute,
+  getStatusPagesIdImpactsImpactIdRoute,
+  getStatusPagesIdImpactsRoute,
+  getStatusPagesIdPostsPostIdPostmortemRoute,
+  getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+  getStatusPagesIdPostsPostIdPostUpdatesRoute,
+  getStatusPagesIdPostsPostIdRoute,
+  getStatusPagesIdPostsRoute,
+  getStatusPagesIdServicesRoute,
+  getStatusPagesIdServicesServiceIdRoute,
+  getStatusPagesIdSeveritiesRoute,
+  getStatusPagesIdSeveritiesSeverityIdRoute,
+  getStatusPagesIdStatusesRoute,
+  getStatusPagesIdStatusesStatusIdRoute,
+  getStatusPagesIdSubscriptionsRoute,
+  getStatusPagesIdSubscriptionsSubscriptionIdRoute,
+  getStatusPagesRoute,
+  getTagsIdEntityTypeRoute,
+  getTagsIdRoute,
+  getTagsRoute,
+  getTeamsIdAuditRecordsRoute,
+  getTeamsIdMembersRoute,
+  getTeamsIdNotificationSubscriptionsRoute,
+  getTeamsIdRoute,
+  getTeamsRoute,
+  getTemplatesFieldsRoute,
+  getTemplatesIdRoute,
+  getTemplatesRoute,
+  getUsersIdAuditRecordsRoute,
+  getUsersIdContactMethodsContactMethodIdRoute,
+  getUsersIdContactMethodsRoute,
+  getUsersIdLicenseRoute,
+  getUsersIdNotificationRulesNotificationRuleIdRoute,
+  getUsersIdNotificationRulesRoute,
+  getUsersIdNotificationSubscriptionsRoute,
+  getUsersIdOauthDelegationsDelegationIdRoute,
+  getUsersIdOauthDelegationsRoute,
+  getUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+  getUsersIdOncallHandoffNotificationRulesRoute,
+  getUsersIdRoute,
+  getUsersIdSessionsRoute,
+  getUsersIdSessionsTypeSessionIdRoute,
+  getUsersIdStatusUpdateNotificationRulesRoute,
+  getUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+  getUsersMeRoute,
+  getUsersRoute,
+  getV3SchedulesIdAuditRecordsRoute,
+  getV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+  getV3SchedulesIdCustomShiftsRoute,
+  getV3SchedulesIdOverridesOverrideIdRoute,
+  getV3SchedulesIdOverridesRoute,
+  getV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+  getV3SchedulesIdRotationsRotationIdEventsRoute,
+  getV3SchedulesIdRotationsRotationIdRoute,
+  getV3SchedulesIdRotationsRoute,
+  getV3SchedulesIdRoute,
+  getV3SchedulesRoute,
+  getVendorsIdRoute,
+  getVendorsRoute,
+  getWebhookSubscriptionsIdRoute,
+  getWebhookSubscriptionsOauthClientsIdRoute,
+  getWebhookSubscriptionsOauthClientsRoute,
+  getWebhookSubscriptionsRoute,
+  getWorkflowsIntegrationsConnectionsRoute,
+  getWorkflowsIntegrationsIdRoute,
+  getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  getWorkflowsIntegrationsIntegrationIdConnectionsRoute,
+  getWorkflowsIntegrationsRoute,
+  patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  postAddonsRoute,
+  postAlertGroupingSettingsRoute,
+  postAnalyticsMetricsIncidentsAllRoute,
+  postAnalyticsMetricsIncidentsEscalationPoliciesAllRoute,
+  postAnalyticsMetricsIncidentsEscalationPoliciesRoute,
+  postAnalyticsMetricsIncidentsServicesAllRoute,
+  postAnalyticsMetricsIncidentsServicesRoute,
+  postAnalyticsMetricsIncidentsTeamsAllRoute,
+  postAnalyticsMetricsIncidentsTeamsRoute,
+  postAnalyticsMetricsPdAdvanceUsageFeaturesRoute,
+  postAnalyticsMetricsRespondersAllRoute,
+  postAnalyticsMetricsRespondersTeamsRoute,
+  postAnalyticsMetricsUsersAllRoute,
+  postAnalyticsRawIncidentsRoute,
+  postAnalyticsRawRespondersResponderIdIncidentsRoute,
+  postAnalyticsRawUsersRoute,
+  postAutomationActionsActionsIdInvocationsRoute,
+  postAutomationActionsActionsIdServicesRoute,
+  postAutomationActionsActionsIdTeamsRoute,
+  postAutomationActionsActionsRoute,
+  postAutomationActionsRunnersIdTeamsRoute,
+  postAutomationActionsRunnersRoute,
+  postBusinessServicesIdAccountSubscriptionRoute,
+  postBusinessServicesIdSubscribersRoute,
+  postBusinessServicesIdUnsubscribeRoute,
+  postBusinessServicesRoute,
+  postChangeEventsRoute,
+  postEnrichmentEventEnrichmentsIdAssociationsRoute,
+  postEnrichmentEventEnrichmentsRoute,
+  postEnrichmentIntegrationsServicenowCredentialsRoute,
+  postEnrichmentIntegrationsServicenowIntegrationIdTablesRoute,
+  postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRoute,
+  postEnrichmentIntegrationsServicenowRoute,
+  postEnrichmentQueryRoute,
+  postEnrichmentSchemasRoute,
+  postEnrichmentSchemasSchemaIdRecordsRoute,
+  postEntityTypeIdChangeTagsRoute,
+  postEscalationPoliciesRoute,
+  postEventOrchestrationsIdCacheVariablesRoute,
+  postEventOrchestrationsIdIntegrationsMigrationRoute,
+  postEventOrchestrationsIdIntegrationsRoute,
+  postEventOrchestrationsRoute,
+  postEventOrchestrationsServicesServiceIdCacheVariablesRoute,
+  postExtensionsIdEnableRoute,
+  postExtensionsRoute,
+  postIncidentsCustomFieldsFieldIdFieldOptionsRoute,
+  postIncidentsCustomFieldsRoute,
+  postIncidentsIdNotesRoute,
+  postIncidentsIdResponderRequestsRoute,
+  postIncidentsIdReviewMarkersRoute,
+  postIncidentsIdReviewRoute,
+  postIncidentsIdSnoozeRoute,
+  postIncidentsIdStatusUpdatesRoute,
+  postIncidentsIdStatusUpdatesSubscribersRoute,
+  postIncidentsIdStatusUpdatesUnsubscribeRoute,
+  postIncidentsRoute,
+  postIncidentsTypesRoute,
+  postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute,
+  postIncidentsTypesTypeIdOrNameCustomFieldsRoute,
+  postIncidentWorkflowsIdInstancesRoute,
+  postIncidentWorkflowsRoute,
+  postIncidentWorkflowsTriggersIdServicesRoute,
+  postIncidentWorkflowsTriggersRoute,
+  postIpAllowListsRoute,
+  postMaintenanceWindowsRoute,
+  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRoute,
+  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdDismissRoute,
+  postRulesetsIdRulesRoute,
+  postRulesetsRoute,
+  postSchedulesIdOverridesRoute,
+  postSchedulesPreviewRoute,
+  postSchedulesRoute,
+  postServiceDependenciesAssociateRoute,
+  postServiceDependenciesDisassociateRoute,
+  postServicesCustomFieldsFieldIdFieldOptionsRoute,
+  postServicesCustomFieldsRoute,
+  postServicesIdIntegrationsRoute,
+  postServicesIdRulesConvertRoute,
+  postServicesIdRulesRoute,
+  postServicesRoute,
+  postStatusPagesIdPostsPostIdPostUpdatesRoute,
+  postStatusPagesIdPostsRoute,
+  postStatusPagesIdSubscriptionsRoute,
+  postTagsRoute,
+  postTeamsIdNotificationSubscriptionsRoute,
+  postTeamsIdNotificationSubscriptionsUnsubscribeRoute,
+  postTeamsRoute,
+  postTemplatesIdRenderRoute,
+  postTemplatesRoute,
+  postUsersIdContactMethodsRoute,
+  postUsersIdNotificationRulesRoute,
+  postUsersIdNotificationSubscriptionsRoute,
+  postUsersIdNotificationSubscriptionsUnsubscribeRoute,
+  postUsersIdOncallHandoffNotificationRulesRoute,
+  postUsersIdRegeneratePrivateUrlKeyRoute,
+  postUsersIdStatusUpdateNotificationRulesRoute,
+  postUsersRoute,
+  postV3SchedulesIdCustomShiftsRoute,
+  postV3SchedulesIdOverridesRoute,
+  postV3SchedulesIdRotationsRotationIdEventsRoute,
+  postV3SchedulesIdRotationsRoute,
+  postV3SchedulesRoute,
+  postWebhookSubscriptionsIdEnableRoute,
+  postWebhookSubscriptionsIdPingRoute,
+  postWebhookSubscriptionsOauthClientsRoute,
+  postWebhookSubscriptionsRoute,
+  postWorkflowsIntegrationsIntegrationIdConnectionsRoute,
+  putAddonsIdRoute,
+  putAlertGroupingSettingsIdRoute,
+  putAutomationActionsActionsIdRoute,
+  putAutomationActionsRunnersIdRoute,
+  putBusinessServicesIdRoute,
+  putBusinessServicesPriorityThresholdsRoute,
+  putChangeEventsIdRoute,
+  putEnrichmentEventEnrichmentsDefaultRoute,
+  putEnrichmentEventEnrichmentsIdRoute,
+  putEnrichmentEventEnrichmentsIdRulesRoute,
+  putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+  putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute,
+  putEnrichmentSchemasSchemaIdRoute,
+  putEscalationPoliciesIdRoute,
+  putEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+  putEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+  putEventOrchestrationsIdEnablementsFeatureNameRoute,
+  putEventOrchestrationsIdGlobalRoute,
+  putEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+  putEventOrchestrationsIdRoute,
+  putEventOrchestrationsIdRouterRoute,
+  putEventOrchestrationsIdUnroutedRoute,
+  putEventOrchestrationsServicesServiceIdActiveRoute,
+  putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+  putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+  putEventOrchestrationsServicesServiceIdRoute,
+  putExtensionsIdRoute,
+  putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  putIncidentsCustomFieldsFieldIdRoute,
+  putIncidentsIdAlertsAlertIdRoute,
+  putIncidentsIdAlertsRoute,
+  putIncidentsIdBusinessServicesBusinessServiceIdImpactsRoute,
+  putIncidentsIdCustomFieldsValuesRoute,
+  putIncidentsIdMergeRoute,
+  putIncidentsIdNotesNoteIdRoute,
+  putIncidentsIdResponderRequestsCancelRoute,
+  putIncidentsIdReviewRoute,
+  putIncidentsIdRoute,
+  putIncidentsRoute,
+  putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+  putIncidentsTypesTypeIdOrNameRoute,
+  putIncidentWorkflowsIdRoute,
+  putIncidentWorkflowsTriggersIdRoute,
+  putIpAllowListsIdRoute,
+  putLogEntriesIdChannelRoute,
+  putMaintenanceWindowsIdRoute,
+  putRulesetsIdRoute,
+  putRulesetsIdRulesRuleIdRoute,
+  putSchedulesIdRoute,
+  putServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+  putServicesCustomFieldsFieldIdRoute,
+  putServicesIdCustomFieldsValuesRoute,
+  putServicesIdEnablementsFeatureNameRoute,
+  putServicesIdIntegrationsIntegrationIdRoute,
+  putServicesIdRoute,
+  putServicesIdRulesRuleIdRoute,
+  putSessionConfigurationsRoute,
+  putSreAgentMemoriesIdRoute,
+  putStandardsIdRoute,
+  putStatusPagesIdPostsPostIdPostmortemRoute,
+  putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+  putStatusPagesIdPostsPostIdRoute,
+  putTeamsIdEscalationPoliciesEscalationPolicyIdRoute,
+  putTeamsIdRoute,
+  putTeamsIdUsersUserIdRoute,
+  putTemplatesIdRoute,
+  putUsersIdContactMethodsContactMethodIdRoute,
+  putUsersIdNotificationRulesNotificationRuleIdRoute,
+  putUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+  putUsersIdRoute,
+  putUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+  putV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+  putV3SchedulesIdOverridesOverrideIdRoute,
+  putV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+  putV3SchedulesIdRoute,
+  putWebhookSubscriptionsIdRoute,
+  putWebhookSubscriptionsOauthClientsIdRoute,
+} from './routes'
+import {
+  deleteAddonsIdRouteHandler,
+  deleteAlertGroupingSettingsIdRouteHandler,
+  deleteAutomationActionsActionsIdRouteHandler,
+  deleteAutomationActionsActionsIdServicesServiceIdRouteHandler,
+  deleteAutomationActionsActionsIdTeamsTeamIdRouteHandler,
+  deleteAutomationActionsRunnersIdRouteHandler,
+  deleteAutomationActionsRunnersIdTeamsTeamIdRouteHandler,
+  deleteBusinessServicesIdAccountSubscriptionRouteHandler,
+  deleteBusinessServicesIdRouteHandler,
+  deleteBusinessServicesPriorityThresholdsRouteHandler,
+  deleteEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  deleteEnrichmentEventEnrichmentsIdRouteHandler,
+  deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  deleteEnrichmentIntegrationsServicenowIntegrationIdRouteHandler,
+  deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler,
+  deleteEnrichmentSchemasSchemaIdRecordsRecordIdRouteHandler,
+  deleteEnrichmentSchemasSchemaIdRouteHandler,
+  deleteEscalationPoliciesIdRouteHandler,
+  deleteEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  deleteEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  deleteEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  deleteEventOrchestrationsIdRouteHandler,
+  deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  deleteExtensionsIdRouteHandler,
+  deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  deleteIncidentsCustomFieldsFieldIdRouteHandler,
+  deleteIncidentsIdNotesNoteIdRouteHandler,
+  deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  deleteIncidentWorkflowsIdRouteHandler,
+  deleteIncidentWorkflowsTriggersIdRouteHandler,
+  deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRouteHandler,
+  deleteIpAllowListsIdRouteHandler,
+  deleteMaintenanceWindowsIdRouteHandler,
+  deleteOauthDelegationsRouteHandler,
+  deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRouteHandler,
+  deleteRulesetsIdRouteHandler,
+  deleteRulesetsIdRulesRuleIdRouteHandler,
+  deleteSchedulesIdOverridesOverrideIdRouteHandler,
+  deleteSchedulesIdRouteHandler,
+  deleteServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  deleteServicesCustomFieldsFieldIdRouteHandler,
+  deleteServicesIdRouteHandler,
+  deleteServicesIdRulesRuleIdRouteHandler,
+  deleteSessionConfigurationsRouteHandler,
+  deleteSreAgentMemoriesIdRouteHandler,
+  deleteStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  deleteStatusPagesIdPostsPostIdRouteHandler,
+  deleteStatusPagesIdSubscriptionsSubscriptionIdRouteHandler,
+  deleteTagsIdRouteHandler,
+  deleteTeamsIdEscalationPoliciesEscalationPolicyIdRouteHandler,
+  deleteTeamsIdRouteHandler,
+  deleteTeamsIdUsersUserIdRouteHandler,
+  deleteTemplatesIdRouteHandler,
+  deleteUsersIdContactMethodsContactMethodIdRouteHandler,
+  deleteUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  deleteUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  deleteUsersIdRouteHandler,
+  deleteUsersIdSessionsRouteHandler,
+  deleteUsersIdSessionsTypeSessionIdRouteHandler,
+  deleteUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  deleteV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  deleteV3SchedulesIdOverridesOverrideIdRouteHandler,
+  deleteV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  deleteV3SchedulesIdRotationsRotationIdRouteHandler,
+  deleteV3SchedulesIdRouteHandler,
+  deleteWebhookSubscriptionsIdRouteHandler,
+  deleteWebhookSubscriptionsOauthClientsIdRouteHandler,
+  deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  getAbilitiesIdRouteHandler,
+  getAbilitiesRouteHandler,
+  getAddonsIdRouteHandler,
+  getAddonsRouteHandler,
+  getAlertGroupingSettingsIdRouteHandler,
+  getAlertGroupingSettingsRouteHandler,
+  getAnalyticsRawIncidentsIdResponsesRouteHandler,
+  getAnalyticsRawIncidentsIdRouteHandler,
+  getAuditRecordsRouteHandler,
+  getAutomationActionsActionsIdRouteHandler,
+  getAutomationActionsActionsIdServicesRouteHandler,
+  getAutomationActionsActionsIdServicesServiceIdRouteHandler,
+  getAutomationActionsActionsIdTeamsRouteHandler,
+  getAutomationActionsActionsIdTeamsTeamIdRouteHandler,
+  getAutomationActionsActionsRouteHandler,
+  getAutomationActionsInvocationsIdRouteHandler,
+  getAutomationActionsInvocationsRouteHandler,
+  getAutomationActionsRunnersIdRouteHandler,
+  getAutomationActionsRunnersIdTeamsRouteHandler,
+  getAutomationActionsRunnersIdTeamsTeamIdRouteHandler,
+  getAutomationActionsRunnersRouteHandler,
+  getBusinessServicesIdRouteHandler,
+  getBusinessServicesIdSubscribersRouteHandler,
+  getBusinessServicesIdSupportingServicesImpactsRouteHandler,
+  getBusinessServicesImpactorsRouteHandler,
+  getBusinessServicesImpactsRouteHandler,
+  getBusinessServicesPriorityThresholdsRouteHandler,
+  getBusinessServicesRouteHandler,
+  getChangeEventsIdRouteHandler,
+  getChangeEventsRouteHandler,
+  getEnrichmentEventEnrichmentsDefaultRouteHandler,
+  getEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  getEnrichmentEventEnrichmentsIdRouteHandler,
+  getEnrichmentEventEnrichmentsIdRulesRouteHandler,
+  getEnrichmentEventEnrichmentsRouteHandler,
+  getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  getEnrichmentIntegrationsServicenowIntegrationIdRouteHandler,
+  getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRouteHandler,
+  getEnrichmentIntegrationsServicenowRouteHandler,
+  getEnrichmentSchemasRouteHandler,
+  getEnrichmentSchemasSchemaIdRecordsRouteHandler,
+  getEnrichmentSchemasSchemaIdRouteHandler,
+  getEntityTypeIdTagsRouteHandler,
+  getEscalationPoliciesIdAuditRecordsRouteHandler,
+  getEscalationPoliciesIdRouteHandler,
+  getEscalationPoliciesRouteHandler,
+  getEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  getEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  getEventOrchestrationsIdCacheVariablesRouteHandler,
+  getEventOrchestrationsIdEnablementsRouteHandler,
+  getEventOrchestrationsIdGlobalRouteHandler,
+  getEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  getEventOrchestrationsIdIntegrationsRouteHandler,
+  getEventOrchestrationsIdRouteHandler,
+  getEventOrchestrationsIdRouterRouteHandler,
+  getEventOrchestrationsIdUnroutedRouteHandler,
+  getEventOrchestrationsRouteHandler,
+  getEventOrchestrationsServicesServiceIdActiveRouteHandler,
+  getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  getEventOrchestrationsServicesServiceIdCacheVariablesRouteHandler,
+  getEventOrchestrationsServicesServiceIdRouteHandler,
+  getExtensionSchemasIdRouteHandler,
+  getExtensionSchemasRouteHandler,
+  getExtensionsIdRouteHandler,
+  getExtensionsRouteHandler,
+  getIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler,
+  getIncidentsCustomFieldsFieldIdRouteHandler,
+  getIncidentsCustomFieldsRouteHandler,
+  getIncidentsIdAlertsAlertIdRouteHandler,
+  getIncidentsIdAlertsRouteHandler,
+  getIncidentsIdBusinessServicesImpactsRouteHandler,
+  getIncidentsIdCustomFieldsValuesRouteHandler,
+  getIncidentsIdLogEntriesRouteHandler,
+  getIncidentsIdNotesRouteHandler,
+  getIncidentsIdOutlierIncidentRouteHandler,
+  getIncidentsIdPastIncidentsRouteHandler,
+  getIncidentsIdRelatedChangeEventsRouteHandler,
+  getIncidentsIdRelatedIncidentsRouteHandler,
+  getIncidentsIdReviewActionItemsRouteHandler,
+  getIncidentsIdReviewRouteHandler,
+  getIncidentsIdRouteHandler,
+  getIncidentsIdScribeTranscriptsRouteHandler,
+  getIncidentsIdStatusUpdatesSubscribersRouteHandler,
+  getIncidentsReviewsActionItemsRouteHandler,
+  getIncidentsReviewsRouteHandler,
+  getIncidentsRouteHandler,
+  getIncidentsTypesRouteHandler,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler,
+  getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  getIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler,
+  getIncidentsTypesTypeIdOrNameRouteHandler,
+  getIncidentWorkflowsActionsIdRouteHandler,
+  getIncidentWorkflowsActionsRouteHandler,
+  getIncidentWorkflowsIdRouteHandler,
+  getIncidentWorkflowsRouteHandler,
+  getIncidentWorkflowsTriggersIdRouteHandler,
+  getIncidentWorkflowsTriggersRouteHandler,
+  getIpAllowListsIdAuditRecordsRouteHandler,
+  getIpAllowListsIdRouteHandler,
+  getIpAllowListsRouteHandler,
+  getLicenseAllocationsRouteHandler,
+  getLicensesRouteHandler,
+  getLogEntriesIdRouteHandler,
+  getLogEntriesRouteHandler,
+  getMaintenanceWindowsIdRouteHandler,
+  getMaintenanceWindowsRouteHandler,
+  getNotificationsRouteHandler,
+  getOauthDelegationsRevocationRequestsStatusRouteHandler,
+  getOncallsRouteHandler,
+  getPausedIncidentReportsAlertsRouteHandler,
+  getPausedIncidentReportsCountsRouteHandler,
+  getPrioritiesRouteHandler,
+  getRecommendationsEventOrchestrationsRulesRouteHandler,
+  getRulesetsIdRouteHandler,
+  getRulesetsIdRulesRouteHandler,
+  getRulesetsIdRulesRuleIdRouteHandler,
+  getRulesetsRouteHandler,
+  getSchedulesIdAuditRecordsRouteHandler,
+  getSchedulesIdOverridesRouteHandler,
+  getSchedulesIdRouteHandler,
+  getSchedulesIdUsersRouteHandler,
+  getSchedulesRouteHandler,
+  getServiceDependenciesBusinessServicesIdRouteHandler,
+  getServiceDependenciesTechnicalServicesIdRouteHandler,
+  getServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  getServicesCustomFieldsFieldIdFieldOptionsRouteHandler,
+  getServicesCustomFieldsFieldIdRouteHandler,
+  getServicesCustomFieldsRouteHandler,
+  getServicesIdAuditRecordsRouteHandler,
+  getServicesIdChangeEventsRouteHandler,
+  getServicesIdCustomFieldsValuesRouteHandler,
+  getServicesIdEnablementsRouteHandler,
+  getServicesIdIntegrationsIntegrationIdRouteHandler,
+  getServicesIdRouteHandler,
+  getServicesIdRulesRouteHandler,
+  getServicesIdRulesRuleIdRouteHandler,
+  getServicesRouteHandler,
+  getSessionConfigurationsRouteHandler,
+  getSreAgentMemoriesRouteHandler,
+  getStandardsRouteHandler,
+  getStandardsScoresResourceTypeIdRouteHandler,
+  getStandardsScoresResourceTypeRouteHandler,
+  getStatusDashboardsIdRouteHandler,
+  getStatusDashboardsIdServiceImpactsRouteHandler,
+  getStatusDashboardsRouteHandler,
+  getStatusDashboardsUrlSlugsUrlSlugRouteHandler,
+  getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRouteHandler,
+  getStatusPagesIdImpactsImpactIdRouteHandler,
+  getStatusPagesIdImpactsRouteHandler,
+  getStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  getStatusPagesIdPostsPostIdPostUpdatesRouteHandler,
+  getStatusPagesIdPostsPostIdRouteHandler,
+  getStatusPagesIdPostsRouteHandler,
+  getStatusPagesIdServicesRouteHandler,
+  getStatusPagesIdServicesServiceIdRouteHandler,
+  getStatusPagesIdSeveritiesRouteHandler,
+  getStatusPagesIdSeveritiesSeverityIdRouteHandler,
+  getStatusPagesIdStatusesRouteHandler,
+  getStatusPagesIdStatusesStatusIdRouteHandler,
+  getStatusPagesIdSubscriptionsRouteHandler,
+  getStatusPagesIdSubscriptionsSubscriptionIdRouteHandler,
+  getStatusPagesRouteHandler,
+  getTagsIdEntityTypeRouteHandler,
+  getTagsIdRouteHandler,
+  getTagsRouteHandler,
+  getTeamsIdAuditRecordsRouteHandler,
+  getTeamsIdMembersRouteHandler,
+  getTeamsIdNotificationSubscriptionsRouteHandler,
+  getTeamsIdRouteHandler,
+  getTeamsRouteHandler,
+  getTemplatesFieldsRouteHandler,
+  getTemplatesIdRouteHandler,
+  getTemplatesRouteHandler,
+  getUsersIdAuditRecordsRouteHandler,
+  getUsersIdContactMethodsContactMethodIdRouteHandler,
+  getUsersIdContactMethodsRouteHandler,
+  getUsersIdLicenseRouteHandler,
+  getUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  getUsersIdNotificationRulesRouteHandler,
+  getUsersIdNotificationSubscriptionsRouteHandler,
+  getUsersIdOauthDelegationsDelegationIdRouteHandler,
+  getUsersIdOauthDelegationsRouteHandler,
+  getUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  getUsersIdOncallHandoffNotificationRulesRouteHandler,
+  getUsersIdRouteHandler,
+  getUsersIdSessionsRouteHandler,
+  getUsersIdSessionsTypeSessionIdRouteHandler,
+  getUsersIdStatusUpdateNotificationRulesRouteHandler,
+  getUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  getUsersMeRouteHandler,
+  getUsersRouteHandler,
+  getV3SchedulesIdAuditRecordsRouteHandler,
+  getV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  getV3SchedulesIdCustomShiftsRouteHandler,
+  getV3SchedulesIdOverridesOverrideIdRouteHandler,
+  getV3SchedulesIdOverridesRouteHandler,
+  getV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  getV3SchedulesIdRotationsRotationIdEventsRouteHandler,
+  getV3SchedulesIdRotationsRotationIdRouteHandler,
+  getV3SchedulesIdRotationsRouteHandler,
+  getV3SchedulesIdRouteHandler,
+  getV3SchedulesRouteHandler,
+  getVendorsIdRouteHandler,
+  getVendorsRouteHandler,
+  getWebhookSubscriptionsIdRouteHandler,
+  getWebhookSubscriptionsOauthClientsIdRouteHandler,
+  getWebhookSubscriptionsOauthClientsRouteHandler,
+  getWebhookSubscriptionsRouteHandler,
+  getWorkflowsIntegrationsConnectionsRouteHandler,
+  getWorkflowsIntegrationsIdRouteHandler,
+  getWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  getWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler,
+  getWorkflowsIntegrationsRouteHandler,
+  patchWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  postAddonsRouteHandler,
+  postAlertGroupingSettingsRouteHandler,
+  postAnalyticsMetricsIncidentsAllRouteHandler,
+  postAnalyticsMetricsIncidentsEscalationPoliciesAllRouteHandler,
+  postAnalyticsMetricsIncidentsEscalationPoliciesRouteHandler,
+  postAnalyticsMetricsIncidentsServicesAllRouteHandler,
+  postAnalyticsMetricsIncidentsServicesRouteHandler,
+  postAnalyticsMetricsIncidentsTeamsAllRouteHandler,
+  postAnalyticsMetricsIncidentsTeamsRouteHandler,
+  postAnalyticsMetricsPdAdvanceUsageFeaturesRouteHandler,
+  postAnalyticsMetricsRespondersAllRouteHandler,
+  postAnalyticsMetricsRespondersTeamsRouteHandler,
+  postAnalyticsMetricsUsersAllRouteHandler,
+  postAnalyticsRawIncidentsRouteHandler,
+  postAnalyticsRawRespondersResponderIdIncidentsRouteHandler,
+  postAnalyticsRawUsersRouteHandler,
+  postAutomationActionsActionsIdInvocationsRouteHandler,
+  postAutomationActionsActionsIdServicesRouteHandler,
+  postAutomationActionsActionsIdTeamsRouteHandler,
+  postAutomationActionsActionsRouteHandler,
+  postAutomationActionsRunnersIdTeamsRouteHandler,
+  postAutomationActionsRunnersRouteHandler,
+  postBusinessServicesIdAccountSubscriptionRouteHandler,
+  postBusinessServicesIdSubscribersRouteHandler,
+  postBusinessServicesIdUnsubscribeRouteHandler,
+  postBusinessServicesRouteHandler,
+  postChangeEventsRouteHandler,
+  postEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  postEnrichmentEventEnrichmentsRouteHandler,
+  postEnrichmentIntegrationsServicenowCredentialsRouteHandler,
+  postEnrichmentIntegrationsServicenowIntegrationIdTablesRouteHandler,
+  postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRouteHandler,
+  postEnrichmentIntegrationsServicenowRouteHandler,
+  postEnrichmentQueryRouteHandler,
+  postEnrichmentSchemasRouteHandler,
+  postEnrichmentSchemasSchemaIdRecordsRouteHandler,
+  postEntityTypeIdChangeTagsRouteHandler,
+  postEscalationPoliciesRouteHandler,
+  postEventOrchestrationsIdCacheVariablesRouteHandler,
+  postEventOrchestrationsIdIntegrationsMigrationRouteHandler,
+  postEventOrchestrationsIdIntegrationsRouteHandler,
+  postEventOrchestrationsRouteHandler,
+  postEventOrchestrationsServicesServiceIdCacheVariablesRouteHandler,
+  postExtensionsIdEnableRouteHandler,
+  postExtensionsRouteHandler,
+  postIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler,
+  postIncidentsCustomFieldsRouteHandler,
+  postIncidentsIdNotesRouteHandler,
+  postIncidentsIdResponderRequestsRouteHandler,
+  postIncidentsIdReviewMarkersRouteHandler,
+  postIncidentsIdReviewRouteHandler,
+  postIncidentsIdSnoozeRouteHandler,
+  postIncidentsIdStatusUpdatesRouteHandler,
+  postIncidentsIdStatusUpdatesSubscribersRouteHandler,
+  postIncidentsIdStatusUpdatesUnsubscribeRouteHandler,
+  postIncidentsRouteHandler,
+  postIncidentsTypesRouteHandler,
+  postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler,
+  postIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler,
+  postIncidentWorkflowsIdInstancesRouteHandler,
+  postIncidentWorkflowsRouteHandler,
+  postIncidentWorkflowsTriggersIdServicesRouteHandler,
+  postIncidentWorkflowsTriggersRouteHandler,
+  postIpAllowListsRouteHandler,
+  postMaintenanceWindowsRouteHandler,
+  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRouteHandler,
+  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdDismissRouteHandler,
+  postRulesetsIdRulesRouteHandler,
+  postRulesetsRouteHandler,
+  postSchedulesIdOverridesRouteHandler,
+  postSchedulesPreviewRouteHandler,
+  postSchedulesRouteHandler,
+  postServiceDependenciesAssociateRouteHandler,
+  postServiceDependenciesDisassociateRouteHandler,
+  postServicesCustomFieldsFieldIdFieldOptionsRouteHandler,
+  postServicesCustomFieldsRouteHandler,
+  postServicesIdIntegrationsRouteHandler,
+  postServicesIdRulesConvertRouteHandler,
+  postServicesIdRulesRouteHandler,
+  postServicesRouteHandler,
+  postStatusPagesIdPostsPostIdPostUpdatesRouteHandler,
+  postStatusPagesIdPostsRouteHandler,
+  postStatusPagesIdSubscriptionsRouteHandler,
+  postTagsRouteHandler,
+  postTeamsIdNotificationSubscriptionsRouteHandler,
+  postTeamsIdNotificationSubscriptionsUnsubscribeRouteHandler,
+  postTeamsRouteHandler,
+  postTemplatesIdRenderRouteHandler,
+  postTemplatesRouteHandler,
+  postUsersIdContactMethodsRouteHandler,
+  postUsersIdNotificationRulesRouteHandler,
+  postUsersIdNotificationSubscriptionsRouteHandler,
+  postUsersIdNotificationSubscriptionsUnsubscribeRouteHandler,
+  postUsersIdOncallHandoffNotificationRulesRouteHandler,
+  postUsersIdRegeneratePrivateUrlKeyRouteHandler,
+  postUsersIdStatusUpdateNotificationRulesRouteHandler,
+  postUsersRouteHandler,
+  postV3SchedulesIdCustomShiftsRouteHandler,
+  postV3SchedulesIdOverridesRouteHandler,
+  postV3SchedulesIdRotationsRotationIdEventsRouteHandler,
+  postV3SchedulesIdRotationsRouteHandler,
+  postV3SchedulesRouteHandler,
+  postWebhookSubscriptionsIdEnableRouteHandler,
+  postWebhookSubscriptionsIdPingRouteHandler,
+  postWebhookSubscriptionsOauthClientsRouteHandler,
+  postWebhookSubscriptionsRouteHandler,
+  postWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler,
+  putAddonsIdRouteHandler,
+  putAlertGroupingSettingsIdRouteHandler,
+  putAutomationActionsActionsIdRouteHandler,
+  putAutomationActionsRunnersIdRouteHandler,
+  putBusinessServicesIdRouteHandler,
+  putBusinessServicesPriorityThresholdsRouteHandler,
+  putChangeEventsIdRouteHandler,
+  putEnrichmentEventEnrichmentsDefaultRouteHandler,
+  putEnrichmentEventEnrichmentsIdRouteHandler,
+  putEnrichmentEventEnrichmentsIdRulesRouteHandler,
+  putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler,
+  putEnrichmentSchemasSchemaIdRouteHandler,
+  putEscalationPoliciesIdRouteHandler,
+  putEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  putEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  putEventOrchestrationsIdEnablementsFeatureNameRouteHandler,
+  putEventOrchestrationsIdGlobalRouteHandler,
+  putEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  putEventOrchestrationsIdRouteHandler,
+  putEventOrchestrationsIdRouterRouteHandler,
+  putEventOrchestrationsIdUnroutedRouteHandler,
+  putEventOrchestrationsServicesServiceIdActiveRouteHandler,
+  putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  putEventOrchestrationsServicesServiceIdRouteHandler,
+  putExtensionsIdRouteHandler,
+  putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  putIncidentsCustomFieldsFieldIdRouteHandler,
+  putIncidentsIdAlertsAlertIdRouteHandler,
+  putIncidentsIdAlertsRouteHandler,
+  putIncidentsIdBusinessServicesBusinessServiceIdImpactsRouteHandler,
+  putIncidentsIdCustomFieldsValuesRouteHandler,
+  putIncidentsIdMergeRouteHandler,
+  putIncidentsIdNotesNoteIdRouteHandler,
+  putIncidentsIdResponderRequestsCancelRouteHandler,
+  putIncidentsIdReviewRouteHandler,
+  putIncidentsIdRouteHandler,
+  putIncidentsRouteHandler,
+  putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  putIncidentsTypesTypeIdOrNameRouteHandler,
+  putIncidentWorkflowsIdRouteHandler,
+  putIncidentWorkflowsTriggersIdRouteHandler,
+  putIpAllowListsIdRouteHandler,
+  putLogEntriesIdChannelRouteHandler,
+  putMaintenanceWindowsIdRouteHandler,
+  putRulesetsIdRouteHandler,
+  putRulesetsIdRulesRuleIdRouteHandler,
+  putSchedulesIdRouteHandler,
+  putServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  putServicesCustomFieldsFieldIdRouteHandler,
+  putServicesIdCustomFieldsValuesRouteHandler,
+  putServicesIdEnablementsFeatureNameRouteHandler,
+  putServicesIdIntegrationsIntegrationIdRouteHandler,
+  putServicesIdRouteHandler,
+  putServicesIdRulesRuleIdRouteHandler,
+  putSessionConfigurationsRouteHandler,
+  putSreAgentMemoriesIdRouteHandler,
+  putStandardsIdRouteHandler,
+  putStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  putStatusPagesIdPostsPostIdRouteHandler,
+  putTeamsIdEscalationPoliciesEscalationPolicyIdRouteHandler,
+  putTeamsIdRouteHandler,
+  putTeamsIdUsersUserIdRouteHandler,
+  putTemplatesIdRouteHandler,
+  putUsersIdContactMethodsContactMethodIdRouteHandler,
+  putUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  putUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  putUsersIdRouteHandler,
+  putUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  putV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  putV3SchedulesIdOverridesOverrideIdRouteHandler,
+  putV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  putV3SchedulesIdRouteHandler,
+  putWebhookSubscriptionsIdRouteHandler,
+  putWebhookSubscriptionsOauthClientsIdRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', entityTypeHandler)
-  .route('/', abilitiesHandler)
-  .route('/', addonsHandler)
-  .route('/', alertGroupingSettingsHandler)
-  .route('/', analyticsHandler)
-  .route('/', auditHandler)
-  .route('/', automationActionsHandler)
-  .route('/', businessServicesHandler)
-  .route('/', changeEventsHandler)
-  .route('/', enrichmentHandler)
-  .route('/', escalationPoliciesHandler)
-  .route('/', eventOrchestrationsHandler)
-  .route('/', extensionSchemasHandler)
-  .route('/', extensionsHandler)
-  .route('/', incidentWorkflowsHandler)
-  .route('/', incidentsHandler)
-  .route('/', ipAllowListsHandler)
-  .route('/', licenseAllocationsHandler)
-  .route('/', licensesHandler)
-  .route('/', logEntriesHandler)
-  .route('/', maintenanceWindowsHandler)
-  .route('/', notificationsHandler)
-  .route('/', oauthDelegationsHandler)
-  .route('/', oncallsHandler)
-  .route('/', pausedIncidentReportsHandler)
-  .route('/', prioritiesHandler)
-  .route('/', rulesetsHandler)
-  .route('/', schedulesHandler)
-  .route('/', serviceDependenciesHandler)
-  .route('/', servicesHandler)
-  .route('/', sessionConfigurationsHandler)
-  .route('/', standardsHandler)
-  .route('/', statusDashboardsHandler)
-  .route('/', statusPagesHandler)
-  .route('/', sreAgentHandler)
-  .route('/', tagsHandler)
-  .route('/', teamsHandler)
-  .route('/', templatesHandler)
-  .route('/', usersHandler)
-  .route('/', vendorsHandler)
-  .route('/', v3Handler)
-  .route('/', webhookSubscriptionsHandler)
-  .route('/', workflowsHandler)
-  .route('/', recommendationsHandler)
+  .openapi(postEntityTypeIdChangeTagsRoute, postEntityTypeIdChangeTagsRouteHandler)
+  .openapi(getEntityTypeIdTagsRoute, getEntityTypeIdTagsRouteHandler)
+  .openapi(getAbilitiesRoute, getAbilitiesRouteHandler)
+  .openapi(getAbilitiesIdRoute, getAbilitiesIdRouteHandler)
+  .openapi(getAddonsRoute, getAddonsRouteHandler)
+  .openapi(postAddonsRoute, postAddonsRouteHandler)
+  .openapi(getAddonsIdRoute, getAddonsIdRouteHandler)
+  .openapi(deleteAddonsIdRoute, deleteAddonsIdRouteHandler)
+  .openapi(putAddonsIdRoute, putAddonsIdRouteHandler)
+  .openapi(getAlertGroupingSettingsRoute, getAlertGroupingSettingsRouteHandler)
+  .openapi(postAlertGroupingSettingsRoute, postAlertGroupingSettingsRouteHandler)
+  .openapi(getAlertGroupingSettingsIdRoute, getAlertGroupingSettingsIdRouteHandler)
+  .openapi(deleteAlertGroupingSettingsIdRoute, deleteAlertGroupingSettingsIdRouteHandler)
+  .openapi(putAlertGroupingSettingsIdRoute, putAlertGroupingSettingsIdRouteHandler)
+  .openapi(postAnalyticsMetricsIncidentsAllRoute, postAnalyticsMetricsIncidentsAllRouteHandler)
+  .openapi(
+    postAnalyticsMetricsIncidentsEscalationPoliciesRoute,
+    postAnalyticsMetricsIncidentsEscalationPoliciesRouteHandler,
+  )
+  .openapi(
+    postAnalyticsMetricsIncidentsEscalationPoliciesAllRoute,
+    postAnalyticsMetricsIncidentsEscalationPoliciesAllRouteHandler,
+  )
+  .openapi(
+    postAnalyticsMetricsIncidentsServicesRoute,
+    postAnalyticsMetricsIncidentsServicesRouteHandler,
+  )
+  .openapi(
+    postAnalyticsMetricsIncidentsServicesAllRoute,
+    postAnalyticsMetricsIncidentsServicesAllRouteHandler,
+  )
+  .openapi(postAnalyticsMetricsIncidentsTeamsRoute, postAnalyticsMetricsIncidentsTeamsRouteHandler)
+  .openapi(
+    postAnalyticsMetricsIncidentsTeamsAllRoute,
+    postAnalyticsMetricsIncidentsTeamsAllRouteHandler,
+  )
+  .openapi(
+    postAnalyticsMetricsPdAdvanceUsageFeaturesRoute,
+    postAnalyticsMetricsPdAdvanceUsageFeaturesRouteHandler,
+  )
+  .openapi(postAnalyticsMetricsRespondersAllRoute, postAnalyticsMetricsRespondersAllRouteHandler)
+  .openapi(
+    postAnalyticsMetricsRespondersTeamsRoute,
+    postAnalyticsMetricsRespondersTeamsRouteHandler,
+  )
+  .openapi(postAnalyticsMetricsUsersAllRoute, postAnalyticsMetricsUsersAllRouteHandler)
+  .openapi(postAnalyticsRawIncidentsRoute, postAnalyticsRawIncidentsRouteHandler)
+  .openapi(getAnalyticsRawIncidentsIdRoute, getAnalyticsRawIncidentsIdRouteHandler)
+  .openapi(
+    getAnalyticsRawIncidentsIdResponsesRoute,
+    getAnalyticsRawIncidentsIdResponsesRouteHandler,
+  )
+  .openapi(
+    postAnalyticsRawRespondersResponderIdIncidentsRoute,
+    postAnalyticsRawRespondersResponderIdIncidentsRouteHandler,
+  )
+  .openapi(postAnalyticsRawUsersRoute, postAnalyticsRawUsersRouteHandler)
+  .openapi(getAuditRecordsRoute, getAuditRecordsRouteHandler)
+  .openapi(postAutomationActionsActionsRoute, postAutomationActionsActionsRouteHandler)
+  .openapi(getAutomationActionsActionsRoute, getAutomationActionsActionsRouteHandler)
+  .openapi(getAutomationActionsActionsIdRoute, getAutomationActionsActionsIdRouteHandler)
+  .openapi(deleteAutomationActionsActionsIdRoute, deleteAutomationActionsActionsIdRouteHandler)
+  .openapi(putAutomationActionsActionsIdRoute, putAutomationActionsActionsIdRouteHandler)
+  .openapi(
+    postAutomationActionsActionsIdInvocationsRoute,
+    postAutomationActionsActionsIdInvocationsRouteHandler,
+  )
+  .openapi(
+    getAutomationActionsActionsIdServicesRoute,
+    getAutomationActionsActionsIdServicesRouteHandler,
+  )
+  .openapi(
+    postAutomationActionsActionsIdServicesRoute,
+    postAutomationActionsActionsIdServicesRouteHandler,
+  )
+  .openapi(
+    getAutomationActionsActionsIdServicesServiceIdRoute,
+    getAutomationActionsActionsIdServicesServiceIdRouteHandler,
+  )
+  .openapi(
+    deleteAutomationActionsActionsIdServicesServiceIdRoute,
+    deleteAutomationActionsActionsIdServicesServiceIdRouteHandler,
+  )
+  .openapi(
+    postAutomationActionsActionsIdTeamsRoute,
+    postAutomationActionsActionsIdTeamsRouteHandler,
+  )
+  .openapi(getAutomationActionsActionsIdTeamsRoute, getAutomationActionsActionsIdTeamsRouteHandler)
+  .openapi(
+    deleteAutomationActionsActionsIdTeamsTeamIdRoute,
+    deleteAutomationActionsActionsIdTeamsTeamIdRouteHandler,
+  )
+  .openapi(
+    getAutomationActionsActionsIdTeamsTeamIdRoute,
+    getAutomationActionsActionsIdTeamsTeamIdRouteHandler,
+  )
+  .openapi(getAutomationActionsInvocationsRoute, getAutomationActionsInvocationsRouteHandler)
+  .openapi(getAutomationActionsInvocationsIdRoute, getAutomationActionsInvocationsIdRouteHandler)
+  .openapi(postAutomationActionsRunnersRoute, postAutomationActionsRunnersRouteHandler)
+  .openapi(getAutomationActionsRunnersRoute, getAutomationActionsRunnersRouteHandler)
+  .openapi(getAutomationActionsRunnersIdRoute, getAutomationActionsRunnersIdRouteHandler)
+  .openapi(putAutomationActionsRunnersIdRoute, putAutomationActionsRunnersIdRouteHandler)
+  .openapi(deleteAutomationActionsRunnersIdRoute, deleteAutomationActionsRunnersIdRouteHandler)
+  .openapi(
+    postAutomationActionsRunnersIdTeamsRoute,
+    postAutomationActionsRunnersIdTeamsRouteHandler,
+  )
+  .openapi(getAutomationActionsRunnersIdTeamsRoute, getAutomationActionsRunnersIdTeamsRouteHandler)
+  .openapi(
+    deleteAutomationActionsRunnersIdTeamsTeamIdRoute,
+    deleteAutomationActionsRunnersIdTeamsTeamIdRouteHandler,
+  )
+  .openapi(
+    getAutomationActionsRunnersIdTeamsTeamIdRoute,
+    getAutomationActionsRunnersIdTeamsTeamIdRouteHandler,
+  )
+  .openapi(getBusinessServicesRoute, getBusinessServicesRouteHandler)
+  .openapi(postBusinessServicesRoute, postBusinessServicesRouteHandler)
+  .openapi(getBusinessServicesIdRoute, getBusinessServicesIdRouteHandler)
+  .openapi(deleteBusinessServicesIdRoute, deleteBusinessServicesIdRouteHandler)
+  .openapi(putBusinessServicesIdRoute, putBusinessServicesIdRouteHandler)
+  .openapi(
+    postBusinessServicesIdAccountSubscriptionRoute,
+    postBusinessServicesIdAccountSubscriptionRouteHandler,
+  )
+  .openapi(
+    deleteBusinessServicesIdAccountSubscriptionRoute,
+    deleteBusinessServicesIdAccountSubscriptionRouteHandler,
+  )
+  .openapi(getBusinessServicesIdSubscribersRoute, getBusinessServicesIdSubscribersRouteHandler)
+  .openapi(postBusinessServicesIdSubscribersRoute, postBusinessServicesIdSubscribersRouteHandler)
+  .openapi(
+    getBusinessServicesIdSupportingServicesImpactsRoute,
+    getBusinessServicesIdSupportingServicesImpactsRouteHandler,
+  )
+  .openapi(postBusinessServicesIdUnsubscribeRoute, postBusinessServicesIdUnsubscribeRouteHandler)
+  .openapi(getBusinessServicesImpactorsRoute, getBusinessServicesImpactorsRouteHandler)
+  .openapi(getBusinessServicesImpactsRoute, getBusinessServicesImpactsRouteHandler)
+  .openapi(
+    getBusinessServicesPriorityThresholdsRoute,
+    getBusinessServicesPriorityThresholdsRouteHandler,
+  )
+  .openapi(
+    deleteBusinessServicesPriorityThresholdsRoute,
+    deleteBusinessServicesPriorityThresholdsRouteHandler,
+  )
+  .openapi(
+    putBusinessServicesPriorityThresholdsRoute,
+    putBusinessServicesPriorityThresholdsRouteHandler,
+  )
+  .openapi(getChangeEventsRoute, getChangeEventsRouteHandler)
+  .openapi(postChangeEventsRoute, postChangeEventsRouteHandler)
+  .openapi(getChangeEventsIdRoute, getChangeEventsIdRouteHandler)
+  .openapi(putChangeEventsIdRoute, putChangeEventsIdRouteHandler)
+  .openapi(
+    getEnrichmentIntegrationsServicenowRoute,
+    getEnrichmentIntegrationsServicenowRouteHandler,
+  )
+  .openapi(
+    postEnrichmentIntegrationsServicenowRoute,
+    postEnrichmentIntegrationsServicenowRouteHandler,
+  )
+  .openapi(
+    getEnrichmentIntegrationsServicenowIntegrationIdRoute,
+    getEnrichmentIntegrationsServicenowIntegrationIdRouteHandler,
+  )
+  .openapi(
+    deleteEnrichmentIntegrationsServicenowIntegrationIdRoute,
+    deleteEnrichmentIntegrationsServicenowIntegrationIdRouteHandler,
+  )
+  .openapi(
+    postEnrichmentIntegrationsServicenowIntegrationIdTablesRoute,
+    postEnrichmentIntegrationsServicenowIntegrationIdTablesRouteHandler,
+  )
+  .openapi(
+    putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute,
+    putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler,
+  )
+  .openapi(
+    deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute,
+    deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler,
+  )
+  .openapi(
+    postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRoute,
+    postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRouteHandler,
+  )
+  .openapi(
+    getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRoute,
+    getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRouteHandler,
+  )
+  .openapi(
+    postEnrichmentIntegrationsServicenowCredentialsRoute,
+    postEnrichmentIntegrationsServicenowCredentialsRouteHandler,
+  )
+  .openapi(
+    getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+    getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  )
+  .openapi(
+    putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+    putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  )
+  .openapi(
+    deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
+    deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler,
+  )
+  .openapi(postEnrichmentQueryRoute, postEnrichmentQueryRouteHandler)
+  .openapi(getEnrichmentSchemasRoute, getEnrichmentSchemasRouteHandler)
+  .openapi(postEnrichmentSchemasRoute, postEnrichmentSchemasRouteHandler)
+  .openapi(getEnrichmentSchemasSchemaIdRoute, getEnrichmentSchemasSchemaIdRouteHandler)
+  .openapi(putEnrichmentSchemasSchemaIdRoute, putEnrichmentSchemasSchemaIdRouteHandler)
+  .openapi(deleteEnrichmentSchemasSchemaIdRoute, deleteEnrichmentSchemasSchemaIdRouteHandler)
+  .openapi(
+    getEnrichmentSchemasSchemaIdRecordsRoute,
+    getEnrichmentSchemasSchemaIdRecordsRouteHandler,
+  )
+  .openapi(
+    postEnrichmentSchemasSchemaIdRecordsRoute,
+    postEnrichmentSchemasSchemaIdRecordsRouteHandler,
+  )
+  .openapi(
+    deleteEnrichmentSchemasSchemaIdRecordsRecordIdRoute,
+    deleteEnrichmentSchemasSchemaIdRecordsRecordIdRouteHandler,
+  )
+  .openapi(getEscalationPoliciesRoute, getEscalationPoliciesRouteHandler)
+  .openapi(postEscalationPoliciesRoute, postEscalationPoliciesRouteHandler)
+  .openapi(getEscalationPoliciesIdRoute, getEscalationPoliciesIdRouteHandler)
+  .openapi(deleteEscalationPoliciesIdRoute, deleteEscalationPoliciesIdRouteHandler)
+  .openapi(putEscalationPoliciesIdRoute, putEscalationPoliciesIdRouteHandler)
+  .openapi(
+    getEscalationPoliciesIdAuditRecordsRoute,
+    getEscalationPoliciesIdAuditRecordsRouteHandler,
+  )
+  .openapi(getEventOrchestrationsRoute, getEventOrchestrationsRouteHandler)
+  .openapi(postEventOrchestrationsRoute, postEventOrchestrationsRouteHandler)
+  .openapi(getEventOrchestrationsIdRoute, getEventOrchestrationsIdRouteHandler)
+  .openapi(putEventOrchestrationsIdRoute, putEventOrchestrationsIdRouteHandler)
+  .openapi(deleteEventOrchestrationsIdRoute, deleteEventOrchestrationsIdRouteHandler)
+  .openapi(
+    getEventOrchestrationsIdIntegrationsRoute,
+    getEventOrchestrationsIdIntegrationsRouteHandler,
+  )
+  .openapi(
+    postEventOrchestrationsIdIntegrationsRoute,
+    postEventOrchestrationsIdIntegrationsRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+    getEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+    putEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  )
+  .openapi(
+    deleteEventOrchestrationsIdIntegrationsIntegrationIdRoute,
+    deleteEventOrchestrationsIdIntegrationsIntegrationIdRouteHandler,
+  )
+  .openapi(
+    postEventOrchestrationsIdIntegrationsMigrationRoute,
+    postEventOrchestrationsIdIntegrationsMigrationRouteHandler,
+  )
+  .openapi(getEventOrchestrationsIdGlobalRoute, getEventOrchestrationsIdGlobalRouteHandler)
+  .openapi(putEventOrchestrationsIdGlobalRoute, putEventOrchestrationsIdGlobalRouteHandler)
+  .openapi(getEventOrchestrationsIdRouterRoute, getEventOrchestrationsIdRouterRouteHandler)
+  .openapi(putEventOrchestrationsIdRouterRoute, putEventOrchestrationsIdRouterRouteHandler)
+  .openapi(getEventOrchestrationsIdUnroutedRoute, getEventOrchestrationsIdUnroutedRouteHandler)
+  .openapi(putEventOrchestrationsIdUnroutedRoute, putEventOrchestrationsIdUnroutedRouteHandler)
+  .openapi(
+    getEventOrchestrationsServicesServiceIdRoute,
+    getEventOrchestrationsServicesServiceIdRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsServicesServiceIdRoute,
+    putEventOrchestrationsServicesServiceIdRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsServicesServiceIdActiveRoute,
+    getEventOrchestrationsServicesServiceIdActiveRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsServicesServiceIdActiveRoute,
+    putEventOrchestrationsServicesServiceIdActiveRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsIdCacheVariablesRoute,
+    getEventOrchestrationsIdCacheVariablesRouteHandler,
+  )
+  .openapi(
+    postEventOrchestrationsIdCacheVariablesRoute,
+    postEventOrchestrationsIdCacheVariablesRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+    getEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+    putEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    deleteEventOrchestrationsIdCacheVariablesCacheVariableIdRoute,
+    deleteEventOrchestrationsIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+    getEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+    putEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    deleteEventOrchestrationsIdCacheVariablesCacheVariableIdDataRoute,
+    deleteEventOrchestrationsIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsServicesServiceIdCacheVariablesRoute,
+    getEventOrchestrationsServicesServiceIdCacheVariablesRouteHandler,
+  )
+  .openapi(
+    postEventOrchestrationsServicesServiceIdCacheVariablesRoute,
+    postEventOrchestrationsServicesServiceIdCacheVariablesRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+    getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+    putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRoute,
+    deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+    getEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+    putEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRoute,
+    deleteEventOrchestrationsServicesServiceIdCacheVariablesCacheVariableIdDataRouteHandler,
+  )
+  .openapi(
+    getEventOrchestrationsIdEnablementsRoute,
+    getEventOrchestrationsIdEnablementsRouteHandler,
+  )
+  .openapi(
+    putEventOrchestrationsIdEnablementsFeatureNameRoute,
+    putEventOrchestrationsIdEnablementsFeatureNameRouteHandler,
+  )
+  .openapi(getExtensionSchemasRoute, getExtensionSchemasRouteHandler)
+  .openapi(getEnrichmentEventEnrichmentsRoute, getEnrichmentEventEnrichmentsRouteHandler)
+  .openapi(postEnrichmentEventEnrichmentsRoute, postEnrichmentEventEnrichmentsRouteHandler)
+  .openapi(
+    getEnrichmentEventEnrichmentsDefaultRoute,
+    getEnrichmentEventEnrichmentsDefaultRouteHandler,
+  )
+  .openapi(
+    putEnrichmentEventEnrichmentsDefaultRoute,
+    putEnrichmentEventEnrichmentsDefaultRouteHandler,
+  )
+  .openapi(getEnrichmentEventEnrichmentsIdRoute, getEnrichmentEventEnrichmentsIdRouteHandler)
+  .openapi(putEnrichmentEventEnrichmentsIdRoute, putEnrichmentEventEnrichmentsIdRouteHandler)
+  .openapi(deleteEnrichmentEventEnrichmentsIdRoute, deleteEnrichmentEventEnrichmentsIdRouteHandler)
+  .openapi(
+    getEnrichmentEventEnrichmentsIdAssociationsRoute,
+    getEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  )
+  .openapi(
+    postEnrichmentEventEnrichmentsIdAssociationsRoute,
+    postEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  )
+  .openapi(
+    deleteEnrichmentEventEnrichmentsIdAssociationsRoute,
+    deleteEnrichmentEventEnrichmentsIdAssociationsRouteHandler,
+  )
+  .openapi(
+    getEnrichmentEventEnrichmentsIdRulesRoute,
+    getEnrichmentEventEnrichmentsIdRulesRouteHandler,
+  )
+  .openapi(
+    putEnrichmentEventEnrichmentsIdRulesRoute,
+    putEnrichmentEventEnrichmentsIdRulesRouteHandler,
+  )
+  .openapi(getExtensionSchemasIdRoute, getExtensionSchemasIdRouteHandler)
+  .openapi(getExtensionsRoute, getExtensionsRouteHandler)
+  .openapi(postExtensionsRoute, postExtensionsRouteHandler)
+  .openapi(getExtensionsIdRoute, getExtensionsIdRouteHandler)
+  .openapi(deleteExtensionsIdRoute, deleteExtensionsIdRouteHandler)
+  .openapi(putExtensionsIdRoute, putExtensionsIdRouteHandler)
+  .openapi(postExtensionsIdEnableRoute, postExtensionsIdEnableRouteHandler)
+  .openapi(getIncidentWorkflowsRoute, getIncidentWorkflowsRouteHandler)
+  .openapi(postIncidentWorkflowsRoute, postIncidentWorkflowsRouteHandler)
+  .openapi(getIncidentWorkflowsIdRoute, getIncidentWorkflowsIdRouteHandler)
+  .openapi(deleteIncidentWorkflowsIdRoute, deleteIncidentWorkflowsIdRouteHandler)
+  .openapi(putIncidentWorkflowsIdRoute, putIncidentWorkflowsIdRouteHandler)
+  .openapi(postIncidentWorkflowsIdInstancesRoute, postIncidentWorkflowsIdInstancesRouteHandler)
+  .openapi(getIncidentWorkflowsActionsRoute, getIncidentWorkflowsActionsRouteHandler)
+  .openapi(getIncidentWorkflowsActionsIdRoute, getIncidentWorkflowsActionsIdRouteHandler)
+  .openapi(getIncidentWorkflowsTriggersRoute, getIncidentWorkflowsTriggersRouteHandler)
+  .openapi(postIncidentWorkflowsTriggersRoute, postIncidentWorkflowsTriggersRouteHandler)
+  .openapi(getIncidentWorkflowsTriggersIdRoute, getIncidentWorkflowsTriggersIdRouteHandler)
+  .openapi(putIncidentWorkflowsTriggersIdRoute, putIncidentWorkflowsTriggersIdRouteHandler)
+  .openapi(deleteIncidentWorkflowsTriggersIdRoute, deleteIncidentWorkflowsTriggersIdRouteHandler)
+  .openapi(
+    postIncidentWorkflowsTriggersIdServicesRoute,
+    postIncidentWorkflowsTriggersIdServicesRouteHandler,
+  )
+  .openapi(
+    deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRoute,
+    deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRouteHandler,
+  )
+  .openapi(getIncidentsRoute, getIncidentsRouteHandler)
+  .openapi(putIncidentsRoute, putIncidentsRouteHandler)
+  .openapi(postIncidentsRoute, postIncidentsRouteHandler)
+  .openapi(getIncidentsIdRoute, getIncidentsIdRouteHandler)
+  .openapi(putIncidentsIdRoute, putIncidentsIdRouteHandler)
+  .openapi(getIncidentsIdAlertsRoute, getIncidentsIdAlertsRouteHandler)
+  .openapi(putIncidentsIdAlertsRoute, putIncidentsIdAlertsRouteHandler)
+  .openapi(getIncidentsIdAlertsAlertIdRoute, getIncidentsIdAlertsAlertIdRouteHandler)
+  .openapi(putIncidentsIdAlertsAlertIdRoute, putIncidentsIdAlertsAlertIdRouteHandler)
+  .openapi(
+    putIncidentsIdBusinessServicesBusinessServiceIdImpactsRoute,
+    putIncidentsIdBusinessServicesBusinessServiceIdImpactsRouteHandler,
+  )
+  .openapi(
+    getIncidentsIdBusinessServicesImpactsRoute,
+    getIncidentsIdBusinessServicesImpactsRouteHandler,
+  )
+  .openapi(getIncidentsIdCustomFieldsValuesRoute, getIncidentsIdCustomFieldsValuesRouteHandler)
+  .openapi(putIncidentsIdCustomFieldsValuesRoute, putIncidentsIdCustomFieldsValuesRouteHandler)
+  .openapi(getIncidentsIdLogEntriesRoute, getIncidentsIdLogEntriesRouteHandler)
+  .openapi(putIncidentsIdMergeRoute, putIncidentsIdMergeRouteHandler)
+  .openapi(getIncidentsIdNotesRoute, getIncidentsIdNotesRouteHandler)
+  .openapi(postIncidentsIdNotesRoute, postIncidentsIdNotesRouteHandler)
+  .openapi(putIncidentsIdNotesNoteIdRoute, putIncidentsIdNotesNoteIdRouteHandler)
+  .openapi(deleteIncidentsIdNotesNoteIdRoute, deleteIncidentsIdNotesNoteIdRouteHandler)
+  .openapi(getIncidentsIdOutlierIncidentRoute, getIncidentsIdOutlierIncidentRouteHandler)
+  .openapi(getIncidentsIdPastIncidentsRoute, getIncidentsIdPastIncidentsRouteHandler)
+  .openapi(getIncidentsIdRelatedChangeEventsRoute, getIncidentsIdRelatedChangeEventsRouteHandler)
+  .openapi(getIncidentsIdRelatedIncidentsRoute, getIncidentsIdRelatedIncidentsRouteHandler)
+  .openapi(postIncidentsIdResponderRequestsRoute, postIncidentsIdResponderRequestsRouteHandler)
+  .openapi(
+    putIncidentsIdResponderRequestsCancelRoute,
+    putIncidentsIdResponderRequestsCancelRouteHandler,
+  )
+  .openapi(getIncidentsReviewsRoute, getIncidentsReviewsRouteHandler)
+  .openapi(getIncidentsReviewsActionItemsRoute, getIncidentsReviewsActionItemsRouteHandler)
+  .openapi(getIncidentsIdReviewRoute, getIncidentsIdReviewRouteHandler)
+  .openapi(postIncidentsIdReviewRoute, postIncidentsIdReviewRouteHandler)
+  .openapi(putIncidentsIdReviewRoute, putIncidentsIdReviewRouteHandler)
+  .openapi(getIncidentsIdReviewActionItemsRoute, getIncidentsIdReviewActionItemsRouteHandler)
+  .openapi(postIncidentsIdReviewMarkersRoute, postIncidentsIdReviewMarkersRouteHandler)
+  .openapi(getIncidentsIdScribeTranscriptsRoute, getIncidentsIdScribeTranscriptsRouteHandler)
+  .openapi(postIncidentsIdSnoozeRoute, postIncidentsIdSnoozeRouteHandler)
+  .openapi(postIncidentsIdStatusUpdatesRoute, postIncidentsIdStatusUpdatesRouteHandler)
+  .openapi(
+    getIncidentsIdStatusUpdatesSubscribersRoute,
+    getIncidentsIdStatusUpdatesSubscribersRouteHandler,
+  )
+  .openapi(
+    postIncidentsIdStatusUpdatesSubscribersRoute,
+    postIncidentsIdStatusUpdatesSubscribersRouteHandler,
+  )
+  .openapi(
+    postIncidentsIdStatusUpdatesUnsubscribeRoute,
+    postIncidentsIdStatusUpdatesUnsubscribeRouteHandler,
+  )
+  .openapi(getIncidentsTypesRoute, getIncidentsTypesRouteHandler)
+  .openapi(postIncidentsTypesRoute, postIncidentsTypesRouteHandler)
+  .openapi(getIncidentsTypesTypeIdOrNameRoute, getIncidentsTypesTypeIdOrNameRouteHandler)
+  .openapi(putIncidentsTypesTypeIdOrNameRoute, putIncidentsTypesTypeIdOrNameRouteHandler)
+  .openapi(
+    getIncidentsTypesTypeIdOrNameCustomFieldsRoute,
+    getIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler,
+  )
+  .openapi(
+    postIncidentsTypesTypeIdOrNameCustomFieldsRoute,
+    postIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler,
+  )
+  .openapi(
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  )
+  .openapi(
+    putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+    putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  )
+  .openapi(
+    deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute,
+    deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler,
+  )
+  .openapi(
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute,
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute,
+    postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(postIncidentsCustomFieldsRoute, postIncidentsCustomFieldsRouteHandler)
+  .openapi(getIncidentsCustomFieldsRoute, getIncidentsCustomFieldsRouteHandler)
+  .openapi(getIncidentsCustomFieldsFieldIdRoute, getIncidentsCustomFieldsFieldIdRouteHandler)
+  .openapi(putIncidentsCustomFieldsFieldIdRoute, putIncidentsCustomFieldsFieldIdRouteHandler)
+  .openapi(deleteIncidentsCustomFieldsFieldIdRoute, deleteIncidentsCustomFieldsFieldIdRouteHandler)
+  .openapi(
+    postIncidentsCustomFieldsFieldIdFieldOptionsRoute,
+    postIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    getIncidentsCustomFieldsFieldIdFieldOptionsRoute,
+    getIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(postIpAllowListsRoute, postIpAllowListsRouteHandler)
+  .openapi(getIpAllowListsRoute, getIpAllowListsRouteHandler)
+  .openapi(getIpAllowListsIdRoute, getIpAllowListsIdRouteHandler)
+  .openapi(putIpAllowListsIdRoute, putIpAllowListsIdRouteHandler)
+  .openapi(deleteIpAllowListsIdRoute, deleteIpAllowListsIdRouteHandler)
+  .openapi(getIpAllowListsIdAuditRecordsRoute, getIpAllowListsIdAuditRecordsRouteHandler)
+  .openapi(getLicenseAllocationsRoute, getLicenseAllocationsRouteHandler)
+  .openapi(getLicensesRoute, getLicensesRouteHandler)
+  .openapi(getLogEntriesRoute, getLogEntriesRouteHandler)
+  .openapi(getLogEntriesIdRoute, getLogEntriesIdRouteHandler)
+  .openapi(putLogEntriesIdChannelRoute, putLogEntriesIdChannelRouteHandler)
+  .openapi(getMaintenanceWindowsRoute, getMaintenanceWindowsRouteHandler)
+  .openapi(postMaintenanceWindowsRoute, postMaintenanceWindowsRouteHandler)
+  .openapi(getMaintenanceWindowsIdRoute, getMaintenanceWindowsIdRouteHandler)
+  .openapi(deleteMaintenanceWindowsIdRoute, deleteMaintenanceWindowsIdRouteHandler)
+  .openapi(putMaintenanceWindowsIdRoute, putMaintenanceWindowsIdRouteHandler)
+  .openapi(getNotificationsRoute, getNotificationsRouteHandler)
+  .openapi(deleteOauthDelegationsRoute, deleteOauthDelegationsRouteHandler)
+  .openapi(
+    getOauthDelegationsRevocationRequestsStatusRoute,
+    getOauthDelegationsRevocationRequestsStatusRouteHandler,
+  )
+  .openapi(getOncallsRoute, getOncallsRouteHandler)
+  .openapi(getPausedIncidentReportsAlertsRoute, getPausedIncidentReportsAlertsRouteHandler)
+  .openapi(getPausedIncidentReportsCountsRoute, getPausedIncidentReportsCountsRouteHandler)
+  .openapi(getPrioritiesRoute, getPrioritiesRouteHandler)
+  .openapi(getRulesetsRoute, getRulesetsRouteHandler)
+  .openapi(postRulesetsRoute, postRulesetsRouteHandler)
+  .openapi(getRulesetsIdRoute, getRulesetsIdRouteHandler)
+  .openapi(putRulesetsIdRoute, putRulesetsIdRouteHandler)
+  .openapi(deleteRulesetsIdRoute, deleteRulesetsIdRouteHandler)
+  .openapi(getRulesetsIdRulesRoute, getRulesetsIdRulesRouteHandler)
+  .openapi(postRulesetsIdRulesRoute, postRulesetsIdRulesRouteHandler)
+  .openapi(getRulesetsIdRulesRuleIdRoute, getRulesetsIdRulesRuleIdRouteHandler)
+  .openapi(putRulesetsIdRulesRuleIdRoute, putRulesetsIdRulesRuleIdRouteHandler)
+  .openapi(deleteRulesetsIdRulesRuleIdRoute, deleteRulesetsIdRulesRuleIdRouteHandler)
+  .openapi(getSchedulesRoute, getSchedulesRouteHandler)
+  .openapi(postSchedulesRoute, postSchedulesRouteHandler)
+  .openapi(getSchedulesIdRoute, getSchedulesIdRouteHandler)
+  .openapi(deleteSchedulesIdRoute, deleteSchedulesIdRouteHandler)
+  .openapi(putSchedulesIdRoute, putSchedulesIdRouteHandler)
+  .openapi(getSchedulesIdAuditRecordsRoute, getSchedulesIdAuditRecordsRouteHandler)
+  .openapi(getSchedulesIdOverridesRoute, getSchedulesIdOverridesRouteHandler)
+  .openapi(postSchedulesIdOverridesRoute, postSchedulesIdOverridesRouteHandler)
+  .openapi(
+    deleteSchedulesIdOverridesOverrideIdRoute,
+    deleteSchedulesIdOverridesOverrideIdRouteHandler,
+  )
+  .openapi(getSchedulesIdUsersRoute, getSchedulesIdUsersRouteHandler)
+  .openapi(postSchedulesPreviewRoute, postSchedulesPreviewRouteHandler)
+  .openapi(postServiceDependenciesAssociateRoute, postServiceDependenciesAssociateRouteHandler)
+  .openapi(
+    getServiceDependenciesBusinessServicesIdRoute,
+    getServiceDependenciesBusinessServicesIdRouteHandler,
+  )
+  .openapi(
+    postServiceDependenciesDisassociateRoute,
+    postServiceDependenciesDisassociateRouteHandler,
+  )
+  .openapi(
+    getServiceDependenciesTechnicalServicesIdRoute,
+    getServiceDependenciesTechnicalServicesIdRouteHandler,
+  )
+  .openapi(getServicesRoute, getServicesRouteHandler)
+  .openapi(postServicesRoute, postServicesRouteHandler)
+  .openapi(getServicesIdRoute, getServicesIdRouteHandler)
+  .openapi(deleteServicesIdRoute, deleteServicesIdRouteHandler)
+  .openapi(putServicesIdRoute, putServicesIdRouteHandler)
+  .openapi(getServicesIdAuditRecordsRoute, getServicesIdAuditRecordsRouteHandler)
+  .openapi(getServicesIdChangeEventsRoute, getServicesIdChangeEventsRouteHandler)
+  .openapi(postServicesIdIntegrationsRoute, postServicesIdIntegrationsRouteHandler)
+  .openapi(
+    putServicesIdIntegrationsIntegrationIdRoute,
+    putServicesIdIntegrationsIntegrationIdRouteHandler,
+  )
+  .openapi(
+    getServicesIdIntegrationsIntegrationIdRoute,
+    getServicesIdIntegrationsIntegrationIdRouteHandler,
+  )
+  .openapi(getServicesIdRulesRoute, getServicesIdRulesRouteHandler)
+  .openapi(postServicesIdRulesRoute, postServicesIdRulesRouteHandler)
+  .openapi(postServicesIdRulesConvertRoute, postServicesIdRulesConvertRouteHandler)
+  .openapi(getServicesIdRulesRuleIdRoute, getServicesIdRulesRuleIdRouteHandler)
+  .openapi(putServicesIdRulesRuleIdRoute, putServicesIdRulesRuleIdRouteHandler)
+  .openapi(deleteServicesIdRulesRuleIdRoute, deleteServicesIdRulesRuleIdRouteHandler)
+  .openapi(postServicesCustomFieldsRoute, postServicesCustomFieldsRouteHandler)
+  .openapi(getServicesCustomFieldsRoute, getServicesCustomFieldsRouteHandler)
+  .openapi(getServicesCustomFieldsFieldIdRoute, getServicesCustomFieldsFieldIdRouteHandler)
+  .openapi(putServicesCustomFieldsFieldIdRoute, putServicesCustomFieldsFieldIdRouteHandler)
+  .openapi(deleteServicesCustomFieldsFieldIdRoute, deleteServicesCustomFieldsFieldIdRouteHandler)
+  .openapi(
+    getServicesCustomFieldsFieldIdFieldOptionsRoute,
+    getServicesCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    postServicesCustomFieldsFieldIdFieldOptionsRoute,
+    postServicesCustomFieldsFieldIdFieldOptionsRouteHandler,
+  )
+  .openapi(
+    getServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    getServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    putServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    putServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
+    deleteServicesCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler,
+  )
+  .openapi(getServicesIdCustomFieldsValuesRoute, getServicesIdCustomFieldsValuesRouteHandler)
+  .openapi(putServicesIdCustomFieldsValuesRoute, putServicesIdCustomFieldsValuesRouteHandler)
+  .openapi(getServicesIdEnablementsRoute, getServicesIdEnablementsRouteHandler)
+  .openapi(
+    putServicesIdEnablementsFeatureNameRoute,
+    putServicesIdEnablementsFeatureNameRouteHandler,
+  )
+  .openapi(getSessionConfigurationsRoute, getSessionConfigurationsRouteHandler)
+  .openapi(putSessionConfigurationsRoute, putSessionConfigurationsRouteHandler)
+  .openapi(deleteSessionConfigurationsRoute, deleteSessionConfigurationsRouteHandler)
+  .openapi(getStandardsRoute, getStandardsRouteHandler)
+  .openapi(putStandardsIdRoute, putStandardsIdRouteHandler)
+  .openapi(getStandardsScoresResourceTypeRoute, getStandardsScoresResourceTypeRouteHandler)
+  .openapi(getStandardsScoresResourceTypeIdRoute, getStandardsScoresResourceTypeIdRouteHandler)
+  .openapi(getStatusDashboardsRoute, getStatusDashboardsRouteHandler)
+  .openapi(getStatusDashboardsIdRoute, getStatusDashboardsIdRouteHandler)
+  .openapi(
+    getStatusDashboardsIdServiceImpactsRoute,
+    getStatusDashboardsIdServiceImpactsRouteHandler,
+  )
+  .openapi(getStatusDashboardsUrlSlugsUrlSlugRoute, getStatusDashboardsUrlSlugsUrlSlugRouteHandler)
+  .openapi(
+    getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRoute,
+    getStatusDashboardsUrlSlugsUrlSlugServiceImpactsRouteHandler,
+  )
+  .openapi(getStatusPagesRoute, getStatusPagesRouteHandler)
+  .openapi(getStatusPagesIdImpactsRoute, getStatusPagesIdImpactsRouteHandler)
+  .openapi(getStatusPagesIdImpactsImpactIdRoute, getStatusPagesIdImpactsImpactIdRouteHandler)
+  .openapi(getStatusPagesIdServicesRoute, getStatusPagesIdServicesRouteHandler)
+  .openapi(getStatusPagesIdServicesServiceIdRoute, getStatusPagesIdServicesServiceIdRouteHandler)
+  .openapi(getStatusPagesIdSeveritiesRoute, getStatusPagesIdSeveritiesRouteHandler)
+  .openapi(
+    getStatusPagesIdSeveritiesSeverityIdRoute,
+    getStatusPagesIdSeveritiesSeverityIdRouteHandler,
+  )
+  .openapi(getStatusPagesIdStatusesRoute, getStatusPagesIdStatusesRouteHandler)
+  .openapi(getStatusPagesIdStatusesStatusIdRoute, getStatusPagesIdStatusesStatusIdRouteHandler)
+  .openapi(getStatusPagesIdPostsRoute, getStatusPagesIdPostsRouteHandler)
+  .openapi(postStatusPagesIdPostsRoute, postStatusPagesIdPostsRouteHandler)
+  .openapi(getStatusPagesIdPostsPostIdRoute, getStatusPagesIdPostsPostIdRouteHandler)
+  .openapi(putStatusPagesIdPostsPostIdRoute, putStatusPagesIdPostsPostIdRouteHandler)
+  .openapi(deleteStatusPagesIdPostsPostIdRoute, deleteStatusPagesIdPostsPostIdRouteHandler)
+  .openapi(
+    getStatusPagesIdPostsPostIdPostUpdatesRoute,
+    getStatusPagesIdPostsPostIdPostUpdatesRouteHandler,
+  )
+  .openapi(
+    postStatusPagesIdPostsPostIdPostUpdatesRoute,
+    postStatusPagesIdPostsPostIdPostUpdatesRouteHandler,
+  )
+  .openapi(
+    getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+    getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  )
+  .openapi(
+    putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+    putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  )
+  .openapi(
+    deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
+    deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler,
+  )
+  .openapi(
+    getStatusPagesIdPostsPostIdPostmortemRoute,
+    getStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  )
+  .openapi(
+    putStatusPagesIdPostsPostIdPostmortemRoute,
+    putStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  )
+  .openapi(
+    deleteStatusPagesIdPostsPostIdPostmortemRoute,
+    deleteStatusPagesIdPostsPostIdPostmortemRouteHandler,
+  )
+  .openapi(getStatusPagesIdSubscriptionsRoute, getStatusPagesIdSubscriptionsRouteHandler)
+  .openapi(postStatusPagesIdSubscriptionsRoute, postStatusPagesIdSubscriptionsRouteHandler)
+  .openapi(
+    getStatusPagesIdSubscriptionsSubscriptionIdRoute,
+    getStatusPagesIdSubscriptionsSubscriptionIdRouteHandler,
+  )
+  .openapi(
+    deleteStatusPagesIdSubscriptionsSubscriptionIdRoute,
+    deleteStatusPagesIdSubscriptionsSubscriptionIdRouteHandler,
+  )
+  .openapi(getSreAgentMemoriesRoute, getSreAgentMemoriesRouteHandler)
+  .openapi(putSreAgentMemoriesIdRoute, putSreAgentMemoriesIdRouteHandler)
+  .openapi(deleteSreAgentMemoriesIdRoute, deleteSreAgentMemoriesIdRouteHandler)
+  .openapi(getTagsRoute, getTagsRouteHandler)
+  .openapi(postTagsRoute, postTagsRouteHandler)
+  .openapi(getTagsIdRoute, getTagsIdRouteHandler)
+  .openapi(deleteTagsIdRoute, deleteTagsIdRouteHandler)
+  .openapi(getTagsIdEntityTypeRoute, getTagsIdEntityTypeRouteHandler)
+  .openapi(postTeamsRoute, postTeamsRouteHandler)
+  .openapi(getTeamsRoute, getTeamsRouteHandler)
+  .openapi(getTeamsIdRoute, getTeamsIdRouteHandler)
+  .openapi(deleteTeamsIdRoute, deleteTeamsIdRouteHandler)
+  .openapi(putTeamsIdRoute, putTeamsIdRouteHandler)
+  .openapi(getTeamsIdAuditRecordsRoute, getTeamsIdAuditRecordsRouteHandler)
+  .openapi(
+    deleteTeamsIdEscalationPoliciesEscalationPolicyIdRoute,
+    deleteTeamsIdEscalationPoliciesEscalationPolicyIdRouteHandler,
+  )
+  .openapi(
+    putTeamsIdEscalationPoliciesEscalationPolicyIdRoute,
+    putTeamsIdEscalationPoliciesEscalationPolicyIdRouteHandler,
+  )
+  .openapi(getTeamsIdMembersRoute, getTeamsIdMembersRouteHandler)
+  .openapi(
+    getTeamsIdNotificationSubscriptionsRoute,
+    getTeamsIdNotificationSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postTeamsIdNotificationSubscriptionsRoute,
+    postTeamsIdNotificationSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postTeamsIdNotificationSubscriptionsUnsubscribeRoute,
+    postTeamsIdNotificationSubscriptionsUnsubscribeRouteHandler,
+  )
+  .openapi(deleteTeamsIdUsersUserIdRoute, deleteTeamsIdUsersUserIdRouteHandler)
+  .openapi(putTeamsIdUsersUserIdRoute, putTeamsIdUsersUserIdRouteHandler)
+  .openapi(getTemplatesRoute, getTemplatesRouteHandler)
+  .openapi(postTemplatesRoute, postTemplatesRouteHandler)
+  .openapi(getTemplatesIdRoute, getTemplatesIdRouteHandler)
+  .openapi(putTemplatesIdRoute, putTemplatesIdRouteHandler)
+  .openapi(deleteTemplatesIdRoute, deleteTemplatesIdRouteHandler)
+  .openapi(postTemplatesIdRenderRoute, postTemplatesIdRenderRouteHandler)
+  .openapi(getTemplatesFieldsRoute, getTemplatesFieldsRouteHandler)
+  .openapi(getUsersRoute, getUsersRouteHandler)
+  .openapi(postUsersRoute, postUsersRouteHandler)
+  .openapi(getUsersIdRoute, getUsersIdRouteHandler)
+  .openapi(deleteUsersIdRoute, deleteUsersIdRouteHandler)
+  .openapi(putUsersIdRoute, putUsersIdRouteHandler)
+  .openapi(getUsersIdAuditRecordsRoute, getUsersIdAuditRecordsRouteHandler)
+  .openapi(getUsersIdContactMethodsRoute, getUsersIdContactMethodsRouteHandler)
+  .openapi(postUsersIdContactMethodsRoute, postUsersIdContactMethodsRouteHandler)
+  .openapi(
+    getUsersIdContactMethodsContactMethodIdRoute,
+    getUsersIdContactMethodsContactMethodIdRouteHandler,
+  )
+  .openapi(
+    deleteUsersIdContactMethodsContactMethodIdRoute,
+    deleteUsersIdContactMethodsContactMethodIdRouteHandler,
+  )
+  .openapi(
+    putUsersIdContactMethodsContactMethodIdRoute,
+    putUsersIdContactMethodsContactMethodIdRouteHandler,
+  )
+  .openapi(getUsersIdOauthDelegationsRoute, getUsersIdOauthDelegationsRouteHandler)
+  .openapi(
+    getUsersIdOauthDelegationsDelegationIdRoute,
+    getUsersIdOauthDelegationsDelegationIdRouteHandler,
+  )
+  .openapi(getUsersIdLicenseRoute, getUsersIdLicenseRouteHandler)
+  .openapi(getUsersIdNotificationRulesRoute, getUsersIdNotificationRulesRouteHandler)
+  .openapi(postUsersIdNotificationRulesRoute, postUsersIdNotificationRulesRouteHandler)
+  .openapi(
+    getUsersIdNotificationRulesNotificationRuleIdRoute,
+    getUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteUsersIdNotificationRulesNotificationRuleIdRoute,
+    deleteUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    putUsersIdNotificationRulesNotificationRuleIdRoute,
+    putUsersIdNotificationRulesNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    getUsersIdNotificationSubscriptionsRoute,
+    getUsersIdNotificationSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postUsersIdNotificationSubscriptionsRoute,
+    postUsersIdNotificationSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postUsersIdNotificationSubscriptionsUnsubscribeRoute,
+    postUsersIdNotificationSubscriptionsUnsubscribeRouteHandler,
+  )
+  .openapi(
+    getUsersIdOncallHandoffNotificationRulesRoute,
+    getUsersIdOncallHandoffNotificationRulesRouteHandler,
+  )
+  .openapi(
+    postUsersIdOncallHandoffNotificationRulesRoute,
+    postUsersIdOncallHandoffNotificationRulesRouteHandler,
+  )
+  .openapi(
+    getUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+    getUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+    deleteUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    putUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRoute,
+    putUsersIdOncallHandoffNotificationRulesOncallHandoffNotificationRuleIdRouteHandler,
+  )
+  .openapi(getUsersIdSessionsRoute, getUsersIdSessionsRouteHandler)
+  .openapi(deleteUsersIdSessionsRoute, deleteUsersIdSessionsRouteHandler)
+  .openapi(getUsersIdSessionsTypeSessionIdRoute, getUsersIdSessionsTypeSessionIdRouteHandler)
+  .openapi(deleteUsersIdSessionsTypeSessionIdRoute, deleteUsersIdSessionsTypeSessionIdRouteHandler)
+  .openapi(
+    getUsersIdStatusUpdateNotificationRulesRoute,
+    getUsersIdStatusUpdateNotificationRulesRouteHandler,
+  )
+  .openapi(
+    postUsersIdStatusUpdateNotificationRulesRoute,
+    postUsersIdStatusUpdateNotificationRulesRouteHandler,
+  )
+  .openapi(
+    getUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+    getUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+    deleteUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  )
+  .openapi(
+    putUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRoute,
+    putUsersIdStatusUpdateNotificationRulesStatusUpdateNotificationRuleIdRouteHandler,
+  )
+  .openapi(postUsersIdRegeneratePrivateUrlKeyRoute, postUsersIdRegeneratePrivateUrlKeyRouteHandler)
+  .openapi(getUsersMeRoute, getUsersMeRouteHandler)
+  .openapi(getVendorsRoute, getVendorsRouteHandler)
+  .openapi(getV3SchedulesRoute, getV3SchedulesRouteHandler)
+  .openapi(postV3SchedulesRoute, postV3SchedulesRouteHandler)
+  .openapi(getV3SchedulesIdRoute, getV3SchedulesIdRouteHandler)
+  .openapi(putV3SchedulesIdRoute, putV3SchedulesIdRouteHandler)
+  .openapi(deleteV3SchedulesIdRoute, deleteV3SchedulesIdRouteHandler)
+  .openapi(getV3SchedulesIdAuditRecordsRoute, getV3SchedulesIdAuditRecordsRouteHandler)
+  .openapi(getV3SchedulesIdCustomShiftsRoute, getV3SchedulesIdCustomShiftsRouteHandler)
+  .openapi(postV3SchedulesIdCustomShiftsRoute, postV3SchedulesIdCustomShiftsRouteHandler)
+  .openapi(
+    getV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+    getV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  )
+  .openapi(
+    putV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+    putV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  )
+  .openapi(
+    deleteV3SchedulesIdCustomShiftsCustomShiftIdRoute,
+    deleteV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler,
+  )
+  .openapi(getV3SchedulesIdOverridesRoute, getV3SchedulesIdOverridesRouteHandler)
+  .openapi(postV3SchedulesIdOverridesRoute, postV3SchedulesIdOverridesRouteHandler)
+  .openapi(
+    getV3SchedulesIdOverridesOverrideIdRoute,
+    getV3SchedulesIdOverridesOverrideIdRouteHandler,
+  )
+  .openapi(
+    putV3SchedulesIdOverridesOverrideIdRoute,
+    putV3SchedulesIdOverridesOverrideIdRouteHandler,
+  )
+  .openapi(
+    deleteV3SchedulesIdOverridesOverrideIdRoute,
+    deleteV3SchedulesIdOverridesOverrideIdRouteHandler,
+  )
+  .openapi(getV3SchedulesIdRotationsRoute, getV3SchedulesIdRotationsRouteHandler)
+  .openapi(postV3SchedulesIdRotationsRoute, postV3SchedulesIdRotationsRouteHandler)
+  .openapi(
+    getV3SchedulesIdRotationsRotationIdRoute,
+    getV3SchedulesIdRotationsRotationIdRouteHandler,
+  )
+  .openapi(
+    deleteV3SchedulesIdRotationsRotationIdRoute,
+    deleteV3SchedulesIdRotationsRotationIdRouteHandler,
+  )
+  .openapi(
+    getV3SchedulesIdRotationsRotationIdEventsRoute,
+    getV3SchedulesIdRotationsRotationIdEventsRouteHandler,
+  )
+  .openapi(
+    postV3SchedulesIdRotationsRotationIdEventsRoute,
+    postV3SchedulesIdRotationsRotationIdEventsRouteHandler,
+  )
+  .openapi(
+    getV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+    getV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  )
+  .openapi(
+    putV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+    putV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  )
+  .openapi(
+    deleteV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
+    deleteV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler,
+  )
+  .openapi(getVendorsIdRoute, getVendorsIdRouteHandler)
+  .openapi(getWebhookSubscriptionsRoute, getWebhookSubscriptionsRouteHandler)
+  .openapi(postWebhookSubscriptionsRoute, postWebhookSubscriptionsRouteHandler)
+  .openapi(getWebhookSubscriptionsIdRoute, getWebhookSubscriptionsIdRouteHandler)
+  .openapi(putWebhookSubscriptionsIdRoute, putWebhookSubscriptionsIdRouteHandler)
+  .openapi(deleteWebhookSubscriptionsIdRoute, deleteWebhookSubscriptionsIdRouteHandler)
+  .openapi(postWebhookSubscriptionsIdEnableRoute, postWebhookSubscriptionsIdEnableRouteHandler)
+  .openapi(postWebhookSubscriptionsIdPingRoute, postWebhookSubscriptionsIdPingRouteHandler)
+  .openapi(
+    getWebhookSubscriptionsOauthClientsRoute,
+    getWebhookSubscriptionsOauthClientsRouteHandler,
+  )
+  .openapi(
+    postWebhookSubscriptionsOauthClientsRoute,
+    postWebhookSubscriptionsOauthClientsRouteHandler,
+  )
+  .openapi(
+    getWebhookSubscriptionsOauthClientsIdRoute,
+    getWebhookSubscriptionsOauthClientsIdRouteHandler,
+  )
+  .openapi(
+    putWebhookSubscriptionsOauthClientsIdRoute,
+    putWebhookSubscriptionsOauthClientsIdRouteHandler,
+  )
+  .openapi(
+    deleteWebhookSubscriptionsOauthClientsIdRoute,
+    deleteWebhookSubscriptionsOauthClientsIdRouteHandler,
+  )
+  .openapi(getWorkflowsIntegrationsRoute, getWorkflowsIntegrationsRouteHandler)
+  .openapi(getWorkflowsIntegrationsIdRoute, getWorkflowsIntegrationsIdRouteHandler)
+  .openapi(
+    getWorkflowsIntegrationsConnectionsRoute,
+    getWorkflowsIntegrationsConnectionsRouteHandler,
+  )
+  .openapi(
+    getWorkflowsIntegrationsIntegrationIdConnectionsRoute,
+    getWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler,
+  )
+  .openapi(
+    postWorkflowsIntegrationsIntegrationIdConnectionsRoute,
+    postWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler,
+  )
+  .openapi(
+    getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+    getWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  )
+  .openapi(
+    patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+    patchWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  )
+  .openapi(
+    deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+    deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler,
+  )
+  .openapi(
+    getRecommendationsEventOrchestrationsRulesRoute,
+    getRecommendationsEventOrchestrationsRulesRouteHandler,
+  )
+  .openapi(
+    postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdDismissRoute,
+    postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdDismissRouteHandler,
+  )
+  .openapi(
+    postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRoute,
+    postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRouteHandler,
+  )
+  .openapi(
+    deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRoute,
+    deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRouteHandler,
+  )
 
 export default app

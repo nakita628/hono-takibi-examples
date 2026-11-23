@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsUntagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsUntagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsUntagResourceHandler = app.openapi(
-  postXAmzTargetAWSEventsUntagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsUntagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsUntagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

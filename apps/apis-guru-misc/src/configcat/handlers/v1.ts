@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ConfigsConfigIdRoute,
   deleteV1EnvironmentsEnvironmentIdRoute,
   deleteV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRoute,
@@ -64,198 +64,366 @@ import {
   putV1TagsTagIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1CodeReferencesRouteHandler: RouteHandler<
+  typeof postV1CodeReferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1CodeReferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CodeReferencesDeleteReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ConfigsConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigsConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ConfigsConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigsConfigIdDeletedSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigsConfigIdEnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigsConfigIdEnvironmentsEnvironmentIdValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigsConfigIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ConfigsConfigIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1EnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IntegrationLinkIntegrationLinkTypeKeyDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1JiraConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1JiraEnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OrganizationsOrganizationIdAuditlogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OrganizationsOrganizationIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1OrganizationsOrganizationIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1OrganizationsOrganizationIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1OrganizationsOrganizationIdProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1PermissionsPermissionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PermissionsPermissionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1PermissionsPermissionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdAuditlogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdMembersInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProductsProductIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProductsProductIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProductsProductIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1SegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1SettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SettingsSettingKeyOrIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1SettingsSettingKeyOrIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1SettingsSettingKeyOrIdValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1TagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TagsTagIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1CodeReferencesDeleteReportsRouteHandler: RouteHandler<
+  typeof postV1CodeReferencesDeleteReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ConfigsConfigIdRouteHandler: RouteHandler<
+  typeof deleteV1ConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigsConfigIdRouteHandler: RouteHandler<
+  typeof getV1ConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ConfigsConfigIdRouteHandler: RouteHandler<
+  typeof putV1ConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigsConfigIdDeletedSettingsRouteHandler: RouteHandler<
+  typeof getV1ConfigsConfigIdDeletedSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigsConfigIdEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getV1ConfigsConfigIdEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigsConfigIdEnvironmentsEnvironmentIdValuesRouteHandler: RouteHandler<
+  typeof getV1ConfigsConfigIdEnvironmentsEnvironmentIdValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigsConfigIdSettingsRouteHandler: RouteHandler<
+  typeof getV1ConfigsConfigIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ConfigsConfigIdSettingsRouteHandler: RouteHandler<
+  typeof postV1ConfigsConfigIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof deleteV1EnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getV1EnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof putV1EnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRouteHandler: RouteHandler<
+  typeof deleteV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRouteHandler: RouteHandler<
+  typeof postV1EnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksIntegrationLinkTypeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EnvironmentsEnvironmentIdSettingsSettingIdValueRouteHandler: RouteHandler<
+  typeof getV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1EnvironmentsEnvironmentIdSettingsSettingIdValueRouteHandler: RouteHandler<
+  typeof patchV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1EnvironmentsEnvironmentIdSettingsSettingIdValueRouteHandler: RouteHandler<
+  typeof putV1EnvironmentsEnvironmentIdSettingsSettingIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IntegrationLinkIntegrationLinkTypeKeyDetailsRouteHandler: RouteHandler<
+  typeof getV1IntegrationLinkIntegrationLinkTypeKeyDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1JiraConnectRouteHandler: RouteHandler<typeof postV1JiraConnectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1JiraEnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksKeyRouteHandler: RouteHandler<
+  typeof postV1JiraEnvironmentsEnvironmentIdSettingsSettingIdIntegrationLinksKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeRouteHandler: RouteHandler<typeof getV1MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OrganizationsRouteHandler: RouteHandler<typeof getV1OrganizationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OrganizationsOrganizationIdAuditlogsRouteHandler: RouteHandler<
+  typeof getV1OrganizationsOrganizationIdAuditlogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OrganizationsOrganizationIdMembersRouteHandler: RouteHandler<
+  typeof getV1OrganizationsOrganizationIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1OrganizationsOrganizationIdMembersUserIdRouteHandler: RouteHandler<
+  typeof deleteV1OrganizationsOrganizationIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1OrganizationsOrganizationIdMembersUserIdRouteHandler: RouteHandler<
+  typeof postV1OrganizationsOrganizationIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1OrganizationsOrganizationIdProductsRouteHandler: RouteHandler<
+  typeof postV1OrganizationsOrganizationIdProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1PermissionsPermissionGroupIdRouteHandler: RouteHandler<
+  typeof deleteV1PermissionsPermissionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PermissionsPermissionGroupIdRouteHandler: RouteHandler<
+  typeof getV1PermissionsPermissionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1PermissionsPermissionGroupIdRouteHandler: RouteHandler<
+  typeof putV1PermissionsPermissionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsRouteHandler: RouteHandler<typeof getV1ProductsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProductsProductIdRouteHandler: RouteHandler<
+  typeof deleteV1ProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProductsProductIdRouteHandler: RouteHandler<
+  typeof putV1ProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdAuditlogsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdAuditlogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdConfigsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdConfigsRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdEnvironmentsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdEnvironmentsRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdMembersRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdMembersInviteRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdMembersInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProductsProductIdMembersUserIdRouteHandler: RouteHandler<
+  typeof deleteV1ProductsProductIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdPermissionsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdPermissionsRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdSegmentsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdSegmentsRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProductsProductIdTagsRouteHandler: RouteHandler<
+  typeof getV1ProductsProductIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProductsProductIdTagsRouteHandler: RouteHandler<
+  typeof postV1ProductsProductIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof deleteV1SegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof getV1SegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1SegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof putV1SegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SettingsSettingIdRouteHandler: RouteHandler<
+  typeof deleteV1SettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SettingsSettingIdRouteHandler: RouteHandler<
+  typeof getV1SettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1SettingsSettingIdRouteHandler: RouteHandler<
+  typeof patchV1SettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SettingsSettingKeyOrIdValueRouteHandler: RouteHandler<
+  typeof getV1SettingsSettingKeyOrIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1SettingsSettingKeyOrIdValueRouteHandler: RouteHandler<
+  typeof patchV1SettingsSettingKeyOrIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1SettingsSettingKeyOrIdValueRouteHandler: RouteHandler<
+  typeof putV1SettingsSettingKeyOrIdValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TagsTagIdRouteHandler: RouteHandler<typeof deleteV1TagsTagIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TagsTagIdRouteHandler: RouteHandler<typeof getV1TagsTagIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1TagsTagIdRouteHandler: RouteHandler<typeof putV1TagsTagIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TagsTagIdSettingsRouteHandler: RouteHandler<
+  typeof getV1TagsTagIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStandardsControlsStandardsSubscriptionArnRoute,
   getStandardsRoute,
   patchStandardsControlStandardsControlArnRoute,
@@ -8,24 +8,36 @@ import {
   postStandardsRegisterRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postStandardsDeregisterRouteHandler: RouteHandler<
+  typeof postStandardsDeregisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const standardsHandler = app
-  .openapi(postStandardsDeregisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStandardsRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStandardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStandardsControlsStandardsSubscriptionArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStandardsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStandardsControlStandardsControlArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStandardsRegisterRouteHandler: RouteHandler<
+  typeof postStandardsRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStandardsRouteHandler: RouteHandler<typeof getStandardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStandardsControlsStandardsSubscriptionArnRouteHandler: RouteHandler<
+  typeof getStandardsControlsStandardsSubscriptionArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStandardsGetRouteHandler: RouteHandler<typeof postStandardsGetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStandardsControlStandardsControlArnRouteHandler: RouteHandler<
+  typeof patchStandardsControlStandardsControlArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

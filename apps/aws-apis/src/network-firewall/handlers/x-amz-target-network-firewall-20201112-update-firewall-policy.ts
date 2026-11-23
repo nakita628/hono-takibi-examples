@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetNetworkFirewall20201112UpdateFirewallPolicyHandler = app.openapi(
-  postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetNetworkFirewall20201112UpdateFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

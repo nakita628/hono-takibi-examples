@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute,
   deleteMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute,
   deleteMediaBridge202609AppIdSchemasObjectTypeAssociationsAssociationIdRoute,
@@ -35,105 +35,200 @@ import {
   putMediaBridge202609AppIdSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMediaBridge202609EventsAttentionSpanRouteHandler: RouteHandler<
+  typeof postMediaBridge202609EventsAttentionSpanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mediaBridgeHandler = app
-  .openapi(postMediaBridge202609EventsAttentionSpanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609EventsMediaPlayedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609EventsMediaPlayedPercentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdPropertiesObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdPropertiesObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdPropertiesObjectTypeBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdPropertiesObjectTypeBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdPropertiesObjectTypeBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdPropertiesObjectTypeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdPropertiesObjectTypeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSchemasObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMediaBridge202609AppIdSchemasObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdSchemasObjectTypeAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMediaBridge202609AppIdSchemasObjectTypeAssociationsAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMediaBridge202609AppIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSettingsEventVisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMediaBridge202609AppIdSettingsEventVisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdSettingsObjectDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSettingsObjectDefinitionsMediaTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSettingsOembedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdSettingsOembedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMediaBridge202609AppIdSettingsOembedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdSettingsRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMediaBridge202609AppIdSettingsVideoAssociationDefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMediaBridge202609EventsMediaPlayedRouteHandler: RouteHandler<
+  typeof postMediaBridge202609EventsMediaPlayedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609EventsMediaPlayedPercentRouteHandler: RouteHandler<
+  typeof postMediaBridge202609EventsMediaPlayedPercentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdPropertiesObjectTypeRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdPropertiesObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdPropertiesObjectTypeRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdPropertiesObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdPropertiesObjectTypeBatchArchiveRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdPropertiesObjectTypeBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdPropertiesObjectTypeBatchCreateRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdPropertiesObjectTypeBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdPropertiesObjectTypeBatchReadRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdPropertiesObjectTypeBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdPropertiesObjectTypeGroupsRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdPropertiesObjectTypeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdPropertiesObjectTypeGroupsRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdPropertiesObjectTypeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRouteHandler: RouteHandler<
+  typeof deleteMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRouteHandler: RouteHandler<
+  typeof patchMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdPropertiesObjectTypePropertyNameRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMediaBridge202609AppIdPropertiesObjectTypePropertyNameRouteHandler: RouteHandler<
+  typeof deleteMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMediaBridge202609AppIdPropertiesObjectTypePropertyNameRouteHandler: RouteHandler<
+  typeof patchMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSchemasRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSchemasObjectTypeRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSchemasObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMediaBridge202609AppIdSchemasObjectTypeRouteHandler: RouteHandler<
+  typeof patchMediaBridge202609AppIdSchemasObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdSchemasObjectTypeAssociationsRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdSchemasObjectTypeAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMediaBridge202609AppIdSchemasObjectTypeAssociationsAssociationIdRouteHandler: RouteHandler<
+  typeof deleteMediaBridge202609AppIdSchemasObjectTypeAssociationsAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMediaBridge202609AppIdSettingsRouteHandler: RouteHandler<
+  typeof putMediaBridge202609AppIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSettingsEventVisibilityRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSettingsEventVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMediaBridge202609AppIdSettingsEventVisibilityRouteHandler: RouteHandler<
+  typeof patchMediaBridge202609AppIdSettingsEventVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdSettingsObjectDefinitionsRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdSettingsObjectDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSettingsObjectDefinitionsMediaTypeRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSettingsObjectDefinitionsMediaTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSettingsOembedDomainsRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSettingsOembedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdSettingsOembedDomainsRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdSettingsOembedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMediaBridge202609AppIdSettingsOembedDomainsRouteHandler: RouteHandler<
+  typeof deleteMediaBridge202609AppIdSettingsOembedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRouteHandler: RouteHandler<
+  typeof getMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRouteHandler: RouteHandler<
+  typeof patchMediaBridge202609AppIdSettingsOembedDomainsOEmbedDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdSettingsRegisterRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdSettingsRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMediaBridge202609AppIdSettingsVideoAssociationDefinitionRouteHandler: RouteHandler<
+  typeof postMediaBridge202609AppIdSettingsVideoAssociationDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

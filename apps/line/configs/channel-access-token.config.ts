@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/channel-access-token.yml',
   output: './src/channel-access-token/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/channel-access-token/types.ts' },
   client: { output: './src/channel-access-token/client.ts', baseUrl: '/' },
   rpc: { output: './src/channel-access-token/rpc.ts', parseResponse: true },

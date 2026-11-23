@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHardwareApplicationsApplicationIdRoute,
   getHardwareApplicationsRoute,
   getHardwareDeviceMonitorsDeviceIdRoute,
@@ -25,75 +25,140 @@ import {
   putHardwareGroupsGroupIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postHardwareActionsDeviceIdCollectNowRouteHandler: RouteHandler<
+  typeof postHardwareActionsDeviceIdCollectNowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hardwareHandler = app
-  .openapi(postHardwareActionsDeviceIdCollectNowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareActionsDeviceIdRediscoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareActionsDeviceIdReinitializeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareActionsDeviceIdRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareActionsDeviceIdResetErrorCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareApplicationsApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDeviceMonitorsDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesDeviceIdAgentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesDeviceIdAgentDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareDevicesDeviceIdParameterHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareEnergyUsageDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putHardwareGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareHeatingMarginDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareSearchDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareServicesServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHardwareActionsDeviceIdRediscoverRouteHandler: RouteHandler<
+  typeof postHardwareActionsDeviceIdRediscoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHardwareActionsDeviceIdReinitializeRouteHandler: RouteHandler<
+  typeof postHardwareActionsDeviceIdReinitializeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHardwareActionsDeviceIdRemoveRouteHandler: RouteHandler<
+  typeof postHardwareActionsDeviceIdRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHardwareActionsDeviceIdResetErrorCountRouteHandler: RouteHandler<
+  typeof postHardwareActionsDeviceIdResetErrorCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareApplicationsRouteHandler: RouteHandler<
+  typeof getHardwareApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareApplicationsApplicationIdRouteHandler: RouteHandler<
+  typeof getHardwareApplicationsApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDeviceMonitorsDeviceIdRouteHandler: RouteHandler<
+  typeof getHardwareDeviceMonitorsDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesRouteHandler: RouteHandler<typeof getHardwareDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesSummaryRouteHandler: RouteHandler<
+  typeof getHardwareDevicesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getHardwareDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesDeviceIdAgentRouteHandler: RouteHandler<
+  typeof getHardwareDevicesDeviceIdAgentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesDeviceIdAgentDevicesRouteHandler: RouteHandler<
+  typeof getHardwareDevicesDeviceIdAgentDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareDevicesDeviceIdParameterHistoryRouteHandler: RouteHandler<
+  typeof getHardwareDevicesDeviceIdParameterHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareEnergyUsageDeviceIdRouteHandler: RouteHandler<
+  typeof getHardwareEnergyUsageDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareGroupsRouteHandler: RouteHandler<typeof getHardwareGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getHardwareGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putHardwareGroupsGroupIdRouteHandler: RouteHandler<
+  typeof putHardwareGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareHeatingMarginDevicesRouteHandler: RouteHandler<
+  typeof getHardwareHeatingMarginDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareHistoryRouteHandler: RouteHandler<typeof getHardwareHistoryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareSearchDevicesRouteHandler: RouteHandler<
+  typeof getHardwareSearchDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareServicesRouteHandler: RouteHandler<
+  typeof getHardwareServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHardwareServicesServiceIdRouteHandler: RouteHandler<
+  typeof getHardwareServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

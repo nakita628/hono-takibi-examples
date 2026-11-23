@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSubscriptionsExternalIdAlertsCodeRoute,
   deleteSubscriptionsExternalIdAlertsRoute,
   deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute,
@@ -30,93 +30,170 @@ import {
   putSubscriptionsExternalIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSubscriptionsRouteHandler: RouteHandler<typeof postSubscriptionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const subscriptionsHandler = app
-  .openapi(postSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscriptionsExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdLifetimeUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdLifetimeUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsExternalIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscriptionsExternalIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdAlertsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdAlertsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscriptionsExternalIdAlertsCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSubscriptionsExternalIdEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscriptionsExternalIdEntitlementsFeatureCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteSubscriptionsExternalIdEntitlementsFeatureCodePrivilegesPrivilegeCodeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getSubscriptionsExternalIdFixedChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdChargesChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdChargesChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsExternalIdChargesChargeCodeFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdChargesChargeCodeFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsExternalIdFixedChargesFixedChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscriptionsExternalIdFixedChargesFixedChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSubscriptionsRouteHandler: RouteHandler<typeof getSubscriptionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdLifetimeUsageRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdLifetimeUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdLifetimeUsageRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdLifetimeUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdAlertsRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsExternalIdAlertsRouteHandler: RouteHandler<
+  typeof postSubscriptionsExternalIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdAlertsRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdAlertsCodeRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdAlertsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdAlertsCodeRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdAlertsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdAlertsCodeRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdAlertsCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdEntitlementsRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSubscriptionsExternalIdEntitlementsRouteHandler: RouteHandler<
+  typeof patchSubscriptionsExternalIdEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdEntitlementsFeatureCodeRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdEntitlementsFeatureCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdEntitlementsFeatureCodePrivilegesPrivilegeCodeRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdEntitlementsFeatureCodePrivilegesPrivilegeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdFixedChargesRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdFixedChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdChargesRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdChargesChargeCodeRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdChargesChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdChargesChargeCodeRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdChargesChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsExternalIdChargesChargeCodeFiltersRouteHandler: RouteHandler<
+  typeof postSubscriptionsExternalIdChargesChargeCodeFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdChargesChargeCodeFiltersRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdChargesChargeCodeFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsExternalIdFixedChargesFixedChargeCodeRouteHandler: RouteHandler<
+  typeof getSubscriptionsExternalIdFixedChargesFixedChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscriptionsExternalIdFixedChargesFixedChargeCodeRouteHandler: RouteHandler<
+  typeof putSubscriptionsExternalIdFixedChargesFixedChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

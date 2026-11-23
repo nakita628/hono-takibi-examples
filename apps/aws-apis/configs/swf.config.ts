@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/swf/2012-01-25/openapi.yaml',
   output: './src/swf/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/swf/types.ts' },
   client: { output: './src/swf/client.ts', baseUrl: '/' },
   rpc: { output: './src/swf/rpc.ts', parseResponse: true },

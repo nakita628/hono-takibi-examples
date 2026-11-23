@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceAssociateMemberToGroupHandler = app.openapi(
-  postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceAssociateMemberToGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceAssociateMemberToGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

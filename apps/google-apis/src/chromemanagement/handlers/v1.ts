@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1CustomerAppsCountChromeAppRequestsRoute,
   getV1CustomerReportsCountChromeBrowsersNeedingAttentionRoute,
   getV1CustomerReportsCountChromeDevicesReachingAutoExpirationDateRoute,
@@ -14,42 +14,72 @@ import {
   getV1ParentTelemetryUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1CustomerAppsCountChromeAppRequestsRouteHandler: RouteHandler<
+  typeof getV1CustomerAppsCountChromeAppRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1CustomerAppsCountChromeAppRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountChromeBrowsersNeedingAttentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountChromeDevicesReachingAutoExpirationDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountChromeDevicesThatNeedAttentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountChromeHardwareFleetDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountChromeVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsCountInstalledAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CustomerReportsFindInstalledAppDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentTelemetryDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentTelemetryEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentTelemetryUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1CustomerReportsCountChromeBrowsersNeedingAttentionRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountChromeBrowsersNeedingAttentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsCountChromeDevicesReachingAutoExpirationDateRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountChromeDevicesReachingAutoExpirationDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsCountChromeDevicesThatNeedAttentionRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountChromeDevicesThatNeedAttentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsCountChromeHardwareFleetDevicesRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountChromeHardwareFleetDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsCountChromeVersionsRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountChromeVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsCountInstalledAppsRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsCountInstalledAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CustomerReportsFindInstalledAppDevicesRouteHandler: RouteHandler<
+  typeof getV1CustomerReportsFindInstalledAppDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentTelemetryDevicesRouteHandler: RouteHandler<
+  typeof getV1ParentTelemetryDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentTelemetryEventsRouteHandler: RouteHandler<
+  typeof getV1ParentTelemetryEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentTelemetryUsersRouteHandler: RouteHandler<
+  typeof getV1ParentTelemetryUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

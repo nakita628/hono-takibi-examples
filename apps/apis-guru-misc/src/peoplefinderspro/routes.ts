@@ -106,7 +106,7 @@ export const postAddressAutocompleteRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postContactEnrichRoute = createRoute({
@@ -160,7 +160,7 @@ export const postContactEnrichRoute = createRoute({
     }),
     body: SearchBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailEnrichRoute = createRoute({
@@ -222,7 +222,7 @@ export const postEmailEnrichRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postIdentityVerifyIdRoute = createRoute({
@@ -277,7 +277,7 @@ export const postIdentityVerifyIdRoute = createRoute({
     }),
     body: SearchBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPhoneEnrichRoute = createRoute({
@@ -339,5 +339,5 @@ export const postPhoneEnrichRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

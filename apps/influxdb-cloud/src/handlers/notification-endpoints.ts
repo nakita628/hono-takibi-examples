@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNotificationEndpointsEndpointIDLabelsLabelIDRoute,
   deleteNotificationEndpointsEndpointIDRoute,
   getNotificationEndpointsEndpointIDLabelsRoute,
@@ -11,33 +11,56 @@ import {
   putNotificationEndpointsEndpointIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNotificationEndpointsRouteHandler: RouteHandler<
+  typeof getNotificationEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const notificationEndpointsHandler = app
-  .openapi(getNotificationEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationEndpointsEndpointIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationEndpointsEndpointIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNotificationEndpointsEndpointIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationEndpointsEndpointIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationEndpointsEndpointIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationEndpointsEndpointIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationEndpointsEndpointIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNotificationEndpointsRouteHandler: RouteHandler<
+  typeof postNotificationEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationEndpointsEndpointIDRouteHandler: RouteHandler<
+  typeof getNotificationEndpointsEndpointIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationEndpointsEndpointIDRouteHandler: RouteHandler<
+  typeof putNotificationEndpointsEndpointIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNotificationEndpointsEndpointIDRouteHandler: RouteHandler<
+  typeof patchNotificationEndpointsEndpointIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationEndpointsEndpointIDRouteHandler: RouteHandler<
+  typeof deleteNotificationEndpointsEndpointIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationEndpointsEndpointIDLabelsRouteHandler: RouteHandler<
+  typeof getNotificationEndpointsEndpointIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNotificationEndpointsEndpointIDLabelsRouteHandler: RouteHandler<
+  typeof postNotificationEndpointsEndpointIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationEndpointsEndpointIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteNotificationEndpointsEndpointIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

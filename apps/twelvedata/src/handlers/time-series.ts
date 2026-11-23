@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTimeSeriesCrossRoute, getTimeSeriesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTimeSeriesCrossRoute, getTimeSeriesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimeSeriesRouteHandler: RouteHandler<typeof getTimeSeriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const timeSeriesHandler = app
-  .openapi(getTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimeSeriesCrossRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTimeSeriesCrossRouteHandler: RouteHandler<typeof getTimeSeriesCrossRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

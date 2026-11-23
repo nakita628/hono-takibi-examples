@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReviewsResourceTypeJsonRoute, getReviewsSearchJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReviewsResourceTypeJsonRoute, getReviewsSearchJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReviewsSearchJsonRouteHandler: RouteHandler<
+  typeof getReviewsSearchJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reviewsHandler = app
-  .openapi(getReviewsSearchJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewsResourceTypeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReviewsResourceTypeJsonRouteHandler: RouteHandler<
+  typeof getReviewsResourceTypeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

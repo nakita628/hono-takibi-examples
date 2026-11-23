@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { timestagsHandler } from './handlers'
+import { getTimestagsRoute } from './routes'
+import { getTimestagsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', timestagsHandler)
+export const api = app.openapi(getTimestagsRoute, getTimestagsRouteHandler)
 
 export default app

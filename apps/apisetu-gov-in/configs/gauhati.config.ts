@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/gauhati/3.0.0/openapi.yaml',
   output: './src/gauhati/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gauhati/types.ts' },
   client: { output: './src/gauhati/client.ts', baseUrl: '/' },
   rpc: { output: './src/gauhati/rpc.ts', parseResponse: true },

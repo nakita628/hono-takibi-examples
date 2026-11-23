@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1MeRoute,
   getApiV1UsersTotpCodesRemainingRoute,
   postApiV1LoginCodeRedeemRoute,
@@ -16,48 +16,80 @@ import {
   postApiV1UsersValidateTotpRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiV1LoginRouteHandler: RouteHandler<typeof postApiV1LoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiV1LoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1LogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1LoginCodeRedeemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1Users2faEnableEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1Users2faSendEmailCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1Users2faDisableEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1UsersEnableTotpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1UsersValidateTotpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1UsersDisableTotpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1UsersRegenerateTotpCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1UsersTotpCodesRemainingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1TwoFactorChallengesSendEmailCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1TwoFactorChallengesVerifyChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiV1LogoutRouteHandler: RouteHandler<typeof postApiV1LogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1LoginCodeRedeemRouteHandler: RouteHandler<
+  typeof postApiV1LoginCodeRedeemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MeRouteHandler: RouteHandler<typeof getApiV1MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1Users2faEnableEmailRouteHandler: RouteHandler<
+  typeof postApiV1Users2faEnableEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1Users2faSendEmailCodeRouteHandler: RouteHandler<
+  typeof postApiV1Users2faSendEmailCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1Users2faDisableEmailRouteHandler: RouteHandler<
+  typeof postApiV1Users2faDisableEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1UsersEnableTotpRouteHandler: RouteHandler<
+  typeof postApiV1UsersEnableTotpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1UsersValidateTotpRouteHandler: RouteHandler<
+  typeof postApiV1UsersValidateTotpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1UsersDisableTotpRouteHandler: RouteHandler<
+  typeof postApiV1UsersDisableTotpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1UsersRegenerateTotpCodesRouteHandler: RouteHandler<
+  typeof postApiV1UsersRegenerateTotpCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1UsersTotpCodesRemainingRouteHandler: RouteHandler<
+  typeof getApiV1UsersTotpCodesRemainingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1TwoFactorChallengesSendEmailCodeRouteHandler: RouteHandler<
+  typeof postApiV1TwoFactorChallengesSendEmailCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1TwoFactorChallengesVerifyChallengeRouteHandler: RouteHandler<
+  typeof postApiV1TwoFactorChallengesVerifyChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

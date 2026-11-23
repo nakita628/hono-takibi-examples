@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRetargetingIdRoute,
   getRetargetingCountRoute,
   getRetargetingIdDatapointsCountRoute,
@@ -10,30 +10,46 @@ import {
   postRetargetingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRetargetingRouteHandler: RouteHandler<typeof getRetargetingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const retargetingHandler = app
-  .openapi(getRetargetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRetargetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetargetingCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRetargetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetargetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRetargetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetargetingIdDatapointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetargetingIdDatapointsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRetargetingRouteHandler: RouteHandler<typeof postRetargetingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetargetingCountRouteHandler: RouteHandler<
+  typeof getRetargetingCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRetargetingIdRouteHandler: RouteHandler<
+  typeof deleteRetargetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetargetingIdRouteHandler: RouteHandler<typeof getRetargetingIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRetargetingIdRouteHandler: RouteHandler<typeof postRetargetingIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetargetingIdDatapointsRouteHandler: RouteHandler<
+  typeof getRetargetingIdDatapointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetargetingIdDatapointsCountRouteHandler: RouteHandler<
+  typeof getRetargetingIdDatapointsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

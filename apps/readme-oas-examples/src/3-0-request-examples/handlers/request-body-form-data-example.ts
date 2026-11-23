@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRequestBodyFormDataExampleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRequestBodyFormDataExampleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const requestBodyFormDataExampleHandler = app.openapi(
-  postRequestBodyFormDataExampleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRequestBodyFormDataExampleRouteHandler: RouteHandler<
+  typeof postRequestBodyFormDataExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNamespaceNamespaceNameRoute,
   getNamespaceNamespaceNameRoute,
   postNamespaceNamespaceNameRoute,
   postNamespaceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postNamespaceRouteHandler: RouteHandler<typeof postNamespaceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const namespaceHandler = app
-  .openapi(postNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNamespaceNamespaceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamespaceNamespaceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNamespaceNamespaceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteNamespaceNamespaceNameRouteHandler: RouteHandler<
+  typeof deleteNamespaceNamespaceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamespaceNamespaceNameRouteHandler: RouteHandler<
+  typeof getNamespaceNamespaceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNamespaceNamespaceNameRouteHandler: RouteHandler<
+  typeof postNamespaceNamespaceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

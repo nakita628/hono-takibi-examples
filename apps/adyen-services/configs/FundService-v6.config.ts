@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/FundService-v6.json',
   output: './src/FundService-v6/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/FundService-v6/types.ts' },
   client: { output: './src/FundService-v6/client.ts', baseUrl: '/' },
   rpc: { output: './src/FundService-v6/rpc.ts', parseResponse: true },

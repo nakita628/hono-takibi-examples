@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218DeregisterRdsDbInstanceHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDeliverySlipsIdRoute,
   getDeliverySlipsRoute,
   getDeliverySlipsTemplatesRoute,
@@ -9,27 +9,44 @@ import {
   putDeliverySlipsIdUncancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeliverySlipsRouteHandler: RouteHandler<typeof getDeliverySlipsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const deliverySlipsHandler = app
-  .openapi(getDeliverySlipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeliverySlipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliverySlipsTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliverySlipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliverySlipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliverySlipsIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliverySlipsIdUncancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeliverySlipsRouteHandler: RouteHandler<typeof postDeliverySlipsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeliverySlipsTemplatesRouteHandler: RouteHandler<
+  typeof getDeliverySlipsTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeliverySlipsIdRouteHandler: RouteHandler<typeof getDeliverySlipsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliverySlipsIdRouteHandler: RouteHandler<typeof putDeliverySlipsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliverySlipsIdCancelRouteHandler: RouteHandler<
+  typeof putDeliverySlipsIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliverySlipsIdUncancelRouteHandler: RouteHandler<
+  typeof putDeliverySlipsIdUncancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

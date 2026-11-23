@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/digitalassetlinks/v1/openapi.yaml',
   output: './src/digitalassetlinks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/digitalassetlinks/types.ts' },
   client: { output: './src/digitalassetlinks/client.ts', baseUrl: '/' },
   rpc: { output: './src/digitalassetlinks/rpc.ts', parseResponse: true },

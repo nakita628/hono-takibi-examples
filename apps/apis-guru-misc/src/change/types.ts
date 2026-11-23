@@ -28,19 +28,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/v1/donations/create': {
-      $post: {
-        input: {
-          query: {
-            amount: string
-            nonprofit_id: string
-            funding_source: 'merchant' | 'customer'
-            zip_code?: string | undefined
+      $post:
+        | {
+            input: {
+              query: {
+                amount: string
+                nonprofit_id: string
+                funding_source: 'merchant' | 'customer'
+                zip_code?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                amount: string
+                nonprofit_id: string
+                funding_source: 'merchant' | 'customer'
+                zip_code?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/api/v1/donations/crypto_calculate': {

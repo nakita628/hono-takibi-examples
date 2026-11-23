@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLabelTemplatesNameRoute, getLabelTemplatesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLabelTemplatesNameRoute, getLabelTemplatesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLabelTemplatesRouteHandler: RouteHandler<typeof getLabelTemplatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const labelHandler = app
-  .openapi(getLabelTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLabelTemplatesNameRouteHandler: RouteHandler<
+  typeof getLabelTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

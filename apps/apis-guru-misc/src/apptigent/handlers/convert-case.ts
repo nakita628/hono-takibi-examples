@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConvertCaseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConvertCaseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const convertCaseHandler = app.openapi(postConvertCaseRoute, (c) => {
+export const postConvertCaseRouteHandler: RouteHandler<typeof postConvertCaseRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

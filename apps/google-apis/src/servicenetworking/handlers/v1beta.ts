@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1betaNameRoute,
   getV1betaParentConnectionsRoute,
   patchV1betaNameConnectionsRoute,
@@ -8,24 +8,36 @@ import {
   postV1betaParentSearchRangeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaNameConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentAddSubnetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentSearchRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchV1betaNameConnectionsRouteHandler: RouteHandler<
+  typeof patchV1betaNameConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentConnectionsRouteHandler: RouteHandler<
+  typeof getV1betaParentConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentConnectionsRouteHandler: RouteHandler<
+  typeof postV1betaParentConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentAddSubnetworkRouteHandler: RouteHandler<
+  typeof postV1betaParentAddSubnetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentSearchRangeRouteHandler: RouteHandler<
+  typeof postV1betaParentSearchRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

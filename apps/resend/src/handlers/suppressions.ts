@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSuppressionsSuppressionRoute,
   getSuppressionsRoute,
   getSuppressionsSuppressionRoute,
@@ -8,24 +8,36 @@ import {
   postSuppressionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSuppressionsRouteHandler: RouteHandler<typeof postSuppressionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const suppressionsHandler = app
-  .openapi(postSuppressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuppressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSuppressionsBatchAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSuppressionsBatchRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuppressionsSuppressionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSuppressionsSuppressionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSuppressionsRouteHandler: RouteHandler<typeof getSuppressionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSuppressionsBatchAddRouteHandler: RouteHandler<
+  typeof postSuppressionsBatchAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSuppressionsBatchRemoveRouteHandler: RouteHandler<
+  typeof postSuppressionsBatchRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuppressionsSuppressionRouteHandler: RouteHandler<
+  typeof getSuppressionsSuppressionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSuppressionsSuppressionRouteHandler: RouteHandler<
+  typeof deleteSuppressionsSuppressionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

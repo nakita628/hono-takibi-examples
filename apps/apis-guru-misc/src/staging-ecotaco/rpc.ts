@@ -168,17 +168,17 @@ export async function postRidesIdReserve(
 }
 
 export async function getRidesPagePagePerPagePerPage(
-  args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>,
+  args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['rides?page=:page&per_page=:per_page'].$get(args, options))
+  return await parseResponse(client['rides?page={page}&per_page={per_page}'].$get(args, options))
 }
 
 export async function postRidesPagePagePerPagePerPage(
-  args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>,
+  args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['rides?page=:page&per_page=:per_page'].$post(args, options))
+  return await parseResponse(client['rides?page={page}&per_page={per_page}'].$post(args, options))
 }
 
 export async function getVersion(

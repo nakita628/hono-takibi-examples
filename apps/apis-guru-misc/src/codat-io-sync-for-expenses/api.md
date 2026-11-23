@@ -1257,7 +1257,7 @@ auth_header
 |syncId|string \| null|false|none|Unique identifier of the sync.|
 |syncStatus|string \| null|false|none|Text status of the sync.|
 |syncStatusCode|integer(int32)|false|none|Status code of the sync.|
-|syncUtc|string|false|none|Datetime of the sync.|
+|syncUtc|[DataConnectionCreated](#schemadataconnectioncreated)|false|none|Datetime of the sync.|
 
 <h2 id="tocS_CreateExpenseRequest">CreateExpenseRequest</h2>
 <!-- backwards compatibility -->
@@ -1372,17 +1372,17 @@ A connection represents the link between a `company` and a source of data.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |connectionInfo|object|false|none|none|
-|created|string|true|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|dataConnectionErrors|[object]|false|none|none|
+|created|[DataConnectionCreated](#schemadataconnectioncreated)|true|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|dataConnectionErrors|[[DataConnectionDataConnectionError](#schemadataconnectiondataconnectionerror)]|false|none|none|
 |id|string(uuid)|true|none|Unique identifier for a company's data connection.|
 |integrationId|string(uuid)|true|none|A Codat ID representing the integration.|
 |integrationKey|string|true|none|A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.|
-|lastSync|string|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|lastSync|[DataConnectionCreated](#schemadataconnectioncreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |linkUrl|string(uri)|true|none|none|
 |platformName|string|true|none|none|
 |sourceId|string(uuid)|true|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
 |sourceType|string|true|none|The type of platform of the connection.|
-|status|string|true|none|The current authorization status of the data connection.|
+|status|[DataConnectionDataConnectionStatus](#schemadataconnectiondataconnectionstatus)|true|none|The current authorization status of the data connection.|
 
 #### Enumerated Values
 
@@ -1441,7 +1441,7 @@ A connection represents the link between a `company` and a source of data.
 |currency|string|true|none|Currency the transaction was recorded in.|
 |currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |id|string(uuid)|true|none|Your unique idenfier for the transaction.|
-|issueDate|string|true|none|Date of the transaction was recorded.|
+|issueDate|[DataConnectionCreated](#schemadataconnectioncreated)|true|none|Date of the transaction was recorded.|
 |lines|[[ExpenseTransactionLine](#schemaexpensetransactionline)]|false|none|Array of transaction lines.|
 |merchantName|string|false|none|Name of the merchant where the purchase took place|
 |notes|string|false|none|Any private, company notes about the transaction.|
@@ -1758,7 +1758,7 @@ Type of transaction that has been processed e.g. Expense or Bank Feed.
 |---|---|---|---|---|
 |hasChildren|boolean|false|none|Boolean of whether the tracking category has child categories.|
 |id|string \| null|false|none|Unique identifier of the tracking category.|
-|modifiedDate|string|false|none|Datetime when the tracking category was last modified.|
+|modifiedDate|[DataConnectionCreated](#schemadataconnectioncreated)|false|none|Datetime when the tracking category was last modified.|
 |name|string \| null|false|none|Name of the tracking category as it appears in the accounting software.|
 |parentId|string \| null|false|none|ID of the parent tracking category|
 
@@ -1852,3 +1852,72 @@ Type of transaction that has been processed e.g. Expense or Bank Feed.
 ```
 
 Status of the transaction.
+
+<h2 id="tocS_DataConnectionCreated">DataConnectionCreated</h2>
+<!-- backwards compatibility -->
+<a id="schemadataconnectioncreated"></a>
+<a id="schema_DataConnectionCreated"></a>
+<a id="tocSdataconnectioncreated"></a>
+<a id="tocsdataconnectioncreated"></a>
+
+```json
+"2022-10-23T00:00:00Z"
+```
+
+In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:
+
+```
+2020-10-08T22:40:50Z
+2021-01-01T00:00:00
+```
+
+
+
+When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:
+
+- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`
+- Unqualified local time: `2021-11-15T01:00:00`
+- UTC time offsets: `2021-11-15T01:00:00-05:00`
+
+> Time zones
+> 
+> Not all dates from Codat will contain information about time zones.  
+> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.
+
+<h2 id="tocS_DataConnectionDataConnectionError">DataConnectionDataConnectionError</h2>
+<!-- backwards compatibility -->
+<a id="schemadataconnectiondataconnectionerror"></a>
+<a id="schema_DataConnectionDataConnectionError"></a>
+<a id="tocSdataconnectiondataconnectionerror"></a>
+<a id="tocsdataconnectiondataconnectionerror"></a>
+
+```json
+{
+  "errorMessage": "string",
+  "erroredOnUtc": "2022-10-23T00:00:00Z",
+  "statusCode": "string",
+  "statusText": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errorMessage|string|false|none|none|
+|erroredOnUtc|[DataConnectionCreated](#schemadataconnectioncreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|statusCode|string|false|none|none|
+|statusText|string|false|none|none|
+
+<h2 id="tocS_DataConnectionDataConnectionStatus">DataConnectionDataConnectionStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemadataconnectiondataconnectionstatus"></a>
+<a id="schema_DataConnectionDataConnectionStatus"></a>
+<a id="tocSdataconnectiondataconnectionstatus"></a>
+<a id="tocsdataconnectiondataconnectionstatus"></a>
+
+```json
+"PendingAuth"
+```
+
+The current authorization status of the data connection.

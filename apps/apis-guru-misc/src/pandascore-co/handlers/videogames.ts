@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVideogamesRoute,
   getVideogamesVideogameIdOrSlugLeaguesRoute,
   getVideogamesVideogameIdOrSlugRoute,
@@ -8,24 +8,36 @@ import {
   getVideogamesVideogameIdOrSlugVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVideogamesRouteHandler: RouteHandler<typeof getVideogamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const videogamesHandler = app
-  .openapi(getVideogamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideogamesVideogameIdOrSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideogamesVideogameIdOrSlugLeaguesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideogamesVideogameIdOrSlugSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideogamesVideogameIdOrSlugTournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideogamesVideogameIdOrSlugVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVideogamesVideogameIdOrSlugRouteHandler: RouteHandler<
+  typeof getVideogamesVideogameIdOrSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideogamesVideogameIdOrSlugLeaguesRouteHandler: RouteHandler<
+  typeof getVideogamesVideogameIdOrSlugLeaguesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideogamesVideogameIdOrSlugSeriesRouteHandler: RouteHandler<
+  typeof getVideogamesVideogameIdOrSlugSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideogamesVideogameIdOrSlugTournamentsRouteHandler: RouteHandler<
+  typeof getVideogamesVideogameIdOrSlugTournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideogamesVideogameIdOrSlugVersionsRouteHandler: RouteHandler<
+  typeof getVideogamesVideogameIdOrSlugVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

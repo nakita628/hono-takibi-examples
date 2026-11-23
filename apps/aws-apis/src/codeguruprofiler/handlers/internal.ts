@@ -1,32 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInternalFindingsReportsRoute,
   getInternalProfilingGroupsProfilingGroupNameFindingsReportsEndTimeStartTimeRoute,
   getInternalProfilingGroupsProfilingGroupNameRecommendationsEndTimeStartTimeRoute,
   postInternalProfilingGroupsProfilingGroupNameAnomaliesAnomalyInstanceIdFeedbackRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInternalFindingsReportsRouteHandler: RouteHandler<
+  typeof getInternalFindingsReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const internalHandler = app
-  .openapi(getInternalFindingsReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getInternalProfilingGroupsProfilingGroupNameRecommendationsEndTimeStartTimeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getInternalProfilingGroupsProfilingGroupNameFindingsReportsEndTimeStartTimeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postInternalProfilingGroupsProfilingGroupNameAnomaliesAnomalyInstanceIdFeedbackRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getInternalProfilingGroupsProfilingGroupNameRecommendationsEndTimeStartTimeRouteHandler: RouteHandler<
+  typeof getInternalProfilingGroupsProfilingGroupNameRecommendationsEndTimeStartTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInternalProfilingGroupsProfilingGroupNameFindingsReportsEndTimeStartTimeRouteHandler: RouteHandler<
+  typeof getInternalProfilingGroupsProfilingGroupNameFindingsReportsEndTimeStartTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInternalProfilingGroupsProfilingGroupNameAnomaliesAnomalyInstanceIdFeedbackRouteHandler: RouteHandler<
+  typeof postInternalProfilingGroupsProfilingGroupNameAnomaliesAnomalyInstanceIdFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

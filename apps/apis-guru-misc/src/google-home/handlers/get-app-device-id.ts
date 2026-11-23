@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetAppDeviceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetAppDeviceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getAppDeviceIdHandler = app.openapi(postGetAppDeviceIdRoute, (c) => {
+export const postGetAppDeviceIdRouteHandler: RouteHandler<typeof postGetAppDeviceIdRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

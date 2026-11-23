@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAuthenticationAuthkeyRoute,
   getAuthenticationVerifyotpRoute,
   patchAuthenticationAppkeyRoute,
@@ -10,30 +10,50 @@ import {
   putAuthenticationAuthkeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const patchAuthenticationAppkeyRouteHandler: RouteHandler<
+  typeof patchAuthenticationAppkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authenticationHandler = app
-  .openapi(patchAuthenticationAppkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAppkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticationAppkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticationAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticationAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticationAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticationAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticationVerifyotpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthenticationAppkeyRouteHandler: RouteHandler<
+  typeof postAuthenticationAppkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticationAppkeyRouteHandler: RouteHandler<
+  typeof putAuthenticationAppkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticationAuthkeyRouteHandler: RouteHandler<
+  typeof getAuthenticationAuthkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticationAuthkeyRouteHandler: RouteHandler<
+  typeof patchAuthenticationAuthkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticationAuthkeyRouteHandler: RouteHandler<
+  typeof postAuthenticationAuthkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticationAuthkeyRouteHandler: RouteHandler<
+  typeof putAuthenticationAuthkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticationVerifyotpRouteHandler: RouteHandler<
+  typeof getAuthenticationVerifyotpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

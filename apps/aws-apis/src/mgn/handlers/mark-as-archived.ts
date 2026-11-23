@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMarkAsArchivedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMarkAsArchivedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const markAsArchivedHandler = app.openapi(postMarkAsArchivedRoute, (c) => {
+export const postMarkAsArchivedRouteHandler: RouteHandler<typeof postMarkAsArchivedRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

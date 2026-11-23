@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCrmOwners202609OwnerIdRoute, getCrmOwners202609Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCrmOwners202609OwnerIdRoute, getCrmOwners202609Route } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmOwners202609RouteHandler: RouteHandler<typeof getCrmOwners202609Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmOwners202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmOwners202609OwnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCrmOwners202609OwnerIdRouteHandler: RouteHandler<
+  typeof getCrmOwners202609OwnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

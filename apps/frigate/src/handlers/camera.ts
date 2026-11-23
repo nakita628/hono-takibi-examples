@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   putCameraCameraNameSetFeatureRoute,
   putCameraCameraNameSetFeatureSubCommandRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putCameraCameraNameSetFeatureSubCommandRouteHandler: RouteHandler<
+  typeof putCameraCameraNameSetFeatureSubCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cameraHandler = app
-  .openapi(putCameraCameraNameSetFeatureSubCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCameraCameraNameSetFeatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putCameraCameraNameSetFeatureRouteHandler: RouteHandler<
+  typeof putCameraCameraNameSetFeatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

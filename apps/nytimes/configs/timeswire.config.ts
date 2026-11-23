@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/timeswire/3.0.0/openapi.yaml',
   output: './src/timeswire/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/timeswire/types.ts' },
   client: { output: './src/timeswire/client.ts', baseUrl: '/' },
   rpc: { output: './src/timeswire/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchAcceptCertificateTransferCertificateIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchAcceptCertificateTransferCertificateIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const acceptCertificateTransferHandler = app.openapi(
-  patchAcceptCertificateTransferCertificateIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const patchAcceptCertificateTransferCertificateIdRouteHandler: RouteHandler<
+  typeof patchAcceptCertificateTransferCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

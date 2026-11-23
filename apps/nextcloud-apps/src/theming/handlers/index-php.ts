@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIndexPhpAppsThemingBackgroundCustomRoute,
   getIndexPhpAppsThemingBackgroundRoute,
   getIndexPhpAppsThemingFaviconAppRoute,
@@ -11,33 +11,56 @@ import {
   postIndexPhpAppsThemingBackgroundTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIndexPhpAppsThemingThemeThemeIdCssRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingThemeThemeIdCssRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const indexPhpHandler = app
-  .openapi(getIndexPhpAppsThemingThemeThemeIdCssRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingImageKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingManifestAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingFaviconAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingIconAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingImgAppImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAppsThemingBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpAppsThemingBackgroundTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexPhpAppsThemingBackgroundCustomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIndexPhpAppsThemingImageKeyRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingImageKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAppsThemingManifestAppRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingManifestAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAppsThemingFaviconAppRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingFaviconAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAppsThemingIconAppRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingIconAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAppsThemingImgAppImageRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingImgAppImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAppsThemingBackgroundRouteHandler: RouteHandler<
+  typeof getIndexPhpAppsThemingBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpAppsThemingBackgroundTypeRouteHandler: RouteHandler<
+  typeof postIndexPhpAppsThemingBackgroundTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexPhpAppsThemingBackgroundCustomRouteHandler: RouteHandler<
+  typeof deleteIndexPhpAppsThemingBackgroundCustomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

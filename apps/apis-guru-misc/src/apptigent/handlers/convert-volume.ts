@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConvertVolumeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConvertVolumeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const convertVolumeHandler = app.openapi(postConvertVolumeRoute, (c) => {
+export const postConvertVolumeRouteHandler: RouteHandler<typeof postConvertVolumeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

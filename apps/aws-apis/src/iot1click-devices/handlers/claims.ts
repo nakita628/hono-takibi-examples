@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putClaimsClaimCodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putClaimsClaimCodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const claimsHandler = app.openapi(putClaimsClaimCodeRoute, (c) => {
+export const putClaimsClaimCodeRouteHandler: RouteHandler<typeof putClaimsClaimCodeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

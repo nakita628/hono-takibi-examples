@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1CustomSoundsGetOneRoute,
   getApiV1CustomSoundsListRoute,
   getApiV1CustomUserStatusListRoute,
@@ -18,54 +18,98 @@ import {
   postApiV1EmojiCustomUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1EmojiCustomAllRouteHandler: RouteHandler<
+  typeof getApiV1EmojiCustomAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1EmojiCustomAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1EmojiCustomCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1EmojiCustomDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EmojiCustomListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1EmojiCustomUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CustomSoundsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomSoundsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomSoundsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CustomUserStatusListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomUserStatusCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomUserStatusUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomUserStatusDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AssetsSetAssetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AssetsUnsetAssetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CustomSoundsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CustomSoundsGetOneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiV1EmojiCustomCreateRouteHandler: RouteHandler<
+  typeof postApiV1EmojiCustomCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1EmojiCustomDeleteRouteHandler: RouteHandler<
+  typeof postApiV1EmojiCustomDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EmojiCustomListRouteHandler: RouteHandler<
+  typeof getApiV1EmojiCustomListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1EmojiCustomUpdateRouteHandler: RouteHandler<
+  typeof postApiV1EmojiCustomUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CustomSoundsListRouteHandler: RouteHandler<
+  typeof getApiV1CustomSoundsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomSoundsCreateRouteHandler: RouteHandler<
+  typeof postApiV1CustomSoundsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomSoundsUpdateRouteHandler: RouteHandler<
+  typeof postApiV1CustomSoundsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CustomUserStatusListRouteHandler: RouteHandler<
+  typeof getApiV1CustomUserStatusListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomUserStatusCreateRouteHandler: RouteHandler<
+  typeof postApiV1CustomUserStatusCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomUserStatusUpdateRouteHandler: RouteHandler<
+  typeof postApiV1CustomUserStatusUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomUserStatusDeleteRouteHandler: RouteHandler<
+  typeof postApiV1CustomUserStatusDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AssetsSetAssetRouteHandler: RouteHandler<
+  typeof postApiV1AssetsSetAssetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AssetsUnsetAssetRouteHandler: RouteHandler<
+  typeof postApiV1AssetsUnsetAssetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CustomSoundsDeleteRouteHandler: RouteHandler<
+  typeof postApiV1CustomSoundsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CustomSoundsGetOneRouteHandler: RouteHandler<
+  typeof getApiV1CustomSoundsGetOneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/complex-nesting.yaml',
   output: './src/3-0-complex-nesting/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-complex-nesting/types.ts' },
   client: { output: './src/3-0-complex-nesting/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-complex-nesting/rpc.ts', parseResponse: true },

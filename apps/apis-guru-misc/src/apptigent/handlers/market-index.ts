@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMarketIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMarketIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const marketIndexHandler = app.openapi(postMarketIndexRoute, (c) => {
+export const postMarketIndexRouteHandler: RouteHandler<typeof postMarketIndexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

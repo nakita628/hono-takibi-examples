@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionGetQueueAttributesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionGetQueueAttributesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionGetQueueAttributesHandler = app.openapi(
-  postActionGetQueueAttributesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postActionGetQueueAttributesRouteHandler: RouteHandler<
+  typeof postActionGetQueueAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

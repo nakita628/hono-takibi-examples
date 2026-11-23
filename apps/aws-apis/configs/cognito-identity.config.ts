@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/cognito-identity/2014-06-30/openapi.yaml',
   output: './src/cognito-identity/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cognito-identity/types.ts' },
   client: { output: './src/cognito-identity/client.ts', baseUrl: '/' },
   rpc: { output: './src/cognito-identity/rpc.ts', parseResponse: true },

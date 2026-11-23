@@ -1,8 +1,98 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apisHandler } from './handlers'
+import {
+  deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+  deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+  getApisAutoscalingV1HorizontalpodautoscalersRoute,
+  getApisAutoscalingV1IndexRoute,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+  getApisAutoscalingV1WatchHorizontalpodautoscalersRoute,
+  getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRoute,
+  getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRoute,
+  patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+  patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+  postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+  putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+  putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+} from './routes'
+import {
+  deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  getApisAutoscalingV1HorizontalpodautoscalersRouteHandler,
+  getApisAutoscalingV1IndexRouteHandler,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+  getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  getApisAutoscalingV1WatchHorizontalpodautoscalersRouteHandler,
+  getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+  postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apisHandler)
+export const api = app
+  .openapi(getApisAutoscalingV1IndexRoute, getApisAutoscalingV1IndexRouteHandler)
+  .openapi(
+    getApisAutoscalingV1HorizontalpodautoscalersRoute,
+    getApisAutoscalingV1HorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+    deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
+    postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+    deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  )
+  .openapi(
+    patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+    patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  )
+  .openapi(
+    putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
+    putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+  )
+  .openapi(
+    patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+    patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+  )
+  .openapi(
+    putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
+    putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1WatchHorizontalpodautoscalersRoute,
+    getApisAutoscalingV1WatchHorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRoute,
+    getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRouteHandler,
+  )
+  .openapi(
+    getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRoute,
+    getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRouteHandler,
+  )
 
 export default app

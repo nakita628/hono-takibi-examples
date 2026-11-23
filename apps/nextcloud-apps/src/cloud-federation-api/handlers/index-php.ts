@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postIndexPhpOcmNotificationsRoute, postIndexPhpOcmSharesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postIndexPhpOcmNotificationsRoute, postIndexPhpOcmSharesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIndexPhpOcmSharesRouteHandler: RouteHandler<
+  typeof postIndexPhpOcmSharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const indexPhpHandler = app
-  .openapi(postIndexPhpOcmSharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpOcmNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIndexPhpOcmNotificationsRouteHandler: RouteHandler<
+  typeof postIndexPhpOcmNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

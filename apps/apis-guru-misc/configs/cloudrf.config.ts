@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/cloudrf.com/2.0.0/openapi.yaml',
   output: './src/cloudrf/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudrf/types.ts' },
   client: { output: './src/cloudrf/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudrf/rpc.ts', parseResponse: true },

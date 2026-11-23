@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRoute,
   deleteCoreNetworksCoreNetworkIdRoute,
   getCoreNetworksCoreNetworkIdCoreNetworkChangeEventsPolicyVersionIdRoute,
@@ -15,48 +15,78 @@ import {
   postCoreNetworksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCoreNetworksRouteHandler: RouteHandler<typeof postCoreNetworksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const coreNetworksHandler = app
-  .openapi(postCoreNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCoreNetworksCoreNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksCoreNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCoreNetworksCoreNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksCoreNetworkIdCoreNetworkChangeEventsPolicyVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksCoreNetworkIdCoreNetworkPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCoreNetworksCoreNetworkIdCoreNetworkPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRestoreRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getCoreNetworksRouteHandler: RouteHandler<typeof getCoreNetworksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCoreNetworksCoreNetworkIdRouteHandler: RouteHandler<
+  typeof deleteCoreNetworksCoreNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoreNetworksCoreNetworkIdRouteHandler: RouteHandler<
+  typeof getCoreNetworksCoreNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCoreNetworksCoreNetworkIdRouteHandler: RouteHandler<
+  typeof patchCoreNetworksCoreNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRouteHandler: RouteHandler<
+  typeof deleteCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdExecuteRouteHandler: RouteHandler<
+  typeof postCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoreNetworksCoreNetworkIdCoreNetworkChangeEventsPolicyVersionIdRouteHandler: RouteHandler<
+  typeof getCoreNetworksCoreNetworkIdCoreNetworkChangeEventsPolicyVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdRouteHandler: RouteHandler<
+  typeof getCoreNetworksCoreNetworkIdCoreNetworkChangeSetsPolicyVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoreNetworksCoreNetworkIdCoreNetworkPolicyRouteHandler: RouteHandler<
+  typeof getCoreNetworksCoreNetworkIdCoreNetworkPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCoreNetworksCoreNetworkIdCoreNetworkPolicyRouteHandler: RouteHandler<
+  typeof postCoreNetworksCoreNetworkIdCoreNetworkPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsRouteHandler: RouteHandler<
+  typeof getCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRestoreRouteHandler: RouteHandler<
+  typeof postCoreNetworksCoreNetworkIdCoreNetworkPolicyVersionsPolicyVersionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

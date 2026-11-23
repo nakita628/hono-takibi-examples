@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUsersLookupByEmailRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUsersLookupByEmailRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const usersLookupByEmailHandler = app.openapi(getUsersLookupByEmailRoute, (c) => {
+export const getUsersLookupByEmailRouteHandler: RouteHandler<
+  typeof getUsersLookupByEmailRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

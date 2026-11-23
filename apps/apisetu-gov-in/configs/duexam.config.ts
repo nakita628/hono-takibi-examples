@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/duexam/3.0.0/openapi.yaml',
   output: './src/duexam/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/duexam/types.ts' },
   client: { output: './src/duexam/client.ts', baseUrl: '/' },
   rpc: { output: './src/duexam/rpc.ts', parseResponse: true },

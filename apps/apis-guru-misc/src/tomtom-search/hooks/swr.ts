@@ -12,20 +12,20 @@ export function getSearchKey() {
 }
 
 export function getGetSearchVersionNumberAdditionalDataExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>,
 ) {
-  return ['search', '/search/:versionNumber/additionalData.:ext', args] as const
+  return ['search', '/search/:versionNumber/additionalData.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberAdditionalDataExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
             >
           >
         >
@@ -50,7 +50,7 @@ export function useGetSearchVersionNumberAdditionalDataExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
             >
           >
         >
@@ -60,7 +60,7 @@ export function useGetSearchVersionNumberAdditionalDataExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['additionalData.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['additionalData.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -68,14 +68,14 @@ export function useGetSearchVersionNumberAdditionalDataExt<TError = unknown>(
 }
 
 export function useImmutableGetSearchVersionNumberAdditionalDataExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
             >
           >
         >
@@ -100,7 +100,7 @@ export function useImmutableGetSearchVersionNumberAdditionalDataExt<TError = unk
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
             >
           >
         >
@@ -110,7 +110,7 @@ export function useImmutableGetSearchVersionNumberAdditionalDataExt<TError = unk
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['additionalData.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['additionalData.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -118,20 +118,20 @@ export function useImmutableGetSearchVersionNumberAdditionalDataExt<TError = unk
 }
 
 export function getGetSearchVersionNumberCSCategoryExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>,
 ) {
-  return ['search', '/search/:versionNumber/cS/:category.:ext', args] as const
+  return ['search', '/search/:versionNumber/cS/:category.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberCSCategoryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
             >
           >
         >
@@ -156,7 +156,7 @@ export function useGetSearchVersionNumberCSCategoryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
             >
           >
         >
@@ -166,7 +166,7 @@ export function useGetSearchVersionNumberCSCategoryExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].cS[':category.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].cS[':category.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -174,14 +174,14 @@ export function useGetSearchVersionNumberCSCategoryExt<TError = unknown>(
 }
 
 export function useImmutableGetSearchVersionNumberCSCategoryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
             >
           >
         >
@@ -206,7 +206,7 @@ export function useImmutableGetSearchVersionNumberCSCategoryExt<TError = unknown
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
             >
           >
         >
@@ -216,7 +216,7 @@ export function useImmutableGetSearchVersionNumberCSCategoryExt<TError = unknown
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].cS[':category.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].cS[':category.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -225,15 +225,15 @@ export function useImmutableGetSearchVersionNumberCSCategoryExt<TError = unknown
 
 export function getGetSearchVersionNumberCategorySearchQueryExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/categorySearch/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/categorySearch/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberCategorySearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -242,7 +242,7 @@ export function useGetSearchVersionNumberCategorySearchQueryExt<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -269,7 +269,7 @@ export function useGetSearchVersionNumberCategorySearchQueryExt<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -280,7 +280,7 @@ export function useGetSearchVersionNumberCategorySearchQueryExt<TError = unknown
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].categorySearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].categorySearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -289,7 +289,7 @@ export function useGetSearchVersionNumberCategorySearchQueryExt<TError = unknown
 
 export function useImmutableGetSearchVersionNumberCategorySearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -298,7 +298,7 @@ export function useImmutableGetSearchVersionNumberCategorySearchQueryExt<TError 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -325,7 +325,7 @@ export function useImmutableGetSearchVersionNumberCategorySearchQueryExt<TError 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -336,7 +336,7 @@ export function useImmutableGetSearchVersionNumberCategorySearchQueryExt<TError 
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].categorySearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].categorySearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -345,15 +345,15 @@ export function useImmutableGetSearchVersionNumberCategorySearchQueryExt<TError 
 
 export function getGetSearchVersionNumberGeocodeQueryExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/geocode/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/geocode/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -361,7 +361,9 @@ export function useGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
+              >
             >
           >
         >
@@ -386,7 +388,9 @@ export function useGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
+              >
             >
           >
         >
@@ -396,7 +400,7 @@ export function useGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].geocode[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].geocode[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -405,7 +409,7 @@ export function useGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
 
 export function useImmutableGetSearchVersionNumberGeocodeQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -413,7 +417,9 @@ export function useImmutableGetSearchVersionNumberGeocodeQueryExt<TError = unkno
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
+              >
             >
           >
         >
@@ -438,7 +444,9 @@ export function useImmutableGetSearchVersionNumberGeocodeQueryExt<TError = unkno
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
+              >
             >
           >
         >
@@ -448,7 +456,7 @@ export function useImmutableGetSearchVersionNumberGeocodeQueryExt<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].geocode[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].geocode[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -456,20 +464,20 @@ export function useImmutableGetSearchVersionNumberGeocodeQueryExt<TError = unkno
 }
 
 export function getGetSearchVersionNumberGeometryFilterExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>,
 ) {
-  return ['search', '/search/:versionNumber/geometryFilter.:ext', args] as const
+  return ['search', '/search/:versionNumber/geometryFilter.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberGeometryFilterExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
             >
           >
         >
@@ -494,7 +502,7 @@ export function useGetSearchVersionNumberGeometryFilterExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
             >
           >
         >
@@ -504,7 +512,7 @@ export function useGetSearchVersionNumberGeometryFilterExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['geometryFilter.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['geometryFilter.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -512,14 +520,14 @@ export function useGetSearchVersionNumberGeometryFilterExt<TError = unknown>(
 }
 
 export function useImmutableGetSearchVersionNumberGeometryFilterExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
             >
           >
         >
@@ -544,7 +552,7 @@ export function useImmutableGetSearchVersionNumberGeometryFilterExt<TError = unk
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
             >
           >
         >
@@ -554,7 +562,7 @@ export function useImmutableGetSearchVersionNumberGeometryFilterExt<TError = unk
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['geometryFilter.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['geometryFilter.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -562,7 +570,7 @@ export function useImmutableGetSearchVersionNumberGeometryFilterExt<TError = unk
 }
 
 export function getPostSearchVersionNumberGeometryFilterExtKey() {
-  return ['search', '/search/:versionNumber/geometryFilter.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/geometryFilter.{ext}', 'POST'] as const
 }
 
 export function usePostSearchVersionNumberGeometryFilterExt<TError = unknown>(options?: {
@@ -571,14 +579,14 @@ export function usePostSearchVersionNumberGeometryFilterExt<TError = unknown>(op
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']>
+            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']>
           >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -595,12 +603,12 @@ export function usePostSearchVersionNumberGeometryFilterExt<TError = unknown>(op
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']
+            (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.search[':versionNumber']['geometryFilter.:ext'].$post(arg, clientOptions),
+          client.search[':versionNumber']['geometryFilter.{ext}'].$post(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -609,15 +617,15 @@ export function usePostSearchVersionNumberGeometryFilterExt<TError = unknown>(op
 
 export function getGetSearchVersionNumberGeometrySearchQueryExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/geometrySearch/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/geometrySearch/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -626,7 +634,7 @@ export function useGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -653,7 +661,7 @@ export function useGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -664,7 +672,7 @@ export function useGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].geometrySearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].geometrySearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -673,7 +681,7 @@ export function useGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown
 
 export function useImmutableGetSearchVersionNumberGeometrySearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -682,7 +690,7 @@ export function useImmutableGetSearchVersionNumberGeometrySearchQueryExt<TError 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -709,7 +717,7 @@ export function useImmutableGetSearchVersionNumberGeometrySearchQueryExt<TError 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -720,7 +728,7 @@ export function useImmutableGetSearchVersionNumberGeometrySearchQueryExt<TError 
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].geometrySearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].geometrySearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -728,7 +736,7 @@ export function useImmutableGetSearchVersionNumberGeometrySearchQueryExt<TError 
 }
 
 export function getPostSearchVersionNumberGeometrySearchQueryExtKey() {
-  return ['search', '/search/:versionNumber/geometrySearch/:query.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/geometrySearch/:query.{ext}', 'POST'] as const
 }
 
 export function usePostSearchVersionNumberGeometrySearchQueryExt<TError = unknown>(options?: {
@@ -738,7 +746,7 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<TError = unknow
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+              (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
             >
           >
         >
@@ -747,7 +755,7 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<TError = unknow
     TError,
     Key,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+      (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -765,12 +773,12 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<TError = unknow
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+            (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.search[':versionNumber'].geometrySearch[':query.:ext'].$post(arg, clientOptions),
+          client.search[':versionNumber'].geometrySearch[':query.{ext}'].$post(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -778,20 +786,24 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<TError = unknow
 }
 
 export function getGetSearchVersionNumberNearbySearchExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']
+  >,
 ) {
-  return ['search', '/search/:versionNumber/nearbySearch/.:ext', args] as const
+  return ['search', '/search/:versionNumber/nearbySearch/.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberNearbySearchExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
             >
           >
         >
@@ -816,7 +828,7 @@ export function useGetSearchVersionNumberNearbySearchExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
             >
           >
         >
@@ -826,7 +838,7 @@ export function useGetSearchVersionNumberNearbySearchExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].nearbySearch['.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].nearbySearch['.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -834,14 +846,16 @@ export function useGetSearchVersionNumberNearbySearchExt<TError = unknown>(
 }
 
 export function useImmutableGetSearchVersionNumberNearbySearchExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
             >
           >
         >
@@ -866,7 +880,7 @@ export function useImmutableGetSearchVersionNumberNearbySearchExt<TError = unkno
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
             >
           >
         >
@@ -876,7 +890,7 @@ export function useImmutableGetSearchVersionNumberNearbySearchExt<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].nearbySearch['.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].nearbySearch['.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -885,15 +899,15 @@ export function useImmutableGetSearchVersionNumberNearbySearchExt<TError = unkno
 
 export function getGetSearchVersionNumberPoiSearchQueryExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/poiSearch/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/poiSearch/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -902,7 +916,7 @@ export function useGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -929,7 +943,7 @@ export function useGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -940,7 +954,7 @@ export function useGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].poiSearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].poiSearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -949,7 +963,7 @@ export function useGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
 
 export function useImmutableGetSearchVersionNumberPoiSearchQueryExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+    (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -958,7 +972,7 @@ export function useImmutableGetSearchVersionNumberPoiSearchQueryExt<TError = unk
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -985,7 +999,7 @@ export function useImmutableGetSearchVersionNumberPoiSearchQueryExt<TError = unk
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
               >
             >
           >
@@ -996,7 +1010,7 @@ export function useImmutableGetSearchVersionNumberPoiSearchQueryExt<TError = unk
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].poiSearch[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].poiSearch[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1005,19 +1019,19 @@ export function useImmutableGetSearchVersionNumberPoiSearchQueryExt<TError = unk
 
 export function getGetSearchVersionNumberReverseGeocodeCrossStreetPositionExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
   >,
 ) {
   return [
     'search',
-    '/search/:versionNumber/reverseGeocode/crossStreet/:position.:ext',
+    '/search/:versionNumber/reverseGeocode/crossStreet/:position.{ext}',
     args,
   ] as const
 }
 
 export function useGetSearchVersionNumberReverseGeocodeCrossStreetPositionExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1026,7 +1040,7 @@ export function useGetSearchVersionNumberReverseGeocodeCrossStreetPositionExt<TE
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
               >
             >
           >
@@ -1053,7 +1067,7 @@ export function useGetSearchVersionNumberReverseGeocodeCrossStreetPositionExt<TE
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
               >
             >
           >
@@ -1064,7 +1078,7 @@ export function useGetSearchVersionNumberReverseGeocodeCrossStreetPositionExt<TE
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.:ext'].$get(
+          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1078,7 +1092,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodeCrossStreetPosit
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1087,7 +1101,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodeCrossStreetPosit
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
               >
             >
           >
@@ -1114,7 +1128,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodeCrossStreetPosit
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
               >
             >
           >
@@ -1125,7 +1139,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodeCrossStreetPosit
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.:ext'].$get(
+          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1137,15 +1151,15 @@ export function useImmutableGetSearchVersionNumberReverseGeocodeCrossStreetPosit
 
 export function getGetSearchVersionNumberReverseGeocodePositionExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/reverseGeocode/:position.:ext', args] as const
+  return ['search', '/search/:versionNumber/reverseGeocode/:position.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberReverseGeocodePositionExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1154,7 +1168,7 @@ export function useGetSearchVersionNumberReverseGeocodePositionExt<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
               >
             >
           >
@@ -1181,7 +1195,7 @@ export function useGetSearchVersionNumberReverseGeocodePositionExt<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
               >
             >
           >
@@ -1192,7 +1206,7 @@ export function useGetSearchVersionNumberReverseGeocodePositionExt<TError = unkn
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].reverseGeocode[':position.:ext'].$get(
+          client.search[':versionNumber'].reverseGeocode[':position.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1204,7 +1218,7 @@ export function useGetSearchVersionNumberReverseGeocodePositionExt<TError = unkn
 
 export function useImmutableGetSearchVersionNumberReverseGeocodePositionExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1213,7 +1227,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodePositionExt<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
               >
             >
           >
@@ -1240,7 +1254,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodePositionExt<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
               >
             >
           >
@@ -1251,7 +1265,7 @@ export function useImmutableGetSearchVersionNumberReverseGeocodePositionExt<TErr
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].reverseGeocode[':position.:ext'].$get(
+          client.search[':versionNumber'].reverseGeocode[':position.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1263,15 +1277,15 @@ export function useImmutableGetSearchVersionNumberReverseGeocodePositionExt<TErr
 
 export function getGetSearchVersionNumberRoutedFilterPositionHeadingExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.:ext', args] as const
+  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1280,7 +1294,7 @@ export function useGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1307,7 +1321,7 @@ export function useGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1318,7 +1332,7 @@ export function useGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError =
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$get(
+          client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1330,7 +1344,7 @@ export function useGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError =
 
 export function useImmutableGetSearchVersionNumberRoutedFilterPositionHeadingExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1339,7 +1353,7 @@ export function useImmutableGetSearchVersionNumberRoutedFilterPositionHeadingExt
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1366,7 +1380,7 @@ export function useImmutableGetSearchVersionNumberRoutedFilterPositionHeadingExt
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1377,7 +1391,7 @@ export function useImmutableGetSearchVersionNumberRoutedFilterPositionHeadingExt
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$get(
+          client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$get(
             args,
             clientOptions,
           ),
@@ -1388,7 +1402,7 @@ export function useImmutableGetSearchVersionNumberRoutedFilterPositionHeadingExt
 }
 
 export function getPostSearchVersionNumberRoutedFilterPositionHeadingExtKey() {
-  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.{ext}', 'POST'] as const
 }
 
 export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
@@ -1400,7 +1414,7 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
             >
           >
         >
@@ -1409,7 +1423,7 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
     TError,
     Key,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -1427,12 +1441,12 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$post(
+          client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$post(
             arg,
             clientOptions,
           ),
@@ -1444,19 +1458,19 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
 
 export function getGetSearchVersionNumberRoutedSearchQueryPositionHeadingExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
   >,
 ) {
   return [
     'search',
-    '/search/:versionNumber/routedSearch/:query/:position/:heading.:ext',
+    '/search/:versionNumber/routedSearch/:query/:position/:heading.{ext}',
     args,
   ] as const
 }
 
 export function useGetSearchVersionNumberRoutedSearchQueryPositionHeadingExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1465,7 +1479,7 @@ export function useGetSearchVersionNumberRoutedSearchQueryPositionHeadingExt<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1492,7 +1506,7 @@ export function useGetSearchVersionNumberRoutedSearchQueryPositionHeadingExt<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1503,10 +1517,9 @@ export function useGetSearchVersionNumberRoutedSearchQueryPositionHeadingExt<TEr
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].routedSearch[':query'][':position'][':heading.:ext'].$get(
-            args,
-            clientOptions,
-          ),
+          client.search[':versionNumber'].routedSearch[':query'][':position'][
+            ':heading.{ext}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1517,7 +1530,7 @@ export function useImmutableGetSearchVersionNumberRoutedSearchQueryPositionHeadi
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1526,7 +1539,7 @@ export function useImmutableGetSearchVersionNumberRoutedSearchQueryPositionHeadi
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1553,7 +1566,7 @@ export function useImmutableGetSearchVersionNumberRoutedSearchQueryPositionHeadi
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
               >
             >
           >
@@ -1564,10 +1577,9 @@ export function useImmutableGetSearchVersionNumberRoutedSearchQueryPositionHeadi
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].routedSearch[':query'][':position'][':heading.:ext'].$get(
-            args,
-            clientOptions,
-          ),
+          client.search[':versionNumber'].routedSearch[':query'][':position'][
+            ':heading.{ext}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1575,20 +1587,20 @@ export function useImmutableGetSearchVersionNumberRoutedSearchQueryPositionHeadi
 }
 
 export function getGetSearchVersionNumberSQueryExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>,
 ) {
-  return ['search', '/search/:versionNumber/s/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/s/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberSQueryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1613,7 +1625,7 @@ export function useGetSearchVersionNumberSQueryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1622,21 +1634,21 @@ export function useGetSearchVersionNumberSQueryExt<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.search[':versionNumber'].s[':query.:ext'].$get(args, clientOptions)),
+        parseResponse(client.search[':versionNumber'].s[':query.{ext}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchVersionNumberSQueryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>,
+  args: InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1661,7 +1673,7 @@ export function useImmutableGetSearchVersionNumberSQueryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1670,27 +1682,31 @@ export function useImmutableGetSearchVersionNumberSQueryExt<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.search[':versionNumber'].s[':query.:ext'].$get(args, clientOptions)),
+        parseResponse(client.search[':versionNumber'].s[':query.{ext}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetSearchVersionNumberSearchQueryExtKey(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']
+  >,
 ) {
-  return ['search', '/search/:versionNumber/search/:query.:ext', args] as const
+  return ['search', '/search/:versionNumber/search/:query.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberSearchQueryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1715,7 +1731,7 @@ export function useGetSearchVersionNumberSearchQueryExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1725,7 +1741,7 @@ export function useGetSearchVersionNumberSearchQueryExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].search[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].search[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1733,14 +1749,16 @@ export function useGetSearchVersionNumberSearchQueryExt<TError = unknown>(
 }
 
 export function useImmutableGetSearchVersionNumberSearchQueryExt<TError = unknown>(
-  args: InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>,
+  args: InferRequestType<
+    (typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1765,7 +1783,7 @@ export function useImmutableGetSearchVersionNumberSearchQueryExt<TError = unknow
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+              ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
             >
           >
         >
@@ -1775,7 +1793,7 @@ export function useImmutableGetSearchVersionNumberSearchQueryExt<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber'].search[':query.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber'].search[':query.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1783,7 +1801,7 @@ export function useImmutableGetSearchVersionNumberSearchQueryExt<TError = unknow
 }
 
 export function getPostSearchVersionNumberSearchAlongRouteQueryExtKey() {
-  return ['search', '/search/:versionNumber/searchAlongRoute/:query.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/searchAlongRoute/:query.{ext}', 'POST'] as const
 }
 
 export function usePostSearchVersionNumberSearchAlongRouteQueryExt<TError = unknown>(options?: {
@@ -1793,7 +1811,7 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<TError = unkn
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+              (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
             >
           >
         >
@@ -1802,7 +1820,7 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<TError = unkn
     TError,
     Key,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+      (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -1820,12 +1838,15 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<TError = unkn
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+            (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.search[':versionNumber'].searchAlongRoute[':query.:ext'].$post(arg, clientOptions),
+          client.search[':versionNumber'].searchAlongRoute[':query.{ext}'].$post(
+            arg,
+            clientOptions,
+          ),
         ),
       restMutationOptions,
     ),
@@ -1834,15 +1855,15 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<TError = unkn
 
 export function getGetSearchVersionNumberStructuredGeocodeExtKey(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']
+    (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
   >,
 ) {
-  return ['search', '/search/:versionNumber/structuredGeocode.:ext', args] as const
+  return ['search', '/search/:versionNumber/structuredGeocode.{ext}', args] as const
 }
 
 export function useGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']
+    (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1850,7 +1871,9 @@ export function useGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
+              >
             >
           >
         >
@@ -1875,7 +1898,9 @@ export function useGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
+              >
             >
           >
         >
@@ -1885,7 +1910,7 @@ export function useGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['structuredGeocode.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['structuredGeocode.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1894,7 +1919,7 @@ export function useGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
 
 export function useImmutableGetSearchVersionNumberStructuredGeocodeExt<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']
+    (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1902,7 +1927,9 @@ export function useImmutableGetSearchVersionNumberStructuredGeocodeExt<TError = 
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
+              >
             >
           >
         >
@@ -1927,7 +1954,9 @@ export function useImmutableGetSearchVersionNumberStructuredGeocodeExt<TError = 
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+              ReturnType<
+                (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
+              >
             >
           >
         >
@@ -1937,7 +1966,7 @@ export function useImmutableGetSearchVersionNumberStructuredGeocodeExt<TError = 
       swrKey,
       async () =>
         parseResponse(
-          client.search[':versionNumber']['structuredGeocode.:ext'].$get(args, clientOptions),
+          client.search[':versionNumber']['structuredGeocode.{ext}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

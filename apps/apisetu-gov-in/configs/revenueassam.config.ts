@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/revenueassam/3.0.0/openapi.yaml',
   output: './src/revenueassam/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/revenueassam/types.ts' },
   client: { output: './src/revenueassam/client.ts', baseUrl: '/' },
   rpc: { output: './src/revenueassam/rpc.ts', parseResponse: true },

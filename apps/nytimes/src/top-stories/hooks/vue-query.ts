@@ -16,20 +16,20 @@ export function getSectionFormatKey() {
 }
 
 export function getSectionFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.{format}']['$get']>>,
 ) {
-  return [':section.:format', '/:section.:format', toValue(args)] as const
+  return [':section.{format}', '/:section.{format}', toValue(args)] as const
 }
 
 export function getSectionFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.{format}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getSectionFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client[':section.:format'].$get(toValue(args), {
+        client[':section.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -41,26 +41,30 @@ export function getSectionFormatQueryOptions(
 export function useSectionFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':section.{format}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
         UseQueryOptions<
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>
+              >
             >
           >,
           TError,
           TData,
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>
+              >
             >
           >,
           ReturnType<typeof getSectionFormatQueryKey>
@@ -77,7 +81,7 @@ export function useSectionFormat<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
       >
     >,
     TError,
@@ -89,7 +93,7 @@ export function useSectionFormat<
       queryKey: computed(() => getSectionFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client[':section.:format'].$get(toValue(args), {
+          client[':section.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

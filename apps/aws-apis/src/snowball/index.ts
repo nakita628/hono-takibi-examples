@@ -1,61 +1,167 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsieSnowballJobManagementServiceCancelClusterHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCancelJobHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCreateAddressHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCreateClusterHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCreateJobHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCreateLongTermPricingHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceCreateReturnShippingLabelHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceDescribeAddressesHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceDescribeAddressHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceDescribeClusterHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceDescribeJobHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceDescribeReturnShippingLabelHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceGetJobManifestHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceGetJobUnlockCodeHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceGetSnowballUsageHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceGetSoftwareUpdatesHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListClusterJobsHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListClustersHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListCompatibleImagesHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListJobsHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListLongTermPricingHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceListServiceVersionsHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceUpdateClusterHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceUpdateJobHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceUpdateJobShipmentStateHandler,
-  xAmzTargetAwsieSnowballJobManagementServiceUpdateLongTermPricingHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCancelClusterRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCancelJobRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateAddressRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateClusterRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateJobRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateLongTermPricingRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateReturnShippingLabelRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressesRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeClusterRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeJobRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeReturnShippingLabelRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetJobManifestRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetJobUnlockCodeRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetSnowballUsageRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetSoftwareUpdatesRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListClustersRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListCompatibleImagesRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListJobsRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListLongTermPricingRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceListServiceVersionsRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateClusterRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobShipmentStateRoute,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateLongTermPricingRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSIESnowballJobManagementServiceCancelClusterRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCancelJobRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateAddressRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateClusterRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateJobRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateLongTermPricingRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceCreateReturnShippingLabelRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressesRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeClusterRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeJobRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceDescribeReturnShippingLabelRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetJobManifestRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetJobUnlockCodeRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetSnowballUsageRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceGetSoftwareUpdatesRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListClustersRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListCompatibleImagesRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListJobsRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListLongTermPricingRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceListServiceVersionsRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateClusterRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobShipmentStateRouteHandler,
+  postXAmzTargetAWSIESnowballJobManagementServiceUpdateLongTermPricingRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCancelClusterHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCancelJobHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCreateAddressHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCreateClusterHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCreateJobHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCreateLongTermPricingHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceCreateReturnShippingLabelHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceDescribeAddressHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceDescribeAddressesHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceDescribeClusterHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceDescribeJobHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceDescribeReturnShippingLabelHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceGetJobManifestHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceGetJobUnlockCodeHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceGetSnowballUsageHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceGetSoftwareUpdatesHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListClusterJobsHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListClustersHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListCompatibleImagesHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListJobsHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListLongTermPricingHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceListServiceVersionsHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceUpdateClusterHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceUpdateJobHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceUpdateJobShipmentStateHandler)
-  .route('/', xAmzTargetAwsieSnowballJobManagementServiceUpdateLongTermPricingHandler)
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCancelClusterRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCancelClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCancelJobRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCancelJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateAddressRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateAddressRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateClusterRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateJobRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateLongTermPricingRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateLongTermPricingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateReturnShippingLabelRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceCreateReturnShippingLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressesRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeAddressesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeClusterRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeJobRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeReturnShippingLabelRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceDescribeReturnShippingLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceGetJobManifestRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceGetJobManifestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceGetJobUnlockCodeRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceGetJobUnlockCodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceGetSnowballUsageRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceGetSnowballUsageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceGetSoftwareUpdatesRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceGetSoftwareUpdatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListClustersRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListClustersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListCompatibleImagesRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListCompatibleImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListJobsRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListLongTermPricingRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListLongTermPricingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceListServiceVersionsRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceListServiceVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateClusterRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobShipmentStateRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateJobShipmentStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateLongTermPricingRoute,
+    postXAmzTargetAWSIESnowballJobManagementServiceUpdateLongTermPricingRouteHandler,
+  )
 
 export default app

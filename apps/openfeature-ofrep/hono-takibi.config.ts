@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/open-feature/protocol/blob/98c4e0de5583c0d79dd938b82975c80125335e92/service/openapi.yaml
   input: 'https://raw.githubusercontent.com/open-feature/protocol/main/service/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

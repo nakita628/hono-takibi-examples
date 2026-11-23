@@ -95,7 +95,7 @@ say(
   `paths=${Object.keys(doc.paths ?? {}).length} operations=${operations} schemas=${Object.keys(doc.components?.schemas ?? {}).length} webhooks=${Object.keys(doc.webhooks ?? {}).length} files=${files}`,
 )
 
-// 4. $ref shapes that hono-takibi has mishandled before (see issue-drafts/ and docs/daily-routine.md).
+// 4. $ref shapes that hono-takibi has mishandled before (see docs/daily-routine.md and the hono-takibi issues it links).
 const deep = new Set()
 const foreign = new Set()
 const walk = (n) => {

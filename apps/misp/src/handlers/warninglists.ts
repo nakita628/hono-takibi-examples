@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWarninglistsRoute,
   getWarninglistsViewWarninglistIdRoute,
   postWarninglistsCheckValueRoute,
@@ -8,24 +8,36 @@ import {
   postWarninglistsUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWarninglistsRouteHandler: RouteHandler<typeof getWarninglistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const warninglistsHandler = app
-  .openapi(getWarninglistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWarninglistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWarninglistsToggleEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWarninglistsViewWarninglistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWarninglistsCheckValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWarninglistsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWarninglistsRouteHandler: RouteHandler<typeof postWarninglistsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postWarninglistsToggleEnableRouteHandler: RouteHandler<
+  typeof postWarninglistsToggleEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWarninglistsViewWarninglistIdRouteHandler: RouteHandler<
+  typeof getWarninglistsViewWarninglistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWarninglistsCheckValueRouteHandler: RouteHandler<
+  typeof postWarninglistsCheckValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWarninglistsUpdateRouteHandler: RouteHandler<
+  typeof postWarninglistsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

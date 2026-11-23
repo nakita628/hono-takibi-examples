@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQuotaSpecNameRoute,
   getQuotaSpecNameRoute,
   postQuotaRoute,
   postQuotaSpecNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQuotaRouteHandler: RouteHandler<typeof postQuotaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quotaHandler = app
-  .openapi(postQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQuotaSpecNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotaSpecNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotaSpecNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteQuotaSpecNameRouteHandler: RouteHandler<
+  typeof deleteQuotaSpecNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotaSpecNameRouteHandler: RouteHandler<typeof getQuotaSpecNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotaSpecNameRouteHandler: RouteHandler<typeof postQuotaSpecNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

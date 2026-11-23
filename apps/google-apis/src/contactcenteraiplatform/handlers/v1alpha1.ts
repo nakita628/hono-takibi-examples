@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1alpha1NameRoute,
   getV1alpha1NameLocationsRoute,
   getV1alpha1NameOperationsRoute,
@@ -11,33 +11,54 @@ import {
   postV1alpha1ParentContactCentersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1alpha1NameRouteHandler: RouteHandler<typeof deleteV1alpha1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1alpha1Handler = app
-  .openapi(deleteV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentContactCentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentContactCentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentQueryContactCenterQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1alpha1NameRouteHandler: RouteHandler<typeof getV1alpha1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1alpha1NameRouteHandler: RouteHandler<typeof patchV1alpha1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1NameLocationsRouteHandler: RouteHandler<
+  typeof getV1alpha1NameLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1NameOperationsRouteHandler: RouteHandler<
+  typeof getV1alpha1NameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1NameCancelRouteHandler: RouteHandler<
+  typeof postV1alpha1NameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentContactCentersRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentContactCentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentContactCentersRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentContactCentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentQueryContactCenterQuotaRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentQueryContactCenterQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

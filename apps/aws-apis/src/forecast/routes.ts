@@ -156,10 +156,10 @@ const OptimizationMetricSchema = z
   .openapi('OptimizationMetric')
 
 type GetAccuracyMetricsResponseType = {
-  PredictorEvaluationResults?: z.infer<typeof PredictorEvaluationResultsSchema> & unknown
-  IsAutoPredictor?: z.infer<typeof BooleanSchema> & unknown
-  AutoMLOverrideStrategy?: z.infer<typeof AutoMLOverrideStrategySchema> & unknown
-  OptimizationMetric?: z.infer<typeof OptimizationMetricSchema> & unknown
+  PredictorEvaluationResults?: z.infer<typeof PredictorEvaluationResultsSchema>
+  IsAutoPredictor?: z.infer<typeof BooleanSchema>
+  AutoMLOverrideStrategy?: z.infer<typeof AutoMLOverrideStrategySchema>
+  OptimizationMetric?: z.infer<typeof OptimizationMetricSchema>
 }
 
 const CreateAutoPredictorResponseSchema = z

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSocialplatformsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSocialplatformsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const socialplatformsHandler = app.openapi(getSocialplatformsRoute, (c) => {
+export const getSocialplatformsRouteHandler: RouteHandler<typeof getSocialplatformsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

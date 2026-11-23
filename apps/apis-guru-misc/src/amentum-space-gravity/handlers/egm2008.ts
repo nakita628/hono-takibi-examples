@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEgm2008GeoidHeightRoute, getEgm2008GravityAnomalyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEgm2008GeoidHeightRoute, getEgm2008GravityAnomalyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEgm2008GeoidHeightRouteHandler: RouteHandler<
+  typeof getEgm2008GeoidHeightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const egm2008Handler = app
-  .openapi(getEgm2008GeoidHeightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEgm2008GravityAnomalyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEgm2008GravityAnomalyRouteHandler: RouteHandler<
+  typeof getEgm2008GravityAnomalyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

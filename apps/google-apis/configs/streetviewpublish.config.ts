@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/streetviewpublish/v1/openapi.yaml',
   output: './src/streetviewpublish/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/streetviewpublish/types.ts' },
   client: { output: './src/streetviewpublish/client.ts', baseUrl: '/' },
   rpc: { output: './src/streetviewpublish/rpc.ts', parseResponse: true },

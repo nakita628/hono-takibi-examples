@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/server_enum_unknown.yaml',
   output: './src/3-0-server-enum-unknown/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-server-enum-unknown/types.ts' },
   client: { output: './src/3-0-server-enum-unknown/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-server-enum-unknown/rpc.ts', parseResponse: true },

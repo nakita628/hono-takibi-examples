@@ -8592,8 +8592,8 @@ export const getAccountsRoute = createRoute({
         'Y800 : Invalid value for status<br>Y800 : Invalid value for container<br>Y800 : Invalid value for providerAccountId<br>Y824 : The maximum number of accountIds permitted is 100',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8622,8 +8622,8 @@ export const postAccountsRoute = createRoute({
         'Y800 : Invalid value for accountParam<br>Y811 : Real Estate Property value already exists<br>Y862 : The provided address is invalid, or the valuation is not available<br>Y869 : Multiple matches found. Provide the complete address or call the POST /accounts/evaluateAddress API to retrieve the list of matched addresses<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8652,8 +8652,8 @@ export const postAccountsEvaluateAddressRoute = createRoute({
         'Y806 : Invalid input<br>Y800 : Invalid value for zip<br>Y812 : Required field/value - address missing in the request<br>Y812 : Required field/value - street missing in the request<br>Y812 : Required field/value - state & city / zip missing in the request',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8788,8 +8788,8 @@ export const getAccountsHistoricalBalancesRoute = createRoute({
         'Y800 : Invalid value for accountId<br>Y800 : Invalid value for fromDate<br>Y800 : Invalid value for toDate<br>Y809 : Invalid date range<br>Y800 : Invalid value for interval<br>Y802 : Future date not allowed',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8843,8 +8843,8 @@ export const getAccountsAccountIdRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: AccountResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8883,14 +8883,14 @@ export const putAccountsAccountIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y800 : Invalid value for accountId<br>Y800 : Invalid value for updateParam<br>Y862 : The provided address is invalid, or the valuation is not available<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>Y869 : Multiple matches found. Provide the complete address or call the POST /accounts/evaluateAddress API to retrieve the list of matched addresses<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8924,14 +8924,14 @@ export const deleteAccountsAccountIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y800 : Invalid value for accountId<br>Y807 : Resource not found<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8948,8 +8948,8 @@ export const getAuthApiKeyRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: ApiKeyResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -8978,8 +8978,8 @@ export const postAuthApiKeyRoute = createRoute({
         'Y800 : Invalid value for RS512 publicKey<br>Y806 : Invalid input<br>Y824 : The maximum number of apiKey permitted is 5<br>Y811 : publicKey value already exists',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9007,14 +9007,14 @@ export const deleteAuthApiKeyKeyRoute = createRoute({
     }),
   },
   responses: {
-    201: { description: 'OK', content: {} },
-    204: { description: 'No Content', content: {} },
+    201: { description: 'OK' },
+    204: { description: 'No Content' },
     400: {
       description: 'Y807 : Resource not found<br>Y806 : Invalid input',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9043,7 +9043,7 @@ export const postAuthTokenRoute = createRoute({
         'Y016 : loginName header missing<br>Y015 : Unauthorized User<br>Y016 : Api-Version header missing<br>Y020 : Invalid token in authorization header<br>Y027 : Unsupported authentication type',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9056,13 +9056,13 @@ export const deleteAuthTokenRoute = createRoute({
     'This endpoint revokes the token passed in the Authorization header. This service is applicable for JWT-based (and all API key-based) authentication and also client credential (clientId and secret) based authentication. This service does not return a response body. The HTTP response code is 204 (success with no content). <br>Tokens generally have limited lifetime of up to 30 minutes. You will call this service when you finish working with one user, and you want to delete the valid token rather than simply letting it expire.<br><br><b>Note:</b> <li>Revoking an access token (either type, admin or a user token) can take up to 2 minutes, as the tokens are stored on a distributed system.<br/>',
   operationId: 'deleteToken',
   responses: {
-    204: { description: 'No Content', content: {} },
+    204: { description: 'No Content' },
     401: {
       description:
         'Y020 : Invalid token in authorization header<br>Y023 : Token has expired<br>Y016 : Api-Version header missing<br>Y015 : Unauthorized User<br>Y027 : Unsupported authentication type<br>Y007 : Authorization header missing<br>Y020 : Invalid token in authorization header',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9096,8 +9096,8 @@ export const getCobrandConfigNotificationsEventsRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: CobrandNotificationResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -9131,14 +9131,14 @@ export const putCobrandConfigNotificationsEventsEventNameRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y803 : eventName required<br>Y803 : callbackUrl required<br>Y800 : Invalid value for callbackUrl',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -9172,14 +9172,14 @@ export const postCobrandConfigNotificationsEventsEventNameRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'OK', content: {} },
+    201: { description: 'OK' },
     400: {
       description:
         'Y803 : eventName required<br>Y803 : callbackUrl required<br>Y800 : Invalid value for callbackUrl',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -9208,13 +9208,13 @@ export const deleteCobrandConfigNotificationsEventsEventNameRoute = createRoute(
     }),
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description: 'Y803 : eventName required',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -9248,7 +9248,7 @@ export const postCobrandLoginRoute = createRoute({
         'Y003 : Account is locked, contact Yodlee customer care<br>Y001 : User name and password required',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9261,9 +9261,9 @@ export const postCobrandLogoutRoute = createRoute({
     'The cobrand logout service is used to log out the cobrand.<br>This service does not return a response. The HTTP response code is 204 (Success with no content).<br><b>Note:</b> This endpoint is deprecated for customers using the API Key-based authentication and is applicable only to customers who use the SAML-based authentication.<br>',
   operationId: 'cobrandLogout',
   responses: {
-    204: { description: 'Logout successful', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    204: { description: 'Logout successful' },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9280,8 +9280,8 @@ export const getCobrandPublicKeyRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: CobrandPublicKeyResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -9316,8 +9316,8 @@ export const getConfigsNotificationsEventsRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: ConfigsNotificationResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9350,14 +9350,14 @@ export const putConfigsNotificationsEventsEventNameRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y803 : eventName required<br>Y803 : callbackUrl required<br>Y800 : Invalid value for callbackUrl',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9390,14 +9390,14 @@ export const postConfigsNotificationsEventsEventNameRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'OK', content: {} },
+    201: { description: 'OK' },
     400: {
       description:
         'Y803 : eventName required<br>Y803 : callbackUrl required<br>Y800 : Invalid value for callbackUrl',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9424,13 +9424,13 @@ export const deleteConfigsNotificationsEventsEventNameRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description: 'Y803 : eventName required',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9447,8 +9447,8 @@ export const getConfigsPublicKeyRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: ConfigsPublicKeyResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9510,8 +9510,8 @@ export const getDataExtractsEventsRoute = createRoute({
         'Y800 : Invalid value for fromDate.fromDate cannot be greater than current time<br>Y800 : Invalid value for toDate.toDate cannot be greater than current time<br>Y800 : Invalid value for fromDate or toDate.fromDate and toDate cannot be older than 7 days<br>Y800 : Invalid value for fromDate.fromDate cannot be greater than toDate.',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9573,8 +9573,8 @@ export const getDataExtractsUserDataRoute = createRoute({
         'Y800 : Invalid value for eventName<br>Y821 : Data update event not supported<br>Y800 : Invalid value for fromDate.fromDate cannot be greater than current time<br>Y800 : Invalid value for toDate.toDate cannot be greater than current time<br>.Y800 : Invalid value for fromDate or toDate.fromDate and toDate cannot be older than 7 days<br>Y800 : Invalid value for fromDate.fromDate can not be greater than toDate<br>Y800 : Invalid value for loginName',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9641,8 +9641,8 @@ export const getDerivedHoldingSummaryRoute = createRoute({
         'Y800 : Invalid value for classificationType<br>Y814 : Exchange rate not available for currency<br>Y824 : The maximum number of accountIds permitted is 100<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9789,8 +9789,8 @@ export const getDerivedNetworthRoute = createRoute({
         'Y800 : Invalid value for accountIds<br>Y800 : Invalid value for fromDate<br>Y800 : Invalid value for toDate<br>Y809 : Invalid date range<br>Y800 : Invalid value for interval<br>Y802 : Future date not allowed<br>Y814 : Exchange rate not available for currency<br>Y800 : Invalid value for container',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -9934,8 +9934,8 @@ export const getDerivedTransactionSummaryRoute = createRoute({
         "Y010 : Invalid session<br>Y800 : Invalid value for accountId<br>Y800 : Invalid value for groupBy<br>Y803 : groupBy required<br>Y803 : categoryType required<br>Y800 : Invalid value for categoryId<br>Y800 : Invalid value for fromDate<br>Y800 : Invalid value for toDate<br>Y800 : Invalid value for fromDate or toDate<br>Y814 : Exchange rate not available for currency<br>Y815 : Cannot apply filter on categoryId if groupBy value is CATEGORY_TYPE<br>Y816 : User-defined category details can only be requested for one system categoryId with groupBy='CATEGORY'<br>Y824 : The maximum number of accountIds permitted is 100<br>Y824 : The maximum number of categoryIds permitted is 100<br>Y824 : The maximum number of categoryTypes permitted is 100",
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10028,8 +10028,8 @@ export const getDocumentsRoute = createRoute({
         'Y800 : Invalid value for accountId<br>Y800 : Invalid value for fromDate<br>Y800 : Invalid value for toDate<br>Y800 : Invalid value for docType',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10065,8 +10065,8 @@ export const getDocumentsDocumentIdRoute = createRoute({
       description: 'Y800 : Invalid value for documentId',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10094,14 +10094,14 @@ export const deleteDocumentsDocumentIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y800 : Invalid value for documentId<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10192,8 +10192,8 @@ export const getHoldingsRoute = createRoute({
         'Y800 : Invalid value for accountId<br>Y800 : Invalid value for providerAccountId<br>Y800 : Invalid value for include<br>Y800 : Invalid value for classificationType<br>Y800 : Invalid value for classificationValue<br>Y800 : Invalid value for include<br>Y400 : classificationType mismatch<br>Y400 : classificationValue mismatch<br>Y824 : The maximum number of accountIds permitted is 100',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10212,8 +10212,8 @@ export const getHoldingsAssetClassificationListRoute = createRoute({
         'application/json;charset=UTF-8': { schema: HoldingAssetClassificationListResponseSchema },
       },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10230,8 +10230,8 @@ export const getHoldingsHoldingTypeListRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: HoldingTypeListResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10270,8 +10270,8 @@ export const getHoldingsSecuritiesRoute = createRoute({
         'Y800 : Invalid value for holdingId<br>Y824 : The maximum number of holdingIds permitted is 100',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10317,8 +10317,8 @@ export const getProviderAccountsRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: ProviderAccountResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10362,8 +10362,8 @@ export const putProviderAccountsRoute = createRoute({
         'Y805 : Multiple providerAccountId not supported for updating credentials<br>Y800 : Invalid value for credentialsParam<br>Y400 : id and value in credentialsParam are mandatory<br>Y806 : Invalid input<br>Y823 : Credentials are not applicable for real estate aggregated / manual accounts<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10399,8 +10399,8 @@ export const getProviderAccountsProfileRoute = createRoute({
         'application/json;charset=UTF-8': { schema: ProviderAccountUserProfileResponseSchema },
       },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10473,8 +10473,8 @@ export const getProviderAccountsProviderAccountIdRoute = createRoute({
         'Y800 : Invalid value for providerAccountId<br>Y816 : questions can only be requested for questionAndAnswer Supported Sites',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10508,14 +10508,14 @@ export const deleteProviderAccountsProviderAccountIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     400: {
       description:
         'Y800 : Invalid value for providerAccountId<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10554,14 +10554,14 @@ export const putProviderAccountsProviderAccountIdPreferencesRoute = createRoute(
     },
   },
   responses: {
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
     400: {
       description:
         'Y800 : Invalid value for preferences<br>Y800 : Invalid value for preferences.isDataExtractsEnabled<br>Y800 : Invalid value for preferences.isAutoRefreshEnabled<br>Y807 : Resource not found<br>Y830 : Data extracts feature has to be enabled to set preferences.isDataExtractsEnabled as true<br>Y830 : Auto refresh feature has to be enabled to set preferences.isAutoRefreshEnabled as true<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10728,8 +10728,8 @@ export const getProvidersRoute = createRoute({
         'Y800 : Invalid value for priority<br>Y800 : Invalid value for providerName<br>Y801 : Invalid length for a site search. The search string must have atleast 1 character<br>Y800 : Invalid value for skip<br>Y804 : Permitted values of top between 1 - 500<br>Y821 : Dataset not supported<br>Y820 : The additionalDataSet is not supported for Get provider API',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10822,8 +10822,8 @@ export const getProvidersCountRoute = createRoute({
         'Y800 : Invalid value for priority<br>Y800 : Invalid value for providerName<br>Y801 : Invalid length for a site search. The search string must have at least 1 character<br>Y800 : Invalid value for skip<br>Y804 : Permitted values of top between 1 - 500<br>Y821 : Dataset not supported<br>Y820 : The additionalDataSet is not supported for Get provider API',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10865,8 +10865,8 @@ export const getProvidersProviderIdRoute = createRoute({
       description: 'Y800 : Invalid value for providerId',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -10957,8 +10957,8 @@ export const getStatementsRoute = createRoute({
         'Y800 : Invalid value for accountId<br>Y800 : Invalid value for status<br>Y805 : Multiple containers not supported<br>Y800 : Invalid value for container<br>Y800 : Invalid value for isLatest<br>Y800 : Invalid value for fromDate<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11170,8 +11170,8 @@ export const getTransactionsRoute = createRoute({
         'Y800 : Invalid value for baseType<br>Y800 : Invalid value for fromDate<br>Y800 : Invalid value for category<br>Y800 : Invalid value for toDate<br>Y800 : Invalid value for container<br>Y809 : Invalid date range<br>Y804 : Permitted values of top between 1 - 500<br>Y805 : Multiple containers not supported<br>Y800 : Invalid value for transaction type<br>Y824 : The maximum number of accountIds permitted is 100<br>Y824 : The maximum number of categoryIds permitted is 100<br>Y824 : The maximum number of highLevelCategoryIds permitted is 100<br>Y848 : detailCategoryId cannot be provided as input, as the detailedCategory feature is not enabled<br>Y823 : detailCategoryId is not for applicable containers other than bank and card<br>Y824 : The maximum number of detailCategoryIds permitted is 100<br>Y800 : Invalid value for detailCategoryId',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11188,8 +11188,8 @@ export const getTransactionsCategoriesRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: TransactionCategoryResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11209,14 +11209,14 @@ export const putTransactionsCategoriesRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Updated Successfully', content: {} },
+    204: { description: 'Updated Successfully' },
     400: {
       description:
         'Y800 : Invalid value for categoryParam<br>Y800 : Invalid value for source<br>Y801 : Invalid length for categoryName. Min 1 and max 50 is required<br>Y803 : id required<br>Y811 : categoryName value already exists',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11236,14 +11236,14 @@ export const postTransactionsCategoriesRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created Successfully', content: {} },
+    201: { description: 'Created Successfully' },
     400: {
       description:
         'Y800 : Invalid value for categoryParam<br>Y800 : Invalid value for source<br>Y801 : Invalid length for categoryName. Min 1 and max 50 is required<br>Y803 : parentCategoryId required<br>Y811 : categoryName value already exists',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11262,8 +11262,8 @@ export const getTransactionsCategoriesRulesRoute = createRoute({
         'application/json;charset=UTF-8': { schema: z.array(TransactionCategorizationRuleSchema) },
       },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
   deprecated: true,
 })
@@ -11307,15 +11307,15 @@ export const postTransactionsCategoriesRulesRoute = createRoute({
     }),
   },
   responses: {
-    201: { description: 'Created Successfully', content: {} },
-    204: { description: 'No Content', content: {} },
+    201: { description: 'Created Successfully' },
+    204: { description: 'No Content' },
     400: {
       description:
         'Y806 : Invalid input<br>Y400 : Rule already exists. Rule should be unique in terms of combination of description and amount',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11354,13 +11354,13 @@ export const putTransactionsCategoriesRulesRuleIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Updated Successfully', content: {} },
+    204: { description: 'Updated Successfully' },
     400: {
       description: 'Y800 : Invalid value for ruleId<br>Y806 : Invalid input',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11407,13 +11407,13 @@ export const postTransactionsCategoriesRulesRuleIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Run Successfully', content: {} },
+    204: { description: 'Run Successfully' },
     400: {
       description: 'Y800 : Invalid value for ruleId<br>Y400 : Categorization already in progress',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11447,13 +11447,13 @@ export const deleteTransactionsCategoriesRulesRuleIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Deleted Successfully', content: {} },
+    204: { description: 'Deleted Successfully' },
     400: {
       description: 'Y800 : Invalid value for ruleId',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11472,8 +11472,8 @@ export const getTransactionsCategoriesTxnRulesRoute = createRoute({
         'application/json;charset=UTF-8': { schema: TransactionCategorizationRuleResponseSchema },
       },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11507,13 +11507,13 @@ export const deleteTransactionsCategoriesCategoryIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Deleted Successfully', content: {} },
+    204: { description: 'Deleted Successfully' },
     400: {
       description: 'Y800 : Invalid value for categoryId',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11683,8 +11683,8 @@ export const getTransactionsCountRoute = createRoute({
         'Y800 : Invalid value for detailCategoryId<br>Y848 : detailCategoryId cannot be provided as input, as the detailedCategory feature is not enabled<br>Y823 : detailCategoryId is not applicable for containers other than bank and card<br>Y824 : The maximum number of detailCategoryIds permitted is 100<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11723,14 +11723,14 @@ export const putTransactionsTransactionIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Updated Successfully', content: {} },
+    204: { description: 'Updated Successfully' },
     400: {
       description:
         'Y812 : Required field -container missing in the transactionParam parameter input<br>Y800 : Invalid value for transactionId<br>Y800 : Invalid value for categoryId<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11747,8 +11747,8 @@ export const getUserRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: UserDetailResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11768,9 +11768,9 @@ export const putUserRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'No Content', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    204: { description: 'No Content' },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11802,8 +11802,8 @@ export const getUserAccessTokensRoute = createRoute({
       description: 'OK',
       content: { 'application/json;charset=UTF-8': { schema: UserAccessTokensResponseSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11816,9 +11816,9 @@ export const postUserLogoutRoute = createRoute({
     '<b>Deprecated</b>: This endpoint is deprecated for API Key-based authentication. The user logout service allows the user to log out of the application.<br>The service does not return a response body. The HTTP response code is 204 (Success with no content).<br>',
   operationId: 'userLogout',
   responses: {
-    204: { description: 'Logout successful', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    204: { description: 'Logout successful' },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11847,8 +11847,8 @@ export const postUserRegisterRoute = createRoute({
         'Y800 : Invalid value for loginName<br>Y800 : Invalid value for email<br>Y801 : Invalid length for loginName<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11907,8 +11907,8 @@ export const postUserSamlLoginRoute = createRoute({
       description: 'Y013 : Invalid value for samlResponse<br>Y013 : Invalid value for issuer',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11921,9 +11921,9 @@ export const deleteUserUnregisterRoute = createRoute({
     'The delete user service is used to delete or unregister a user from Yodlee. <br>Once deleted, the information related to the users cannot be retrieved. <br>The HTTP response code is 204 (Success without content)<br>',
   operationId: 'unregister',
   responses: {
-    204: { description: 'No Content', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    204: { description: 'No Content' },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -11988,8 +11988,8 @@ export const getVerificationRoute = createRoute({
         'Y901 : Service not supported<br>Y813 : Either of accountId or providerAccountId should be provided<br>Y800 : Invalid value for accountId<br>Y800 : Invalid value for verification.verificationType<br>Y800 : Invalid value for providerAccountId<br>Y835 : Account(s) not eligible for Matching verification<br>Y836 : No verification initiated',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -12018,8 +12018,8 @@ export const putVerificationRoute = createRoute({
         'Y901 : Service not supported<br>Y812 : Required field/value - verification.verificationType missing in the verificationParam<br>Y812 : Required field/value - amount.amount missing in the verificationParam<br>Y812 : Required field/value - baseType missing in the verificationParam<br>Y812 : Required field/value - currency missing in the verificationParam<br>Y812 : Required field/value - providerAccountId missing in the verificationParam<br>Y812 : Required field/value - accountId missing in the verificationParam<br>Y800 : Invalid value for verificationParam<br>Y800 : Invalid value for verification.verificationType<br>Y800 : Invalid value for baseType<br>Y800 : Invalid value for providerAccountId<br>Y800 : Invalid value for accountId<br>Y813 : Transaction should be provided<br>Y801 : Invalid length for accountNumber<br>Y801 : Invalid length for amount<br>Y835 : Account(s) not eligible for Challenge Deposit verification<br>Y806 : Invalid Input<br>Y840 : Verification has been initiated already<br>Y837 : Account has been verified already<br>Y838 : The currency code provided does not match with the currency of the transaction executed on the target account<br>Y846 : The number of financial transactions made on the target account does not match with the number of transactions entered by the user.<br>Y842 : Number of retries exceeded the maximum Challenge Deposit verification limit<br>Y844 : Financial Instructions were not executed successfully on the target account<br>Y845 : Verification time expired. Please try initiating challenge deposit again<br>Y868 : No action is allowed, as the data is being migrated to the Open Banking provider<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -12048,8 +12048,8 @@ export const postVerificationRoute = createRoute({
         'Y901 : Service not supported<br>Y812 : Required field/value - verification.verificationType missing in the verificationParam<br>Y812 : Required field/value - accountNumber missing in the verificationParam<br>Y812 : Required field/value - accountType missing in the verificationParam<br>Y812 : Required field/value - bankTransferCode missing in the verificationParam<br>Y812 : Required field/value - bankTransferCode.id missing in the verificationParam<br>Y812 : Required field/value - bankTransferCode.type missing in the verificationParam<br>Y800 : Invalid value for verification.verificationType<br>Y800 : Invalid value for verificationParam<br>Y800 : Invalid value for bankTransferCode.type<br>Y800 : Invalid value for bankTransferCode.id<br>Y800 : Invalid value for accountType<br>Y800 : Invalid value for accountId<br>Y813 : Account details should be provided<br>Y801 : Invalid length for accountNumber<br>Y835 : Account(s) not eligible for Challenge Deposit verification<br>Y806 : Invalid Input<br>Y840 : Verification has been initiated already<br>Y837 : Account has been verified already',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -12091,7 +12091,7 @@ export const postVerifyAccountProviderAccountIdRoute = createRoute({
         'Y800 : Invalid value for container<br>Y800 : Invalid value for accountId<br>Y800 : Invalid value for amount<br>Y800 : Invalid value for dateVariance<br>Y801 : Invalid length for keyword<br>Y804 : Permitted values of dateVariance between 1 - 7<br>Y806 : Invalid input<br>Y807 : Resource not found<br>Y809 : Invalid date range<br>Y812 : Required field/value - transactionCriteria missing in the input<br>Y812 : Required field/value - amount missing in the transactionCriteria<br>Y812 : Required field/value - amount date in the transactionCriteria<br>Y812 : Required field/value - baseType missing in the transactionCriteria<br>Y823 : Transaction not applicable for container <br>Y824 : The maximum number of transactionCriteria permitted is 5<br>Y857 : Transactions are not refreshed in the past 24 hours<br>Y858 : Only active accounts can be verified<br>Y901 : Service not supported<br>',
       content: { 'application/json;charset=UTF-8': { schema: YodleeErrorSchema } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Not Found' },
   },
 })

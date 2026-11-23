@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAccountPasswordRoute,
   postAccountRegistrationRoute,
   postAccountVerificationRoute,
@@ -7,21 +7,32 @@ import {
   putAccountRegistrationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountPasswordRouteHandler: RouteHandler<
+  typeof postAccountPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountHandler = app
-  .openapi(postAccountPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountRegistrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountRegistrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAccountPasswordRouteHandler: RouteHandler<typeof putAccountPasswordRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountRegistrationRouteHandler: RouteHandler<
+  typeof postAccountRegistrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountRegistrationRouteHandler: RouteHandler<
+  typeof putAccountRegistrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountVerificationRouteHandler: RouteHandler<
+  typeof postAccountVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

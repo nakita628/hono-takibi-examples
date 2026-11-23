@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiCatalogSellerPortalBrandsBrandIdRoute,
   getApiCatalogSellerPortalBrandsRoute,
   getApiCatalogSellerPortalCategoryTreeCategoriesCategoryIdRoute,
@@ -18,54 +18,98 @@ import {
   putApiCatalogSellerPortalProductsProductIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiCatalogSellerPortalBrandsRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiCatalogSellerPortalBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCatalogSellerPortalBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalBrandsBrandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCatalogSellerPortalBrandsBrandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalCategoryTreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCatalogSellerPortalCategoryTreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCatalogSellerPortalCategoryTreeCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalCategoryTreeCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCatalogSellerPortalProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalProductsParamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCatalogSellerPortalProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalProductsProductIdDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCatalogSellerPortalProductsProductIdDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalSkusSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCatalogSellerPortalSkusIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiCatalogSellerPortalBrandsRouteHandler: RouteHandler<
+  typeof postApiCatalogSellerPortalBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalBrandsBrandIdRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalBrandsBrandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCatalogSellerPortalBrandsBrandIdRouteHandler: RouteHandler<
+  typeof putApiCatalogSellerPortalBrandsBrandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalCategoryTreeRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalCategoryTreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCatalogSellerPortalCategoryTreeRouteHandler: RouteHandler<
+  typeof putApiCatalogSellerPortalCategoryTreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCatalogSellerPortalCategoryTreeCategoriesRouteHandler: RouteHandler<
+  typeof postApiCatalogSellerPortalCategoryTreeCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalCategoryTreeCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalCategoryTreeCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCatalogSellerPortalProductsRouteHandler: RouteHandler<
+  typeof postApiCatalogSellerPortalProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalProductsParamRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalProductsParamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalProductsProductIdRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCatalogSellerPortalProductsProductIdRouteHandler: RouteHandler<
+  typeof putApiCatalogSellerPortalProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalProductsProductIdDescriptionRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalProductsProductIdDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCatalogSellerPortalProductsProductIdDescriptionRouteHandler: RouteHandler<
+  typeof putApiCatalogSellerPortalProductsProductIdDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalSkusSearchRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalSkusSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCatalogSellerPortalSkusIdsRouteHandler: RouteHandler<
+  typeof getApiCatalogSellerPortalSkusIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

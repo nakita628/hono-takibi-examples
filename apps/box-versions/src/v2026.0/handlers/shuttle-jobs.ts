@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShuttleJobsShuttleJobIdRoute,
   getShuttleJobsRoute,
   getShuttleJobsShuttleJobIdRoute,
@@ -10,30 +10,46 @@ import {
   putShuttleJobsShuttleJobIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShuttleJobsRouteHandler: RouteHandler<typeof getShuttleJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shuttleJobsHandler = app
-  .openapi(getShuttleJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShuttleJobsShuttleJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putShuttleJobsShuttleJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShuttleJobsShuttleJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleJobsShuttleJobIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleJobsShuttleJobIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleJobsShuttleJobIdPrepareMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postShuttleJobsRouteHandler: RouteHandler<typeof postShuttleJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShuttleJobsShuttleJobIdRouteHandler: RouteHandler<
+  typeof getShuttleJobsShuttleJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putShuttleJobsShuttleJobIdRouteHandler: RouteHandler<
+  typeof putShuttleJobsShuttleJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShuttleJobsShuttleJobIdRouteHandler: RouteHandler<
+  typeof deleteShuttleJobsShuttleJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShuttleJobsShuttleJobIdStartRouteHandler: RouteHandler<
+  typeof postShuttleJobsShuttleJobIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShuttleJobsShuttleJobIdStopRouteHandler: RouteHandler<
+  typeof postShuttleJobsShuttleJobIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShuttleJobsShuttleJobIdPrepareMigrationRouteHandler: RouteHandler<
+  typeof postShuttleJobsShuttleJobIdPrepareMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

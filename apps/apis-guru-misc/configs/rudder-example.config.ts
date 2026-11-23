@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rudder.example.local/16/openapi.yaml',
   output: './src/rudder-example/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rudder-example/types.ts' },
   client: { output: './src/rudder-example/client.ts', baseUrl: '/' },
   rpc: { output: './src/rudder-example/rpc.ts', parseResponse: true },

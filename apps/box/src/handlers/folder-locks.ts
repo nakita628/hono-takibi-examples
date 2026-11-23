@@ -1,19 +1,20 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFolderLocksFolderLockIdRoute,
   getFolderLocksRoute,
   postFolderLocksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFolderLocksRouteHandler: RouteHandler<typeof getFolderLocksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const folderLocksHandler = app
-  .openapi(getFolderLocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFolderLocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFolderLocksFolderLockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFolderLocksRouteHandler: RouteHandler<typeof postFolderLocksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFolderLocksFolderLockIdRouteHandler: RouteHandler<
+  typeof deleteFolderLocksFolderLockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

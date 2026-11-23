@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasValkeyNameRoute,
   deleteDbaasValkeyServiceNameUserUsernameRoute,
   getDbaasValkeyNameRoute,
@@ -14,42 +14,74 @@ import {
   putDbaasValkeyServiceNameUserUsernameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDbaasValkeyNameMigrationStopRouteHandler: RouteHandler<
+  typeof postDbaasValkeyNameMigrationStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasValkeyHandler = app
-  .openapi(postDbaasValkeyNameMigrationStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasValkeyServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasValkeyServiceNameUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasValkeyServiceNameUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasValkeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasValkeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasValkeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasValkeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasValkeyNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasValkeyServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasValkeyServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasValkeyServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDbaasValkeyServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasValkeyServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasValkeyServiceNameUserUsernameRouteHandler: RouteHandler<
+  typeof putDbaasValkeyServiceNameUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasValkeyServiceNameUserUsernameRouteHandler: RouteHandler<
+  typeof deleteDbaasValkeyServiceNameUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasValkeyNameRouteHandler: RouteHandler<
+  typeof deleteDbaasValkeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasValkeyNameRouteHandler: RouteHandler<typeof getDbaasValkeyNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasValkeyNameRouteHandler: RouteHandler<
+  typeof postDbaasValkeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasValkeyNameRouteHandler: RouteHandler<typeof putDbaasValkeyNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasValkeyNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasValkeyNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasValkeyServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasValkeyServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasValkeyServiceNameUserRouteHandler: RouteHandler<
+  typeof postDbaasValkeyServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasValkeyServiceNameUserRouteHandler: RouteHandler<
+  typeof getDbaasValkeyServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

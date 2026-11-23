@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesis20131202UpdateShardCountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesis20131202UpdateShardCountRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesis20131202UpdateShardCountHandler = app.openapi(
-  postXAmzTargetKinesis20131202UpdateShardCountRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesis20131202UpdateShardCountRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesis20131202UpdateShardCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

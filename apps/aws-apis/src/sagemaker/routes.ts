@@ -1156,8 +1156,8 @@ const AlgorithmValidationProfilesSchema: z.ZodType<AlgorithmValidationProfilesTy
   .openapi('AlgorithmValidationProfiles')
 
 type AlgorithmValidationSpecificationType = {
-  ValidationRole: z.infer<typeof RoleArnSchema> & unknown
-  ValidationProfiles: z.infer<typeof AlgorithmValidationProfilesSchema> & unknown
+  ValidationRole: z.infer<typeof RoleArnSchema>
+  ValidationProfiles: z.infer<typeof AlgorithmValidationProfilesSchema>
 }
 
 const AlgorithmValidationSpecificationSchema: z.ZodType<AlgorithmValidationSpecificationType> = z
@@ -1210,13 +1210,13 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).min(0).max(50).openapi('TagList')
 
 type CreateAlgorithmInputType = {
-  AlgorithmName: z.infer<typeof EntityNameSchema> & unknown
-  AlgorithmDescription?: z.infer<typeof EntityDescriptionSchema> & unknown
-  TrainingSpecification: z.infer<typeof TrainingSpecificationSchema> & unknown
-  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema> & unknown
-  ValidationSpecification?: z.infer<typeof AlgorithmValidationSpecificationSchema> & unknown
-  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  AlgorithmName: z.infer<typeof EntityNameSchema>
+  AlgorithmDescription?: z.infer<typeof EntityDescriptionSchema>
+  TrainingSpecification: z.infer<typeof TrainingSpecificationSchema>
+  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema>
+  ValidationSpecification?: z.infer<typeof AlgorithmValidationSpecificationSchema>
+  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const HyperParameterTuningJobNameSchema = z
@@ -1820,12 +1820,12 @@ const HyperParameterTuningJobWarmStartConfigSchema = z
   .openapi('HyperParameterTuningJobWarmStartConfig')
 
 type CreateHyperParameterTuningJobRequestType = {
-  HyperParameterTuningJobName: z.infer<typeof HyperParameterTuningJobNameSchema> & unknown
-  HyperParameterTuningJobConfig: z.infer<typeof HyperParameterTuningJobConfigSchema> & unknown
-  TrainingJobDefinition?: z.infer<typeof HyperParameterTrainingJobDefinitionSchema> & unknown
-  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema> & unknown
-  WarmStartConfig?: z.infer<typeof HyperParameterTuningJobWarmStartConfigSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  HyperParameterTuningJobName: z.infer<typeof HyperParameterTuningJobNameSchema>
+  HyperParameterTuningJobConfig: z.infer<typeof HyperParameterTuningJobConfigSchema>
+  TrainingJobDefinition?: z.infer<typeof HyperParameterTrainingJobDefinitionSchema>
+  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema>
+  WarmStartConfig?: z.infer<typeof HyperParameterTuningJobWarmStartConfigSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const RecommendationJobNameSchema = z
@@ -2220,14 +2220,14 @@ const RecommendationJobOutputConfigSchema = z
   .openapi('RecommendationJobOutputConfig')
 
 type CreateInferenceRecommendationsJobRequestType = {
-  JobName: z.infer<typeof RecommendationJobNameSchema> & unknown
-  JobType: z.infer<typeof RecommendationJobTypeSchema> & unknown
-  RoleArn: z.infer<typeof RoleArnSchema> & unknown
-  InputConfig: z.infer<typeof RecommendationJobInputConfigSchema> & unknown
-  JobDescription?: z.infer<typeof RecommendationJobDescriptionSchema> & unknown
-  StoppingConditions?: z.infer<typeof RecommendationJobStoppingConditionsSchema> & unknown
-  OutputConfig?: z.infer<typeof RecommendationJobOutputConfigSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  JobName: z.infer<typeof RecommendationJobNameSchema>
+  JobType: z.infer<typeof RecommendationJobTypeSchema>
+  RoleArn: z.infer<typeof RoleArnSchema>
+  InputConfig: z.infer<typeof RecommendationJobInputConfigSchema>
+  JobDescription?: z.infer<typeof RecommendationJobDescriptionSchema>
+  StoppingConditions?: z.infer<typeof RecommendationJobStoppingConditionsSchema>
+  OutputConfig?: z.infer<typeof RecommendationJobOutputConfigSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const ModelPackageValidationProfileSchema = z
@@ -2587,25 +2587,24 @@ const AdditionalInferenceSpecificationsSchema = z
   .openapi('AdditionalInferenceSpecifications')
 
 type CreateModelPackageInputType = {
-  ModelPackageName?: z.infer<typeof EntityNameSchema> & unknown
-  ModelPackageGroupName?: z.infer<typeof ArnOrNameSchema> & unknown
-  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema> & unknown
-  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema> & unknown
-  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema> & unknown
-  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema> & unknown
-  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema> & unknown
+  ModelPackageName?: z.infer<typeof EntityNameSchema>
+  ModelPackageGroupName?: z.infer<typeof ArnOrNameSchema>
+  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema>
+  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema>
+  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema>
+  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema>
+  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema>
   MetadataProperties?: z.infer<typeof MetadataPropertiesSchema>
-  ModelMetrics?: z.infer<typeof ModelMetricsSchema> & unknown
-  ClientToken?: z.infer<typeof ClientTokenSchema> & unknown
-  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema> & unknown
-  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema> & unknown
-  Domain?: z.infer<typeof StringSchema> & unknown
-  Task?: z.infer<typeof StringSchema> & unknown
-  SamplePayloadUrl?: z.infer<typeof S3UriSchema> & unknown
-  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema> &
-    unknown
+  ModelMetrics?: z.infer<typeof ModelMetricsSchema>
+  ClientToken?: z.infer<typeof ClientTokenSchema>
+  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema>
+  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema>
+  Domain?: z.infer<typeof StringSchema>
+  Task?: z.infer<typeof StringSchema>
+  SamplePayloadUrl?: z.infer<typeof S3UriSchema>
+  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema>
 }
 
 const MonitoringScheduleNameSchema = z
@@ -3185,9 +3184,9 @@ const MonitoringScheduleConfigSchema = z
   .openapi('MonitoringScheduleConfig')
 
 type CreateMonitoringScheduleRequestType = {
-  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema> & unknown
-  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema>
+  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const AlgorithmArnSchema = z
@@ -3243,17 +3242,17 @@ const AlgorithmStatusDetailsSchema = z
   .openapi('AlgorithmStatusDetails')
 
 type DescribeAlgorithmOutputType = {
-  AlgorithmName: z.infer<typeof EntityNameSchema> & unknown
-  AlgorithmArn: z.infer<typeof AlgorithmArnSchema> & unknown
-  AlgorithmDescription?: z.infer<typeof EntityDescriptionSchema> & unknown
-  CreationTime: z.infer<typeof CreationTimeSchema> & unknown
-  TrainingSpecification: z.infer<typeof TrainingSpecificationSchema> & unknown
-  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema> & unknown
-  ValidationSpecification?: z.infer<typeof AlgorithmValidationSpecificationSchema> & unknown
-  AlgorithmStatus: z.infer<typeof AlgorithmStatusSchema> & unknown
-  AlgorithmStatusDetails: z.infer<typeof AlgorithmStatusDetailsSchema> & unknown
-  ProductId?: z.infer<typeof ProductIdSchema> & unknown
-  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema> & unknown
+  AlgorithmName: z.infer<typeof EntityNameSchema>
+  AlgorithmArn: z.infer<typeof AlgorithmArnSchema>
+  AlgorithmDescription?: z.infer<typeof EntityDescriptionSchema>
+  CreationTime: z.infer<typeof CreationTimeSchema>
+  TrainingSpecification: z.infer<typeof TrainingSpecificationSchema>
+  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema>
+  ValidationSpecification?: z.infer<typeof AlgorithmValidationSpecificationSchema>
+  AlgorithmStatus: z.infer<typeof AlgorithmStatusSchema>
+  AlgorithmStatusDetails: z.infer<typeof AlgorithmStatusDetailsSchema>
+  ProductId?: z.infer<typeof ProductIdSchema>
+  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema>
 }
 
 const HyperParameterTuningJobArnSchema = z
@@ -3453,23 +3452,22 @@ const HyperParameterTuningJobConsumedResourcesSchema = z
   .openapi('HyperParameterTuningJobConsumedResources')
 
 type DescribeHyperParameterTuningJobResponseType = {
-  HyperParameterTuningJobName: z.infer<typeof HyperParameterTuningJobNameSchema> & unknown
-  HyperParameterTuningJobArn: z.infer<typeof HyperParameterTuningJobArnSchema> & unknown
-  HyperParameterTuningJobConfig: z.infer<typeof HyperParameterTuningJobConfigSchema> & unknown
-  TrainingJobDefinition?: z.infer<typeof HyperParameterTrainingJobDefinitionSchema> & unknown
-  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema> & unknown
-  HyperParameterTuningJobStatus: z.infer<typeof HyperParameterTuningJobStatusSchema> & unknown
-  CreationTime: z.infer<typeof TimestampSchema> & unknown
-  HyperParameterTuningEndTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
-  TrainingJobStatusCounters: z.infer<typeof TrainingJobStatusCountersSchema> & unknown
-  ObjectiveStatusCounters: z.infer<typeof ObjectiveStatusCountersSchema> & unknown
-  BestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema> & unknown
-  OverallBestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema> & unknown
-  WarmStartConfig?: z.infer<typeof HyperParameterTuningJobWarmStartConfigSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  TuningJobCompletionDetails?: z.infer<typeof HyperParameterTuningJobCompletionDetailsSchema> &
-    unknown
+  HyperParameterTuningJobName: z.infer<typeof HyperParameterTuningJobNameSchema>
+  HyperParameterTuningJobArn: z.infer<typeof HyperParameterTuningJobArnSchema>
+  HyperParameterTuningJobConfig: z.infer<typeof HyperParameterTuningJobConfigSchema>
+  TrainingJobDefinition?: z.infer<typeof HyperParameterTrainingJobDefinitionSchema>
+  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema>
+  HyperParameterTuningJobStatus: z.infer<typeof HyperParameterTuningJobStatusSchema>
+  CreationTime: z.infer<typeof TimestampSchema>
+  HyperParameterTuningEndTime?: z.infer<typeof TimestampSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
+  TrainingJobStatusCounters: z.infer<typeof TrainingJobStatusCountersSchema>
+  ObjectiveStatusCounters: z.infer<typeof ObjectiveStatusCountersSchema>
+  BestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema>
+  OverallBestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema>
+  WarmStartConfig?: z.infer<typeof HyperParameterTuningJobWarmStartConfigSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  TuningJobCompletionDetails?: z.infer<typeof HyperParameterTuningJobCompletionDetailsSchema>
   ConsumedResources?: z.infer<typeof HyperParameterTuningJobConsumedResourcesSchema>
 }
 
@@ -3655,20 +3653,20 @@ const EndpointPerformancesSchema = z
   .openapi('EndpointPerformances')
 
 type DescribeInferenceRecommendationsJobResponseType = {
-  JobName: z.infer<typeof RecommendationJobNameSchema> & unknown
-  JobDescription?: z.infer<typeof RecommendationJobDescriptionSchema> & unknown
-  JobType: z.infer<typeof RecommendationJobTypeSchema> & unknown
-  JobArn: z.infer<typeof RecommendationJobArnSchema> & unknown
-  RoleArn: z.infer<typeof RoleArnSchema> & unknown
-  Status: z.infer<typeof RecommendationJobStatusSchema> & unknown
-  CreationTime: z.infer<typeof CreationTimeSchema> & unknown
-  CompletionTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime: z.infer<typeof LastModifiedTimeSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  InputConfig: z.infer<typeof RecommendationJobInputConfigSchema> & unknown
-  StoppingConditions?: z.infer<typeof RecommendationJobStoppingConditionsSchema> & unknown
-  InferenceRecommendations?: z.infer<typeof InferenceRecommendationsSchema> & unknown
-  EndpointPerformances?: z.infer<typeof EndpointPerformancesSchema> & unknown
+  JobName: z.infer<typeof RecommendationJobNameSchema>
+  JobDescription?: z.infer<typeof RecommendationJobDescriptionSchema>
+  JobType: z.infer<typeof RecommendationJobTypeSchema>
+  JobArn: z.infer<typeof RecommendationJobArnSchema>
+  RoleArn: z.infer<typeof RoleArnSchema>
+  Status: z.infer<typeof RecommendationJobStatusSchema>
+  CreationTime: z.infer<typeof CreationTimeSchema>
+  CompletionTime?: z.infer<typeof TimestampSchema>
+  LastModifiedTime: z.infer<typeof LastModifiedTimeSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  InputConfig: z.infer<typeof RecommendationJobInputConfigSchema>
+  StoppingConditions?: z.infer<typeof RecommendationJobStoppingConditionsSchema>
+  InferenceRecommendations?: z.infer<typeof InferenceRecommendationsSchema>
+  EndpointPerformances?: z.infer<typeof EndpointPerformancesSchema>
 }
 
 const ModelPackageVersionSchema = z.int().min(1).openapi('ModelPackageVersion')
@@ -3761,32 +3759,31 @@ const UserContextSchema = z
 const ApprovalDescriptionSchema = z.string().regex(/.*/).max(1024).openapi('ApprovalDescription')
 
 type DescribeModelPackageOutputType = {
-  ModelPackageName: z.infer<typeof EntityNameSchema> & unknown
-  ModelPackageGroupName?: z.infer<typeof EntityNameSchema> & unknown
-  ModelPackageVersion?: z.infer<typeof ModelPackageVersionSchema> & unknown
-  ModelPackageArn: z.infer<typeof ModelPackageArnSchema> & unknown
-  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema> & unknown
-  CreationTime: z.infer<typeof CreationTimeSchema> & unknown
-  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema> & unknown
-  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema> & unknown
-  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema> & unknown
-  ModelPackageStatus: z.infer<typeof ModelPackageStatusSchema> & unknown
-  ModelPackageStatusDetails: z.infer<typeof ModelPackageStatusDetailsSchema> & unknown
-  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema> & unknown
-  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema> & unknown
+  ModelPackageName: z.infer<typeof EntityNameSchema>
+  ModelPackageGroupName?: z.infer<typeof EntityNameSchema>
+  ModelPackageVersion?: z.infer<typeof ModelPackageVersionSchema>
+  ModelPackageArn: z.infer<typeof ModelPackageArnSchema>
+  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema>
+  CreationTime: z.infer<typeof CreationTimeSchema>
+  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema>
+  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema>
+  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema>
+  ModelPackageStatus: z.infer<typeof ModelPackageStatusSchema>
+  ModelPackageStatusDetails: z.infer<typeof ModelPackageStatusDetailsSchema>
+  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema>
+  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema>
   CreatedBy?: z.infer<typeof UserContextSchema>
   MetadataProperties?: z.infer<typeof MetadataPropertiesSchema>
-  ModelMetrics?: z.infer<typeof ModelMetricsSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
+  ModelMetrics?: z.infer<typeof ModelMetricsSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
   LastModifiedBy?: z.infer<typeof UserContextSchema>
-  ApprovalDescription?: z.infer<typeof ApprovalDescriptionSchema> & unknown
-  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema> & unknown
-  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema> & unknown
-  Domain?: z.infer<typeof StringSchema> & unknown
-  Task?: z.infer<typeof StringSchema> & unknown
-  SamplePayloadUrl?: z.infer<typeof StringSchema> & unknown
-  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema> &
-    unknown
+  ApprovalDescription?: z.infer<typeof ApprovalDescriptionSchema>
+  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema>
+  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema>
+  Domain?: z.infer<typeof StringSchema>
+  Task?: z.infer<typeof StringSchema>
+  SamplePayloadUrl?: z.infer<typeof StringSchema>
+  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema>
 }
 
 const MonitoringScheduleArnSchema = z.string().regex(/.*/).max(256).openapi('MonitoringScheduleArn')
@@ -3859,16 +3856,16 @@ const MonitoringExecutionSummarySchema = z
   .openapi('MonitoringExecutionSummary')
 
 type DescribeMonitoringScheduleResponseType = {
-  MonitoringScheduleArn: z.infer<typeof MonitoringScheduleArnSchema> & unknown
-  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema> & unknown
-  MonitoringScheduleStatus: z.infer<typeof ScheduleStatusSchema> & unknown
-  MonitoringType?: z.infer<typeof MonitoringTypeSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  CreationTime: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime: z.infer<typeof TimestampSchema> & unknown
-  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema> & unknown
-  EndpointName?: z.infer<typeof EndpointNameSchema> & unknown
-  LastMonitoringExecutionSummary?: z.infer<typeof MonitoringExecutionSummarySchema> & unknown
+  MonitoringScheduleArn: z.infer<typeof MonitoringScheduleArnSchema>
+  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema>
+  MonitoringScheduleStatus: z.infer<typeof ScheduleStatusSchema>
+  MonitoringType?: z.infer<typeof MonitoringTypeSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  CreationTime: z.infer<typeof TimestampSchema>
+  LastModifiedTime: z.infer<typeof TimestampSchema>
+  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema>
+  EndpointName?: z.infer<typeof EndpointNameSchema>
+  LastMonitoringExecutionSummary?: z.infer<typeof MonitoringExecutionSummarySchema>
 }
 
 const LabelingJobArnSchema = z
@@ -5404,27 +5401,27 @@ const ParentSchema = z
 const ParentsSchema = z.array(ParentSchema).openapi('Parents')
 
 type TrialComponentType = {
-  TrialComponentName?: z.infer<typeof ExperimentEntityNameSchema> & unknown
-  DisplayName?: z.infer<typeof ExperimentEntityNameSchema> & unknown
-  TrialComponentArn?: z.infer<typeof TrialComponentArnSchema> & unknown
-  Source?: z.infer<typeof TrialComponentSourceSchema> & unknown
+  TrialComponentName?: z.infer<typeof ExperimentEntityNameSchema>
+  DisplayName?: z.infer<typeof ExperimentEntityNameSchema>
+  TrialComponentArn?: z.infer<typeof TrialComponentArnSchema>
+  Source?: z.infer<typeof TrialComponentSourceSchema>
   Status?: z.infer<typeof TrialComponentStatusSchema>
-  StartTime?: z.infer<typeof TimestampSchema> & unknown
-  EndTime?: z.infer<typeof TimestampSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampSchema> & unknown
-  CreatedBy?: z.infer<typeof UserContextSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
+  StartTime?: z.infer<typeof TimestampSchema>
+  EndTime?: z.infer<typeof TimestampSchema>
+  CreationTime?: z.infer<typeof TimestampSchema>
+  CreatedBy?: z.infer<typeof UserContextSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
   LastModifiedBy?: z.infer<typeof UserContextSchema>
-  Parameters?: z.infer<typeof TrialComponentParametersSchema> & unknown
-  InputArtifacts?: z.infer<typeof TrialComponentArtifactsSchema> & unknown
-  OutputArtifacts?: z.infer<typeof TrialComponentArtifactsSchema> & unknown
-  Metrics?: z.infer<typeof TrialComponentMetricSummariesSchema> & unknown
+  Parameters?: z.infer<typeof TrialComponentParametersSchema>
+  InputArtifacts?: z.infer<typeof TrialComponentArtifactsSchema>
+  OutputArtifacts?: z.infer<typeof TrialComponentArtifactsSchema>
+  Metrics?: z.infer<typeof TrialComponentMetricSummariesSchema>
   MetadataProperties?: z.infer<typeof MetadataPropertiesSchema>
-  SourceDetail?: z.infer<typeof TrialComponentSourceDetailSchema> & unknown
-  LineageGroupArn?: z.infer<typeof LineageGroupArnSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  Parents?: z.infer<typeof ParentsSchema> & unknown
-  RunName?: z.infer<typeof ExperimentEntityNameSchema> & unknown
+  SourceDetail?: z.infer<typeof TrialComponentSourceDetailSchema>
+  LineageGroupArn?: z.infer<typeof LineageGroupArnSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  Parents?: z.infer<typeof ParentsSchema>
+  RunName?: z.infer<typeof ExperimentEntityNameSchema>
 }
 
 const TrialComponentSchema: z.ZodType<TrialComponentType> = z
@@ -5688,17 +5685,17 @@ const EndpointStatusSchema = z
   .openapi('EndpointStatus')
 
 type MonitoringScheduleType = {
-  MonitoringScheduleArn?: z.infer<typeof MonitoringScheduleArnSchema> & unknown
-  MonitoringScheduleName?: z.infer<typeof MonitoringScheduleNameSchema> & unknown
-  MonitoringScheduleStatus?: z.infer<typeof ScheduleStatusSchema> & unknown
-  MonitoringType?: z.infer<typeof MonitoringTypeSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
+  MonitoringScheduleArn?: z.infer<typeof MonitoringScheduleArnSchema>
+  MonitoringScheduleName?: z.infer<typeof MonitoringScheduleNameSchema>
+  MonitoringScheduleStatus?: z.infer<typeof ScheduleStatusSchema>
+  MonitoringType?: z.infer<typeof MonitoringTypeSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  CreationTime?: z.infer<typeof TimestampSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
   MonitoringScheduleConfig?: z.infer<typeof MonitoringScheduleConfigSchema>
-  EndpointName?: z.infer<typeof EndpointNameSchema> & unknown
+  EndpointName?: z.infer<typeof EndpointNameSchema>
   LastMonitoringExecutionSummary?: z.infer<typeof MonitoringExecutionSummarySchema>
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const MonitoringScheduleSchema: z.ZodType<MonitoringScheduleType> = z
@@ -5749,18 +5746,18 @@ const MonitoringScheduleListSchema: z.ZodType<MonitoringScheduleListType> = z
   .openapi('MonitoringScheduleList')
 
 type EndpointType = {
-  EndpointName: z.infer<typeof EndpointNameSchema> & unknown
-  EndpointArn: z.infer<typeof EndpointArnSchema> & unknown
-  EndpointConfigName: z.infer<typeof EndpointConfigNameSchema> & unknown
-  ProductionVariants?: z.infer<typeof ProductionVariantSummaryListSchema> & unknown
+  EndpointName: z.infer<typeof EndpointNameSchema>
+  EndpointArn: z.infer<typeof EndpointArnSchema>
+  EndpointConfigName: z.infer<typeof EndpointConfigNameSchema>
+  ProductionVariants?: z.infer<typeof ProductionVariantSummaryListSchema>
   DataCaptureConfig?: z.infer<typeof DataCaptureConfigSummarySchema>
-  EndpointStatus: z.infer<typeof EndpointStatusSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  CreationTime: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime: z.infer<typeof TimestampSchema> & unknown
-  MonitoringSchedules?: z.infer<typeof MonitoringScheduleListSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  ShadowProductionVariants?: z.infer<typeof ProductionVariantSummaryListSchema> & unknown
+  EndpointStatus: z.infer<typeof EndpointStatusSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  CreationTime: z.infer<typeof TimestampSchema>
+  LastModifiedTime: z.infer<typeof TimestampSchema>
+  MonitoringSchedules?: z.infer<typeof MonitoringScheduleListSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  ShadowProductionVariants?: z.infer<typeof ProductionVariantSummaryListSchema>
 }
 
 const EndpointSchema: z.ZodType<EndpointType> = z
@@ -5814,33 +5811,32 @@ const EndpointSchema: z.ZodType<EndpointType> = z
   .openapi('Endpoint')
 
 type ModelPackageType = {
-  ModelPackageName?: z.infer<typeof EntityNameSchema> & unknown
-  ModelPackageGroupName?: z.infer<typeof EntityNameSchema> & unknown
-  ModelPackageVersion?: z.infer<typeof ModelPackageVersionSchema> & unknown
-  ModelPackageArn?: z.infer<typeof ModelPackageArnSchema> & unknown
-  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema> & unknown
-  CreationTime?: z.infer<typeof CreationTimeSchema> & unknown
-  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema> & unknown
-  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema> & unknown
-  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema> & unknown
-  ModelPackageStatus?: z.infer<typeof ModelPackageStatusSchema> & unknown
-  ModelPackageStatusDetails?: z.infer<typeof ModelPackageStatusDetailsSchema> & unknown
-  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema> & unknown
-  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema> & unknown
-  CreatedBy?: z.infer<typeof UserContextSchema> & unknown
-  MetadataProperties?: z.infer<typeof MetadataPropertiesSchema> & unknown
-  ModelMetrics?: z.infer<typeof ModelMetricsSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedBy?: z.infer<typeof UserContextSchema> & unknown
-  ApprovalDescription?: z.infer<typeof ApprovalDescriptionSchema> & unknown
-  Domain?: z.infer<typeof StringSchema> & unknown
-  Task?: z.infer<typeof StringSchema> & unknown
-  SamplePayloadUrl?: z.infer<typeof StringSchema> & unknown
-  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema> &
-    unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema> & unknown
-  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema> & unknown
+  ModelPackageName?: z.infer<typeof EntityNameSchema>
+  ModelPackageGroupName?: z.infer<typeof EntityNameSchema>
+  ModelPackageVersion?: z.infer<typeof ModelPackageVersionSchema>
+  ModelPackageArn?: z.infer<typeof ModelPackageArnSchema>
+  ModelPackageDescription?: z.infer<typeof EntityDescriptionSchema>
+  CreationTime?: z.infer<typeof CreationTimeSchema>
+  InferenceSpecification?: z.infer<typeof InferenceSpecificationSchema>
+  SourceAlgorithmSpecification?: z.infer<typeof SourceAlgorithmSpecificationSchema>
+  ValidationSpecification?: z.infer<typeof ModelPackageValidationSpecificationSchema>
+  ModelPackageStatus?: z.infer<typeof ModelPackageStatusSchema>
+  ModelPackageStatusDetails?: z.infer<typeof ModelPackageStatusDetailsSchema>
+  CertifyForMarketplace?: z.infer<typeof CertifyForMarketplaceSchema>
+  ModelApprovalStatus?: z.infer<typeof ModelApprovalStatusSchema>
+  CreatedBy?: z.infer<typeof UserContextSchema>
+  MetadataProperties?: z.infer<typeof MetadataPropertiesSchema>
+  ModelMetrics?: z.infer<typeof ModelMetricsSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
+  LastModifiedBy?: z.infer<typeof UserContextSchema>
+  ApprovalDescription?: z.infer<typeof ApprovalDescriptionSchema>
+  Domain?: z.infer<typeof StringSchema>
+  Task?: z.infer<typeof StringSchema>
+  SamplePayloadUrl?: z.infer<typeof StringSchema>
+  AdditionalInferenceSpecifications?: z.infer<typeof AdditionalInferenceSpecificationsSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  CustomerMetadataProperties?: z.infer<typeof CustomerMetadataMapSchema>
+  DriftCheckBaselines?: z.infer<typeof DriftCheckBaselinesSchema>
 }
 
 const ModelPackageSchema: z.ZodType<ModelPackageType> = z
@@ -6653,25 +6649,24 @@ const FeatureMetadataSchema = z
   .openapi('FeatureMetadata')
 
 type HyperParameterTuningJobSearchEntityType = {
-  HyperParameterTuningJobName?: z.infer<typeof HyperParameterTuningJobNameSchema> & unknown
-  HyperParameterTuningJobArn?: z.infer<typeof HyperParameterTuningJobArnSchema> & unknown
+  HyperParameterTuningJobName?: z.infer<typeof HyperParameterTuningJobNameSchema>
+  HyperParameterTuningJobArn?: z.infer<typeof HyperParameterTuningJobArnSchema>
   HyperParameterTuningJobConfig?: z.infer<typeof HyperParameterTuningJobConfigSchema>
   TrainingJobDefinition?: z.infer<typeof HyperParameterTrainingJobDefinitionSchema>
-  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema> & unknown
-  HyperParameterTuningJobStatus?: z.infer<typeof HyperParameterTuningJobStatusSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampSchema> & unknown
-  HyperParameterTuningEndTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
+  TrainingJobDefinitions?: z.infer<typeof HyperParameterTrainingJobDefinitionsSchema>
+  HyperParameterTuningJobStatus?: z.infer<typeof HyperParameterTuningJobStatusSchema>
+  CreationTime?: z.infer<typeof TimestampSchema>
+  HyperParameterTuningEndTime?: z.infer<typeof TimestampSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
   TrainingJobStatusCounters?: z.infer<typeof TrainingJobStatusCountersSchema>
   ObjectiveStatusCounters?: z.infer<typeof ObjectiveStatusCountersSchema>
   BestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema>
   OverallBestTrainingJob?: z.infer<typeof HyperParameterTrainingJobSummarySchema>
   WarmStartConfig?: z.infer<typeof HyperParameterTuningJobWarmStartConfigSchema>
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  TuningJobCompletionDetails?: z.infer<typeof HyperParameterTuningJobCompletionDetailsSchema> &
-    unknown
-  ConsumedResources?: z.infer<typeof HyperParameterTuningJobConsumedResourcesSchema> & unknown
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  TuningJobCompletionDetails?: z.infer<typeof HyperParameterTuningJobCompletionDetailsSchema>
+  ConsumedResources?: z.infer<typeof HyperParameterTuningJobConsumedResourcesSchema>
 }
 
 const HyperParameterTuningJobSearchEntitySchema: z.ZodType<HyperParameterTuningJobSearchEntityType> =
@@ -7016,16 +7011,16 @@ const MonitoringAlertSummaryListSchema = z
   .openapi('MonitoringAlertSummaryList')
 
 type ModelDashboardMonitoringScheduleType = {
-  MonitoringScheduleArn?: z.infer<typeof MonitoringScheduleArnSchema> & unknown
-  MonitoringScheduleName?: z.infer<typeof MonitoringScheduleNameSchema> & unknown
-  MonitoringScheduleStatus?: z.infer<typeof ScheduleStatusSchema> & unknown
-  MonitoringType?: z.infer<typeof MonitoringTypeSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampSchema> & unknown
-  LastModifiedTime?: z.infer<typeof TimestampSchema> & unknown
+  MonitoringScheduleArn?: z.infer<typeof MonitoringScheduleArnSchema>
+  MonitoringScheduleName?: z.infer<typeof MonitoringScheduleNameSchema>
+  MonitoringScheduleStatus?: z.infer<typeof ScheduleStatusSchema>
+  MonitoringType?: z.infer<typeof MonitoringTypeSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  CreationTime?: z.infer<typeof TimestampSchema>
+  LastModifiedTime?: z.infer<typeof TimestampSchema>
   MonitoringScheduleConfig?: z.infer<typeof MonitoringScheduleConfigSchema>
-  EndpointName?: z.infer<typeof EndpointNameSchema> & unknown
-  MonitoringAlertSummaries?: z.infer<typeof MonitoringAlertSummaryListSchema> & unknown
+  EndpointName?: z.infer<typeof EndpointNameSchema>
+  MonitoringAlertSummaries?: z.infer<typeof MonitoringAlertSummaryListSchema>
   LastMonitoringExecutionSummary?: z.infer<typeof MonitoringExecutionSummarySchema>
 }
 
@@ -7145,11 +7140,11 @@ const ModelDashboardModelCardSchema = z
   .openapi('ModelDashboardModelCard')
 
 type ModelDashboardModelType = {
-  Model?: z.infer<typeof ModelSchema> & unknown
-  Endpoints?: z.infer<typeof ModelDashboardEndpointsSchema> & unknown
+  Model?: z.infer<typeof ModelSchema>
+  Endpoints?: z.infer<typeof ModelDashboardEndpointsSchema>
   LastBatchTransformJob?: z.infer<typeof TransformJobSchema>
-  MonitoringSchedules?: z.infer<typeof ModelDashboardMonitoringSchedulesSchema> & unknown
-  ModelCard?: z.infer<typeof ModelDashboardModelCardSchema> & unknown
+  MonitoringSchedules?: z.infer<typeof ModelDashboardMonitoringSchedulesSchema>
+  ModelCard?: z.infer<typeof ModelDashboardModelCardSchema>
 }
 
 const ModelDashboardModelSchema: z.ZodType<ModelDashboardModelType> = z
@@ -7221,21 +7216,21 @@ const ModelCardSchema = z
   .openapi('ModelCard')
 
 type SearchRecordType = {
-  TrainingJob?: z.infer<typeof TrainingJobSchema> & unknown
-  Experiment?: z.infer<typeof ExperimentSchema> & unknown
-  Trial?: z.infer<typeof TrialSchema> & unknown
-  TrialComponent?: z.infer<typeof TrialComponentSchema> & unknown
+  TrainingJob?: z.infer<typeof TrainingJobSchema>
+  Experiment?: z.infer<typeof ExperimentSchema>
+  Trial?: z.infer<typeof TrialSchema>
+  TrialComponent?: z.infer<typeof TrialComponentSchema>
   Endpoint?: z.infer<typeof EndpointSchema>
   ModelPackage?: z.infer<typeof ModelPackageSchema>
   ModelPackageGroup?: z.infer<typeof ModelPackageGroupSchema>
   Pipeline?: z.infer<typeof PipelineSchema>
   PipelineExecution?: z.infer<typeof PipelineExecutionSchema>
   FeatureGroup?: z.infer<typeof FeatureGroupSchema>
-  Project?: z.infer<typeof ProjectSchema> & unknown
-  FeatureMetadata?: z.infer<typeof FeatureMetadataSchema> & unknown
-  HyperParameterTuningJob?: z.infer<typeof HyperParameterTuningJobSearchEntitySchema> & unknown
+  Project?: z.infer<typeof ProjectSchema>
+  FeatureMetadata?: z.infer<typeof FeatureMetadataSchema>
+  HyperParameterTuningJob?: z.infer<typeof HyperParameterTuningJobSearchEntitySchema>
   Model?: z.infer<typeof ModelDashboardModelSchema>
-  ModelCard?: z.infer<typeof ModelCardSchema> & unknown
+  ModelCard?: z.infer<typeof ModelCardSchema>
 }
 
 const SearchRecordSchema: z.ZodType<SearchRecordType> = z
@@ -7285,13 +7280,13 @@ const SearchResultsListSchema: z.ZodType<SearchResultsListType> = z
 const NextTokenSchema = z.string().regex(/.*/).max(8192).openapi('NextToken')
 
 type SearchResponseType = {
-  Results?: z.infer<typeof SearchResultsListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Results?: z.infer<typeof SearchResultsListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type UpdateMonitoringScheduleRequestType = {
-  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema> & unknown
-  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema> & unknown
+  MonitoringScheduleName: z.infer<typeof MonitoringScheduleNameSchema>
+  MonitoringScheduleConfig: z.infer<typeof MonitoringScheduleConfigSchema>
 }
 
 type BooleanOperatorType = 'And' | 'Or'
@@ -7413,10 +7408,10 @@ const BooleanOperatorSchema: z.ZodType<BooleanOperatorType> = z
   .openapi('BooleanOperator')
 
 type SearchExpressionType = {
-  Filters?: z.infer<typeof FilterListSchema> & unknown
-  NestedFilters?: z.infer<typeof NestedFiltersListSchema> & unknown
-  SubExpressions?: z.infer<typeof SearchExpressionListSchema> & unknown
-  Operator?: z.infer<typeof BooleanOperatorSchema> & unknown
+  Filters?: z.infer<typeof FilterListSchema>
+  NestedFilters?: z.infer<typeof NestedFiltersListSchema>
+  SubExpressions?: z.infer<typeof SearchExpressionListSchema>
+  Operator?: z.infer<typeof BooleanOperatorSchema>
 }
 
 const AssociationEntityArnSchema = z

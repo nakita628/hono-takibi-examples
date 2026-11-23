@@ -19,10 +19,7 @@ export const postMultipleTypesMultipleExamplesRoute = createRoute({
       },
     },
   },
-  responses: {
-    200: { description: 'OK', content: {} },
-    400: { description: 'Validation failed', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 400: { description: 'Validation failed' } },
 })
 
 export const postMultipleTypesSingleExampleRoute = createRoute({
@@ -44,28 +41,19 @@ export const postMultipleTypesSingleExampleRoute = createRoute({
       },
     },
   },
-  responses: {
-    200: { description: 'OK', content: {} },
-    400: { description: 'Validation failed', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 400: { description: 'Validation failed' } },
 })
 
 export const getSingleTypeMultipleExamplesRoute = createRoute({
   method: 'get',
   path: '/single-type-multiple-examples',
   summary: 'Single media type with multiple examples',
-  responses: {
-    200: { description: 'OK', content: {} },
-    400: { description: 'Validation failed', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 400: { description: 'Validation failed' } },
 })
 
 export const getSingleTypeSingleExampleRoute = createRoute({
   method: 'get',
   path: '/single-type-single-example',
   summary: 'Single media type with a single example',
-  responses: {
-    200: { description: 'OK', content: {} },
-    400: { description: 'Validation failed', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 400: { description: 'Validation failed' } },
 })

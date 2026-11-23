@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCabwiseSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCabwiseSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cabwiseHandler = app.openapi(getCabwiseSearchRoute, (c) => {
+export const getCabwiseSearchRouteHandler: RouteHandler<typeof getCabwiseSearchRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

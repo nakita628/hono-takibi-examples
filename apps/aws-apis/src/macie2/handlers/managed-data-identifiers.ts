@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postManagedDataIdentifiersListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postManagedDataIdentifiersListRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const managedDataIdentifiersHandler = app.openapi(
-  postManagedDataIdentifiersListRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postManagedDataIdentifiersListRouteHandler: RouteHandler<
+  typeof postManagedDataIdentifiersListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

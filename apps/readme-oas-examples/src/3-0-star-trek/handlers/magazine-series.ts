@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMagazineSeriesRoute,
   getMagazineSeriesSearchRoute,
   postMagazineSeriesSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMagazineSeriesRouteHandler: RouteHandler<typeof getMagazineSeriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const magazineSeriesHandler = app
-  .openapi(getMagazineSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMagazineSeriesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMagazineSeriesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMagazineSeriesSearchRouteHandler: RouteHandler<
+  typeof getMagazineSeriesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMagazineSeriesSearchRouteHandler: RouteHandler<
+  typeof postMagazineSeriesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

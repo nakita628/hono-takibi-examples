@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ote-godaddy.com/aftermarket/1.0.0/openapi.yaml',
   output: './src/aftermarket/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/aftermarket/types.ts' },
   client: { output: './src/aftermarket/client.ts', baseUrl: '/' },
   rpc: { output: './src/aftermarket/rpc.ts', parseResponse: true },

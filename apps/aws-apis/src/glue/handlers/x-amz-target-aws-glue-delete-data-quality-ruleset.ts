@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueDeleteDataQualityRulesetHandler = app.openapi(
-  postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueDeleteDataQualityRulesetRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

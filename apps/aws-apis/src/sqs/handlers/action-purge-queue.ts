@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionPurgeQueueRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionPurgeQueueRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionPurgeQueueHandler = app.openapi(postActionPurgeQueueRoute, (c) => {
+export const postActionPurgeQueueRouteHandler: RouteHandler<
+  typeof postActionPurgeQueueRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

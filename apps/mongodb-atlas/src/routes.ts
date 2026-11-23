@@ -70527,7 +70527,6 @@ export const deleteApiAtlasV2FederationSettingsFederationSettingsIdRoute = creat
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -70668,7 +70667,6 @@ export const deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgC
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -70969,7 +70967,6 @@ export const deleteApiAtlasV2FederationSettingsFederationSettingsIdConnectedOrgC
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -71185,7 +71182,6 @@ export const deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvi
     responses: {
       204: {
         description: 'No Response',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -71297,7 +71293,6 @@ export const deleteApiAtlasV2FederationSettingsFederationSettingsIdIdentityProvi
     responses: {
       204: {
         description: 'No Response',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -71480,7 +71475,6 @@ export const deleteApiAtlasV2GroupsGroupIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -71563,7 +71557,6 @@ export const postApiAtlasV2GroupsGroupIdAccessRoute = createRoute({
     },
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -71772,7 +71765,6 @@ export const deleteApiAtlasV2GroupsGroupIdAccessListEntryValueRoute = createRout
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -72327,7 +72319,6 @@ export const deleteApiAtlasV2GroupsGroupIdAiModelApiKeysApiKeyIdRoute = createRo
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -72684,7 +72675,6 @@ export const deleteApiAtlasV2GroupsGroupIdAlertConfigsAlertConfigIdRoute = creat
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -73147,7 +73137,6 @@ export const postApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -73194,7 +73183,6 @@ export const deleteApiAtlasV2GroupsGroupIdApiKeysApiUserIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -73621,7 +73609,6 @@ export const deleteApiAtlasV2GroupsGroupIdBackupCloudProviderPrivateEndpointsEnd
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -73955,7 +73942,6 @@ export const deleteApiAtlasV2GroupsGroupIdBackupExportBucketsExportBucketIdRoute
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -74136,7 +74122,6 @@ export const deleteApiAtlasV2GroupsGroupIdBackupCompliancePolicyRoute = createRo
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -74307,7 +74292,6 @@ export const deleteApiAtlasV2GroupsGroupIdCloudProviderAccessCloudProviderRoleId
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -75011,7 +74995,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameRoute = createRoute
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -75524,7 +75507,6 @@ export const patchApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferen
     responses: {
       202: {
         description: 'Accepted',
-        content: {},
         headers: z.object({
           Location: z.url().openapi({ description: 'URI of the Operation resource to poll.' }),
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
@@ -75678,7 +75660,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameAutoEmbeddingInferenc
     responses: {
       202: {
         description: 'Accepted',
-        content: {},
         headers: z.object({
           Location: z.url().openapi({ description: 'URI of the Operation resource to poll.' }),
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
@@ -76118,7 +76099,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupRestoreJobsRe
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -76555,7 +76535,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsSnap
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -77039,7 +77018,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameBackupSnapshotsShar
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -78145,7 +78123,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameFtsIndexesIndexIdRo
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -78776,7 +78753,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameIndexRoute = createRo
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -79016,7 +78992,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameOnlineArchivesArchi
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -79600,7 +79575,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameOverloadSimulations
     responses: {
       202: {
         description: 'Accepted',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -80126,7 +80100,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNamePrivateEndpointConn
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -80484,7 +80457,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameQuerySamplingNamesp
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -81161,7 +81133,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameRestartPrimariesRoute
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -81512,7 +81483,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRou
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -81520,7 +81490,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchDeploymentRou
     },
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -81947,7 +81916,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesDataba
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -82165,7 +82133,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSearchIndexesIndexI
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -82344,7 +82311,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameShardKeyAnalysesRoute
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         Location: z
           .url()
@@ -83360,7 +83326,6 @@ export const deleteApiAtlasV2GroupsGroupIdClustersClusterNameSnapshotsSnapshotId
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -83621,7 +83586,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameGrantMongoDBEmployeeA
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -83671,7 +83635,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNamePinFeatureCompatibili
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -83716,7 +83679,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameRevokeMongoDBEmployee
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -83762,7 +83724,6 @@ export const postApiAtlasV2GroupsGroupIdClustersClusterNameUnpinFeatureCompatibi
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -84282,7 +84243,6 @@ export const deleteApiAtlasV2GroupsGroupIdContainersContainerIdRoute = createRou
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -84534,7 +84494,6 @@ export const deleteApiAtlasV2GroupsGroupIdCustomDBRolesRolesRoleNameRoute = crea
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -84767,7 +84726,6 @@ export const deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameRoute = create
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -85014,7 +84972,6 @@ export const deleteApiAtlasV2GroupsGroupIdDataFederationTenantNameLimitsLimitNam
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -85488,7 +85445,6 @@ export const deleteApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -86248,7 +86204,6 @@ export const deleteApiAtlasV2GroupsGroupIdEncryptionAtRestCloudProviderPrivateEn
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -86626,7 +86581,6 @@ export const deleteApiAtlasV2GroupsGroupIdFlexClustersNameRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -87760,7 +87714,6 @@ export const deleteApiAtlasV2GroupsGroupIdIntegrationsIntegrationTypeRoute = cre
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -87968,7 +87921,6 @@ export const deleteApiAtlasV2GroupsGroupIdInvitesInvitationIdRoute = createRoute
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88230,7 +88182,6 @@ export const deleteApiAtlasV2GroupsGroupIdLimitsLimitNameRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88422,7 +88373,6 @@ export const putApiAtlasV2GroupsGroupIdLiveMigrationsLiveMigrationIdCutoverRoute
   responses: {
     202: {
       description: 'Accepted.',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88733,7 +88683,6 @@ export const deleteApiAtlasV2GroupsGroupIdLogIntegrationsIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88797,7 +88746,6 @@ export const deleteApiAtlasV2GroupsGroupIdMaintenanceWindowRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88837,7 +88785,6 @@ export const patchApiAtlasV2GroupsGroupIdMaintenanceWindowRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88867,7 +88814,6 @@ export const postApiAtlasV2GroupsGroupIdMaintenanceWindowAutoDeferRoute = create
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88901,7 +88847,6 @@ export const postApiAtlasV2GroupsGroupIdMaintenanceWindowDeferRoute = createRout
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88959,7 +88904,6 @@ export const deleteApiAtlasV2GroupsGroupIdManagedSlowMsDisableRoute = createRout
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -88988,7 +88932,6 @@ export const postApiAtlasV2GroupsGroupIdManagedSlowMsEnableRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -89173,7 +89116,6 @@ export const deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdRoute = createRou
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -89477,7 +89419,6 @@ export const deleteApiAtlasV2GroupsGroupIdMcpConfigsMcpConfigIdSecretsSecretIdRo
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -89723,7 +89664,6 @@ export const deleteApiAtlasV2GroupsGroupIdMetricIntegrationsMetricIntegrationIdR
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -89989,7 +89929,6 @@ export const deleteApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute = cre
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -90463,7 +90402,6 @@ export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointSe
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -90684,7 +90622,6 @@ export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointSe
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -91086,7 +91023,6 @@ export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointServerlessInstanceInsta
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -91413,7 +91349,6 @@ export const deleteApiAtlasV2GroupsGroupIdPrivateNetworkSettingsEndpointIdsEndpo
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93164,7 +93099,6 @@ export const postApiAtlasV2GroupsGroupIdPushBasedLogExportRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93195,7 +93129,6 @@ export const deleteApiAtlasV2GroupsGroupIdPushBasedLogExportRoute = createRoute(
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93233,7 +93166,6 @@ export const patchApiAtlasV2GroupsGroupIdPushBasedLogExportRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93508,7 +93440,6 @@ export const postApiAtlasV2GroupsGroupIdServerlessClusterNamePerformanceAdvisorA
     responses: {
       200: {
         description: 'OK',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93743,7 +93674,6 @@ export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdRoute = createR
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -93996,7 +93926,6 @@ export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdAccessListIpAdd
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -94111,7 +94040,6 @@ export const deleteApiAtlasV2GroupsGroupIdServiceAccountsClientIdSecretsSecretId
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -94470,7 +94398,7 @@ export const deleteApiAtlasV2GroupsGroupIdStandbyLinksStandbyLinkIdRoute = creat
     }),
   },
   responses: {
-    204: { description: 'Standby link deleted successfully.', content: {} },
+    204: { description: 'Standby link deleted successfully.' },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     403: ForbiddenResponse,
@@ -94917,7 +94845,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameRoute = createRoute({
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -95292,7 +95219,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnection
     responses: {
       202: {
         description: 'Accepted',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -95614,7 +95540,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameConnectionsConnection
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -95846,7 +95771,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNam
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -95963,7 +95887,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameS
     responses: {
       200: {
         description: 'OK',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96024,7 +95947,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameS
     responses: {
       200: {
         description: 'OK',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96078,7 +96000,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsTenantNameProcessorProcessorNameS
     responses: {
       200: {
         description: 'OK',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96505,7 +96426,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsPrivateLinkConnectionsConnectio
     responses: {
       202: {
         description: 'Accepted',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96649,7 +96569,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRoute = 
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96697,7 +96616,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdAcceptRout
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96738,7 +96656,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsVpcPeeringConnectionsIdRejectRout
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -96857,7 +96774,6 @@ export const postApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsRoute = 
   responses: {
     202: {
       description: 'Accepted',
-      content: {},
       headers: z.object({
         Location: z
           .url()
@@ -96973,7 +96889,6 @@ export const deleteApiAtlasV2GroupsGroupIdStreamsWorkspacePrivateEndpointsEndpoi
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -97142,7 +97057,6 @@ export const deleteApiAtlasV2GroupsGroupIdTeamsTeamIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -97684,7 +97598,6 @@ export const deleteApiAtlasV2GroupsGroupIdUsersUserIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -98083,7 +97996,6 @@ export const deleteApiAtlasV2OrgsOrgIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -98588,7 +98500,6 @@ export const deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -98906,7 +98817,6 @@ export const deleteApiAtlasV2OrgsOrgIdApiKeysApiUserIdAccessListIpAddressRoute =
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -99650,7 +99560,6 @@ export const deleteApiAtlasV2OrgsOrgIdInvitesInvitationIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -100367,7 +100276,6 @@ export const deleteApiAtlasV2OrgsOrgIdLiveMigrationsLinkTokensRoute = createRout
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -100591,7 +100499,6 @@ export const deleteApiAtlasV2OrgsOrgIdLogIntegrationsLogIntegrationIdRoute = cre
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -100885,7 +100792,6 @@ export const deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -101187,7 +101093,6 @@ export const deleteApiAtlasV2OrgsOrgIdMcpConfigsMcpConfigIdSecretsSecretIdRoute 
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -101430,7 +101335,6 @@ export const deleteApiAtlasV2OrgsOrgIdResourcePoliciesResourcePolicyIdRoute = cr
   responses: {
     200: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -101663,7 +101567,7 @@ export const deleteApiAtlasV2OrgsOrgIdSandboxConfigSandboxConfigIdRoute = create
     params: z.object({ orgId: OrgIdParamsSchema, sandboxConfigId: SandboxConfigIdParamsSchema }),
   },
   responses: {
-    204: { description: 'No Content', content: {} },
+    204: { description: 'No Content' },
     401: UnauthorizedResponse,
     403: ForbiddenResponse,
     404: NotFoundResponse,
@@ -101868,7 +101772,6 @@ export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdRoute = createRoute
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -102121,7 +102024,6 @@ export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdAccessListIpAddress
     responses: {
       204: {
         description: 'No Content',
-        content: {},
         headers: z.object({
           'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
           'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -102290,7 +102192,6 @@ export const deleteApiAtlasV2OrgsOrgIdServiceAccountsClientIdSecretsSecretIdRout
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -102529,7 +102430,6 @@ export const deleteApiAtlasV2OrgsOrgIdTeamsTeamIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -102830,7 +102730,6 @@ export const deleteApiAtlasV2OrgsOrgIdTeamsTeamIdUsersUserIdRoute = createRoute(
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -103245,7 +103144,6 @@ export const deleteApiAtlasV2OrgsOrgIdUsersUserIdRoute = createRoute({
   responses: {
     204: {
       description: 'No Content',
-      content: {},
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,

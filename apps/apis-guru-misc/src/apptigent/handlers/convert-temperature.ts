@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConvertTemperatureRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConvertTemperatureRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const convertTemperatureHandler = app.openapi(postConvertTemperatureRoute, (c) => {
+export const postConvertTemperatureRouteHandler: RouteHandler<
+  typeof postConvertTemperatureRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

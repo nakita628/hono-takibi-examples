@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOfficeHoursSchedulesIdRoute,
   deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
   getOfficeHoursSchedulesIdRoute,
@@ -12,36 +12,62 @@ import {
   putOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRouteHandler: RouteHandler<
+  typeof getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const officeHoursSchedulesHandler = app
-  .openapi(getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOfficeHoursSchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOfficeHoursSchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOfficeHoursSchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOfficeHoursSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOfficeHoursSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRouteHandler: RouteHandler<
+  typeof putOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRouteHandler: RouteHandler<
+  typeof deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRouteHandler: RouteHandler<
+  typeof getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRouteHandler: RouteHandler<
+  typeof postOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOfficeHoursSchedulesIdRouteHandler: RouteHandler<
+  typeof getOfficeHoursSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOfficeHoursSchedulesIdRouteHandler: RouteHandler<
+  typeof putOfficeHoursSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOfficeHoursSchedulesIdRouteHandler: RouteHandler<
+  typeof deleteOfficeHoursSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOfficeHoursSchedulesRouteHandler: RouteHandler<
+  typeof getOfficeHoursSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOfficeHoursSchedulesRouteHandler: RouteHandler<
+  typeof postOfficeHoursSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

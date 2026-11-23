@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIntervalsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIntervalsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const intervalsHandler = app.openapi(getIntervalsRoute, (c) => {
+export const getIntervalsRouteHandler: RouteHandler<typeof getIntervalsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

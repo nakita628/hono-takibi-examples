@@ -1,43 +1,62 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  abortHandler,
-  adminHandler,
-  balanceinquiryHandler,
-  cardacquisitionHandler,
-  diagnosisHandler,
-  displayHandler,
-  enableserviceHandler,
-  gettotalsHandler,
-  inputHandler,
-  loginHandler,
-  logoutHandler,
-  paymentHandler,
-  printHandler,
-  reconciliationHandler,
-  reversalHandler,
-  storedvalueHandler,
-  transactionstatusHandler,
+  postAbortRoute,
+  postAdminRoute,
+  postBalanceinquiryRoute,
+  postCardacquisitionRoute,
+  postDiagnosisRoute,
+  postDisplayRoute,
+  postEnableserviceRoute,
+  postGettotalsRoute,
+  postInputRoute,
+  postLoginRoute,
+  postLogoutRoute,
+  postPaymentRoute,
+  postPrintRoute,
+  postReconciliationRoute,
+  postReversalRoute,
+  postStoredvalueRoute,
+  postTransactionstatusRoute,
+} from './routes'
+import {
+  postAbortRouteHandler,
+  postAdminRouteHandler,
+  postBalanceinquiryRouteHandler,
+  postCardacquisitionRouteHandler,
+  postDiagnosisRouteHandler,
+  postDisplayRouteHandler,
+  postEnableserviceRouteHandler,
+  postGettotalsRouteHandler,
+  postInputRouteHandler,
+  postLoginRouteHandler,
+  postLogoutRouteHandler,
+  postPaymentRouteHandler,
+  postPrintRouteHandler,
+  postReconciliationRouteHandler,
+  postReversalRouteHandler,
+  postStoredvalueRouteHandler,
+  postTransactionstatusRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', loginHandler)
-  .route('/', logoutHandler)
-  .route('/', enableserviceHandler)
-  .route('/', adminHandler)
-  .route('/', paymentHandler)
-  .route('/', cardacquisitionHandler)
-  .route('/', storedvalueHandler)
-  .route('/', reversalHandler)
-  .route('/', reconciliationHandler)
-  .route('/', gettotalsHandler)
-  .route('/', balanceinquiryHandler)
-  .route('/', transactionstatusHandler)
-  .route('/', abortHandler)
-  .route('/', diagnosisHandler)
-  .route('/', displayHandler)
-  .route('/', inputHandler)
-  .route('/', printHandler)
+  .openapi(postLoginRoute, postLoginRouteHandler)
+  .openapi(postLogoutRoute, postLogoutRouteHandler)
+  .openapi(postEnableserviceRoute, postEnableserviceRouteHandler)
+  .openapi(postAdminRoute, postAdminRouteHandler)
+  .openapi(postPaymentRoute, postPaymentRouteHandler)
+  .openapi(postCardacquisitionRoute, postCardacquisitionRouteHandler)
+  .openapi(postStoredvalueRoute, postStoredvalueRouteHandler)
+  .openapi(postReversalRoute, postReversalRouteHandler)
+  .openapi(postReconciliationRoute, postReconciliationRouteHandler)
+  .openapi(postGettotalsRoute, postGettotalsRouteHandler)
+  .openapi(postBalanceinquiryRoute, postBalanceinquiryRouteHandler)
+  .openapi(postTransactionstatusRoute, postTransactionstatusRouteHandler)
+  .openapi(postAbortRoute, postAbortRouteHandler)
+  .openapi(postDiagnosisRoute, postDiagnosisRouteHandler)
+  .openapi(postDisplayRoute, postDisplayRouteHandler)
+  .openapi(postInputRoute, postInputRouteHandler)
+  .openapi(postPrintRoute, postPrintRouteHandler)
 
 export default app

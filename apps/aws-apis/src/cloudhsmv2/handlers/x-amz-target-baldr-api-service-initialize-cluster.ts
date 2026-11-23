@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetBaldrApiServiceInitializeClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetBaldrApiServiceInitializeClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetBaldrApiServiceInitializeClusterHandler = app.openapi(
-  postXAmzTargetBaldrApiServiceInitializeClusterRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetBaldrApiServiceInitializeClusterRouteHandler: RouteHandler<
+  typeof postXAmzTargetBaldrApiServiceInitializeClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

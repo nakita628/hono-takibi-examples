@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/BalancePlatformAcsNotification-v1.json',
   output: './src/BalancePlatformAcsNotification-v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/BalancePlatformAcsNotification-v1/types.ts' },
   client: { output: './src/BalancePlatformAcsNotification-v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/BalancePlatformAcsNotification-v1/rpc.ts', parseResponse: true },

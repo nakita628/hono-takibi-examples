@@ -1,23 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLettersLtrIdRoute,
   getLettersLtrIdRoute,
   getLettersRoute,
   postLettersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLettersLtrIdRouteHandler: RouteHandler<typeof getLettersLtrIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lettersHandler = app
-  .openapi(getLettersLtrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLettersLtrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLettersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLettersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteLettersLtrIdRouteHandler: RouteHandler<typeof deleteLettersLtrIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLettersRouteHandler: RouteHandler<typeof getLettersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLettersRouteHandler: RouteHandler<typeof postLettersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEmailAddressesEmailAddressIdRoute,
   getEmailAddressesEmailAddressIdRoute,
   patchEmailAddressesEmailAddressIdRoute,
@@ -8,24 +8,38 @@ import {
   postEmailAddressesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEmailAddressesRouteHandler: RouteHandler<typeof postEmailAddressesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const emailAddressesHandler = app
-  .openapi(postEmailAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailAddressesEmailAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmailAddressesEmailAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmailAddressesEmailAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailAddressesEmailAddressIdPrepareVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailAddressesEmailAddressIdAttemptVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmailAddressesEmailAddressIdRouteHandler: RouteHandler<
+  typeof getEmailAddressesEmailAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmailAddressesEmailAddressIdRouteHandler: RouteHandler<
+  typeof deleteEmailAddressesEmailAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmailAddressesEmailAddressIdRouteHandler: RouteHandler<
+  typeof patchEmailAddressesEmailAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailAddressesEmailAddressIdPrepareVerificationRouteHandler: RouteHandler<
+  typeof postEmailAddressesEmailAddressIdPrepareVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailAddressesEmailAddressIdAttemptVerificationRouteHandler: RouteHandler<
+  typeof postEmailAddressesEmailAddressIdAttemptVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

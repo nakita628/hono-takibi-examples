@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLiveStreamsLiveStreamIdRoute,
   deleteLiveStreamsLiveStreamIdThumbnailRoute,
   getLiveStreamsLiveStreamIdRoute,
@@ -9,27 +9,40 @@ import {
   postLiveStreamsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLiveStreamsRouteHandler: RouteHandler<typeof getLiveStreamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const liveStreamsHandler = app
-  .openapi(getLiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLiveStreamsLiveStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLiveStreamsLiveStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLiveStreamsLiveStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLiveStreamsLiveStreamIdThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveStreamsLiveStreamIdThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLiveStreamsRouteHandler: RouteHandler<typeof postLiveStreamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLiveStreamsLiveStreamIdRouteHandler: RouteHandler<
+  typeof deleteLiveStreamsLiveStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLiveStreamsLiveStreamIdRouteHandler: RouteHandler<
+  typeof getLiveStreamsLiveStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLiveStreamsLiveStreamIdRouteHandler: RouteHandler<
+  typeof patchLiveStreamsLiveStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLiveStreamsLiveStreamIdThumbnailRouteHandler: RouteHandler<
+  typeof deleteLiveStreamsLiveStreamIdThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLiveStreamsLiveStreamIdThumbnailRouteHandler: RouteHandler<
+  typeof postLiveStreamsLiveStreamIdThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

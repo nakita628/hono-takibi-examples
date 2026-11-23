@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCoursesContentIdActivationsRoute,
   getCoursesContentIdPermissionsRoute,
   getCoursesContentIdRoute,
@@ -11,33 +11,54 @@ import {
   putCoursesContentIdMetadataTopicRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCoursesRouteHandler: RouteHandler<typeof getCoursesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const coursesHandler = app
-  .openapi(getCoursesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoursesContentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoursesContentIdActivationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCoursesContentIdMetadataCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCoursesContentIdMetadataLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCoursesContentIdMetadataTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCoursesContentIdMetadataTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCoursesContentIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCoursesRootContentIdPermissionsUserEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCoursesContentIdRouteHandler: RouteHandler<
+  typeof getCoursesContentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoursesContentIdActivationsRouteHandler: RouteHandler<
+  typeof getCoursesContentIdActivationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCoursesContentIdMetadataCategoryRouteHandler: RouteHandler<
+  typeof putCoursesContentIdMetadataCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCoursesContentIdMetadataLevelRouteHandler: RouteHandler<
+  typeof putCoursesContentIdMetadataLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCoursesContentIdMetadataTagsRouteHandler: RouteHandler<
+  typeof putCoursesContentIdMetadataTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCoursesContentIdMetadataTopicRouteHandler: RouteHandler<
+  typeof putCoursesContentIdMetadataTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCoursesContentIdPermissionsRouteHandler: RouteHandler<
+  typeof getCoursesContentIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCoursesRootContentIdPermissionsUserEmailRouteHandler: RouteHandler<
+  typeof postCoursesRootContentIdPermissionsUserEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

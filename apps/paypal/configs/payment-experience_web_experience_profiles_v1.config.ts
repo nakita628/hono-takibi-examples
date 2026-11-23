@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/payment-experience_web_experience_profiles_v1.json',
   output: './src/payment-experience_web_experience_profiles_v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/payment-experience_web_experience_profiles_v1/types.ts' },
   client: { output: './src/payment-experience_web_experience_profiles_v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/payment-experience_web_experience_profiles_v1/rpc.ts', parseResponse: true },

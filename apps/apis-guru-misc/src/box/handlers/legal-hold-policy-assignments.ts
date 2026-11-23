@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRoute,
   getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFilesOnHoldRoute,
   getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFileVersionsOnHoldRoute,
@@ -8,24 +8,38 @@ import {
   postLegalHoldPolicyAssignmentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLegalHoldPolicyAssignmentsRouteHandler: RouteHandler<
+  typeof getLegalHoldPolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const legalHoldPolicyAssignmentsHandler = app
-  .openapi(getLegalHoldPolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLegalHoldPolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFileVersionsOnHoldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFilesOnHoldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLegalHoldPolicyAssignmentsRouteHandler: RouteHandler<
+  typeof postLegalHoldPolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFileVersionsOnHoldRouteHandler: RouteHandler<
+  typeof getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFileVersionsOnHoldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFilesOnHoldRouteHandler: RouteHandler<
+  typeof getLegalHoldPolicyAssignmentsLegalHoldPolicyAssignmentIdFilesOnHoldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

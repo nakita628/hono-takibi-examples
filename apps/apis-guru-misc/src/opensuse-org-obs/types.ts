@@ -912,6 +912,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { project_name: string; repository_name: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { project_name: string; repository_name: string } }
             output: {
               code?: string | undefined
               data?: string[] | undefined
@@ -1310,6 +1316,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/build/:project_name/:repository_name/:architecture_name/:package_name/_log': {
       $get:
+        | {
+            input: {
+              param: {
+                project_name: string
+                repository_name: string
+                architecture_name: string
+                package_name: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               param: {
@@ -5060,7 +5079,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/worker/:architecture_name::worker_id': {
+    '/worker/:architecture_name:{worker_id}': {
       $get:
         | {
             input: { param: { architecture_name: string; worker_id: string } }

@@ -1,11 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { configurationHandler, intentHandler, queuesHandler } from './handlers'
+import {
+  getConfigurationRoute,
+  postIntentAddMediaRoute,
+  postIntentPlayMediaRoute,
+  postIntentUpdateMediaAffinityRoute,
+  postQueuesPlayMediaRoute,
+  postQueuesUpdateActivityRoute,
+} from './routes'
+import {
+  getConfigurationRouteHandler,
+  postIntentAddMediaRouteHandler,
+  postIntentPlayMediaRouteHandler,
+  postIntentUpdateMediaAffinityRouteHandler,
+  postQueuesPlayMediaRouteHandler,
+  postQueuesUpdateActivityRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', configurationHandler)
-  .route('/', intentHandler)
-  .route('/', queuesHandler)
+  .openapi(getConfigurationRoute, getConfigurationRouteHandler)
+  .openapi(postIntentAddMediaRoute, postIntentAddMediaRouteHandler)
+  .openapi(postIntentPlayMediaRoute, postIntentPlayMediaRouteHandler)
+  .openapi(postIntentUpdateMediaAffinityRoute, postIntentUpdateMediaAffinityRouteHandler)
+  .openapi(postQueuesPlayMediaRoute, postQueuesPlayMediaRouteHandler)
+  .openapi(postQueuesUpdateActivityRoute, postQueuesUpdateActivityRouteHandler)
 
 export default app

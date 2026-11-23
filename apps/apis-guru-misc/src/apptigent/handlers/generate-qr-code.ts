@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGenerateQRCodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGenerateQRCodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const generateQrCodeHandler = app.openapi(postGenerateQRCodeRoute, (c) => {
+export const postGenerateQRCodeRouteHandler: RouteHandler<typeof postGenerateQRCodeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

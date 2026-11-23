@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postApplePaySessionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postApplePaySessionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const applePayHandler = app.openapi(postApplePaySessionsRoute, (c) => {
+export const postApplePaySessionsRouteHandler: RouteHandler<
+  typeof postApplePaySessionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

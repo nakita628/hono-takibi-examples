@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAccessPreviewAnalyzerArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAccessPreviewAnalyzerArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const accessPreviewAnalyzerArnHandler = app.openapi(
-  getAccessPreviewAnalyzerArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAccessPreviewAnalyzerArnRouteHandler: RouteHandler<
+  typeof getAccessPreviewAnalyzerArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

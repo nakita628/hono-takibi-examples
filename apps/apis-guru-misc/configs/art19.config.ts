@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/art19.com/1.0.0/openapi.yaml',
   output: './src/art19/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/art19/types.ts' },
   client: { output: './src/art19/client.ts', baseUrl: '/' },
   rpc: { output: './src/art19/rpc.ts', parseResponse: true },

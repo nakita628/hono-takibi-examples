@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/listennotes.com/2.0/openapi.yaml',
   output: './src/listennotes/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/listennotes/types.ts' },
   client: { output: './src/listennotes/client.ts', baseUrl: '/' },
   rpc: { output: './src/listennotes/rpc.ts', parseResponse: true },

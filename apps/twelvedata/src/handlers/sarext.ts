@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSarextRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSarextRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sarextHandler = app.openapi(getSarextRoute, (c) => {
+export const getSarextRouteHandler: RouteHandler<typeof getSarextRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

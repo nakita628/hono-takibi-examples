@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerServiceV20141113GetTaskProtectionHandler = app.openapi(
-  postXAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

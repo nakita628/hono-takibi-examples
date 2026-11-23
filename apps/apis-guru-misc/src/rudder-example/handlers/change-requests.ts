@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChangeRequestsChangeRequestIdRoute,
   getChangeRequestsChangeRequestIdRoute,
   postChangeRequestsChangeRequestIdAcceptRoute,
   postChangeRequestsChangeRequestIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteChangeRequestsChangeRequestIdRouteHandler: RouteHandler<
+  typeof deleteChangeRequestsChangeRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const changeRequestsHandler = app
-  .openapi(deleteChangeRequestsChangeRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChangeRequestsChangeRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChangeRequestsChangeRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChangeRequestsChangeRequestIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getChangeRequestsChangeRequestIdRouteHandler: RouteHandler<
+  typeof getChangeRequestsChangeRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChangeRequestsChangeRequestIdRouteHandler: RouteHandler<
+  typeof postChangeRequestsChangeRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChangeRequestsChangeRequestIdAcceptRouteHandler: RouteHandler<
+  typeof postChangeRequestsChangeRequestIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

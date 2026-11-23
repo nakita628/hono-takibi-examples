@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsec2InstanceConnectServiceSendSerialConsoleSshPublicKeyHandler =
-  app.openapi(postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

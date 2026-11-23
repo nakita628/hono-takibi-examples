@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectApplicationsIdRoute,
   deleteConnectClientSecretsIdRoute,
   getConnectApplicationsIdClientSecretsRoute,
@@ -10,30 +10,50 @@ import {
   putConnectApplicationsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConnectApplicationsRouteHandler: RouteHandler<
+  typeof getConnectApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectHandler = app
-  .openapi(getConnectApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectApplicationsIdClientSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectApplicationsIdClientSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectClientSecretsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConnectApplicationsRouteHandler: RouteHandler<
+  typeof postConnectApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectApplicationsIdRouteHandler: RouteHandler<
+  typeof getConnectApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectApplicationsIdRouteHandler: RouteHandler<
+  typeof putConnectApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectApplicationsIdRouteHandler: RouteHandler<
+  typeof deleteConnectApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectApplicationsIdClientSecretsRouteHandler: RouteHandler<
+  typeof getConnectApplicationsIdClientSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectApplicationsIdClientSecretsRouteHandler: RouteHandler<
+  typeof postConnectApplicationsIdClientSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectClientSecretsIdRouteHandler: RouteHandler<
+  typeof deleteConnectClientSecretsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEdgeIssueTokenRoute, postEdgeValidateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEdgeIssueTokenRoute, postEdgeValidateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEdgeValidateRouteHandler: RouteHandler<typeof postEdgeValidateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const edgeHandler = app
-  .openapi(postEdgeValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeIssueTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEdgeIssueTokenRouteHandler: RouteHandler<typeof postEdgeIssueTokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

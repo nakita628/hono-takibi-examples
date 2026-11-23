@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMailboxProvidersStatsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMailboxProvidersStatsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mailboxProvidersHandler = app.openapi(getMailboxProvidersStatsRoute, (c) => {
+export const getMailboxProvidersStatsRouteHandler: RouteHandler<
+  typeof getMailboxProvidersStatsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

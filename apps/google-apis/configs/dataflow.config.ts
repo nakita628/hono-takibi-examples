@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/dataflow/v1b3/openapi.yaml',
   output: './src/dataflow/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dataflow/types.ts' },
   client: { output: './src/dataflow/client.ts', baseUrl: '/' },
   rpc: { output: './src/dataflow/rpc.ts', parseResponse: true },

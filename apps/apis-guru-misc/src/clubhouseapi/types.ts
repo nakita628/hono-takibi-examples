@@ -20,7 +20,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/check_waitlist_status': {
-      $post: { input: {}; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
     }
   } & {
     '/complete_phone_number_auth': {
@@ -37,7 +39,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 400
       }
     }
   } & {
@@ -46,7 +48,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 401
       }
     }
   } & {
@@ -81,7 +83,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 400
       }
     }
   } & {
@@ -231,7 +233,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 400
       }
     }
   } & {
@@ -240,17 +242,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 400
       }
     }
   } & {
     '/join_channel': {
-      $post: {
-        input: { json: { [x: string]: unknown } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/leave_channel': {
@@ -263,12 +272,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/me': {
-      $post: {
-        input: { json: { [x: string]: unknown } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/record_action_trails': {
@@ -281,12 +297,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/refresh_token': {
-      $post: {
-        input: { json: { [x: string]: unknown } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/resend_phone_number_auth': {
@@ -330,17 +353,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { [x: string]: unknown } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 400
       }
     }
   } & {
     '/update_username': {
-      $post: {
-        input: { json: { [x: string]: unknown } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   },
   '/'

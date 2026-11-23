@@ -3262,26 +3262,26 @@ export async function getCommunicationsCallRecordsCount(
 
 export async function getCommunicationsCallRecordsMicrosoftGraphCallRecordsGetDirectRoutingCallsFromDateTimeFromDateTimeToDateTimeToDateTime(
   args: InferRequestType<
-    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)']['$get']
+    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.communications.callRecords[
-      'microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)'
+      'microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})'
     ].$get(args, options),
   )
 }
 
 export async function getCommunicationsCallRecordsMicrosoftGraphCallRecordsGetPstnCallsFromDateTimeFromDateTimeToDateTimeToDateTime(
   args: InferRequestType<
-    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getPstnCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)']['$get']
+    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getPstnCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.communications.callRecords[
-      'microsoft.graph.callRecords.getPstnCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)'
+      'microsoft.graph.callRecords.getPstnCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})'
     ].$get(args, options),
   )
 }
@@ -8399,13 +8399,13 @@ export async function getDeviceManagementAuditEventsCount(
 
 export async function getDeviceManagementAuditEventsMicrosoftGraphGetAuditActivityTypesCategoryCategory(
   args: InferRequestType<
-    (typeof client.deviceManagement.auditEvents)["microsoft.graph.getAuditActivityTypes(category=':category')"]['$get']
+    (typeof client.deviceManagement.auditEvents)["microsoft.graph.getAuditActivityTypes(category='{category}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.deviceManagement.auditEvents[
-      "microsoft.graph.getAuditActivityTypes(category=':category')"
+      "microsoft.graph.getAuditActivityTypes(category='{category}')"
     ].$get(args, options),
   )
 }
@@ -9901,13 +9901,13 @@ export async function postDeviceManagementDeviceConfigurationsDeviceConfiguratio
 
 export async function getDeviceManagementDeviceConfigurationsDeviceConfigurationIdMicrosoftGraphGetOmaSettingPlainTextValueSecretReferenceValueIdSecretReferenceValueId(
   args: InferRequestType<
-    (typeof client.deviceManagement.deviceConfigurations)[':deviceConfiguration-id']["microsoft.graph.getOmaSettingPlainTextValue(secretReferenceValueId=':secretReferenceValueId')"]['$get']
+    (typeof client.deviceManagement.deviceConfigurations)[':deviceConfiguration-id']["microsoft.graph.getOmaSettingPlainTextValue(secretReferenceValueId='{secretReferenceValueId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.deviceManagement.deviceConfigurations[':deviceConfiguration-id'][
-      "microsoft.graph.getOmaSettingPlainTextValue(secretReferenceValueId=':secretReferenceValueId')"
+      "microsoft.graph.getOmaSettingPlainTextValue(secretReferenceValueId='{secretReferenceValueId}')"
     ].$get(args, options),
   )
 }
@@ -11008,12 +11008,12 @@ export async function getDeviceManagementManagedDevicesManagedDeviceIdUsers(
 
 export async function getDeviceManagementMicrosoftGraphGetEffectivePermissionsScopeScope(
   args: InferRequestType<
-    (typeof client.deviceManagement)["microsoft.graph.getEffectivePermissions(scope=':scope')"]['$get']
+    (typeof client.deviceManagement)["microsoft.graph.getEffectivePermissions(scope='{scope}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.deviceManagement["microsoft.graph.getEffectivePermissions(scope=':scope')"].$get(
+    client.deviceManagement["microsoft.graph.getEffectivePermissions(scope='{scope}')"].$get(
       args,
       options,
     ),
@@ -11022,13 +11022,13 @@ export async function getDeviceManagementMicrosoftGraphGetEffectivePermissionsSc
 
 export async function getDeviceManagementMicrosoftGraphVerifyWindowsEnrollmentAutoDiscoveryDomainNameDomainName(
   args: InferRequestType<
-    (typeof client.deviceManagement)["microsoft.graph.verifyWindowsEnrollmentAutoDiscovery(domainName=':domainName')"]['$get']
+    (typeof client.deviceManagement)["microsoft.graph.verifyWindowsEnrollmentAutoDiscovery(domainName='{domainName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.deviceManagement[
-      "microsoft.graph.verifyWindowsEnrollmentAutoDiscovery(domainName=':domainName')"
+      "microsoft.graph.verifyWindowsEnrollmentAutoDiscovery(domainName='{domainName}')"
     ].$get(args, options),
   )
 }
@@ -16290,15 +16290,14 @@ export async function getDrivesDriveIdItemsDriveItemIdMicrosoftGraphDelta(
 
 export async function getDrivesDriveIdItemsDriveItemIdMicrosoftGraphDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.delta(token=':token')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id']["microsoft.graph.delta(token=':token')"].$get(
-      args,
-      options,
-    ),
+    client.drives[':drive-id'].items[':driveItem-id'][
+      "microsoft.graph.delta(token='{token}')"
+    ].$get(args, options),
   )
 }
 
@@ -16331,13 +16330,13 @@ export async function getDrivesDriveIdItemsDriveItemIdMicrosoftGraphGetActivitie
 
 export async function getDrivesDriveIdItemsDriveItemIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -16386,12 +16385,12 @@ export async function postDrivesDriveIdItemsDriveItemIdMicrosoftGraphRestore(
 
 export async function getDrivesDriveIdItemsDriveItemIdMicrosoftGraphSearchQQ(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.search(q=':q')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["microsoft.graph.search(q='{q}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id']["microsoft.graph.search(q=':q')"].$get(
+    client.drives[':drive-id'].items[':driveItem-id']["microsoft.graph.search(q='{q}')"].$get(
       args,
       options,
     ),
@@ -21857,26 +21856,26 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookMicrosoftGraphRef
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookMicrosoftGraphSessionInfoResourceKeyKey(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["microsoft.graph.sessionInfoResource(key=':key')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["microsoft.graph.sessionInfoResource(key='{key}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook[
-      "microsoft.graph.sessionInfoResource(key=':key')"
+      "microsoft.graph.sessionInfoResource(key='{key}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookMicrosoftGraphTableRowOperationResultKeyKey(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["microsoft.graph.tableRowOperationResult(key=':key')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["microsoft.graph.tableRowOperationResult(key='{key}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook[
-      "microsoft.graph.tableRowOperationResult(key=':key')"
+      "microsoft.graph.tableRowOperationResult(key='{key}')"
     ].$get(args, options),
   )
 }
@@ -22144,13 +22143,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesMicrosoftGra
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'microsoft.graph.itemAt(index=:index)'
+      'microsoft.graph.itemAt(index={index})'
     ].$get(args, options),
   )
 }
@@ -22264,13 +22263,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'microsoft.graph.itemAt(index=:index)'
+      'microsoft.graph.itemAt(index={index})'
     ].$get(args, options),
   )
 }
@@ -22719,13 +22718,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
-      'microsoft.graph.itemAt(index=:index)'
+      'microsoft.graph.itemAt(index={index})'
     ].$get(args, options),
   )
 }
@@ -23028,27 +23027,27 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsMicrosoftGraphItemNameName(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["microsoft.graph.item(name=':name')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["microsoft.graph.item(name='{name}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["microsoft.graph.item(name=':name')"].$get(args, options),
+    ].charts["microsoft.graph.item(name='{name}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['microsoft.graph.itemAt(index=:index)'].$get(args, options),
+    ].charts['microsoft.graph.itemAt(index={index})'].$get(args, options),
   )
 }
 
@@ -25332,27 +25331,27 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdMicrosoftGraphImageWidthWidth(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['microsoft.graph.image(width=:width)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['microsoft.graph.image(width={width})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id']['microsoft.graph.image(width=:width)'].$get(args, options),
+    ].charts[':workbookChart-id']['microsoft.graph.image(width={width})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdMicrosoftGraphImageWidthWidthHeightHeight(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['microsoft.graph.image(width=:width,height=:height)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['microsoft.graph.image(width={width},height={height})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id']['microsoft.graph.image(width=:width,height=:height)'].$get(
+    ].charts[':workbookChart-id']['microsoft.graph.image(width={width},height={height})'].$get(
       args,
       options,
     ),
@@ -25361,7 +25360,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdMicrosoftGraphImageWidthWidthHeightHeightFittingModeFittingMode(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']["microsoft.graph.image(width=:width,height=:height,fittingMode=':fittingMode')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']["microsoft.graph.image(width={width},height={height},fittingMode='{fittingMode}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -25369,7 +25368,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'][
-      "microsoft.graph.image(width=:width,height=:height,fittingMode=':fittingMode')"
+      "microsoft.graph.image(width={width},height={height},fittingMode='{fittingMode}')"
     ].$get(args, options),
   )
 }
@@ -25454,14 +25453,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['microsoft.graph.itemAt(index=:index)'].$get(
+    ].charts[':workbookChart-id'].series['microsoft.graph.itemAt(index={index})'].$get(
       args,
       options,
     ),
@@ -25740,7 +25739,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesWorkbookChartSeriesIdPointsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -25748,7 +25747,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'].series[':workbookChartSeries-id'].points[
-      'microsoft.graph.itemAt(index=:index)'
+      'microsoft.graph.itemAt(index={index})'
     ].$get(args, options),
   )
 }
@@ -26118,13 +26117,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdMicrosoftGraphCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['microsoft.graph.cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['microsoft.graph.cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'microsoft.graph.cell(row=:row,column=:column)'
+      'microsoft.graph.cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -26144,13 +26143,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdMicrosoftGraphRangeAddressAddress(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["microsoft.graph.range(address=':address')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["microsoft.graph.range(address='{address}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "microsoft.graph.range(address=':address')"
+      "microsoft.graph.range(address='{address}')"
     ].$get(args, options),
   )
 }
@@ -26170,13 +26169,13 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdMicrosoftGraphUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['microsoft.graph.usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['microsoft.graph.usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'microsoft.graph.usedRange(valuesOnly=:valuesOnly)'
+      'microsoft.graph.usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -26560,14 +26559,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['microsoft.graph.itemAt(index=:index)'].$get(args, options),
+    ].tables['microsoft.graph.itemAt(index={index})'].$get(args, options),
   )
 }
 
@@ -26677,14 +26676,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['microsoft.graph.itemAt(index=:index)'].$get(
+    ].tables[':workbookTable-id'].columns['microsoft.graph.itemAt(index={index})'].$get(
       args,
       options,
     ),
@@ -27167,14 +27166,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsMicrosoftGraphItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['microsoft.graph.itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['microsoft.graph.itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].rows['microsoft.graph.itemAt(index=:index)'].$get(args, options),
+    ].tables[':workbookTable-id'].rows['microsoft.graph.itemAt(index={index})'].$get(args, options),
   )
 }
 
@@ -28071,13 +28070,13 @@ export async function getDrivesDriveIdListItemsListItemIdMicrosoftGraphGetActivi
 
 export async function getDrivesDriveIdListItemsListItemIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['list']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.drives)[':drive-id']['list']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].list.items[':listItem-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -28353,12 +28352,12 @@ export async function getDrivesDriveIdMicrosoftGraphRecent(
 
 export async function getDrivesDriveIdMicrosoftGraphSearchQQ(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']["microsoft.graph.search(q=':q')"]['$get']
+    (typeof client.drives)[':drive-id']["microsoft.graph.search(q='{q}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id']["microsoft.graph.search(q=':q')"].$get(args, options),
+    client.drives[':drive-id']["microsoft.graph.search(q='{q}')"].$get(args, options),
   )
 }
 
@@ -34395,13 +34394,13 @@ export async function patchGroupsGroupIdCalendarEventsEventIdSingleValueExtended
 
 export async function getGroupsGroupIdCalendarMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['calendar']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.groups)[':group-id']['calendar']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].calendar[
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -38467,13 +38466,13 @@ export async function postGroupsGroupIdOnenoteNotebooksMicrosoftGraphGetNotebook
 
 export async function getGroupsGroupIdOnenoteNotebooksMicrosoftGraphGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.groups)[':group-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].onenote.notebooks[
-      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -43060,13 +43059,13 @@ export async function getGroupsGroupIdSitesSiteIdListsListIdItemsListItemIdMicro
 
 export async function getGroupsGroupIdSitesSiteIdListsListIdItemsListItemIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'].lists[':list-id'].items[':listItem-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -43386,38 +43385,38 @@ export async function getGroupsGroupIdSitesSiteIdMicrosoftGraphGetActivitiesByIn
 
 export async function getGroupsGroupIdSitesSiteIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdMicrosoftGraphGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'][
-      "microsoft.graph.getApplicableContentTypesForList(listId=':listId')"
+      "microsoft.graph.getApplicableContentTypesForList(listId='{listId}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdMicrosoftGraphGetByPathPathPath(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getByPath(path=':path')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["microsoft.graph.getByPath(path='{path}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["microsoft.graph.getByPath(path=':path')"].$get(
+    client.groups[':group-id'].sites[':site-id']["microsoft.graph.getByPath(path='{path}')"].$get(
       args,
       options,
     ),
@@ -43505,13 +43504,13 @@ export async function postGroupsGroupIdSitesSiteIdOnenoteNotebooksMicrosoftGraph
 
 export async function getGroupsGroupIdSitesSiteIdOnenoteNotebooksMicrosoftGraphGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'].onenote.notebooks[
-      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -57482,13 +57481,13 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsCount(
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.definitions[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -57574,14 +57573,14 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances["microsoft.graph.filterByCurrentUser(on=':on')"].$get(args, options),
+    ].instances["microsoft.graph.filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -57752,7 +57751,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdDecisionsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -57760,7 +57759,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
     ].instances[':accessReviewInstance-id'].decisions[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -57936,7 +57935,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -57944,7 +57943,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
     ].instances[':accessReviewInstance-id'].stages[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -58038,7 +58037,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesAccessReviewStageIdDecisionsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -58046,7 +58045,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
     ].instances[':accessReviewInstance-id'].stages[':accessReviewStage-id'].decisions[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -58338,13 +58337,13 @@ export async function getIdentityGovernanceAppConsentAppConsentRequestsCount(
 
 export async function getIdentityGovernanceAppConsentAppConsentRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.appConsent.appConsentRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.appConsent.appConsentRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.appConsent.appConsentRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -58432,14 +58431,14 @@ export async function getIdentityGovernanceAppConsentAppConsentRequestsAppConsen
 
 export async function getIdentityGovernanceAppConsentAppConsentRequestsAppConsentRequestIdUserConsentRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.appConsent.appConsentRequests)[':appConsentRequest-id']['userConsentRequests']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.appConsent.appConsentRequests)[':appConsentRequest-id']['userConsentRequests']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.appConsent.appConsentRequests[
       ':appConsentRequest-id'
-    ].userConsentRequests["microsoft.graph.filterByCurrentUser(on=':on')"].$get(args, options),
+    ].userConsentRequests["microsoft.graph.filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -58673,13 +58672,13 @@ export async function getIdentityGovernanceEntitlementManagementAccessPackageAss
 
 export async function getIdentityGovernanceEntitlementManagementAccessPackageAssignmentApprovalsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -58836,13 +58835,13 @@ export async function getIdentityGovernanceEntitlementManagementAccessPackagesCo
 
 export async function getIdentityGovernanceEntitlementManagementAccessPackagesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.accessPackages)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.accessPackages)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.accessPackages[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -59483,13 +59482,13 @@ export async function getIdentityGovernanceEntitlementManagementAssignmentReques
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignmentRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignmentRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignmentRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -59642,26 +59641,26 @@ export async function getIdentityGovernanceEntitlementManagementAssignmentsMicro
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentsMicrosoftGraphAdditionalAccessAccessPackageIdAccessPackageIdIncompatibleAccessPackageIdIncompatibleAccessPackageId(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignments)["microsoft.graph.additionalAccess(accessPackageId=':accessPackageId',incompatibleAccessPackageId=':incompatibleAccessPackageId')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignments)["microsoft.graph.additionalAccess(accessPackageId='{accessPackageId}',incompatibleAccessPackageId='{incompatibleAccessPackageId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignments[
-      "microsoft.graph.additionalAccess(accessPackageId=':accessPackageId',incompatibleAccessPackageId=':incompatibleAccessPackageId')"
+      "microsoft.graph.additionalAccess(accessPackageId='{accessPackageId}',incompatibleAccessPackageId='{incompatibleAccessPackageId}')"
     ].$get(args, options),
   )
 }
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignments)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignments)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignments[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -59870,14 +59869,14 @@ export async function getIdentityGovernanceEntitlementManagementCatalogsAccessPa
 
 export async function getIdentityGovernanceEntitlementManagementCatalogsAccessPackageCatalogIdAccessPackagesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.catalogs)[':accessPackageCatalog-id']['accessPackages']["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.catalogs)[':accessPackageCatalog-id']['accessPackages']["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.catalogs[
       ':accessPackageCatalog-id'
-    ].accessPackages["microsoft.graph.filterByCurrentUser(on=':on')"].$get(args, options),
+    ].accessPackages["microsoft.graph.filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -64704,12 +64703,12 @@ export async function patchMeCalendarEventsEventIdSingleValueExtendedPropertiesS
 
 export async function getMeCalendarMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendar)["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendar)["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me.calendar["microsoft.graph.allowedCalendarSharingRoles(User=':User')"].$get(
+    client.me.calendar["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"].$get(
       args,
       options,
     ),
@@ -66984,13 +66983,13 @@ export async function patchMeCalendarGroupsCalendarGroupIdCalendarsCalendarIdEve
 
 export async function getMeCalendarGroupsCalendarGroupIdCalendarsCalendarIdMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendarGroups)[':calendarGroup-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendarGroups)[':calendarGroup-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.calendarGroups[':calendarGroup-id'].calendars[':calendar-id'][
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -69988,13 +69987,13 @@ export async function patchMeCalendarsCalendarIdEventsEventIdSingleValueExtended
 
 export async function getMeCalendarsCalendarIdMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendars)[':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendars)[':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.calendars[':calendar-id'][
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -79555,12 +79554,12 @@ export async function getMeMicrosoftGraphExportDeviceAndAppManagementData(
 
 export async function getMeMicrosoftGraphExportDeviceAndAppManagementDataSkipSkipTopTop(
   args: InferRequestType<
-    (typeof client.me)['microsoft.graph.exportDeviceAndAppManagementData(skip=:skip,top=:top)']['$get']
+    (typeof client.me)['microsoft.graph.exportDeviceAndAppManagementData(skip={skip},top={top})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me['microsoft.graph.exportDeviceAndAppManagementData(skip=:skip,top=:top)'].$get(
+    client.me['microsoft.graph.exportDeviceAndAppManagementData(skip={skip},top={top})'].$get(
       args,
       options,
     ),
@@ -79635,13 +79634,13 @@ export async function postMeMicrosoftGraphGetMemberObjects(
 
 export async function getMeMicrosoftGraphReminderViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.me)["microsoft.graph.reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"]['$get']
+    (typeof client.me)["microsoft.graph.reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me[
-      "microsoft.graph.reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"
+      "microsoft.graph.reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"
     ].$get(args, options),
   )
 }
@@ -79777,13 +79776,13 @@ export async function postMeOnenoteNotebooksMicrosoftGraphGetNotebookFromWebUrl(
 
 export async function getMeOnenoteNotebooksMicrosoftGraphGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.me.onenote.notebooks)['microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.me.onenote.notebooks)['microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.onenote.notebooks[
-      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -81760,13 +81759,13 @@ export async function getMeOutlookMicrosoftGraphSupportedTimeZones(
 
 export async function getMeOutlookMicrosoftGraphSupportedTimeZonesTimeZoneStandardTimeZoneStandard(
   args: InferRequestType<
-    (typeof client.me.outlook)["microsoft.graph.supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"]['$get']
+    (typeof client.me.outlook)["microsoft.graph.supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.outlook[
-      "microsoft.graph.supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"
+      "microsoft.graph.supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"
     ].$get(args, options),
   )
 }
@@ -88280,23 +88279,23 @@ export async function getReportsMicrosoftGraphDeviceConfigurationUserActivity(
 
 export async function getReportsMicrosoftGraphGetEmailActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailActivityCounts(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getEmailActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetEmailActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88305,23 +88304,23 @@ export async function getReportsMicrosoftGraphGetEmailActivityUserCountsPeriodPe
 
 export async function getReportsMicrosoftGraphGetEmailActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getEmailActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getEmailActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getEmailActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getEmailActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetEmailActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88330,12 +88329,12 @@ export async function getReportsMicrosoftGraphGetEmailActivityUserDetailPeriodPe
 
 export async function getReportsMicrosoftGraphGetEmailAppUsageAppsUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailAppUsageAppsUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailAppUsageAppsUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailAppUsageAppsUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailAppUsageAppsUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88344,12 +88343,12 @@ export async function getReportsMicrosoftGraphGetEmailAppUsageAppsUserCountsPeri
 
 export async function getReportsMicrosoftGraphGetEmailAppUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailAppUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailAppUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailAppUsageUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailAppUsageUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88358,23 +88357,23 @@ export async function getReportsMicrosoftGraphGetEmailAppUsageUserCountsPeriodPe
 
 export async function getReportsMicrosoftGraphGetEmailAppUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getEmailAppUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getEmailAppUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getEmailAppUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getEmailAppUsageUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetEmailAppUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailAppUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailAppUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailAppUsageUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailAppUsageUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88383,12 +88382,12 @@ export async function getReportsMicrosoftGraphGetEmailAppUsageUserDetailPeriodPe
 
 export async function getReportsMicrosoftGraphGetEmailAppUsageVersionsUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getEmailAppUsageVersionsUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getEmailAppUsageVersionsUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getEmailAppUsageVersionsUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getEmailAppUsageVersionsUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88397,25 +88396,25 @@ export async function getReportsMicrosoftGraphGetEmailAppUsageVersionsUserCounts
 
 export async function getReportsMicrosoftGraphGetGroupArchivedPrintJobsGroupIdGroupIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getGroupArchivedPrintJobs(groupId=':groupId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["microsoft.graph.getGroupArchivedPrintJobs(groupId='{groupId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getGroupArchivedPrintJobs(groupId=':groupId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "microsoft.graph.getGroupArchivedPrintJobs(groupId='{groupId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetM365AppPlatformUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getM365AppPlatformUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getM365AppPlatformUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getM365AppPlatformUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getM365AppPlatformUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88424,56 +88423,56 @@ export async function getReportsMicrosoftGraphGetM365AppPlatformUserCountsPeriod
 
 export async function getReportsMicrosoftGraphGetM365AppUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getM365AppUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getM365AppUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getM365AppUserCounts(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getM365AppUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetM365AppUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getM365AppUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getM365AppUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getM365AppUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getM365AppUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetM365AppUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getM365AppUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getM365AppUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getM365AppUserDetail(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getM365AppUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetMailboxUsageDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getMailboxUsageDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getMailboxUsageDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getMailboxUsageDetail(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getMailboxUsageDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetMailboxUsageMailboxCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getMailboxUsageMailboxCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getMailboxUsageMailboxCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getMailboxUsageMailboxCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getMailboxUsageMailboxCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88482,25 +88481,25 @@ export async function getReportsMicrosoftGraphGetMailboxUsageMailboxCountsPeriod
 
 export async function getReportsMicrosoftGraphGetMailboxUsageQuotaStatusMailboxCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getMailboxUsageQuotaStatusMailboxCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getMailboxUsageQuotaStatusMailboxCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getMailboxUsageQuotaStatusMailboxCounts(period=':period')"
+      "microsoft.graph.getMailboxUsageQuotaStatusMailboxCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetMailboxUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getMailboxUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getMailboxUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getMailboxUsageStorage(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getMailboxUsageStorage(period='{period}')"].$get(args, options),
   )
 }
 
@@ -88530,12 +88529,12 @@ export async function getReportsMicrosoftGraphGetOffice365ActivationsUserDetail(
 
 export async function getReportsMicrosoftGraphGetOffice365ActiveUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365ActiveUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365ActiveUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365ActiveUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365ActiveUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88544,23 +88543,23 @@ export async function getReportsMicrosoftGraphGetOffice365ActiveUserCountsPeriod
 
 export async function getReportsMicrosoftGraphGetOffice365ActiveUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getOffice365ActiveUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getOffice365ActiveUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getOffice365ActiveUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getOffice365ActiveUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetOffice365ActiveUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365ActiveUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365ActiveUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365ActiveUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365ActiveUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88569,12 +88568,12 @@ export async function getReportsMicrosoftGraphGetOffice365ActiveUserDetailPeriod
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365GroupsActivityCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365GroupsActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88583,12 +88582,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityCountsPe
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getOffice365GroupsActivityDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getOffice365GroupsActivityDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getOffice365GroupsActivityDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getOffice365GroupsActivityDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -88597,12 +88596,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityDetailDa
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365GroupsActivityDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365GroupsActivityDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88611,12 +88610,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityDetailPe
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365GroupsActivityFileCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365GroupsActivityFileCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88625,12 +88624,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityFileCoun
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityGroupCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityGroupCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityGroupCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365GroupsActivityGroupCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365GroupsActivityGroupCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88639,12 +88638,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityGroupCou
 
 export async function getReportsMicrosoftGraphGetOffice365GroupsActivityStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityStorage(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365GroupsActivityStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365GroupsActivityStorage(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365GroupsActivityStorage(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88653,12 +88652,12 @@ export async function getReportsMicrosoftGraphGetOffice365GroupsActivityStorageP
 
 export async function getReportsMicrosoftGraphGetOffice365ServicesUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOffice365ServicesUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOffice365ServicesUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOffice365ServicesUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOffice365ServicesUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88667,12 +88666,12 @@ export async function getReportsMicrosoftGraphGetOffice365ServicesUserCountsPeri
 
 export async function getReportsMicrosoftGraphGetOneDriveActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveActivityFileCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveActivityFileCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88681,12 +88680,12 @@ export async function getReportsMicrosoftGraphGetOneDriveActivityFileCountsPerio
 
 export async function getReportsMicrosoftGraphGetOneDriveActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88695,23 +88694,26 @@ export async function getReportsMicrosoftGraphGetOneDriveActivityUserCountsPerio
 
 export async function getReportsMicrosoftGraphGetOneDriveActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getOneDriveActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getOneDriveActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getOneDriveActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getOneDriveActivityUserDetail(date={date})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetOneDriveActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88720,12 +88722,12 @@ export async function getReportsMicrosoftGraphGetOneDriveActivityUserDetailPerio
 
 export async function getReportsMicrosoftGraphGetOneDriveUsageAccountCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveUsageAccountCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveUsageAccountCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveUsageAccountCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveUsageAccountCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88734,23 +88736,26 @@ export async function getReportsMicrosoftGraphGetOneDriveUsageAccountCountsPerio
 
 export async function getReportsMicrosoftGraphGetOneDriveUsageAccountDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getOneDriveUsageAccountDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getOneDriveUsageAccountDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getOneDriveUsageAccountDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getOneDriveUsageAccountDetail(date={date})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetOneDriveUsageAccountDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveUsageAccountDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveUsageAccountDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveUsageAccountDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveUsageAccountDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88759,12 +88764,12 @@ export async function getReportsMicrosoftGraphGetOneDriveUsageAccountDetailPerio
 
 export async function getReportsMicrosoftGraphGetOneDriveUsageFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveUsageFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveUsageFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveUsageFileCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getOneDriveUsageFileCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88773,36 +88778,39 @@ export async function getReportsMicrosoftGraphGetOneDriveUsageFileCountsPeriodPe
 
 export async function getReportsMicrosoftGraphGetOneDriveUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getOneDriveUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getOneDriveUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getOneDriveUsageStorage(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getOneDriveUsageStorage(period='{period}')"].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetPrinterArchivedPrintJobsPrinterIdPrinterIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getPrinterArchivedPrintJobs(printerId=':printerId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["microsoft.graph.getPrinterArchivedPrintJobs(printerId='{printerId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getPrinterArchivedPrintJobs(printerId=':printerId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "microsoft.graph.getPrinterArchivedPrintJobs(printerId='{printerId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSharePointActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointActivityFileCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointActivityFileCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88811,12 +88819,12 @@ export async function getReportsMicrosoftGraphGetSharePointActivityFileCountsPer
 
 export async function getReportsMicrosoftGraphGetSharePointActivityPagesPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointActivityPages(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointActivityPages(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointActivityPages(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointActivityPages(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88825,12 +88833,12 @@ export async function getReportsMicrosoftGraphGetSharePointActivityPagesPeriodPe
 
 export async function getReportsMicrosoftGraphGetSharePointActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88839,12 +88847,12 @@ export async function getReportsMicrosoftGraphGetSharePointActivityUserCountsPer
 
 export async function getReportsMicrosoftGraphGetSharePointActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getSharePointActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getSharePointActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getSharePointActivityUserDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getSharePointActivityUserDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -88853,12 +88861,12 @@ export async function getReportsMicrosoftGraphGetSharePointActivityUserDetailDat
 
 export async function getReportsMicrosoftGraphGetSharePointActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88867,23 +88875,23 @@ export async function getReportsMicrosoftGraphGetSharePointActivityUserDetailPer
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsageDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getSharePointSiteUsageDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getSharePointSiteUsageDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getSharePointSiteUsageDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getSharePointSiteUsageDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsageDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointSiteUsageDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointSiteUsageDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88892,12 +88900,12 @@ export async function getReportsMicrosoftGraphGetSharePointSiteUsageDetailPeriod
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsageFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointSiteUsageFileCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointSiteUsageFileCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88906,12 +88914,12 @@ export async function getReportsMicrosoftGraphGetSharePointSiteUsageFileCountsPe
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsagePagesPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointSiteUsagePages(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointSiteUsagePages(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointSiteUsagePages(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointSiteUsagePages(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88920,12 +88928,12 @@ export async function getReportsMicrosoftGraphGetSharePointSiteUsagePagesPeriodP
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsageSiteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageSiteCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageSiteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointSiteUsageSiteCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointSiteUsageSiteCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88934,12 +88942,12 @@ export async function getReportsMicrosoftGraphGetSharePointSiteUsageSiteCountsPe
 
 export async function getReportsMicrosoftGraphGetSharePointSiteUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSharePointSiteUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSharePointSiteUsageStorage(period=':period')"].$get(
+    client.reports["microsoft.graph.getSharePointSiteUsageStorage(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88948,12 +88956,12 @@ export async function getReportsMicrosoftGraphGetSharePointSiteUsageStoragePerio
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSkypeForBusinessActivityCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSkypeForBusinessActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88962,12 +88970,12 @@ export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityCountsP
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSkypeForBusinessActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getSkypeForBusinessActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -88976,12 +88984,12 @@ export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserCou
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getSkypeForBusinessActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getSkypeForBusinessActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getSkypeForBusinessActivityUserDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getSkypeForBusinessActivityUserDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -88990,12 +88998,12 @@ export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserDet
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getSkypeForBusinessActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getSkypeForBusinessActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89004,38 +89012,38 @@ export async function getReportsMicrosoftGraphGetSkypeForBusinessActivityUserDet
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessDeviceUsageDistributionUserCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessDeviceUsageDistributionUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessDeviceUsageUserCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessDeviceUsageUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -89044,155 +89052,155 @@ export async function getReportsMicrosoftGraphGetSkypeForBusinessDeviceUsageUser
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(period=':period')"
+      "microsoft.graph.getSkypeForBusinessDeviceUsageUserDetail(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessOrganizerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessOrganizerActivityCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessOrganizerActivityCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessOrganizerActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessOrganizerActivityMinuteCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessOrganizerActivityMinuteCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessOrganizerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessOrganizerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessOrganizerActivityUserCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessOrganizerActivityUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessParticipantActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessParticipantActivityCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessParticipantActivityCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessParticipantActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessParticipantActivityMinuteCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessParticipantActivityMinuteCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessParticipantActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessParticipantActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessParticipantActivityUserCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessParticipantActivityUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessPeerToPeerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessPeerToPeerActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityMinuteCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityMinuteCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetSkypeForBusinessPeerToPeerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getSkypeForBusinessPeerToPeerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityUserCounts(period=':period')"
+      "microsoft.graph.getSkypeForBusinessPeerToPeerActivityUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetTeamsDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getTeamsDeviceUsageDistributionUserCounts(period=':period')"
+      "microsoft.graph.getTeamsDeviceUsageDistributionUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetTeamsDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getTeamsDeviceUsageUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getTeamsDeviceUsageUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89201,23 +89209,26 @@ export async function getReportsMicrosoftGraphGetTeamsDeviceUsageUserCountsPerio
 
 export async function getReportsMicrosoftGraphGetTeamsDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getTeamsDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getTeamsDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getTeamsDeviceUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getTeamsDeviceUsageUserDetail(date={date})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetTeamsDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getTeamsDeviceUsageUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getTeamsDeviceUsageUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89226,12 +89237,12 @@ export async function getReportsMicrosoftGraphGetTeamsDeviceUsageUserDetailPerio
 
 export async function getReportsMicrosoftGraphGetTeamsUserActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsUserActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsUserActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getTeamsUserActivityCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getTeamsUserActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89240,12 +89251,12 @@ export async function getReportsMicrosoftGraphGetTeamsUserActivityCountsPeriodPe
 
 export async function getReportsMicrosoftGraphGetTeamsUserActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsUserActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsUserActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getTeamsUserActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getTeamsUserActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89254,12 +89265,12 @@ export async function getReportsMicrosoftGraphGetTeamsUserActivityUserCountsPeri
 
 export async function getReportsMicrosoftGraphGetTeamsUserActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getTeamsUserActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getTeamsUserActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getTeamsUserActivityUserDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getTeamsUserActivityUserDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -89268,12 +89279,12 @@ export async function getReportsMicrosoftGraphGetTeamsUserActivityUserDetailDate
 
 export async function getReportsMicrosoftGraphGetTeamsUserActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getTeamsUserActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getTeamsUserActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getTeamsUserActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getTeamsUserActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89282,36 +89293,39 @@ export async function getReportsMicrosoftGraphGetTeamsUserActivityUserDetailPeri
 
 export async function getReportsMicrosoftGraphGetUserArchivedPrintJobsUserIdUserIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getUserArchivedPrintJobs(userId=':userId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["microsoft.graph.getUserArchivedPrintJobs(userId='{userId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getUserArchivedPrintJobs(userId=':userId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "microsoft.graph.getUserArchivedPrintJobs(userId='{userId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetYammerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerActivityCounts(period=':period')"].$get(args, options),
+    client.reports["microsoft.graph.getYammerActivityCounts(period='{period}')"].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetYammerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerActivityUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89320,23 +89334,23 @@ export async function getReportsMicrosoftGraphGetYammerActivityUserCountsPeriodP
 
 export async function getReportsMicrosoftGraphGetYammerActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getYammerActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getYammerActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getYammerActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getYammerActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetYammerActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerActivityUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerActivityUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89345,25 +89359,25 @@ export async function getReportsMicrosoftGraphGetYammerActivityUserDetailPeriodP
 
 export async function getReportsMicrosoftGraphGetYammerDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.getYammerDeviceUsageDistributionUserCounts(period=':period')"
+      "microsoft.graph.getYammerDeviceUsageDistributionUserCounts(period='{period}')"
     ].$get(args, options),
   )
 }
 
 export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerDeviceUsageUserCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerDeviceUsageUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89372,12 +89386,12 @@ export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserCountsPeri
 
 export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getYammerDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getYammerDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getYammerDeviceUsageUserDetail(date=:date)'].$get(
+    client.reports['microsoft.graph.getYammerDeviceUsageUserDetail(date={date})'].$get(
       args,
       options,
     ),
@@ -89386,12 +89400,12 @@ export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserDetailDate
 
 export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerDeviceUsageUserDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerDeviceUsageUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89400,12 +89414,12 @@ export async function getReportsMicrosoftGraphGetYammerDeviceUsageUserDetailPeri
 
 export async function getReportsMicrosoftGraphGetYammerGroupsActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerGroupsActivityCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerGroupsActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89414,23 +89428,26 @@ export async function getReportsMicrosoftGraphGetYammerGroupsActivityCountsPerio
 
 export async function getReportsMicrosoftGraphGetYammerGroupsActivityDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['microsoft.graph.getYammerGroupsActivityDetail(date=:date)']['$get']
+    (typeof client.reports)['microsoft.graph.getYammerGroupsActivityDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['microsoft.graph.getYammerGroupsActivityDetail(date=:date)'].$get(args, options),
+    client.reports['microsoft.graph.getYammerGroupsActivityDetail(date={date})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsMicrosoftGraphGetYammerGroupsActivityDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityDetail(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerGroupsActivityDetail(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerGroupsActivityDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89439,12 +89456,12 @@ export async function getReportsMicrosoftGraphGetYammerGroupsActivityDetailPerio
 
 export async function getReportsMicrosoftGraphGetYammerGroupsActivityGroupCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityGroupCounts(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.getYammerGroupsActivityGroupCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.getYammerGroupsActivityGroupCounts(period=':period')"].$get(
+    client.reports["microsoft.graph.getYammerGroupsActivityGroupCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89464,13 +89481,13 @@ export async function getReportsMicrosoftGraphManagedDeviceEnrollmentFailureDeta
 
 export async function getReportsMicrosoftGraphManagedDeviceEnrollmentFailureDetailsSkipSkipTopTopFilterFilterSkipTokenSkipToken(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.managedDeviceEnrollmentFailureDetails(skip=:skip,top=:top,filter=':filter',skipToken=':skipToken')"]['$get']
+    (typeof client.reports)["microsoft.graph.managedDeviceEnrollmentFailureDetails(skip={skip},top={top},filter='{filter}',skipToken='{skipToken}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "microsoft.graph.managedDeviceEnrollmentFailureDetails(skip=:skip,top=:top,filter=':filter',skipToken=':skipToken')"
+      "microsoft.graph.managedDeviceEnrollmentFailureDetails(skip={skip},top={top},filter='{filter}',skipToken='{skipToken}')"
     ].$get(args, options),
   )
 }
@@ -89485,12 +89502,12 @@ export async function getReportsMicrosoftGraphManagedDeviceEnrollmentTopFailures
 
 export async function getReportsMicrosoftGraphManagedDeviceEnrollmentTopFailuresPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["microsoft.graph.managedDeviceEnrollmentTopFailures(period=':period')"]['$get']
+    (typeof client.reports)["microsoft.graph.managedDeviceEnrollmentTopFailures(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["microsoft.graph.managedDeviceEnrollmentTopFailures(period=':period')"].$get(
+    client.reports["microsoft.graph.managedDeviceEnrollmentTopFailures(period='{period}')"].$get(
       args,
       options,
     ),
@@ -89738,13 +89755,13 @@ export async function getRoleManagementDirectoryRoleAssignmentScheduleInstancesC
 
 export async function getRoleManagementDirectoryRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentScheduleInstances)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentScheduleInstances)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleAssignmentScheduleInstances[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -89836,13 +89853,13 @@ export async function getRoleManagementDirectoryRoleAssignmentScheduleRequestsCo
 
 export async function getRoleManagementDirectoryRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentScheduleRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentScheduleRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleAssignmentScheduleRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90008,13 +90025,13 @@ export async function getRoleManagementDirectoryRoleAssignmentSchedulesCount(
 
 export async function getRoleManagementDirectoryRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentSchedules)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentSchedules)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleAssignmentSchedules[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90396,13 +90413,13 @@ export async function getRoleManagementDirectoryRoleEligibilityScheduleInstances
 
 export async function getRoleManagementDirectoryRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilityScheduleInstances)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilityScheduleInstances)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleEligibilityScheduleInstances[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90481,13 +90498,13 @@ export async function getRoleManagementDirectoryRoleEligibilityScheduleRequestsC
 
 export async function getRoleManagementDirectoryRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilityScheduleRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilityScheduleRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleEligibilityScheduleRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90640,13 +90657,13 @@ export async function getRoleManagementDirectoryRoleEligibilitySchedulesCount(
 
 export async function getRoleManagementDirectoryRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilitySchedules)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilitySchedules)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleEligibilitySchedules[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90752,13 +90769,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -90853,13 +90870,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -91029,13 +91046,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentSchedules)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentSchedules)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentSchedules[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -91432,13 +91449,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -91523,13 +91540,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -91686,13 +91703,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilitySchedules)["microsoft.graph.filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilitySchedules)["microsoft.graph.filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilitySchedules[
-      "microsoft.graph.filterByCurrentUser(on=':on')"
+      "microsoft.graph.filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -96655,13 +96672,13 @@ export async function getSharesSharedDriveItemIdListItemsListItemIdMicrosoftGrap
 
 export async function getSharesSharedDriveItemIdListItemsListItemIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.shares)[':sharedDriveItem-id']['list']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.shares)[':sharedDriveItem-id']['list']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.shares[':sharedDriveItem-id'].list.items[':listItem-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -98441,13 +98458,13 @@ export async function getSitesSiteIdListsListIdItemsListItemIdMicrosoftGraphGetA
 
 export async function getSitesSiteIdListsListIdItemsListItemIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']['lists'][':list-id']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.sites)[':site-id']['lists'][':list-id']['items'][':listItem-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'].lists[':list-id'].items[':listItem-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -98755,38 +98772,38 @@ export async function getSitesSiteIdMicrosoftGraphGetActivitiesByInterval(
 
 export async function getSitesSiteIdMicrosoftGraphGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.sites)[':site-id']["microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'][
-      "microsoft.graph.getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "microsoft.graph.getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdMicrosoftGraphGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["microsoft.graph.getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.sites)[':site-id']["microsoft.graph.getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'][
-      "microsoft.graph.getApplicableContentTypesForList(listId=':listId')"
+      "microsoft.graph.getApplicableContentTypesForList(listId='{listId}')"
     ].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdMicrosoftGraphGetByPathPathPath(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["microsoft.graph.getByPath(path=':path')"]['$get']
+    (typeof client.sites)[':site-id']["microsoft.graph.getByPath(path='{path}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["microsoft.graph.getByPath(path=':path')"].$get(args, options),
+    client.sites[':site-id']["microsoft.graph.getByPath(path='{path}')"].$get(args, options),
   )
 }
 
@@ -98850,13 +98867,13 @@ export async function postSitesSiteIdOnenoteNotebooksMicrosoftGraphGetNotebookFr
 
 export async function getSitesSiteIdOnenoteNotebooksMicrosoftGraphGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.sites)[':site-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'].onenote.notebooks[
-      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -114142,13 +114159,13 @@ export async function patchUsersUserIdCalendarEventsEventIdSingleValueExtendedPr
 
 export async function getUsersUserIdCalendarMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendar']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendar']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].calendar[
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -116529,13 +116546,13 @@ export async function patchUsersUserIdCalendarGroupsCalendarGroupIdCalendarsCale
 
 export async function getUsersUserIdCalendarGroupsCalendarGroupIdCalendarsCalendarIdMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendarGroups'][':calendarGroup-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendarGroups'][':calendarGroup-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].calendarGroups[':calendarGroup-id'].calendars[':calendar-id'][
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -119665,13 +119682,13 @@ export async function patchUsersUserIdCalendarsCalendarIdEventsEventIdSingleValu
 
 export async function getUsersUserIdCalendarsCalendarIdMicrosoftGraphAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendars'][':calendar-id']["microsoft.graph.allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].calendars[':calendar-id'][
-      "microsoft.graph.allowedCalendarSharingRoles(User=':User')"
+      "microsoft.graph.allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -130189,13 +130206,13 @@ export async function getUsersUserIdMicrosoftGraphExportDeviceAndAppManagementDa
 
 export async function getUsersUserIdMicrosoftGraphExportDeviceAndAppManagementDataSkipSkipTopTop(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['microsoft.graph.exportDeviceAndAppManagementData(skip=:skip,top=:top)']['$get']
+    (typeof client.users)[':user-id']['microsoft.graph.exportDeviceAndAppManagementData(skip={skip},top={top})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'][
-      'microsoft.graph.exportDeviceAndAppManagementData(skip=:skip,top=:top)'
+      'microsoft.graph.exportDeviceAndAppManagementData(skip={skip},top={top})'
     ].$get(args, options),
   )
 }
@@ -130294,13 +130311,13 @@ export async function postUsersUserIdMicrosoftGraphGetMemberObjects(
 
 export async function getUsersUserIdMicrosoftGraphReminderViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.users)[':user-id']["microsoft.graph.reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"]['$get']
+    (typeof client.users)[':user-id']["microsoft.graph.reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'][
-      "microsoft.graph.reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"
+      "microsoft.graph.reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"
     ].$get(args, options),
   )
 }
@@ -130473,13 +130490,13 @@ export async function postUsersUserIdOnenoteNotebooksMicrosoftGraphGetNotebookFr
 
 export async function getUsersUserIdOnenoteNotebooksMicrosoftGraphGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.users)[':user-id']['onenote']['notebooks']['microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].onenote.notebooks[
-      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'microsoft.graph.getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -132581,13 +132598,13 @@ export async function getUsersUserIdOutlookMicrosoftGraphSupportedTimeZones(
 
 export async function getUsersUserIdOutlookMicrosoftGraphSupportedTimeZonesTimeZoneStandardTimeZoneStandard(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['outlook']["microsoft.graph.supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"]['$get']
+    (typeof client.users)[':user-id']['outlook']["microsoft.graph.supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].outlook[
-      "microsoft.graph.supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"
+      "microsoft.graph.supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"
     ].$get(args, options),
   )
 }

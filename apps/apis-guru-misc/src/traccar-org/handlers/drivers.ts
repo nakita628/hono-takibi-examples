@@ -1,23 +1,23 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDriversIdRoute,
   getDriversRoute,
   postDriversRoute,
   putDriversIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDriversRouteHandler: RouteHandler<typeof getDriversRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const driversHandler = app
-  .openapi(getDriversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDriversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDriversIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDriversIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDriversRouteHandler: RouteHandler<typeof postDriversRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDriversIdRouteHandler: RouteHandler<typeof deleteDriversIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDriversIdRouteHandler: RouteHandler<typeof putDriversIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

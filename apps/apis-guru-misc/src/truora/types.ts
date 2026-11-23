@@ -796,18 +796,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/checks/:check_id/pdf': {
-      $get: {
-        input: { param: { check_id: string } } & { query: { lang?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $post: {
-        input: { param: { check_id: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { check_id: string } } & { query: { lang?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { check_id: string } } & { query: { lang?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | { input: { param: { check_id: string } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { check_id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/v1/config': {
@@ -958,12 +962,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/reports/:report_id': {
-      $get: {
-        input: { param: { report_id: string } }
-        output: ReportOutput
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { report_id: string } }
+            output: ReportOutput
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { report_id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/v1/reports/:report_id/upload': {

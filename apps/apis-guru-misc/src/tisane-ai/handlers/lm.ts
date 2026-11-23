@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLmFamilyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLmFamilyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const lmHandler = app.openapi(getLmFamilyRoute, (c) => {
+export const getLmFamilyRouteHandler: RouteHandler<typeof getLmFamilyRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

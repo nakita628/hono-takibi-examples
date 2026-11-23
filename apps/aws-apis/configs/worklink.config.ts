@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/worklink/2018-09-25/openapi.yaml',
   output: './src/worklink/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/worklink/types.ts' },
   client: { output: './src/worklink/client.ts', baseUrl: '/' },
   rpc: { output: './src/worklink/rpc.ts', parseResponse: true },

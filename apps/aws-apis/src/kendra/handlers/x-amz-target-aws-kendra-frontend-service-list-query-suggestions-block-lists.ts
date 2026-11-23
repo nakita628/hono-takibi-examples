@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsKendraFrontendServiceListQuerySuggestionsBlockListsHandler = app.openapi(
-  postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

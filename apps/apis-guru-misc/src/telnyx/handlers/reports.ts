@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReportsBatchMdrReportsIdRoute,
   deleteReportsMdrUsageReportsIdRoute,
   getReportsBatchMdrReportsIdRoute,
@@ -14,42 +14,70 @@ import {
   postReportsMdrUsageReportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReportsBatchMdrReportsRouteHandler: RouteHandler<
+  typeof getReportsBatchMdrReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportsHandler = app
-  .openapi(getReportsBatchMdrReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsBatchMdrReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportsBatchMdrReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsBatchMdrReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsCdrUsageReportsSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsMdrUsageReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsMdrUsageReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsMdrUsageReportsSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportsMdrUsageReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsMdrUsageReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsMdrsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsWdrsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postReportsBatchMdrReportsRouteHandler: RouteHandler<
+  typeof postReportsBatchMdrReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportsBatchMdrReportsIdRouteHandler: RouteHandler<
+  typeof deleteReportsBatchMdrReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsBatchMdrReportsIdRouteHandler: RouteHandler<
+  typeof getReportsBatchMdrReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsCdrUsageReportsSyncRouteHandler: RouteHandler<
+  typeof getReportsCdrUsageReportsSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsMdrUsageReportsRouteHandler: RouteHandler<
+  typeof getReportsMdrUsageReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportsMdrUsageReportsRouteHandler: RouteHandler<
+  typeof postReportsMdrUsageReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsMdrUsageReportsSyncRouteHandler: RouteHandler<
+  typeof getReportsMdrUsageReportsSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportsMdrUsageReportsIdRouteHandler: RouteHandler<
+  typeof deleteReportsMdrUsageReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsMdrUsageReportsIdRouteHandler: RouteHandler<
+  typeof getReportsMdrUsageReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsMdrsRouteHandler: RouteHandler<typeof getReportsMdrsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsWdrsRouteHandler: RouteHandler<typeof getReportsWdrsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

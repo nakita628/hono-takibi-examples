@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMediaStore20170901GetMetricPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMediaStore20170901GetMetricPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMediaStore20170901GetMetricPolicyHandler = app.openapi(
-  postXAmzTargetMediaStore20170901GetMetricPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMediaStore20170901GetMetricPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetMediaStore20170901GetMetricPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

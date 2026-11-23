@@ -30,21 +30,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/events/2026-09/send': {
-      $post: {
-        input: { json: BehavioralEventHttpCompletionRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BehavioralEventHttpCompletionRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BehavioralEventHttpCompletionRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/events/2026-09/send/batch': {
-      $post: {
-        input: { json: BatchedBehavioralEventHttpCompletionRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchedBehavioralEventHttpCompletionRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchedBehavioralEventHttpCompletionRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

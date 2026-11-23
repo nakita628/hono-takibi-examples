@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVirtualCircuitsIdRoute,
   getVirtualCircuitsIdEventsRoute,
   getVirtualCircuitsIdRoute,
   putVirtualCircuitsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVirtualCircuitsIdEventsRouteHandler: RouteHandler<
+  typeof getVirtualCircuitsIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const virtualCircuitsHandler = app
-  .openapi(getVirtualCircuitsIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVirtualCircuitsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualCircuitsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVirtualCircuitsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteVirtualCircuitsIdRouteHandler: RouteHandler<
+  typeof deleteVirtualCircuitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualCircuitsIdRouteHandler: RouteHandler<
+  typeof getVirtualCircuitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVirtualCircuitsIdRouteHandler: RouteHandler<
+  typeof putVirtualCircuitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

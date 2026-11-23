@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/agtripura/3.0.0/openapi.yaml',
   output: './src/agtripura/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/agtripura/types.ts' },
   client: { output: './src/agtripura/client.ts', baseUrl: '/' },
   rpc: { output: './src/agtripura/rpc.ts', parseResponse: true },

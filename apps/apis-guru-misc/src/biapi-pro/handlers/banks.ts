@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBanksCategoriesIdCategoryRoute,
   getBanksIdBankRoute,
   getBanksIdConnectorConnectionsRoute,
@@ -14,42 +14,70 @@ import {
   postBanksCategoriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBanksRouteHandler: RouteHandler<typeof getBanksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const banksHandler = app
-  .openapi(getBanksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBanksCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBanksCategoriesIdCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBanksCategoriesIdCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorLogosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorLogosMainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorLogosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorSourcesIdConnectorSourceFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBanksIdConnectorSourcesIdSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBanksCategoriesRouteHandler: RouteHandler<
+  typeof postBanksCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBanksCategoriesIdCategoryRouteHandler: RouteHandler<
+  typeof deleteBanksCategoriesIdCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBanksCategoriesIdCategoryRouteHandler: RouteHandler<
+  typeof postBanksCategoriesIdCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdBankRouteHandler: RouteHandler<typeof getBanksIdBankRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorConnectionsRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorLogosRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorLogosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorLogosMainRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorLogosMainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorLogosThumbnailRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorLogosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorSourcesRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorSourcesIdConnectorSourceFieldsRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorSourcesIdConnectorSourceFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBanksIdConnectorSourcesIdSourceRouteHandler: RouteHandler<
+  typeof getBanksIdConnectorSourcesIdSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

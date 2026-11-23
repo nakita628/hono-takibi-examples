@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getProjectsUsernameProjectSlugFiltersIdentifierRoute,
   getProjectsUsernameProjectSlugFiltersRoute,
   getProjectsUsernameRoute,
@@ -7,21 +7,32 @@ import {
   postProjectsUsernameProjectSlugUrlsAggsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsUsernameRouteHandler: RouteHandler<
+  typeof getProjectsUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsUsernameProjectSlugFeaturesUrlRewritingRulesValidatorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsUsernameProjectSlugFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsUsernameProjectSlugFiltersIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsUsernameProjectSlugUrlsAggsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectsUsernameProjectSlugFeaturesUrlRewritingRulesValidatorRouteHandler: RouteHandler<
+  typeof postProjectsUsernameProjectSlugFeaturesUrlRewritingRulesValidatorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsUsernameProjectSlugFiltersRouteHandler: RouteHandler<
+  typeof getProjectsUsernameProjectSlugFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsUsernameProjectSlugFiltersIdentifierRouteHandler: RouteHandler<
+  typeof getProjectsUsernameProjectSlugFiltersIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsUsernameProjectSlugUrlsAggsRouteHandler: RouteHandler<
+  typeof postProjectsUsernameProjectSlugUrlsAggsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

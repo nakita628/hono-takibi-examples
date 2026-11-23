@@ -501,7 +501,7 @@ type EntitySettlementBaseType = {
   reference?: string | null
   settledAt?: string | null
   status: z.infer<typeof SettlementStatusSchema>
-  amount: z.infer<typeof AmountSchema> & unknown
+  amount: z.infer<typeof AmountSchema>
   balanceId: z.infer<typeof BalanceTokenSchema>
   invoiceId?: z.infer<typeof InvoiceTokenSchema> | null
   periods?: {

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

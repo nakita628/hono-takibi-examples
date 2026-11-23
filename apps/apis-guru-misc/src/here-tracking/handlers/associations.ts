@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAssociationsV3TrackingIdGeofencesGeofenceIdRoute,
   deleteAssociationsV3TrackingIdRulesRuleIdRoute,
   deleteAssociationsV3TrackingIdSensorsSensorRuleIdRoute,
@@ -19,57 +19,104 @@ import {
   putAssociationsV3TrackingIdSensorsSensorRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putAssociationsV3DevicesBatchUpdateRouteHandler: RouteHandler<
+  typeof putAssociationsV3DevicesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const associationsHandler = app
-  .openapi(putAssociationsV3DevicesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssociationsV3DevicesTrackingIdBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssociationsV3DevicesTrackingIdBatchDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3GeofencesGeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3RulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3SensorsSensorRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3TrackingIdGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAssociationsV3TrackingIdGeofencesGeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAssociationsV3TrackingIdGeofencesGeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3TrackingIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAssociationsV3TrackingIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAssociationsV3TrackingIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsV3TrackingIdSensorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAssociationsV3TrackingIdSensorsSensorRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAssociationsV3TrackingIdSensorsSensorRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAssociationsV3DevicesTrackingIdBatchCreateRouteHandler: RouteHandler<
+  typeof postAssociationsV3DevicesTrackingIdBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssociationsV3DevicesTrackingIdBatchDeleteRouteHandler: RouteHandler<
+  typeof postAssociationsV3DevicesTrackingIdBatchDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3GeofencesGeofenceIdRouteHandler: RouteHandler<
+  typeof getAssociationsV3GeofencesGeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3HealthRouteHandler: RouteHandler<
+  typeof getAssociationsV3HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3RulesRuleIdRouteHandler: RouteHandler<
+  typeof getAssociationsV3RulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3SensorsSensorRuleIdRouteHandler: RouteHandler<
+  typeof getAssociationsV3SensorsSensorRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3VersionRouteHandler: RouteHandler<
+  typeof getAssociationsV3VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3TrackingIdGeofencesRouteHandler: RouteHandler<
+  typeof getAssociationsV3TrackingIdGeofencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAssociationsV3TrackingIdGeofencesGeofenceIdRouteHandler: RouteHandler<
+  typeof deleteAssociationsV3TrackingIdGeofencesGeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAssociationsV3TrackingIdGeofencesGeofenceIdRouteHandler: RouteHandler<
+  typeof putAssociationsV3TrackingIdGeofencesGeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3TrackingIdRulesRouteHandler: RouteHandler<
+  typeof getAssociationsV3TrackingIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAssociationsV3TrackingIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteAssociationsV3TrackingIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAssociationsV3TrackingIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof putAssociationsV3TrackingIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationsV3TrackingIdSensorsRouteHandler: RouteHandler<
+  typeof getAssociationsV3TrackingIdSensorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAssociationsV3TrackingIdSensorsSensorRuleIdRouteHandler: RouteHandler<
+  typeof deleteAssociationsV3TrackingIdSensorsSensorRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAssociationsV3TrackingIdSensorsSensorRuleIdRouteHandler: RouteHandler<
+  typeof putAssociationsV3TrackingIdSensorsSensorRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

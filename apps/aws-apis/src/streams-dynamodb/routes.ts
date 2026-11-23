@@ -57,16 +57,16 @@ const BooleanAttributeValueSchema: z.ZodType<BooleanAttributeValueType> = z
   .openapi('BooleanAttributeValue')
 
 type AttributeValueType = {
-  S?: z.infer<typeof StringAttributeValueSchema> & unknown
-  N?: z.infer<typeof NumberAttributeValueSchema> & unknown
-  B?: z.infer<typeof BinaryAttributeValueSchema> & unknown
-  SS?: z.infer<typeof StringSetAttributeValueSchema> & unknown
-  NS?: z.infer<typeof NumberSetAttributeValueSchema> & unknown
-  BS?: z.infer<typeof BinarySetAttributeValueSchema> & unknown
-  M?: z.infer<typeof MapAttributeValueSchema> & unknown
-  L?: z.infer<typeof ListAttributeValueSchema> & unknown
-  NULL?: z.infer<typeof NullAttributeValueSchema> & unknown
-  BOOL?: z.infer<typeof BooleanAttributeValueSchema> & unknown
+  S?: z.infer<typeof StringAttributeValueSchema>
+  N?: z.infer<typeof NumberAttributeValueSchema>
+  B?: z.infer<typeof BinaryAttributeValueSchema>
+  SS?: z.infer<typeof StringSetAttributeValueSchema>
+  NS?: z.infer<typeof NumberSetAttributeValueSchema>
+  BS?: z.infer<typeof BinarySetAttributeValueSchema>
+  M?: z.infer<typeof MapAttributeValueSchema>
+  L?: z.infer<typeof ListAttributeValueSchema>
+  NULL?: z.infer<typeof NullAttributeValueSchema>
+  BOOL?: z.infer<typeof BooleanAttributeValueSchema>
 }
 
 const AttributeValueSchema: z.ZodType<AttributeValueType> = z

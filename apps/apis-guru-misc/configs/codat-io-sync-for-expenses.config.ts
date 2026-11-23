@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/codat.io/sync-for-expenses/prealpha/openapi.yaml',
   output: './src/codat-io-sync-for-expenses/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codat-io-sync-for-expenses/types.ts' },
   client: { output: './src/codat-io-sync-for-expenses/client.ts', baseUrl: '/' },
   rpc: { output: './src/codat-io-sync-for-expenses/rpc.ts', parseResponse: true },

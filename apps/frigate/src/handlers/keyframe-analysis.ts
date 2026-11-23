@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getKeyframeAnalysisRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getKeyframeAnalysisRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const keyframeAnalysisHandler = app.openapi(getKeyframeAnalysisRoute, (c) => {
+export const getKeyframeAnalysisRouteHandler: RouteHandler<
+  typeof getKeyframeAnalysisRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBatchDeleteWorldsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBatchDeleteWorldsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const batchDeleteWorldsHandler = app.openapi(postBatchDeleteWorldsRoute, (c) => {
+export const postBatchDeleteWorldsRouteHandler: RouteHandler<
+  typeof postBatchDeleteWorldsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

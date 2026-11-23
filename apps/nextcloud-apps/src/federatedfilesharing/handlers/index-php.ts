@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postIndexPhpAppsFederatedfilesharingCreateFederatedShareRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postIndexPhpAppsFederatedfilesharingCreateFederatedShareRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const indexPhpHandler = app.openapi(
-  postIndexPhpAppsFederatedfilesharingCreateFederatedShareRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postIndexPhpAppsFederatedfilesharingCreateFederatedShareRouteHandler: RouteHandler<
+  typeof postIndexPhpAppsFederatedfilesharingCreateFederatedShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

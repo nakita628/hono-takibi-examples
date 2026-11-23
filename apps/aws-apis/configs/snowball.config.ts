@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/snowball/2016-06-30/openapi.yaml',
   output: './src/snowball/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/snowball/types.ts' },
   client: { output: './src/snowball/client.ts', baseUrl: '/' },
   rpc: { output: './src/snowball/rpc.ts', parseResponse: true },

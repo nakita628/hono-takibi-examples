@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getListIndicesIndexRoute,
   getListIndicesRoute,
   getListRoute,
@@ -7,21 +7,26 @@ import {
   getListShardsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getListRouteHandler: RouteHandler<typeof getListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const listHandler = app
-  .openapi(getListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListIndicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListIndicesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListShardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListShardsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getListIndicesRouteHandler: RouteHandler<typeof getListIndicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListIndicesIndexRouteHandler: RouteHandler<
+  typeof getListIndicesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListShardsRouteHandler: RouteHandler<typeof getListShardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListShardsIndexRouteHandler: RouteHandler<typeof getListShardsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ticketmaster.com/discovery/v2/openapi.yaml',
   output: './src/ticketmaster-discovery/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ticketmaster-discovery/types.ts' },
   client: { output: './src/ticketmaster-discovery/client.ts', baseUrl: '/' },
   rpc: { output: './src/ticketmaster-discovery/rpc.ts', parseResponse: true },

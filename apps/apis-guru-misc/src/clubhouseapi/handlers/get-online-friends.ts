@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetOnlineFriendsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetOnlineFriendsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getOnlineFriendsHandler = app.openapi(postGetOnlineFriendsRoute, (c) => {
+export const postGetOnlineFriendsRouteHandler: RouteHandler<
+  typeof postGetOnlineFriendsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

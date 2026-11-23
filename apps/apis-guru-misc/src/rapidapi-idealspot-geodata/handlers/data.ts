@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDataInsightsInsightIdQueryRoute,
   getDataInsightsInsightIdRoute,
   getDataInsightsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataInsightsRouteHandler: RouteHandler<typeof getDataInsightsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataHandler = app
-  .openapi(getDataInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataInsightsInsightIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataInsightsInsightIdQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataInsightsInsightIdRouteHandler: RouteHandler<
+  typeof getDataInsightsInsightIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataInsightsInsightIdQueryRouteHandler: RouteHandler<
+  typeof getDataInsightsInsightIdQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

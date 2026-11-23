@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/mpmsu/3.0.0/openapi.yaml',
   output: './src/mpmsu/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mpmsu/types.ts' },
   client: { output: './src/mpmsu/client.ts', baseUrl: '/' },
   rpc: { output: './src/mpmsu/rpc.ts', parseResponse: true },

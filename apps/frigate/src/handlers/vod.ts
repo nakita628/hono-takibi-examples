@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVodCameraNameStartStartTsEndEndTsRoute,
   getVodCameraNameStreamStartStartTsEndEndTsRoute,
   getVodClipCameraNameStartStartTsEndEndTsRoute,
@@ -8,24 +8,38 @@ import {
   getVodYearMonthDayHourCameraNameTzNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVodCameraNameStartStartTsEndEndTsRouteHandler: RouteHandler<
+  typeof getVodCameraNameStartStartTsEndEndTsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vodHandler = app
-  .openapi(getVodCameraNameStartStartTsEndEndTsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVodYearMonthDayHourCameraNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVodYearMonthDayHourCameraNameTzNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVodEventEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVodClipCameraNameStartStartTsEndEndTsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVodCameraNameStreamStartStartTsEndEndTsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVodYearMonthDayHourCameraNameRouteHandler: RouteHandler<
+  typeof getVodYearMonthDayHourCameraNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVodYearMonthDayHourCameraNameTzNameRouteHandler: RouteHandler<
+  typeof getVodYearMonthDayHourCameraNameTzNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVodEventEventIdRouteHandler: RouteHandler<typeof getVodEventEventIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVodClipCameraNameStartStartTsEndEndTsRouteHandler: RouteHandler<
+  typeof getVodClipCameraNameStartStartTsEndEndTsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVodCameraNameStreamStartStartTsEndEndTsRouteHandler: RouteHandler<
+  typeof getVodCameraNameStreamStartStartTsEndEndTsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

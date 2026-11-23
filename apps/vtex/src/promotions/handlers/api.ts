@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiRnbPvtArchiveBenefitsCalculatorConfigurationRoute,
   getApiRnbPvtArchiveCouponCouponCodeRoute,
   getApiRnbPvtArchiveTaxesCalculatorConfigurationRoute,
@@ -26,78 +26,146 @@ import {
   putApiRnbPvtImportCalculatorConfigurationPromotionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiRnbPubNotificationsRouteHandler: RouteHandler<
+  typeof postApiRnbPubNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiRnbPubNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtArchiveBenefitsCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtArchiveCouponCouponCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtArchiveCouponCouponCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtArchiveTaxesCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtBenefitsCalculatorconfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtCalculatorconfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCampaignConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtCampaignConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCampaignConfigurationCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCouponRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtCouponRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtCouponIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCouponUsageCouponCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtCouponCouponCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtImportCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiRnbPvtImportCalculatorConfigurationPromotionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtMultipleCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRnbPvtTaxesCalculatorconfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRnbPvtUnarchiveCouponCouponCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiRnbPvtArchiveBenefitsCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtArchiveBenefitsCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof postApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtArchiveCouponCouponCodeRouteHandler: RouteHandler<
+  typeof getApiRnbPvtArchiveCouponCouponCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtArchiveCouponCouponCodeRouteHandler: RouteHandler<
+  typeof postApiRnbPvtArchiveCouponCouponCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtArchiveTaxesCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtArchiveTaxesCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtBenefitsCalculatorconfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtBenefitsCalculatorconfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtCalculatorconfigurationRouteHandler: RouteHandler<
+  typeof postApiRnbPvtCalculatorconfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCampaignConfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtCampaignConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtCampaignConfigurationRouteHandler: RouteHandler<
+  typeof postApiRnbPvtCampaignConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCampaignConfigurationCampaignIdRouteHandler: RouteHandler<
+  typeof getApiRnbPvtCampaignConfigurationCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCouponRouteHandler: RouteHandler<typeof getApiRnbPvtCouponRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtCouponRouteHandler: RouteHandler<
+  typeof postApiRnbPvtCouponRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtCouponIndexRouteHandler: RouteHandler<
+  typeof postApiRnbPvtCouponIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCouponUsageCouponCodeRouteHandler: RouteHandler<
+  typeof getApiRnbPvtCouponUsageCouponCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtCouponCouponCodeRouteHandler: RouteHandler<
+  typeof getApiRnbPvtCouponCouponCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtCouponsRouteHandler: RouteHandler<
+  typeof postApiRnbPvtCouponsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtImportCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof postApiRnbPvtImportCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiRnbPvtImportCalculatorConfigurationPromotionIdRouteHandler: RouteHandler<
+  typeof putApiRnbPvtImportCalculatorConfigurationPromotionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtMultipleCouponsRouteHandler: RouteHandler<
+  typeof postApiRnbPvtMultipleCouponsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRnbPvtTaxesCalculatorconfigurationRouteHandler: RouteHandler<
+  typeof getApiRnbPvtTaxesCalculatorconfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationRouteHandler: RouteHandler<
+  typeof postApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRnbPvtUnarchiveCouponCouponCodeRouteHandler: RouteHandler<
+  typeof postApiRnbPvtUnarchiveCouponCouponCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

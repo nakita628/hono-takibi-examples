@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteImagesByIdImageIdRoute,
   deleteImagesImageDigestRoute,
   deleteImagesRoute,
@@ -30,90 +30,164 @@ import {
   postImagesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteImagesRouteHandler: RouteHandler<typeof deleteImagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const imagesHandler = app
-  .openapi(deleteImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImagesByIdImageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdContentFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdContentJavaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdContentCtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdVulnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesByIdImageIdVulnVtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImagesImageDigestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestArtifactsFileContentSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestArtifactsRetrievedFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestArtifactsSecretSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestContentFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestContentJavaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestContentMalwareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestContentCtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestMetadataMtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestSbomsNativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestVulnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImagesImageDigestVulnVtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getImagesRouteHandler: RouteHandler<typeof getImagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImagesRouteHandler: RouteHandler<typeof postImagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteImagesByIdImageIdRouteHandler: RouteHandler<
+  typeof deleteImagesByIdImageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdCheckRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdContentRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdContentFilesRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdContentFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdContentJavaRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdContentJavaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdContentCtypeRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdContentCtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdVulnRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdVulnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesByIdImageIdVulnVtypeRouteHandler: RouteHandler<
+  typeof getImagesByIdImageIdVulnVtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteImagesImageDigestRouteHandler: RouteHandler<
+  typeof deleteImagesImageDigestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestRouteHandler: RouteHandler<
+  typeof getImagesImageDigestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestArtifactsFileContentSearchRouteHandler: RouteHandler<
+  typeof getImagesImageDigestArtifactsFileContentSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestArtifactsRetrievedFilesRouteHandler: RouteHandler<
+  typeof getImagesImageDigestArtifactsRetrievedFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestArtifactsSecretSearchRouteHandler: RouteHandler<
+  typeof getImagesImageDigestArtifactsSecretSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestCheckRouteHandler: RouteHandler<
+  typeof getImagesImageDigestCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestContentRouteHandler: RouteHandler<
+  typeof getImagesImageDigestContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestContentFilesRouteHandler: RouteHandler<
+  typeof getImagesImageDigestContentFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestContentJavaRouteHandler: RouteHandler<
+  typeof getImagesImageDigestContentJavaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestContentMalwareRouteHandler: RouteHandler<
+  typeof getImagesImageDigestContentMalwareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestContentCtypeRouteHandler: RouteHandler<
+  typeof getImagesImageDigestContentCtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestMetadataRouteHandler: RouteHandler<
+  typeof getImagesImageDigestMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestMetadataMtypeRouteHandler: RouteHandler<
+  typeof getImagesImageDigestMetadataMtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestSbomsNativeRouteHandler: RouteHandler<
+  typeof getImagesImageDigestSbomsNativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestVulnRouteHandler: RouteHandler<
+  typeof getImagesImageDigestVulnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImagesImageDigestVulnVtypeRouteHandler: RouteHandler<
+  typeof getImagesImageDigestVulnVtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

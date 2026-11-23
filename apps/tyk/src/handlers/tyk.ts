@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTykApisApiIDRoute,
   deleteTykApisOasApiIDRoute,
   deleteTykCacheApiIDRoute,
@@ -65,195 +65,336 @@ import {
   putTykPoliciesPolIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTykApisRouteHandler: RouteHandler<typeof getTykApisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tykHandler = app
-  .openapi(getTykApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykApisApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykApisApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisApiIDVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisOasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykApisOasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykApisOasApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisOasApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTykApisOasApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykApisOasApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisOasApiIDExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisOasApiIDVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykApisOasExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykApisOasImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykMcpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykMcpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykMcpsApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykMcpsApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykMcpsApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykCacheApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykCacheJwksApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykCacheJwksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykCertsCertIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykCertsCertIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykDebugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykKeysCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykKeysPolicyKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykKeysPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOauthClientsApiIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykOauthClientsApiIDKeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOauthClientsApiIDKeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykOauthClientsApiIDKeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykOauthClientsApiIDKeyNameRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOauthClientsApiIDKeyNameTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOauthClientsApisAppIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykOauthClientsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykOauthRefreshKeyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykOauthRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykOauthRevokeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykOauthTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOrgKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykOrgKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykOrgKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykOrgKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykOrgKeysKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTykPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTykPoliciesPolIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykPoliciesPolIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTykPoliciesPolIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykReloadGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTykSchemaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTykApisRouteHandler: RouteHandler<typeof postTykApisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykApisApiIDRouteHandler: RouteHandler<typeof deleteTykApisApiIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisApiIDRouteHandler: RouteHandler<typeof getTykApisApiIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykApisApiIDRouteHandler: RouteHandler<typeof putTykApisApiIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisApiIDVersionsRouteHandler: RouteHandler<
+  typeof getTykApisApiIDVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisOasRouteHandler: RouteHandler<typeof getTykApisOasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykApisOasRouteHandler: RouteHandler<typeof postTykApisOasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykApisOasApiIDRouteHandler: RouteHandler<
+  typeof deleteTykApisOasApiIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisOasApiIDRouteHandler: RouteHandler<typeof getTykApisOasApiIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTykApisOasApiIDRouteHandler: RouteHandler<
+  typeof patchTykApisOasApiIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykApisOasApiIDRouteHandler: RouteHandler<typeof putTykApisOasApiIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisOasApiIDExportRouteHandler: RouteHandler<
+  typeof getTykApisOasApiIDExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisOasApiIDVersionsRouteHandler: RouteHandler<
+  typeof getTykApisOasApiIDVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykApisOasExportRouteHandler: RouteHandler<
+  typeof getTykApisOasExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykApisOasImportRouteHandler: RouteHandler<
+  typeof postTykApisOasImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykMcpsRouteHandler: RouteHandler<typeof getTykMcpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykMcpsRouteHandler: RouteHandler<typeof postTykMcpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykMcpsApiIDRouteHandler: RouteHandler<typeof getTykMcpsApiIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykMcpsApiIDRouteHandler: RouteHandler<typeof putTykMcpsApiIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykMcpsApiIDRouteHandler: RouteHandler<typeof deleteTykMcpsApiIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykCacheApiIDRouteHandler: RouteHandler<
+  typeof deleteTykCacheApiIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykCacheJwksApiIDRouteHandler: RouteHandler<
+  typeof deleteTykCacheJwksApiIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykCacheJwksRouteHandler: RouteHandler<typeof deleteTykCacheJwksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykCertsRouteHandler: RouteHandler<typeof getTykCertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykCertsRouteHandler: RouteHandler<typeof postTykCertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykCertsCertIDRouteHandler: RouteHandler<
+  typeof deleteTykCertsCertIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykCertsCertIDRouteHandler: RouteHandler<typeof getTykCertsCertIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykDebugRouteHandler: RouteHandler<typeof postTykDebugRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykKeysRouteHandler: RouteHandler<typeof getTykKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykKeysRouteHandler: RouteHandler<typeof postTykKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykKeysKeyIDRouteHandler: RouteHandler<typeof deleteTykKeysKeyIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykKeysKeyIDRouteHandler: RouteHandler<typeof getTykKeysKeyIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykKeysKeyIDRouteHandler: RouteHandler<typeof postTykKeysKeyIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykKeysKeyIDRouteHandler: RouteHandler<typeof putTykKeysKeyIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykKeysCreateRouteHandler: RouteHandler<typeof postTykKeysCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykKeysPolicyKeyIDRouteHandler: RouteHandler<
+  typeof postTykKeysPolicyKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykKeysPreviewRouteHandler: RouteHandler<typeof postTykKeysPreviewRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOauthClientsApiIDRouteHandler: RouteHandler<
+  typeof getTykOauthClientsApiIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykOauthClientsApiIDKeyNameRouteHandler: RouteHandler<
+  typeof deleteTykOauthClientsApiIDKeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOauthClientsApiIDKeyNameRouteHandler: RouteHandler<
+  typeof getTykOauthClientsApiIDKeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykOauthClientsApiIDKeyNameRouteHandler: RouteHandler<
+  typeof putTykOauthClientsApiIDKeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykOauthClientsApiIDKeyNameRotateRouteHandler: RouteHandler<
+  typeof putTykOauthClientsApiIDKeyNameRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOauthClientsApiIDKeyNameTokensRouteHandler: RouteHandler<
+  typeof getTykOauthClientsApiIDKeyNameTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOauthClientsApisAppIDRouteHandler: RouteHandler<
+  typeof getTykOauthClientsApisAppIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykOauthClientsCreateRouteHandler: RouteHandler<
+  typeof postTykOauthClientsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykOauthRefreshKeyNameRouteHandler: RouteHandler<
+  typeof deleteTykOauthRefreshKeyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykOauthRevokeRouteHandler: RouteHandler<typeof postTykOauthRevokeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykOauthRevokeAllRouteHandler: RouteHandler<
+  typeof postTykOauthRevokeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykOauthTokensRouteHandler: RouteHandler<
+  typeof deleteTykOauthTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOrgKeysRouteHandler: RouteHandler<typeof getTykOrgKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykOrgKeysKeyIDRouteHandler: RouteHandler<
+  typeof deleteTykOrgKeysKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykOrgKeysKeyIDRouteHandler: RouteHandler<typeof getTykOrgKeysKeyIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykOrgKeysKeyIDRouteHandler: RouteHandler<
+  typeof postTykOrgKeysKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykOrgKeysKeyIDRouteHandler: RouteHandler<typeof putTykOrgKeysKeyIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykPoliciesRouteHandler: RouteHandler<typeof getTykPoliciesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTykPoliciesRouteHandler: RouteHandler<typeof postTykPoliciesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTykPoliciesPolIDRouteHandler: RouteHandler<
+  typeof deleteTykPoliciesPolIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykPoliciesPolIDRouteHandler: RouteHandler<
+  typeof getTykPoliciesPolIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTykPoliciesPolIDRouteHandler: RouteHandler<
+  typeof putTykPoliciesPolIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykReloadRouteHandler: RouteHandler<typeof getTykReloadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykReloadGroupRouteHandler: RouteHandler<typeof getTykReloadGroupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTykSchemaRouteHandler: RouteHandler<typeof getTykSchemaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-payroll-uk.yaml',
   output: './src/xero-payroll-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/xero-payroll-uk/types.ts' },
   client: { output: './src/xero-payroll-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/xero-payroll-uk/rpc.ts', parseResponse: true },

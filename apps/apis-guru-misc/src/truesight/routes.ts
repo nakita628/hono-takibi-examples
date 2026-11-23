@@ -1639,7 +1639,7 @@ export const getHardwareDeviceMonitorsDeviceIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful operation', content: {} },
+    200: { description: 'Successful operation' },
     500: { description: 'Unexpected error', content: { '*/*': { schema: ErrorResponseSchema } } },
   },
 })

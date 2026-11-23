@@ -195,8 +195,8 @@ const MessageGroupsListSchema = z
 const BoxedBooleanSchema = z.boolean().openapi('BoxedBoolean')
 
 type ResponseSpecificationType = {
-  messageGroups: z.infer<typeof MessageGroupsListSchema> & unknown
-  allowInterrupt?: z.infer<typeof BoxedBooleanSchema> & unknown
+  messageGroups: z.infer<typeof MessageGroupsListSchema>
+  allowInterrupt?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const ResponseSpecificationSchema: z.ZodType<ResponseSpecificationType> = z
@@ -318,9 +318,9 @@ const ConditionSchema = z
   .openapi('Condition')
 
 type ConditionalBranchType = {
-  name: z.infer<typeof NameSchema> & unknown
-  condition: z.infer<typeof ConditionSchema> & unknown
-  nextStep: z.infer<typeof DialogStateSchema> & unknown
+  name: z.infer<typeof NameSchema>
+  condition: z.infer<typeof ConditionSchema>
+  nextStep: z.infer<typeof DialogStateSchema>
   response?: z.infer<typeof ResponseSpecificationSchema>
 }
 
@@ -349,7 +349,7 @@ const ConditionalBranchesSchema: z.ZodType<ConditionalBranchesType> = z
   .openapi('ConditionalBranches')
 
 type DefaultConditionalBranchType = {
-  nextStep?: z.infer<typeof DialogStateSchema> & unknown
+  nextStep?: z.infer<typeof DialogStateSchema>
   response?: z.infer<typeof ResponseSpecificationSchema>
 }
 
@@ -368,9 +368,9 @@ const DefaultConditionalBranchSchema: z.ZodType<DefaultConditionalBranchType> = 
   .openapi('DefaultConditionalBranch')
 
 type ConditionalSpecificationType = {
-  active: z.infer<typeof BoxedBooleanSchema> & unknown
-  conditionalBranches: z.infer<typeof ConditionalBranchesSchema> & unknown
-  defaultBranch: z.infer<typeof DefaultConditionalBranchSchema> & unknown
+  active: z.infer<typeof BoxedBooleanSchema>
+  conditionalBranches: z.infer<typeof ConditionalBranchesSchema>
+  defaultBranch: z.infer<typeof DefaultConditionalBranchSchema>
 }
 
 const ConditionalSpecificationSchema: z.ZodType<ConditionalSpecificationType> = z
@@ -399,12 +399,12 @@ type PostFulfillmentStatusSpecificationType = {
   successResponse?: z.infer<typeof ResponseSpecificationSchema>
   failureResponse?: z.infer<typeof ResponseSpecificationSchema>
   timeoutResponse?: z.infer<typeof ResponseSpecificationSchema>
-  successNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  successConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
-  failureNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  failureConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
-  timeoutNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  timeoutConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  successNextStep?: z.infer<typeof DialogStateSchema>
+  successConditional?: z.infer<typeof ConditionalSpecificationSchema>
+  failureNextStep?: z.infer<typeof DialogStateSchema>
+  failureConditional?: z.infer<typeof ConditionalSpecificationSchema>
+  timeoutNextStep?: z.infer<typeof DialogStateSchema>
+  timeoutConditional?: z.infer<typeof ConditionalSpecificationSchema>
 }
 
 const PostFulfillmentStatusSpecificationSchema: z.ZodType<PostFulfillmentStatusSpecificationType> =
@@ -452,9 +452,9 @@ const FulfillmentStartResponseDelaySchema = z
   .openapi('FulfillmentStartResponseDelay')
 
 type FulfillmentStartResponseSpecificationType = {
-  delayInSeconds: z.infer<typeof FulfillmentStartResponseDelaySchema> & unknown
-  messageGroups: z.infer<typeof MessageGroupsListSchema> & unknown
-  allowInterrupt?: z.infer<typeof BoxedBooleanSchema> & unknown
+  delayInSeconds: z.infer<typeof FulfillmentStartResponseDelaySchema>
+  messageGroups: z.infer<typeof MessageGroupsListSchema>
+  allowInterrupt?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const FulfillmentStartResponseSpecificationSchema: z.ZodType<FulfillmentStartResponseSpecificationType> =
@@ -487,9 +487,9 @@ const FulfillmentUpdateResponseFrequencySchema = z
   .openapi('FulfillmentUpdateResponseFrequency')
 
 type FulfillmentUpdateResponseSpecificationType = {
-  frequencyInSeconds: z.infer<typeof FulfillmentUpdateResponseFrequencySchema> & unknown
-  messageGroups: z.infer<typeof MessageGroupsListSchema> & unknown
-  allowInterrupt?: z.infer<typeof BoxedBooleanSchema> & unknown
+  frequencyInSeconds: z.infer<typeof FulfillmentUpdateResponseFrequencySchema>
+  messageGroups: z.infer<typeof MessageGroupsListSchema>
+  allowInterrupt?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const FulfillmentUpdateResponseSpecificationSchema: z.ZodType<FulfillmentUpdateResponseSpecificationType> =
@@ -518,10 +518,10 @@ const FulfillmentUpdateResponseSpecificationSchema: z.ZodType<FulfillmentUpdateR
 const FulfillmentTimeoutSchema = z.int().min(1).max(900).openapi('FulfillmentTimeout')
 
 type FulfillmentUpdatesSpecificationType = {
-  active: z.infer<typeof BoxedBooleanSchema> & unknown
-  startResponse?: z.infer<typeof FulfillmentStartResponseSpecificationSchema> & unknown
-  updateResponse?: z.infer<typeof FulfillmentUpdateResponseSpecificationSchema> & unknown
-  timeoutInSeconds?: z.infer<typeof FulfillmentTimeoutSchema> & unknown
+  active: z.infer<typeof BoxedBooleanSchema>
+  startResponse?: z.infer<typeof FulfillmentStartResponseSpecificationSchema>
+  updateResponse?: z.infer<typeof FulfillmentUpdateResponseSpecificationSchema>
+  timeoutInSeconds?: z.infer<typeof FulfillmentTimeoutSchema>
 }
 
 const FulfillmentUpdatesSpecificationSchema: z.ZodType<FulfillmentUpdatesSpecificationType> = z
@@ -551,11 +551,10 @@ const FulfillmentUpdatesSpecificationSchema: z.ZodType<FulfillmentUpdatesSpecifi
   .openapi('FulfillmentUpdatesSpecification')
 
 type FulfillmentCodeHookSettingsType = {
-  enabled: z.infer<typeof BooleanSchema> & unknown
-  postFulfillmentStatusSpecification?: z.infer<typeof PostFulfillmentStatusSpecificationSchema> &
-    unknown
-  fulfillmentUpdatesSpecification?: z.infer<typeof FulfillmentUpdatesSpecificationSchema> & unknown
-  active?: z.infer<typeof BoxedBooleanSchema> & unknown
+  enabled: z.infer<typeof BooleanSchema>
+  postFulfillmentStatusSpecification?: z.infer<typeof PostFulfillmentStatusSpecificationSchema>
+  fulfillmentUpdatesSpecification?: z.infer<typeof FulfillmentUpdatesSpecificationSchema>
+  active?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const FulfillmentCodeHookSettingsSchema: z.ZodType<FulfillmentCodeHookSettingsType> = z
@@ -712,11 +711,11 @@ const PromptAttemptsSpecificationMapSchema = z
   .openapi('PromptAttemptsSpecificationMap')
 
 type PromptSpecificationType = {
-  messageGroups: z.infer<typeof MessageGroupsListSchema> & unknown
-  maxRetries: z.infer<typeof PromptMaxRetriesSchema> & unknown
-  allowInterrupt?: z.infer<typeof BoxedBooleanSchema> & unknown
-  messageSelectionStrategy?: z.infer<typeof MessageSelectionStrategySchema> & unknown
-  promptAttemptsSpecification?: z.infer<typeof PromptAttemptsSpecificationMapSchema> & unknown
+  messageGroups: z.infer<typeof MessageGroupsListSchema>
+  maxRetries: z.infer<typeof PromptMaxRetriesSchema>
+  allowInterrupt?: z.infer<typeof BoxedBooleanSchema>
+  messageSelectionStrategy?: z.infer<typeof MessageSelectionStrategySchema>
+  promptAttemptsSpecification?: z.infer<typeof PromptAttemptsSpecificationMapSchema>
 }
 
 const PromptSpecificationSchema: z.ZodType<PromptSpecificationType> = z
@@ -748,14 +747,14 @@ const PromptSpecificationSchema: z.ZodType<PromptSpecificationType> = z
 
 type PostDialogCodeHookInvocationSpecificationType = {
   successResponse?: z.infer<typeof ResponseSpecificationSchema>
-  successNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  successConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  successNextStep?: z.infer<typeof DialogStateSchema>
+  successConditional?: z.infer<typeof ConditionalSpecificationSchema>
   failureResponse?: z.infer<typeof ResponseSpecificationSchema>
-  failureNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  failureConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  failureNextStep?: z.infer<typeof DialogStateSchema>
+  failureConditional?: z.infer<typeof ConditionalSpecificationSchema>
   timeoutResponse?: z.infer<typeof ResponseSpecificationSchema>
-  timeoutNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  timeoutConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  timeoutNextStep?: z.infer<typeof DialogStateSchema>
+  timeoutConditional?: z.infer<typeof ConditionalSpecificationSchema>
 }
 
 const PostDialogCodeHookInvocationSpecificationSchema: z.ZodType<PostDialogCodeHookInvocationSpecificationType> =
@@ -794,11 +793,10 @@ const PostDialogCodeHookInvocationSpecificationSchema: z.ZodType<PostDialogCodeH
     .openapi('PostDialogCodeHookInvocationSpecification')
 
 type DialogCodeHookInvocationSettingType = {
-  enableCodeHookInvocation: z.infer<typeof BoxedBooleanSchema> & unknown
-  active: z.infer<typeof BoxedBooleanSchema> & unknown
-  invocationLabel?: z.infer<typeof NameSchema> & unknown
-  postCodeHookSpecification: z.infer<typeof PostDialogCodeHookInvocationSpecificationSchema> &
-    unknown
+  enableCodeHookInvocation: z.infer<typeof BoxedBooleanSchema>
+  active: z.infer<typeof BoxedBooleanSchema>
+  invocationLabel?: z.infer<typeof NameSchema>
+  postCodeHookSpecification: z.infer<typeof PostDialogCodeHookInvocationSpecificationSchema>
 }
 
 const DialogCodeHookInvocationSettingSchema: z.ZodType<DialogCodeHookInvocationSettingType> = z
@@ -843,19 +841,19 @@ const ElicitationCodeHookInvocationSettingSchema = z
   .openapi('ElicitationCodeHookInvocationSetting')
 
 type IntentConfirmationSettingType = {
-  promptSpecification: z.infer<typeof PromptSpecificationSchema> & unknown
-  declinationResponse?: z.infer<typeof ResponseSpecificationSchema> & unknown
-  active?: z.infer<typeof BoxedBooleanSchema> & unknown
+  promptSpecification: z.infer<typeof PromptSpecificationSchema>
+  declinationResponse?: z.infer<typeof ResponseSpecificationSchema>
+  active?: z.infer<typeof BoxedBooleanSchema>
   confirmationResponse?: z.infer<typeof ResponseSpecificationSchema>
-  confirmationNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  confirmationConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
-  declinationNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  declinationConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  confirmationNextStep?: z.infer<typeof DialogStateSchema>
+  confirmationConditional?: z.infer<typeof ConditionalSpecificationSchema>
+  declinationNextStep?: z.infer<typeof DialogStateSchema>
+  declinationConditional?: z.infer<typeof ConditionalSpecificationSchema>
   failureResponse?: z.infer<typeof ResponseSpecificationSchema>
-  failureNextStep?: z.infer<typeof DialogStateSchema> & unknown
+  failureNextStep?: z.infer<typeof DialogStateSchema>
   failureConditional?: z.infer<typeof ConditionalSpecificationSchema>
-  codeHook?: z.infer<typeof DialogCodeHookInvocationSettingSchema> & unknown
-  elicitationCodeHook?: z.infer<typeof ElicitationCodeHookInvocationSettingSchema> & unknown
+  codeHook?: z.infer<typeof DialogCodeHookInvocationSettingSchema>
+  elicitationCodeHook?: z.infer<typeof ElicitationCodeHookInvocationSettingSchema>
 }
 
 const IntentConfirmationSettingSchema: z.ZodType<IntentConfirmationSettingType> = z
@@ -909,10 +907,10 @@ const IntentConfirmationSettingSchema: z.ZodType<IntentConfirmationSettingType> 
   .openapi('IntentConfirmationSetting')
 
 type IntentClosingSettingType = {
-  closingResponse?: z.infer<typeof ResponseSpecificationSchema> & unknown
-  active?: z.infer<typeof BoxedBooleanSchema> & unknown
-  nextStep?: z.infer<typeof DialogStateSchema> & unknown
-  conditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  closingResponse?: z.infer<typeof ResponseSpecificationSchema>
+  active?: z.infer<typeof BoxedBooleanSchema>
+  nextStep?: z.infer<typeof DialogStateSchema>
+  conditional?: z.infer<typeof ConditionalSpecificationSchema>
 }
 
 const IntentClosingSettingSchema: z.ZodType<IntentClosingSettingType> = z
@@ -1030,7 +1028,7 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 type InitialResponseSettingType = {
   initialResponse?: z.infer<typeof ResponseSpecificationSchema>
-  nextStep?: z.infer<typeof DialogStateSchema> & unknown
+  nextStep?: z.infer<typeof DialogStateSchema>
   conditional?: z.infer<typeof ConditionalSpecificationSchema>
   codeHook?: z.infer<typeof DialogCodeHookInvocationSettingSchema>
 }
@@ -1052,23 +1050,23 @@ const InitialResponseSettingSchema: z.ZodType<InitialResponseSettingType> = z
   .openapi('InitialResponseSetting')
 
 type CreateIntentResponseType = {
-  intentId?: z.infer<typeof IdSchema> & unknown
-  intentName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  parentIntentSignature?: z.infer<typeof IntentSignatureSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
-  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema> & unknown
-  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema> & unknown
-  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema> & unknown
-  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema> & unknown
-  inputContexts?: z.infer<typeof InputContextsListSchema> & unknown
-  outputContexts?: z.infer<typeof OutputContextsListSchema> & unknown
-  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof DraftBotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema> & unknown
+  intentId?: z.infer<typeof IdSchema>
+  intentName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  parentIntentSignature?: z.infer<typeof IntentSignatureSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
+  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema>
+  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema>
+  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema>
+  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema>
+  inputContexts?: z.infer<typeof InputContextsListSchema>
+  outputContexts?: z.infer<typeof OutputContextsListSchema>
+  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof DraftBotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema>
 }
 
 const BuiltInOrCustomSlotTypeIdSchema = z
@@ -1128,10 +1126,10 @@ const StillWaitingResponseTimeoutSchema = z
   .openapi('StillWaitingResponseTimeout')
 
 type StillWaitingResponseSpecificationType = {
-  messageGroups: z.infer<typeof MessageGroupsListSchema> & unknown
-  frequencyInSeconds: z.infer<typeof StillWaitingResponseFrequencySchema> & unknown
-  timeoutInSeconds: z.infer<typeof StillWaitingResponseTimeoutSchema> & unknown
-  allowInterrupt?: z.infer<typeof BoxedBooleanSchema> & unknown
+  messageGroups: z.infer<typeof MessageGroupsListSchema>
+  frequencyInSeconds: z.infer<typeof StillWaitingResponseFrequencySchema>
+  timeoutInSeconds: z.infer<typeof StillWaitingResponseTimeoutSchema>
+  allowInterrupt?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const StillWaitingResponseSpecificationSchema: z.ZodType<StillWaitingResponseSpecificationType> = z
@@ -1161,10 +1159,10 @@ const StillWaitingResponseSpecificationSchema: z.ZodType<StillWaitingResponseSpe
   .openapi('StillWaitingResponseSpecification')
 
 type WaitAndContinueSpecificationType = {
-  waitingResponse: z.infer<typeof ResponseSpecificationSchema> & unknown
-  continueResponse: z.infer<typeof ResponseSpecificationSchema> & unknown
-  stillWaitingResponse?: z.infer<typeof StillWaitingResponseSpecificationSchema> & unknown
-  active?: z.infer<typeof BoxedBooleanSchema> & unknown
+  waitingResponse: z.infer<typeof ResponseSpecificationSchema>
+  continueResponse: z.infer<typeof ResponseSpecificationSchema>
+  stillWaitingResponse?: z.infer<typeof StillWaitingResponseSpecificationSchema>
+  active?: z.infer<typeof BoxedBooleanSchema>
 }
 
 const WaitAndContinueSpecificationSchema: z.ZodType<WaitAndContinueSpecificationType> = z
@@ -1195,13 +1193,13 @@ const WaitAndContinueSpecificationSchema: z.ZodType<WaitAndContinueSpecification
 
 type SlotCaptureSettingType = {
   captureResponse?: z.infer<typeof ResponseSpecificationSchema>
-  captureNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  captureConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
+  captureNextStep?: z.infer<typeof DialogStateSchema>
+  captureConditional?: z.infer<typeof ConditionalSpecificationSchema>
   failureResponse?: z.infer<typeof ResponseSpecificationSchema>
-  failureNextStep?: z.infer<typeof DialogStateSchema> & unknown
-  failureConditional?: z.infer<typeof ConditionalSpecificationSchema> & unknown
-  codeHook?: z.infer<typeof DialogCodeHookInvocationSettingSchema> & unknown
-  elicitationCodeHook?: z.infer<typeof ElicitationCodeHookInvocationSettingSchema> & unknown
+  failureNextStep?: z.infer<typeof DialogStateSchema>
+  failureConditional?: z.infer<typeof ConditionalSpecificationSchema>
+  codeHook?: z.infer<typeof DialogCodeHookInvocationSettingSchema>
+  elicitationCodeHook?: z.infer<typeof ElicitationCodeHookInvocationSettingSchema>
 }
 
 const SlotCaptureSettingSchema: z.ZodType<SlotCaptureSettingType> = z
@@ -1236,12 +1234,12 @@ const SlotCaptureSettingSchema: z.ZodType<SlotCaptureSettingType> = z
   .openapi('SlotCaptureSetting')
 
 type SlotValueElicitationSettingType = {
-  defaultValueSpecification?: z.infer<typeof SlotDefaultValueSpecificationSchema> & unknown
-  slotConstraint: z.infer<typeof SlotConstraintSchema> & unknown
-  promptSpecification?: z.infer<typeof PromptSpecificationSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
+  defaultValueSpecification?: z.infer<typeof SlotDefaultValueSpecificationSchema>
+  slotConstraint: z.infer<typeof SlotConstraintSchema>
+  promptSpecification?: z.infer<typeof PromptSpecificationSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
   waitAndContinueSpecification?: z.infer<typeof WaitAndContinueSpecificationSchema>
-  slotCaptureSetting?: z.infer<typeof SlotCaptureSettingSchema> & unknown
+  slotCaptureSetting?: z.infer<typeof SlotCaptureSettingSchema>
 }
 
 const SlotValueElicitationSettingSchema: z.ZodType<SlotValueElicitationSettingType> = z
@@ -1310,7 +1308,7 @@ const SubSlotExpressionSchema = z
 type SubSlotValueElicitationSettingType = {
   defaultValueSpecification?: z.infer<typeof SlotDefaultValueSpecificationSchema>
   promptSpecification: z.infer<typeof PromptSpecificationSchema>
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
   waitAndContinueSpecification?: z.infer<typeof WaitAndContinueSpecificationSchema>
 }
 
@@ -1332,8 +1330,8 @@ const SubSlotValueElicitationSettingSchema: z.ZodType<SubSlotValueElicitationSet
   .openapi('SubSlotValueElicitationSetting')
 
 type SpecificationsType = {
-  slotTypeId: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting: z.infer<typeof SubSlotValueElicitationSettingSchema> & unknown
+  slotTypeId: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting: z.infer<typeof SubSlotValueElicitationSettingSchema>
 }
 
 const SpecificationsSchema: z.ZodType<SpecificationsType> = z
@@ -1361,8 +1359,8 @@ const SubSlotSpecificationMapSchema: z.ZodType<SubSlotSpecificationMapType> = z
   .openapi('SubSlotSpecificationMap')
 
 type SubSlotSettingType = {
-  expression?: z.infer<typeof SubSlotExpressionSchema> & unknown
-  slotSpecifications?: z.infer<typeof SubSlotSpecificationMapSchema> & unknown
+  expression?: z.infer<typeof SubSlotExpressionSchema>
+  slotSpecifications?: z.infer<typeof SubSlotSpecificationMapSchema>
 }
 
 const SubSlotSettingSchema: z.ZodType<SubSlotSettingType> = z
@@ -1383,19 +1381,19 @@ const SubSlotSettingSchema: z.ZodType<SubSlotSettingType> = z
   .openapi('SubSlotSetting')
 
 type CreateSlotResponseType = {
-  slotId?: z.infer<typeof IdSchema> & unknown
-  slotName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema> & unknown
-  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof DraftBotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  intentId?: z.infer<typeof IdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema> & unknown
-  subSlotSetting?: z.infer<typeof SubSlotSettingSchema> & unknown
+  slotId?: z.infer<typeof IdSchema>
+  slotName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema>
+  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof DraftBotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  intentId?: z.infer<typeof IdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema>
+  subSlotSetting?: z.infer<typeof SubSlotSettingSchema>
 }
 
 const PriorityValueSchema = z.int().min(0).max(100).openapi('PriorityValue')
@@ -1417,25 +1415,25 @@ const SlotPrioritySchema = z
 const SlotPrioritiesListSchema = z.array(SlotPrioritySchema).openapi('SlotPrioritiesList')
 
 type DescribeIntentResponseType = {
-  intentId?: z.infer<typeof IdSchema> & unknown
-  intentName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  parentIntentSignature?: z.infer<typeof IntentSignatureSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
-  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema> & unknown
-  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema> & unknown
-  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema> & unknown
-  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema> & unknown
-  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema> & unknown
-  inputContexts?: z.infer<typeof InputContextsListSchema> & unknown
-  outputContexts?: z.infer<typeof OutputContextsListSchema> & unknown
-  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof DraftBotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  lastUpdatedDateTime?: z.infer<typeof TimestampSchema> & unknown
-  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema> & unknown
+  intentId?: z.infer<typeof IdSchema>
+  intentName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  parentIntentSignature?: z.infer<typeof IntentSignatureSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
+  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema>
+  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema>
+  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema>
+  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema>
+  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema>
+  inputContexts?: z.infer<typeof InputContextsListSchema>
+  outputContexts?: z.infer<typeof OutputContextsListSchema>
+  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof DraftBotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  lastUpdatedDateTime?: z.infer<typeof TimestampSchema>
+  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema>
 }
 
 const BotVersionSchema = z
@@ -1446,30 +1444,30 @@ const BotVersionSchema = z
   .openapi('BotVersion')
 
 type DescribeSlotResponseType = {
-  slotId?: z.infer<typeof IdSchema> & unknown
-  slotName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema> & unknown
-  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof BotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  intentId?: z.infer<typeof IdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  lastUpdatedDateTime?: z.infer<typeof TimestampSchema> & unknown
-  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema> & unknown
-  subSlotSetting?: z.infer<typeof SubSlotSettingSchema> & unknown
+  slotId?: z.infer<typeof IdSchema>
+  slotName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema>
+  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof BotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  intentId?: z.infer<typeof IdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  lastUpdatedDateTime?: z.infer<typeof TimestampSchema>
+  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema>
+  subSlotSetting?: z.infer<typeof SubSlotSettingSchema>
 }
 
 type SlotSummaryType = {
-  slotId?: z.infer<typeof IdSchema> & unknown
-  slotName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotConstraint?: z.infer<typeof SlotConstraintSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationPromptSpecification?: z.infer<typeof PromptSpecificationSchema> & unknown
-  lastUpdatedDateTime?: z.infer<typeof TimestampSchema> & unknown
+  slotId?: z.infer<typeof IdSchema>
+  slotName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotConstraint?: z.infer<typeof SlotConstraintSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationPromptSpecification?: z.infer<typeof PromptSpecificationSchema>
+  lastUpdatedDateTime?: z.infer<typeof TimestampSchema>
 }
 
 const SlotSummarySchema: z.ZodType<SlotSummaryType> = z
@@ -1508,81 +1506,81 @@ const SlotSummaryListSchema: z.ZodType<SlotSummaryListType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type ListSlotsResponseType = {
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof BotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  intentId?: z.infer<typeof IdSchema> & unknown
-  slotSummaries?: z.infer<typeof SlotSummaryListSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof BotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  intentId?: z.infer<typeof IdSchema>
+  slotSummaries?: z.infer<typeof SlotSummaryListSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type UpdateIntentResponseType = {
-  intentId?: z.infer<typeof IdSchema> & unknown
-  intentName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  parentIntentSignature?: z.infer<typeof IntentSignatureSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
-  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema> & unknown
-  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema> & unknown
-  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema> & unknown
-  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema> & unknown
-  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema> & unknown
-  inputContexts?: z.infer<typeof InputContextsListSchema> & unknown
-  outputContexts?: z.infer<typeof OutputContextsListSchema> & unknown
-  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof DraftBotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  lastUpdatedDateTime?: z.infer<typeof TimestampSchema> & unknown
-  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema> & unknown
+  intentId?: z.infer<typeof IdSchema>
+  intentName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  parentIntentSignature?: z.infer<typeof IntentSignatureSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
+  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema>
+  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema>
+  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema>
+  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema>
+  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema>
+  inputContexts?: z.infer<typeof InputContextsListSchema>
+  outputContexts?: z.infer<typeof OutputContextsListSchema>
+  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof DraftBotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  lastUpdatedDateTime?: z.infer<typeof TimestampSchema>
+  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema>
 }
 
 type UpdateSlotResponseType = {
-  slotId?: z.infer<typeof IdSchema> & unknown
-  slotName?: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema> & unknown
-  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema> & unknown
-  botId?: z.infer<typeof IdSchema> & unknown
-  botVersion?: z.infer<typeof DraftBotVersionSchema> & unknown
-  localeId?: z.infer<typeof LocaleIdSchema> & unknown
-  intentId?: z.infer<typeof IdSchema> & unknown
-  creationDateTime?: z.infer<typeof TimestampSchema> & unknown
-  lastUpdatedDateTime?: z.infer<typeof TimestampSchema> & unknown
-  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema> & unknown
-  subSlotSetting?: z.infer<typeof SubSlotSettingSchema> & unknown
+  slotId?: z.infer<typeof IdSchema>
+  slotName?: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting?: z.infer<typeof SlotValueElicitationSettingSchema>
+  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema>
+  botId?: z.infer<typeof IdSchema>
+  botVersion?: z.infer<typeof DraftBotVersionSchema>
+  localeId?: z.infer<typeof LocaleIdSchema>
+  intentId?: z.infer<typeof IdSchema>
+  creationDateTime?: z.infer<typeof TimestampSchema>
+  lastUpdatedDateTime?: z.infer<typeof TimestampSchema>
+  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema>
+  subSlotSetting?: z.infer<typeof SubSlotSettingSchema>
 }
 
 type CreateIntentRequestType = {
-  intentName: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  parentIntentSignature?: z.infer<typeof IntentSignatureSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
-  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema> & unknown
-  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema> & unknown
-  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema> & unknown
-  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema> & unknown
-  inputContexts?: z.infer<typeof InputContextsListSchema> & unknown
-  outputContexts?: z.infer<typeof OutputContextsListSchema> & unknown
-  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema> & unknown
-  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema> & unknown
+  intentName: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  parentIntentSignature?: z.infer<typeof IntentSignatureSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
+  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema>
+  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema>
+  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema>
+  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema>
+  inputContexts?: z.infer<typeof InputContextsListSchema>
+  outputContexts?: z.infer<typeof OutputContextsListSchema>
+  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema>
+  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema>
 }
 
 type CreateSlotRequestType = {
-  slotName: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting: z.infer<typeof SlotValueElicitationSettingSchema> & unknown
-  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema> & unknown
-  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema> & unknown
-  subSlotSetting?: z.infer<typeof SubSlotSettingSchema> & unknown
+  slotName: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting: z.infer<typeof SlotValueElicitationSettingSchema>
+  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema>
+  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema>
+  subSlotSetting?: z.infer<typeof SubSlotSettingSchema>
 }
 
 const NonEmptyStringSchema = z.string().min(1).openapi('NonEmptyString')
 
-type SlotValueType = { interpretedValue?: z.infer<typeof NonEmptyStringSchema> & unknown }
+type SlotValueType = { interpretedValue?: z.infer<typeof NonEmptyStringSchema> }
 
 type SlotValuesType = z.infer<typeof SlotValueOverrideSchema>[]
 
@@ -1601,34 +1599,34 @@ const SlotValuesSchema: z.ZodType<SlotValuesType> = z
   .openapi('SlotValues')
 
 type SlotValueOverrideType = {
-  value?: z.infer<typeof SlotValueSchema> & unknown
-  values?: z.infer<typeof SlotValuesSchema> & unknown
+  value?: z.infer<typeof SlotValueSchema>
+  values?: z.infer<typeof SlotValuesSchema>
 }
 
 type UpdateIntentRequestType = {
-  intentName: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  parentIntentSignature?: z.infer<typeof IntentSignatureSchema> & unknown
-  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema> & unknown
-  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema> & unknown
-  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema> & unknown
-  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema> & unknown
-  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema> & unknown
-  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema> & unknown
-  inputContexts?: z.infer<typeof InputContextsListSchema> & unknown
-  outputContexts?: z.infer<typeof OutputContextsListSchema> & unknown
-  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema> & unknown
-  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema> & unknown
+  intentName: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  parentIntentSignature?: z.infer<typeof IntentSignatureSchema>
+  sampleUtterances?: z.infer<typeof SampleUtterancesListSchema>
+  dialogCodeHook?: z.infer<typeof DialogCodeHookSettingsSchema>
+  fulfillmentCodeHook?: z.infer<typeof FulfillmentCodeHookSettingsSchema>
+  slotPriorities?: z.infer<typeof SlotPrioritiesListSchema>
+  intentConfirmationSetting?: z.infer<typeof IntentConfirmationSettingSchema>
+  intentClosingSetting?: z.infer<typeof IntentClosingSettingSchema>
+  inputContexts?: z.infer<typeof InputContextsListSchema>
+  outputContexts?: z.infer<typeof OutputContextsListSchema>
+  kendraConfiguration?: z.infer<typeof KendraConfigurationSchema>
+  initialResponseSetting?: z.infer<typeof InitialResponseSettingSchema>
 }
 
 type UpdateSlotRequestType = {
-  slotName: z.infer<typeof NameSchema> & unknown
-  description?: z.infer<typeof DescriptionSchema> & unknown
-  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema> & unknown
-  valueElicitationSetting: z.infer<typeof SlotValueElicitationSettingSchema> & unknown
-  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema> & unknown
-  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema> & unknown
-  subSlotSetting?: z.infer<typeof SubSlotSettingSchema> & unknown
+  slotName: z.infer<typeof NameSchema>
+  description?: z.infer<typeof DescriptionSchema>
+  slotTypeId?: z.infer<typeof BuiltInOrCustomSlotTypeIdSchema>
+  valueElicitationSetting: z.infer<typeof SlotValueElicitationSettingSchema>
+  obfuscationSetting?: z.infer<typeof ObfuscationSettingSchema>
+  multipleValuesSetting?: z.infer<typeof MultipleValuesSettingSchema>
+  subSlotSetting?: z.infer<typeof SubSlotSettingSchema>
 }
 
 const ItemIdSchema = z.string().min(1).max(32).openapi('ItemId')

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSSMContactsCreateRotationOverrideRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSSMContactsCreateRotationOverrideRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSsmContactsCreateRotationOverrideHandler = app.openapi(
-  postXAmzTargetSSMContactsCreateRotationOverrideRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSSMContactsCreateRotationOverrideRouteHandler: RouteHandler<
+  typeof postXAmzTargetSSMContactsCreateRotationOverrideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

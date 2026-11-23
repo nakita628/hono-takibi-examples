@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDedicatedIpsDedicatedIpIdRoute,
   getDedicatedIpsDedicatedIpIdRoute,
   getDedicatedIpsRoute,
@@ -7,21 +7,30 @@ import {
   postDedicatedIpsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDedicatedIpsRouteHandler: RouteHandler<typeof getDedicatedIpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dedicatedIpsHandler = app
-  .openapi(getDedicatedIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDedicatedIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDedicatedIpsDedicatedIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDedicatedIpsDedicatedIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDedicatedIpsDedicatedIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDedicatedIpsRouteHandler: RouteHandler<typeof postDedicatedIpsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDedicatedIpsDedicatedIpIdRouteHandler: RouteHandler<
+  typeof getDedicatedIpsDedicatedIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDedicatedIpsDedicatedIpIdRouteHandler: RouteHandler<
+  typeof patchDedicatedIpsDedicatedIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDedicatedIpsDedicatedIpIdRouteHandler: RouteHandler<
+  typeof deleteDedicatedIpsDedicatedIpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

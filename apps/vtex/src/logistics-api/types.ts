@@ -1,7 +1,7 @@
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames': {
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames': {
       $get: {
         input: { param: { capacityType: string; shippingPolicyId: string } } & {
           query: { rangeStart: string; rangeEnd: string }
@@ -12,7 +12,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames/:windowDayF:windowStartTimeT:windowEndTime': {
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames/:windowDayF{windowStartTime}T{windowEndTime}': {
       $get: {
         input: {
           param: {

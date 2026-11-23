@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVerifyProfilesVerifyProfileIdRoute,
   getVerifyProfilesRoute,
   getVerifyProfilesVerifyProfileIdRoute,
@@ -7,21 +7,32 @@ import {
   postVerifyProfilesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVerifyProfilesRouteHandler: RouteHandler<typeof getVerifyProfilesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const verifyProfilesHandler = app
-  .openapi(getVerifyProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerifyProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVerifyProfilesVerifyProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVerifyProfilesVerifyProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVerifyProfilesVerifyProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVerifyProfilesRouteHandler: RouteHandler<typeof postVerifyProfilesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVerifyProfilesVerifyProfileIdRouteHandler: RouteHandler<
+  typeof deleteVerifyProfilesVerifyProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVerifyProfilesVerifyProfileIdRouteHandler: RouteHandler<
+  typeof getVerifyProfilesVerifyProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVerifyProfilesVerifyProfileIdRouteHandler: RouteHandler<
+  typeof patchVerifyProfilesVerifyProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

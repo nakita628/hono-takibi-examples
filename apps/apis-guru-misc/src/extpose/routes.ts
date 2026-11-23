@@ -98,7 +98,7 @@ export const getUserExtensionsRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: z.array(ExtensionSchema) } },
     },
-    400: { description: 'Invalid status value', content: {} },
+    400: { description: 'Invalid status value' },
   },
   security: [{ api_key: [] }],
 })

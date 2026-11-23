@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFlowRunsFlowRunIdRoute,
   getFlowRunsFlowRunIdRoute,
   getFlowRunsFlowRunIdStepsRoute,
@@ -9,27 +9,40 @@ import {
   postFlowRunsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFlowRunsRouteHandler: RouteHandler<typeof getFlowRunsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const flowRunsHandler = app
-  .openapi(getFlowRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlowRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowRunsFlowRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFlowRunsFlowRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowRunsFlowRunIdStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowRunsFlowRunIdStepsStepSeqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowRunsFlowRunIdStepsStepSeqAttemptsAttemptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFlowRunsRouteHandler: RouteHandler<typeof postFlowRunsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowRunsFlowRunIdRouteHandler: RouteHandler<
+  typeof getFlowRunsFlowRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFlowRunsFlowRunIdRouteHandler: RouteHandler<
+  typeof deleteFlowRunsFlowRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowRunsFlowRunIdStepsRouteHandler: RouteHandler<
+  typeof getFlowRunsFlowRunIdStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowRunsFlowRunIdStepsStepSeqRouteHandler: RouteHandler<
+  typeof getFlowRunsFlowRunIdStepsStepSeqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowRunsFlowRunIdStepsStepSeqAttemptsAttemptRouteHandler: RouteHandler<
+  typeof getFlowRunsFlowRunIdStepsStepSeqAttemptsAttemptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

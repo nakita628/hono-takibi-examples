@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmObjectSchemas202609SchemasObjectTypeAssociationsAssociationIdentifierRoute,
   deleteCrmObjectSchemas202609SchemasObjectTypeRoute,
   getCrmObjectSchemas202609SchemasObjectTypeRoute,
@@ -10,33 +10,50 @@ import {
   postCrmObjectSchemas202609SchemasRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmObjectSchemas202609SchemasRouteHandler: RouteHandler<
+  typeof getCrmObjectSchemas202609SchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmObjectSchemasHandler = app
-  .openapi(getCrmObjectSchemas202609SchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjectSchemas202609SchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjectSchemas202609SchemasBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjectSchemas202609SchemasObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjectSchemas202609SchemasObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmObjectSchemas202609SchemasObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjectSchemas202609SchemasObjectTypeAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteCrmObjectSchemas202609SchemasObjectTypeAssociationsAssociationIdentifierRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postCrmObjectSchemas202609SchemasRouteHandler: RouteHandler<
+  typeof postCrmObjectSchemas202609SchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjectSchemas202609SchemasBatchReadRouteHandler: RouteHandler<
+  typeof postCrmObjectSchemas202609SchemasBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjectSchemas202609SchemasObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmObjectSchemas202609SchemasObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjectSchemas202609SchemasObjectTypeRouteHandler: RouteHandler<
+  typeof deleteCrmObjectSchemas202609SchemasObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmObjectSchemas202609SchemasObjectTypeRouteHandler: RouteHandler<
+  typeof patchCrmObjectSchemas202609SchemasObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjectSchemas202609SchemasObjectTypeAssociationsRouteHandler: RouteHandler<
+  typeof postCrmObjectSchemas202609SchemasObjectTypeAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjectSchemas202609SchemasObjectTypeAssociationsAssociationIdentifierRouteHandler: RouteHandler<
+  typeof deleteCrmObjectSchemas202609SchemasObjectTypeAssociationsAssociationIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

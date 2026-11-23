@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getInternalNetmonCorrelationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getInternalNetmonCorrelationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const internalHandler = app.openapi(getInternalNetmonCorrelationRoute, (c) => {
+export const getInternalNetmonCorrelationRouteHandler: RouteHandler<
+  typeof getInternalNetmonCorrelationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

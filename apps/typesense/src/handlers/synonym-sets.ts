@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSynonymSetsSynonymSetNameItemsItemIdRoute,
   deleteSynonymSetsSynonymSetNameRoute,
   getSynonymSetsRoute,
@@ -10,30 +10,48 @@ import {
   putSynonymSetsSynonymSetNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSynonymSetsRouteHandler: RouteHandler<typeof getSynonymSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const synonymSetsHandler = app
-  .openapi(getSynonymSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSynonymSetsSynonymSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSynonymSetsSynonymSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSynonymSetsSynonymSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSynonymSetsSynonymSetNameItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSynonymSetsSynonymSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSynonymSetsSynonymSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSynonymSetsSynonymSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSynonymSetsSynonymSetNameRouteHandler: RouteHandler<
+  typeof getSynonymSetsSynonymSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSynonymSetsSynonymSetNameRouteHandler: RouteHandler<
+  typeof putSynonymSetsSynonymSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSynonymSetsSynonymSetNameRouteHandler: RouteHandler<
+  typeof deleteSynonymSetsSynonymSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSynonymSetsSynonymSetNameItemsRouteHandler: RouteHandler<
+  typeof getSynonymSetsSynonymSetNameItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSynonymSetsSynonymSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof getSynonymSetsSynonymSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSynonymSetsSynonymSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof putSynonymSetsSynonymSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSynonymSetsSynonymSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof deleteSynonymSetsSynonymSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

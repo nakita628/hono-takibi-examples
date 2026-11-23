@@ -807,7 +807,7 @@ export function usePostAsyncFunctionFunctionName<TError = unknown>(options?: {
 }
 
 export function getPostAsyncFunctionFunctionNameNamespaceKey() {
-  return ['async-function', '/async-function/:functionName.:namespace', 'POST'] as const
+  return ['async-function', '/async-function/:functionName.{namespace}', 'POST'] as const
 }
 
 export function usePostAsyncFunctionFunctionNameNamespace<TError = unknown>(options?: {
@@ -816,14 +816,14 @@ export function usePostAsyncFunctionFunctionNameNamespace<TError = unknown>(opti
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client)['async-function'][':functionName.:namespace']['$post']>
+            ReturnType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>
           >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['async-function'][':functionName.:namespace']['$post']>
+    InferRequestType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -840,12 +840,12 @@ export function usePostAsyncFunctionFunctionNameNamespace<TError = unknown>(opti
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client)['async-function'][':functionName.:namespace']['$post']
+            (typeof client)['async-function'][':functionName.{namespace}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client['async-function'][':functionName.:namespace'].$post(arg, clientOptions),
+          client['async-function'][':functionName.{namespace}'].$post(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -888,7 +888,7 @@ export function usePostFunctionFunctionName<TError = unknown>(options?: {
 }
 
 export function getPostFunctionFunctionNameNamespaceKey() {
-  return ['function', '/function/:functionName.:namespace', 'POST'] as const
+  return ['function', '/function/:functionName.{namespace}', 'POST'] as const
 }
 
 export function usePostFunctionFunctionNameNamespace<TError = unknown>(options?: {
@@ -896,13 +896,13 @@ export function usePostFunctionFunctionNameNamespace<TError = unknown>(options?:
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.function)[':functionName.:namespace']['$post']>>
+          Awaited<ReturnType<(typeof client.function)[':functionName.{namespace}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']>
+    InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -917,8 +917,10 @@ export function usePostFunctionFunctionNameNamespace<TError = unknown>(options?:
         _: Key,
         {
           arg,
-        }: { arg: InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']> },
-      ) => parseResponse(client.function[':functionName.:namespace'].$post(arg, clientOptions)),
+        }: {
+          arg: InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>
+        },
+      ) => parseResponse(client.function[':functionName.{namespace}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }

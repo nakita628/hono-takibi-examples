@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTemplatesTemplateIdRoute,
   getTemplatesRoute,
   getTemplatesTemplateIdRoute,
@@ -11,33 +11,52 @@ import {
   putTemplatesTemplateIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTemplatesRouteHandler: RouteHandler<typeof getTemplatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templatesHandler = app
-  .openapi(getTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesOutputRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateIdCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateIdEditorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateIdOutputRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTemplatesRouteHandler: RouteHandler<typeof postTemplatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesOutputRouteHandler: RouteHandler<
+  typeof postTemplatesOutputRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof putTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateIdCopyRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateIdCopyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateIdEditorRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateIdEditorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateIdOutputRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateIdOutputRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

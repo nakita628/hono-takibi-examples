@@ -1,19 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  addressHandler,
-  contactHandler,
-  emailHandler,
-  identityHandler,
-  phoneHandler,
+  postAddressAutocompleteRoute,
+  postContactEnrichRoute,
+  postEmailEnrichRoute,
+  postIdentityVerifyIdRoute,
+  postPhoneEnrichRoute,
+} from './routes'
+import {
+  postAddressAutocompleteRouteHandler,
+  postContactEnrichRouteHandler,
+  postEmailEnrichRouteHandler,
+  postIdentityVerifyIdRouteHandler,
+  postPhoneEnrichRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', addressHandler)
-  .route('/', contactHandler)
-  .route('/', emailHandler)
-  .route('/', identityHandler)
-  .route('/', phoneHandler)
+  .openapi(postAddressAutocompleteRoute, postAddressAutocompleteRouteHandler)
+  .openapi(postContactEnrichRoute, postContactEnrichRouteHandler)
+  .openapi(postEmailEnrichRoute, postEmailEnrichRouteHandler)
+  .openapi(postIdentityVerifyIdRoute, postIdentityVerifyIdRouteHandler)
+  .openapi(postPhoneEnrichRoute, postPhoneEnrichRouteHandler)
 
 export default app

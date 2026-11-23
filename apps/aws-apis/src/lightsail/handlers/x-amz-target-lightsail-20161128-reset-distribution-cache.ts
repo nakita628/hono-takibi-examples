@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLightsail20161128ResetDistributionCacheRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLightsail20161128ResetDistributionCacheRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLightsail20161128ResetDistributionCacheHandler = app.openapi(
-  postXAmzTargetLightsail20161128ResetDistributionCacheRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLightsail20161128ResetDistributionCacheRouteHandler: RouteHandler<
+  typeof postXAmzTargetLightsail20161128ResetDistributionCacheRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionResyncMFADeviceRoute, postActionResyncMFADeviceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionResyncMFADeviceRoute, postActionResyncMFADeviceRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionResyncMFADeviceRouteHandler: RouteHandler<
+  typeof getActionResyncMFADeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionResyncMfaDeviceHandler = app
-  .openapi(getActionResyncMFADeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionResyncMFADeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionResyncMFADeviceRouteHandler: RouteHandler<
+  typeof postActionResyncMFADeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

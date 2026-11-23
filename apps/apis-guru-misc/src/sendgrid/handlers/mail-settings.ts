@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMailSettingsAddressWhitelistRoute,
   getMailSettingsBouncePurgeRoute,
   getMailSettingsFooterRoute,
@@ -15,45 +15,78 @@ import {
   patchMailSettingsTemplateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMailSettingsRouteHandler: RouteHandler<typeof getMailSettingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mailSettingsHandler = app
-  .openapi(getMailSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsAddressWhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsAddressWhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsBouncePurgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsBouncePurgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsFooterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsFooterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsForwardBounceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsForwardBounceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsForwardSpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsForwardSpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailSettingsTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMailSettingsTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMailSettingsAddressWhitelistRouteHandler: RouteHandler<
+  typeof getMailSettingsAddressWhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsAddressWhitelistRouteHandler: RouteHandler<
+  typeof patchMailSettingsAddressWhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMailSettingsBouncePurgeRouteHandler: RouteHandler<
+  typeof getMailSettingsBouncePurgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsBouncePurgeRouteHandler: RouteHandler<
+  typeof patchMailSettingsBouncePurgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMailSettingsFooterRouteHandler: RouteHandler<
+  typeof getMailSettingsFooterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsFooterRouteHandler: RouteHandler<
+  typeof patchMailSettingsFooterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMailSettingsForwardBounceRouteHandler: RouteHandler<
+  typeof getMailSettingsForwardBounceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsForwardBounceRouteHandler: RouteHandler<
+  typeof patchMailSettingsForwardBounceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMailSettingsForwardSpamRouteHandler: RouteHandler<
+  typeof getMailSettingsForwardSpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsForwardSpamRouteHandler: RouteHandler<
+  typeof patchMailSettingsForwardSpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMailSettingsTemplateRouteHandler: RouteHandler<
+  typeof getMailSettingsTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMailSettingsTemplateRouteHandler: RouteHandler<
+  typeof patchMailSettingsTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

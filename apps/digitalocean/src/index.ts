@@ -1,23 +1,4085 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  apiHandler,
-  approvalsHandler,
-  codeHandler,
-  toolsHandler,
-  uploadUrlHandler,
-  v1Handler,
-  v2Handler,
+  deleteV2AccountKeysSshKeyIdentifierRoute,
+  deleteV2ActionGatewayConnectionsIdRoute,
+  deleteV2ActionGatewayEndpointsEndpointIdRoute,
+  deleteV2ActionGatewayEndpointVersionsVersionIdRoute,
+  deleteV2ActionGatewayMcpServersServerRefRoute,
+  deleteV2ActionGatewayOutputViewsViewIdRoute,
+  deleteV2ActionGatewayProviderCredentialsIdRoute,
+  deleteV2ActionGatewaySessionsSessionUrnRoute,
+  deleteV2ActionGatewayToolbeltsNameRoute,
+  deleteV2AddOnsSaasResourceUuidRoute,
+  deleteV2AppsIdRoute,
+  deleteV2ByoipPrefixesByoipPrefixUuidRoute,
+  deleteV2CdnEndpointsCdnIdCacheRoute,
+  deleteV2CdnEndpointsCdnIdRoute,
+  deleteV2CertificatesCertificateIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidRoute,
+  deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  deleteV2DedicatedInferencesDedicatedInferenceIdRoute,
+  deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRoute,
+  deleteV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  deleteV2DomainsDomainNameRoute,
+  deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRoute,
+  deleteV2DropletsAutoscaleAutoscalePoolIdRoute,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRoute,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRoute,
+  deleteV2DropletsDropletIdRoute,
+  deleteV2DropletsRoute,
+  deleteV2FirewallsFirewallIdDropletsRoute,
+  deleteV2FirewallsFirewallIdRoute,
+  deleteV2FirewallsFirewallIdRulesRoute,
+  deleteV2FirewallsFirewallIdTagsRoute,
+  deleteV2FloatingIpsFloatingIpRoute,
+  deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+  deleteV2FunctionsNamespacesNamespaceIdRoute,
+  deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+  deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+  deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRoute,
+  deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+  deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  deleteV2GenAiAgentsUuidRoute,
+  deleteV2GenAiAnthropicKeysApiKeyUuidRoute,
+  deleteV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+  deleteV2GenAiCustomModelsUuidRoute,
+  deleteV2GenAiEvaluationDatasetsDatasetUuidRoute,
+  deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+  deleteV2GenAiKnowledgeBasesUuidRoute,
+  deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+  deleteV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  deleteV2GenAiModelsApiKeysApiKeyUuidRoute,
+  deleteV2GenAiModelsRoutersUuidRoute,
+  deleteV2GenAiOpenaiKeysApiKeyUuidRoute,
+  deleteV2GenAiScenarioSetsScenarioSetUuidRoute,
+  deleteV2GenAiScheduledIndexingUuidRoute,
+  deleteV2GenAiSimulationRunsRunUuidRoute,
+  deleteV2GenAiWorkspacesWorkspaceUuidRoute,
+  deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+  deleteV2HarnessRuntimeConfigsConfigIdRoute,
+  deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+  deleteV2HarnessRuntimeSessionsSessionIdRoute,
+  deleteV2HarnessRuntimeTemplatesTemplateIdRoute,
+  deleteV2HarnessRuntimeTriggersTriggerIdRoute,
+  deleteV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+  deleteV2ImagesImageIdRoute,
+  deleteV2InsightsAlertRulesIdRoute,
+  deleteV2InsightsDashboardsUuidRoute,
+  deleteV2InsightsNotificationChannelsIdRoute,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRoute,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRoute,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRoute,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  deleteV2KubernetesClustersClusterIdRoute,
+  deleteV2KubernetesRegistriesRoute,
+  deleteV2KubernetesRegistryRoute,
+  deleteV2LoadBalancersLbIdCacheRoute,
+  deleteV2LoadBalancersLbIdDropletsRoute,
+  deleteV2LoadBalancersLbIdForwardingRulesRoute,
+  deleteV2LoadBalancersLbIdRoute,
+  deleteV2MicrovmsCheckpointsCheckpointIdRoute,
+  deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRoute,
+  deleteV2MicrovmsMicrovmIdRoute,
+  deleteV2MicrovmsMicrovmIdUrlsUrlIdRoute,
+  deleteV2MonitoringAlertsAlertUuidRoute,
+  deleteV2MonitoringSinksDestinationsDestinationUuidRoute,
+  deleteV2MonitoringSinksSinkUuidRoute,
+  deleteV2NfsAccessPointsAccessPointIdRoute,
+  deleteV2NfsNfsIdRoute,
+  deleteV2NfsSnapshotsNfsSnapshotIdRoute,
+  deleteV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  deleteV2ProjectsProjectIdRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+  deleteV2RegistriesRegistryNameRoute,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+  deleteV2RegistryRoute,
+  deleteV2ReservedIpsReservedIpRoute,
+  deleteV2ReservedIpv6ReservedIpv6Route,
+  deleteV2SecuritySecretsSecretRoute,
+  deleteV2SecuritySettingsSuppressionsSuppressionUuidRoute,
+  deleteV2SnapshotsSnapshotIdRegionsRegionRoute,
+  deleteV2SnapshotsSnapshotIdRoute,
+  deleteV2SpacesKeysAccessKeyRoute,
+  deleteV2TagsTagIdResourcesRoute,
+  deleteV2TagsTagIdRoute,
+  deleteV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  deleteV2UptimeChecksCheckIdRoute,
+  deleteV2VectorDatabasesIdRoute,
+  deleteV2VolumesRoute,
+  deleteV2VolumesSnapshotsSnapshotIdRoute,
+  deleteV2VolumesVolumeIdRoute,
+  deleteV2VpcNatGatewaysIdRoute,
+  deleteV2VpcPeeringsVpcPeeringIdRoute,
+  deleteV2VpcsVpcIdRoute,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+  getToolsRoute,
+  getV1BatchesBatchIdResultsRoute,
+  getV1BatchesBatchIdRoute,
+  getV1BatchesRoute,
+  getV1ConsentEnvironmentIdRoute,
+  getV1ConsentRoute,
+  getV1ModelsRoute,
+  getV1SignalsAgentsEnvironmentIdSessionsRoute,
+  getV1SignalsDeletionsDeletionIdRoute,
+  getV1SignalsDeletionsRoute,
+  getV1SignalsExportsExportIdDownloadRoute,
+  getV1SignalsExportsExportIdRoute,
+  getV1SignalsExportsOptionsRoute,
+  getV1SignalsExportsRoute,
+  getV1SignalsSessionsSessionIdDialoguesRoute,
+  getV1VideosVideoIdContentRoute,
+  getV1VideosVideoIdRoute,
+  getV21ClicksRoute,
+  getV2AccountKeysRoute,
+  getV2AccountKeysSshKeyIdentifierRoute,
+  getV2AccountRoute,
+  getV2ActionGatewayActorsActorIdLimitsRoute,
+  getV2ActionGatewayConnectionsIdRoute,
+  getV2ActionGatewayConnectionsRoute,
+  getV2ActionGatewayEndpointsEndpointIdRoute,
+  getV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+  getV2ActionGatewayEndpointsRoute,
+  getV2ActionGatewayEndpointsSearchRoute,
+  getV2ActionGatewayEndpointVersionsVersionIdRoute,
+  getV2ActionGatewayMcpServersRoute,
+  getV2ActionGatewayMcpServersServerRefRoute,
+  getV2ActionGatewayMcpServersServerRefToolsRoute,
+  getV2ActionGatewayOutputViewsRoute,
+  getV2ActionGatewayOutputViewsViewIdRoute,
+  getV2ActionGatewayProviderCredentialsIdRoute,
+  getV2ActionGatewayProviderCredentialsRoute,
+  getV2ActionGatewaySessionsRoute,
+  getV2ActionGatewaySessionsSearchRoute,
+  getV2ActionGatewayToolbeltsNameProvidersProviderToolsRoute,
+  getV2ActionGatewayToolbeltsNameProvidersRoute,
+  getV2ActionGatewayToolbeltsNameRoute,
+  getV2ActionGatewayToolbeltsRoute,
+  getV2ActionGatewayToolbeltsSearchRoute,
+  getV2ActionGatewayToolsHealthProvidersRoute,
+  getV2ActionGatewayToolsHealthRoute,
+  getV2ActionGatewayToolsHealthToolsToolSlugRoute,
+  getV2ActionGatewayToolsProvidersRoute,
+  getV2ActionGatewayToolsProvidersSearchRoute,
+  getV2ActionGatewayToolsRoute,
+  getV2ActionGatewayToolsSearchRoute,
+  getV2ActionGatewayToolsToolkitsRoute,
+  getV2ActionGatewayToolsToolSlugVersionsRoute,
+  getV2ActionGatewayUsersRoute,
+  getV2ActionGatewayUsersUserIdRoute,
+  getV2ActionsActionIdRoute,
+  getV2ActionsRoute,
+  getV2AddOnsAppsAppSlugMetadataRoute,
+  getV2AddOnsAppsRoute,
+  getV2AddOnsSaasResourceUuidRoute,
+  getV2AddOnsSaasRoute,
+  getV2AppsAppIdAlertsRoute,
+  getV2AppsAppIdComponentsComponentNameExecRoute,
+  getV2AppsAppIdComponentsComponentNameLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdRoute,
+  getV2AppsAppIdDeploymentsRoute,
+  getV2AppsAppIdEventsEventIdLogsRoute,
+  getV2AppsAppIdEventsEventIdRoute,
+  getV2AppsAppIdEventsRoute,
+  getV2AppsAppIdHealthRoute,
+  getV2AppsAppIdInstancesRoute,
+  getV2AppsAppIdJobInvocationsJobInvocationIdRoute,
+  getV2AppsAppIdJobInvocationsRoute,
+  getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRoute,
+  getV2AppsAppIdLogsRoute,
+  getV2AppsAppIdMetricsBandwidthDailyRoute,
+  getV2AppsIdRoute,
+  getV2AppsRegionsRoute,
+  getV2AppsRoute,
+  getV2AppsTiersInstanceSizesRoute,
+  getV2AppsTiersInstanceSizesSlugRoute,
+  getV2BillingAccountUrnInsightsStartDateEndDateRoute,
+  getV2ByoipPrefixesByoipPrefixUuidIpsRoute,
+  getV2ByoipPrefixesByoipPrefixUuidRoute,
+  getV2ByoipPrefixesRoute,
+  getV2CdnEndpointsCdnIdRoute,
+  getV2CdnEndpointsRoute,
+  getV2CertificatesCertificateIdRoute,
+  getV2CertificatesRoute,
+  getV2CustomersMyBalanceRoute,
+  getV2CustomersMyBillingHistoryRoute,
+  getV2CustomersMyInvoicesInvoiceUuidCsvRoute,
+  getV2CustomersMyInvoicesInvoiceUuidPdfRoute,
+  getV2CustomersMyInvoicesInvoiceUuidRoute,
+  getV2CustomersMyInvoicesInvoiceUuidSummaryRoute,
+  getV2CustomersMyInvoicesRoute,
+  getV2CustomersMyPrepaymentConfigRoute,
+  getV2CustomersMyPrepaymentStatusRoute,
+  getV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+  getV2DatabasesDatabaseClusterUuidBackupsRoute,
+  getV2DatabasesDatabaseClusterUuidCaRoute,
+  getV2DatabasesDatabaseClusterUuidConfigRoute,
+  getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+  getV2DatabasesDatabaseClusterUuidDbsRoute,
+  getV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+  getV2DatabasesDatabaseClusterUuidEventsRoute,
+  getV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+  getV2DatabasesDatabaseClusterUuidFirewallRoute,
+  getV2DatabasesDatabaseClusterUuidIndexesRoute,
+  getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  getV2DatabasesDatabaseClusterUuidLogsinkRoute,
+  getV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+  getV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  getV2DatabasesDatabaseClusterUuidPoolsRoute,
+  getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+  getV2DatabasesDatabaseClusterUuidReplicasRoute,
+  getV2DatabasesDatabaseClusterUuidRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRoute,
+  getV2DatabasesDatabaseClusterUuidSqlModeRoute,
+  getV2DatabasesDatabaseClusterUuidTopicsRoute,
+  getV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  getV2DatabasesDatabaseClusterUuidUsersRoute,
+  getV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  getV2DatabasesMetricsCredentialsRoute,
+  getV2DatabasesOptionsRoute,
+  getV2DatabasesRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdCaRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+  getV2DedicatedInferencesGpuModelConfigRoute,
+  getV2DedicatedInferencesRoute,
+  getV2DedicatedInferencesSizesRoute,
+  getV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  getV2DomainsDomainNameRecordsRoute,
+  getV2DomainsDomainNameRoute,
+  getV2DomainsRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdHistoryRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdMembersRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdRoute,
+  getV2DropletsAutoscaleRoute,
+  getV2DropletsBackupsPoliciesRoute,
+  getV2DropletsBackupsSupportedPoliciesRoute,
+  getV2DropletsDropletIdActionsActionIdRoute,
+  getV2DropletsDropletIdActionsRoute,
+  getV2DropletsDropletIdBackupsPolicyRoute,
+  getV2DropletsDropletIdBackupsRoute,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesRoute,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRoute,
+  getV2DropletsDropletIdFirewallsRoute,
+  getV2DropletsDropletIdKernelsRoute,
+  getV2DropletsDropletIdNeighborsRoute,
+  getV2DropletsDropletIdRoute,
+  getV2DropletsDropletIdSnapshotsRoute,
+  getV2DropletsRoute,
+  getV2FirewallsFirewallIdRoute,
+  getV2FirewallsRoute,
+  getV2FloatingIpsFloatingIpActionsActionIdRoute,
+  getV2FloatingIpsFloatingIpActionsRoute,
+  getV2FloatingIpsFloatingIpRoute,
+  getV2FloatingIpsRoute,
+  getV2FunctionsNamespacesNamespaceIdKeysRoute,
+  getV2FunctionsNamespacesNamespaceIdRoute,
+  getV2FunctionsNamespacesNamespaceIdTriggersRoute,
+  getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  getV2FunctionsNamespacesRoute,
+  getV2GenAiAgentsAgentUuidApiKeysRoute,
+  getV2GenAiAgentsRoute,
+  getV2GenAiAgentsUuidChildAgentsRoute,
+  getV2GenAiAgentsUuidRoute,
+  getV2GenAiAgentsUuidUsageRoute,
+  getV2GenAiAgentsUuidVersionsRoute,
+  getV2GenAiAnthropicKeysApiKeyUuidRoute,
+  getV2GenAiAnthropicKeysRoute,
+  getV2GenAiAnthropicKeysUuidAgentsRoute,
+  getV2GenAiCustomModelsRoute,
+  getV2GenAiCustomModelsUuidRoute,
+  getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRoute,
+  getV2GenAiEvaluationDatasetsRoute,
+  getV2GenAiEvaluationMetricsRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidRoute,
+  getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRoute,
+  getV2GenAiEvaluationTestCasesRoute,
+  getV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+  getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRoute,
+  getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRoute,
+  getV2GenAiIndexingJobsRoute,
+  getV2GenAiIndexingJobsUuidRoute,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRoute,
+  getV2GenAiKnowledgeBasesRoute,
+  getV2GenAiKnowledgeBasesUuidRoute,
+  getV2GenAiModelEvaluationMetricsRoute,
+  getV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+  getV2GenAiModelEvaluationPresetsRoute,
+  getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRoute,
+  getV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  getV2GenAiModelEvaluationRunsRoute,
+  getV2GenAiModelsApiKeysRoute,
+  getV2GenAiModelsCatalogIdRoute,
+  getV2GenAiModelsCatalogRoute,
+  getV2GenAiModelsCatalogV2IdRoute,
+  getV2GenAiModelsCatalogV2Route,
+  getV2GenAiModelsRoute,
+  getV2GenAiModelsRoutersPresetsRoute,
+  getV2GenAiModelsRoutersRoute,
+  getV2GenAiModelsRoutersTasksPresetsRoute,
+  getV2GenAiModelsRoutersUuidRoute,
+  getV2GenAiOauth2UrlRoute,
+  getV2GenAiOpenaiKeysApiKeyUuidRoute,
+  getV2GenAiOpenaiKeysRoute,
+  getV2GenAiOpenaiKeysUuidAgentsRoute,
+  getV2GenAiRegionsRoute,
+  getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRoute,
+  getV2GenAiScenarioLibraryRoute,
+  getV2GenAiScenarioSetsRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidScenariosRoute,
+  getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRoute,
+  getV2GenAiSimulationRunsRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesRoute,
+  getV2GenAiSimulationRunsRunUuidRoute,
+  getV2GenAiWorkspacesRoute,
+  getV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+  getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRoute,
+  getV2GenAiWorkspacesWorkspaceUuidRoute,
+  getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+  getV2HarnessRuntimeAuthProviderConnectionsRoute,
+  getV2HarnessRuntimeAuthProviderPollRoute,
+  getV2HarnessRuntimeConfigsConfigIdRoute,
+  getV2HarnessRuntimeConfigsConfigIdSessionsRoute,
+  getV2HarnessRuntimeConfigsRoute,
+  getV2HarnessRuntimeImageMessagesRoute,
+  getV2HarnessRuntimeRegionsRoute,
+  getV2HarnessRuntimeSessionsRoute,
+  getV2HarnessRuntimeSessionsSandboxSizesRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+  getV2HarnessRuntimeSessionsSessionIdEventsRoute,
+  getV2HarnessRuntimeSessionsSessionIdImageMessagesRoute,
+  getV2HarnessRuntimeSessionsSessionIdIngressRoute,
+  getV2HarnessRuntimeSessionsSessionIdPortForwardPortRoute,
+  getV2HarnessRuntimeSessionsSessionIdRoute,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRoute,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRoute,
+  getV2HarnessRuntimeTemplatesRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdRoute,
+  getV2HarnessRuntimeTriggersBySessionSessionIdRoute,
+  getV2HarnessRuntimeTriggersReusableSessionsRoute,
+  getV2HarnessRuntimeTriggersRoute,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRoute,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsRoute,
+  getV2HarnessRuntimeTriggersTriggerIdRoute,
+  getV2HarnessRuntimeWebhookProvidersRoute,
+  getV2HarnessRuntimeWorkspacesRoute,
+  getV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+  getV2ImagesImageIdActionsActionIdRoute,
+  getV2ImagesImageIdActionsRoute,
+  getV2ImagesImageIdRoute,
+  getV2ImagesRoute,
+  getV2InsightsAlertInstancesIdRoute,
+  getV2InsightsAlertInstancesRoute,
+  getV2InsightsAlertRulesIdRoute,
+  getV2InsightsAlertRulesRoute,
+  getV2InsightsDashboardsRoute,
+  getV2InsightsDashboardsSchemaRoute,
+  getV2InsightsDashboardsUuidRoute,
+  getV2InsightsNotificationChannelsIdRoute,
+  getV2InsightsNotificationChannelsRoute,
+  getV2InsightsQueryRegionPromApiV1LabelNameValuesRoute,
+  getV2InsightsQueryRegionPromApiV1LabelsRoute,
+  getV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+  getV2InsightsQueryRegionPromApiV1QueryRoute,
+  getV2InsightsQueryRegionPromApiV1SeriesRoute,
+  getV2InsightsQueryRegionTracesTraceIdRoute,
+  getV2InsightsResourcesResourceUrnRoute,
+  getV2InsightsResourcesRoute,
+  getV2KubernetesClustersClusterIdClusterlintRoute,
+  getV2KubernetesClustersClusterIdCredentialsRoute,
+  getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRoute,
+  getV2KubernetesClustersClusterIdKubeconfigRoute,
+  getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  getV2KubernetesClustersClusterIdNodePoolsRoute,
+  getV2KubernetesClustersClusterIdRoute,
+  getV2KubernetesClustersClusterIdStatusMessagesRoute,
+  getV2KubernetesClustersClusterIdUpgradesRoute,
+  getV2KubernetesClustersClusterIdUserRoute,
+  getV2KubernetesClustersRoute,
+  getV2KubernetesOptionsRoute,
+  getV2LoadBalancersLbIdRoute,
+  getV2LoadBalancersRoute,
+  getV2MicrovmsCheckpointsCheckpointIdRoute,
+  getV2MicrovmsCheckpointsRoute,
+  getV2MicrovmsMicrovmIdAccessTokensRoute,
+  getV2MicrovmsMicrovmIdConsoleRoute,
+  getV2MicrovmsMicrovmIdFilesRoute,
+  getV2MicrovmsMicrovmIdPortForwardRoute,
+  getV2MicrovmsMicrovmIdRoute,
+  getV2MicrovmsOptionsRoute,
+  getV2MicrovmsRoute,
+  getV2MonitoringAlertsAlertUuidRoute,
+  getV2MonitoringAlertsRoute,
+  getV2MonitoringMetricsAppsCpuPercentageRoute,
+  getV2MonitoringMetricsAppsMemoryPercentageRoute,
+  getV2MonitoringMetricsAppsRestartCountRoute,
+  getV2MonitoringMetricsDatabaseMysqlCpuUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlDiskUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRoute,
+  getV2MonitoringMetricsDatabaseMysqlLoadRoute,
+  getV2MonitoringMetricsDatabaseMysqlMemoryUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlOpRatesRoute,
+  getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRoute,
+  getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsActiveRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetInstancesRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRoute,
+  getV2MonitoringMetricsDropletBandwidthRoute,
+  getV2MonitoringMetricsDropletCpuRoute,
+  getV2MonitoringMetricsDropletFilesystemFreeRoute,
+  getV2MonitoringMetricsDropletFilesystemSizeRoute,
+  getV2MonitoringMetricsDropletLoad15Route,
+  getV2MonitoringMetricsDropletLoad1Route,
+  getV2MonitoringMetricsDropletLoad5Route,
+  getV2MonitoringMetricsDropletMemoryAvailableRoute,
+  getV2MonitoringMetricsDropletMemoryCachedRoute,
+  getV2MonitoringMetricsDropletMemoryFreeRoute,
+  getV2MonitoringMetricsDropletMemoryTotalRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsConnectionsRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsDowntimeRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRoute,
+  getV2MonitoringSinksDestinationsDestinationUuidRoute,
+  getV2MonitoringSinksDestinationsRoute,
+  getV2MonitoringSinksRoute,
+  getV2MonitoringSinksSinkUuidRoute,
+  getV2NfsAccessPointsAccessPointIdRoute,
+  getV2NfsNfsIdRoute,
+  getV2NfsRoute,
+  getV2NfsSharesShareIdAccessPointsRoute,
+  getV2NfsSnapshotsNfsSnapshotIdRoute,
+  getV2NfsSnapshotsRoute,
+  getV2OrganizationsTeamsRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+  getV2PartnerNetworkConnectAttachmentsRoute,
+  getV2ProjectsDefaultResourcesRoute,
+  getV2ProjectsDefaultRoute,
+  getV2ProjectsProjectIdResourcesRoute,
+  getV2ProjectsProjectIdRoute,
+  getV2ProjectsRoute,
+  getV2RegionsRoute,
+  getV2RegistriesOptionsRoute,
+  getV2RegistriesRegistryNameDockerCredentialsRoute,
+  getV2RegistriesRegistryNameGarbageCollectionRoute,
+  getV2RegistriesRegistryNameGarbageCollectionsRoute,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRoute,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRoute,
+  getV2RegistriesRegistryNameRepositoriesV2Route,
+  getV2RegistriesRegistryNameRoute,
+  getV2RegistriesRoute,
+  getV2RegistriesSubscriptionRoute,
+  getV2RegistryDockerCredentialsRoute,
+  getV2RegistryOptionsRoute,
+  getV2RegistryRegistryNameGarbageCollectionRoute,
+  getV2RegistryRegistryNameGarbageCollectionsRoute,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRoute,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRoute,
+  getV2RegistryRegistryNameRepositoriesRoute,
+  getV2RegistryRegistryNameRepositoriesV2Route,
+  getV2RegistryRoute,
+  getV2RegistrySubscriptionRoute,
+  getV2ReportsDropletNeighborsIdsRoute,
+  getV2ReservedIpsReservedIpActionsActionIdRoute,
+  getV2ReservedIpsReservedIpActionsRoute,
+  getV2ReservedIpsReservedIpRoute,
+  getV2ReservedIpsRoute,
+  getV2ReservedIpv6ReservedIpv6Route,
+  getV2ReservedIpv6Route,
+  getV2SecurityScansLatestRoute,
+  getV2SecurityScansRoute,
+  getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRoute,
+  getV2SecurityScansScanIdRoute,
+  getV2SecuritySecretsRoute,
+  getV2SecuritySecretsSecretRoute,
+  getV2SecuritySecretsSecretVersionsRoute,
+  getV2SecuritySettingsRoute,
+  getV2SizesRoute,
+  getV2SnapshotsRoute,
+  getV2SnapshotsSnapshotIdRoute,
+  getV2SpacesKeysAccessKeyRoute,
+  getV2SpacesKeysRoute,
+  getV2TagsRoute,
+  getV2TagsTagIdRoute,
+  getV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  getV2UptimeChecksCheckIdAlertsRoute,
+  getV2UptimeChecksCheckIdRoute,
+  getV2UptimeChecksCheckIdStateRoute,
+  getV2UptimeChecksRoute,
+  getV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+  getV2VectorDatabasesIdBackupsRoute,
+  getV2VectorDatabasesIdCredentialsRoute,
+  getV2VectorDatabasesIdRoute,
+  getV2VectorDatabasesRoute,
+  getV2VolumesRoute,
+  getV2VolumesSnapshotsSnapshotIdRoute,
+  getV2VolumesVolumeIdActionsActionIdRoute,
+  getV2VolumesVolumeIdActionsRoute,
+  getV2VolumesVolumeIdRoute,
+  getV2VolumesVolumeIdSnapshotsRoute,
+  getV2VpcNatGatewaysIdRoute,
+  getV2VpcNatGatewaysRoute,
+  getV2VpcPeeringsRoute,
+  getV2VpcPeeringsVpcPeeringIdRoute,
+  getV2VpcsRoute,
+  getV2VpcsVpcIdMembersRoute,
+  getV2VpcsVpcIdPeeringsRoute,
+  getV2VpcsVpcIdRoute,
+  getV2VpcsVpcUuidRoutesRoute,
+  getV2VpcsVpcUuidSubnetsRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidMembersRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+  patchV2ActionGatewayEndpointsEndpointIdRoute,
+  patchV2ActionGatewayMcpServersServerRefRoute,
+  patchV2ActionGatewayProviderCredentialsIdRoute,
+  patchV2AddOnsSaasResourceUuidPlanRoute,
+  patchV2AddOnsSaasResourceUuidRoute,
+  patchV2ByoipPrefixesByoipPrefixUuidRoute,
+  patchV2DatabasesDatabaseClusterUuidConfigRoute,
+  patchV2DedicatedInferencesDedicatedInferenceIdRoute,
+  patchV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  patchV2GenAiCustomModelsUuidMetadataRoute,
+  patchV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  patchV2GenAiSimulationRunsRunUuidCancelRoute,
+  patchV2HarnessRuntimeSessionsSessionIdRoute,
+  patchV2HarnessRuntimeTriggersTriggerIdRoute,
+  patchV2MicrovmsMicrovmIdRoute,
+  patchV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  patchV2ProjectsDefaultRoute,
+  patchV2ProjectsProjectIdRoute,
+  patchV2SpacesKeysAccessKeyRoute,
+  patchV2VpcPeeringsVpcPeeringIdRoute,
+  patchV2VpcsVpcIdPeeringsVpcPeeringIdRoute,
+  patchV2VpcsVpcIdRoute,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+  postApiV1ChatCompletionsRoute,
+  postApprovalsApprovalIdRoute,
+  postApprovalsSessionSessionIdApprovalIdRoute,
+  postCodeExecuteRoute,
+  postToolsInvokeRoute,
+  postToolsSearchRoute,
+  postV1AsyncInvokeRoute,
+  postV1AudioSpeechRoute,
+  postV1BatchesBatchIdCancelRoute,
+  postV1BatchesFilesRoute,
+  postV1BatchesRoute,
+  postV1ChatCompletionsRoute,
+  postV1EmbeddingsRoute,
+  postV1ImagesGenerationsRoute,
+  postV1MessagesRoute,
+  postV1ResponsesRoute,
+  postV1SignalsDeletionsRoute,
+  postV1SignalsExportsRoute,
+  postV1SystemoneRoute,
+  postV1VideosRoute,
+  postV21ClicksKubernetesRoute,
+  postV2AccountKeysRoute,
+  postV2ActionGatewayActorsActorIdLimitsClearRoute,
+  postV2ActionGatewayActorsActorIdLimitsSetRoute,
+  postV2ActionGatewayConnectionsRoute,
+  postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRoute,
+  postV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+  postV2ActionGatewayEndpointsRoute,
+  postV2ActionGatewayMcpServersRoute,
+  postV2ActionGatewayMcpServersServerRefResyncRoute,
+  postV2ActionGatewayOutputViewsPreviewRoute,
+  postV2ActionGatewayOutputViewsRoute,
+  postV2ActionGatewayProviderCredentialsRoute,
+  postV2ActionGatewaySessionsRoute,
+  postV2ActionGatewayToolbeltsNameToolsAddRoute,
+  postV2ActionGatewayToolbeltsNameToolsRemoveRoute,
+  postV2ActionGatewayToolbeltsRoute,
+  postV2AddOnsSaasRoute,
+  postV2AppsAppIdAlertsAlertIdDestinationsRoute,
+  postV2AppsAppIdDeploymentsDeploymentIdCancelRoute,
+  postV2AppsAppIdDeploymentsRoute,
+  postV2AppsAppIdEventsEventIdCancelRoute,
+  postV2AppsAppIdJobInvocationsJobInvocationIdCancelRoute,
+  postV2AppsAppIdRestartRoute,
+  postV2AppsAppIdRollbackCommitRoute,
+  postV2AppsAppIdRollbackRevertRoute,
+  postV2AppsAppIdRollbackRoute,
+  postV2AppsAppIdRollbackValidateRoute,
+  postV2AppsMetricsBandwidthDailyRoute,
+  postV2AppsProposeRoute,
+  postV2AppsRoute,
+  postV2ByoipPrefixesRoute,
+  postV2CdnEndpointsRoute,
+  postV2CertificatesRoute,
+  postV2DatabasesDatabaseClusterUuidDbsRoute,
+  postV2DatabasesDatabaseClusterUuidLogsinkRoute,
+  postV2DatabasesDatabaseClusterUuidPoolsRoute,
+  postV2DatabasesDatabaseClusterUuidReplicasRoute,
+  postV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+  postV2DatabasesDatabaseClusterUuidTopicsRoute,
+  postV2DatabasesDatabaseClusterUuidUsersRoute,
+  postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRoute,
+  postV2DatabasesRoute,
+  postV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+  postV2DedicatedInferencesRoute,
+  postV2DomainsDomainNameRecordsRoute,
+  postV2DomainsRoute,
+  postV2DropletsActionsRoute,
+  postV2DropletsAutoscaleRoute,
+  postV2DropletsDropletIdActionsRoute,
+  postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRoute,
+  postV2DropletsRoute,
+  postV2FirewallsFirewallIdDropletsRoute,
+  postV2FirewallsFirewallIdRulesRoute,
+  postV2FirewallsFirewallIdTagsRoute,
+  postV2FirewallsRoute,
+  postV2FloatingIpsFloatingIpActionsRoute,
+  postV2FloatingIpsRoute,
+  postV2FunctionsNamespacesNamespaceIdKeysRoute,
+  postV2FunctionsNamespacesNamespaceIdTriggersRoute,
+  postV2FunctionsNamespacesRoute,
+  postV2GenAiAgentsAgentUuidApiKeysRoute,
+  postV2GenAiAgentsAgentUuidFunctionsRoute,
+  postV2GenAiAgentsAgentUuidGuardrailsRoute,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesRoute,
+  postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  postV2GenAiAgentsRoute,
+  postV2GenAiAnthropicKeysRoute,
+  postV2GenAiCustomEvaluationMetricsRoute,
+  postV2GenAiCustomModelsImportRoute,
+  postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRoute,
+  postV2GenAiEvaluationDatasetsRoute,
+  postV2GenAiEvaluationRunsRoute,
+  postV2GenAiEvaluationTestCasesRoute,
+  postV2GenAiIndexingJobsRoute,
+  postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRoute,
+  postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+  postV2GenAiKnowledgeBasesRoute,
+  postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRoute,
+  postV2GenAiModelEvaluationRunsRoute,
+  postV2GenAiModelsApiKeysRoute,
+  postV2GenAiModelsRoutersRoute,
+  postV2GenAiOauth2DropboxTokensRoute,
+  postV2GenAiOpenaiKeysRoute,
+  postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRoute,
+  postV2GenAiScenarioSetsFileUploadPresignedUrlsRoute,
+  postV2GenAiScenarioSetsGenerateRoute,
+  postV2GenAiScenarioSetsRoute,
+  postV2GenAiScenarioSetsScenarioSetUuidDuplicateRoute,
+  postV2GenAiScheduledIndexingRoute,
+  postV2GenAiSimulationRunsRoute,
+  postV2GenAiWorkspacesRoute,
+  postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRoute,
+  postV2HarnessRuntimeAuthProviderConnectionsRoute,
+  postV2HarnessRuntimeAuthProviderRoute,
+  postV2HarnessRuntimeConfigsConfigIdCloneRoute,
+  postV2HarnessRuntimeConfigsRoute,
+  postV2HarnessRuntimeSessionsPolicyValidateRoute,
+  postV2HarnessRuntimeSessionsRoute,
+  postV2HarnessRuntimeSessionsSessionIdCancelRoute,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRoute,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+  postV2HarnessRuntimeSessionsSessionIdForkRoute,
+  postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRoute,
+  postV2HarnessRuntimeSessionsSessionIdInputRoute,
+  postV2HarnessRuntimeSessionsSessionIdPauseRoute,
+  postV2HarnessRuntimeSessionsSessionIdResumeRoute,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRoute,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRoute,
+  postV2HarnessRuntimeTemplatesRoute,
+  postV2HarnessRuntimeTriggersRoute,
+  postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRoute,
+  postV2HarnessRuntimeTriggersTriggerIdRotateSecretRoute,
+  postV2HarnessRuntimeTriggersTriggerIdWebhookRoute,
+  postV2HarnessRuntimeWorkspacesRoute,
+  postV2ImagesImageIdAccountTransferAcceptRoute,
+  postV2ImagesImageIdAccountTransferCancelRoute,
+  postV2ImagesImageIdAccountTransferDeclineRoute,
+  postV2ImagesImageIdAccountTransferRoute,
+  postV2ImagesImageIdActionsRoute,
+  postV2ImagesRoute,
+  postV2InsightsAlertRulesRoute,
+  postV2InsightsDashboardsRoute,
+  postV2InsightsNotificationChannelsRoute,
+  postV2InsightsQueryRegionLogsSearchRoute,
+  postV2InsightsQueryRegionPromApiV1LabelsRoute,
+  postV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+  postV2InsightsQueryRegionPromApiV1QueryRoute,
+  postV2InsightsQueryRegionPromApiV1SeriesRoute,
+  postV2InsightsQueryRegionSpansSearchRoute,
+  postV2InsightsQueryRegionTracesSearchRoute,
+  postV2KubernetesClustersClusterIdClusterlintRoute,
+  postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRoute,
+  postV2KubernetesClustersClusterIdNodePoolsRoute,
+  postV2KubernetesClustersClusterIdUpgradeRoute,
+  postV2KubernetesClustersRoute,
+  postV2KubernetesRegistriesRoute,
+  postV2KubernetesRegistryRoute,
+  postV2LoadBalancersLbIdDropletsRoute,
+  postV2LoadBalancersLbIdForwardingRulesRoute,
+  postV2LoadBalancersRoute,
+  postV2MicrovmsMicrovmIdAccessTokensRoute,
+  postV2MicrovmsMicrovmIdCheckpointsRoute,
+  postV2MicrovmsMicrovmIdExecRoute,
+  postV2MicrovmsMicrovmIdPauseRoute,
+  postV2MicrovmsMicrovmIdResumeRoute,
+  postV2MicrovmsMicrovmIdUrlsRoute,
+  postV2MicrovmsRoute,
+  postV2MonitoringAlertsRoute,
+  postV2MonitoringSinksDestinationsDestinationUuidRoute,
+  postV2MonitoringSinksDestinationsRoute,
+  postV2MonitoringSinksRoute,
+  postV2NfsNfsIdActionsRoute,
+  postV2NfsRoute,
+  postV2NfsSharesShareIdAccessPointsRoute,
+  postV2OrganizationsTeamRoute,
+  postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+  postV2PartnerNetworkConnectAttachmentsRoute,
+  postV2ProjectsDefaultResourcesRoute,
+  postV2ProjectsProjectIdResourcesRoute,
+  postV2ProjectsRoute,
+  postV2RegistriesRegistryNameGarbageCollectionRoute,
+  postV2RegistriesRoute,
+  postV2RegistriesSubscriptionRoute,
+  postV2RegistriesValidateNameRoute,
+  postV2RegistryRegistryNameGarbageCollectionRoute,
+  postV2RegistryRoute,
+  postV2RegistrySubscriptionRoute,
+  postV2RegistryValidateNameRoute,
+  postV2ReservedIpsReservedIpActionsRoute,
+  postV2ReservedIpsRoute,
+  postV2ReservedIpv6ReservedIpv6ActionsRoute,
+  postV2ReservedIpv6Route,
+  postV2SecurityScansRoute,
+  postV2SecurityScansRulesRoute,
+  postV2SecuritySecretsRoute,
+  postV2SecuritySecretsSecretRestoreRoute,
+  postV2SecuritySettingsSuppressionsRoute,
+  postV2SpacesKeysRoute,
+  postV2TagsRoute,
+  postV2TagsTagIdResourcesRoute,
+  postV2UptimeChecksCheckIdAlertsRoute,
+  postV2UptimeChecksRoute,
+  postV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+  postV2VectorDatabasesIdResizeRoute,
+  postV2VectorDatabasesRoute,
+  postV2VolumesActionsRoute,
+  postV2VolumesRoute,
+  postV2VolumesVolumeIdActionsRoute,
+  postV2VolumesVolumeIdSnapshotsRoute,
+  postV2VpcNatGatewaysRoute,
+  postV2VpcPeeringsRoute,
+  postV2VpcsRoute,
+  postV2VpcsVpcIdPeeringsRoute,
+  postV2VpcsVpcUuidSubnetsRoute,
+  postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+  putUploadUrlRoute,
+  putV1ConsentEnvironmentIdRoute,
+  putV1ConsentRoute,
+  putV2AccountKeysSshKeyIdentifierRoute,
+  putV2ActionGatewayMcpServersServerRefToolsRoute,
+  putV2AppsIdRoute,
+  putV2CdnEndpointsCdnIdRoute,
+  putV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+  putV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+  putV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+  putV2DatabasesDatabaseClusterUuidFirewallRoute,
+  putV2DatabasesDatabaseClusterUuidInstallUpdateRoute,
+  putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  putV2DatabasesDatabaseClusterUuidMaintenanceRoute,
+  putV2DatabasesDatabaseClusterUuidMigrateRoute,
+  putV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+  putV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRoute,
+  putV2DatabasesDatabaseClusterUuidResizeRoute,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+  putV2DatabasesDatabaseClusterUuidSqlModeRoute,
+  putV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  putV2DatabasesDatabaseClusterUuidUpgradeRoute,
+  putV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  putV2DatabasesMetricsCredentialsRoute,
+  putV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  putV2DropletsAutoscaleAutoscalePoolIdRoute,
+  putV2FirewallsFirewallIdRoute,
+  putV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+  putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRoute,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+  putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+  putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  putV2GenAiAgentsUuidDeploymentVisibilityRoute,
+  putV2GenAiAgentsUuidRoute,
+  putV2GenAiAgentsUuidVersionsRoute,
+  putV2GenAiAnthropicKeysApiKeyUuidRoute,
+  putV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+  putV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+  putV2GenAiIndexingJobsUuidCancelRoute,
+  putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+  putV2GenAiKnowledgeBasesUuidRoute,
+  putV2GenAiModelEvaluationRunsEvalRunUuidCancelRoute,
+  putV2GenAiModelsApiKeysApiKeyUuidRegenerateRoute,
+  putV2GenAiModelsApiKeysApiKeyUuidRoute,
+  putV2GenAiModelsRoutersUuidRoute,
+  putV2GenAiOpenaiKeysApiKeyUuidRoute,
+  putV2GenAiScenarioSetsScenarioSetUuidRoute,
+  putV2GenAiSimulationRunsRunUuidRoute,
+  putV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+  putV2GenAiWorkspacesWorkspaceUuidRoute,
+  putV2HarnessRuntimeTemplatesTemplateIdRoute,
+  putV2ImagesImageIdRoute,
+  putV2InsightsAlertRulesIdRoute,
+  putV2InsightsDashboardsUuidRoute,
+  putV2InsightsNotificationChannelsIdRoute,
+  putV2InsightsResourcesResourceUrnSignalsRoute,
+  putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  putV2KubernetesClustersClusterIdRoute,
+  putV2LoadBalancersLbIdRoute,
+  putV2MicrovmsMicrovmIdFilesRoute,
+  putV2MonitoringAlertsAlertUuidRoute,
+  putV2ProjectsDefaultRoute,
+  putV2ProjectsProjectIdRoute,
+  putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+  putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+  putV2SecuritySecretsSecretRoute,
+  putV2SecuritySettingsPlanRoute,
+  putV2SpacesKeysAccessKeyRoute,
+  putV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  putV2UptimeChecksCheckIdRoute,
+  putV2VectorDatabasesIdRoute,
+  putV2VectorDatabasesIdTagsRoute,
+  putV2VpcNatGatewaysIdRoute,
+  putV2VpcsVpcIdRoute,
+} from './routes'
+import {
+  deleteV2AccountKeysSshKeyIdentifierRouteHandler,
+  deleteV2ActionGatewayConnectionsIdRouteHandler,
+  deleteV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  deleteV2ActionGatewayEndpointVersionsVersionIdRouteHandler,
+  deleteV2ActionGatewayMcpServersServerRefRouteHandler,
+  deleteV2ActionGatewayOutputViewsViewIdRouteHandler,
+  deleteV2ActionGatewayProviderCredentialsIdRouteHandler,
+  deleteV2ActionGatewaySessionsSessionUrnRouteHandler,
+  deleteV2ActionGatewayToolbeltsNameRouteHandler,
+  deleteV2AddOnsSaasResourceUuidRouteHandler,
+  deleteV2AppsIdRouteHandler,
+  deleteV2ByoipPrefixesByoipPrefixUuidRouteHandler,
+  deleteV2CdnEndpointsCdnIdCacheRouteHandler,
+  deleteV2CdnEndpointsCdnIdRouteHandler,
+  deleteV2CertificatesCertificateIdRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  deleteV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  deleteV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRouteHandler,
+  deleteV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  deleteV2DomainsDomainNameRouteHandler,
+  deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRouteHandler,
+  deleteV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRouteHandler,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRouteHandler,
+  deleteV2DropletsDropletIdRouteHandler,
+  deleteV2DropletsRouteHandler,
+  deleteV2FirewallsFirewallIdDropletsRouteHandler,
+  deleteV2FirewallsFirewallIdRouteHandler,
+  deleteV2FirewallsFirewallIdRulesRouteHandler,
+  deleteV2FirewallsFirewallIdTagsRouteHandler,
+  deleteV2FloatingIpsFloatingIpRouteHandler,
+  deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRouteHandler,
+  deleteV2FunctionsNamespacesNamespaceIdRouteHandler,
+  deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRouteHandler,
+  deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRouteHandler,
+  deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRouteHandler,
+  deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRouteHandler,
+  deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  deleteV2GenAiAgentsUuidRouteHandler,
+  deleteV2GenAiAnthropicKeysApiKeyUuidRouteHandler,
+  deleteV2GenAiCustomEvaluationMetricsMetricUuidRouteHandler,
+  deleteV2GenAiCustomModelsUuidRouteHandler,
+  deleteV2GenAiEvaluationDatasetsDatasetUuidRouteHandler,
+  deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRouteHandler,
+  deleteV2GenAiKnowledgeBasesUuidRouteHandler,
+  deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRouteHandler,
+  deleteV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  deleteV2GenAiModelsApiKeysApiKeyUuidRouteHandler,
+  deleteV2GenAiModelsRoutersUuidRouteHandler,
+  deleteV2GenAiOpenaiKeysApiKeyUuidRouteHandler,
+  deleteV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  deleteV2GenAiScheduledIndexingUuidRouteHandler,
+  deleteV2GenAiSimulationRunsRunUuidRouteHandler,
+  deleteV2GenAiWorkspacesWorkspaceUuidRouteHandler,
+  deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRouteHandler,
+  deleteV2HarnessRuntimeConfigsConfigIdRouteHandler,
+  deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRouteHandler,
+  deleteV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  deleteV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  deleteV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  deleteV2HarnessRuntimeWorkspacesWorkspaceIdRouteHandler,
+  deleteV2ImagesImageIdRouteHandler,
+  deleteV2InsightsAlertRulesIdRouteHandler,
+  deleteV2InsightsDashboardsUuidRouteHandler,
+  deleteV2InsightsNotificationChannelsIdRouteHandler,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRouteHandler,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRouteHandler,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRouteHandler,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  deleteV2KubernetesClustersClusterIdRouteHandler,
+  deleteV2KubernetesRegistriesRouteHandler,
+  deleteV2KubernetesRegistryRouteHandler,
+  deleteV2LoadBalancersLbIdCacheRouteHandler,
+  deleteV2LoadBalancersLbIdDropletsRouteHandler,
+  deleteV2LoadBalancersLbIdForwardingRulesRouteHandler,
+  deleteV2LoadBalancersLbIdRouteHandler,
+  deleteV2MicrovmsCheckpointsCheckpointIdRouteHandler,
+  deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRouteHandler,
+  deleteV2MicrovmsMicrovmIdRouteHandler,
+  deleteV2MicrovmsMicrovmIdUrlsUrlIdRouteHandler,
+  deleteV2MonitoringAlertsAlertUuidRouteHandler,
+  deleteV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  deleteV2MonitoringSinksSinkUuidRouteHandler,
+  deleteV2NfsAccessPointsAccessPointIdRouteHandler,
+  deleteV2NfsNfsIdRouteHandler,
+  deleteV2NfsSnapshotsNfsSnapshotIdRouteHandler,
+  deleteV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  deleteV2ProjectsProjectIdRouteHandler,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRouteHandler,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRouteHandler,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRouteHandler,
+  deleteV2RegistriesRegistryNameRouteHandler,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRouteHandler,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRouteHandler,
+  deleteV2RegistryRouteHandler,
+  deleteV2ReservedIpsReservedIpRouteHandler,
+  deleteV2ReservedIpv6ReservedIpv6RouteHandler,
+  deleteV2SecuritySecretsSecretRouteHandler,
+  deleteV2SecuritySettingsSuppressionsSuppressionUuidRouteHandler,
+  deleteV2SnapshotsSnapshotIdRegionsRegionRouteHandler,
+  deleteV2SnapshotsSnapshotIdRouteHandler,
+  deleteV2SpacesKeysAccessKeyRouteHandler,
+  deleteV2TagsTagIdResourcesRouteHandler,
+  deleteV2TagsTagIdRouteHandler,
+  deleteV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  deleteV2UptimeChecksCheckIdRouteHandler,
+  deleteV2VectorDatabasesIdRouteHandler,
+  deleteV2VolumesRouteHandler,
+  deleteV2VolumesSnapshotsSnapshotIdRouteHandler,
+  deleteV2VolumesVolumeIdRouteHandler,
+  deleteV2VpcNatGatewaysIdRouteHandler,
+  deleteV2VpcPeeringsVpcPeeringIdRouteHandler,
+  deleteV2VpcsVpcIdRouteHandler,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRouteHandler,
+  getToolsRouteHandler,
+  getV1BatchesBatchIdResultsRouteHandler,
+  getV1BatchesBatchIdRouteHandler,
+  getV1BatchesRouteHandler,
+  getV1ConsentEnvironmentIdRouteHandler,
+  getV1ConsentRouteHandler,
+  getV1ModelsRouteHandler,
+  getV1SignalsAgentsEnvironmentIdSessionsRouteHandler,
+  getV1SignalsDeletionsDeletionIdRouteHandler,
+  getV1SignalsDeletionsRouteHandler,
+  getV1SignalsExportsExportIdDownloadRouteHandler,
+  getV1SignalsExportsExportIdRouteHandler,
+  getV1SignalsExportsOptionsRouteHandler,
+  getV1SignalsExportsRouteHandler,
+  getV1SignalsSessionsSessionIdDialoguesRouteHandler,
+  getV1VideosVideoIdContentRouteHandler,
+  getV1VideosVideoIdRouteHandler,
+  getV21ClicksRouteHandler,
+  getV2AccountKeysRouteHandler,
+  getV2AccountKeysSshKeyIdentifierRouteHandler,
+  getV2AccountRouteHandler,
+  getV2ActionGatewayActorsActorIdLimitsRouteHandler,
+  getV2ActionGatewayConnectionsIdRouteHandler,
+  getV2ActionGatewayConnectionsRouteHandler,
+  getV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  getV2ActionGatewayEndpointsEndpointIdVersionsRouteHandler,
+  getV2ActionGatewayEndpointsRouteHandler,
+  getV2ActionGatewayEndpointsSearchRouteHandler,
+  getV2ActionGatewayEndpointVersionsVersionIdRouteHandler,
+  getV2ActionGatewayMcpServersRouteHandler,
+  getV2ActionGatewayMcpServersServerRefRouteHandler,
+  getV2ActionGatewayMcpServersServerRefToolsRouteHandler,
+  getV2ActionGatewayOutputViewsRouteHandler,
+  getV2ActionGatewayOutputViewsViewIdRouteHandler,
+  getV2ActionGatewayProviderCredentialsIdRouteHandler,
+  getV2ActionGatewayProviderCredentialsRouteHandler,
+  getV2ActionGatewaySessionsRouteHandler,
+  getV2ActionGatewaySessionsSearchRouteHandler,
+  getV2ActionGatewayToolbeltsNameProvidersProviderToolsRouteHandler,
+  getV2ActionGatewayToolbeltsNameProvidersRouteHandler,
+  getV2ActionGatewayToolbeltsNameRouteHandler,
+  getV2ActionGatewayToolbeltsRouteHandler,
+  getV2ActionGatewayToolbeltsSearchRouteHandler,
+  getV2ActionGatewayToolsHealthProvidersRouteHandler,
+  getV2ActionGatewayToolsHealthRouteHandler,
+  getV2ActionGatewayToolsHealthToolsToolSlugRouteHandler,
+  getV2ActionGatewayToolsProvidersRouteHandler,
+  getV2ActionGatewayToolsProvidersSearchRouteHandler,
+  getV2ActionGatewayToolsRouteHandler,
+  getV2ActionGatewayToolsSearchRouteHandler,
+  getV2ActionGatewayToolsToolkitsRouteHandler,
+  getV2ActionGatewayToolsToolSlugVersionsRouteHandler,
+  getV2ActionGatewayUsersRouteHandler,
+  getV2ActionGatewayUsersUserIdRouteHandler,
+  getV2ActionsActionIdRouteHandler,
+  getV2ActionsRouteHandler,
+  getV2AddOnsAppsAppSlugMetadataRouteHandler,
+  getV2AddOnsAppsRouteHandler,
+  getV2AddOnsSaasResourceUuidRouteHandler,
+  getV2AddOnsSaasRouteHandler,
+  getV2AppsAppIdAlertsRouteHandler,
+  getV2AppsAppIdComponentsComponentNameExecRouteHandler,
+  getV2AppsAppIdComponentsComponentNameLogsRouteHandler,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRouteHandler,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRouteHandler,
+  getV2AppsAppIdDeploymentsDeploymentIdLogsRouteHandler,
+  getV2AppsAppIdDeploymentsDeploymentIdRouteHandler,
+  getV2AppsAppIdDeploymentsRouteHandler,
+  getV2AppsAppIdEventsEventIdLogsRouteHandler,
+  getV2AppsAppIdEventsEventIdRouteHandler,
+  getV2AppsAppIdEventsRouteHandler,
+  getV2AppsAppIdHealthRouteHandler,
+  getV2AppsAppIdInstancesRouteHandler,
+  getV2AppsAppIdJobInvocationsJobInvocationIdRouteHandler,
+  getV2AppsAppIdJobInvocationsRouteHandler,
+  getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRouteHandler,
+  getV2AppsAppIdLogsRouteHandler,
+  getV2AppsAppIdMetricsBandwidthDailyRouteHandler,
+  getV2AppsIdRouteHandler,
+  getV2AppsRegionsRouteHandler,
+  getV2AppsRouteHandler,
+  getV2AppsTiersInstanceSizesRouteHandler,
+  getV2AppsTiersInstanceSizesSlugRouteHandler,
+  getV2BillingAccountUrnInsightsStartDateEndDateRouteHandler,
+  getV2ByoipPrefixesByoipPrefixUuidIpsRouteHandler,
+  getV2ByoipPrefixesByoipPrefixUuidRouteHandler,
+  getV2ByoipPrefixesRouteHandler,
+  getV2CdnEndpointsCdnIdRouteHandler,
+  getV2CdnEndpointsRouteHandler,
+  getV2CertificatesCertificateIdRouteHandler,
+  getV2CertificatesRouteHandler,
+  getV2CustomersMyBalanceRouteHandler,
+  getV2CustomersMyBillingHistoryRouteHandler,
+  getV2CustomersMyInvoicesInvoiceUuidCsvRouteHandler,
+  getV2CustomersMyInvoicesInvoiceUuidPdfRouteHandler,
+  getV2CustomersMyInvoicesInvoiceUuidRouteHandler,
+  getV2CustomersMyInvoicesInvoiceUuidSummaryRouteHandler,
+  getV2CustomersMyInvoicesRouteHandler,
+  getV2CustomersMyPrepaymentConfigRouteHandler,
+  getV2CustomersMyPrepaymentStatusRouteHandler,
+  getV2DatabasesDatabaseClusterUuidAutoscaleRouteHandler,
+  getV2DatabasesDatabaseClusterUuidBackupsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidCaRouteHandler,
+  getV2DatabasesDatabaseClusterUuidConfigRouteHandler,
+  getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidDbsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidDoSettingsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidEventsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidEvictionPolicyRouteHandler,
+  getV2DatabasesDatabaseClusterUuidFirewallRouteHandler,
+  getV2DatabasesDatabaseClusterUuidIndexesRouteHandler,
+  getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  getV2DatabasesDatabaseClusterUuidLogsinkRouteHandler,
+  getV2DatabasesDatabaseClusterUuidOnlineMigrationRouteHandler,
+  getV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidPoolsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidReplicasRouteHandler,
+  getV2DatabasesDatabaseClusterUuidRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRouteHandler,
+  getV2DatabasesDatabaseClusterUuidSqlModeRouteHandler,
+  getV2DatabasesDatabaseClusterUuidTopicsRouteHandler,
+  getV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  getV2DatabasesDatabaseClusterUuidUsersRouteHandler,
+  getV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  getV2DatabasesMetricsCredentialsRouteHandler,
+  getV2DatabasesOptionsRouteHandler,
+  getV2DatabasesRouteHandler,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRouteHandler,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRouteHandler,
+  getV2DedicatedInferencesDedicatedInferenceIdCaRouteHandler,
+  getV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  getV2DedicatedInferencesDedicatedInferenceIdTokensRouteHandler,
+  getV2DedicatedInferencesGpuModelConfigRouteHandler,
+  getV2DedicatedInferencesRouteHandler,
+  getV2DedicatedInferencesSizesRouteHandler,
+  getV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  getV2DomainsDomainNameRecordsRouteHandler,
+  getV2DomainsDomainNameRouteHandler,
+  getV2DomainsRouteHandler,
+  getV2DropletsAutoscaleAutoscalePoolIdHistoryRouteHandler,
+  getV2DropletsAutoscaleAutoscalePoolIdMembersRouteHandler,
+  getV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  getV2DropletsAutoscaleRouteHandler,
+  getV2DropletsBackupsPoliciesRouteHandler,
+  getV2DropletsBackupsSupportedPoliciesRouteHandler,
+  getV2DropletsDropletIdActionsActionIdRouteHandler,
+  getV2DropletsDropletIdActionsRouteHandler,
+  getV2DropletsDropletIdBackupsPolicyRouteHandler,
+  getV2DropletsDropletIdBackupsRouteHandler,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesRouteHandler,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRouteHandler,
+  getV2DropletsDropletIdFirewallsRouteHandler,
+  getV2DropletsDropletIdKernelsRouteHandler,
+  getV2DropletsDropletIdNeighborsRouteHandler,
+  getV2DropletsDropletIdRouteHandler,
+  getV2DropletsDropletIdSnapshotsRouteHandler,
+  getV2DropletsRouteHandler,
+  getV2FirewallsFirewallIdRouteHandler,
+  getV2FirewallsRouteHandler,
+  getV2FloatingIpsFloatingIpActionsActionIdRouteHandler,
+  getV2FloatingIpsFloatingIpActionsRouteHandler,
+  getV2FloatingIpsFloatingIpRouteHandler,
+  getV2FloatingIpsRouteHandler,
+  getV2FunctionsNamespacesNamespaceIdKeysRouteHandler,
+  getV2FunctionsNamespacesNamespaceIdRouteHandler,
+  getV2FunctionsNamespacesNamespaceIdTriggersRouteHandler,
+  getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  getV2FunctionsNamespacesRouteHandler,
+  getV2GenAiAgentsAgentUuidApiKeysRouteHandler,
+  getV2GenAiAgentsRouteHandler,
+  getV2GenAiAgentsUuidChildAgentsRouteHandler,
+  getV2GenAiAgentsUuidRouteHandler,
+  getV2GenAiAgentsUuidUsageRouteHandler,
+  getV2GenAiAgentsUuidVersionsRouteHandler,
+  getV2GenAiAnthropicKeysApiKeyUuidRouteHandler,
+  getV2GenAiAnthropicKeysRouteHandler,
+  getV2GenAiAnthropicKeysUuidAgentsRouteHandler,
+  getV2GenAiCustomModelsRouteHandler,
+  getV2GenAiCustomModelsUuidRouteHandler,
+  getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRouteHandler,
+  getV2GenAiEvaluationDatasetsRouteHandler,
+  getV2GenAiEvaluationMetricsRouteHandler,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRouteHandler,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsRouteHandler,
+  getV2GenAiEvaluationRunsEvaluationRunUuidRouteHandler,
+  getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRouteHandler,
+  getV2GenAiEvaluationTestCasesRouteHandler,
+  getV2GenAiEvaluationTestCasesTestCaseUuidRouteHandler,
+  getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRouteHandler,
+  getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRouteHandler,
+  getV2GenAiIndexingJobsRouteHandler,
+  getV2GenAiIndexingJobsUuidRouteHandler,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRouteHandler,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRouteHandler,
+  getV2GenAiKnowledgeBasesRouteHandler,
+  getV2GenAiKnowledgeBasesUuidRouteHandler,
+  getV2GenAiModelEvaluationMetricsRouteHandler,
+  getV2GenAiModelEvaluationPresetsEvalPresetUuidRouteHandler,
+  getV2GenAiModelEvaluationPresetsRouteHandler,
+  getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRouteHandler,
+  getV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  getV2GenAiModelEvaluationRunsRouteHandler,
+  getV2GenAiModelsApiKeysRouteHandler,
+  getV2GenAiModelsCatalogIdRouteHandler,
+  getV2GenAiModelsCatalogRouteHandler,
+  getV2GenAiModelsCatalogV2IdRouteHandler,
+  getV2GenAiModelsCatalogV2RouteHandler,
+  getV2GenAiModelsRouteHandler,
+  getV2GenAiModelsRoutersPresetsRouteHandler,
+  getV2GenAiModelsRoutersRouteHandler,
+  getV2GenAiModelsRoutersTasksPresetsRouteHandler,
+  getV2GenAiModelsRoutersUuidRouteHandler,
+  getV2GenAiOauth2UrlRouteHandler,
+  getV2GenAiOpenaiKeysApiKeyUuidRouteHandler,
+  getV2GenAiOpenaiKeysRouteHandler,
+  getV2GenAiOpenaiKeysUuidAgentsRouteHandler,
+  getV2GenAiRegionsRouteHandler,
+  getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRouteHandler,
+  getV2GenAiScenarioLibraryRouteHandler,
+  getV2GenAiScenarioSetsRouteHandler,
+  getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRouteHandler,
+  getV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  getV2GenAiScenarioSetsScenarioSetUuidScenariosRouteHandler,
+  getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRouteHandler,
+  getV2GenAiSimulationRunsRouteHandler,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRouteHandler,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRouteHandler,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRouteHandler,
+  getV2GenAiSimulationRunsRunUuidEpisodesRouteHandler,
+  getV2GenAiSimulationRunsRunUuidRouteHandler,
+  getV2GenAiWorkspacesRouteHandler,
+  getV2GenAiWorkspacesWorkspaceUuidAgentsRouteHandler,
+  getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRouteHandler,
+  getV2GenAiWorkspacesWorkspaceUuidRouteHandler,
+  getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRouteHandler,
+  getV2HarnessRuntimeAuthProviderConnectionsRouteHandler,
+  getV2HarnessRuntimeAuthProviderPollRouteHandler,
+  getV2HarnessRuntimeConfigsConfigIdRouteHandler,
+  getV2HarnessRuntimeConfigsConfigIdSessionsRouteHandler,
+  getV2HarnessRuntimeConfigsRouteHandler,
+  getV2HarnessRuntimeImageMessagesRouteHandler,
+  getV2HarnessRuntimeRegionsRouteHandler,
+  getV2HarnessRuntimeSessionsRouteHandler,
+  getV2HarnessRuntimeSessionsSandboxSizesRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdEventsRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdImageMessagesRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdIngressRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdPortForwardPortRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRouteHandler,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRouteHandler,
+  getV2HarnessRuntimeTemplatesRouteHandler,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRouteHandler,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsRouteHandler,
+  getV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  getV2HarnessRuntimeTriggersBySessionSessionIdRouteHandler,
+  getV2HarnessRuntimeTriggersReusableSessionsRouteHandler,
+  getV2HarnessRuntimeTriggersRouteHandler,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRouteHandler,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsRouteHandler,
+  getV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  getV2HarnessRuntimeWebhookProvidersRouteHandler,
+  getV2HarnessRuntimeWorkspacesRouteHandler,
+  getV2HarnessRuntimeWorkspacesWorkspaceIdRouteHandler,
+  getV2ImagesImageIdActionsActionIdRouteHandler,
+  getV2ImagesImageIdActionsRouteHandler,
+  getV2ImagesImageIdRouteHandler,
+  getV2ImagesRouteHandler,
+  getV2InsightsAlertInstancesIdRouteHandler,
+  getV2InsightsAlertInstancesRouteHandler,
+  getV2InsightsAlertRulesIdRouteHandler,
+  getV2InsightsAlertRulesRouteHandler,
+  getV2InsightsDashboardsRouteHandler,
+  getV2InsightsDashboardsSchemaRouteHandler,
+  getV2InsightsDashboardsUuidRouteHandler,
+  getV2InsightsNotificationChannelsIdRouteHandler,
+  getV2InsightsNotificationChannelsRouteHandler,
+  getV2InsightsQueryRegionPromApiV1LabelNameValuesRouteHandler,
+  getV2InsightsQueryRegionPromApiV1LabelsRouteHandler,
+  getV2InsightsQueryRegionPromApiV1QueryRangeRouteHandler,
+  getV2InsightsQueryRegionPromApiV1QueryRouteHandler,
+  getV2InsightsQueryRegionPromApiV1SeriesRouteHandler,
+  getV2InsightsQueryRegionTracesTraceIdRouteHandler,
+  getV2InsightsResourcesResourceUrnRouteHandler,
+  getV2InsightsResourcesRouteHandler,
+  getV2KubernetesClustersClusterIdClusterlintRouteHandler,
+  getV2KubernetesClustersClusterIdCredentialsRouteHandler,
+  getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRouteHandler,
+  getV2KubernetesClustersClusterIdKubeconfigRouteHandler,
+  getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  getV2KubernetesClustersClusterIdNodePoolsRouteHandler,
+  getV2KubernetesClustersClusterIdRouteHandler,
+  getV2KubernetesClustersClusterIdStatusMessagesRouteHandler,
+  getV2KubernetesClustersClusterIdUpgradesRouteHandler,
+  getV2KubernetesClustersClusterIdUserRouteHandler,
+  getV2KubernetesClustersRouteHandler,
+  getV2KubernetesOptionsRouteHandler,
+  getV2LoadBalancersLbIdRouteHandler,
+  getV2LoadBalancersRouteHandler,
+  getV2MicrovmsCheckpointsCheckpointIdRouteHandler,
+  getV2MicrovmsCheckpointsRouteHandler,
+  getV2MicrovmsMicrovmIdAccessTokensRouteHandler,
+  getV2MicrovmsMicrovmIdConsoleRouteHandler,
+  getV2MicrovmsMicrovmIdFilesRouteHandler,
+  getV2MicrovmsMicrovmIdPortForwardRouteHandler,
+  getV2MicrovmsMicrovmIdRouteHandler,
+  getV2MicrovmsOptionsRouteHandler,
+  getV2MicrovmsRouteHandler,
+  getV2MonitoringAlertsAlertUuidRouteHandler,
+  getV2MonitoringAlertsRouteHandler,
+  getV2MonitoringMetricsAppsCpuPercentageRouteHandler,
+  getV2MonitoringMetricsAppsMemoryPercentageRouteHandler,
+  getV2MonitoringMetricsAppsRestartCountRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlCpuUsageRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlDiskUsageRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlLoadRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlMemoryUsageRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlOpRatesRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlThreadsActiveRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRouteHandler,
+  getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleTargetInstancesRouteHandler,
+  getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRouteHandler,
+  getV2MonitoringMetricsDropletBandwidthRouteHandler,
+  getV2MonitoringMetricsDropletCpuRouteHandler,
+  getV2MonitoringMetricsDropletFilesystemFreeRouteHandler,
+  getV2MonitoringMetricsDropletFilesystemSizeRouteHandler,
+  getV2MonitoringMetricsDropletLoad15RouteHandler,
+  getV2MonitoringMetricsDropletLoad1RouteHandler,
+  getV2MonitoringMetricsDropletLoad5RouteHandler,
+  getV2MonitoringMetricsDropletMemoryAvailableRouteHandler,
+  getV2MonitoringMetricsDropletMemoryCachedRouteHandler,
+  getV2MonitoringMetricsDropletMemoryFreeRouteHandler,
+  getV2MonitoringMetricsDropletMemoryTotalRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsConnectionsRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsDowntimeRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRouteHandler,
+  getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRouteHandler,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRouteHandler,
+  getV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  getV2MonitoringSinksDestinationsRouteHandler,
+  getV2MonitoringSinksRouteHandler,
+  getV2MonitoringSinksSinkUuidRouteHandler,
+  getV2NfsAccessPointsAccessPointIdRouteHandler,
+  getV2NfsNfsIdRouteHandler,
+  getV2NfsRouteHandler,
+  getV2NfsSharesShareIdAccessPointsRouteHandler,
+  getV2NfsSnapshotsNfsSnapshotIdRouteHandler,
+  getV2NfsSnapshotsRouteHandler,
+  getV2OrganizationsTeamsRouteHandler,
+  getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRouteHandler,
+  getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRouteHandler,
+  getV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRouteHandler,
+  getV2PartnerNetworkConnectAttachmentsRouteHandler,
+  getV2ProjectsDefaultResourcesRouteHandler,
+  getV2ProjectsDefaultRouteHandler,
+  getV2ProjectsProjectIdResourcesRouteHandler,
+  getV2ProjectsProjectIdRouteHandler,
+  getV2ProjectsRouteHandler,
+  getV2RegionsRouteHandler,
+  getV2RegistriesOptionsRouteHandler,
+  getV2RegistriesRegistryNameDockerCredentialsRouteHandler,
+  getV2RegistriesRegistryNameGarbageCollectionRouteHandler,
+  getV2RegistriesRegistryNameGarbageCollectionsRouteHandler,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRouteHandler,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRouteHandler,
+  getV2RegistriesRegistryNameRepositoriesV2RouteHandler,
+  getV2RegistriesRegistryNameRouteHandler,
+  getV2RegistriesRouteHandler,
+  getV2RegistriesSubscriptionRouteHandler,
+  getV2RegistryDockerCredentialsRouteHandler,
+  getV2RegistryOptionsRouteHandler,
+  getV2RegistryRegistryNameGarbageCollectionRouteHandler,
+  getV2RegistryRegistryNameGarbageCollectionsRouteHandler,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRouteHandler,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRouteHandler,
+  getV2RegistryRegistryNameRepositoriesRouteHandler,
+  getV2RegistryRegistryNameRepositoriesV2RouteHandler,
+  getV2RegistryRouteHandler,
+  getV2RegistrySubscriptionRouteHandler,
+  getV2ReportsDropletNeighborsIdsRouteHandler,
+  getV2ReservedIpsReservedIpActionsActionIdRouteHandler,
+  getV2ReservedIpsReservedIpActionsRouteHandler,
+  getV2ReservedIpsReservedIpRouteHandler,
+  getV2ReservedIpsRouteHandler,
+  getV2ReservedIpv6ReservedIpv6RouteHandler,
+  getV2ReservedIpv6RouteHandler,
+  getV2SecurityScansLatestRouteHandler,
+  getV2SecurityScansRouteHandler,
+  getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRouteHandler,
+  getV2SecurityScansScanIdRouteHandler,
+  getV2SecuritySecretsRouteHandler,
+  getV2SecuritySecretsSecretRouteHandler,
+  getV2SecuritySecretsSecretVersionsRouteHandler,
+  getV2SecuritySettingsRouteHandler,
+  getV2SizesRouteHandler,
+  getV2SnapshotsRouteHandler,
+  getV2SnapshotsSnapshotIdRouteHandler,
+  getV2SpacesKeysAccessKeyRouteHandler,
+  getV2SpacesKeysRouteHandler,
+  getV2TagsRouteHandler,
+  getV2TagsTagIdRouteHandler,
+  getV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  getV2UptimeChecksCheckIdAlertsRouteHandler,
+  getV2UptimeChecksCheckIdRouteHandler,
+  getV2UptimeChecksCheckIdStateRouteHandler,
+  getV2UptimeChecksRouteHandler,
+  getV2VectorDatabasesIdBackupsBackupIdRestoreRouteHandler,
+  getV2VectorDatabasesIdBackupsRouteHandler,
+  getV2VectorDatabasesIdCredentialsRouteHandler,
+  getV2VectorDatabasesIdRouteHandler,
+  getV2VectorDatabasesRouteHandler,
+  getV2VolumesRouteHandler,
+  getV2VolumesSnapshotsSnapshotIdRouteHandler,
+  getV2VolumesVolumeIdActionsActionIdRouteHandler,
+  getV2VolumesVolumeIdActionsRouteHandler,
+  getV2VolumesVolumeIdRouteHandler,
+  getV2VolumesVolumeIdSnapshotsRouteHandler,
+  getV2VpcNatGatewaysIdRouteHandler,
+  getV2VpcNatGatewaysRouteHandler,
+  getV2VpcPeeringsRouteHandler,
+  getV2VpcPeeringsVpcPeeringIdRouteHandler,
+  getV2VpcsRouteHandler,
+  getV2VpcsVpcIdMembersRouteHandler,
+  getV2VpcsVpcIdPeeringsRouteHandler,
+  getV2VpcsVpcIdRouteHandler,
+  getV2VpcsVpcUuidRoutesRouteHandler,
+  getV2VpcsVpcUuidSubnetsRouteHandler,
+  getV2VpcsVpcUuidSubnetsSubnetUuidMembersRouteHandler,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteHandler,
+  patchV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  patchV2ActionGatewayMcpServersServerRefRouteHandler,
+  patchV2ActionGatewayProviderCredentialsIdRouteHandler,
+  patchV2AddOnsSaasResourceUuidPlanRouteHandler,
+  patchV2AddOnsSaasResourceUuidRouteHandler,
+  patchV2ByoipPrefixesByoipPrefixUuidRouteHandler,
+  patchV2DatabasesDatabaseClusterUuidConfigRouteHandler,
+  patchV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  patchV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  patchV2GenAiCustomModelsUuidMetadataRouteHandler,
+  patchV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  patchV2GenAiSimulationRunsRunUuidCancelRouteHandler,
+  patchV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  patchV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  patchV2MicrovmsMicrovmIdRouteHandler,
+  patchV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  patchV2ProjectsDefaultRouteHandler,
+  patchV2ProjectsProjectIdRouteHandler,
+  patchV2SpacesKeysAccessKeyRouteHandler,
+  patchV2VpcPeeringsVpcPeeringIdRouteHandler,
+  patchV2VpcsVpcIdPeeringsVpcPeeringIdRouteHandler,
+  patchV2VpcsVpcIdRouteHandler,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRouteHandler,
+  postApiV1ChatCompletionsRouteHandler,
+  postApprovalsApprovalIdRouteHandler,
+  postApprovalsSessionSessionIdApprovalIdRouteHandler,
+  postCodeExecuteRouteHandler,
+  postToolsInvokeRouteHandler,
+  postToolsSearchRouteHandler,
+  postV1AsyncInvokeRouteHandler,
+  postV1AudioSpeechRouteHandler,
+  postV1BatchesBatchIdCancelRouteHandler,
+  postV1BatchesFilesRouteHandler,
+  postV1BatchesRouteHandler,
+  postV1ChatCompletionsRouteHandler,
+  postV1EmbeddingsRouteHandler,
+  postV1ImagesGenerationsRouteHandler,
+  postV1MessagesRouteHandler,
+  postV1ResponsesRouteHandler,
+  postV1SignalsDeletionsRouteHandler,
+  postV1SignalsExportsRouteHandler,
+  postV1SystemoneRouteHandler,
+  postV1VideosRouteHandler,
+  postV21ClicksKubernetesRouteHandler,
+  postV2AccountKeysRouteHandler,
+  postV2ActionGatewayActorsActorIdLimitsClearRouteHandler,
+  postV2ActionGatewayActorsActorIdLimitsSetRouteHandler,
+  postV2ActionGatewayConnectionsRouteHandler,
+  postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRouteHandler,
+  postV2ActionGatewayEndpointsEndpointIdVersionsRouteHandler,
+  postV2ActionGatewayEndpointsRouteHandler,
+  postV2ActionGatewayMcpServersRouteHandler,
+  postV2ActionGatewayMcpServersServerRefResyncRouteHandler,
+  postV2ActionGatewayOutputViewsPreviewRouteHandler,
+  postV2ActionGatewayOutputViewsRouteHandler,
+  postV2ActionGatewayProviderCredentialsRouteHandler,
+  postV2ActionGatewaySessionsRouteHandler,
+  postV2ActionGatewayToolbeltsNameToolsAddRouteHandler,
+  postV2ActionGatewayToolbeltsNameToolsRemoveRouteHandler,
+  postV2ActionGatewayToolbeltsRouteHandler,
+  postV2AddOnsSaasRouteHandler,
+  postV2AppsAppIdAlertsAlertIdDestinationsRouteHandler,
+  postV2AppsAppIdDeploymentsDeploymentIdCancelRouteHandler,
+  postV2AppsAppIdDeploymentsRouteHandler,
+  postV2AppsAppIdEventsEventIdCancelRouteHandler,
+  postV2AppsAppIdJobInvocationsJobInvocationIdCancelRouteHandler,
+  postV2AppsAppIdRestartRouteHandler,
+  postV2AppsAppIdRollbackCommitRouteHandler,
+  postV2AppsAppIdRollbackRevertRouteHandler,
+  postV2AppsAppIdRollbackRouteHandler,
+  postV2AppsAppIdRollbackValidateRouteHandler,
+  postV2AppsMetricsBandwidthDailyRouteHandler,
+  postV2AppsProposeRouteHandler,
+  postV2AppsRouteHandler,
+  postV2ByoipPrefixesRouteHandler,
+  postV2CdnEndpointsRouteHandler,
+  postV2CertificatesRouteHandler,
+  postV2DatabasesDatabaseClusterUuidDbsRouteHandler,
+  postV2DatabasesDatabaseClusterUuidLogsinkRouteHandler,
+  postV2DatabasesDatabaseClusterUuidPoolsRouteHandler,
+  postV2DatabasesDatabaseClusterUuidReplicasRouteHandler,
+  postV2DatabasesDatabaseClusterUuidSchemaRegistryRouteHandler,
+  postV2DatabasesDatabaseClusterUuidTopicsRouteHandler,
+  postV2DatabasesDatabaseClusterUuidUsersRouteHandler,
+  postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRouteHandler,
+  postV2DatabasesRouteHandler,
+  postV2DedicatedInferencesDedicatedInferenceIdTokensRouteHandler,
+  postV2DedicatedInferencesRouteHandler,
+  postV2DomainsDomainNameRecordsRouteHandler,
+  postV2DomainsRouteHandler,
+  postV2DropletsActionsRouteHandler,
+  postV2DropletsAutoscaleRouteHandler,
+  postV2DropletsDropletIdActionsRouteHandler,
+  postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRouteHandler,
+  postV2DropletsRouteHandler,
+  postV2FirewallsFirewallIdDropletsRouteHandler,
+  postV2FirewallsFirewallIdRulesRouteHandler,
+  postV2FirewallsFirewallIdTagsRouteHandler,
+  postV2FirewallsRouteHandler,
+  postV2FloatingIpsFloatingIpActionsRouteHandler,
+  postV2FloatingIpsRouteHandler,
+  postV2FunctionsNamespacesNamespaceIdKeysRouteHandler,
+  postV2FunctionsNamespacesNamespaceIdTriggersRouteHandler,
+  postV2FunctionsNamespacesRouteHandler,
+  postV2GenAiAgentsAgentUuidApiKeysRouteHandler,
+  postV2GenAiAgentsAgentUuidFunctionsRouteHandler,
+  postV2GenAiAgentsAgentUuidGuardrailsRouteHandler,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRouteHandler,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesRouteHandler,
+  postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  postV2GenAiAgentsRouteHandler,
+  postV2GenAiAnthropicKeysRouteHandler,
+  postV2GenAiCustomEvaluationMetricsRouteHandler,
+  postV2GenAiCustomModelsImportRouteHandler,
+  postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRouteHandler,
+  postV2GenAiEvaluationDatasetsRouteHandler,
+  postV2GenAiEvaluationRunsRouteHandler,
+  postV2GenAiEvaluationTestCasesRouteHandler,
+  postV2GenAiIndexingJobsRouteHandler,
+  postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRouteHandler,
+  postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRouteHandler,
+  postV2GenAiKnowledgeBasesRouteHandler,
+  postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRouteHandler,
+  postV2GenAiModelEvaluationRunsRouteHandler,
+  postV2GenAiModelsApiKeysRouteHandler,
+  postV2GenAiModelsRoutersRouteHandler,
+  postV2GenAiOauth2DropboxTokensRouteHandler,
+  postV2GenAiOpenaiKeysRouteHandler,
+  postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRouteHandler,
+  postV2GenAiScenarioSetsFileUploadPresignedUrlsRouteHandler,
+  postV2GenAiScenarioSetsGenerateRouteHandler,
+  postV2GenAiScenarioSetsRouteHandler,
+  postV2GenAiScenarioSetsScenarioSetUuidDuplicateRouteHandler,
+  postV2GenAiScheduledIndexingRouteHandler,
+  postV2GenAiSimulationRunsRouteHandler,
+  postV2GenAiWorkspacesRouteHandler,
+  postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRouteHandler,
+  postV2HarnessRuntimeAuthProviderConnectionsRouteHandler,
+  postV2HarnessRuntimeAuthProviderRouteHandler,
+  postV2HarnessRuntimeConfigsConfigIdCloneRouteHandler,
+  postV2HarnessRuntimeConfigsRouteHandler,
+  postV2HarnessRuntimeSessionsPolicyValidateRouteHandler,
+  postV2HarnessRuntimeSessionsRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdCancelRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdForkRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdInputRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdPauseRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdResumeRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRouteHandler,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRouteHandler,
+  postV2HarnessRuntimeTemplatesRouteHandler,
+  postV2HarnessRuntimeTriggersRouteHandler,
+  postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRouteHandler,
+  postV2HarnessRuntimeTriggersTriggerIdRotateSecretRouteHandler,
+  postV2HarnessRuntimeTriggersTriggerIdWebhookRouteHandler,
+  postV2HarnessRuntimeWorkspacesRouteHandler,
+  postV2ImagesImageIdAccountTransferAcceptRouteHandler,
+  postV2ImagesImageIdAccountTransferCancelRouteHandler,
+  postV2ImagesImageIdAccountTransferDeclineRouteHandler,
+  postV2ImagesImageIdAccountTransferRouteHandler,
+  postV2ImagesImageIdActionsRouteHandler,
+  postV2ImagesRouteHandler,
+  postV2InsightsAlertRulesRouteHandler,
+  postV2InsightsDashboardsRouteHandler,
+  postV2InsightsNotificationChannelsRouteHandler,
+  postV2InsightsQueryRegionLogsSearchRouteHandler,
+  postV2InsightsQueryRegionPromApiV1LabelsRouteHandler,
+  postV2InsightsQueryRegionPromApiV1QueryRangeRouteHandler,
+  postV2InsightsQueryRegionPromApiV1QueryRouteHandler,
+  postV2InsightsQueryRegionPromApiV1SeriesRouteHandler,
+  postV2InsightsQueryRegionSpansSearchRouteHandler,
+  postV2InsightsQueryRegionTracesSearchRouteHandler,
+  postV2KubernetesClustersClusterIdClusterlintRouteHandler,
+  postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRouteHandler,
+  postV2KubernetesClustersClusterIdNodePoolsRouteHandler,
+  postV2KubernetesClustersClusterIdUpgradeRouteHandler,
+  postV2KubernetesClustersRouteHandler,
+  postV2KubernetesRegistriesRouteHandler,
+  postV2KubernetesRegistryRouteHandler,
+  postV2LoadBalancersLbIdDropletsRouteHandler,
+  postV2LoadBalancersLbIdForwardingRulesRouteHandler,
+  postV2LoadBalancersRouteHandler,
+  postV2MicrovmsMicrovmIdAccessTokensRouteHandler,
+  postV2MicrovmsMicrovmIdCheckpointsRouteHandler,
+  postV2MicrovmsMicrovmIdExecRouteHandler,
+  postV2MicrovmsMicrovmIdPauseRouteHandler,
+  postV2MicrovmsMicrovmIdResumeRouteHandler,
+  postV2MicrovmsMicrovmIdUrlsRouteHandler,
+  postV2MicrovmsRouteHandler,
+  postV2MonitoringAlertsRouteHandler,
+  postV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  postV2MonitoringSinksDestinationsRouteHandler,
+  postV2MonitoringSinksRouteHandler,
+  postV2NfsNfsIdActionsRouteHandler,
+  postV2NfsRouteHandler,
+  postV2NfsSharesShareIdAccessPointsRouteHandler,
+  postV2OrganizationsTeamRouteHandler,
+  postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRouteHandler,
+  postV2PartnerNetworkConnectAttachmentsRouteHandler,
+  postV2ProjectsDefaultResourcesRouteHandler,
+  postV2ProjectsProjectIdResourcesRouteHandler,
+  postV2ProjectsRouteHandler,
+  postV2RegistriesRegistryNameGarbageCollectionRouteHandler,
+  postV2RegistriesRouteHandler,
+  postV2RegistriesSubscriptionRouteHandler,
+  postV2RegistriesValidateNameRouteHandler,
+  postV2RegistryRegistryNameGarbageCollectionRouteHandler,
+  postV2RegistryRouteHandler,
+  postV2RegistrySubscriptionRouteHandler,
+  postV2RegistryValidateNameRouteHandler,
+  postV2ReservedIpsReservedIpActionsRouteHandler,
+  postV2ReservedIpsRouteHandler,
+  postV2ReservedIpv6ReservedIpv6ActionsRouteHandler,
+  postV2ReservedIpv6RouteHandler,
+  postV2SecurityScansRouteHandler,
+  postV2SecurityScansRulesRouteHandler,
+  postV2SecuritySecretsRouteHandler,
+  postV2SecuritySecretsSecretRestoreRouteHandler,
+  postV2SecuritySettingsSuppressionsRouteHandler,
+  postV2SpacesKeysRouteHandler,
+  postV2TagsRouteHandler,
+  postV2TagsTagIdResourcesRouteHandler,
+  postV2UptimeChecksCheckIdAlertsRouteHandler,
+  postV2UptimeChecksRouteHandler,
+  postV2VectorDatabasesIdBackupsBackupIdRestoreRouteHandler,
+  postV2VectorDatabasesIdResizeRouteHandler,
+  postV2VectorDatabasesRouteHandler,
+  postV2VolumesActionsRouteHandler,
+  postV2VolumesRouteHandler,
+  postV2VolumesVolumeIdActionsRouteHandler,
+  postV2VolumesVolumeIdSnapshotsRouteHandler,
+  postV2VpcNatGatewaysRouteHandler,
+  postV2VpcPeeringsRouteHandler,
+  postV2VpcsRouteHandler,
+  postV2VpcsVpcIdPeeringsRouteHandler,
+  postV2VpcsVpcUuidSubnetsRouteHandler,
+  postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteHandler,
+  putUploadUrlRouteHandler,
+  putV1ConsentEnvironmentIdRouteHandler,
+  putV1ConsentRouteHandler,
+  putV2AccountKeysSshKeyIdentifierRouteHandler,
+  putV2ActionGatewayMcpServersServerRefToolsRouteHandler,
+  putV2AppsIdRouteHandler,
+  putV2CdnEndpointsCdnIdRouteHandler,
+  putV2DatabasesDatabaseClusterUuidAutoscaleRouteHandler,
+  putV2DatabasesDatabaseClusterUuidDoSettingsRouteHandler,
+  putV2DatabasesDatabaseClusterUuidEvictionPolicyRouteHandler,
+  putV2DatabasesDatabaseClusterUuidFirewallRouteHandler,
+  putV2DatabasesDatabaseClusterUuidInstallUpdateRouteHandler,
+  putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  putV2DatabasesDatabaseClusterUuidMaintenanceRouteHandler,
+  putV2DatabasesDatabaseClusterUuidMigrateRouteHandler,
+  putV2DatabasesDatabaseClusterUuidOnlineMigrationRouteHandler,
+  putV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRouteHandler,
+  putV2DatabasesDatabaseClusterUuidResizeRouteHandler,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRouteHandler,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRouteHandler,
+  putV2DatabasesDatabaseClusterUuidSqlModeRouteHandler,
+  putV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  putV2DatabasesDatabaseClusterUuidUpgradeRouteHandler,
+  putV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  putV2DatabasesMetricsCredentialsRouteHandler,
+  putV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  putV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  putV2FirewallsFirewallIdRouteHandler,
+  putV2FunctionsNamespacesNamespaceIdKeysKeyIdRouteHandler,
+  putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRouteHandler,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRouteHandler,
+  putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRouteHandler,
+  putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  putV2GenAiAgentsUuidDeploymentVisibilityRouteHandler,
+  putV2GenAiAgentsUuidRouteHandler,
+  putV2GenAiAgentsUuidVersionsRouteHandler,
+  putV2GenAiAnthropicKeysApiKeyUuidRouteHandler,
+  putV2GenAiCustomEvaluationMetricsMetricUuidRouteHandler,
+  putV2GenAiEvaluationTestCasesTestCaseUuidRouteHandler,
+  putV2GenAiIndexingJobsUuidCancelRouteHandler,
+  putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRouteHandler,
+  putV2GenAiKnowledgeBasesUuidRouteHandler,
+  putV2GenAiModelEvaluationRunsEvalRunUuidCancelRouteHandler,
+  putV2GenAiModelsApiKeysApiKeyUuidRegenerateRouteHandler,
+  putV2GenAiModelsApiKeysApiKeyUuidRouteHandler,
+  putV2GenAiModelsRoutersUuidRouteHandler,
+  putV2GenAiOpenaiKeysApiKeyUuidRouteHandler,
+  putV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  putV2GenAiSimulationRunsRunUuidRouteHandler,
+  putV2GenAiWorkspacesWorkspaceUuidAgentsRouteHandler,
+  putV2GenAiWorkspacesWorkspaceUuidRouteHandler,
+  putV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  putV2ImagesImageIdRouteHandler,
+  putV2InsightsAlertRulesIdRouteHandler,
+  putV2InsightsDashboardsUuidRouteHandler,
+  putV2InsightsNotificationChannelsIdRouteHandler,
+  putV2InsightsResourcesResourceUrnSignalsRouteHandler,
+  putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  putV2KubernetesClustersClusterIdRouteHandler,
+  putV2LoadBalancersLbIdRouteHandler,
+  putV2MicrovmsMicrovmIdFilesRouteHandler,
+  putV2MonitoringAlertsAlertUuidRouteHandler,
+  putV2ProjectsDefaultRouteHandler,
+  putV2ProjectsProjectIdRouteHandler,
+  putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRouteHandler,
+  putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRouteHandler,
+  putV2SecuritySecretsSecretRouteHandler,
+  putV2SecuritySettingsPlanRouteHandler,
+  putV2SpacesKeysAccessKeyRouteHandler,
+  putV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  putV2UptimeChecksCheckIdRouteHandler,
+  putV2VectorDatabasesIdRouteHandler,
+  putV2VectorDatabasesIdTagsRouteHandler,
+  putV2VpcNatGatewaysIdRouteHandler,
+  putV2VpcsVpcIdRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', v2Handler)
-  .route('/', toolsHandler)
-  .route('/', codeHandler)
-  .route('/', approvalsHandler)
-  .route('/', v1Handler)
-  .route('/', apiHandler)
-  .route('/', uploadUrlHandler)
+  .openapi(
+    getV2ActionGatewayActorsActorIdLimitsRoute,
+    getV2ActionGatewayActorsActorIdLimitsRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayActorsActorIdLimitsClearRoute,
+    postV2ActionGatewayActorsActorIdLimitsClearRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayActorsActorIdLimitsSetRoute,
+    postV2ActionGatewayActorsActorIdLimitsSetRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayProviderCredentialsRoute,
+    postV2ActionGatewayProviderCredentialsRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayProviderCredentialsRoute,
+    getV2ActionGatewayProviderCredentialsRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayProviderCredentialsIdRoute,
+    getV2ActionGatewayProviderCredentialsIdRouteHandler,
+  )
+  .openapi(
+    patchV2ActionGatewayProviderCredentialsIdRoute,
+    patchV2ActionGatewayProviderCredentialsIdRouteHandler,
+  )
+  .openapi(
+    deleteV2ActionGatewayProviderCredentialsIdRoute,
+    deleteV2ActionGatewayProviderCredentialsIdRouteHandler,
+  )
+  .openapi(postV2ActionGatewayConnectionsRoute, postV2ActionGatewayConnectionsRouteHandler)
+  .openapi(getV2ActionGatewayConnectionsRoute, getV2ActionGatewayConnectionsRouteHandler)
+  .openapi(getV2ActionGatewayConnectionsIdRoute, getV2ActionGatewayConnectionsIdRouteHandler)
+  .openapi(deleteV2ActionGatewayConnectionsIdRoute, deleteV2ActionGatewayConnectionsIdRouteHandler)
+  .openapi(postV2ActionGatewayMcpServersRoute, postV2ActionGatewayMcpServersRouteHandler)
+  .openapi(getV2ActionGatewayMcpServersRoute, getV2ActionGatewayMcpServersRouteHandler)
+  .openapi(
+    getV2ActionGatewayMcpServersServerRefRoute,
+    getV2ActionGatewayMcpServersServerRefRouteHandler,
+  )
+  .openapi(
+    patchV2ActionGatewayMcpServersServerRefRoute,
+    patchV2ActionGatewayMcpServersServerRefRouteHandler,
+  )
+  .openapi(
+    deleteV2ActionGatewayMcpServersServerRefRoute,
+    deleteV2ActionGatewayMcpServersServerRefRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayMcpServersServerRefResyncRoute,
+    postV2ActionGatewayMcpServersServerRefResyncRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayMcpServersServerRefToolsRoute,
+    getV2ActionGatewayMcpServersServerRefToolsRouteHandler,
+  )
+  .openapi(
+    putV2ActionGatewayMcpServersServerRefToolsRoute,
+    putV2ActionGatewayMcpServersServerRefToolsRouteHandler,
+  )
+  .openapi(postV2ActionGatewayOutputViewsRoute, postV2ActionGatewayOutputViewsRouteHandler)
+  .openapi(getV2ActionGatewayOutputViewsRoute, getV2ActionGatewayOutputViewsRouteHandler)
+  .openapi(
+    postV2ActionGatewayOutputViewsPreviewRoute,
+    postV2ActionGatewayOutputViewsPreviewRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayOutputViewsViewIdRoute,
+    getV2ActionGatewayOutputViewsViewIdRouteHandler,
+  )
+  .openapi(
+    deleteV2ActionGatewayOutputViewsViewIdRoute,
+    deleteV2ActionGatewayOutputViewsViewIdRouteHandler,
+  )
+  .openapi(postV2ActionGatewayEndpointsRoute, postV2ActionGatewayEndpointsRouteHandler)
+  .openapi(getV2ActionGatewayEndpointsRoute, getV2ActionGatewayEndpointsRouteHandler)
+  .openapi(getV2ActionGatewayEndpointsSearchRoute, getV2ActionGatewayEndpointsSearchRouteHandler)
+  .openapi(
+    getV2ActionGatewayEndpointsEndpointIdRoute,
+    getV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(
+    patchV2ActionGatewayEndpointsEndpointIdRoute,
+    patchV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(
+    deleteV2ActionGatewayEndpointsEndpointIdRoute,
+    deleteV2ActionGatewayEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+    postV2ActionGatewayEndpointsEndpointIdVersionsRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+    getV2ActionGatewayEndpointsEndpointIdVersionsRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRoute,
+    postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayEndpointVersionsVersionIdRoute,
+    getV2ActionGatewayEndpointVersionsVersionIdRouteHandler,
+  )
+  .openapi(
+    deleteV2ActionGatewayEndpointVersionsVersionIdRoute,
+    deleteV2ActionGatewayEndpointVersionsVersionIdRouteHandler,
+  )
+  .openapi(postV2ActionGatewaySessionsRoute, postV2ActionGatewaySessionsRouteHandler)
+  .openapi(getV2ActionGatewaySessionsRoute, getV2ActionGatewaySessionsRouteHandler)
+  .openapi(getV2ActionGatewaySessionsSearchRoute, getV2ActionGatewaySessionsSearchRouteHandler)
+  .openapi(
+    deleteV2ActionGatewaySessionsSessionUrnRoute,
+    deleteV2ActionGatewaySessionsSessionUrnRouteHandler,
+  )
+  .openapi(postV2ActionGatewayToolbeltsRoute, postV2ActionGatewayToolbeltsRouteHandler)
+  .openapi(getV2ActionGatewayToolbeltsRoute, getV2ActionGatewayToolbeltsRouteHandler)
+  .openapi(getV2ActionGatewayToolbeltsSearchRoute, getV2ActionGatewayToolbeltsSearchRouteHandler)
+  .openapi(getV2ActionGatewayToolbeltsNameRoute, getV2ActionGatewayToolbeltsNameRouteHandler)
+  .openapi(deleteV2ActionGatewayToolbeltsNameRoute, deleteV2ActionGatewayToolbeltsNameRouteHandler)
+  .openapi(
+    getV2ActionGatewayToolbeltsNameProvidersRoute,
+    getV2ActionGatewayToolbeltsNameProvidersRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayToolbeltsNameProvidersProviderToolsRoute,
+    getV2ActionGatewayToolbeltsNameProvidersProviderToolsRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayToolbeltsNameToolsAddRoute,
+    postV2ActionGatewayToolbeltsNameToolsAddRouteHandler,
+  )
+  .openapi(
+    postV2ActionGatewayToolbeltsNameToolsRemoveRoute,
+    postV2ActionGatewayToolbeltsNameToolsRemoveRouteHandler,
+  )
+  .openapi(getV2ActionGatewayToolsRoute, getV2ActionGatewayToolsRouteHandler)
+  .openapi(getV2ActionGatewayToolsHealthRoute, getV2ActionGatewayToolsHealthRouteHandler)
+  .openapi(
+    getV2ActionGatewayToolsHealthProvidersRoute,
+    getV2ActionGatewayToolsHealthProvidersRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayToolsHealthToolsToolSlugRoute,
+    getV2ActionGatewayToolsHealthToolsToolSlugRouteHandler,
+  )
+  .openapi(
+    getV2ActionGatewayToolsToolSlugVersionsRoute,
+    getV2ActionGatewayToolsToolSlugVersionsRouteHandler,
+  )
+  .openapi(getV2ActionGatewayToolsProvidersRoute, getV2ActionGatewayToolsProvidersRouteHandler)
+  .openapi(
+    getV2ActionGatewayToolsProvidersSearchRoute,
+    getV2ActionGatewayToolsProvidersSearchRouteHandler,
+  )
+  .openapi(getV2ActionGatewayToolsSearchRoute, getV2ActionGatewayToolsSearchRouteHandler)
+  .openapi(getV2ActionGatewayToolsToolkitsRoute, getV2ActionGatewayToolsToolkitsRouteHandler)
+  .openapi(getV2ActionGatewayUsersRoute, getV2ActionGatewayUsersRouteHandler)
+  .openapi(getV2ActionGatewayUsersUserIdRoute, getV2ActionGatewayUsersUserIdRouteHandler)
+  .openapi(getToolsRoute, getToolsRouteHandler)
+  .openapi(postToolsSearchRoute, postToolsSearchRouteHandler)
+  .openapi(postToolsInvokeRoute, postToolsInvokeRouteHandler)
+  .openapi(postCodeExecuteRoute, postCodeExecuteRouteHandler)
+  .openapi(
+    postApprovalsSessionSessionIdApprovalIdRoute,
+    postApprovalsSessionSessionIdApprovalIdRouteHandler,
+  )
+  .openapi(postApprovalsApprovalIdRoute, postApprovalsApprovalIdRouteHandler)
+  .openapi(getV21ClicksRoute, getV21ClicksRouteHandler)
+  .openapi(postV21ClicksKubernetesRoute, postV21ClicksKubernetesRouteHandler)
+  .openapi(getV2AccountRoute, getV2AccountRouteHandler)
+  .openapi(getV2AccountKeysRoute, getV2AccountKeysRouteHandler)
+  .openapi(postV2AccountKeysRoute, postV2AccountKeysRouteHandler)
+  .openapi(getV2AccountKeysSshKeyIdentifierRoute, getV2AccountKeysSshKeyIdentifierRouteHandler)
+  .openapi(putV2AccountKeysSshKeyIdentifierRoute, putV2AccountKeysSshKeyIdentifierRouteHandler)
+  .openapi(
+    deleteV2AccountKeysSshKeyIdentifierRoute,
+    deleteV2AccountKeysSshKeyIdentifierRouteHandler,
+  )
+  .openapi(getV2ActionsRoute, getV2ActionsRouteHandler)
+  .openapi(getV2ActionsActionIdRoute, getV2ActionsActionIdRouteHandler)
+  .openapi(getV2AddOnsAppsRoute, getV2AddOnsAppsRouteHandler)
+  .openapi(getV2AddOnsAppsAppSlugMetadataRoute, getV2AddOnsAppsAppSlugMetadataRouteHandler)
+  .openapi(getV2AddOnsSaasRoute, getV2AddOnsSaasRouteHandler)
+  .openapi(postV2AddOnsSaasRoute, postV2AddOnsSaasRouteHandler)
+  .openapi(getV2AddOnsSaasResourceUuidRoute, getV2AddOnsSaasResourceUuidRouteHandler)
+  .openapi(deleteV2AddOnsSaasResourceUuidRoute, deleteV2AddOnsSaasResourceUuidRouteHandler)
+  .openapi(patchV2AddOnsSaasResourceUuidRoute, patchV2AddOnsSaasResourceUuidRouteHandler)
+  .openapi(patchV2AddOnsSaasResourceUuidPlanRoute, patchV2AddOnsSaasResourceUuidPlanRouteHandler)
+  .openapi(postV2HarnessRuntimeAuthProviderRoute, postV2HarnessRuntimeAuthProviderRouteHandler)
+  .openapi(
+    getV2HarnessRuntimeAuthProviderPollRoute,
+    getV2HarnessRuntimeAuthProviderPollRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeAuthProviderConnectionsRoute,
+    getV2HarnessRuntimeAuthProviderConnectionsRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeAuthProviderConnectionsRoute,
+    postV2HarnessRuntimeAuthProviderConnectionsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+    getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+    deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRoute,
+    postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRouteHandler,
+  )
+  .openapi(getV2HarnessRuntimeImageMessagesRoute, getV2HarnessRuntimeImageMessagesRouteHandler)
+  .openapi(getV2HarnessRuntimeConfigsRoute, getV2HarnessRuntimeConfigsRouteHandler)
+  .openapi(postV2HarnessRuntimeConfigsRoute, postV2HarnessRuntimeConfigsRouteHandler)
+  .openapi(getV2HarnessRuntimeConfigsConfigIdRoute, getV2HarnessRuntimeConfigsConfigIdRouteHandler)
+  .openapi(
+    deleteV2HarnessRuntimeConfigsConfigIdRoute,
+    deleteV2HarnessRuntimeConfigsConfigIdRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeConfigsConfigIdCloneRoute,
+    postV2HarnessRuntimeConfigsConfigIdCloneRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeConfigsConfigIdSessionsRoute,
+    getV2HarnessRuntimeConfigsConfigIdSessionsRouteHandler,
+  )
+  .openapi(getV2HarnessRuntimeRegionsRoute, getV2HarnessRuntimeRegionsRouteHandler)
+  .openapi(getV2HarnessRuntimeSessionsRoute, getV2HarnessRuntimeSessionsRouteHandler)
+  .openapi(postV2HarnessRuntimeSessionsRoute, postV2HarnessRuntimeSessionsRouteHandler)
+  .openapi(
+    postV2HarnessRuntimeSessionsPolicyValidateRoute,
+    postV2HarnessRuntimeSessionsPolicyValidateRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSandboxSizesRoute,
+    getV2HarnessRuntimeSessionsSandboxSizesRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeSessionsSessionIdRoute,
+    deleteV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdRoute,
+    getV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  )
+  .openapi(
+    patchV2HarnessRuntimeSessionsSessionIdRoute,
+    patchV2HarnessRuntimeSessionsSessionIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+    postV2HarnessRuntimeSessionsSessionIdCheckpointsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+    deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRoute,
+    getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRoute,
+    postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdForkRoute,
+    postV2HarnessRuntimeSessionsSessionIdForkRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRoute,
+    postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdCancelRoute,
+    postV2HarnessRuntimeSessionsSessionIdCancelRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdImageMessagesRoute,
+    getV2HarnessRuntimeSessionsSessionIdImageMessagesRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdInputRoute,
+    postV2HarnessRuntimeSessionsSessionIdInputRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdPauseRoute,
+    postV2HarnessRuntimeSessionsSessionIdPauseRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdResumeRoute,
+    postV2HarnessRuntimeSessionsSessionIdResumeRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdSandboxExecRoute,
+    postV2HarnessRuntimeSessionsSessionIdSandboxExecRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRoute,
+    postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRoute,
+    getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRoute,
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRoute,
+    getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRoute,
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRoute,
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRoute,
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRoute,
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdEventsRoute,
+    getV2HarnessRuntimeSessionsSessionIdEventsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdPortForwardPortRoute,
+    getV2HarnessRuntimeSessionsSessionIdPortForwardPortRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeSessionsSessionIdIngressRoute,
+    getV2HarnessRuntimeSessionsSessionIdIngressRouteHandler,
+  )
+  .openapi(getV2HarnessRuntimeTemplatesRoute, getV2HarnessRuntimeTemplatesRouteHandler)
+  .openapi(postV2HarnessRuntimeTemplatesRoute, postV2HarnessRuntimeTemplatesRouteHandler)
+  .openapi(
+    getV2HarnessRuntimeTemplatesTemplateIdRoute,
+    getV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    putV2HarnessRuntimeTemplatesTemplateIdRoute,
+    putV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeTemplatesTemplateIdRoute,
+    deleteV2HarnessRuntimeTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTemplatesTemplateIdBuildsRoute,
+    getV2HarnessRuntimeTemplatesTemplateIdBuildsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRoute,
+    getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRouteHandler,
+  )
+  .openapi(getV2HarnessRuntimeTriggersRoute, getV2HarnessRuntimeTriggersRouteHandler)
+  .openapi(postV2HarnessRuntimeTriggersRoute, postV2HarnessRuntimeTriggersRouteHandler)
+  .openapi(
+    getV2HarnessRuntimeTriggersBySessionSessionIdRoute,
+    getV2HarnessRuntimeTriggersBySessionSessionIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTriggersReusableSessionsRoute,
+    getV2HarnessRuntimeTriggersReusableSessionsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTriggersTriggerIdRoute,
+    getV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    patchV2HarnessRuntimeTriggersTriggerIdRoute,
+    patchV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeTriggersTriggerIdRoute,
+    deleteV2HarnessRuntimeTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTriggersTriggerIdExecutionsRoute,
+    getV2HarnessRuntimeTriggersTriggerIdExecutionsRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRoute,
+    getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRoute,
+    postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeTriggersTriggerIdRotateSecretRoute,
+    postV2HarnessRuntimeTriggersTriggerIdRotateSecretRouteHandler,
+  )
+  .openapi(
+    postV2HarnessRuntimeTriggersTriggerIdWebhookRoute,
+    postV2HarnessRuntimeTriggersTriggerIdWebhookRouteHandler,
+  )
+  .openapi(
+    getV2HarnessRuntimeWebhookProvidersRoute,
+    getV2HarnessRuntimeWebhookProvidersRouteHandler,
+  )
+  .openapi(getV2HarnessRuntimeWorkspacesRoute, getV2HarnessRuntimeWorkspacesRouteHandler)
+  .openapi(postV2HarnessRuntimeWorkspacesRoute, postV2HarnessRuntimeWorkspacesRouteHandler)
+  .openapi(
+    getV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+    getV2HarnessRuntimeWorkspacesWorkspaceIdRouteHandler,
+  )
+  .openapi(
+    deleteV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+    deleteV2HarnessRuntimeWorkspacesWorkspaceIdRouteHandler,
+  )
+  .openapi(getV2AppsRoute, getV2AppsRouteHandler)
+  .openapi(postV2AppsRoute, postV2AppsRouteHandler)
+  .openapi(deleteV2AppsIdRoute, deleteV2AppsIdRouteHandler)
+  .openapi(getV2AppsIdRoute, getV2AppsIdRouteHandler)
+  .openapi(putV2AppsIdRoute, putV2AppsIdRouteHandler)
+  .openapi(postV2AppsAppIdRestartRoute, postV2AppsAppIdRestartRouteHandler)
+  .openapi(
+    getV2AppsAppIdComponentsComponentNameLogsRoute,
+    getV2AppsAppIdComponentsComponentNameLogsRouteHandler,
+  )
+  .openapi(
+    getV2AppsAppIdComponentsComponentNameExecRoute,
+    getV2AppsAppIdComponentsComponentNameExecRouteHandler,
+  )
+  .openapi(getV2AppsAppIdInstancesRoute, getV2AppsAppIdInstancesRouteHandler)
+  .openapi(getV2AppsAppIdDeploymentsRoute, getV2AppsAppIdDeploymentsRouteHandler)
+  .openapi(postV2AppsAppIdDeploymentsRoute, postV2AppsAppIdDeploymentsRouteHandler)
+  .openapi(
+    getV2AppsAppIdDeploymentsDeploymentIdRoute,
+    getV2AppsAppIdDeploymentsDeploymentIdRouteHandler,
+  )
+  .openapi(
+    postV2AppsAppIdDeploymentsDeploymentIdCancelRoute,
+    postV2AppsAppIdDeploymentsDeploymentIdCancelRouteHandler,
+  )
+  .openapi(
+    getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRoute,
+    getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRouteHandler,
+  )
+  .openapi(
+    getV2AppsAppIdDeploymentsDeploymentIdLogsRoute,
+    getV2AppsAppIdDeploymentsDeploymentIdLogsRouteHandler,
+  )
+  .openapi(
+    getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRoute,
+    getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRouteHandler,
+  )
+  .openapi(getV2AppsAppIdLogsRoute, getV2AppsAppIdLogsRouteHandler)
+  .openapi(getV2AppsAppIdJobInvocationsRoute, getV2AppsAppIdJobInvocationsRouteHandler)
+  .openapi(
+    getV2AppsAppIdJobInvocationsJobInvocationIdRoute,
+    getV2AppsAppIdJobInvocationsJobInvocationIdRouteHandler,
+  )
+  .openapi(
+    postV2AppsAppIdJobInvocationsJobInvocationIdCancelRoute,
+    postV2AppsAppIdJobInvocationsJobInvocationIdCancelRouteHandler,
+  )
+  .openapi(
+    getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRoute,
+    getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRouteHandler,
+  )
+  .openapi(getV2AppsAppIdEventsRoute, getV2AppsAppIdEventsRouteHandler)
+  .openapi(getV2AppsAppIdEventsEventIdRoute, getV2AppsAppIdEventsEventIdRouteHandler)
+  .openapi(postV2AppsAppIdEventsEventIdCancelRoute, postV2AppsAppIdEventsEventIdCancelRouteHandler)
+  .openapi(getV2AppsAppIdEventsEventIdLogsRoute, getV2AppsAppIdEventsEventIdLogsRouteHandler)
+  .openapi(getV2AppsTiersInstanceSizesRoute, getV2AppsTiersInstanceSizesRouteHandler)
+  .openapi(getV2AppsTiersInstanceSizesSlugRoute, getV2AppsTiersInstanceSizesSlugRouteHandler)
+  .openapi(getV2AppsRegionsRoute, getV2AppsRegionsRouteHandler)
+  .openapi(postV2AppsProposeRoute, postV2AppsProposeRouteHandler)
+  .openapi(getV2AppsAppIdAlertsRoute, getV2AppsAppIdAlertsRouteHandler)
+  .openapi(
+    postV2AppsAppIdAlertsAlertIdDestinationsRoute,
+    postV2AppsAppIdAlertsAlertIdDestinationsRouteHandler,
+  )
+  .openapi(postV2AppsAppIdRollbackRoute, postV2AppsAppIdRollbackRouteHandler)
+  .openapi(postV2AppsAppIdRollbackValidateRoute, postV2AppsAppIdRollbackValidateRouteHandler)
+  .openapi(postV2AppsAppIdRollbackCommitRoute, postV2AppsAppIdRollbackCommitRouteHandler)
+  .openapi(postV2AppsAppIdRollbackRevertRoute, postV2AppsAppIdRollbackRevertRouteHandler)
+  .openapi(
+    getV2AppsAppIdMetricsBandwidthDailyRoute,
+    getV2AppsAppIdMetricsBandwidthDailyRouteHandler,
+  )
+  .openapi(postV2AppsMetricsBandwidthDailyRoute, postV2AppsMetricsBandwidthDailyRouteHandler)
+  .openapi(getV2AppsAppIdHealthRoute, getV2AppsAppIdHealthRouteHandler)
+  .openapi(getV2CdnEndpointsRoute, getV2CdnEndpointsRouteHandler)
+  .openapi(postV2CdnEndpointsRoute, postV2CdnEndpointsRouteHandler)
+  .openapi(getV2CdnEndpointsCdnIdRoute, getV2CdnEndpointsCdnIdRouteHandler)
+  .openapi(putV2CdnEndpointsCdnIdRoute, putV2CdnEndpointsCdnIdRouteHandler)
+  .openapi(deleteV2CdnEndpointsCdnIdRoute, deleteV2CdnEndpointsCdnIdRouteHandler)
+  .openapi(deleteV2CdnEndpointsCdnIdCacheRoute, deleteV2CdnEndpointsCdnIdCacheRouteHandler)
+  .openapi(getV2CertificatesRoute, getV2CertificatesRouteHandler)
+  .openapi(postV2CertificatesRoute, postV2CertificatesRouteHandler)
+  .openapi(getV2CertificatesCertificateIdRoute, getV2CertificatesCertificateIdRouteHandler)
+  .openapi(deleteV2CertificatesCertificateIdRoute, deleteV2CertificatesCertificateIdRouteHandler)
+  .openapi(getV2CustomersMyBalanceRoute, getV2CustomersMyBalanceRouteHandler)
+  .openapi(getV2CustomersMyPrepaymentConfigRoute, getV2CustomersMyPrepaymentConfigRouteHandler)
+  .openapi(getV2CustomersMyPrepaymentStatusRoute, getV2CustomersMyPrepaymentStatusRouteHandler)
+  .openapi(getV2CustomersMyBillingHistoryRoute, getV2CustomersMyBillingHistoryRouteHandler)
+  .openapi(getV2CustomersMyInvoicesRoute, getV2CustomersMyInvoicesRouteHandler)
+  .openapi(
+    getV2CustomersMyInvoicesInvoiceUuidRoute,
+    getV2CustomersMyInvoicesInvoiceUuidRouteHandler,
+  )
+  .openapi(
+    getV2CustomersMyInvoicesInvoiceUuidCsvRoute,
+    getV2CustomersMyInvoicesInvoiceUuidCsvRouteHandler,
+  )
+  .openapi(
+    getV2CustomersMyInvoicesInvoiceUuidPdfRoute,
+    getV2CustomersMyInvoicesInvoiceUuidPdfRouteHandler,
+  )
+  .openapi(
+    getV2CustomersMyInvoicesInvoiceUuidSummaryRoute,
+    getV2CustomersMyInvoicesInvoiceUuidSummaryRouteHandler,
+  )
+  .openapi(
+    getV2BillingAccountUrnInsightsStartDateEndDateRoute,
+    getV2BillingAccountUrnInsightsStartDateEndDateRouteHandler,
+  )
+  .openapi(getV2DatabasesOptionsRoute, getV2DatabasesOptionsRouteHandler)
+  .openapi(getV2DatabasesRoute, getV2DatabasesRouteHandler)
+  .openapi(postV2DatabasesRoute, postV2DatabasesRouteHandler)
+  .openapi(getV2DatabasesDatabaseClusterUuidRoute, getV2DatabasesDatabaseClusterUuidRouteHandler)
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidRoute,
+    deleteV2DatabasesDatabaseClusterUuidRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidConfigRoute,
+    getV2DatabasesDatabaseClusterUuidConfigRouteHandler,
+  )
+  .openapi(
+    patchV2DatabasesDatabaseClusterUuidConfigRoute,
+    patchV2DatabasesDatabaseClusterUuidConfigRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidCaRoute,
+    getV2DatabasesDatabaseClusterUuidCaRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+    getV2DatabasesDatabaseClusterUuidOnlineMigrationRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+    putV2DatabasesDatabaseClusterUuidOnlineMigrationRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRoute,
+    deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidMigrateRoute,
+    putV2DatabasesDatabaseClusterUuidMigrateRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidResizeRoute,
+    putV2DatabasesDatabaseClusterUuidResizeRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidFirewallRoute,
+    getV2DatabasesDatabaseClusterUuidFirewallRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidFirewallRoute,
+    putV2DatabasesDatabaseClusterUuidFirewallRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+    getV2DatabasesDatabaseClusterUuidDoSettingsRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+    putV2DatabasesDatabaseClusterUuidDoSettingsRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidMaintenanceRoute,
+    putV2DatabasesDatabaseClusterUuidMaintenanceRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidInstallUpdateRoute,
+    putV2DatabasesDatabaseClusterUuidInstallUpdateRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidBackupsRoute,
+    getV2DatabasesDatabaseClusterUuidBackupsRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidReplicasRoute,
+    getV2DatabasesDatabaseClusterUuidReplicasRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidReplicasRoute,
+    postV2DatabasesDatabaseClusterUuidReplicasRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidEventsRoute,
+    getV2DatabasesDatabaseClusterUuidEventsRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+    getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRoute,
+    putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidUsersRoute,
+    getV2DatabasesDatabaseClusterUuidUsersRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidUsersRoute,
+    postV2DatabasesDatabaseClusterUuidUsersRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+    getV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+    deleteV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+    putV2DatabasesDatabaseClusterUuidUsersUsernameRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRoute,
+    postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidDbsRoute,
+    getV2DatabasesDatabaseClusterUuidDbsRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidDbsRoute,
+    postV2DatabasesDatabaseClusterUuidDbsRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+    getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidPoolsRoute,
+    getV2DatabasesDatabaseClusterUuidPoolsRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidPoolsRoute,
+    postV2DatabasesDatabaseClusterUuidPoolsRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+    getV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+    putV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+    getV2DatabasesDatabaseClusterUuidEvictionPolicyRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+    putV2DatabasesDatabaseClusterUuidEvictionPolicyRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSqlModeRoute,
+    getV2DatabasesDatabaseClusterUuidSqlModeRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidSqlModeRoute,
+    putV2DatabasesDatabaseClusterUuidSqlModeRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidUpgradeRoute,
+    putV2DatabasesDatabaseClusterUuidUpgradeRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+    getV2DatabasesDatabaseClusterUuidAutoscaleRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+    putV2DatabasesDatabaseClusterUuidAutoscaleRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidTopicsRoute,
+    getV2DatabasesDatabaseClusterUuidTopicsRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidTopicsRoute,
+    postV2DatabasesDatabaseClusterUuidTopicsRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+    getV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+    putV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidLogsinkRoute,
+    getV2DatabasesDatabaseClusterUuidLogsinkRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidLogsinkRoute,
+    postV2DatabasesDatabaseClusterUuidLogsinkRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+    getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+    putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+    deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryRouteHandler,
+  )
+  .openapi(
+    postV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+    postV2DatabasesDatabaseClusterUuidSchemaRegistryRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+    getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRoute,
+    getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+    putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRouteHandler,
+  )
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+    getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRouteHandler,
+  )
+  .openapi(
+    putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+    putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRouteHandler,
+  )
+  .openapi(getV2DatabasesMetricsCredentialsRoute, getV2DatabasesMetricsCredentialsRouteHandler)
+  .openapi(putV2DatabasesMetricsCredentialsRoute, putV2DatabasesMetricsCredentialsRouteHandler)
+  .openapi(
+    getV2DatabasesDatabaseClusterUuidIndexesRoute,
+    getV2DatabasesDatabaseClusterUuidIndexesRouteHandler,
+  )
+  .openapi(
+    deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRoute,
+    deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRouteHandler,
+  )
+  .openapi(
+    getV2DedicatedInferencesDedicatedInferenceIdRoute,
+    getV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  )
+  .openapi(
+    patchV2DedicatedInferencesDedicatedInferenceIdRoute,
+    patchV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  )
+  .openapi(
+    deleteV2DedicatedInferencesDedicatedInferenceIdRoute,
+    deleteV2DedicatedInferencesDedicatedInferenceIdRouteHandler,
+  )
+  .openapi(getV2DedicatedInferencesRoute, getV2DedicatedInferencesRouteHandler)
+  .openapi(postV2DedicatedInferencesRoute, postV2DedicatedInferencesRouteHandler)
+  .openapi(
+    getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRoute,
+    getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRouteHandler,
+  )
+  .openapi(
+    getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRoute,
+    getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRouteHandler,
+  )
+  .openapi(
+    getV2DedicatedInferencesDedicatedInferenceIdCaRoute,
+    getV2DedicatedInferencesDedicatedInferenceIdCaRouteHandler,
+  )
+  .openapi(
+    getV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+    getV2DedicatedInferencesDedicatedInferenceIdTokensRouteHandler,
+  )
+  .openapi(
+    postV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+    postV2DedicatedInferencesDedicatedInferenceIdTokensRouteHandler,
+  )
+  .openapi(
+    deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRoute,
+    deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRouteHandler,
+  )
+  .openapi(getV2DedicatedInferencesSizesRoute, getV2DedicatedInferencesSizesRouteHandler)
+  .openapi(
+    getV2DedicatedInferencesGpuModelConfigRoute,
+    getV2DedicatedInferencesGpuModelConfigRouteHandler,
+  )
+  .openapi(getV2DomainsRoute, getV2DomainsRouteHandler)
+  .openapi(postV2DomainsRoute, postV2DomainsRouteHandler)
+  .openapi(getV2DomainsDomainNameRoute, getV2DomainsDomainNameRouteHandler)
+  .openapi(deleteV2DomainsDomainNameRoute, deleteV2DomainsDomainNameRouteHandler)
+  .openapi(getV2DomainsDomainNameRecordsRoute, getV2DomainsDomainNameRecordsRouteHandler)
+  .openapi(postV2DomainsDomainNameRecordsRoute, postV2DomainsDomainNameRecordsRouteHandler)
+  .openapi(
+    getV2DomainsDomainNameRecordsDomainRecordIdRoute,
+    getV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  )
+  .openapi(
+    patchV2DomainsDomainNameRecordsDomainRecordIdRoute,
+    patchV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  )
+  .openapi(
+    putV2DomainsDomainNameRecordsDomainRecordIdRoute,
+    putV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  )
+  .openapi(
+    deleteV2DomainsDomainNameRecordsDomainRecordIdRoute,
+    deleteV2DomainsDomainNameRecordsDomainRecordIdRouteHandler,
+  )
+  .openapi(getV2DropletsRoute, getV2DropletsRouteHandler)
+  .openapi(postV2DropletsRoute, postV2DropletsRouteHandler)
+  .openapi(deleteV2DropletsRoute, deleteV2DropletsRouteHandler)
+  .openapi(getV2DropletsDropletIdRoute, getV2DropletsDropletIdRouteHandler)
+  .openapi(deleteV2DropletsDropletIdRoute, deleteV2DropletsDropletIdRouteHandler)
+  .openapi(getV2DropletsDropletIdBackupsRoute, getV2DropletsDropletIdBackupsRouteHandler)
+  .openapi(
+    getV2DropletsDropletIdBackupsPolicyRoute,
+    getV2DropletsDropletIdBackupsPolicyRouteHandler,
+  )
+  .openapi(getV2DropletsBackupsPoliciesRoute, getV2DropletsBackupsPoliciesRouteHandler)
+  .openapi(
+    getV2DropletsBackupsSupportedPoliciesRoute,
+    getV2DropletsBackupsSupportedPoliciesRouteHandler,
+  )
+  .openapi(getV2DropletsDropletIdSnapshotsRoute, getV2DropletsDropletIdSnapshotsRouteHandler)
+  .openapi(getV2DropletsDropletIdActionsRoute, getV2DropletsDropletIdActionsRouteHandler)
+  .openapi(postV2DropletsDropletIdActionsRoute, postV2DropletsDropletIdActionsRouteHandler)
+  .openapi(postV2DropletsActionsRoute, postV2DropletsActionsRouteHandler)
+  .openapi(
+    getV2DropletsDropletIdActionsActionIdRoute,
+    getV2DropletsDropletIdActionsActionIdRouteHandler,
+  )
+  .openapi(getV2DropletsDropletIdKernelsRoute, getV2DropletsDropletIdKernelsRouteHandler)
+  .openapi(getV2DropletsDropletIdFirewallsRoute, getV2DropletsDropletIdFirewallsRouteHandler)
+  .openapi(getV2DropletsDropletIdNeighborsRoute, getV2DropletsDropletIdNeighborsRouteHandler)
+  .openapi(
+    getV2DropletsDropletIdDestroyWithAssociatedResourcesRoute,
+    getV2DropletsDropletIdDestroyWithAssociatedResourcesRouteHandler,
+  )
+  .openapi(
+    deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRoute,
+    deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRouteHandler,
+  )
+  .openapi(
+    deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRoute,
+    deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRouteHandler,
+  )
+  .openapi(
+    getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRoute,
+    getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRouteHandler,
+  )
+  .openapi(
+    postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRoute,
+    postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRouteHandler,
+  )
+  .openapi(getV2DropletsAutoscaleRoute, getV2DropletsAutoscaleRouteHandler)
+  .openapi(postV2DropletsAutoscaleRoute, postV2DropletsAutoscaleRouteHandler)
+  .openapi(
+    getV2DropletsAutoscaleAutoscalePoolIdRoute,
+    getV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  )
+  .openapi(
+    putV2DropletsAutoscaleAutoscalePoolIdRoute,
+    putV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  )
+  .openapi(
+    deleteV2DropletsAutoscaleAutoscalePoolIdRoute,
+    deleteV2DropletsAutoscaleAutoscalePoolIdRouteHandler,
+  )
+  .openapi(
+    deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRoute,
+    deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRouteHandler,
+  )
+  .openapi(
+    getV2DropletsAutoscaleAutoscalePoolIdMembersRoute,
+    getV2DropletsAutoscaleAutoscalePoolIdMembersRouteHandler,
+  )
+  .openapi(
+    getV2DropletsAutoscaleAutoscalePoolIdHistoryRoute,
+    getV2DropletsAutoscaleAutoscalePoolIdHistoryRouteHandler,
+  )
+  .openapi(getV2FirewallsRoute, getV2FirewallsRouteHandler)
+  .openapi(postV2FirewallsRoute, postV2FirewallsRouteHandler)
+  .openapi(getV2FirewallsFirewallIdRoute, getV2FirewallsFirewallIdRouteHandler)
+  .openapi(putV2FirewallsFirewallIdRoute, putV2FirewallsFirewallIdRouteHandler)
+  .openapi(deleteV2FirewallsFirewallIdRoute, deleteV2FirewallsFirewallIdRouteHandler)
+  .openapi(postV2FirewallsFirewallIdDropletsRoute, postV2FirewallsFirewallIdDropletsRouteHandler)
+  .openapi(
+    deleteV2FirewallsFirewallIdDropletsRoute,
+    deleteV2FirewallsFirewallIdDropletsRouteHandler,
+  )
+  .openapi(postV2FirewallsFirewallIdTagsRoute, postV2FirewallsFirewallIdTagsRouteHandler)
+  .openapi(deleteV2FirewallsFirewallIdTagsRoute, deleteV2FirewallsFirewallIdTagsRouteHandler)
+  .openapi(postV2FirewallsFirewallIdRulesRoute, postV2FirewallsFirewallIdRulesRouteHandler)
+  .openapi(deleteV2FirewallsFirewallIdRulesRoute, deleteV2FirewallsFirewallIdRulesRouteHandler)
+  .openapi(getV2FloatingIpsRoute, getV2FloatingIpsRouteHandler)
+  .openapi(postV2FloatingIpsRoute, postV2FloatingIpsRouteHandler)
+  .openapi(getV2FloatingIpsFloatingIpRoute, getV2FloatingIpsFloatingIpRouteHandler)
+  .openapi(deleteV2FloatingIpsFloatingIpRoute, deleteV2FloatingIpsFloatingIpRouteHandler)
+  .openapi(getV2FloatingIpsFloatingIpActionsRoute, getV2FloatingIpsFloatingIpActionsRouteHandler)
+  .openapi(postV2FloatingIpsFloatingIpActionsRoute, postV2FloatingIpsFloatingIpActionsRouteHandler)
+  .openapi(
+    getV2FloatingIpsFloatingIpActionsActionIdRoute,
+    getV2FloatingIpsFloatingIpActionsActionIdRouteHandler,
+  )
+  .openapi(getV2FunctionsNamespacesRoute, getV2FunctionsNamespacesRouteHandler)
+  .openapi(postV2FunctionsNamespacesRoute, postV2FunctionsNamespacesRouteHandler)
+  .openapi(
+    getV2FunctionsNamespacesNamespaceIdRoute,
+    getV2FunctionsNamespacesNamespaceIdRouteHandler,
+  )
+  .openapi(
+    deleteV2FunctionsNamespacesNamespaceIdRoute,
+    deleteV2FunctionsNamespacesNamespaceIdRouteHandler,
+  )
+  .openapi(
+    getV2FunctionsNamespacesNamespaceIdTriggersRoute,
+    getV2FunctionsNamespacesNamespaceIdTriggersRouteHandler,
+  )
+  .openapi(
+    postV2FunctionsNamespacesNamespaceIdTriggersRoute,
+    postV2FunctionsNamespacesNamespaceIdTriggersRouteHandler,
+  )
+  .openapi(
+    getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+    getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  )
+  .openapi(
+    putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+    putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  )
+  .openapi(
+    deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+    deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRouteHandler,
+  )
+  .openapi(
+    getV2FunctionsNamespacesNamespaceIdKeysRoute,
+    getV2FunctionsNamespacesNamespaceIdKeysRouteHandler,
+  )
+  .openapi(
+    postV2FunctionsNamespacesNamespaceIdKeysRoute,
+    postV2FunctionsNamespacesNamespaceIdKeysRouteHandler,
+  )
+  .openapi(
+    putV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+    putV2FunctionsNamespacesNamespaceIdKeysKeyIdRouteHandler,
+  )
+  .openapi(
+    deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+    deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRouteHandler,
+  )
+  .openapi(getV2ImagesRoute, getV2ImagesRouteHandler)
+  .openapi(postV2ImagesRoute, postV2ImagesRouteHandler)
+  .openapi(getV2ImagesImageIdRoute, getV2ImagesImageIdRouteHandler)
+  .openapi(putV2ImagesImageIdRoute, putV2ImagesImageIdRouteHandler)
+  .openapi(deleteV2ImagesImageIdRoute, deleteV2ImagesImageIdRouteHandler)
+  .openapi(postV2ImagesImageIdAccountTransferRoute, postV2ImagesImageIdAccountTransferRouteHandler)
+  .openapi(
+    postV2ImagesImageIdAccountTransferAcceptRoute,
+    postV2ImagesImageIdAccountTransferAcceptRouteHandler,
+  )
+  .openapi(
+    postV2ImagesImageIdAccountTransferCancelRoute,
+    postV2ImagesImageIdAccountTransferCancelRouteHandler,
+  )
+  .openapi(
+    postV2ImagesImageIdAccountTransferDeclineRoute,
+    postV2ImagesImageIdAccountTransferDeclineRouteHandler,
+  )
+  .openapi(getV2ImagesImageIdActionsRoute, getV2ImagesImageIdActionsRouteHandler)
+  .openapi(postV2ImagesImageIdActionsRoute, postV2ImagesImageIdActionsRouteHandler)
+  .openapi(getV2ImagesImageIdActionsActionIdRoute, getV2ImagesImageIdActionsActionIdRouteHandler)
+  .openapi(getV2InsightsAlertInstancesRoute, getV2InsightsAlertInstancesRouteHandler)
+  .openapi(getV2InsightsAlertInstancesIdRoute, getV2InsightsAlertInstancesIdRouteHandler)
+  .openapi(getV2InsightsAlertRulesRoute, getV2InsightsAlertRulesRouteHandler)
+  .openapi(postV2InsightsAlertRulesRoute, postV2InsightsAlertRulesRouteHandler)
+  .openapi(getV2InsightsAlertRulesIdRoute, getV2InsightsAlertRulesIdRouteHandler)
+  .openapi(putV2InsightsAlertRulesIdRoute, putV2InsightsAlertRulesIdRouteHandler)
+  .openapi(deleteV2InsightsAlertRulesIdRoute, deleteV2InsightsAlertRulesIdRouteHandler)
+  .openapi(getV2InsightsDashboardsRoute, getV2InsightsDashboardsRouteHandler)
+  .openapi(postV2InsightsDashboardsRoute, postV2InsightsDashboardsRouteHandler)
+  .openapi(getV2InsightsDashboardsSchemaRoute, getV2InsightsDashboardsSchemaRouteHandler)
+  .openapi(getV2InsightsDashboardsUuidRoute, getV2InsightsDashboardsUuidRouteHandler)
+  .openapi(putV2InsightsDashboardsUuidRoute, putV2InsightsDashboardsUuidRouteHandler)
+  .openapi(deleteV2InsightsDashboardsUuidRoute, deleteV2InsightsDashboardsUuidRouteHandler)
+  .openapi(getV2InsightsNotificationChannelsRoute, getV2InsightsNotificationChannelsRouteHandler)
+  .openapi(postV2InsightsNotificationChannelsRoute, postV2InsightsNotificationChannelsRouteHandler)
+  .openapi(
+    getV2InsightsNotificationChannelsIdRoute,
+    getV2InsightsNotificationChannelsIdRouteHandler,
+  )
+  .openapi(
+    putV2InsightsNotificationChannelsIdRoute,
+    putV2InsightsNotificationChannelsIdRouteHandler,
+  )
+  .openapi(
+    deleteV2InsightsNotificationChannelsIdRoute,
+    deleteV2InsightsNotificationChannelsIdRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionPromApiV1QueryRoute,
+    getV2InsightsQueryRegionPromApiV1QueryRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionPromApiV1QueryRoute,
+    postV2InsightsQueryRegionPromApiV1QueryRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+    getV2InsightsQueryRegionPromApiV1QueryRangeRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+    postV2InsightsQueryRegionPromApiV1QueryRangeRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionPromApiV1LabelsRoute,
+    getV2InsightsQueryRegionPromApiV1LabelsRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionPromApiV1LabelsRoute,
+    postV2InsightsQueryRegionPromApiV1LabelsRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionPromApiV1LabelNameValuesRoute,
+    getV2InsightsQueryRegionPromApiV1LabelNameValuesRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionPromApiV1SeriesRoute,
+    getV2InsightsQueryRegionPromApiV1SeriesRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionPromApiV1SeriesRoute,
+    postV2InsightsQueryRegionPromApiV1SeriesRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionLogsSearchRoute,
+    postV2InsightsQueryRegionLogsSearchRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionTracesSearchRoute,
+    postV2InsightsQueryRegionTracesSearchRouteHandler,
+  )
+  .openapi(
+    getV2InsightsQueryRegionTracesTraceIdRoute,
+    getV2InsightsQueryRegionTracesTraceIdRouteHandler,
+  )
+  .openapi(
+    postV2InsightsQueryRegionSpansSearchRoute,
+    postV2InsightsQueryRegionSpansSearchRouteHandler,
+  )
+  .openapi(getV2InsightsResourcesRoute, getV2InsightsResourcesRouteHandler)
+  .openapi(getV2InsightsResourcesResourceUrnRoute, getV2InsightsResourcesResourceUrnRouteHandler)
+  .openapi(
+    putV2InsightsResourcesResourceUrnSignalsRoute,
+    putV2InsightsResourcesResourceUrnSignalsRouteHandler,
+  )
+  .openapi(getV1ConsentRoute, getV1ConsentRouteHandler)
+  .openapi(putV1ConsentRoute, putV1ConsentRouteHandler)
+  .openapi(getV1ConsentEnvironmentIdRoute, getV1ConsentEnvironmentIdRouteHandler)
+  .openapi(putV1ConsentEnvironmentIdRoute, putV1ConsentEnvironmentIdRouteHandler)
+  .openapi(
+    getV1SignalsAgentsEnvironmentIdSessionsRoute,
+    getV1SignalsAgentsEnvironmentIdSessionsRouteHandler,
+  )
+  .openapi(
+    getV1SignalsSessionsSessionIdDialoguesRoute,
+    getV1SignalsSessionsSessionIdDialoguesRouteHandler,
+  )
+  .openapi(getV1SignalsExportsRoute, getV1SignalsExportsRouteHandler)
+  .openapi(postV1SignalsExportsRoute, postV1SignalsExportsRouteHandler)
+  .openapi(getV1SignalsExportsOptionsRoute, getV1SignalsExportsOptionsRouteHandler)
+  .openapi(getV1SignalsExportsExportIdRoute, getV1SignalsExportsExportIdRouteHandler)
+  .openapi(
+    getV1SignalsExportsExportIdDownloadRoute,
+    getV1SignalsExportsExportIdDownloadRouteHandler,
+  )
+  .openapi(getV1SignalsDeletionsRoute, getV1SignalsDeletionsRouteHandler)
+  .openapi(postV1SignalsDeletionsRoute, postV1SignalsDeletionsRouteHandler)
+  .openapi(getV1SignalsDeletionsDeletionIdRoute, getV1SignalsDeletionsDeletionIdRouteHandler)
+  .openapi(getV2KubernetesClustersRoute, getV2KubernetesClustersRouteHandler)
+  .openapi(postV2KubernetesClustersRoute, postV2KubernetesClustersRouteHandler)
+  .openapi(getV2KubernetesClustersClusterIdRoute, getV2KubernetesClustersClusterIdRouteHandler)
+  .openapi(putV2KubernetesClustersClusterIdRoute, putV2KubernetesClustersClusterIdRouteHandler)
+  .openapi(
+    deleteV2KubernetesClustersClusterIdRoute,
+    deleteV2KubernetesClustersClusterIdRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRoute,
+    getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRouteHandler,
+  )
+  .openapi(
+    deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRoute,
+    deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRouteHandler,
+  )
+  .openapi(
+    deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRoute,
+    deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdKubeconfigRoute,
+    getV2KubernetesClustersClusterIdKubeconfigRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdCredentialsRoute,
+    getV2KubernetesClustersClusterIdCredentialsRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdUpgradesRoute,
+    getV2KubernetesClustersClusterIdUpgradesRouteHandler,
+  )
+  .openapi(
+    postV2KubernetesClustersClusterIdUpgradeRoute,
+    postV2KubernetesClustersClusterIdUpgradeRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdNodePoolsRoute,
+    getV2KubernetesClustersClusterIdNodePoolsRouteHandler,
+  )
+  .openapi(
+    postV2KubernetesClustersClusterIdNodePoolsRoute,
+    postV2KubernetesClustersClusterIdNodePoolsRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+    getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  )
+  .openapi(
+    putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+    putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  )
+  .openapi(
+    deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+    deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  )
+  .openapi(
+    deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRoute,
+    deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRouteHandler,
+  )
+  .openapi(
+    postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRoute,
+    postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdUserRoute,
+    getV2KubernetesClustersClusterIdUserRouteHandler,
+  )
+  .openapi(getV2KubernetesOptionsRoute, getV2KubernetesOptionsRouteHandler)
+  .openapi(
+    postV2KubernetesClustersClusterIdClusterlintRoute,
+    postV2KubernetesClustersClusterIdClusterlintRouteHandler,
+  )
+  .openapi(
+    getV2KubernetesClustersClusterIdClusterlintRoute,
+    getV2KubernetesClustersClusterIdClusterlintRouteHandler,
+  )
+  .openapi(postV2KubernetesRegistryRoute, postV2KubernetesRegistryRouteHandler)
+  .openapi(deleteV2KubernetesRegistryRoute, deleteV2KubernetesRegistryRouteHandler)
+  .openapi(postV2KubernetesRegistriesRoute, postV2KubernetesRegistriesRouteHandler)
+  .openapi(deleteV2KubernetesRegistriesRoute, deleteV2KubernetesRegistriesRouteHandler)
+  .openapi(
+    getV2KubernetesClustersClusterIdStatusMessagesRoute,
+    getV2KubernetesClustersClusterIdStatusMessagesRouteHandler,
+  )
+  .openapi(postV2LoadBalancersRoute, postV2LoadBalancersRouteHandler)
+  .openapi(getV2LoadBalancersRoute, getV2LoadBalancersRouteHandler)
+  .openapi(getV2LoadBalancersLbIdRoute, getV2LoadBalancersLbIdRouteHandler)
+  .openapi(putV2LoadBalancersLbIdRoute, putV2LoadBalancersLbIdRouteHandler)
+  .openapi(deleteV2LoadBalancersLbIdRoute, deleteV2LoadBalancersLbIdRouteHandler)
+  .openapi(deleteV2LoadBalancersLbIdCacheRoute, deleteV2LoadBalancersLbIdCacheRouteHandler)
+  .openapi(postV2LoadBalancersLbIdDropletsRoute, postV2LoadBalancersLbIdDropletsRouteHandler)
+  .openapi(deleteV2LoadBalancersLbIdDropletsRoute, deleteV2LoadBalancersLbIdDropletsRouteHandler)
+  .openapi(
+    postV2LoadBalancersLbIdForwardingRulesRoute,
+    postV2LoadBalancersLbIdForwardingRulesRouteHandler,
+  )
+  .openapi(
+    deleteV2LoadBalancersLbIdForwardingRulesRoute,
+    deleteV2LoadBalancersLbIdForwardingRulesRouteHandler,
+  )
+  .openapi(getV2MicrovmsRoute, getV2MicrovmsRouteHandler)
+  .openapi(postV2MicrovmsRoute, postV2MicrovmsRouteHandler)
+  .openapi(getV2MicrovmsOptionsRoute, getV2MicrovmsOptionsRouteHandler)
+  .openapi(getV2MicrovmsCheckpointsRoute, getV2MicrovmsCheckpointsRouteHandler)
+  .openapi(
+    getV2MicrovmsCheckpointsCheckpointIdRoute,
+    getV2MicrovmsCheckpointsCheckpointIdRouteHandler,
+  )
+  .openapi(
+    deleteV2MicrovmsCheckpointsCheckpointIdRoute,
+    deleteV2MicrovmsCheckpointsCheckpointIdRouteHandler,
+  )
+  .openapi(getV2MicrovmsMicrovmIdRoute, getV2MicrovmsMicrovmIdRouteHandler)
+  .openapi(deleteV2MicrovmsMicrovmIdRoute, deleteV2MicrovmsMicrovmIdRouteHandler)
+  .openapi(patchV2MicrovmsMicrovmIdRoute, patchV2MicrovmsMicrovmIdRouteHandler)
+  .openapi(postV2MicrovmsMicrovmIdUrlsRoute, postV2MicrovmsMicrovmIdUrlsRouteHandler)
+  .openapi(deleteV2MicrovmsMicrovmIdUrlsUrlIdRoute, deleteV2MicrovmsMicrovmIdUrlsUrlIdRouteHandler)
+  .openapi(
+    postV2MicrovmsMicrovmIdAccessTokensRoute,
+    postV2MicrovmsMicrovmIdAccessTokensRouteHandler,
+  )
+  .openapi(getV2MicrovmsMicrovmIdAccessTokensRoute, getV2MicrovmsMicrovmIdAccessTokensRouteHandler)
+  .openapi(
+    deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRoute,
+    deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRouteHandler,
+  )
+  .openapi(postV2MicrovmsMicrovmIdPauseRoute, postV2MicrovmsMicrovmIdPauseRouteHandler)
+  .openapi(postV2MicrovmsMicrovmIdResumeRoute, postV2MicrovmsMicrovmIdResumeRouteHandler)
+  .openapi(postV2MicrovmsMicrovmIdExecRoute, postV2MicrovmsMicrovmIdExecRouteHandler)
+  .openapi(getV2MicrovmsMicrovmIdConsoleRoute, getV2MicrovmsMicrovmIdConsoleRouteHandler)
+  .openapi(getV2MicrovmsMicrovmIdPortForwardRoute, getV2MicrovmsMicrovmIdPortForwardRouteHandler)
+  .openapi(putV2MicrovmsMicrovmIdFilesRoute, putV2MicrovmsMicrovmIdFilesRouteHandler)
+  .openapi(getV2MicrovmsMicrovmIdFilesRoute, getV2MicrovmsMicrovmIdFilesRouteHandler)
+  .openapi(postV2MicrovmsMicrovmIdCheckpointsRoute, postV2MicrovmsMicrovmIdCheckpointsRouteHandler)
+  .openapi(getV2MonitoringAlertsRoute, getV2MonitoringAlertsRouteHandler)
+  .openapi(postV2MonitoringAlertsRoute, postV2MonitoringAlertsRouteHandler)
+  .openapi(getV2MonitoringAlertsAlertUuidRoute, getV2MonitoringAlertsAlertUuidRouteHandler)
+  .openapi(putV2MonitoringAlertsAlertUuidRoute, putV2MonitoringAlertsAlertUuidRouteHandler)
+  .openapi(deleteV2MonitoringAlertsAlertUuidRoute, deleteV2MonitoringAlertsAlertUuidRouteHandler)
+  .openapi(
+    getV2MonitoringMetricsDropletBandwidthRoute,
+    getV2MonitoringMetricsDropletBandwidthRouteHandler,
+  )
+  .openapi(getV2MonitoringMetricsDropletCpuRoute, getV2MonitoringMetricsDropletCpuRouteHandler)
+  .openapi(
+    getV2MonitoringMetricsDropletFilesystemFreeRoute,
+    getV2MonitoringMetricsDropletFilesystemFreeRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletFilesystemSizeRoute,
+    getV2MonitoringMetricsDropletFilesystemSizeRouteHandler,
+  )
+  .openapi(getV2MonitoringMetricsDropletLoad1Route, getV2MonitoringMetricsDropletLoad1RouteHandler)
+  .openapi(getV2MonitoringMetricsDropletLoad5Route, getV2MonitoringMetricsDropletLoad5RouteHandler)
+  .openapi(
+    getV2MonitoringMetricsDropletLoad15Route,
+    getV2MonitoringMetricsDropletLoad15RouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletMemoryCachedRoute,
+    getV2MonitoringMetricsDropletMemoryCachedRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletMemoryFreeRoute,
+    getV2MonitoringMetricsDropletMemoryFreeRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletMemoryTotalRoute,
+    getV2MonitoringMetricsDropletMemoryTotalRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletMemoryAvailableRoute,
+    getV2MonitoringMetricsDropletMemoryAvailableRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsAppsMemoryPercentageRoute,
+    getV2MonitoringMetricsAppsMemoryPercentageRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsAppsCpuPercentageRoute,
+    getV2MonitoringMetricsAppsCpuPercentageRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsAppsRestartCountRoute,
+    getV2MonitoringMetricsAppsRestartCountRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRoute,
+    getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsConnectionsRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsConnectionsRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsLoadBalancerDropletsDowntimeRoute,
+    getV2MonitoringMetricsLoadBalancerDropletsDowntimeRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRoute,
+    getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleTargetInstancesRoute,
+    getV2MonitoringMetricsDropletAutoscaleTargetInstancesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRoute,
+    getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRoute,
+    getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRoute,
+    getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRoute,
+    getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlCpuUsageRoute,
+    getV2MonitoringMetricsDatabaseMysqlCpuUsageRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlLoadRoute,
+    getV2MonitoringMetricsDatabaseMysqlLoadRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlMemoryUsageRoute,
+    getV2MonitoringMetricsDatabaseMysqlMemoryUsageRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlDiskUsageRoute,
+    getV2MonitoringMetricsDatabaseMysqlDiskUsageRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRoute,
+    getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRoute,
+    getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlThreadsActiveRoute,
+    getV2MonitoringMetricsDatabaseMysqlThreadsActiveRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRoute,
+    getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlOpRatesRoute,
+    getV2MonitoringMetricsDatabaseMysqlOpRatesRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRoute,
+    getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRouteHandler,
+  )
+  .openapi(
+    getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRoute,
+    getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRouteHandler,
+  )
+  .openapi(postV2MonitoringSinksDestinationsRoute, postV2MonitoringSinksDestinationsRouteHandler)
+  .openapi(getV2MonitoringSinksDestinationsRoute, getV2MonitoringSinksDestinationsRouteHandler)
+  .openapi(
+    getV2MonitoringSinksDestinationsDestinationUuidRoute,
+    getV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  )
+  .openapi(
+    postV2MonitoringSinksDestinationsDestinationUuidRoute,
+    postV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2MonitoringSinksDestinationsDestinationUuidRoute,
+    deleteV2MonitoringSinksDestinationsDestinationUuidRouteHandler,
+  )
+  .openapi(postV2MonitoringSinksRoute, postV2MonitoringSinksRouteHandler)
+  .openapi(getV2MonitoringSinksRoute, getV2MonitoringSinksRouteHandler)
+  .openapi(getV2MonitoringSinksSinkUuidRoute, getV2MonitoringSinksSinkUuidRouteHandler)
+  .openapi(deleteV2MonitoringSinksSinkUuidRoute, deleteV2MonitoringSinksSinkUuidRouteHandler)
+  .openapi(postV2NfsRoute, postV2NfsRouteHandler)
+  .openapi(getV2NfsRoute, getV2NfsRouteHandler)
+  .openapi(getV2NfsNfsIdRoute, getV2NfsNfsIdRouteHandler)
+  .openapi(deleteV2NfsNfsIdRoute, deleteV2NfsNfsIdRouteHandler)
+  .openapi(postV2NfsNfsIdActionsRoute, postV2NfsNfsIdActionsRouteHandler)
+  .openapi(getV2NfsSnapshotsRoute, getV2NfsSnapshotsRouteHandler)
+  .openapi(getV2NfsSnapshotsNfsSnapshotIdRoute, getV2NfsSnapshotsNfsSnapshotIdRouteHandler)
+  .openapi(deleteV2NfsSnapshotsNfsSnapshotIdRoute, deleteV2NfsSnapshotsNfsSnapshotIdRouteHandler)
+  .openapi(postV2NfsSharesShareIdAccessPointsRoute, postV2NfsSharesShareIdAccessPointsRouteHandler)
+  .openapi(getV2NfsSharesShareIdAccessPointsRoute, getV2NfsSharesShareIdAccessPointsRouteHandler)
+  .openapi(getV2NfsAccessPointsAccessPointIdRoute, getV2NfsAccessPointsAccessPointIdRouteHandler)
+  .openapi(
+    deleteV2NfsAccessPointsAccessPointIdRoute,
+    deleteV2NfsAccessPointsAccessPointIdRouteHandler,
+  )
+  .openapi(postV2OrganizationsTeamRoute, postV2OrganizationsTeamRouteHandler)
+  .openapi(getV2OrganizationsTeamsRoute, getV2OrganizationsTeamsRouteHandler)
+  .openapi(
+    getV2PartnerNetworkConnectAttachmentsRoute,
+    getV2PartnerNetworkConnectAttachmentsRouteHandler,
+  )
+  .openapi(
+    postV2PartnerNetworkConnectAttachmentsRoute,
+    postV2PartnerNetworkConnectAttachmentsRouteHandler,
+  )
+  .openapi(
+    getV2PartnerNetworkConnectAttachmentsPaIdRoute,
+    getV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  )
+  .openapi(
+    patchV2PartnerNetworkConnectAttachmentsPaIdRoute,
+    patchV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  )
+  .openapi(
+    deleteV2PartnerNetworkConnectAttachmentsPaIdRoute,
+    deleteV2PartnerNetworkConnectAttachmentsPaIdRouteHandler,
+  )
+  .openapi(
+    getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRoute,
+    getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRouteHandler,
+  )
+  .openapi(
+    getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRoute,
+    getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRouteHandler,
+  )
+  .openapi(
+    getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+    getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRouteHandler,
+  )
+  .openapi(
+    postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+    postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRouteHandler,
+  )
+  .openapi(getV2ProjectsRoute, getV2ProjectsRouteHandler)
+  .openapi(postV2ProjectsRoute, postV2ProjectsRouteHandler)
+  .openapi(getV2ProjectsDefaultRoute, getV2ProjectsDefaultRouteHandler)
+  .openapi(putV2ProjectsDefaultRoute, putV2ProjectsDefaultRouteHandler)
+  .openapi(patchV2ProjectsDefaultRoute, patchV2ProjectsDefaultRouteHandler)
+  .openapi(getV2ProjectsProjectIdRoute, getV2ProjectsProjectIdRouteHandler)
+  .openapi(putV2ProjectsProjectIdRoute, putV2ProjectsProjectIdRouteHandler)
+  .openapi(patchV2ProjectsProjectIdRoute, patchV2ProjectsProjectIdRouteHandler)
+  .openapi(deleteV2ProjectsProjectIdRoute, deleteV2ProjectsProjectIdRouteHandler)
+  .openapi(getV2ProjectsProjectIdResourcesRoute, getV2ProjectsProjectIdResourcesRouteHandler)
+  .openapi(postV2ProjectsProjectIdResourcesRoute, postV2ProjectsProjectIdResourcesRouteHandler)
+  .openapi(getV2ProjectsDefaultResourcesRoute, getV2ProjectsDefaultResourcesRouteHandler)
+  .openapi(postV2ProjectsDefaultResourcesRoute, postV2ProjectsDefaultResourcesRouteHandler)
+  .openapi(getV2RegionsRoute, getV2RegionsRouteHandler)
+  .openapi(getV2RegistriesRoute, getV2RegistriesRouteHandler)
+  .openapi(postV2RegistriesRoute, postV2RegistriesRouteHandler)
+  .openapi(getV2RegistriesRegistryNameRoute, getV2RegistriesRegistryNameRouteHandler)
+  .openapi(deleteV2RegistriesRegistryNameRoute, deleteV2RegistriesRegistryNameRouteHandler)
+  .openapi(
+    getV2RegistriesRegistryNameDockerCredentialsRoute,
+    getV2RegistriesRegistryNameDockerCredentialsRouteHandler,
+  )
+  .openapi(getV2RegistriesSubscriptionRoute, getV2RegistriesSubscriptionRouteHandler)
+  .openapi(postV2RegistriesSubscriptionRoute, postV2RegistriesSubscriptionRouteHandler)
+  .openapi(getV2RegistriesOptionsRoute, getV2RegistriesOptionsRouteHandler)
+  .openapi(
+    getV2RegistriesRegistryNameGarbageCollectionRoute,
+    getV2RegistriesRegistryNameGarbageCollectionRouteHandler,
+  )
+  .openapi(
+    postV2RegistriesRegistryNameGarbageCollectionRoute,
+    postV2RegistriesRegistryNameGarbageCollectionRouteHandler,
+  )
+  .openapi(
+    getV2RegistriesRegistryNameGarbageCollectionsRoute,
+    getV2RegistriesRegistryNameGarbageCollectionsRouteHandler,
+  )
+  .openapi(
+    putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+    putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRouteHandler,
+  )
+  .openapi(
+    getV2RegistriesRegistryNameRepositoriesV2Route,
+    getV2RegistriesRegistryNameRepositoriesV2RouteHandler,
+  )
+  .openapi(
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRoute,
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRouteHandler,
+  )
+  .openapi(
+    getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRoute,
+    getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRouteHandler,
+  )
+  .openapi(
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRouteHandler,
+  )
+  .openapi(
+    getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRoute,
+    getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRouteHandler,
+  )
+  .openapi(
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRouteHandler,
+  )
+  .openapi(postV2RegistriesValidateNameRoute, postV2RegistriesValidateNameRouteHandler)
+  .openapi(getV2RegistryRoute, getV2RegistryRouteHandler)
+  .openapi(postV2RegistryRoute, postV2RegistryRouteHandler)
+  .openapi(deleteV2RegistryRoute, deleteV2RegistryRouteHandler)
+  .openapi(getV2RegistrySubscriptionRoute, getV2RegistrySubscriptionRouteHandler)
+  .openapi(postV2RegistrySubscriptionRoute, postV2RegistrySubscriptionRouteHandler)
+  .openapi(getV2RegistryDockerCredentialsRoute, getV2RegistryDockerCredentialsRouteHandler)
+  .openapi(postV2RegistryValidateNameRoute, postV2RegistryValidateNameRouteHandler)
+  .openapi(
+    getV2RegistryRegistryNameRepositoriesRoute,
+    getV2RegistryRegistryNameRepositoriesRouteHandler,
+  )
+  .openapi(
+    getV2RegistryRegistryNameRepositoriesV2Route,
+    getV2RegistryRegistryNameRepositoriesV2RouteHandler,
+  )
+  .openapi(
+    getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRoute,
+    getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRouteHandler,
+  )
+  .openapi(
+    deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+    deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRouteHandler,
+  )
+  .openapi(
+    getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRoute,
+    getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRouteHandler,
+  )
+  .openapi(
+    deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+    deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRouteHandler,
+  )
+  .openapi(
+    postV2RegistryRegistryNameGarbageCollectionRoute,
+    postV2RegistryRegistryNameGarbageCollectionRouteHandler,
+  )
+  .openapi(
+    getV2RegistryRegistryNameGarbageCollectionRoute,
+    getV2RegistryRegistryNameGarbageCollectionRouteHandler,
+  )
+  .openapi(
+    getV2RegistryRegistryNameGarbageCollectionsRoute,
+    getV2RegistryRegistryNameGarbageCollectionsRouteHandler,
+  )
+  .openapi(
+    putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+    putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRouteHandler,
+  )
+  .openapi(getV2RegistryOptionsRoute, getV2RegistryOptionsRouteHandler)
+  .openapi(getV2ReportsDropletNeighborsIdsRoute, getV2ReportsDropletNeighborsIdsRouteHandler)
+  .openapi(getV2ReservedIpsRoute, getV2ReservedIpsRouteHandler)
+  .openapi(postV2ReservedIpsRoute, postV2ReservedIpsRouteHandler)
+  .openapi(getV2ReservedIpsReservedIpRoute, getV2ReservedIpsReservedIpRouteHandler)
+  .openapi(deleteV2ReservedIpsReservedIpRoute, deleteV2ReservedIpsReservedIpRouteHandler)
+  .openapi(getV2ReservedIpsReservedIpActionsRoute, getV2ReservedIpsReservedIpActionsRouteHandler)
+  .openapi(postV2ReservedIpsReservedIpActionsRoute, postV2ReservedIpsReservedIpActionsRouteHandler)
+  .openapi(
+    getV2ReservedIpsReservedIpActionsActionIdRoute,
+    getV2ReservedIpsReservedIpActionsActionIdRouteHandler,
+  )
+  .openapi(getV2ReservedIpv6Route, getV2ReservedIpv6RouteHandler)
+  .openapi(postV2ReservedIpv6Route, postV2ReservedIpv6RouteHandler)
+  .openapi(getV2ReservedIpv6ReservedIpv6Route, getV2ReservedIpv6ReservedIpv6RouteHandler)
+  .openapi(deleteV2ReservedIpv6ReservedIpv6Route, deleteV2ReservedIpv6ReservedIpv6RouteHandler)
+  .openapi(
+    postV2ReservedIpv6ReservedIpv6ActionsRoute,
+    postV2ReservedIpv6ReservedIpv6ActionsRouteHandler,
+  )
+  .openapi(postV2ByoipPrefixesRoute, postV2ByoipPrefixesRouteHandler)
+  .openapi(getV2ByoipPrefixesRoute, getV2ByoipPrefixesRouteHandler)
+  .openapi(getV2ByoipPrefixesByoipPrefixUuidRoute, getV2ByoipPrefixesByoipPrefixUuidRouteHandler)
+  .openapi(
+    deleteV2ByoipPrefixesByoipPrefixUuidRoute,
+    deleteV2ByoipPrefixesByoipPrefixUuidRouteHandler,
+  )
+  .openapi(
+    patchV2ByoipPrefixesByoipPrefixUuidRoute,
+    patchV2ByoipPrefixesByoipPrefixUuidRouteHandler,
+  )
+  .openapi(
+    getV2ByoipPrefixesByoipPrefixUuidIpsRoute,
+    getV2ByoipPrefixesByoipPrefixUuidIpsRouteHandler,
+  )
+  .openapi(getV2SecurityScansRoute, getV2SecurityScansRouteHandler)
+  .openapi(postV2SecurityScansRoute, postV2SecurityScansRouteHandler)
+  .openapi(getV2SecurityScansScanIdRoute, getV2SecurityScansScanIdRouteHandler)
+  .openapi(getV2SecurityScansLatestRoute, getV2SecurityScansLatestRouteHandler)
+  .openapi(postV2SecurityScansRulesRoute, postV2SecurityScansRulesRouteHandler)
+  .openapi(
+    getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRoute,
+    getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRouteHandler,
+  )
+  .openapi(getV2SecuritySettingsRoute, getV2SecuritySettingsRouteHandler)
+  .openapi(putV2SecuritySettingsPlanRoute, putV2SecuritySettingsPlanRouteHandler)
+  .openapi(postV2SecuritySettingsSuppressionsRoute, postV2SecuritySettingsSuppressionsRouteHandler)
+  .openapi(
+    deleteV2SecuritySettingsSuppressionsSuppressionUuidRoute,
+    deleteV2SecuritySettingsSuppressionsSuppressionUuidRouteHandler,
+  )
+  .openapi(getV2SecuritySecretsRoute, getV2SecuritySecretsRouteHandler)
+  .openapi(postV2SecuritySecretsRoute, postV2SecuritySecretsRouteHandler)
+  .openapi(getV2SecuritySecretsSecretRoute, getV2SecuritySecretsSecretRouteHandler)
+  .openapi(putV2SecuritySecretsSecretRoute, putV2SecuritySecretsSecretRouteHandler)
+  .openapi(deleteV2SecuritySecretsSecretRoute, deleteV2SecuritySecretsSecretRouteHandler)
+  .openapi(getV2SecuritySecretsSecretVersionsRoute, getV2SecuritySecretsSecretVersionsRouteHandler)
+  .openapi(postV2SecuritySecretsSecretRestoreRoute, postV2SecuritySecretsSecretRestoreRouteHandler)
+  .openapi(getV2SizesRoute, getV2SizesRouteHandler)
+  .openapi(getV2SnapshotsRoute, getV2SnapshotsRouteHandler)
+  .openapi(getV2SnapshotsSnapshotIdRoute, getV2SnapshotsSnapshotIdRouteHandler)
+  .openapi(deleteV2SnapshotsSnapshotIdRoute, deleteV2SnapshotsSnapshotIdRouteHandler)
+  .openapi(
+    deleteV2SnapshotsSnapshotIdRegionsRegionRoute,
+    deleteV2SnapshotsSnapshotIdRegionsRegionRouteHandler,
+  )
+  .openapi(getV2SpacesKeysRoute, getV2SpacesKeysRouteHandler)
+  .openapi(postV2SpacesKeysRoute, postV2SpacesKeysRouteHandler)
+  .openapi(getV2SpacesKeysAccessKeyRoute, getV2SpacesKeysAccessKeyRouteHandler)
+  .openapi(deleteV2SpacesKeysAccessKeyRoute, deleteV2SpacesKeysAccessKeyRouteHandler)
+  .openapi(putV2SpacesKeysAccessKeyRoute, putV2SpacesKeysAccessKeyRouteHandler)
+  .openapi(patchV2SpacesKeysAccessKeyRoute, patchV2SpacesKeysAccessKeyRouteHandler)
+  .openapi(getV2TagsRoute, getV2TagsRouteHandler)
+  .openapi(postV2TagsRoute, postV2TagsRouteHandler)
+  .openapi(getV2TagsTagIdRoute, getV2TagsTagIdRouteHandler)
+  .openapi(deleteV2TagsTagIdRoute, deleteV2TagsTagIdRouteHandler)
+  .openapi(postV2TagsTagIdResourcesRoute, postV2TagsTagIdResourcesRouteHandler)
+  .openapi(deleteV2TagsTagIdResourcesRoute, deleteV2TagsTagIdResourcesRouteHandler)
+  .openapi(getV2VectorDatabasesRoute, getV2VectorDatabasesRouteHandler)
+  .openapi(postV2VectorDatabasesRoute, postV2VectorDatabasesRouteHandler)
+  .openapi(getV2VectorDatabasesIdRoute, getV2VectorDatabasesIdRouteHandler)
+  .openapi(putV2VectorDatabasesIdRoute, putV2VectorDatabasesIdRouteHandler)
+  .openapi(deleteV2VectorDatabasesIdRoute, deleteV2VectorDatabasesIdRouteHandler)
+  .openapi(getV2VectorDatabasesIdBackupsRoute, getV2VectorDatabasesIdBackupsRouteHandler)
+  .openapi(
+    getV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+    getV2VectorDatabasesIdBackupsBackupIdRestoreRouteHandler,
+  )
+  .openapi(
+    postV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+    postV2VectorDatabasesIdBackupsBackupIdRestoreRouteHandler,
+  )
+  .openapi(getV2VectorDatabasesIdCredentialsRoute, getV2VectorDatabasesIdCredentialsRouteHandler)
+  .openapi(postV2VectorDatabasesIdResizeRoute, postV2VectorDatabasesIdResizeRouteHandler)
+  .openapi(putV2VectorDatabasesIdTagsRoute, putV2VectorDatabasesIdTagsRouteHandler)
+  .openapi(getV2VolumesRoute, getV2VolumesRouteHandler)
+  .openapi(postV2VolumesRoute, postV2VolumesRouteHandler)
+  .openapi(deleteV2VolumesRoute, deleteV2VolumesRouteHandler)
+  .openapi(postV2VolumesActionsRoute, postV2VolumesActionsRouteHandler)
+  .openapi(getV2VolumesSnapshotsSnapshotIdRoute, getV2VolumesSnapshotsSnapshotIdRouteHandler)
+  .openapi(deleteV2VolumesSnapshotsSnapshotIdRoute, deleteV2VolumesSnapshotsSnapshotIdRouteHandler)
+  .openapi(getV2VolumesVolumeIdRoute, getV2VolumesVolumeIdRouteHandler)
+  .openapi(deleteV2VolumesVolumeIdRoute, deleteV2VolumesVolumeIdRouteHandler)
+  .openapi(getV2VolumesVolumeIdActionsRoute, getV2VolumesVolumeIdActionsRouteHandler)
+  .openapi(postV2VolumesVolumeIdActionsRoute, postV2VolumesVolumeIdActionsRouteHandler)
+  .openapi(
+    getV2VolumesVolumeIdActionsActionIdRoute,
+    getV2VolumesVolumeIdActionsActionIdRouteHandler,
+  )
+  .openapi(getV2VolumesVolumeIdSnapshotsRoute, getV2VolumesVolumeIdSnapshotsRouteHandler)
+  .openapi(postV2VolumesVolumeIdSnapshotsRoute, postV2VolumesVolumeIdSnapshotsRouteHandler)
+  .openapi(getV2VpcsRoute, getV2VpcsRouteHandler)
+  .openapi(postV2VpcsRoute, postV2VpcsRouteHandler)
+  .openapi(getV2VpcsVpcIdRoute, getV2VpcsVpcIdRouteHandler)
+  .openapi(putV2VpcsVpcIdRoute, putV2VpcsVpcIdRouteHandler)
+  .openapi(patchV2VpcsVpcIdRoute, patchV2VpcsVpcIdRouteHandler)
+  .openapi(deleteV2VpcsVpcIdRoute, deleteV2VpcsVpcIdRouteHandler)
+  .openapi(getV2VpcsVpcIdMembersRoute, getV2VpcsVpcIdMembersRouteHandler)
+  .openapi(getV2VpcsVpcIdPeeringsRoute, getV2VpcsVpcIdPeeringsRouteHandler)
+  .openapi(postV2VpcsVpcIdPeeringsRoute, postV2VpcsVpcIdPeeringsRouteHandler)
+  .openapi(
+    patchV2VpcsVpcIdPeeringsVpcPeeringIdRoute,
+    patchV2VpcsVpcIdPeeringsVpcPeeringIdRouteHandler,
+  )
+  .openapi(getV2VpcsVpcUuidRoutesRoute, getV2VpcsVpcUuidRoutesRouteHandler)
+  .openapi(getV2VpcsVpcUuidSubnetsRoute, getV2VpcsVpcUuidSubnetsRouteHandler)
+  .openapi(postV2VpcsVpcUuidSubnetsRoute, postV2VpcsVpcUuidSubnetsRouteHandler)
+  .openapi(getV2VpcsVpcUuidSubnetsSubnetUuidRoute, getV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler)
+  .openapi(
+    patchV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+    patchV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+    deleteV2VpcsVpcUuidSubnetsSubnetUuidRouteHandler,
+  )
+  .openapi(
+    getV2VpcsVpcUuidSubnetsSubnetUuidMembersRoute,
+    getV2VpcsVpcUuidSubnetsSubnetUuidMembersRouteHandler,
+  )
+  .openapi(
+    getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+    getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteHandler,
+  )
+  .openapi(
+    postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+    postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteHandler,
+  )
+  .openapi(
+    patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+    patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+    deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRouteHandler,
+  )
+  .openapi(getV2VpcPeeringsRoute, getV2VpcPeeringsRouteHandler)
+  .openapi(postV2VpcPeeringsRoute, postV2VpcPeeringsRouteHandler)
+  .openapi(getV2VpcPeeringsVpcPeeringIdRoute, getV2VpcPeeringsVpcPeeringIdRouteHandler)
+  .openapi(patchV2VpcPeeringsVpcPeeringIdRoute, patchV2VpcPeeringsVpcPeeringIdRouteHandler)
+  .openapi(deleteV2VpcPeeringsVpcPeeringIdRoute, deleteV2VpcPeeringsVpcPeeringIdRouteHandler)
+  .openapi(getV2VpcNatGatewaysRoute, getV2VpcNatGatewaysRouteHandler)
+  .openapi(postV2VpcNatGatewaysRoute, postV2VpcNatGatewaysRouteHandler)
+  .openapi(getV2VpcNatGatewaysIdRoute, getV2VpcNatGatewaysIdRouteHandler)
+  .openapi(putV2VpcNatGatewaysIdRoute, putV2VpcNatGatewaysIdRouteHandler)
+  .openapi(deleteV2VpcNatGatewaysIdRoute, deleteV2VpcNatGatewaysIdRouteHandler)
+  .openapi(getV2UptimeChecksRoute, getV2UptimeChecksRouteHandler)
+  .openapi(postV2UptimeChecksRoute, postV2UptimeChecksRouteHandler)
+  .openapi(getV2UptimeChecksCheckIdRoute, getV2UptimeChecksCheckIdRouteHandler)
+  .openapi(putV2UptimeChecksCheckIdRoute, putV2UptimeChecksCheckIdRouteHandler)
+  .openapi(deleteV2UptimeChecksCheckIdRoute, deleteV2UptimeChecksCheckIdRouteHandler)
+  .openapi(getV2UptimeChecksCheckIdStateRoute, getV2UptimeChecksCheckIdStateRouteHandler)
+  .openapi(getV2UptimeChecksCheckIdAlertsRoute, getV2UptimeChecksCheckIdAlertsRouteHandler)
+  .openapi(postV2UptimeChecksCheckIdAlertsRoute, postV2UptimeChecksCheckIdAlertsRouteHandler)
+  .openapi(
+    getV2UptimeChecksCheckIdAlertsAlertIdRoute,
+    getV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  )
+  .openapi(
+    putV2UptimeChecksCheckIdAlertsAlertIdRoute,
+    putV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  )
+  .openapi(
+    deleteV2UptimeChecksCheckIdAlertsAlertIdRoute,
+    deleteV2UptimeChecksCheckIdAlertsAlertIdRouteHandler,
+  )
+  .openapi(getV2GenAiAgentsRoute, getV2GenAiAgentsRouteHandler)
+  .openapi(postV2GenAiAgentsRoute, postV2GenAiAgentsRouteHandler)
+  .openapi(getV2GenAiAgentsAgentUuidApiKeysRoute, getV2GenAiAgentsAgentUuidApiKeysRouteHandler)
+  .openapi(postV2GenAiAgentsAgentUuidApiKeysRoute, postV2GenAiAgentsAgentUuidApiKeysRouteHandler)
+  .openapi(
+    putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+    putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+    deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRoute,
+    putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRouteHandler,
+  )
+  .openapi(
+    postV2GenAiAgentsAgentUuidFunctionsRoute,
+    postV2GenAiAgentsAgentUuidFunctionsRouteHandler,
+  )
+  .openapi(
+    putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+    putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+    deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRouteHandler,
+  )
+  .openapi(
+    postV2GenAiAgentsAgentUuidGuardrailsRoute,
+    postV2GenAiAgentsAgentUuidGuardrailsRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRoute,
+    deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRouteHandler,
+  )
+  .openapi(
+    postV2GenAiAgentsAgentUuidKnowledgeBasesRoute,
+    postV2GenAiAgentsAgentUuidKnowledgeBasesRouteHandler,
+  )
+  .openapi(
+    postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+    postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+    deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRouteHandler,
+  )
+  .openapi(
+    postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+    postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+    putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+    deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRouteHandler,
+  )
+  .openapi(getV2GenAiAgentsUuidRoute, getV2GenAiAgentsUuidRouteHandler)
+  .openapi(putV2GenAiAgentsUuidRoute, putV2GenAiAgentsUuidRouteHandler)
+  .openapi(deleteV2GenAiAgentsUuidRoute, deleteV2GenAiAgentsUuidRouteHandler)
+  .openapi(getV2GenAiAgentsUuidChildAgentsRoute, getV2GenAiAgentsUuidChildAgentsRouteHandler)
+  .openapi(
+    putV2GenAiAgentsUuidDeploymentVisibilityRoute,
+    putV2GenAiAgentsUuidDeploymentVisibilityRouteHandler,
+  )
+  .openapi(getV2GenAiAgentsUuidUsageRoute, getV2GenAiAgentsUuidUsageRouteHandler)
+  .openapi(getV2GenAiAgentsUuidVersionsRoute, getV2GenAiAgentsUuidVersionsRouteHandler)
+  .openapi(putV2GenAiAgentsUuidVersionsRoute, putV2GenAiAgentsUuidVersionsRouteHandler)
+  .openapi(getV2GenAiAnthropicKeysRoute, getV2GenAiAnthropicKeysRouteHandler)
+  .openapi(postV2GenAiAnthropicKeysRoute, postV2GenAiAnthropicKeysRouteHandler)
+  .openapi(getV2GenAiAnthropicKeysApiKeyUuidRoute, getV2GenAiAnthropicKeysApiKeyUuidRouteHandler)
+  .openapi(putV2GenAiAnthropicKeysApiKeyUuidRoute, putV2GenAiAnthropicKeysApiKeyUuidRouteHandler)
+  .openapi(
+    deleteV2GenAiAnthropicKeysApiKeyUuidRoute,
+    deleteV2GenAiAnthropicKeysApiKeyUuidRouteHandler,
+  )
+  .openapi(getV2GenAiAnthropicKeysUuidAgentsRoute, getV2GenAiAnthropicKeysUuidAgentsRouteHandler)
+  .openapi(getV2GenAiCustomModelsRoute, getV2GenAiCustomModelsRouteHandler)
+  .openapi(postV2GenAiCustomModelsImportRoute, postV2GenAiCustomModelsImportRouteHandler)
+  .openapi(getV2GenAiCustomModelsUuidRoute, getV2GenAiCustomModelsUuidRouteHandler)
+  .openapi(deleteV2GenAiCustomModelsUuidRoute, deleteV2GenAiCustomModelsUuidRouteHandler)
+  .openapi(
+    patchV2GenAiCustomModelsUuidMetadataRoute,
+    patchV2GenAiCustomModelsUuidMetadataRouteHandler,
+  )
+  .openapi(getV2GenAiEvaluationDatasetsRoute, getV2GenAiEvaluationDatasetsRouteHandler)
+  .openapi(postV2GenAiEvaluationDatasetsRoute, postV2GenAiEvaluationDatasetsRouteHandler)
+  .openapi(
+    postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRoute,
+    postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiEvaluationDatasetsDatasetUuidRoute,
+    deleteV2GenAiEvaluationDatasetsDatasetUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRoute,
+    getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRouteHandler,
+  )
+  .openapi(getV2GenAiEvaluationMetricsRoute, getV2GenAiEvaluationMetricsRouteHandler)
+  .openapi(postV2GenAiCustomEvaluationMetricsRoute, postV2GenAiCustomEvaluationMetricsRouteHandler)
+  .openapi(
+    putV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+    putV2GenAiCustomEvaluationMetricsMetricUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+    deleteV2GenAiCustomEvaluationMetricsMetricUuidRouteHandler,
+  )
+  .openapi(postV2GenAiEvaluationRunsRoute, postV2GenAiEvaluationRunsRouteHandler)
+  .openapi(
+    getV2GenAiEvaluationRunsEvaluationRunUuidRoute,
+    getV2GenAiEvaluationRunsEvaluationRunUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiEvaluationRunsEvaluationRunUuidResultsRoute,
+    getV2GenAiEvaluationRunsEvaluationRunUuidResultsRouteHandler,
+  )
+  .openapi(
+    getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRoute,
+    getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRouteHandler,
+  )
+  .openapi(getV2GenAiEvaluationTestCasesRoute, getV2GenAiEvaluationTestCasesRouteHandler)
+  .openapi(postV2GenAiEvaluationTestCasesRoute, postV2GenAiEvaluationTestCasesRouteHandler)
+  .openapi(
+    getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRoute,
+    getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRouteHandler,
+  )
+  .openapi(
+    getV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+    getV2GenAiEvaluationTestCasesTestCaseUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+    putV2GenAiEvaluationTestCasesTestCaseUuidRouteHandler,
+  )
+  .openapi(getV2GenAiIndexingJobsRoute, getV2GenAiIndexingJobsRouteHandler)
+  .openapi(postV2GenAiIndexingJobsRoute, postV2GenAiIndexingJobsRouteHandler)
+  .openapi(
+    getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRoute,
+    getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRouteHandler,
+  )
+  .openapi(
+    getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRoute,
+    getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRouteHandler,
+  )
+  .openapi(getV2GenAiIndexingJobsUuidRoute, getV2GenAiIndexingJobsUuidRouteHandler)
+  .openapi(putV2GenAiIndexingJobsUuidCancelRoute, putV2GenAiIndexingJobsUuidCancelRouteHandler)
+  .openapi(getV2GenAiKnowledgeBasesRoute, getV2GenAiKnowledgeBasesRouteHandler)
+  .openapi(postV2GenAiKnowledgeBasesRoute, postV2GenAiKnowledgeBasesRouteHandler)
+  .openapi(
+    postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRoute,
+    postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRouteHandler,
+  )
+  .openapi(
+    getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+    getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRouteHandler,
+  )
+  .openapi(
+    postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+    postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRouteHandler,
+  )
+  .openapi(
+    putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+    putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+    deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRoute,
+    getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRouteHandler,
+  )
+  .openapi(getV2GenAiKnowledgeBasesUuidRoute, getV2GenAiKnowledgeBasesUuidRouteHandler)
+  .openapi(putV2GenAiKnowledgeBasesUuidRoute, putV2GenAiKnowledgeBasesUuidRouteHandler)
+  .openapi(deleteV2GenAiKnowledgeBasesUuidRoute, deleteV2GenAiKnowledgeBasesUuidRouteHandler)
+  .openapi(
+    postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRoute,
+    postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRouteHandler,
+  )
+  .openapi(getV2GenAiModelEvaluationMetricsRoute, getV2GenAiModelEvaluationMetricsRouteHandler)
+  .openapi(getV2GenAiModelEvaluationPresetsRoute, getV2GenAiModelEvaluationPresetsRouteHandler)
+  .openapi(
+    getV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+    getV2GenAiModelEvaluationPresetsEvalPresetUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+    deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRouteHandler,
+  )
+  .openapi(getV2GenAiModelEvaluationRunsRoute, getV2GenAiModelEvaluationRunsRouteHandler)
+  .openapi(postV2GenAiModelEvaluationRunsRoute, postV2GenAiModelEvaluationRunsRouteHandler)
+  .openapi(
+    getV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+    getV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+    deleteV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  )
+  .openapi(
+    patchV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+    patchV2GenAiModelEvaluationRunsEvalRunUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiModelEvaluationRunsEvalRunUuidCancelRoute,
+    putV2GenAiModelEvaluationRunsEvalRunUuidCancelRouteHandler,
+  )
+  .openapi(
+    getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRoute,
+    getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRouteHandler,
+  )
+  .openapi(getV2GenAiModelsRoute, getV2GenAiModelsRouteHandler)
+  .openapi(getV2GenAiModelsApiKeysRoute, getV2GenAiModelsApiKeysRouteHandler)
+  .openapi(postV2GenAiModelsApiKeysRoute, postV2GenAiModelsApiKeysRouteHandler)
+  .openapi(putV2GenAiModelsApiKeysApiKeyUuidRoute, putV2GenAiModelsApiKeysApiKeyUuidRouteHandler)
+  .openapi(
+    deleteV2GenAiModelsApiKeysApiKeyUuidRoute,
+    deleteV2GenAiModelsApiKeysApiKeyUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiModelsApiKeysApiKeyUuidRegenerateRoute,
+    putV2GenAiModelsApiKeysApiKeyUuidRegenerateRouteHandler,
+  )
+  .openapi(getV2GenAiModelsCatalogRoute, getV2GenAiModelsCatalogRouteHandler)
+  .openapi(getV2GenAiModelsCatalogIdRoute, getV2GenAiModelsCatalogIdRouteHandler)
+  .openapi(getV2GenAiModelsCatalogV2Route, getV2GenAiModelsCatalogV2RouteHandler)
+  .openapi(getV2GenAiModelsCatalogV2IdRoute, getV2GenAiModelsCatalogV2IdRouteHandler)
+  .openapi(getV2GenAiModelsRoutersRoute, getV2GenAiModelsRoutersRouteHandler)
+  .openapi(postV2GenAiModelsRoutersRoute, postV2GenAiModelsRoutersRouteHandler)
+  .openapi(getV2GenAiModelsRoutersPresetsRoute, getV2GenAiModelsRoutersPresetsRouteHandler)
+  .openapi(
+    getV2GenAiModelsRoutersTasksPresetsRoute,
+    getV2GenAiModelsRoutersTasksPresetsRouteHandler,
+  )
+  .openapi(getV2GenAiModelsRoutersUuidRoute, getV2GenAiModelsRoutersUuidRouteHandler)
+  .openapi(putV2GenAiModelsRoutersUuidRoute, putV2GenAiModelsRoutersUuidRouteHandler)
+  .openapi(deleteV2GenAiModelsRoutersUuidRoute, deleteV2GenAiModelsRoutersUuidRouteHandler)
+  .openapi(postV2GenAiOauth2DropboxTokensRoute, postV2GenAiOauth2DropboxTokensRouteHandler)
+  .openapi(getV2GenAiOauth2UrlRoute, getV2GenAiOauth2UrlRouteHandler)
+  .openapi(getV2GenAiOpenaiKeysRoute, getV2GenAiOpenaiKeysRouteHandler)
+  .openapi(postV2GenAiOpenaiKeysRoute, postV2GenAiOpenaiKeysRouteHandler)
+  .openapi(getV2GenAiOpenaiKeysApiKeyUuidRoute, getV2GenAiOpenaiKeysApiKeyUuidRouteHandler)
+  .openapi(putV2GenAiOpenaiKeysApiKeyUuidRoute, putV2GenAiOpenaiKeysApiKeyUuidRouteHandler)
+  .openapi(deleteV2GenAiOpenaiKeysApiKeyUuidRoute, deleteV2GenAiOpenaiKeysApiKeyUuidRouteHandler)
+  .openapi(getV2GenAiOpenaiKeysUuidAgentsRoute, getV2GenAiOpenaiKeysUuidAgentsRouteHandler)
+  .openapi(getV2GenAiRegionsRoute, getV2GenAiRegionsRouteHandler)
+  .openapi(getV2GenAiScenarioLibraryRoute, getV2GenAiScenarioLibraryRouteHandler)
+  .openapi(
+    postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRoute,
+    postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRouteHandler,
+  )
+  .openapi(
+    getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRoute,
+    getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRouteHandler,
+  )
+  .openapi(getV2GenAiScenarioSetsRoute, getV2GenAiScenarioSetsRouteHandler)
+  .openapi(postV2GenAiScenarioSetsRoute, postV2GenAiScenarioSetsRouteHandler)
+  .openapi(
+    postV2GenAiScenarioSetsFileUploadPresignedUrlsRoute,
+    postV2GenAiScenarioSetsFileUploadPresignedUrlsRouteHandler,
+  )
+  .openapi(postV2GenAiScenarioSetsGenerateRoute, postV2GenAiScenarioSetsGenerateRouteHandler)
+  .openapi(
+    getV2GenAiScenarioSetsScenarioSetUuidRoute,
+    getV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  )
+  .openapi(
+    putV2GenAiScenarioSetsScenarioSetUuidRoute,
+    putV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2GenAiScenarioSetsScenarioSetUuidRoute,
+    deleteV2GenAiScenarioSetsScenarioSetUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRoute,
+    getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRouteHandler,
+  )
+  .openapi(
+    postV2GenAiScenarioSetsScenarioSetUuidDuplicateRoute,
+    postV2GenAiScenarioSetsScenarioSetUuidDuplicateRouteHandler,
+  )
+  .openapi(
+    getV2GenAiScenarioSetsScenarioSetUuidScenariosRoute,
+    getV2GenAiScenarioSetsScenarioSetUuidScenariosRouteHandler,
+  )
+  .openapi(postV2GenAiScheduledIndexingRoute, postV2GenAiScheduledIndexingRouteHandler)
+  .openapi(
+    getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRoute,
+    getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRouteHandler,
+  )
+  .openapi(deleteV2GenAiScheduledIndexingUuidRoute, deleteV2GenAiScheduledIndexingUuidRouteHandler)
+  .openapi(getV2GenAiSimulationRunsRoute, getV2GenAiSimulationRunsRouteHandler)
+  .openapi(postV2GenAiSimulationRunsRoute, postV2GenAiSimulationRunsRouteHandler)
+  .openapi(getV2GenAiSimulationRunsRunUuidRoute, getV2GenAiSimulationRunsRunUuidRouteHandler)
+  .openapi(putV2GenAiSimulationRunsRunUuidRoute, putV2GenAiSimulationRunsRunUuidRouteHandler)
+  .openapi(deleteV2GenAiSimulationRunsRunUuidRoute, deleteV2GenAiSimulationRunsRunUuidRouteHandler)
+  .openapi(
+    patchV2GenAiSimulationRunsRunUuidCancelRoute,
+    patchV2GenAiSimulationRunsRunUuidCancelRouteHandler,
+  )
+  .openapi(
+    getV2GenAiSimulationRunsRunUuidEpisodesRoute,
+    getV2GenAiSimulationRunsRunUuidEpisodesRouteHandler,
+  )
+  .openapi(
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRoute,
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRoute,
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRouteHandler,
+  )
+  .openapi(
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRoute,
+    getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRouteHandler,
+  )
+  .openapi(getV2GenAiWorkspacesRoute, getV2GenAiWorkspacesRouteHandler)
+  .openapi(postV2GenAiWorkspacesRoute, postV2GenAiWorkspacesRouteHandler)
+  .openapi(getV2GenAiWorkspacesWorkspaceUuidRoute, getV2GenAiWorkspacesWorkspaceUuidRouteHandler)
+  .openapi(putV2GenAiWorkspacesWorkspaceUuidRoute, putV2GenAiWorkspacesWorkspaceUuidRouteHandler)
+  .openapi(
+    deleteV2GenAiWorkspacesWorkspaceUuidRoute,
+    deleteV2GenAiWorkspacesWorkspaceUuidRouteHandler,
+  )
+  .openapi(
+    getV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+    getV2GenAiWorkspacesWorkspaceUuidAgentsRouteHandler,
+  )
+  .openapi(
+    putV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+    putV2GenAiWorkspacesWorkspaceUuidAgentsRouteHandler,
+  )
+  .openapi(
+    getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRoute,
+    getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRouteHandler,
+  )
+  .openapi(postV1ChatCompletionsRoute, postV1ChatCompletionsRouteHandler)
+  .openapi(postV1MessagesRoute, postV1MessagesRouteHandler)
+  .openapi(postV1EmbeddingsRoute, postV1EmbeddingsRouteHandler)
+  .openapi(postApiV1ChatCompletionsRoute, postApiV1ChatCompletionsRouteHandler)
+  .openapi(postV1ImagesGenerationsRoute, postV1ImagesGenerationsRouteHandler)
+  .openapi(getV1ModelsRoute, getV1ModelsRouteHandler)
+  .openapi(postV1SystemoneRoute, postV1SystemoneRouteHandler)
+  .openapi(postV1ResponsesRoute, postV1ResponsesRouteHandler)
+  .openapi(postV1AsyncInvokeRoute, postV1AsyncInvokeRouteHandler)
+  .openapi(postV1AudioSpeechRoute, postV1AudioSpeechRouteHandler)
+  .openapi(postV1VideosRoute, postV1VideosRouteHandler)
+  .openapi(getV1VideosVideoIdRoute, getV1VideosVideoIdRouteHandler)
+  .openapi(getV1VideosVideoIdContentRoute, getV1VideosVideoIdContentRouteHandler)
+  .openapi(postV1BatchesFilesRoute, postV1BatchesFilesRouteHandler)
+  .openapi(putUploadUrlRoute, putUploadUrlRouteHandler)
+  .openapi(postV1BatchesRoute, postV1BatchesRouteHandler)
+  .openapi(getV1BatchesRoute, getV1BatchesRouteHandler)
+  .openapi(getV1BatchesBatchIdRoute, getV1BatchesBatchIdRouteHandler)
+  .openapi(getV1BatchesBatchIdResultsRoute, getV1BatchesBatchIdResultsRouteHandler)
+  .openapi(postV1BatchesBatchIdCancelRoute, postV1BatchesBatchIdCancelRouteHandler)
 
 export default app

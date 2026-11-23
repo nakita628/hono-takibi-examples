@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMiscRefreshExtensionSettingsRoute,
   postMiscRefreshExtensionSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMiscRefreshExtensionSettingsRouteHandler: RouteHandler<
+  typeof getMiscRefreshExtensionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const miscHandler = app
-  .openapi(getMiscRefreshExtensionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMiscRefreshExtensionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMiscRefreshExtensionSettingsRouteHandler: RouteHandler<
+  typeof postMiscRefreshExtensionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

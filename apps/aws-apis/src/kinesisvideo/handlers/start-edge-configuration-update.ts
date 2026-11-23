@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postStartEdgeConfigurationUpdateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postStartEdgeConfigurationUpdateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const startEdgeConfigurationUpdateHandler = app.openapi(
-  postStartEdgeConfigurationUpdateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postStartEdgeConfigurationUpdateRouteHandler: RouteHandler<
+  typeof postStartEdgeConfigurationUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

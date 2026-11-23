@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCouponCodesCouponCodeCodeRoute,
   getCouponCodesRoute,
   postCouponCodesCouponCodeCodeArchiveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCouponCodesRouteHandler: RouteHandler<typeof getCouponCodesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const couponCodesHandler = app
-  .openapi(getCouponCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCouponCodesCouponCodeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponCodesCouponCodeCodeArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCouponCodesCouponCodeCodeRouteHandler: RouteHandler<
+  typeof getCouponCodesCouponCodeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponCodesCouponCodeCodeArchiveRouteHandler: RouteHandler<
+  typeof postCouponCodesCouponCodeCodeArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

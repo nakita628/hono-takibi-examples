@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Video%20Conferencing%20Extension/Rollouts/148903/2026-09/videoConferencingExtension.json',
   output: './src/crm-video-conferencing-extension/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-video-conferencing-extension/types.ts' },
   client: { output: './src/crm-video-conferencing-extension/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-video-conferencing-extension/rpc.ts', parseResponse: true },

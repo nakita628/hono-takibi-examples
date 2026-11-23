@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1CurrenciesHistoryRoute,
   getApiV1CurrenciesHistorySupportedRoute,
   getApiV1CurrenciesRateRoute,
@@ -19,57 +19,104 @@ import {
   getApiV1MetalsSupportedCurrencyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1CurrenciesHistoryRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1CurrenciesHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CurrenciesHistorySupportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CurrenciesRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CurrenciesRateSupportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CurrenciesSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CurrenciesSummarySupportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsBenchmarkHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsBenchmarkSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsBenchmarkSupportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotPerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotPerformanceAnnualRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotRatioHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotRatioSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSpotSupportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MetalsSupportedCurrencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV1CurrenciesHistorySupportedRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesHistorySupportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CurrenciesRateRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CurrenciesRateSupportedRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesRateSupportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CurrenciesSummaryRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CurrenciesSummarySupportedRouteHandler: RouteHandler<
+  typeof getApiV1CurrenciesSummarySupportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsBenchmarkHistoryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsBenchmarkHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsBenchmarkSummaryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsBenchmarkSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsBenchmarkSupportedRouteHandler: RouteHandler<
+  typeof getApiV1MetalsBenchmarkSupportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotHistoryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotPerformanceRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotPerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotPerformanceAnnualRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotPerformanceAnnualRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotRatioHistoryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotRatioHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotRatioSummaryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotRatioSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotSummaryRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSpotSupportedRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSpotSupportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MetalsSupportedCurrencyRouteHandler: RouteHandler<
+  typeof getApiV1MetalsSupportedCurrencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/timestream-query/2018-11-01/openapi.yaml',
   output: './src/timestream-query/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/timestream-query/types.ts' },
   client: { output: './src/timestream-query/client.ts', baseUrl: '/' },
   rpc: { output: './src/timestream-query/rpc.ts', parseResponse: true },

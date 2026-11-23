@@ -145,17 +145,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectType: string; pipelineId: string } } & {
-          query: {
-            validateDealStageUsagesBeforeDelete?: boolean | undefined
-            validateReferencesBeforeDelete?: boolean | undefined
+      $delete:
+        | {
+            input: { param: { objectType: string; pipelineId: string } } & {
+              query: {
+                validateDealStageUsagesBeforeDelete?: boolean | undefined
+                validateReferencesBeforeDelete?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+        | {
+            input: { param: { objectType: string; pipelineId: string } } & {
+              query: {
+                validateDealStageUsagesBeforeDelete?: boolean | undefined
+                validateReferencesBeforeDelete?: boolean | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectType: string; pipelineId: string } } & {
@@ -261,12 +273,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectType: string; pipelineId: string; stageId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectType: string; pipelineId: string; stageId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string; pipelineId: string; stageId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectType: string; pipelineId: string; stageId: string } } & {

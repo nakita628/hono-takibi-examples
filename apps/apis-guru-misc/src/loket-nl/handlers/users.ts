@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUsersApplicationsetsApplicationSetIdRoute,
   getUsersInitiatedworkflowsRoute,
   getUsersIntegrationsRoute,
@@ -9,27 +9,44 @@ import {
   putUsersApplicationsetsApplicationSetIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteUsersApplicationsetsApplicationSetIdRouteHandler: RouteHandler<
+  typeof deleteUsersApplicationsetsApplicationSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(deleteUsersApplicationsetsApplicationSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersApplicationsetsApplicationSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersInitiatedworkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdApplicationsetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdApplicationsetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdYourcampusurlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putUsersApplicationsetsApplicationSetIdRouteHandler: RouteHandler<
+  typeof putUsersApplicationsetsApplicationSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersInitiatedworkflowsRouteHandler: RouteHandler<
+  typeof getUsersInitiatedworkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersIntegrationsRouteHandler: RouteHandler<
+  typeof getUsersIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdApplicationsetsRouteHandler: RouteHandler<
+  typeof getUsersUserIdApplicationsetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdApplicationsetsRouteHandler: RouteHandler<
+  typeof postUsersUserIdApplicationsetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdYourcampusurlRouteHandler: RouteHandler<
+  typeof getUsersUserIdYourcampusurlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

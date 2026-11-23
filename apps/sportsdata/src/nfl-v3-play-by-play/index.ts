@@ -1,8 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { formatHandler } from './handlers'
+import {
+  getFormatPlayByPlayDeltaSeasonWeekMinutesRoute,
+  getFormatPlayByPlaySeasonWeekHometeamRoute,
+  getFormatSimulatedPlayByPlayNumberofplaysRoute,
+} from './routes'
+import {
+  getFormatPlayByPlayDeltaSeasonWeekMinutesRouteHandler,
+  getFormatPlayByPlaySeasonWeekHometeamRouteHandler,
+  getFormatSimulatedPlayByPlayNumberofplaysRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', formatHandler)
+export const api = app
+  .openapi(
+    getFormatPlayByPlaySeasonWeekHometeamRoute,
+    getFormatPlayByPlaySeasonWeekHometeamRouteHandler,
+  )
+  .openapi(
+    getFormatPlayByPlayDeltaSeasonWeekMinutesRoute,
+    getFormatPlayByPlayDeltaSeasonWeekMinutesRouteHandler,
+  )
+  .openapi(
+    getFormatSimulatedPlayByPlayNumberofplaysRoute,
+    getFormatSimulatedPlayByPlayNumberofplaysRouteHandler,
+  )
 
 export default app

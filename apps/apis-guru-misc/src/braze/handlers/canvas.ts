@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCanvasDataSeriesRoute,
   getCanvasDataSummaryRoute,
   getCanvasDetailsRoute,
@@ -7,21 +7,30 @@ import {
   postCanvasTriggerScheduleCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCanvasDataSeriesRouteHandler: RouteHandler<
+  typeof getCanvasDataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const canvasHandler = app
-  .openapi(getCanvasDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCanvasDataSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCanvasDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCanvasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCanvasTriggerScheduleCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCanvasDataSummaryRouteHandler: RouteHandler<
+  typeof getCanvasDataSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCanvasDetailsRouteHandler: RouteHandler<typeof getCanvasDetailsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCanvasListRouteHandler: RouteHandler<typeof getCanvasListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCanvasTriggerScheduleCreateRouteHandler: RouteHandler<
+  typeof postCanvasTriggerScheduleCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

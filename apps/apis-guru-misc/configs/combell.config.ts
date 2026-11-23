@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/combell.com/v2/openapi.yaml',
   output: './src/combell/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/combell/types.ts' },
   client: { output: './src/combell/client.ts', baseUrl: '/' },
   rpc: { output: './src/combell/rpc.ts', parseResponse: true },

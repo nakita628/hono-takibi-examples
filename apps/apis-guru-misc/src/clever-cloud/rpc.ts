@@ -291,10 +291,10 @@ export async function getOauthRights(options?: ClientRequestOptions) {
 }
 
 export async function getOpenapiType2(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['openapi.:type'].$get(args, options))
+  return await parseResponse(client['openapi.{type}'].$get(args, options))
 }
 
 export async function getOrganisations(
@@ -1484,10 +1484,10 @@ export async function getProductsInstances(
 }
 
 export async function getProductsInstancesTypeVersion(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.products.instances[':type-:version'].$get(args, options))
+  return await parseResponse(client.products.instances[':type-{version}'].$get(args, options))
 }
 
 export async function getProductsMfaKinds(options?: ClientRequestOptions) {

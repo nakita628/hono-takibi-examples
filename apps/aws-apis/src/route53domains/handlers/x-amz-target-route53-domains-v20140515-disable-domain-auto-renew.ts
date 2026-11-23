@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewHandler = app.openapi(
-  postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

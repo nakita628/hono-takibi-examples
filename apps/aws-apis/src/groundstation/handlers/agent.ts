@@ -1,15 +1,20 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAgentAgentIdConfigurationRoute, postAgentRoute, putAgentAgentIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getAgentAgentIdConfigurationRoute,
+  postAgentRoute,
+  putAgentAgentIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getAgentAgentIdConfigurationRouteHandler: RouteHandler<
+  typeof getAgentAgentIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const agentHandler = app
-  .openapi(getAgentAgentIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAgentAgentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAgentRouteHandler: RouteHandler<typeof postAgentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAgentAgentIdRouteHandler: RouteHandler<typeof putAgentAgentIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

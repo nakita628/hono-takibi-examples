@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetBaldrApiServiceCopyBackupToRegionHandler = app.openapi(
-  postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetBaldrApiServiceCopyBackupToRegionRouteHandler: RouteHandler<
+  typeof postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

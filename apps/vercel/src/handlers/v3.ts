@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3UserTokensTokenIdRoute,
   getV3DeploymentsIdOrUrlEventsRoute,
   getV3EventsRoute,
@@ -11,33 +11,52 @@ import {
   postV3UserTokensRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3DeploymentsIdOrUrlEventsRouteHandler: RouteHandler<
+  typeof getV3DeploymentsIdOrUrlEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3DeploymentsIdOrUrlEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV3DomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SandboxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SandboxesSessionsSessionIdSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SandboxesNameForkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TeamsTeamIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3UserTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3UserTokensTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchV3DomainsDomainRouteHandler: RouteHandler<
+  typeof patchV3DomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3EventsRouteHandler: RouteHandler<typeof getV3EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SandboxesRouteHandler: RouteHandler<typeof postV3SandboxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SandboxesSessionsSessionIdSnapshotRouteHandler: RouteHandler<
+  typeof postV3SandboxesSessionsSessionIdSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SandboxesNameForkRouteHandler: RouteHandler<
+  typeof postV3SandboxesNameForkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TeamsTeamIdMembersRouteHandler: RouteHandler<
+  typeof getV3TeamsTeamIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3UserTokensRouteHandler: RouteHandler<typeof postV3UserTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3UserTokensTokenIdRouteHandler: RouteHandler<
+  typeof deleteV3UserTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

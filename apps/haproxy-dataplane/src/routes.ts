@@ -10989,17 +10989,19 @@ const SslCertificateSchema = z
   })
   .openapi('SslCertificate')
 
+const SslCertificateIdCertificateIdSchema = z
+  .object({
+    hash_algorithm: z.string().exactOptional(),
+    issuer_key_hash: z.string().exactOptional(),
+    issuer_name_hash: z.string().exactOptional(),
+    serial_number: z.string().exactOptional(),
+  })
+  .openapi({ 'x-go-name': 'CertificateId', required: [] })
+  .openapi('SslCertificateIdCertificateId')
+
 const SslCertificateIdSchema = z
   .object({
-    certificate_id: z
-      .object({
-        hash_algorithm: z.string().exactOptional(),
-        issuer_key_hash: z.string().exactOptional(),
-        issuer_name_hash: z.string().exactOptional(),
-        serial_number: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ 'x-go-name': 'CertificateId', required: [] }),
+    certificate_id: SslCertificateIdCertificateIdSchema.exactOptional(),
     certificate_id_key: z.string().exactOptional(),
     certificate_path: z.string().exactOptional(),
   })
@@ -11161,7 +11163,7 @@ const SslOcspResponseSchema = z
     responses: z
       .object({
         cert_status: z.string().exactOptional(),
-        certificate_id: z.lazy(() => SslCertificateIdSchema).exactOptional(),
+        certificate_id: SslCertificateIdCertificateIdSchema.exactOptional(),
         next_update: z.iso.date().exactOptional(),
         revocation_reason: z.string().exactOptional().openapi({ 'x-omitempty': true }),
         this_update: z.iso.date().exactOptional(),

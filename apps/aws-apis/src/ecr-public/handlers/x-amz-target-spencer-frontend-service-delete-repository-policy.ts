@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

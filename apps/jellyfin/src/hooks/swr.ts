@@ -747,19 +747,19 @@ export function useHeadAudioItemIdStream<TError = unknown>(options?: {
 }
 
 export function getGetAudioItemIdStreamContainerKey(
-  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>,
 ) {
-  return ['Audio', '/Audio/:itemId/stream.:container', args] as const
+  return ['Audio', '/Audio/:itemId/stream.{container}', args] as const
 }
 
 export function useGetAudioItemIdStreamContainer<TError = unknown>(
-  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -782,7 +782,7 @@ export function useGetAudioItemIdStreamContainer<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -790,20 +790,20 @@ export function useGetAudioItemIdStreamContainer<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.Audio[':itemId']['stream.:container'].$get(args, clientOptions)),
+        parseResponse(client.Audio[':itemId']['stream.{container}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetAudioItemIdStreamContainer<TError = unknown>(
-  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -826,7 +826,7 @@ export function useImmutableGetAudioItemIdStreamContainer<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -834,14 +834,14 @@ export function useImmutableGetAudioItemIdStreamContainer<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.Audio[':itemId']['stream.:container'].$get(args, clientOptions)),
+        parseResponse(client.Audio[':itemId']['stream.{container}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getHeadAudioItemIdStreamContainerKey() {
-  return ['Audio', '/Audio/:itemId/stream.:container', 'HEAD'] as const
+  return ['Audio', '/Audio/:itemId/stream.{container}', 'HEAD'] as const
 }
 
 export function useHeadAudioItemIdStreamContainer<TError = unknown>(options?: {
@@ -849,13 +849,13 @@ export function useHeadAudioItemIdStreamContainer<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.:container']['$head']>>
+          Awaited<ReturnType<(typeof client.Audio)[':itemId']['stream.{container}']['$head']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$head']>
+    InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$head']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -871,9 +871,9 @@ export function useHeadAudioItemIdStreamContainer<TError = unknown>(options?: {
         {
           arg,
         }: {
-          arg: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$head']>
+          arg: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$head']>
         },
-      ) => parseResponse(client.Audio[':itemId']['stream.:container'].$head(arg, clientOptions)),
+      ) => parseResponse(client.Audio[':itemId']['stream.{container}'].$head(arg, clientOptions)),
       restMutationOptions,
     ),
   }
@@ -10346,15 +10346,15 @@ export function useImmutableGetLiveTvLiveRecordingsRecordingIdStream<TError = un
 
 export function getGetLiveTvLiveStreamFilesStreamIdStreamContainerKey(
   args: InferRequestType<
-    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
   >,
 ) {
-  return ['LiveTv', '/LiveTv/LiveStreamFiles/:streamId/stream.:container', args] as const
+  return ['LiveTv', '/LiveTv/LiveStreamFiles/:streamId/stream.{container}', args] as const
 }
 
 export function useGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unknown>(
   args: InferRequestType<
-    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -10363,7 +10363,7 @@ export function useGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
               >
             >
           >
@@ -10390,7 +10390,7 @@ export function useGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
               >
             >
           >
@@ -10401,7 +10401,10 @@ export function useGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unkn
       swrKey,
       async () =>
         parseResponse(
-          client.LiveTv.LiveStreamFiles[':streamId']['stream.:container'].$get(args, clientOptions),
+          client.LiveTv.LiveStreamFiles[':streamId']['stream.{container}'].$get(
+            args,
+            clientOptions,
+          ),
         ),
       restSwrOptions,
     ),
@@ -10410,7 +10413,7 @@ export function useGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unkn
 
 export function useImmutableGetLiveTvLiveStreamFilesStreamIdStreamContainer<TError = unknown>(
   args: InferRequestType<
-    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -10419,7 +10422,7 @@ export function useImmutableGetLiveTvLiveStreamFilesStreamIdStreamContainer<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
               >
             >
           >
@@ -10446,7 +10449,7 @@ export function useImmutableGetLiveTvLiveStreamFilesStreamIdStreamContainer<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+                (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
               >
             >
           >
@@ -10457,7 +10460,10 @@ export function useImmutableGetLiveTvLiveStreamFilesStreamIdStreamContainer<TErr
       swrKey,
       async () =>
         parseResponse(
-          client.LiveTv.LiveStreamFiles[':streamId']['stream.:container'].$get(args, clientOptions),
+          client.LiveTv.LiveStreamFiles[':streamId']['stream.{container}'].$get(
+            args,
+            clientOptions,
+          ),
         ),
       restSwrOptions,
     ),
@@ -17549,12 +17555,12 @@ export function useDeleteVideosItemIdSubtitlesIndex<TError = unknown>(options?: 
 
 export function getGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRouteStartPositionTicksStreamRouteFormatKey(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
   >,
 ) {
   return [
     'Videos',
-    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/:routeStartPositionTicks/Stream.:routeFormat',
+    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/:routeStartPositionTicks/Stream.{routeFormat}',
     args,
   ] as const
 }
@@ -17563,7 +17569,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRout
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -17572,7 +17578,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRout
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17601,7 +17607,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRout
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17614,7 +17620,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRout
         parseResponse(
           client.Videos[':routeItemId'][':routeMediaSourceId'].Subtitles[':routeIndex'][
             ':routeStartPositionTicks'
-          ]['Stream.:routeFormat'].$get(args, clientOptions),
+          ]['Stream.{routeFormat}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -17625,7 +17631,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -17634,7 +17640,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17663,7 +17669,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex'][':routeStartPositionTicks']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17676,7 +17682,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
         parseResponse(
           client.Videos[':routeItemId'][':routeMediaSourceId'].Subtitles[':routeIndex'][
             ':routeStartPositionTicks'
-          ]['Stream.:routeFormat'].$get(args, clientOptions),
+          ]['Stream.{routeFormat}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -17685,12 +17691,12 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
 
 export function getGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStreamRouteFormatKey(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
   >,
 ) {
   return [
     'Videos',
-    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/Stream.:routeFormat',
+    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/Stream.{routeFormat}',
     args,
   ] as const
 }
@@ -17699,7 +17705,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStre
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -17708,7 +17714,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStre
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17735,7 +17741,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStre
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17747,7 +17753,7 @@ export function useGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStre
       async () =>
         parseResponse(
           client.Videos[':routeItemId'][':routeMediaSourceId'].Subtitles[':routeIndex'][
-            'Stream.:routeFormat'
+            'Stream.{routeFormat}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -17759,7 +17765,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+    (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -17768,7 +17774,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17795,7 +17801,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.:routeFormat']['$get']
+                (typeof client.Videos)[':routeItemId'][':routeMediaSourceId']['Subtitles'][':routeIndex']['Stream.{routeFormat}']['$get']
               >
             >
           >
@@ -17807,7 +17813,7 @@ export function useImmutableGetVideosRouteItemIdRouteMediaSourceIdSubtitlesRoute
       async () =>
         parseResponse(
           client.Videos[':routeItemId'][':routeMediaSourceId'].Subtitles[':routeIndex'][
-            'Stream.:routeFormat'
+            'Stream.{routeFormat}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -21569,19 +21575,19 @@ export function useHeadVideosItemIdStream<TError = unknown>(options?: {
 }
 
 export function getGetVideosItemIdStreamContainerKey(
-  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>,
 ) {
-  return ['Videos', '/Videos/:itemId/stream.:container', args] as const
+  return ['Videos', '/Videos/:itemId/stream.{container}', args] as const
 }
 
 export function useGetVideosItemIdStreamContainer<TError = unknown>(
-  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -21604,7 +21610,7 @@ export function useGetVideosItemIdStreamContainer<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -21612,20 +21618,20 @@ export function useGetVideosItemIdStreamContainer<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.Videos[':itemId']['stream.:container'].$get(args, clientOptions)),
+        parseResponse(client.Videos[':itemId']['stream.{container}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVideosItemIdStreamContainer<TError = unknown>(
-  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -21648,7 +21654,7 @@ export function useImmutableGetVideosItemIdStreamContainer<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.:container']['$get']>>
+            Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.{container}']['$get']>>
           >
         >
       >,
@@ -21656,14 +21662,14 @@ export function useImmutableGetVideosItemIdStreamContainer<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.Videos[':itemId']['stream.:container'].$get(args, clientOptions)),
+        parseResponse(client.Videos[':itemId']['stream.{container}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getHeadVideosItemIdStreamContainerKey() {
-  return ['Videos', '/Videos/:itemId/stream.:container', 'HEAD'] as const
+  return ['Videos', '/Videos/:itemId/stream.{container}', 'HEAD'] as const
 }
 
 export function useHeadVideosItemIdStreamContainer<TError = unknown>(options?: {
@@ -21671,13 +21677,13 @@ export function useHeadVideosItemIdStreamContainer<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.:container']['$head']>>
+          Awaited<ReturnType<(typeof client.Videos)[':itemId']['stream.{container}']['$head']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.Videos)[':itemId']['stream.:container']['$head']>
+    InferRequestType<(typeof client.Videos)[':itemId']['stream.{container}']['$head']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -21693,9 +21699,9 @@ export function useHeadVideosItemIdStreamContainer<TError = unknown>(options?: {
         {
           arg,
         }: {
-          arg: InferRequestType<(typeof client.Videos)[':itemId']['stream.:container']['$head']>
+          arg: InferRequestType<(typeof client.Videos)[':itemId']['stream.{container}']['$head']>
         },
-      ) => parseResponse(client.Videos[':itemId']['stream.:container'].$head(arg, clientOptions)),
+      ) => parseResponse(client.Videos[':itemId']['stream.{container}'].$head(arg, clientOptions)),
       restMutationOptions,
     ),
   }

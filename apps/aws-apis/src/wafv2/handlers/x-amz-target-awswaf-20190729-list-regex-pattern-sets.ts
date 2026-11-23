@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20190729ListRegexPatternSetsHandler = app.openapi(
-  postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20190729ListRegexPatternSetsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

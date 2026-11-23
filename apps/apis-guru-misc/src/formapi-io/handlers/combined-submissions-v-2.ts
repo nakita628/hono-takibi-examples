@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCombinedSubmissionsV2Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCombinedSubmissionsV2Route } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const combinedSubmissionsV2Handler = app.openapi(postCombinedSubmissionsV2Route, (c) => {
+export const postCombinedSubmissionsV2RouteHandler: RouteHandler<
+  typeof postCombinedSubmissionsV2Route
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

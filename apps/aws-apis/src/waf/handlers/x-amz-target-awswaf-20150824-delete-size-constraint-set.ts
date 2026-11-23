@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20150824DeleteSizeConstraintSetHandler = app.openapi(
-  postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

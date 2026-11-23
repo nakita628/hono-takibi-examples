@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGeofenceAssociationsV2GeofenceIdTrackingIdRoute,
   getGeofenceAssociationsV2GeofenceIdDevicesRoute,
   getGeofenceAssociationsV2HealthRoute,
@@ -7,21 +7,32 @@ import {
   putGeofenceAssociationsV2GeofenceIdTrackingIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGeofenceAssociationsV2HealthRouteHandler: RouteHandler<
+  typeof getGeofenceAssociationsV2HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const geofenceAssociationsHandler = app
-  .openapi(getGeofenceAssociationsV2HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofenceAssociationsV2VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofenceAssociationsV2GeofenceIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGeofenceAssociationsV2GeofenceIdTrackingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGeofenceAssociationsV2GeofenceIdTrackingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGeofenceAssociationsV2VersionRouteHandler: RouteHandler<
+  typeof getGeofenceAssociationsV2VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofenceAssociationsV2GeofenceIdDevicesRouteHandler: RouteHandler<
+  typeof getGeofenceAssociationsV2GeofenceIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGeofenceAssociationsV2GeofenceIdTrackingIdRouteHandler: RouteHandler<
+  typeof deleteGeofenceAssociationsV2GeofenceIdTrackingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGeofenceAssociationsV2GeofenceIdTrackingIdRouteHandler: RouteHandler<
+  typeof putGeofenceAssociationsV2GeofenceIdTrackingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

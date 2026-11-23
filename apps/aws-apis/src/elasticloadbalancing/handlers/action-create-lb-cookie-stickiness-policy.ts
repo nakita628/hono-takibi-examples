@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateLBCookieStickinessPolicyRoute,
   postActionCreateLBCookieStickinessPolicyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateLBCookieStickinessPolicyRouteHandler: RouteHandler<
+  typeof getActionCreateLBCookieStickinessPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateLbCookieStickinessPolicyHandler = app
-  .openapi(getActionCreateLBCookieStickinessPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateLBCookieStickinessPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateLBCookieStickinessPolicyRouteHandler: RouteHandler<
+  typeof postActionCreateLBCookieStickinessPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

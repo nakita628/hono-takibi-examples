@@ -1378,7 +1378,7 @@ export const deleteCrmObjectSchemas202609SchemasObjectTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.schemas.custom.write'] }],
 })
 
@@ -1518,6 +1518,6 @@ export const deleteCrmObjectSchemas202609SchemasObjectTypeAssociationsAssociatio
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['crm.schemas.custom.write'] }],
   })

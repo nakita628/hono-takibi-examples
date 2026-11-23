@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentDeleteRevisionRoute,
   deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute,
   deleteV1ProjectsProjectLocationsLocationApisApiRoute,
@@ -37,135 +37,212 @@ import {
   putV1ProjectsProjectLocationsLocationArtifactsArtifactRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ProjectsProjectLocationsLocationApisRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ProjectsProjectLocationsLocationApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectLocationsLocationApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectLocationsLocationApisApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectLocationsLocationApisApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectLocationsLocationApisApiDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentDeleteRevisionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentListRevisionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentTagRevisionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectLocationsLocationApisApiVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecDeleteRevisionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecGetContentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecListRevisionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRollbackRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecTagRevisionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1ProjectsProjectLocationsLocationArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectLocationsLocationArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectLocationsLocationArtifactsArtifactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationArtifactsArtifactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProjectsProjectLocationsLocationArtifactsArtifactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectLocationsLocationArtifactsArtifactGetContentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ProjectsProjectLocationsLocationApisRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectLocationsLocationApisApiRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectLocationsLocationApisApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiDeploymentsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiDeploymentsRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentDeleteRevisionRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentDeleteRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentListRevisionsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentListRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRollbackRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentTagRevisionRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymentTagRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiVersionsRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecDeleteRevisionRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecDeleteRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecGetContentsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecGetContentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecListRevisionsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecListRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRollbackRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecTagRevisionRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpecTagRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationArtifactsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectLocationsLocationArtifactsRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectLocationsLocationArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectLocationsLocationArtifactsArtifactRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectLocationsLocationArtifactsArtifactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationArtifactsArtifactRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationArtifactsArtifactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProjectsProjectLocationsLocationArtifactsArtifactRouteHandler: RouteHandler<
+  typeof putV1ProjectsProjectLocationsLocationArtifactsArtifactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectLocationsLocationArtifactsArtifactGetContentsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectLocationsLocationArtifactsArtifactGetContentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

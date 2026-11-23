@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/kafka/2018-11-14/openapi.yaml',
   output: './src/kafka/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kafka/types.ts' },
   client: { output: './src/kafka/client.ts', baseUrl: '/' },
   rpc: { output: './src/kafka/rpc.ts', parseResponse: true },

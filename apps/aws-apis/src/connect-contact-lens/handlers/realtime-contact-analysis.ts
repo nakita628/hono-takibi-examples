@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRealtimeContactAnalysisAnalysisSegmentsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRealtimeContactAnalysisAnalysisSegmentsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const realtimeContactAnalysisHandler = app.openapi(
-  postRealtimeContactAnalysisAnalysisSegmentsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRealtimeContactAnalysisAnalysisSegmentsRouteHandler: RouteHandler<
+  typeof postRealtimeContactAnalysisAnalysisSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

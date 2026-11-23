@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWebhookSubscriptionsCreateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWebhookSubscriptionsCreateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const webhookSubscriptionsCreateHandler = app.openapi(
-  postWebhookSubscriptionsCreateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postWebhookSubscriptionsCreateRouteHandler: RouteHandler<
+  typeof postWebhookSubscriptionsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

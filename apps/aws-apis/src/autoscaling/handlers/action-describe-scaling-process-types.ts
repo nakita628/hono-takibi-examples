@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeScalingProcessTypesRoute,
   postActionDescribeScalingProcessTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeScalingProcessTypesRouteHandler: RouteHandler<
+  typeof getActionDescribeScalingProcessTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeScalingProcessTypesHandler = app
-  .openapi(getActionDescribeScalingProcessTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeScalingProcessTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeScalingProcessTypesRouteHandler: RouteHandler<
+  typeof postActionDescribeScalingProcessTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

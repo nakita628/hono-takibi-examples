@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putRestaurantOnlineStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putRestaurantOnlineStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const restaurantOnlineStatusHandler = app.openapi(putRestaurantOnlineStatusRoute, (c) => {
+export const putRestaurantOnlineStatusRouteHandler: RouteHandler<
+  typeof putRestaurantOnlineStatusRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

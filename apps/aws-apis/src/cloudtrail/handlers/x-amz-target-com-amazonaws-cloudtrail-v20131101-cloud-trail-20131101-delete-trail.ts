@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailHandler =
-  app.openapi(
-    postXAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailRouteHandler: RouteHandler<
+  typeof postXAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

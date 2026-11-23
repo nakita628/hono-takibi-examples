@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCaseExportCallbacksCaseExportCallbackIdRoute,
   getCaseExportCallbacksRoute,
   getCaseExportCaseIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCaseExportCallbacksRouteHandler: RouteHandler<
+  typeof getCaseExportCallbacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const caseExportHandler = app
-  .openapi(getCaseExportCallbacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCaseExportCallbacksCaseExportCallbackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCaseExportCaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCaseExportCallbacksCaseExportCallbackIdRouteHandler: RouteHandler<
+  typeof getCaseExportCallbacksCaseExportCallbackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCaseExportCaseIdRouteHandler: RouteHandler<
+  typeof getCaseExportCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

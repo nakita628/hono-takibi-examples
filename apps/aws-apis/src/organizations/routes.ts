@@ -60,9 +60,9 @@ const HandshakeResourcesSchema: z.ZodType<HandshakeResourcesType> = z
   .openapi('HandshakeResources')
 
 type HandshakeResourceType = {
-  Value?: z.infer<typeof HandshakeResourceValueSchema> & unknown
-  Type?: z.infer<typeof HandshakeResourceTypeSchema> & unknown
-  Resources?: z.infer<typeof HandshakeResourcesSchema> & unknown
+  Value?: z.infer<typeof HandshakeResourceValueSchema>
+  Type?: z.infer<typeof HandshakeResourceTypeSchema>
+  Resources?: z.infer<typeof HandshakeResourcesSchema>
 }
 
 const HandshakeIdSchema = z

@@ -1,8 +1,18 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { segmentsHandler, sessionsHandler } from './handlers'
+import { getSegmentsRoute, getSessionsRoute, patchSessionsRoute, postSessionsRoute } from './routes'
+import {
+  getSegmentsRouteHandler,
+  getSessionsRouteHandler,
+  patchSessionsRouteHandler,
+  postSessionsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', segmentsHandler).route('/', sessionsHandler)
+export const api = app
+  .openapi(getSegmentsRoute, getSegmentsRouteHandler)
+  .openapi(getSessionsRoute, getSessionsRouteHandler)
+  .openapi(patchSessionsRoute, patchSessionsRouteHandler)
+  .openapi(postSessionsRoute, postSessionsRouteHandler)
 
 export default app

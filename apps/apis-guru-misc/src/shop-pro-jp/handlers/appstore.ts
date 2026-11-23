@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppstoreV1InstallationJsonRoute,
   deleteAppstoreV1ScriptTagsScriptTagIdJsonRoute,
   getAppstoreV1ScriptTagsJsonRoute,
@@ -10,33 +10,50 @@ import {
   putAppstoreV1ScriptTagsScriptTagIdJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppstoreV1ApplicationChargesJsonRouteHandler: RouteHandler<
+  typeof postAppstoreV1ApplicationChargesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appstoreHandler = app
-  .openapi(postAppstoreV1ApplicationChargesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppstoreV1InstallationJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAppstoreV1RecurringApplicationChargesRecurringApplicationChargeIdUsageChargesJsonRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAppstoreV1ScriptTagsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppstoreV1ScriptTagsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppstoreV1ScriptTagsScriptTagIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppstoreV1ScriptTagsScriptTagIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppstoreV1ScriptTagsScriptTagIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAppstoreV1InstallationJsonRouteHandler: RouteHandler<
+  typeof deleteAppstoreV1InstallationJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppstoreV1RecurringApplicationChargesRecurringApplicationChargeIdUsageChargesJsonRouteHandler: RouteHandler<
+  typeof postAppstoreV1RecurringApplicationChargesRecurringApplicationChargeIdUsageChargesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppstoreV1ScriptTagsJsonRouteHandler: RouteHandler<
+  typeof getAppstoreV1ScriptTagsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppstoreV1ScriptTagsJsonRouteHandler: RouteHandler<
+  typeof postAppstoreV1ScriptTagsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppstoreV1ScriptTagsScriptTagIdJsonRouteHandler: RouteHandler<
+  typeof deleteAppstoreV1ScriptTagsScriptTagIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppstoreV1ScriptTagsScriptTagIdJsonRouteHandler: RouteHandler<
+  typeof getAppstoreV1ScriptTagsScriptTagIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppstoreV1ScriptTagsScriptTagIdJsonRouteHandler: RouteHandler<
+  typeof putAppstoreV1ScriptTagsScriptTagIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

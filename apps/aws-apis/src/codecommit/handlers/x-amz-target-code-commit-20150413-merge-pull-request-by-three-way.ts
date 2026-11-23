@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeCommit20150413MergePullRequestByThreeWayHandler = app.openapi(
-  postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

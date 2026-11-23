@@ -963,12 +963,12 @@ export async function getEnterprisesIdTransferrableBulkIdOrganizations(
 
 export async function putEnterprisesIdEnterpriseJoinRequestBulk(
   args: InferRequestType<
-    (typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']
+    (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.enterprises['$:id'].enterpriseJoinRequest.bulk.$put(args, options),
+    client.enterprises['${id}'].enterpriseJoinRequest.bulk.$put(args, options),
   )
 }
 

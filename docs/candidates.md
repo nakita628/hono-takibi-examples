@@ -16,7 +16,7 @@ Each was checked with `node scripts/probe-spec.mjs` on 2026-11-22.
 - audiobookshelf | https://raw.githubusercontent.com/advplyr/audiobookshelf/master/docs/openapi.json | OpenAPI 3.0.0, 46 operations
 - activepieces | https://raw.githubusercontent.com/activepieces/activepieces/main/docs/openapi.json | OpenAPI 3.1.0, 119 operations
 - binance-spot | https://raw.githubusercontent.com/binance/binance-api-swagger/master/spot_api.yaml | OpenAPI 3.0.2, 340 operations, 999 KB
-- apache-gravitino | https://raw.githubusercontent.com/apache/gravitino/main/docs/open-api/openapi.yaml | Does not parse (`deficient indentation (447:11)`), same cause as `iceberg-rest-catalog`, see `issue-drafts/2026-11-22-flow-mapping-closing-brace-indent.md`. Add it config-only, or generate it once hono-takibi reads that shape
+- apache-gravitino | https://raw.githubusercontent.com/apache/gravitino/main/docs/open-api/openapi.yaml | Does not parse (`deficient indentation (447:11)`), same cause as `iceberg-rest-catalog`, nakita628/hono-takibi#406. Add it config-only, or generate it once hono-takibi reads that shape
 
 ## Rejected
 

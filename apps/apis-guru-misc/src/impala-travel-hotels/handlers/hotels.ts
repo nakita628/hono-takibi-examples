@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHotelsHotelIdRatePlansRatePlanIdRoute,
   getHotelsHotelIdRatePlansRoute,
   getHotelsHotelIdRoute,
   getHotelsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHotelsRouteHandler: RouteHandler<typeof getHotelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hotelsHandler = app
-  .openapi(getHotelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHotelsHotelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHotelsHotelIdRatePlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHotelsHotelIdRatePlansRatePlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHotelsHotelIdRouteHandler: RouteHandler<typeof getHotelsHotelIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHotelsHotelIdRatePlansRouteHandler: RouteHandler<
+  typeof getHotelsHotelIdRatePlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHotelsHotelIdRatePlansRatePlanIdRouteHandler: RouteHandler<
+  typeof getHotelsHotelIdRatePlansRatePlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

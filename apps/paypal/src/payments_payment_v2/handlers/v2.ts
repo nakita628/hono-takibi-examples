@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2PaymentsAuthorizationsAuthorizationIdRoute,
   getV2PaymentsCapturesCaptureIdRoute,
   getV2PaymentsRefundsRefundIdRoute,
@@ -10,30 +10,50 @@ import {
   postV2PaymentsFindEligibleMethodsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2PaymentsAuthorizationsAuthorizationIdRouteHandler: RouteHandler<
+  typeof getV2PaymentsAuthorizationsAuthorizationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2PaymentsAuthorizationsAuthorizationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PaymentsAuthorizationsAuthorizationIdCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PaymentsAuthorizationsAuthorizationIdReauthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PaymentsAuthorizationsAuthorizationIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PaymentsCapturesCaptureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PaymentsCapturesCaptureIdRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PaymentsFindEligibleMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PaymentsRefundsRefundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2PaymentsAuthorizationsAuthorizationIdCaptureRouteHandler: RouteHandler<
+  typeof postV2PaymentsAuthorizationsAuthorizationIdCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PaymentsAuthorizationsAuthorizationIdReauthorizeRouteHandler: RouteHandler<
+  typeof postV2PaymentsAuthorizationsAuthorizationIdReauthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PaymentsAuthorizationsAuthorizationIdVoidRouteHandler: RouteHandler<
+  typeof postV2PaymentsAuthorizationsAuthorizationIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PaymentsCapturesCaptureIdRouteHandler: RouteHandler<
+  typeof getV2PaymentsCapturesCaptureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PaymentsCapturesCaptureIdRefundRouteHandler: RouteHandler<
+  typeof postV2PaymentsCapturesCaptureIdRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PaymentsFindEligibleMethodsRouteHandler: RouteHandler<
+  typeof postV2PaymentsFindEligibleMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PaymentsRefundsRefundIdRouteHandler: RouteHandler<
+  typeof getV2PaymentsRefundsRefundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

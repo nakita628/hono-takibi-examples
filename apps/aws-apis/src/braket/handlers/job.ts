@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJobJobArnRoute, postJobRoute, putJobJobArnCancelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJobJobArnRoute, postJobRoute, putJobJobArnCancelRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const putJobJobArnCancelRouteHandler: RouteHandler<typeof putJobJobArnCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const jobHandler = app
-  .openapi(putJobJobArnCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobJobArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postJobRouteHandler: RouteHandler<typeof postJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobJobArnRouteHandler: RouteHandler<typeof getJobJobArnRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -17,12 +17,6 @@ type CreateBotVersionResponse = {
   enableModelImprovements?: {} | undefined
   detectSentiment?: {} | undefined
 }
-type NotFoundException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
-type LimitExceededException = { [x: string]: unknown }
-type InternalFailureException = { [x: string]: unknown }
-type BadRequestException = { [x: string]: unknown }
-type PreconditionFailedException = { [x: string]: unknown }
 type CreateIntentVersionResponse = {
   name?: {} | undefined
   description?: {} | undefined
@@ -64,7 +58,6 @@ type CreateSlotTypeVersionResponse = {
   parentSlotTypeSignature?: {} | undefined
   slotTypeConfigurations?: {} | undefined
 }
-type ResourceInUseException = { [x: string]: unknown }
 type GetBotAliasResponse = {
   name?: {} | undefined
   description?: {} | undefined
@@ -204,7 +197,6 @@ type StartMigrationResponse = {
   migrationStrategy?: {} | undefined
   migrationTimestamp?: {} | undefined
 }
-type AccessDeniedException = { [x: string]: unknown }
 type GetSlotTypeResponse = {
   name?: {} | undefined
   description?: {} | undefined
@@ -324,5010 +316,1000 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/bots/:name/versions': {
-      $post:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: CreateBotVersionResponse
-            outputFormat: 'json'
-            status: 201
+      $post: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { checksum?: string | undefined } }
+        output: CreateBotVersionResponse
+        outputFormat: 'json'
+        status: 201
+      }
     }
   } & {
     '/intents/:name/versions': {
-      $post:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: CreateIntentVersionResponse
-            outputFormat: 'json'
-            status: 201
+      $post: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { checksum?: string | undefined } }
+        output: CreateIntentVersionResponse
+        outputFormat: 'json'
+        status: 201
+      }
     }
   } & {
     '/slottypes/:name/versions': {
-      $post:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: CreateSlotTypeVersionResponse
-            outputFormat: 'json'
-            status: 201
+      $post: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { checksum?: string | undefined } }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { checksum?: string | undefined } }
+        output: CreateSlotTypeVersionResponse
+        outputFormat: 'json'
+        status: 201
+      }
     }
   } & {
     '/bots/:name': {
-      $delete:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/bots/:botName/aliases/:name': {
-      $delete:
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string; botName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: { param: { name: string; botName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetBotAliasResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { name: string; botName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            description?: string | undefined
+            botVersion: string
+            checksum?: string | undefined
+            conversationLogs?:
+              | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
+              | undefined
+            tags?: Tag[] | undefined
           }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotAliasResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: PutBotAliasResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; botName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                botVersion: string
-                checksum?: string | undefined
-                conversationLogs?:
-                  | { logSettings?: {} | undefined; iamRoleArn?: {} | undefined }
-                  | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutBotAliasResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botName/aliases/:aliasName/channels/:name': {
-      $delete:
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string; botName: string; aliasName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: { param: { name: string; botName: string; aliasName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotChannelAssociationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; botName: string; aliasName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBotChannelAssociationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:name/versions/:version': {
-      $delete:
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string; version: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/intents/:name': {
-      $delete:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/intents/:name/versions/:version': {
-      $delete:
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string; version: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
+      $get: {
+        input: { param: { name: string; version: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetIntentResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/slottypes/:name': {
-      $delete:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/slottypes/:name/version/:version': {
-      $delete:
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { name: string; version: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/bots/:botName/utterances/:userId': {
-      $delete:
-        | {
-            input: { param: { botName: string; userId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { botName: string; userId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botName: string; userId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { botName: string; userId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botName: string; userId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { botName: string; userId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/bots/:name/versions/:versionoralias': {
-      $get:
-        | {
-            input: { param: { name: string; versionoralias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { name: string; versionoralias: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; versionoralias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; versionoralias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; versionoralias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; versionoralias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBotResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botName/aliases/': {
-      $get:
-        | {
-            input: { param: { botName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotAliasesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { botName: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            nameContains?: string | undefined
           }
-        | {
-            input: { param: { botName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetBotAliasesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botName/aliases/:aliasName/channels/': {
-      $get:
-        | {
-            input: { param: { botName: string; aliasName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotChannelAssociationsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { botName: string; aliasName: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            nameContains?: string | undefined
           }
-        | {
-            input: { param: { botName: string; aliasName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botName: string; aliasName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botName: string; aliasName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetBotChannelAssociationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:name/versions/': {
-      $get:
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { name: string } } & {
+          query: { nextToken?: string | undefined; maxResults?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBotVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBotsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            nameContains?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBotsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/builtins/intents/:signature': {
-      $get:
-        | {
-            input: { param: { signature: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBuiltinIntentResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { signature: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { signature: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { signature: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { signature: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { signature: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBuiltinIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/builtins/intents/': {
-      $get:
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBuiltinIntentsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            locale?:
+              | 'de-DE'
+              | 'en-AU'
+              | 'en-GB'
+              | 'en-IN'
+              | 'en-US'
+              | 'es-419'
+              | 'es-ES'
+              | 'es-US'
+              | 'fr-FR'
+              | 'fr-CA'
+              | 'it-IT'
+              | 'ja-JP'
+              | 'ko-KR'
+              | undefined
+            signatureContains?: string | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
           }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetBuiltinIntentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/builtins/slottypes/': {
-      $get:
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBuiltinSlotTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            locale?:
+              | 'de-DE'
+              | 'en-AU'
+              | 'en-GB'
+              | 'en-IN'
+              | 'en-US'
+              | 'es-419'
+              | 'es-ES'
+              | 'es-US'
+              | 'fr-FR'
+              | 'fr-CA'
+              | 'it-IT'
+              | 'ja-JP'
+              | 'ko-KR'
+              | undefined
+            signatureContains?: string | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
           }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                locale?:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                  | undefined
-                signatureContains?: string | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetBuiltinSlotTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/exports/#name&version&resourceType&exportType': {
-      $get:
-        | {
-            input: {
-              query: {
-                name: string
-                version: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetExportResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            name: string
+            version: string
+            resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
+            exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
           }
-        | {
-            input: {
-              query: {
-                name: string
-                version: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                name: string
-                version: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                name: string
-                version: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                name: string
-                version: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                exportType: 'ALEXA_SKILLS_KIT' | 'LEX'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetExportResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/imports/:importId': {
-      $get:
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetImportResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { importId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { importId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetImportResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/intents/:name/versions/': {
-      $get:
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetIntentVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { name: string } } & {
+          query: { nextToken?: string | undefined; maxResults?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetIntentVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/intents/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetIntentsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            nameContains?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetIntentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/migrations/:migrationId': {
-      $get:
-        | {
-            input: { param: { migrationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetMigrationResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { migrationId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { migrationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { migrationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { migrationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { migrationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetMigrationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/migrations': {
-      $get:
-        | {
-            input: {
-              query: {
-                sortByAttribute?: 'V1_BOT_NAME' | 'MIGRATION_DATE_TIME' | undefined
-                sortByOrder?: 'ASCENDING' | 'DESCENDING' | undefined
-                v1BotNameContains?: string | undefined
-                migrationStatusEquals?: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetMigrationsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            sortByAttribute?: 'V1_BOT_NAME' | 'MIGRATION_DATE_TIME' | undefined
+            sortByOrder?: 'ASCENDING' | 'DESCENDING' | undefined
+            v1BotNameContains?: string | undefined
+            migrationStatusEquals?: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                sortByAttribute?: 'V1_BOT_NAME' | 'MIGRATION_DATE_TIME' | undefined
-                sortByOrder?: 'ASCENDING' | 'DESCENDING' | undefined
-                v1BotNameContains?: string | undefined
-                migrationStatusEquals?: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                sortByAttribute?: 'V1_BOT_NAME' | 'MIGRATION_DATE_TIME' | undefined
-                sortByOrder?: 'ASCENDING' | 'DESCENDING' | undefined
-                v1BotNameContains?: string | undefined
-                migrationStatusEquals?: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetMigrationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                sortByAttribute?: 'V1_BOT_NAME' | 'MIGRATION_DATE_TIME' | undefined
-                sortByOrder?: 'ASCENDING' | 'DESCENDING' | undefined
-                v1BotNameContains?: string | undefined
-                migrationStatusEquals?: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            v1BotName: string
+            v1BotVersion: string
+            v2BotName: string
+            v2BotRole: string
+            migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
           }
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: StartMigrationResponse
-            outputFormat: 'json'
-            status: 202
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                v1BotName: string
-                v1BotVersion: string
-                v2BotName: string
-                v2BotRole: string
-                migrationStrategy: 'CREATE_NEW' | 'UPDATE_EXISTING'
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: StartMigrationResponse
+        outputFormat: 'json'
+        status: 202
+      }
     }
   } & {
     '/slottypes/:name/versions/:version': {
-      $get:
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSlotTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { name: string; version: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string; version: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetSlotTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/slottypes/:name/versions/': {
-      $get:
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSlotTypeVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { name: string } } & {
+          query: { nextToken?: string | undefined; maxResults?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetSlotTypeVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/slottypes/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSlotTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            nameContains?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                nameContains?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetSlotTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/bots/:botname/utterances#view=aggregation&bot_versions&status_type': {
-      $get:
-        | {
-            input: { param: { botname: string } } & {
-              query: {
-                bot_versions: Version[]
-                status_type: 'Detected' | 'Missed'
-                view: 'aggregation'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetUtterancesViewResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { botname: string } } & {
+          query: {
+            bot_versions: Version[]
+            status_type: 'Detected' | 'Missed'
+            view: 'aggregation'
           }
-        | {
-            input: { param: { botname: string } } & {
-              query: {
-                bot_versions: Version[]
-                status_type: 'Detected' | 'Missed'
-                view: 'aggregation'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { botname: string } } & {
-              query: {
-                bot_versions: Version[]
-                status_type: 'Detected' | 'Missed'
-                view: 'aggregation'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { botname: string } } & {
-              query: {
-                bot_versions: Version[]
-                status_type: 'Detected' | 'Missed'
-                view: 'aggregation'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: GetUtterancesViewResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 204
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: Tag[] } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { tags: Tag[] } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   } & {
     '/bots/:name/versions/$LATEST': {
-      $put:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: PutBotResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            description?: string | undefined
+            intents?: Intent[] | undefined
+            enableModelImprovements?: boolean | undefined
+            nluIntentConfidenceThreshold?: number | undefined
+            clarificationPrompt?:
+              | {
+                  messages?: {} | undefined
+                  maxAttempts?: {} | undefined
+                  responseCard?: {} | undefined
+                }
+              | undefined
+            abortStatement?:
+              | { messages?: {} | undefined; responseCard?: {} | undefined }
+              | undefined
+            idleSessionTTLInSeconds?: number | undefined
+            voiceId?: string | undefined
+            checksum?: string | undefined
+            processBehavior?: 'SAVE' | 'BUILD' | undefined
+            locale:
+              | 'de-DE'
+              | 'en-AU'
+              | 'en-GB'
+              | 'en-IN'
+              | 'en-US'
+              | 'es-419'
+              | 'es-ES'
+              | 'es-US'
+              | 'fr-FR'
+              | 'fr-CA'
+              | 'it-IT'
+              | 'ja-JP'
+              | 'ko-KR'
+            childDirected: boolean
+            detectSentiment?: boolean | undefined
+            createVersion?: boolean | undefined
+            tags?: Tag[] | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                intents?: Intent[] | undefined
-                enableModelImprovements?: boolean | undefined
-                nluIntentConfidenceThreshold?: number | undefined
-                clarificationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                abortStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                idleSessionTTLInSeconds?: number | undefined
-                voiceId?: string | undefined
-                checksum?: string | undefined
-                processBehavior?: 'SAVE' | 'BUILD' | undefined
-                locale:
-                  | 'de-DE'
-                  | 'en-AU'
-                  | 'en-GB'
-                  | 'en-IN'
-                  | 'en-US'
-                  | 'es-419'
-                  | 'es-ES'
-                  | 'es-US'
-                  | 'fr-FR'
-                  | 'fr-CA'
-                  | 'it-IT'
-                  | 'ja-JP'
-                  | 'ko-KR'
-                childDirected: boolean
-                detectSentiment?: boolean | undefined
-                createVersion?: boolean | undefined
-                tags?: Tag[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutBotResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/intents/:name/versions/$LATEST': {
-      $put:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: PutIntentResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            description?: string | undefined
+            slots?: Slot[] | undefined
+            sampleUtterances?: Utterance[] | undefined
+            confirmationPrompt?:
+              | {
+                  messages?: {} | undefined
+                  maxAttempts?: {} | undefined
+                  responseCard?: {} | undefined
+                }
+              | undefined
+            rejectionStatement?:
+              | { messages?: {} | undefined; responseCard?: {} | undefined }
+              | undefined
+            followUpPrompt?:
+              | {
+                  prompt?:
+                    | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
+                    | undefined
+                  rejectionStatement?: { messages: {}; responseCard?: {} | undefined } | undefined
+                }
+              | undefined
+            conclusionStatement?:
+              | { messages?: {} | undefined; responseCard?: {} | undefined }
+              | undefined
+            dialogCodeHook?: { uri?: {} | undefined; messageVersion?: {} | undefined } | undefined
+            fulfillmentActivity?:
+              | { type?: {} | undefined; codeHook?: { uri: {}; messageVersion: {} } | undefined }
+              | undefined
+            parentIntentSignature?: string | undefined
+            checksum?: string | undefined
+            createVersion?: boolean | undefined
+            kendraConfiguration?:
+              | {
+                  kendraIndex?: {} | undefined
+                  queryFilterString?: {} | undefined
+                  role?: {} | undefined
+                }
+              | undefined
+            inputContexts?: InputContext[] | undefined
+            outputContexts?: OutputContext[] | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                slots?: Slot[] | undefined
-                sampleUtterances?: Utterance[] | undefined
-                confirmationPrompt?:
-                  | {
-                      messages?: {} | undefined
-                      maxAttempts?: {} | undefined
-                      responseCard?: {} | undefined
-                    }
-                  | undefined
-                rejectionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                followUpPrompt?:
-                  | {
-                      prompt?:
-                        | { messages: {}; maxAttempts: {}; responseCard?: {} | undefined }
-                        | undefined
-                      rejectionStatement?:
-                        | { messages: {}; responseCard?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                conclusionStatement?:
-                  | { messages?: {} | undefined; responseCard?: {} | undefined }
-                  | undefined
-                dialogCodeHook?:
-                  | { uri?: {} | undefined; messageVersion?: {} | undefined }
-                  | undefined
-                fulfillmentActivity?:
-                  | {
-                      type?: {} | undefined
-                      codeHook?: { uri: {}; messageVersion: {} } | undefined
-                    }
-                  | undefined
-                parentIntentSignature?: string | undefined
-                checksum?: string | undefined
-                createVersion?: boolean | undefined
-                kendraConfiguration?:
-                  | {
-                      kendraIndex?: {} | undefined
-                      queryFilterString?: {} | undefined
-                      role?: {} | undefined
-                    }
-                  | undefined
-                inputContexts?: InputContext[] | undefined
-                outputContexts?: OutputContext[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutIntentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/slottypes/:name/versions/$LATEST': {
-      $put:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: PutSlotTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            description?: string | undefined
+            enumerationValues?: EnumerationValue[] | undefined
+            checksum?: string | undefined
+            valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
+            createVersion?: boolean | undefined
+            parentSlotTypeSignature?: string | undefined
+            slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                enumerationValues?: EnumerationValue[] | undefined
-                checksum?: string | undefined
-                valueSelectionStrategy?: 'ORIGINAL_VALUE' | 'TOP_RESOLUTION' | undefined
-                createVersion?: boolean | undefined
-                parentSlotTypeSignature?: string | undefined
-                slotTypeConfigurations?: SlotTypeConfiguration[] | undefined
-              }
-            }
-            output: PreconditionFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutSlotTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/imports/': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                payload: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                mergeStrategy: 'OVERWRITE_LATEST' | 'FAIL_ON_CONFLICT'
-                tags?: Tag[] | undefined
-              }
-            }
-            output: StartImportResponse
-            outputFormat: 'json'
-            status: 201
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                payload: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                mergeStrategy: 'OVERWRITE_LATEST' | 'FAIL_ON_CONFLICT'
-                tags?: Tag[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            payload: string
+            resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
+            mergeStrategy: 'OVERWRITE_LATEST' | 'FAIL_ON_CONFLICT'
+            tags?: Tag[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                payload: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                mergeStrategy: 'OVERWRITE_LATEST' | 'FAIL_ON_CONFLICT'
-                tags?: Tag[] | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                payload: string
-                resourceType: 'BOT' | 'INTENT' | 'SLOT_TYPE'
-                mergeStrategy: 'OVERWRITE_LATEST' | 'FAIL_ON_CONFLICT'
-                tags?: Tag[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: StartImportResponse
+        outputFormat: 'json'
+        status: 201
+      }
     }
   } & {
     '/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 204
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalFailureException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   },
   '/'

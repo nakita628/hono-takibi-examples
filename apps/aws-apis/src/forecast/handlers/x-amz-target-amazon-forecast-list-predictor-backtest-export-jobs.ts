@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonForecastListPredictorBacktestExportJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonForecastListPredictorBacktestExportJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonForecastListPredictorBacktestExportJobsHandler = app.openapi(
-  postXAmzTargetAmazonForecastListPredictorBacktestExportJobsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonForecastListPredictorBacktestExportJobsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonForecastListPredictorBacktestExportJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

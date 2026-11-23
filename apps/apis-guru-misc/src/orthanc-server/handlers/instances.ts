@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInstancesIdAttachmentsNameRoute,
   deleteInstancesIdMetadataNameRoute,
   deleteInstancesIdRoute,
@@ -58,174 +58,332 @@ import {
   putInstancesIdMetadataNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInstancesRouteHandler: RouteHandler<typeof getInstancesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const instancesHandler = app
-  .openapi(getInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstancesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdAnonymizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstancesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstancesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdAttachmentsNameCompressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameCompressedDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameCompressedMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameCompressedSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameIsCompressedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdAttachmentsNameSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdAttachmentsNameUncompressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdAttachmentsNameVerifyMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameImageInt16Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameImageUint16Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameImageUint8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameMatlabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameNumpyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFramePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameRawGzRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdFramesFrameRenderedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdImageInt16Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdImageUint16Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdImageUint8Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdMatlabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstancesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstancesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdModifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdModuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdNumpyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdPatientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancesIdReconstructRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdRenderedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdSimplifiedTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdStudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancesIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInstancesRouteHandler: RouteHandler<typeof postInstancesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstancesIdRouteHandler: RouteHandler<typeof deleteInstancesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdRouteHandler: RouteHandler<typeof getInstancesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdAnonymizeRouteHandler: RouteHandler<
+  typeof postInstancesIdAnonymizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstancesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof deleteInstancesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstancesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof putInstancesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdAttachmentsNameCompressRouteHandler: RouteHandler<
+  typeof postInstancesIdAttachmentsNameCompressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameCompressedDataRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameCompressedDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameCompressedMd5RouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameCompressedMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameCompressedSizeRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameCompressedSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameDataRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameInfoRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameIsCompressedRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameIsCompressedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameMd5RouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdAttachmentsNameSizeRouteHandler: RouteHandler<
+  typeof getInstancesIdAttachmentsNameSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdAttachmentsNameUncompressRouteHandler: RouteHandler<
+  typeof postInstancesIdAttachmentsNameUncompressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdAttachmentsNameVerifyMd5RouteHandler: RouteHandler<
+  typeof postInstancesIdAttachmentsNameVerifyMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdContentRouteHandler: RouteHandler<
+  typeof getInstancesIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdExportRouteHandler: RouteHandler<
+  typeof postInstancesIdExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFileRouteHandler: RouteHandler<typeof getInstancesIdFileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameImageInt16RouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameImageInt16Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameImageUint16RouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameImageUint16Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameImageUint8RouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameImageUint8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameMatlabRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameMatlabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameNumpyRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameNumpyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFramePreviewRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFramePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameRawRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameRawGzRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameRawGzRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdFramesFrameRenderedRouteHandler: RouteHandler<
+  typeof getInstancesIdFramesFrameRenderedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdHeaderRouteHandler: RouteHandler<
+  typeof getInstancesIdHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdImageInt16RouteHandler: RouteHandler<
+  typeof getInstancesIdImageInt16Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdImageUint16RouteHandler: RouteHandler<
+  typeof getInstancesIdImageUint16Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdImageUint8RouteHandler: RouteHandler<
+  typeof getInstancesIdImageUint8Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdMatlabRouteHandler: RouteHandler<
+  typeof getInstancesIdMatlabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdMetadataRouteHandler: RouteHandler<
+  typeof getInstancesIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstancesIdMetadataNameRouteHandler: RouteHandler<
+  typeof deleteInstancesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdMetadataNameRouteHandler: RouteHandler<
+  typeof getInstancesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstancesIdMetadataNameRouteHandler: RouteHandler<
+  typeof putInstancesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdModifyRouteHandler: RouteHandler<
+  typeof postInstancesIdModifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdModuleRouteHandler: RouteHandler<
+  typeof getInstancesIdModuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdNumpyRouteHandler: RouteHandler<
+  typeof getInstancesIdNumpyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdPatientRouteHandler: RouteHandler<
+  typeof getInstancesIdPatientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdPdfRouteHandler: RouteHandler<typeof getInstancesIdPdfRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdPreviewRouteHandler: RouteHandler<
+  typeof getInstancesIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancesIdReconstructRouteHandler: RouteHandler<
+  typeof postInstancesIdReconstructRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdRenderedRouteHandler: RouteHandler<
+  typeof getInstancesIdRenderedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdSeriesRouteHandler: RouteHandler<
+  typeof getInstancesIdSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdSimplifiedTagsRouteHandler: RouteHandler<
+  typeof getInstancesIdSimplifiedTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdStatisticsRouteHandler: RouteHandler<
+  typeof getInstancesIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdStudyRouteHandler: RouteHandler<
+  typeof getInstancesIdStudyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancesIdTagsRouteHandler: RouteHandler<typeof getInstancesIdTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

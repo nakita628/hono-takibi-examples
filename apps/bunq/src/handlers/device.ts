@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDeviceItemIdRoute, getDeviceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDeviceItemIdRoute, getDeviceRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeviceItemIdRouteHandler: RouteHandler<typeof getDeviceItemIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deviceHandler = app
-  .openapi(getDeviceItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDeviceRouteHandler: RouteHandler<typeof getDeviceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

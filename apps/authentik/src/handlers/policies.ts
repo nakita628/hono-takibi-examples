@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePoliciesAllPolicyUuidIndexRoute,
   deletePoliciesBindingsPolicyBindingUuidIndexRoute,
   deletePoliciesDummyPolicyUuidIndexRoute,
@@ -78,234 +78,458 @@ import {
   putPoliciesUniquePasswordPolicyUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPoliciesAllIndexRouteHandler: RouteHandler<
+  typeof getPoliciesAllIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const policiesHandler = app
-  .openapi(getPoliciesAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesAllPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesAllPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesAllPolicyUuidTestIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesAllPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesAllCacheClearIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesAllCacheInfoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesAllTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesBindingsPolicyBindingUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesBindingsPolicyBindingUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesBindingsPolicyBindingUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesBindingsPolicyBindingUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesBindingsPolicyBindingUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesDummyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesDummyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesDummyPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesDummyPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesDummyPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesDummyPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesDummyPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesEventMatcherIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesEventMatcherIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesEventMatcherPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesEventMatcherPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesEventMatcherPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesEventMatcherPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesEventMatcherPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesExpressionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesExpressionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesExpressionPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesExpressionPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesExpressionPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesExpressionPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesExpressionPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesGeoipIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesGeoipIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesGeoipPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesGeoipPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesGeoipPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesGeoipPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesGeoipPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesGeoipIso3166IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesPasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesPasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesPasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesPasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordExpiryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesPasswordExpiryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordExpiryPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesPasswordExpiryPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesPasswordExpiryPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesPasswordExpiryPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesPasswordExpiryPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesReputationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesReputationPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesReputationPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesReputationPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationScoresIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationScoresReputationUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesReputationScoresReputationUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesReputationScoresReputationUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesUniquePasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoliciesUniquePasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesUniquePasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPoliciesUniquePasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoliciesUniquePasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoliciesUniquePasswordPolicyUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoliciesUniquePasswordPolicyUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPoliciesAllPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesAllPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesAllPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesAllPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesAllPolicyUuidTestIndexRouteHandler: RouteHandler<
+  typeof postPoliciesAllPolicyUuidTestIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesAllPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesAllPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesAllCacheClearIndexRouteHandler: RouteHandler<
+  typeof postPoliciesAllCacheClearIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesAllCacheInfoIndexRouteHandler: RouteHandler<
+  typeof getPoliciesAllCacheInfoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesAllTypesIndexRouteHandler: RouteHandler<
+  typeof getPoliciesAllTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesBindingsIndexRouteHandler: RouteHandler<
+  typeof getPoliciesBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesBindingsIndexRouteHandler: RouteHandler<
+  typeof postPoliciesBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesBindingsPolicyBindingUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesBindingsPolicyBindingUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesBindingsPolicyBindingUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesBindingsPolicyBindingUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesBindingsPolicyBindingUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesBindingsPolicyBindingUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesBindingsPolicyBindingUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesBindingsPolicyBindingUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesBindingsPolicyBindingUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesBindingsPolicyBindingUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesDummyIndexRouteHandler: RouteHandler<
+  typeof getPoliciesDummyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesDummyIndexRouteHandler: RouteHandler<
+  typeof postPoliciesDummyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesDummyPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesDummyPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesDummyPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesDummyPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesDummyPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesDummyPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesDummyPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesDummyPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesDummyPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesDummyPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesEventMatcherIndexRouteHandler: RouteHandler<
+  typeof getPoliciesEventMatcherIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesEventMatcherIndexRouteHandler: RouteHandler<
+  typeof postPoliciesEventMatcherIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesEventMatcherPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesEventMatcherPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesEventMatcherPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesEventMatcherPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesEventMatcherPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesEventMatcherPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesEventMatcherPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesEventMatcherPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesEventMatcherPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesEventMatcherPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesExpressionIndexRouteHandler: RouteHandler<
+  typeof getPoliciesExpressionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesExpressionIndexRouteHandler: RouteHandler<
+  typeof postPoliciesExpressionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesExpressionPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesExpressionPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesExpressionPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesExpressionPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesExpressionPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesExpressionPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesExpressionPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesExpressionPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesExpressionPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesExpressionPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesGeoipIndexRouteHandler: RouteHandler<
+  typeof getPoliciesGeoipIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesGeoipIndexRouteHandler: RouteHandler<
+  typeof postPoliciesGeoipIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesGeoipPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesGeoipPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesGeoipPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesGeoipPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesGeoipPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesGeoipPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesGeoipPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesGeoipPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesGeoipPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesGeoipPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesGeoipIso3166IndexRouteHandler: RouteHandler<
+  typeof getPoliciesGeoipIso3166IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesPasswordIndexRouteHandler: RouteHandler<
+  typeof postPoliciesPasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesPasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesPasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesPasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesPasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesPasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesPasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordExpiryIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordExpiryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesPasswordExpiryIndexRouteHandler: RouteHandler<
+  typeof postPoliciesPasswordExpiryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordExpiryPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordExpiryPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesPasswordExpiryPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesPasswordExpiryPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesPasswordExpiryPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesPasswordExpiryPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesPasswordExpiryPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesPasswordExpiryPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesPasswordExpiryPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesPasswordExpiryPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesReputationIndexRouteHandler: RouteHandler<
+  typeof postPoliciesReputationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesReputationPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesReputationPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesReputationPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesReputationPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesReputationPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesReputationPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationScoresIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationScoresIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationScoresReputationUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationScoresReputationUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesReputationScoresReputationUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesReputationScoresReputationUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesReputationScoresReputationUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesReputationScoresReputationUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesUniquePasswordIndexRouteHandler: RouteHandler<
+  typeof getPoliciesUniquePasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPoliciesUniquePasswordIndexRouteHandler: RouteHandler<
+  typeof postPoliciesUniquePasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesUniquePasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof getPoliciesUniquePasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPoliciesUniquePasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof putPoliciesUniquePasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoliciesUniquePasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof patchPoliciesUniquePasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoliciesUniquePasswordPolicyUuidIndexRouteHandler: RouteHandler<
+  typeof deletePoliciesUniquePasswordPolicyUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoliciesUniquePasswordPolicyUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getPoliciesUniquePasswordPolicyUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

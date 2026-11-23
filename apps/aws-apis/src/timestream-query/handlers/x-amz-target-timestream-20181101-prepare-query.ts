@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTimestream20181101PrepareQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTimestream20181101PrepareQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTimestream20181101PrepareQueryHandler = app.openapi(
-  postXAmzTargetTimestream20181101PrepareQueryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTimestream20181101PrepareQueryRouteHandler: RouteHandler<
+  typeof postXAmzTargetTimestream20181101PrepareQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

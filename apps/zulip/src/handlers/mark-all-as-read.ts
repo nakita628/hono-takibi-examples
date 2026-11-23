@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMarkAllAsReadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMarkAllAsReadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const markAllAsReadHandler = app.openapi(postMarkAllAsReadRoute, (c) => {
+export const postMarkAllAsReadRouteHandler: RouteHandler<typeof postMarkAllAsReadRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

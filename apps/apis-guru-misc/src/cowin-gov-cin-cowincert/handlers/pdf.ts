@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPdfCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPdfCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pdfHandler = app.openapi(postPdfCertificateRoute, (c) => {
+export const postPdfCertificateRouteHandler: RouteHandler<typeof postPdfCertificateRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getViberServiceMsgExternalIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getViberServiceMsgExternalIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const viberServiceMsgHandler = app.openapi(getViberServiceMsgExternalIdRoute, (c) => {
+export const getViberServiceMsgExternalIdRouteHandler: RouteHandler<
+  typeof getViberServiceMsgExternalIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAccessRequestsDismissRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAccessRequestsDismissRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const accessRequestsDismissHandler = app.openapi(postAccessRequestsDismissRoute, (c) => {
+export const postAccessRequestsDismissRouteHandler: RouteHandler<
+  typeof postAccessRequestsDismissRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

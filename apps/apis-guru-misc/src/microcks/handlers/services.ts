@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteServicesIdRoute,
   getServicesCountRoute,
   getServicesIdRoute,
@@ -10,30 +10,46 @@ import {
   putServicesIdOperationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServicesRouteHandler: RouteHandler<typeof getServicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const servicesHandler = app
-  .openapi(getServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesIdOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getServicesCountRouteHandler: RouteHandler<typeof getServicesCountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesLabelsRouteHandler: RouteHandler<typeof getServicesLabelsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesSearchRouteHandler: RouteHandler<typeof getServicesSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesIdRouteHandler: RouteHandler<typeof deleteServicesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesIdRouteHandler: RouteHandler<typeof getServicesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesIdMetadataRouteHandler: RouteHandler<
+  typeof putServicesIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesIdOperationRouteHandler: RouteHandler<
+  typeof putServicesIdOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

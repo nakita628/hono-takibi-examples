@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFiltersCreateRoute, getFiltersFiltersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFiltersCreateRoute, getFiltersFiltersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFiltersCreateRouteHandler: RouteHandler<typeof getFiltersCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const filtersHandler = app
-  .openapi(getFiltersCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFiltersFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFiltersFiltersRouteHandler: RouteHandler<typeof getFiltersFiltersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

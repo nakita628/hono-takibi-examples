@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/lex-models/2017-04-19/openapi.yaml',
   output: './src/lex-models/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lex-models/types.ts' },
   client: { output: './src/lex-models/client.ts', baseUrl: '/' },
   rpc: { output: './src/lex-models/rpc.ts', parseResponse: true },

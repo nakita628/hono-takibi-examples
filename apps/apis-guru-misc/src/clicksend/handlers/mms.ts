@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMmsHistoryExportFilenameFilenameRoute,
   getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRoute,
   getMmsReceiptsMessageIdRoute,
@@ -11,33 +11,48 @@ import {
   putMmsReceiptsReadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putMmsCancelAllRouteHandler: RouteHandler<typeof putMmsCancelAllRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mmsHandler = app
-  .openapi(putMmsCancelAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMmsHistoryExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmsPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMmsReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMmsReceiptsReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMmsReceiptsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmsSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMmsMessageIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMmsHistoryExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getMmsHistoryExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRouteHandler: RouteHandler<
+  typeof getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMmsPriceRouteHandler: RouteHandler<typeof postMmsPriceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMmsReceiptsRouteHandler: RouteHandler<typeof getMmsReceiptsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMmsReceiptsReadRouteHandler: RouteHandler<typeof putMmsReceiptsReadRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMmsReceiptsMessageIdRouteHandler: RouteHandler<
+  typeof getMmsReceiptsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMmsSendRouteHandler: RouteHandler<typeof postMmsSendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMmsMessageIdCancelRouteHandler: RouteHandler<
+  typeof putMmsMessageIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSchemaResponsesSchemaResponseIdRoute,
   getSchemaResponsesIndexRoute,
   getSchemaResponsesSchemaResponseIdActionsIndexRoute,
@@ -12,36 +12,62 @@ import {
   postSchemaResponsesSchemaResponseIdActionsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSchemaResponsesIndexRouteHandler: RouteHandler<
+  typeof getSchemaResponsesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schemaResponsesHandler = app
-  .openapi(getSchemaResponsesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSchemaResponsesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSchemaResponsesSchemaResponseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemaResponsesSchemaResponseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSchemaResponsesSchemaResponseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemaResponsesSchemaResponseIdActionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSchemaResponsesSchemaResponseIdActionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemaResponsesSchemaResponseIdActionsSchemaResponseActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemaResponsesSchemaResponseIdSchemaBlocksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemaResponsesSchemaResponseIdSchemaBlocksSchemaResponseBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSchemaResponsesIndexRouteHandler: RouteHandler<
+  typeof postSchemaResponsesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSchemaResponsesSchemaResponseIdRouteHandler: RouteHandler<
+  typeof deleteSchemaResponsesSchemaResponseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemaResponsesSchemaResponseIdRouteHandler: RouteHandler<
+  typeof getSchemaResponsesSchemaResponseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSchemaResponsesSchemaResponseIdRouteHandler: RouteHandler<
+  typeof patchSchemaResponsesSchemaResponseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemaResponsesSchemaResponseIdActionsIndexRouteHandler: RouteHandler<
+  typeof getSchemaResponsesSchemaResponseIdActionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSchemaResponsesSchemaResponseIdActionsIndexRouteHandler: RouteHandler<
+  typeof postSchemaResponsesSchemaResponseIdActionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemaResponsesSchemaResponseIdActionsSchemaResponseActionIdRouteHandler: RouteHandler<
+  typeof getSchemaResponsesSchemaResponseIdActionsSchemaResponseActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemaResponsesSchemaResponseIdSchemaBlocksIndexRouteHandler: RouteHandler<
+  typeof getSchemaResponsesSchemaResponseIdSchemaBlocksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemaResponsesSchemaResponseIdSchemaBlocksSchemaResponseBlockIdRouteHandler: RouteHandler<
+  typeof getSchemaResponsesSchemaResponseIdSchemaBlocksSchemaResponseBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

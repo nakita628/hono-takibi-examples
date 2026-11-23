@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810UpdateTimeToLiveHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810UpdateTimeToLiveRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810UpdateTimeToLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

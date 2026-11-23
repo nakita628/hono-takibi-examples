@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServicePutRepositoryCatalogDataHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/globalpageload/1.0.0/openapi.yaml',
   output: './src/globalpageload/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/globalpageload/types.ts' },
   client: { output: './src/globalpageload/client.ts', baseUrl: '/' },
   rpc: { output: './src/globalpageload/rpc.ts', parseResponse: true },

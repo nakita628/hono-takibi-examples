@@ -391,15 +391,15 @@ export function useResourcesCampaignsIdMediaJson<
 
 export function getResourcesCampaignsIdSyndicateFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/campaigns/:id/syndicate.:format', toValue(args)] as const
+  return ['resources', '/resources/campaigns/:id/syndicate.{format}', toValue(args)] as const
 }
 
 export function getResourcesCampaignsIdSyndicateFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -407,7 +407,7 @@ export function getResourcesCampaignsIdSyndicateFormatQueryOptions(
     queryKey: computed(() => getResourcesCampaignsIdSyndicateFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.campaigns[':id']['syndicate.:format'].$get(toValue(args), {
+        client.resources.campaigns[':id']['syndicate.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -420,14 +420,16 @@ export function useResourcesCampaignsIdSyndicateFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -438,7 +440,7 @@ export function useResourcesCampaignsIdSyndicateFormat<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']
+                    (typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']
                   >
                 >
               >
@@ -451,7 +453,7 @@ export function useResourcesCampaignsIdSyndicateFormat<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']
+                    (typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']
                   >
                 >
               >
@@ -473,7 +475,7 @@ export function useResourcesCampaignsIdSyndicateFormat<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+            ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
           >
         >
       >
@@ -487,7 +489,7 @@ export function useResourcesCampaignsIdSyndicateFormat<
       queryKey: computed(() => getResourcesCampaignsIdSyndicateFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.campaigns[':id']['syndicate.:format'].$get(toValue(args), {
+          client.resources.campaigns[':id']['syndicate.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -872,15 +874,15 @@ export function useResourcesMediaFeaturedJson<
 
 export function getResourcesMediaMostPopularMediaFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/media/mostPopularMedia.:format', toValue(args)] as const
+  return ['resources', '/resources/media/mostPopularMedia.{format}', toValue(args)] as const
 }
 
 export function getResourcesMediaMostPopularMediaFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -888,7 +890,7 @@ export function getResourcesMediaMostPopularMediaFormatQueryOptions(
     queryKey: computed(() => getResourcesMediaMostPopularMediaFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.media['mostPopularMedia.:format'].$get(toValue(args), {
+        client.resources.media['mostPopularMedia.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -901,14 +903,14 @@ export function useResourcesMediaMostPopularMediaFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -918,7 +920,7 @@ export function useResourcesMediaMostPopularMediaFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>
+                  ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
                 >
               >
             >
@@ -929,7 +931,7 @@ export function useResourcesMediaMostPopularMediaFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>
+                  ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
                 >
               >
             >
@@ -949,7 +951,7 @@ export function useResourcesMediaMostPopularMediaFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>>
         >
       >
     >,
@@ -962,7 +964,7 @@ export function useResourcesMediaMostPopularMediaFormat<
       queryKey: computed(() => getResourcesMediaMostPopularMediaFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.media['mostPopularMedia.:format'].$get(toValue(args), {
+          client.resources.media['mostPopularMedia.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1462,15 +1464,15 @@ export function useResourcesMediaIdPreviewJpg<
 
 export function getResourcesMediaIdRelatedMediaFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/media/:id/relatedMedia.:format', toValue(args)] as const
+  return ['resources', '/resources/media/:id/relatedMedia.{format}', toValue(args)] as const
 }
 
 export function getResourcesMediaIdRelatedMediaFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1478,7 +1480,7 @@ export function getResourcesMediaIdRelatedMediaFormatQueryOptions(
     queryKey: computed(() => getResourcesMediaIdRelatedMediaFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.media[':id']['relatedMedia.:format'].$get(toValue(args), {
+        client.resources.media[':id']['relatedMedia.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1491,14 +1493,14 @@ export function useResourcesMediaIdRelatedMediaFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1508,7 +1510,9 @@ export function useResourcesMediaIdRelatedMediaFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+                  ReturnType<
+                    (typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']
+                  >
                 >
               >
             >
@@ -1519,7 +1523,9 @@ export function useResourcesMediaIdRelatedMediaFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+                  ReturnType<
+                    (typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']
+                  >
                 >
               >
             >
@@ -1540,7 +1546,7 @@ export function useResourcesMediaIdRelatedMediaFormat<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+            ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
           >
         >
       >
@@ -1554,7 +1560,7 @@ export function useResourcesMediaIdRelatedMediaFormat<
       queryKey: computed(() => getResourcesMediaIdRelatedMediaFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.media[':id']['relatedMedia.:format'].$get(toValue(args), {
+          client.resources.media[':id']['relatedMedia.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1567,15 +1573,15 @@ export function useResourcesMediaIdRelatedMediaFormat<
 
 export function getResourcesMediaIdSyndicateFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/media/:id/syndicate.:format', toValue(args)] as const
+  return ['resources', '/resources/media/:id/syndicate.{format}', toValue(args)] as const
 }
 
 export function getResourcesMediaIdSyndicateFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1583,7 +1589,7 @@ export function getResourcesMediaIdSyndicateFormatQueryOptions(
     queryKey: computed(() => getResourcesMediaIdSyndicateFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.media[':id']['syndicate.:format'].$get(toValue(args), {
+        client.resources.media[':id']['syndicate.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1596,14 +1602,14 @@ export function useResourcesMediaIdSyndicateFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1613,7 +1619,7 @@ export function useResourcesMediaIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -1624,7 +1630,7 @@ export function useResourcesMediaIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -1644,7 +1650,7 @@ export function useResourcesMediaIdSyndicateFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>>
         >
       >
     >,
@@ -1657,7 +1663,7 @@ export function useResourcesMediaIdSyndicateFormat<
       queryKey: computed(() => getResourcesMediaIdSyndicateFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.media[':id']['syndicate.:format'].$get(toValue(args), {
+          client.resources.media[':id']['syndicate.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1873,20 +1879,24 @@ export function useResourcesMediaIdYoutubeMetaDataJson<
 }
 
 export function getResourcesMediaTypesFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>
+  >,
 ) {
-  return ['resources', '/resources/mediaTypes.:format', toValue(args)] as const
+  return ['resources', '/resources/mediaTypes.{format}', toValue(args)] as const
 }
 
 export function getResourcesMediaTypesFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>
+  >,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getResourcesMediaTypesFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources['mediaTypes.:format'].$get(toValue(args), {
+        client.resources['mediaTypes.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1899,13 +1909,15 @@ export function useResourcesMediaTypesFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>
+  >,
   options?: {
     query?: Omit<
       Extract<
@@ -1913,7 +1925,7 @@ export function useResourcesMediaTypesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
               >
             >
           >,
@@ -1922,7 +1934,7 @@ export function useResourcesMediaTypesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
               >
             >
           >,
@@ -1941,7 +1953,7 @@ export function useResourcesMediaTypesFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
         >
       >
     >,
@@ -1954,7 +1966,7 @@ export function useResourcesMediaTypesFormat<
       queryKey: computed(() => getResourcesMediaTypesFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources['mediaTypes.:format'].$get(toValue(args), {
+          client.resources['mediaTypes.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2149,15 +2161,15 @@ export function useResourcesSourcesIdJson<
 
 export function getResourcesSourcesIdSyndicateFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/sources/:id/syndicate.:format', toValue(args)] as const
+  return ['resources', '/resources/sources/:id/syndicate.{format}', toValue(args)] as const
 }
 
 export function getResourcesSourcesIdSyndicateFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2165,7 +2177,7 @@ export function getResourcesSourcesIdSyndicateFormatQueryOptions(
     queryKey: computed(() => getResourcesSourcesIdSyndicateFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.sources[':id']['syndicate.:format'].$get(toValue(args), {
+        client.resources.sources[':id']['syndicate.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2178,14 +2190,14 @@ export function useResourcesSourcesIdSyndicateFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2195,7 +2207,7 @@ export function useResourcesSourcesIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -2206,7 +2218,7 @@ export function useResourcesSourcesIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -2226,7 +2238,9 @@ export function useResourcesSourcesIdSyndicateFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>>
+          Awaited<
+            ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
+          >
         >
       >
     >,
@@ -2239,7 +2253,7 @@ export function useResourcesSourcesIdSyndicateFormat<
       queryKey: computed(() => getResourcesSourcesIdSyndicateFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.sources[':id']['syndicate.:format'].$get(toValue(args), {
+          client.resources.sources[':id']['syndicate.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2251,20 +2265,20 @@ export function useResourcesSourcesIdSyndicateFormat<
 }
 
 export function getResourcesTagsFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.{format}']['$get']>>,
 ) {
-  return ['resources', '/resources/tags.:format', toValue(args)] as const
+  return ['resources', '/resources/tags.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.{format}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getResourcesTagsFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources['tags.:format'].$get(toValue(args), {
+        client.resources['tags.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2276,12 +2290,12 @@ export function getResourcesTagsFormatQueryOptions(
 export function useResourcesTagsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources)['tags.{format}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -2289,7 +2303,7 @@ export function useResourcesTagsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
               >
             >
           >,
@@ -2298,7 +2312,7 @@ export function useResourcesTagsFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
               >
             >
           >,
@@ -2316,7 +2330,9 @@ export function useResourcesTagsFormat<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>>
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
+        >
       >
     >,
     TError,
@@ -2328,7 +2344,7 @@ export function useResourcesTagsFormat<
       queryKey: computed(() => getResourcesTagsFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources['tags.:format'].$get(toValue(args), {
+          client.resources['tags.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2341,15 +2357,15 @@ export function useResourcesTagsFormat<
 
 export function getResourcesTagsTagLanguagesFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/tags/tagLanguages.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/tagLanguages.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsTagLanguagesFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2357,7 +2373,7 @@ export function getResourcesTagsTagLanguagesFormatQueryOptions(
     queryKey: computed(() => getResourcesTagsTagLanguagesFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags['tagLanguages.:format'].$get(toValue(args), {
+        client.resources.tags['tagLanguages.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2370,14 +2386,14 @@ export function useResourcesTagsTagLanguagesFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2386,7 +2402,7 @@ export function useResourcesTagsTagLanguagesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
               >
             >
           >,
@@ -2395,7 +2411,7 @@ export function useResourcesTagsTagLanguagesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
               >
             >
           >,
@@ -2414,7 +2430,7 @@ export function useResourcesTagsTagLanguagesFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
         >
       >
     >,
@@ -2427,7 +2443,7 @@ export function useResourcesTagsTagLanguagesFormat<
       queryKey: computed(() => getResourcesTagsTagLanguagesFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags['tagLanguages.:format'].$get(toValue(args), {
+          client.resources.tags['tagLanguages.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2440,15 +2456,15 @@ export function useResourcesTagsTagLanguagesFormat<
 
 export function getResourcesTagsTagTypesFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/tags/tagTypes.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/tagTypes.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsTagTypesFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2456,7 +2472,7 @@ export function getResourcesTagsTagTypesFormatQueryOptions(
     queryKey: computed(() => getResourcesTagsTagTypesFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags['tagTypes.:format'].$get(toValue(args), {
+        client.resources.tags['tagTypes.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2469,14 +2485,14 @@ export function useResourcesTagsTagTypesFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2485,7 +2501,7 @@ export function useResourcesTagsTagTypesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
               >
             >
           >,
@@ -2494,7 +2510,7 @@ export function useResourcesTagsTagTypesFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
               >
             >
           >,
@@ -2513,7 +2529,7 @@ export function useResourcesTagsTagTypesFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
         >
       >
     >,
@@ -2526,7 +2542,7 @@ export function useResourcesTagsTagTypesFormat<
       queryKey: computed(() => getResourcesTagsTagTypesFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags['tagTypes.:format'].$get(toValue(args), {
+          client.resources.tags['tagTypes.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2538,20 +2554,20 @@ export function useResourcesTagsTagTypesFormat<
 }
 
 export function getResourcesTagsIdFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>>,
 ) {
-  return ['resources', '/resources/tags/:id.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/:id.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsIdFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getResourcesTagsIdFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags[':id.:format'].$get(toValue(args), {
+        client.resources.tags[':id.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2564,13 +2580,13 @@ export function useResourcesTagsIdFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -2578,7 +2594,7 @@ export function useResourcesTagsIdFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
               >
             >
           >,
@@ -2587,7 +2603,7 @@ export function useResourcesTagsIdFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
               >
             >
           >,
@@ -2606,7 +2622,7 @@ export function useResourcesTagsIdFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
         >
       >
     >,
@@ -2619,7 +2635,7 @@ export function useResourcesTagsIdFormat<
       queryKey: computed(() => getResourcesTagsIdFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags[':id.:format'].$get(toValue(args), {
+          client.resources.tags[':id.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2632,15 +2648,15 @@ export function useResourcesTagsIdFormat<
 
 export function getResourcesTagsIdMediaFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/tags/:id/media.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/:id/media.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsIdMediaFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2648,7 +2664,7 @@ export function getResourcesTagsIdMediaFormatQueryOptions(
     queryKey: computed(() => getResourcesTagsIdMediaFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags[':id']['media.:format'].$get(toValue(args), {
+        client.resources.tags[':id']['media.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2661,14 +2677,14 @@ export function useResourcesTagsIdMediaFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2677,7 +2693,7 @@ export function useResourcesTagsIdMediaFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
               >
             >
           >,
@@ -2686,7 +2702,7 @@ export function useResourcesTagsIdMediaFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+                Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
               >
             >
           >,
@@ -2705,7 +2721,7 @@ export function useResourcesTagsIdMediaFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
         >
       >
     >,
@@ -2718,7 +2734,7 @@ export function useResourcesTagsIdMediaFormat<
       queryKey: computed(() => getResourcesTagsIdMediaFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags[':id']['media.:format'].$get(toValue(args), {
+          client.resources.tags[':id']['media.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2731,15 +2747,15 @@ export function useResourcesTagsIdMediaFormat<
 
 export function getResourcesTagsIdRelatedFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/tags/:id/related.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/:id/related.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsIdRelatedFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2747,7 +2763,7 @@ export function getResourcesTagsIdRelatedFormatQueryOptions(
     queryKey: computed(() => getResourcesTagsIdRelatedFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags[':id']['related.:format'].$get(toValue(args), {
+        client.resources.tags[':id']['related.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2760,14 +2776,14 @@ export function useResourcesTagsIdRelatedFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2777,7 +2793,7 @@ export function useResourcesTagsIdRelatedFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>
+                  ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>
                 >
               >
             >
@@ -2788,7 +2804,7 @@ export function useResourcesTagsIdRelatedFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>
+                  ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>
                 >
               >
             >
@@ -2808,7 +2824,7 @@ export function useResourcesTagsIdRelatedFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
         >
       >
     >,
@@ -2821,7 +2837,7 @@ export function useResourcesTagsIdRelatedFormat<
       queryKey: computed(() => getResourcesTagsIdRelatedFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags[':id']['related.:format'].$get(toValue(args), {
+          client.resources.tags[':id']['related.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2834,15 +2850,15 @@ export function useResourcesTagsIdRelatedFormat<
 
 export function getResourcesTagsIdSyndicateFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>
   >,
 ) {
-  return ['resources', '/resources/tags/:id/syndicate.:format', toValue(args)] as const
+  return ['resources', '/resources/tags/:id/syndicate.{format}', toValue(args)] as const
 }
 
 export function getResourcesTagsIdSyndicateFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2850,7 +2866,7 @@ export function getResourcesTagsIdSyndicateFormatQueryOptions(
     queryKey: computed(() => getResourcesTagsIdSyndicateFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.resources.tags[':id']['syndicate.:format'].$get(toValue(args), {
+        client.resources.tags[':id']['syndicate.{format}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2863,14 +2879,14 @@ export function useResourcesTagsIdSyndicateFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>
+    InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2880,7 +2896,7 @@ export function useResourcesTagsIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -2891,7 +2907,7 @@ export function useResourcesTagsIdSyndicateFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>
+                  ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>
                 >
               >
             >
@@ -2911,7 +2927,7 @@ export function useResourcesTagsIdSyndicateFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
         >
       >
     >,
@@ -2924,7 +2940,7 @@ export function useResourcesTagsIdSyndicateFormat<
       queryKey: computed(() => getResourcesTagsIdSyndicateFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.resources.tags[':id']['syndicate.:format'].$get(toValue(args), {
+          client.resources.tags[':id']['syndicate.{format}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/impala.travel/hotels/1.003/openapi.yaml',
   output: './src/impala-travel-hotels/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/impala-travel-hotels/types.ts' },
   client: { output: './src/impala-travel-hotels/client.ts', baseUrl: '/' },
   rpc: { output: './src/impala-travel-hotels/rpc.ts', parseResponse: true },

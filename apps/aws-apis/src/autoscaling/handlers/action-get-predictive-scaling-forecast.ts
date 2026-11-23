@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetPredictiveScalingForecastRoute,
   postActionGetPredictiveScalingForecastRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetPredictiveScalingForecastRouteHandler: RouteHandler<
+  typeof getActionGetPredictiveScalingForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetPredictiveScalingForecastHandler = app
-  .openapi(getActionGetPredictiveScalingForecastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetPredictiveScalingForecastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetPredictiveScalingForecastRouteHandler: RouteHandler<
+  typeof postActionGetPredictiveScalingForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

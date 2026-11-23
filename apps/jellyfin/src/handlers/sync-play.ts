@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSyncPlayIdRoute,
   getSyncPlayListRoute,
   postSyncPlayBufferingRoute,
@@ -24,72 +24,128 @@ import {
   postSyncPlayUnpauseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSyncPlayIdRouteHandler: RouteHandler<typeof getSyncPlayIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const syncPlayHandler = app
-  .openapi(getSyncPlayIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayBufferingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayLeaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncPlayListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayMovePlaylistItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayNextItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayPreviousItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayReadyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayRemoveFromPlaylistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySetIgnoreWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySetNewQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySetPlaylistItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySetRepeatModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlaySetShuffleModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncPlayUnpauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSyncPlayBufferingRouteHandler: RouteHandler<
+  typeof postSyncPlayBufferingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayJoinRouteHandler: RouteHandler<typeof postSyncPlayJoinRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayLeaveRouteHandler: RouteHandler<typeof postSyncPlayLeaveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSyncPlayListRouteHandler: RouteHandler<typeof getSyncPlayListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayMovePlaylistItemRouteHandler: RouteHandler<
+  typeof postSyncPlayMovePlaylistItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayNewRouteHandler: RouteHandler<typeof postSyncPlayNewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayNextItemRouteHandler: RouteHandler<
+  typeof postSyncPlayNextItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayPauseRouteHandler: RouteHandler<typeof postSyncPlayPauseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayPingRouteHandler: RouteHandler<typeof postSyncPlayPingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayPreviousItemRouteHandler: RouteHandler<
+  typeof postSyncPlayPreviousItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayQueueRouteHandler: RouteHandler<typeof postSyncPlayQueueRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayReadyRouteHandler: RouteHandler<typeof postSyncPlayReadyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayRemoveFromPlaylistRouteHandler: RouteHandler<
+  typeof postSyncPlayRemoveFromPlaylistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySeekRouteHandler: RouteHandler<typeof postSyncPlaySeekRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySetIgnoreWaitRouteHandler: RouteHandler<
+  typeof postSyncPlaySetIgnoreWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySetNewQueueRouteHandler: RouteHandler<
+  typeof postSyncPlaySetNewQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySetPlaylistItemRouteHandler: RouteHandler<
+  typeof postSyncPlaySetPlaylistItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySetRepeatModeRouteHandler: RouteHandler<
+  typeof postSyncPlaySetRepeatModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlaySetShuffleModeRouteHandler: RouteHandler<
+  typeof postSyncPlaySetShuffleModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayStopRouteHandler: RouteHandler<typeof postSyncPlayStopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncPlayUnpauseRouteHandler: RouteHandler<
+  typeof postSyncPlayUnpauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

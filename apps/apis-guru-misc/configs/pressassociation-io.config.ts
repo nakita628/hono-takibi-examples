@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pressassociation.io/2.0/openapi.yaml',
   output: './src/pressassociation-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pressassociation-io/types.ts' },
   client: { output: './src/pressassociation-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/pressassociation-io/rpc.ts', parseResponse: true },

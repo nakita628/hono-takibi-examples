@@ -129,6 +129,6 @@ export const deleteAppinstalls202609ExternalInstallRoute = createRoute({
   description:
     "Use this endpoint to uninstall your app from a customer's HubSpot account. If successful, this endpoint will return a 204 and the customer will receive an email notification that the developer has uninstall the app from their account.",
   operationId: 'delete-/appinstalls/2026-09/external-install',
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['oauth'] }],
 })

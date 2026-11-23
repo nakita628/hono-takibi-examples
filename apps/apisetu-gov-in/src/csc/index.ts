@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { skcerHandler } from './handlers'
+import { postSkcerCertificateRoute } from './routes'
+import { postSkcerCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', skcerHandler)
+export const api = app.openapi(postSkcerCertificateRoute, postSkcerCertificateRouteHandler)
 
 export default app

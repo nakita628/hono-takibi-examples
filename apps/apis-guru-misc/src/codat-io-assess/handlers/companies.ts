@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCompaniesCompanyIdReportsEnhancedBalanceSheetAccountsRoute,
   getCompaniesCompanyIdReportsEnhancedCashFlowTransactionsRoute,
   getCompaniesCompanyIdReportsEnhancedInvoicesRoute,
   getCompaniesCompanyIdReportsEnhancedProfitAndLossAccountsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCompaniesCompanyIdReportsEnhancedBalanceSheetAccountsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdReportsEnhancedBalanceSheetAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const companiesHandler = app
-  .openapi(getCompaniesCompanyIdReportsEnhancedBalanceSheetAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdReportsEnhancedCashFlowTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdReportsEnhancedInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdReportsEnhancedProfitAndLossAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCompaniesCompanyIdReportsEnhancedCashFlowTransactionsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdReportsEnhancedCashFlowTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdReportsEnhancedInvoicesRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdReportsEnhancedInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdReportsEnhancedProfitAndLossAccountsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdReportsEnhancedProfitAndLossAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

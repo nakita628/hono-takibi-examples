@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDirectivesDirectiveIdRoute,
   getDirectivesDirectiveIdRoute,
   getDirectivesRoute,
@@ -8,24 +8,34 @@ import {
   putDirectivesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDirectivesRouteHandler: RouteHandler<typeof getDirectivesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const directivesHandler = app
-  .openapi(getDirectivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDirectivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDirectivesDirectiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDirectivesDirectiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDirectivesDirectiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDirectivesDirectiveIdCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDirectivesRouteHandler: RouteHandler<typeof putDirectivesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDirectivesDirectiveIdRouteHandler: RouteHandler<
+  typeof deleteDirectivesDirectiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDirectivesDirectiveIdRouteHandler: RouteHandler<
+  typeof getDirectivesDirectiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDirectivesDirectiveIdRouteHandler: RouteHandler<
+  typeof postDirectivesDirectiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDirectivesDirectiveIdCheckRouteHandler: RouteHandler<
+  typeof postDirectivesDirectiveIdCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

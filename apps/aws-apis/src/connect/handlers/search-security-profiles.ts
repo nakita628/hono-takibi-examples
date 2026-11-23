@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSearchSecurityProfilesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSearchSecurityProfilesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const searchSecurityProfilesHandler = app.openapi(postSearchSecurityProfilesRoute, (c) => {
+export const postSearchSecurityProfilesRouteHandler: RouteHandler<
+  typeof postSearchSecurityProfilesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

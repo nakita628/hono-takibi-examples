@@ -3717,12 +3717,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cms/blog-settings/2026-09/settings/multi-language/set-new-lang-primary': {
-      $put: {
-        input: { json: SetNewLanguagePrimaryRequestVNext }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { json: SetNewLanguagePrimaryRequestVNext }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: SetNewLanguagePrimaryRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/blog-settings/2026-09/settings/multi-language/update-languages': {

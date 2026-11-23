@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRoute,
   getApiCheckoutPubOrderFormOrderFormIdInstallmentsRoute,
   getApiCheckoutPubOrderFormOrderFormIdRoute,
@@ -33,99 +33,188 @@ import {
   putApiCheckoutPubOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiCheckoutPubGatewayCallbackOrderGroupRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubGatewayCallbackOrderGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiCheckoutPubGatewayCallbackOrderGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubOrderFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubOrderFormOrderFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientPreferencesDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientProfileDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsMarketingDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsMerchantContextDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsPaymentDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdAttachmentsShippingDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubOrderFormOrderFormIdInstallmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdItemsRemoveAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCheckoutPubOrderFormOrderFormIdItemsItemIndexPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiCheckoutPubOrderFormOrderFormIdProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormOrderFormIdTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPubOrderFormsSimulationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCheckoutPubOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubPickupPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubPostalCodeCountryCodePostalCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPubRegionsRegionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPvtConfigurationOrderFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPvtConfigurationOrderFormRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCheckoutPvtConfigurationWindowToChangeSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCheckoutPvtConfigurationWindowToChangeSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiCheckoutPubOrderFormRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubOrderFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubOrderFormOrderFormIdRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubOrderFormOrderFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientPreferencesDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientPreferencesDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientProfileDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientProfileDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsMarketingDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsMarketingDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsMerchantContextDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsMerchantContextDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsPaymentDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsPaymentDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsShippingDataRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdAttachmentsShippingDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdCouponsRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdCouponsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdRouteHandler: RouteHandler<
+  typeof putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRouteHandler: RouteHandler<
+  typeof deleteApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRouteHandler: RouteHandler<
+  typeof putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubOrderFormOrderFormIdInstallmentsRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubOrderFormOrderFormIdInstallmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdItemsRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdItemsRemoveAllRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdItemsRemoveAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCheckoutPubOrderFormOrderFormIdItemsItemIndexPriceRouteHandler: RouteHandler<
+  typeof putApiCheckoutPubOrderFormOrderFormIdItemsItemIndexPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiCheckoutPubOrderFormOrderFormIdProfileRouteHandler: RouteHandler<
+  typeof patchApiCheckoutPubOrderFormOrderFormIdProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormOrderFormIdTransactionRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormOrderFormIdTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPubOrderFormsSimulationRouteHandler: RouteHandler<
+  typeof postApiCheckoutPubOrderFormsSimulationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCheckoutPubOrdersRouteHandler: RouteHandler<
+  typeof putApiCheckoutPubOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubPickupPointsRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubPickupPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubPostalCodeCountryCodePostalCodeRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubPostalCodeCountryCodePostalCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubProfilesRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPubRegionsRegionIdRouteHandler: RouteHandler<
+  typeof getApiCheckoutPubRegionsRegionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPvtConfigurationOrderFormRouteHandler: RouteHandler<
+  typeof getApiCheckoutPvtConfigurationOrderFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPvtConfigurationOrderFormRouteHandler: RouteHandler<
+  typeof postApiCheckoutPvtConfigurationOrderFormRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCheckoutPvtConfigurationWindowToChangeSellerRouteHandler: RouteHandler<
+  typeof getApiCheckoutPvtConfigurationWindowToChangeSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCheckoutPvtConfigurationWindowToChangeSellerRouteHandler: RouteHandler<
+  typeof postApiCheckoutPvtConfigurationWindowToChangeSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

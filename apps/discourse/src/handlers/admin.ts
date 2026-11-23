@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminBadgesIdJsonRoute,
   deleteAdminGroupsIdJsonRoute,
   deleteAdminUsersIdJsonRoute,
@@ -23,69 +23,128 @@ import {
   putAdminUsersIdSuspendJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminBackupsJsonRouteHandler: RouteHandler<
+  typeof getAdminBackupsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminBackupsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminBackupsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminBackupsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminBackupsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminBadgesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminBadgesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminBadgesIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminBadgesIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminGroupsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminGroupsIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdActivateJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdDeactivateJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdSuspendJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdSilenceJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdAnonymizeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersIdMergeJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersIdLogOutJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersListFlagJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminBackupsJsonRouteHandler: RouteHandler<
+  typeof postAdminBackupsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminBackupsFilenameRouteHandler: RouteHandler<
+  typeof putAdminBackupsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminBackupsFilenameRouteHandler: RouteHandler<
+  typeof getAdminBackupsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminBadgesJsonRouteHandler: RouteHandler<typeof getAdminBadgesJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminBadgesJsonRouteHandler: RouteHandler<
+  typeof postAdminBadgesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminBadgesIdJsonRouteHandler: RouteHandler<
+  typeof putAdminBadgesIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminBadgesIdJsonRouteHandler: RouteHandler<
+  typeof deleteAdminBadgesIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminGroupsJsonRouteHandler: RouteHandler<
+  typeof postAdminGroupsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminGroupsIdJsonRouteHandler: RouteHandler<
+  typeof deleteAdminGroupsIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdJsonRouteHandler: RouteHandler<
+  typeof getAdminUsersIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersIdJsonRouteHandler: RouteHandler<
+  typeof deleteAdminUsersIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdActivateJsonRouteHandler: RouteHandler<
+  typeof putAdminUsersIdActivateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdDeactivateJsonRouteHandler: RouteHandler<
+  typeof putAdminUsersIdDeactivateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdSuspendJsonRouteHandler: RouteHandler<
+  typeof putAdminUsersIdSuspendJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdSilenceJsonRouteHandler: RouteHandler<
+  typeof putAdminUsersIdSilenceJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdAnonymizeJsonRouteHandler: RouteHandler<
+  typeof putAdminUsersIdAnonymizeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersIdMergeJsonRouteHandler: RouteHandler<
+  typeof postAdminUsersIdMergeJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersIdLogOutJsonRouteHandler: RouteHandler<
+  typeof postAdminUsersIdLogOutJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersJsonRouteHandler: RouteHandler<typeof getAdminUsersJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersListFlagJsonRouteHandler: RouteHandler<
+  typeof getAdminUsersListFlagJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -18615,7 +18615,7 @@ export const getToolsMetricsPrometheusRoute = createRoute({
   summary: 'Get usage metrics',
   description:
     'Get usage metrics of Orthanc in the Prometheus file format (OpenMetrics): https://book.orthanc-server.com/users/advanced-rest.html#instrumentation-with-prometheus',
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getToolsNowRoute = createRoute({

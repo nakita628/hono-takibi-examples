@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLedgerBillingGroupReportsIdRoute, postLedgerBillingGroupReportsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getLedgerBillingGroupReportsIdRoute,
+  postLedgerBillingGroupReportsRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postLedgerBillingGroupReportsRouteHandler: RouteHandler<
+  typeof postLedgerBillingGroupReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ledgerBillingGroupReportsHandler = app
-  .openapi(postLedgerBillingGroupReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgerBillingGroupReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLedgerBillingGroupReportsIdRouteHandler: RouteHandler<
+  typeof getLedgerBillingGroupReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

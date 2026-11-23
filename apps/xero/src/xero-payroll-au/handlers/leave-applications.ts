@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLeaveApplicationsLeaveApplicationIDRoute,
   getLeaveApplicationsRoute,
   getLeaveApplicationsV2Route,
@@ -9,27 +9,44 @@ import {
   postLeaveApplicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLeaveApplicationsRouteHandler: RouteHandler<
+  typeof getLeaveApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const leaveApplicationsHandler = app
-  .openapi(getLeaveApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLeaveApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaveApplicationsV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaveApplicationsLeaveApplicationIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLeaveApplicationsLeaveApplicationIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLeaveApplicationsLeaveApplicationIDApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLeaveApplicationsLeaveApplicationIDRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLeaveApplicationsRouteHandler: RouteHandler<
+  typeof postLeaveApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaveApplicationsV2RouteHandler: RouteHandler<
+  typeof getLeaveApplicationsV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaveApplicationsLeaveApplicationIDRouteHandler: RouteHandler<
+  typeof getLeaveApplicationsLeaveApplicationIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLeaveApplicationsLeaveApplicationIDRouteHandler: RouteHandler<
+  typeof postLeaveApplicationsLeaveApplicationIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLeaveApplicationsLeaveApplicationIDApproveRouteHandler: RouteHandler<
+  typeof postLeaveApplicationsLeaveApplicationIDApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLeaveApplicationsLeaveApplicationIDRejectRouteHandler: RouteHandler<
+  typeof postLeaveApplicationsLeaveApplicationIDRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

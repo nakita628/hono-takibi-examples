@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionGetPasswordDataRoute, postActionGetPasswordDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionGetPasswordDataRoute, postActionGetPasswordDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetPasswordDataRouteHandler: RouteHandler<
+  typeof getActionGetPasswordDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetPasswordDataHandler = app
-  .openapi(getActionGetPasswordDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetPasswordDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetPasswordDataRouteHandler: RouteHandler<
+  typeof postActionGetPasswordDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/oauth2/openapi.json',
   output: './src/oauth2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/oauth2/types.ts' },
   client: { output: './src/oauth2/client.ts', baseUrl: '/' },
   rpc: { output: './src/oauth2/rpc.ts', parseResponse: true },

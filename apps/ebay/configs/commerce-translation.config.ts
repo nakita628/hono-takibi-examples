@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/commerce-translation/1/openapi.yaml',
   output: './src/commerce-translation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/commerce-translation/types.ts' },
   client: { output: './src/commerce-translation/client.ts', baseUrl: '/' },
   rpc: { output: './src/commerce-translation/rpc.ts', parseResponse: true },

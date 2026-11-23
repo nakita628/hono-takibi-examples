@@ -367,7 +367,7 @@ const SolutionSchema = z
   })
   .openapi('Solution')
 
-type DescribeSolutionResponseType = { solution?: z.infer<typeof SolutionSchema> & unknown }
+type DescribeSolutionResponseType = { solution?: z.infer<typeof SolutionSchema> }
 
 const TrainingHoursSchema = z.float64().min(0).openapi('TrainingHours')
 
@@ -450,7 +450,7 @@ const SolutionVersionSchema = z
   .openapi('SolutionVersion')
 
 type DescribeSolutionVersionResponseType = {
-  solutionVersion?: z.infer<typeof SolutionVersionSchema> & unknown
+  solutionVersion?: z.infer<typeof SolutionVersionSchema>
 }
 
 const CreateBatchInferenceJobResponseSchema = z

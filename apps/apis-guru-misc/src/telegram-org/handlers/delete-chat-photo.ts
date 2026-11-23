@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteChatPhotoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteChatPhotoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteChatPhotoHandler = app.openapi(postDeleteChatPhotoRoute, (c) => {
+export const postDeleteChatPhotoRouteHandler: RouteHandler<
+  typeof postDeleteChatPhotoRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

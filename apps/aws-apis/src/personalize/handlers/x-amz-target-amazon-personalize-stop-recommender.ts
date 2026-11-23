@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonPersonalizeStopRecommenderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonPersonalizeStopRecommenderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonPersonalizeStopRecommenderHandler = app.openapi(
-  postXAmzTargetAmazonPersonalizeStopRecommenderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonPersonalizeStopRecommenderRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonPersonalizeStopRecommenderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

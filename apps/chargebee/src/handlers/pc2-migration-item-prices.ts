@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
   getPc2MigrationItemPricesRoute,
   postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRoute,
   postPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPc2MigrationItemPricesRouteHandler: RouteHandler<
+  typeof getPc2MigrationItemPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pc2MigrationItemPricesHandler = app
-  .openapi(getPc2MigrationItemPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPc2MigrationItemPricesPc2MigrationItemPriceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPc2MigrationItemPricesPc2MigrationItemPriceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRouteHandler: RouteHandler<
+  typeof postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler: RouteHandler<
+  typeof getPc2MigrationItemPricesPc2MigrationItemPriceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler: RouteHandler<
+  typeof postPc2MigrationItemPricesPc2MigrationItemPriceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

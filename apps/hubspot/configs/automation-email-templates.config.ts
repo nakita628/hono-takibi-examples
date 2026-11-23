@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Automation/Email%20Templates/Rollouts/321889/2026-09/emailTemplates.json',
   output: './src/automation-email-templates/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/automation-email-templates/types.ts' },
   client: { output: './src/automation-email-templates/client.ts', baseUrl: '/' },
   rpc: { output: './src/automation-email-templates/rpc.ts', parseResponse: true },

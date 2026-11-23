@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Forecast%20Types/Rollouts/260892/2026-09/forecastTypes.json',
   output: './src/crm-forecast-types/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-forecast-types/types.ts' },
   client: { output: './src/crm-forecast-types/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-forecast-types/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ApisApiIdApiCachesRoute,
   deleteV1ApisApiIdApikeysIdRoute,
   deleteV1ApisApiIdDatasourcesNameRoute,
@@ -62,189 +62,354 @@ import {
   postV1TagsResourceArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1DomainnamesDomainNameApiassociationRouteHandler: RouteHandler<
+  typeof postV1DomainnamesDomainNameApiassociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1DomainnamesDomainNameApiassociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DomainnamesDomainNameApiassociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DomainnamesDomainNameApiassociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SourceApisSourceApiIdentifierMergedApiAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MergedApisMergedApiIdentifierSourceApiAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdApiCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdApiCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdApiCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdApikeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdApikeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdDatasourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdDatasourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DomainnamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DomainnamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdTypesTypeNameResolversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdTypesTypeNameResolversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdApikeysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdApikeysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdDatasourcesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdDatasourcesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdDatasourcesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DomainnamesDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdTypesTypeNameResolversFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdTypesTypeNameResolversFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdTypesTypeNameResolversFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdTypesTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdTypesTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SourceApisSourceApiIdentifierMergedApiAssociationsAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DataplaneEvaluatecodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DataplaneEvaluatetemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApisApiIdFlushCacheRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdSchemaFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdSchemacreationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdSchemacreationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdTypesTypeNameFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdFunctionsFunctionIdResolversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdSourceApiAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApisApiIdTypesFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdTypesFormatRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TagsResourceArnTagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApisApiIdApiCachesUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV1DomainnamesDomainNameApiassociationRouteHandler: RouteHandler<
+  typeof deleteV1DomainnamesDomainNameApiassociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DomainnamesDomainNameApiassociationRouteHandler: RouteHandler<
+  typeof getV1DomainnamesDomainNameApiassociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SourceApisSourceApiIdentifierMergedApiAssociationsRouteHandler: RouteHandler<
+  typeof postV1SourceApisSourceApiIdentifierMergedApiAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MergedApisMergedApiIdentifierSourceApiAssociationsRouteHandler: RouteHandler<
+  typeof postV1MergedApisMergedApiIdentifierSourceApiAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdApiCachesRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdApiCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdApiCachesRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdApiCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdApiCachesRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdApiCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdApikeysRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdApikeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdApikeysRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdApikeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdDatasourcesRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdDatasourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdDatasourcesRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdDatasourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DomainnamesRouteHandler: RouteHandler<typeof postV1DomainnamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DomainnamesRouteHandler: RouteHandler<typeof getV1DomainnamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdFunctionsRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdFunctionsRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisRouteHandler: RouteHandler<typeof postV1ApisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisRouteHandler: RouteHandler<typeof getV1ApisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdTypesTypeNameResolversRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdTypesTypeNameResolversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdTypesTypeNameResolversRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdTypesTypeNameResolversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdTypesRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdApikeysIdRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdApikeysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdApikeysIdRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdApikeysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdDatasourcesNameRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdDatasourcesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdDatasourcesNameRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdDatasourcesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdDatasourcesNameRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdDatasourcesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1DomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof deleteV1DomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof getV1DomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DomainnamesDomainNameRouteHandler: RouteHandler<
+  typeof postV1DomainnamesDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdRouteHandler: RouteHandler<typeof deleteV1ApisApiIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdRouteHandler: RouteHandler<typeof getV1ApisApiIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdRouteHandler: RouteHandler<typeof postV1ApisApiIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdTypesTypeNameResolversFieldNameRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdTypesTypeNameResolversFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdTypesTypeNameResolversFieldNameRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdTypesTypeNameResolversFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdTypesTypeNameResolversFieldNameRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdTypesTypeNameResolversFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdTypesTypeNameRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdTypesTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdTypesTypeNameRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdTypesTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SourceApisSourceApiIdentifierMergedApiAssociationsAssociationIdRouteHandler: RouteHandler<
+  typeof deleteV1SourceApisSourceApiIdentifierMergedApiAssociationsAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRouteHandler: RouteHandler<
+  typeof deleteV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRouteHandler: RouteHandler<
+  typeof getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRouteHandler: RouteHandler<
+  typeof postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DataplaneEvaluatecodeRouteHandler: RouteHandler<
+  typeof postV1DataplaneEvaluatecodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DataplaneEvaluatetemplateRouteHandler: RouteHandler<
+  typeof postV1DataplaneEvaluatetemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApisApiIdFlushCacheRouteHandler: RouteHandler<
+  typeof deleteV1ApisApiIdFlushCacheRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdSchemaFormatRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdSchemaFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdSchemacreationRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdSchemacreationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdSchemacreationRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdSchemacreationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdTypesTypeNameFormatRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdTypesTypeNameFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdFunctionsFunctionIdResolversRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdFunctionsFunctionIdResolversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdSourceApiAssociationsRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdSourceApiAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof getV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof postV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApisApiIdTypesFormatRouteHandler: RouteHandler<
+  typeof getV1ApisApiIdTypesFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdTypesFormatRouteHandler: RouteHandler<
+  typeof getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdTypesFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdMergeRouteHandler: RouteHandler<
+  typeof postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TagsResourceArnTagKeysRouteHandler: RouteHandler<
+  typeof deleteV1TagsResourceArnTagKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApisApiIdApiCachesUpdateRouteHandler: RouteHandler<
+  typeof postV1ApisApiIdApiCachesUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

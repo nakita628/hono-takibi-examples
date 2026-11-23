@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteClassesClassArchiveRoute,
   deleteClassesClassAssignmentsAssignmentArchiveRoute,
   deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRoute,
@@ -30,93 +30,162 @@ import {
   putClassesClassUsersUserRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getClassesRouteHandler: RouteHandler<typeof getClassesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const classesHandler = app
-  .openapi(getClassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesEnrollEnrollmentCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putClassesClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClassesClassArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClassesClassAssignmentsAssignmentArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassAssignmentsAssignmentArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassAssignmentsAssignmentCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putClassesClassAssignmentsAssignmentSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsExcelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassAssignmentsAssignmentSubmissionsSubmissionHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClassesClassStudentsUserSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClassesClassUsersUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putClassesClassUsersUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postClassesRouteHandler: RouteHandler<typeof postClassesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesEnrollEnrollmentCodeRouteHandler: RouteHandler<
+  typeof postClassesEnrollEnrollmentCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassRouteHandler: RouteHandler<typeof getClassesClassRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putClassesClassRouteHandler: RouteHandler<typeof putClassesClassRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassActivateRouteHandler: RouteHandler<
+  typeof postClassesClassActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClassesClassArchiveRouteHandler: RouteHandler<
+  typeof deleteClassesClassArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassArchiveRouteHandler: RouteHandler<
+  typeof postClassesClassArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassAssignmentsRouteHandler: RouteHandler<
+  typeof postClassesClassAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClassesClassAssignmentsAssignmentArchiveRouteHandler: RouteHandler<
+  typeof deleteClassesClassAssignmentsAssignmentArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassAssignmentsAssignmentArchiveRouteHandler: RouteHandler<
+  typeof postClassesClassAssignmentsAssignmentArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassAssignmentsAssignmentCopyRouteHandler: RouteHandler<
+  typeof postClassesClassAssignmentsAssignmentCopyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putClassesClassAssignmentsAssignmentSubmissionsRouteHandler: RouteHandler<
+  typeof putClassesClassAssignmentsAssignmentSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsCsvRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsExcelRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsExcelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionRouteHandler: RouteHandler<
+  typeof deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsSubmissionRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putClassesClassAssignmentsAssignmentSubmissionsSubmissionRouteHandler: RouteHandler<
+  typeof putClassesClassAssignmentsAssignmentSubmissionsSubmissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRouteHandler: RouteHandler<
+  typeof postClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRouteHandler: RouteHandler<
+  typeof deleteClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRouteHandler: RouteHandler<
+  typeof putClassesClassAssignmentsAssignmentSubmissionsSubmissionCommentsCommentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassAssignmentsAssignmentSubmissionsSubmissionHistoryRouteHandler: RouteHandler<
+  typeof getClassesClassAssignmentsAssignmentSubmissionsSubmissionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClassesClassStudentsUserSubmissionsRouteHandler: RouteHandler<
+  typeof getClassesClassStudentsUserSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClassesClassUsersUserRouteHandler: RouteHandler<
+  typeof deleteClassesClassUsersUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putClassesClassUsersUserRouteHandler: RouteHandler<
+  typeof putClassesClassUsersUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

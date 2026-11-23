@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/mriu/3.0.0/openapi.yaml',
   output: './src/mriu/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mriu/types.ts' },
   client: { output: './src/mriu/client.ts', baseUrl: '/' },
   rpc: { output: './src/mriu/rpc.ts', parseResponse: true },

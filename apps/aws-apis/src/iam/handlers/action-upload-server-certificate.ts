@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionUploadServerCertificateRoute,
   postActionUploadServerCertificateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionUploadServerCertificateRouteHandler: RouteHandler<
+  typeof getActionUploadServerCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionUploadServerCertificateHandler = app
-  .openapi(getActionUploadServerCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionUploadServerCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionUploadServerCertificateRouteHandler: RouteHandler<
+  typeof postActionUploadServerCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

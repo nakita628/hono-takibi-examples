@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserAccountWebsitesRoute,
   getUserAccountAnalyticsRoute,
   getUserAccountAnalyticsTopPinsRoute,
@@ -15,45 +15,78 @@ import {
   postUserAccountWebsitesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserAccountRouteHandler: RouteHandler<typeof getUserAccountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userAccountHandler = app
-  .openapi(getUserAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountAnalyticsTopPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountAnalyticsTopVideoPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountBusinessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountFollowingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountFollowingBoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserAccountFollowingUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountWebsitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserAccountWebsitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserAccountWebsitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountWebsitesVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserAccountAnalyticsRouteHandler: RouteHandler<
+  typeof getUserAccountAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountAnalyticsTopPinsRouteHandler: RouteHandler<
+  typeof getUserAccountAnalyticsTopPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountAnalyticsTopVideoPinsRouteHandler: RouteHandler<
+  typeof getUserAccountAnalyticsTopVideoPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountBusinessesRouteHandler: RouteHandler<
+  typeof getUserAccountBusinessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountFollowersRouteHandler: RouteHandler<
+  typeof getUserAccountFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountFollowingRouteHandler: RouteHandler<
+  typeof getUserAccountFollowingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountFollowingBoardsRouteHandler: RouteHandler<
+  typeof getUserAccountFollowingBoardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserAccountFollowingUsernameRouteHandler: RouteHandler<
+  typeof postUserAccountFollowingUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountWebsitesRouteHandler: RouteHandler<
+  typeof getUserAccountWebsitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserAccountWebsitesRouteHandler: RouteHandler<
+  typeof postUserAccountWebsitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserAccountWebsitesRouteHandler: RouteHandler<
+  typeof deleteUserAccountWebsitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserAccountWebsitesVerificationRouteHandler: RouteHandler<
+  typeof getUserAccountWebsitesVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

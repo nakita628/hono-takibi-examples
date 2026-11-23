@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesis20131202ListShardsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesis20131202ListShardsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesis20131202ListShardsHandler = app.openapi(
-  postXAmzTargetKinesis20131202ListShardsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesis20131202ListShardsRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesis20131202ListShardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

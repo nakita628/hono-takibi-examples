@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/arespass.net/1.0/openapi.yaml',
   output: './src/arespass-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/arespass-net/types.ts' },
   client: { output: './src/arespass-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/arespass-net/rpc.ts', parseResponse: true },

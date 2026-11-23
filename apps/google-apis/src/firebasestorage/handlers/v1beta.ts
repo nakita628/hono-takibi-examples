@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1betaNameRoute,
   getV1betaParentBucketsRoute,
   postV1betaBucketAddFirebaseRoute,
   postV1betaBucketRemoveFirebaseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1betaBucketAddFirebaseRouteHandler: RouteHandler<
+  typeof postV1betaBucketAddFirebaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(postV1betaBucketAddFirebaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaBucketRemoveFirebaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1betaBucketRemoveFirebaseRouteHandler: RouteHandler<
+  typeof postV1betaBucketRemoveFirebaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentBucketsRouteHandler: RouteHandler<
+  typeof getV1betaParentBucketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

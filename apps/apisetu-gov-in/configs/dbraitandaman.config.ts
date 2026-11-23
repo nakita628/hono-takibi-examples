@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/dbraitandaman/3.0.0/openapi.yaml',
   output: './src/dbraitandaman/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dbraitandaman/types.ts' },
   client: { output: './src/dbraitandaman/client.ts', baseUrl: '/' },
   rpc: { output: './src/dbraitandaman/rpc.ts', parseResponse: true },

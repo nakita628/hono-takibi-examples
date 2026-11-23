@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIllustratorsIllustratorRoute, getIllustratorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIllustratorsIllustratorRoute, getIllustratorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIllustratorsRouteHandler: RouteHandler<typeof getIllustratorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const illustratorsHandler = app
-  .openapi(getIllustratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIllustratorsIllustratorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIllustratorsIllustratorRouteHandler: RouteHandler<
+  typeof getIllustratorsIllustratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

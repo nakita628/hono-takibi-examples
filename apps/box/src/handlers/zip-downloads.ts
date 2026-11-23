@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getZipDownloadsZipDownloadIdContentRoute,
   getZipDownloadsZipDownloadIdStatusRoute,
   postZipDownloadsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postZipDownloadsRouteHandler: RouteHandler<typeof postZipDownloadsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const zipDownloadsHandler = app
-  .openapi(postZipDownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getZipDownloadsZipDownloadIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getZipDownloadsZipDownloadIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getZipDownloadsZipDownloadIdContentRouteHandler: RouteHandler<
+  typeof getZipDownloadsZipDownloadIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getZipDownloadsZipDownloadIdStatusRouteHandler: RouteHandler<
+  typeof getZipDownloadsZipDownloadIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

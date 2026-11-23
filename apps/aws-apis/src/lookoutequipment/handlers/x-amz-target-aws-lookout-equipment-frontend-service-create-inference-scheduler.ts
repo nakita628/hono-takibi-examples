@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsLookoutEquipmentFrontendServiceCreateInferenceSchedulerHandler =
-  app.openapi(
-    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

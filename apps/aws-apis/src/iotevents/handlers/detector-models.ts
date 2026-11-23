@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDetectorModelsDetectorModelNameRoute,
   getDetectorModelsDetectorModelNameRoute,
   getDetectorModelsDetectorModelNameVersionsRoute,
@@ -8,24 +8,38 @@ import {
   postDetectorModelsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDetectorModelsRouteHandler: RouteHandler<typeof postDetectorModelsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const detectorModelsHandler = app
-  .openapi(postDetectorModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorModelsDetectorModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorModelsDetectorModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorModelsDetectorModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorModelsDetectorModelNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDetectorModelsRouteHandler: RouteHandler<typeof getDetectorModelsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorModelsDetectorModelNameRouteHandler: RouteHandler<
+  typeof deleteDetectorModelsDetectorModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorModelsDetectorModelNameRouteHandler: RouteHandler<
+  typeof getDetectorModelsDetectorModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorModelsDetectorModelNameRouteHandler: RouteHandler<
+  typeof postDetectorModelsDetectorModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorModelsDetectorModelNameVersionsRouteHandler: RouteHandler<
+  typeof getDetectorModelsDetectorModelNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

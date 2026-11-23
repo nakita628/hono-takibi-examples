@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchFindingsBatchupdateRoute,
   patchFindingsRoute,
   postFindingsImportRoute,
   postFindingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFindingsImportRouteHandler: RouteHandler<typeof postFindingsImportRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const findingsHandler = app
-  .openapi(postFindingsImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFindingsBatchupdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchFindingsBatchupdateRouteHandler: RouteHandler<
+  typeof patchFindingsBatchupdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFindingsRouteHandler: RouteHandler<typeof postFindingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFindingsRouteHandler: RouteHandler<typeof patchFindingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

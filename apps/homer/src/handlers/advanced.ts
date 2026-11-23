@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdvancedGuidRoute,
   getAdvancedGuidRoute,
   getAdvancedRoute,
@@ -7,21 +7,24 @@ import {
   putAdvancedGuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdvancedRouteHandler: RouteHandler<typeof getAdvancedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const advancedHandler = app
-  .openapi(getAdvancedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvancedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdvancedGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdvancedGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdvancedGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdvancedRouteHandler: RouteHandler<typeof postAdvancedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdvancedGuidRouteHandler: RouteHandler<typeof getAdvancedGuidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdvancedGuidRouteHandler: RouteHandler<typeof putAdvancedGuidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdvancedGuidRouteHandler: RouteHandler<typeof deleteAdvancedGuidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

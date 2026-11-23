@@ -1867,7 +1867,7 @@ export const deleteFiles202609FilesFileIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['files.ui_hidden.write'] },
     { oauth2: ['files'] },
@@ -1982,7 +1982,7 @@ export const deleteFiles202609FilesFileIdGdprDeleteRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['files.ui_hidden.write'] },
     { oauth2: ['files'] },
@@ -2557,7 +2557,7 @@ export const deleteFiles202609FoldersFolderIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['files.ui_hidden.write'] },
     { oauth2: ['files'] },
@@ -2698,7 +2698,7 @@ export const deleteFiles202609FoldersFolderPathRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['files.ui_hidden.write'] },
     { oauth2: ['files'] },

@@ -6705,7 +6705,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | { input: {}; output: {}; outputFormat: string; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 429 }
-        | { input: {}; output: {}; outputFormat: string; status: 472 }
         | { input: {}; output: {}; outputFormat: string; status: 501 }
         | { input: {}; output: {}; outputFormat: string; status: 503 }
     }

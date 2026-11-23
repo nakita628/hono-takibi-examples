@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Conversations/Custom%20Channels/Rollouts/160898/2026-09/customChannels.json',
   output: './src/conversations-custom-channels/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/conversations-custom-channels/types.ts' },
   client: { output: './src/conversations-custom-channels/client.ts', baseUrl: '/' },
   rpc: { output: './src/conversations-custom-channels/rpc.ts', parseResponse: true },

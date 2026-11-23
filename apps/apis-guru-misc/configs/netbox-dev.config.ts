@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/netbox.dev/3.4/openapi.yaml',
   output: './src/netbox-dev/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/netbox-dev/types.ts' },
   client: { output: './src/netbox-dev/client.ts', baseUrl: '/' },
   rpc: { output: './src/netbox-dev/rpc.ts', parseResponse: true },

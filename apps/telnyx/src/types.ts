@@ -28795,12 +28795,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 504
           }
-        | {
-            input: { json: DecisionModelRequest }
-            output: DecisionModelError
-            outputFormat: 'json'
-            status: 529
-          }
     }
   } & {
     '/alphanumeric_sender_ids': {

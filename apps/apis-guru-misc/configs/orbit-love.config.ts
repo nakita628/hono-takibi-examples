@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/orbit.love/v1/openapi.yaml',
   output: './src/orbit-love/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/orbit-love/types.ts' },
   client: { output: './src/orbit-love/client.ts', baseUrl: '/' },
   rpc: { output: './src/orbit-love/rpc.ts', parseResponse: true },

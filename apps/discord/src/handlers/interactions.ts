@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postInteractionsInteractionIdInteractionTokenCallbackRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postInteractionsInteractionIdInteractionTokenCallbackRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const interactionsHandler = app.openapi(
-  postInteractionsInteractionIdInteractionTokenCallbackRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postInteractionsInteractionIdInteractionTokenCallbackRouteHandler: RouteHandler<
+  typeof postInteractionsInteractionIdInteractionTokenCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

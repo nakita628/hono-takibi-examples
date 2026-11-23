@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWorkflowsIdRoute,
   getWorkflowsIdLogsRoute,
   getWorkflowsIdRoute,
@@ -10,30 +10,42 @@ import {
   putWorkflowsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkflowsRouteHandler: RouteHandler<typeof getWorkflowsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workflowsHandler = app
-  .openapi(getWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIdLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIdShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWorkflowsRouteHandler: RouteHandler<typeof postWorkflowsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsTriggersRouteHandler: RouteHandler<
+  typeof getWorkflowsTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkflowsIdRouteHandler: RouteHandler<typeof deleteWorkflowsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIdRouteHandler: RouteHandler<typeof getWorkflowsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkflowsIdRouteHandler: RouteHandler<typeof putWorkflowsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIdLogsRouteHandler: RouteHandler<typeof getWorkflowsIdLogsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIdShareRouteHandler: RouteHandler<
+  typeof getWorkflowsIdShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

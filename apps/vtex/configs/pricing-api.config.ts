@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Pricing-API/1.0/openapi.yaml',
   output: './src/pricing-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pricing-api/types.ts' },
   client: { output: './src/pricing-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/pricing-api/rpc.ts', parseResponse: true },

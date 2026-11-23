@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const nativeTriggersHandler = app.openapi(
-  postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRouteHandler: RouteHandler<
+  typeof postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionUpdateOpenIDConnectProviderThumbprintRoute,
   postActionUpdateOpenIDConnectProviderThumbprintRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionUpdateOpenIDConnectProviderThumbprintRouteHandler: RouteHandler<
+  typeof getActionUpdateOpenIDConnectProviderThumbprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionUpdateOpenIdConnectProviderThumbprintHandler = app
-  .openapi(getActionUpdateOpenIDConnectProviderThumbprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionUpdateOpenIDConnectProviderThumbprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionUpdateOpenIDConnectProviderThumbprintRouteHandler: RouteHandler<
+  typeof postActionUpdateOpenIDConnectProviderThumbprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

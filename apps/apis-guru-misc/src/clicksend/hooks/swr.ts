@@ -3172,19 +3172,19 @@ export function useImmutableGetEmailHistory<TError = unknown>(options?: {
 }
 
 export function getGetEmailHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['email', '/email/history/export?filename=:filename', args] as const
+  return ['email', '/email/history/export?filename={filename}', args] as const
 }
 
 export function useGetEmailHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -3207,7 +3207,7 @@ export function useGetEmailHistoryExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -3215,20 +3215,20 @@ export function useGetEmailHistoryExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.email.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.email.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEmailHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -3251,7 +3251,7 @@ export function useImmutableGetEmailHistoryExportFilenameFilename<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -3259,7 +3259,7 @@ export function useImmutableGetEmailHistoryExportFilenameFilename<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.email.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.email.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -4154,19 +4154,19 @@ export function useDeleteEmailTemplatesTemplateId<TError = unknown>(options?: {
 }
 
 export function getGetFaxHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['fax', '/fax/history/export?filename=:filename', args] as const
+  return ['fax', '/fax/history/export?filename={filename}', args] as const
 }
 
 export function useGetFaxHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -4189,7 +4189,7 @@ export function useGetFaxHistoryExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -4197,20 +4197,20 @@ export function useGetFaxHistoryExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.fax.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.fax.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFaxHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -4233,7 +4233,7 @@ export function useImmutableGetFaxHistoryExportFilenameFilename<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -4241,7 +4241,7 @@ export function useImmutableGetFaxHistoryExportFilenameFilename<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.fax.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.fax.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -4249,19 +4249,19 @@ export function useImmutableGetFaxHistoryExportFilenameFilename<TError = unknown
 
 export function getGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByKey(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
 ) {
   return [
     'fax',
-    '/fax/history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by',
+    '/fax/history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}',
     args,
   ] as const
 }
 
 export function useGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<TError = unknown>(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -4270,7 +4270,7 @@ export function useGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+                (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
               >
             >
           >
@@ -4297,7 +4297,7 @@ export function useGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+                (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
               >
             >
           >
@@ -4308,10 +4308,9 @@ export function useGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<TEr
       swrKey,
       async () =>
         parseResponse(
-          client.fax['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by'].$get(
-            args,
-            clientOptions,
-          ),
+          client.fax[
+            'history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -4322,7 +4321,7 @@ export function useImmutableGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOr
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -4331,7 +4330,7 @@ export function useImmutableGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+                (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
               >
             >
           >
@@ -4358,7 +4357,7 @@ export function useImmutableGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+                (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
               >
             >
           >
@@ -4369,10 +4368,9 @@ export function useImmutableGetFaxHistoryDateFromDateFromDateToDateToQQOrderByOr
       swrKey,
       async () =>
         parseResponse(
-          client.fax['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by'].$get(
-            args,
-            clientOptions,
-          ),
+          client.fax[
+            'history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -5331,20 +5329,20 @@ export function useDeleteListsListIdContactsContactId<TError = unknown>(options?
 }
 
 export function getGetListsListIdExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
 ) {
-  return ['lists', '/lists/:list_id/export?filename=:filename', args] as const
+  return ['lists', '/lists/:list_id/export?filename={filename}', args] as const
 }
 
 export function useGetListsListIdExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
             >
           >
         >
@@ -5369,7 +5367,7 @@ export function useGetListsListIdExportFilenameFilename<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
             >
           >
         >
@@ -5379,7 +5377,7 @@ export function useGetListsListIdExportFilenameFilename<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.lists[':list_id']['export?filename=:filename'].$get(args, clientOptions),
+          client.lists[':list_id']['export?filename={filename}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -5387,14 +5385,14 @@ export function useGetListsListIdExportFilenameFilename<TError = unknown>(
 }
 
 export function useImmutableGetListsListIdExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
             >
           >
         >
@@ -5419,7 +5417,7 @@ export function useImmutableGetListsListIdExportFilenameFilename<TError = unknow
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
             >
           >
         >
@@ -5429,7 +5427,7 @@ export function useImmutableGetListsListIdExportFilenameFilename<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.lists[':list_id']['export?filename=:filename'].$get(args, clientOptions),
+          client.lists[':list_id']['export?filename={filename}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -5727,19 +5725,19 @@ export function usePutMmsCancelAll<TError = unknown>(options?: {
 }
 
 export function getGetMmsHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['mms', '/mms/history/export?filename=:filename', args] as const
+  return ['mms', '/mms/history/export?filename={filename}', args] as const
 }
 
 export function useGetMmsHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -5762,7 +5760,7 @@ export function useGetMmsHistoryExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -5770,20 +5768,20 @@ export function useGetMmsHistoryExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.mms.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.mms.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetMmsHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -5806,7 +5804,7 @@ export function useImmutableGetMmsHistoryExportFilenameFilename<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -5814,7 +5812,7 @@ export function useImmutableGetMmsHistoryExportFilenameFilename<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.mms.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.mms.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -5822,19 +5820,19 @@ export function useImmutableGetMmsHistoryExportFilenameFilename<TError = unknown
 
 export function getGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToKey(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
   return [
     'mms',
-    '/mms/history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to',
+    '/mms/history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}',
     args,
   ] as const
 }
 
 export function useGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<TError = unknown>(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -5843,7 +5841,7 @@ export function useGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -5870,7 +5868,7 @@ export function useGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<TEr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -5881,10 +5879,9 @@ export function useGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<TEr
       swrKey,
       async () =>
         parseResponse(
-          client.mms['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to'].$get(
-            args,
-            clientOptions,
-          ),
+          client.mms[
+            'history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -5895,7 +5892,7 @@ export function useImmutableGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToD
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -5904,7 +5901,7 @@ export function useImmutableGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToD
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -5931,7 +5928,7 @@ export function useImmutableGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToD
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -5942,10 +5939,9 @@ export function useImmutableGetMmsHistoryQQOrderByOrderByDateFromDateFromDateToD
       swrKey,
       async () =>
         parseResponse(
-          client.mms['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to'].$get(
-            args,
-            clientOptions,
-          ),
+          client.mms[
+            'history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}'
+          ].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -6310,15 +6306,15 @@ export function usePostNumbersBuyDedicatedNumber<TError = unknown>(options?: {
 
 export function getGetNumbersSearchCountrySearch1SearchType2Key(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
 ) {
-  return ['numbers', '/numbers/search/:country?:search=1&:search_type=2', args] as const
+  return ['numbers', '/numbers/search/:country?{search}=1&{search_type}=2', args] as const
 }
 
 export function useGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -6327,7 +6323,7 @@ export function useGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+                (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
               >
             >
           >
@@ -6354,7 +6350,7 @@ export function useGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+                (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
               >
             >
           >
@@ -6365,7 +6361,7 @@ export function useGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.numbers.search[':country?:search=1&:search_type=2'].$get(args, clientOptions),
+          client.numbers.search[':country?{search}=1&{search_type}=2'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -6374,7 +6370,7 @@ export function useGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
 
 export function useImmutableGetNumbersSearchCountrySearch1SearchType2<TError = unknown>(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -6383,7 +6379,7 @@ export function useImmutableGetNumbersSearchCountrySearch1SearchType2<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+                (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
               >
             >
           >
@@ -6410,7 +6406,7 @@ export function useImmutableGetNumbersSearchCountrySearch1SearchType2<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+                (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
               >
             >
           >
@@ -6421,7 +6417,7 @@ export function useImmutableGetNumbersSearchCountrySearch1SearchType2<TError = u
       swrKey,
       async () =>
         parseResponse(
-          client.numbers.search[':country?:search=1&:search_type=2'].$get(args, clientOptions),
+          client.numbers.search[':country?{search}=1&{search_type}=2'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -6594,15 +6590,15 @@ export function usePostPostDirectMailCampaignsSend<TError = unknown>(options?: {
 
 export function getGetPostDirectMailLocationsSearchCountryQQueryKey(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
 ) {
-  return ['post', '/post/direct-mail/locations/search/:country/?q=:query', args] as const
+  return ['post', '/post/direct-mail/locations/search/:country/?q={query}', args] as const
 }
 
 export function useGetPostDirectMailLocationsSearchCountryQQuery<TError = unknown>(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -6611,7 +6607,7 @@ export function useGetPostDirectMailLocationsSearchCountryQQuery<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
               >
             >
           >
@@ -6638,7 +6634,7 @@ export function useGetPostDirectMailLocationsSearchCountryQQuery<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
               >
             >
           >
@@ -6649,7 +6645,7 @@ export function useGetPostDirectMailLocationsSearchCountryQQuery<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.post['direct-mail'].locations.search[':country']['?q=:query'].$get(
+          client.post['direct-mail'].locations.search[':country']['?q={query}'].$get(
             args,
             clientOptions,
           ),
@@ -6661,7 +6657,7 @@ export function useGetPostDirectMailLocationsSearchCountryQQuery<TError = unknow
 
 export function useImmutableGetPostDirectMailLocationsSearchCountryQQuery<TError = unknown>(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -6670,7 +6666,7 @@ export function useImmutableGetPostDirectMailLocationsSearchCountryQQuery<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
               >
             >
           >
@@ -6697,7 +6693,7 @@ export function useImmutableGetPostDirectMailLocationsSearchCountryQQuery<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+                (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
               >
             >
           >
@@ -6708,7 +6704,7 @@ export function useImmutableGetPostDirectMailLocationsSearchCountryQQuery<TError
       swrKey,
       async () =>
         parseResponse(
-          client.post['direct-mail'].locations.search[':country']['?q=:query'].$get(
+          client.post['direct-mail'].locations.search[':country']['?q={query}'].$get(
             args,
             clientOptions,
           ),
@@ -6818,20 +6814,24 @@ export function useImmutableGetPostLettersHistory<TError = unknown>(options?: {
 }
 
 export function getGetPostLettersHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
 ) {
-  return ['post', '/post/letters/history/export?filename=:filename', args] as const
+  return ['post', '/post/letters/history/export?filename={filename}', args] as const
 }
 
 export function useGetPostLettersHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
             >
           >
         >
@@ -6856,7 +6856,7 @@ export function useGetPostLettersHistoryExportFilenameFilename<TError = unknown>
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
             >
           >
         >
@@ -6866,7 +6866,7 @@ export function useGetPostLettersHistoryExportFilenameFilename<TError = unknown>
       swrKey,
       async () =>
         parseResponse(
-          client.post.letters.history['export?filename=:filename'].$get(args, clientOptions),
+          client.post.letters.history['export?filename={filename}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -6874,14 +6874,16 @@ export function useGetPostLettersHistoryExportFilenameFilename<TError = unknown>
 }
 
 export function useImmutableGetPostLettersHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
             >
           >
         >
@@ -6906,7 +6908,7 @@ export function useImmutableGetPostLettersHistoryExportFilenameFilename<TError =
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+              ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
             >
           >
         >
@@ -6916,7 +6918,7 @@ export function useImmutableGetPostLettersHistoryExportFilenameFilename<TError =
       swrKey,
       async () =>
         parseResponse(
-          client.post.letters.history['export?filename=:filename'].$get(args, clientOptions),
+          client.post.letters.history['export?filename={filename}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -6982,19 +6984,21 @@ export function usePostPostLettersSend<TError = unknown>(options?: {
 }
 
 export function getGetPostPostcardsExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
 ) {
-  return ['post', '/post/postcards/export?filename=:filename', args] as const
+  return ['post', '/post/postcards/export?filename={filename}', args] as const
 }
 
 export function useGetPostPostcardsExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>
+            >
           >
         >
       >,
@@ -7017,7 +7021,9 @@ export function useGetPostPostcardsExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>
+            >
           >
         >
       >,
@@ -7025,20 +7031,24 @@ export function useGetPostPostcardsExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.post.postcards['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(
+          client.post.postcards['export?filename={filename}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPostPostcardsExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>
+            >
           >
         >
       >,
@@ -7061,7 +7071,9 @@ export function useImmutableGetPostPostcardsExportFilenameFilename<TError = unkn
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>
+            >
           >
         >
       >,
@@ -7069,7 +7081,9 @@ export function useImmutableGetPostPostcardsExportFilenameFilename<TError = unkn
     >(
       swrKey,
       async () =>
-        parseResponse(client.post.postcards['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(
+          client.post.postcards['export?filename={filename}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
@@ -7525,19 +7539,19 @@ export function useDeletePostReturnAddressesReturnAddressId<TError = unknown>(op
 }
 
 export function getGetPricingCountryCurrencyCurrencyKey(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
 ) {
-  return ['pricing', '/pricing/:country?currency=:currency', args] as const
+  return ['pricing', '/pricing/:country?currency={currency}', args] as const
 }
 
 export function useGetPricingCountryCurrencyCurrency<TError = unknown>(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+            Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
           >
         >
       >,
@@ -7560,7 +7574,7 @@ export function useGetPricingCountryCurrencyCurrency<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+            Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
           >
         >
       >,
@@ -7568,20 +7582,20 @@ export function useGetPricingCountryCurrencyCurrency<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.pricing[':country?currency=:currency'].$get(args, clientOptions)),
+        parseResponse(client.pricing[':country?currency={currency}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPricingCountryCurrencyCurrency<TError = unknown>(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+            Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
           >
         >
       >,
@@ -7604,7 +7618,7 @@ export function useImmutableGetPricingCountryCurrencyCurrency<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+            Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
           >
         >
       >,
@@ -7612,7 +7626,7 @@ export function useImmutableGetPricingCountryCurrencyCurrency<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.pricing[':country?currency=:currency'].$get(args, clientOptions)),
+        parseResponse(client.pricing[':country?currency={currency}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -7720,19 +7734,19 @@ export function usePutRechargeCreditCard<TError = unknown>(options?: {
 }
 
 export function getGetRechargePackagesCountryCountryKey(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
 ) {
-  return ['recharge', '/recharge/packages?country=:country', args] as const
+  return ['recharge', '/recharge/packages?country={country}', args] as const
 }
 
 export function useGetRechargePackagesCountryCountry<TError = unknown>(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+            Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
           >
         >
       >,
@@ -7755,7 +7769,7 @@ export function useGetRechargePackagesCountryCountry<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+            Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
           >
         >
       >,
@@ -7763,20 +7777,20 @@ export function useGetRechargePackagesCountryCountry<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.recharge['packages?country=:country'].$get(args, clientOptions)),
+        parseResponse(client.recharge['packages?country={country}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetRechargePackagesCountryCountry<TError = unknown>(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+            Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
           >
         >
       >,
@@ -7799,7 +7813,7 @@ export function useImmutableGetRechargePackagesCountryCountry<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+            Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
           >
         >
       >,
@@ -7807,7 +7821,7 @@ export function useImmutableGetRechargePackagesCountryCountry<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.recharge['packages?country=:country'].$get(args, clientOptions)),
+        parseResponse(client.recharge['packages?country={country}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -8626,19 +8640,19 @@ export function useImmutableGetSdkDownloadType<TError = unknown>(
 }
 
 export function getGetSearchContactsListsQQKey(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
 ) {
-  return ['search', '/search/contacts-lists?q=:q', args] as const
+  return ['search', '/search/contacts-lists?q={q}', args] as const
 }
 
 export function useGetSearchContactsListsQQ<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
           >
         >
       >,
@@ -8661,27 +8675,27 @@ export function useGetSearchContactsListsQQ<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['contacts-lists?q=:q'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['contacts-lists?q={q}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSearchContactsListsQQ<TError = unknown>(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
           >
         >
       >,
@@ -8704,14 +8718,14 @@ export function useImmutableGetSearchContactsListsQQ<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+            Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.search['contacts-lists?q=:q'].$get(args, clientOptions)),
+      async () => parseResponse(client.search['contacts-lists?q={q}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -8855,19 +8869,19 @@ export function usePostSmsCampaignsSend<TError = unknown>(options?: {
 
 export function getGetSmsCampaignsCampaignIdLinkExportFilenameFilenameKey(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
 ) {
   return [
     'sms-campaigns',
-    '/sms-campaigns/:campaign_id/link-export?filename=:filename',
+    '/sms-campaigns/:campaign_id/link-export?filename={filename}',
     args,
   ] as const
 }
 
 export function useGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8876,7 +8890,7 @@ export function useGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
               >
             >
           >
@@ -8903,7 +8917,7 @@ export function useGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
               >
             >
           >
@@ -8914,7 +8928,7 @@ export function useGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = 
       swrKey,
       async () =>
         parseResponse(
-          client['sms-campaigns'][':campaign_id']['link-export?filename=:filename'].$get(
+          client['sms-campaigns'][':campaign_id']['link-export?filename={filename}'].$get(
             args,
             clientOptions,
           ),
@@ -8926,7 +8940,7 @@ export function useGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = 
 
 export function useImmutableGetSmsCampaignsCampaignIdLinkExportFilenameFilename<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8935,7 +8949,7 @@ export function useImmutableGetSmsCampaignsCampaignIdLinkExportFilenameFilename<
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
               >
             >
           >
@@ -8962,7 +8976,7 @@ export function useImmutableGetSmsCampaignsCampaignIdLinkExportFilenameFilename<
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+                (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
               >
             >
           >
@@ -8973,7 +8987,7 @@ export function useImmutableGetSmsCampaignsCampaignIdLinkExportFilenameFilename<
       swrKey,
       async () =>
         parseResponse(
-          client['sms-campaigns'][':campaign_id']['link-export?filename=:filename'].$get(
+          client['sms-campaigns'][':campaign_id']['link-export?filename={filename}'].$get(
             args,
             clientOptions,
           ),
@@ -10005,19 +10019,19 @@ export function useDeleteSmsEmailSmsEmailAddressId<TError = unknown>(options?: {
 }
 
 export function getGetSmsHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['sms', '/sms/history/export?filename=:filename', args] as const
+  return ['sms', '/sms/history/export?filename={filename}', args] as const
 }
 
 export function useGetSmsHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -10040,7 +10054,7 @@ export function useGetSmsHistoryExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -10048,20 +10062,20 @@ export function useGetSmsHistoryExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.sms.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.sms.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSmsHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -10084,7 +10098,7 @@ export function useImmutableGetSmsHistoryExportFilenameFilename<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -10092,7 +10106,7 @@ export function useImmutableGetSmsHistoryExportFilenameFilename<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.sms.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.sms.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -10100,15 +10114,15 @@ export function useImmutableGetSmsHistoryExportFilenameFilename<TError = unknown
 
 export function getGetSmsHistoryDateFromDateFromDateToDateToKey(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
-  return ['sms', '/sms/history?date_from=:date_from&date_to=:date_to', args] as const
+  return ['sms', '/sms/history?date_from={date_from}&date_to={date_to}', args] as const
 }
 
 export function useGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -10117,7 +10131,7 @@ export function useGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -10144,7 +10158,7 @@ export function useGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -10155,7 +10169,7 @@ export function useGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.sms['history?date_from=:date_from&date_to=:date_to'].$get(args, clientOptions),
+          client.sms['history?date_from={date_from}&date_to={date_to}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -10164,7 +10178,7 @@ export function useGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
 
 export function useImmutableGetSmsHistoryDateFromDateFromDateToDateTo<TError = unknown>(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -10173,7 +10187,7 @@ export function useImmutableGetSmsHistoryDateFromDateFromDateToDateTo<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -10200,7 +10214,7 @@ export function useImmutableGetSmsHistoryDateFromDateFromDateToDateTo<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -10211,7 +10225,7 @@ export function useImmutableGetSmsHistoryDateFromDateFromDateToDateTo<TError = u
       swrKey,
       async () =>
         parseResponse(
-          client.sms['history?date_from=:date_from&date_to=:date_to'].$get(args, clientOptions),
+          client.sms['history?date_from={date_from}&date_to={date_to}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -11391,7 +11405,7 @@ export function useImmutableGetTimezones<TError = unknown>(options?: {
 }
 
 export function getPostUploadsConvertConvertKey() {
-  return ['uploads?convert=:convert', '/uploads?convert=:convert', 'POST'] as const
+  return ['uploads?convert={convert}', '/uploads?convert={convert}', 'POST'] as const
 }
 
 export function usePostUploadsConvertConvert<TError = unknown>(options?: {
@@ -11399,13 +11413,13 @@ export function usePostUploadsConvertConvert<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['uploads?convert=:convert']['$post']>>
+          Awaited<ReturnType<(typeof client)['uploads?convert={convert}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['uploads?convert=:convert']['$post']>
+    InferRequestType<(typeof client)['uploads?convert={convert}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -11418,8 +11432,8 @@ export function usePostUploadsConvertConvert<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client)['uploads?convert=:convert']['$post']> },
-      ) => parseResponse(client['uploads?convert=:convert'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client)['uploads?convert={convert}']['$post']> },
+      ) => parseResponse(client['uploads?convert={convert}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
@@ -11456,19 +11470,19 @@ export function usePutVoiceCancelAll<TError = unknown>(options?: {
 }
 
 export function getGetVoiceHistoryExportFilenameFilenameKey(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['voice', '/voice/history/export?filename=:filename', args] as const
+  return ['voice', '/voice/history/export?filename={filename}', args] as const
 }
 
 export function useGetVoiceHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -11491,7 +11505,7 @@ export function useGetVoiceHistoryExportFilenameFilename<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -11499,20 +11513,20 @@ export function useGetVoiceHistoryExportFilenameFilename<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.voice.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.voice.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVoiceHistoryExportFilenameFilename<TError = unknown>(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -11535,7 +11549,7 @@ export function useImmutableGetVoiceHistoryExportFilenameFilename<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+            Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
           >
         >
       >,
@@ -11543,7 +11557,7 @@ export function useImmutableGetVoiceHistoryExportFilenameFilename<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.voice.history['export?filename=:filename'].$get(args, clientOptions)),
+        parseResponse(client.voice.history['export?filename={filename}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -11551,15 +11565,15 @@ export function useImmutableGetVoiceHistoryExportFilenameFilename<TError = unkno
 
 export function getGetVoiceHistoryDateFromDateFromDateToDateToKey(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
-  return ['voice', '/voice/history?date_from=:date_from&date_to=:date_to', args] as const
+  return ['voice', '/voice/history?date_from={date_from}&date_to={date_to}', args] as const
 }
 
 export function useGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -11568,7 +11582,7 @@ export function useGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -11595,7 +11609,7 @@ export function useGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -11606,7 +11620,7 @@ export function useGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>
       swrKey,
       async () =>
         parseResponse(
-          client.voice['history?date_from=:date_from&date_to=:date_to'].$get(args, clientOptions),
+          client.voice['history?date_from={date_from}&date_to={date_to}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -11615,7 +11629,7 @@ export function useGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>
 
 export function useImmutableGetVoiceHistoryDateFromDateFromDateToDateTo<TError = unknown>(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -11624,7 +11638,7 @@ export function useImmutableGetVoiceHistoryDateFromDateFromDateToDateTo<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -11651,7 +11665,7 @@ export function useImmutableGetVoiceHistoryDateFromDateFromDateToDateTo<TError =
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+                (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
               >
             >
           >
@@ -11662,7 +11676,7 @@ export function useImmutableGetVoiceHistoryDateFromDateFromDateToDateTo<TError =
       swrKey,
       async () =>
         parseResponse(
-          client.voice['history?date_from=:date_from&date_to=:date_to'].$get(args, clientOptions),
+          client.voice['history?date_from={date_from}&date_to={date_to}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -11838,7 +11852,7 @@ export function usePostVoiceReceipts<TError = unknown>(options?: {
 }
 
 export function getPutVoiceReceiptsReadDateBeforeDateBeforeKey() {
-  return ['voice', '/voice/receipts-read?date_before=:date_before', 'PUT'] as const
+  return ['voice', '/voice/receipts-read?date_before={date_before}', 'PUT'] as const
 }
 
 export function usePutVoiceReceiptsReadDateBeforeDateBefore<TError = unknown>(options?: {
@@ -11847,14 +11861,14 @@ export function usePutVoiceReceiptsReadDateBeforeDateBefore<TError = unknown>(op
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>
+            ReturnType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>
           >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>
+    InferRequestType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -11871,12 +11885,12 @@ export function usePutVoiceReceiptsReadDateBeforeDateBefore<TError = unknown>(op
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.voice)['receipts-read?date_before=:date_before']['$put']
+            (typeof client.voice)['receipts-read?date_before={date_before}']['$put']
           >
         },
       ) =>
         parseResponse(
-          client.voice['receipts-read?date_before=:date_before'].$put(arg, clientOptions),
+          client.voice['receipts-read?date_before={date_before}'].$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDocgenBatchJobsBatchIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDocgenBatchJobsBatchIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const docgenBatchJobsHandler = app.openapi(getDocgenBatchJobsBatchIdRoute, (c) => {
+export const getDocgenBatchJobsBatchIdRouteHandler: RouteHandler<
+  typeof getDocgenBatchJobsBatchIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

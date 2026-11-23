@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCalendarDatesExportIndexRoute, getCalendarDatesIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCalendarDatesExportIndexRoute, getCalendarDatesIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCalendarDatesIndexRouteHandler: RouteHandler<
+  typeof getCalendarDatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const calendarDatesHandler = app
-  .openapi(getCalendarDatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarDatesExportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCalendarDatesExportIndexRouteHandler: RouteHandler<
+  typeof getCalendarDatesExportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

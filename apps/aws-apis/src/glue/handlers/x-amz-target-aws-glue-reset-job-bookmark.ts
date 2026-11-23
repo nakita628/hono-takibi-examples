@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueResetJobBookmarkRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueResetJobBookmarkRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueResetJobBookmarkHandler = app.openapi(
-  postXAmzTargetAWSGlueResetJobBookmarkRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueResetJobBookmarkRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueResetJobBookmarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

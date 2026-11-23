@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFilesRevokePublicURLRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFilesRevokePublicURLRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const filesRevokePublicUrlHandler = app.openapi(postFilesRevokePublicURLRoute, (c) => {
+export const postFilesRevokePublicURLRouteHandler: RouteHandler<
+  typeof postFilesRevokePublicURLRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

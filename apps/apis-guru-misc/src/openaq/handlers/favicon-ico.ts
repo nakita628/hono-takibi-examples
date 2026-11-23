@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFaviconIcoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFaviconIcoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const faviconIcoHandler = app.openapi(getFaviconIcoRoute, (c) => {
+export const getFaviconIcoRouteHandler: RouteHandler<typeof getFaviconIcoRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

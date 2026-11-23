@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/nic.at/domainfinder/1.1.0/openapi.yaml',
   output: './src/nic-at-domainfinder/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nic-at-domainfinder/types.ts' },
   client: { output: './src/nic-at-domainfinder/client.ts', baseUrl: '/' },
   rpc: { output: './src/nic-at-domainfinder/rpc.ts', parseResponse: true },

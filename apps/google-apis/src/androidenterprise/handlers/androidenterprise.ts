@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysKeyIdRoute,
   deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute,
   deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute,
@@ -78,324 +78,458 @@ import {
   putAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAndroidenterpriseV1EnterprisesRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const androidenterpriseHandler = app
-  .openapi(getAndroidenterpriseV1EnterprisesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesAcknowledgeNotificationSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesCompleteSignupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesPullNotificationSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesSignupUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdCreateEnrollmentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdCreateWebTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdUsersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdAppRestrictionsSchemaRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdGenerateApprovalUrlRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdManagedConfigurationsSettingsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdUnapproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdSendTestPushNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdUnenrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAuthenticationTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDeviceAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdForceReportUploadRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidenterpriseV1PermissionsPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAndroidenterpriseV1EnterprisesAcknowledgeNotificationSetRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesAcknowledgeNotificationSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesCompleteSignupRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesCompleteSignupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnrollRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnrollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesPullNotificationSetRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesPullNotificationSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesSignupUrlRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesSignupUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdAccountRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdCreateEnrollmentTokenRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdCreateEnrollmentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdCreateWebTokenRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdCreateWebTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdUsersRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdGroupLicensesGroupLicenseIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdProductsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdAppRestrictionsSchemaRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdAppRestrictionsSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdApproveRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdGenerateApprovalUrlRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdGenerateApprovalUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdManagedConfigurationsSettingsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdManagedConfigurationsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdPermissionsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdUnapproveRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdProductsProductIdUnapproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdSendTestPushNotificationRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdSendTestPushNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysKeyIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdServiceAccountKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdStoreLayoutPagesPageIdClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdUnenrollRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdUnenrollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdUsersRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAuthenticationTokenRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAuthenticationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdAvailableProductSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDeviceAccessRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDeviceAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdForceReportUploadRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdForceReportUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdInstallsInstallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdManagedConfigurationsForDeviceManagedConfigurationForDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdDevicesDeviceIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdEntitlementsEntitlementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdUsersUserIdManagedConfigurationsForUserManagedConfigurationForUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRouteHandler: RouteHandler<
+  typeof postAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRouteHandler: RouteHandler<
+  typeof deleteAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRouteHandler: RouteHandler<
+  typeof putAndroidenterpriseV1EnterprisesEnterpriseIdWebAppsWebAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidenterpriseV1PermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof getAndroidenterpriseV1PermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

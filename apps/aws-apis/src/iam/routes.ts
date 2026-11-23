@@ -529,12 +529,12 @@ const ManagedPolicyDetailListTypeSchema = z
 const ResponseMarkerTypeSchema = z.string().openapi('ResponseMarkerType')
 
 type GetAccountAuthorizationDetailsResponseType = {
-  UserDetailList?: z.infer<typeof UserDetailListTypeSchema> & unknown
-  GroupDetailList?: z.infer<typeof GroupDetailListTypeSchema> & unknown
-  RoleDetailList?: z.infer<typeof RoleDetailListTypeSchema> & unknown
-  Policies?: z.infer<typeof ManagedPolicyDetailListTypeSchema> & unknown
-  IsTruncated?: z.infer<typeof BooleanTypeSchema> & unknown
-  Marker?: z.infer<typeof ResponseMarkerTypeSchema> & unknown
+  UserDetailList?: z.infer<typeof UserDetailListTypeSchema>
+  GroupDetailList?: z.infer<typeof GroupDetailListTypeSchema>
+  RoleDetailList?: z.infer<typeof RoleDetailListTypeSchema>
+  Policies?: z.infer<typeof ManagedPolicyDetailListTypeSchema>
+  IsTruncated?: z.infer<typeof BooleanTypeSchema>
+  Marker?: z.infer<typeof ResponseMarkerTypeSchema>
 }
 
 const ActionNameTypeSchema = z.string().min(3).max(128).openapi('ActionNameType')
@@ -721,9 +721,9 @@ const EvaluationResultsListTypeSchema = z
   .openapi('EvaluationResultsListType')
 
 type SimulatePolicyResponseType = {
-  EvaluationResults?: z.infer<typeof EvaluationResultsListTypeSchema> & unknown
-  IsTruncated?: z.infer<typeof BooleanTypeSchema> & unknown
-  Marker?: z.infer<typeof ResponseMarkerTypeSchema> & unknown
+  EvaluationResults?: z.infer<typeof EvaluationResultsListTypeSchema>
+  IsTruncated?: z.infer<typeof BooleanTypeSchema>
+  Marker?: z.infer<typeof ResponseMarkerTypeSchema>
 }
 
 const InvalidInputExceptionSchema = z.any().openapi('InvalidInputException')

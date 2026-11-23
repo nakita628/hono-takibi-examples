@@ -1,79 +1,218 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAppRunnerAssociateCustomDomainHandler,
-  xAmzTargetAppRunnerCreateAutoScalingConfigurationHandler,
-  xAmzTargetAppRunnerCreateConnectionHandler,
-  xAmzTargetAppRunnerCreateObservabilityConfigurationHandler,
-  xAmzTargetAppRunnerCreateServiceHandler,
-  xAmzTargetAppRunnerCreateVpcConnectorHandler,
-  xAmzTargetAppRunnerCreateVpcIngressConnectionHandler,
-  xAmzTargetAppRunnerDeleteAutoScalingConfigurationHandler,
-  xAmzTargetAppRunnerDeleteConnectionHandler,
-  xAmzTargetAppRunnerDeleteObservabilityConfigurationHandler,
-  xAmzTargetAppRunnerDeleteServiceHandler,
-  xAmzTargetAppRunnerDeleteVpcConnectorHandler,
-  xAmzTargetAppRunnerDeleteVpcIngressConnectionHandler,
-  xAmzTargetAppRunnerDescribeAutoScalingConfigurationHandler,
-  xAmzTargetAppRunnerDescribeCustomDomainsHandler,
-  xAmzTargetAppRunnerDescribeObservabilityConfigurationHandler,
-  xAmzTargetAppRunnerDescribeServiceHandler,
-  xAmzTargetAppRunnerDescribeVpcConnectorHandler,
-  xAmzTargetAppRunnerDescribeVpcIngressConnectionHandler,
-  xAmzTargetAppRunnerDisassociateCustomDomainHandler,
-  xAmzTargetAppRunnerListAutoScalingConfigurationsHandler,
-  xAmzTargetAppRunnerListConnectionsHandler,
-  xAmzTargetAppRunnerListObservabilityConfigurationsHandler,
-  xAmzTargetAppRunnerListOperationsHandler,
-  xAmzTargetAppRunnerListServicesHandler,
-  xAmzTargetAppRunnerListTagsForResourceHandler,
-  xAmzTargetAppRunnerListVpcConnectorsHandler,
-  xAmzTargetAppRunnerListVpcIngressConnectionsHandler,
-  xAmzTargetAppRunnerPauseServiceHandler,
-  xAmzTargetAppRunnerResumeServiceHandler,
-  xAmzTargetAppRunnerStartDeploymentHandler,
-  xAmzTargetAppRunnerTagResourceHandler,
-  xAmzTargetAppRunnerUntagResourceHandler,
-  xAmzTargetAppRunnerUpdateServiceHandler,
-  xAmzTargetAppRunnerUpdateVpcIngressConnectionHandler,
+  postXAmzTargetAppRunnerAssociateCustomDomainRoute,
+  postXAmzTargetAppRunnerCreateAutoScalingConfigurationRoute,
+  postXAmzTargetAppRunnerCreateConnectionRoute,
+  postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute,
+  postXAmzTargetAppRunnerCreateServiceRoute,
+  postXAmzTargetAppRunnerCreateVpcConnectorRoute,
+  postXAmzTargetAppRunnerCreateVpcIngressConnectionRoute,
+  postXAmzTargetAppRunnerDeleteAutoScalingConfigurationRoute,
+  postXAmzTargetAppRunnerDeleteConnectionRoute,
+  postXAmzTargetAppRunnerDeleteObservabilityConfigurationRoute,
+  postXAmzTargetAppRunnerDeleteServiceRoute,
+  postXAmzTargetAppRunnerDeleteVpcConnectorRoute,
+  postXAmzTargetAppRunnerDeleteVpcIngressConnectionRoute,
+  postXAmzTargetAppRunnerDescribeAutoScalingConfigurationRoute,
+  postXAmzTargetAppRunnerDescribeCustomDomainsRoute,
+  postXAmzTargetAppRunnerDescribeObservabilityConfigurationRoute,
+  postXAmzTargetAppRunnerDescribeServiceRoute,
+  postXAmzTargetAppRunnerDescribeVpcConnectorRoute,
+  postXAmzTargetAppRunnerDescribeVpcIngressConnectionRoute,
+  postXAmzTargetAppRunnerDisassociateCustomDomainRoute,
+  postXAmzTargetAppRunnerListAutoScalingConfigurationsRoute,
+  postXAmzTargetAppRunnerListConnectionsRoute,
+  postXAmzTargetAppRunnerListObservabilityConfigurationsRoute,
+  postXAmzTargetAppRunnerListOperationsRoute,
+  postXAmzTargetAppRunnerListServicesRoute,
+  postXAmzTargetAppRunnerListTagsForResourceRoute,
+  postXAmzTargetAppRunnerListVpcConnectorsRoute,
+  postXAmzTargetAppRunnerListVpcIngressConnectionsRoute,
+  postXAmzTargetAppRunnerPauseServiceRoute,
+  postXAmzTargetAppRunnerResumeServiceRoute,
+  postXAmzTargetAppRunnerStartDeploymentRoute,
+  postXAmzTargetAppRunnerTagResourceRoute,
+  postXAmzTargetAppRunnerUntagResourceRoute,
+  postXAmzTargetAppRunnerUpdateServiceRoute,
+  postXAmzTargetAppRunnerUpdateVpcIngressConnectionRoute,
+} from './routes'
+import {
+  postXAmzTargetAppRunnerAssociateCustomDomainRouteHandler,
+  postXAmzTargetAppRunnerCreateAutoScalingConfigurationRouteHandler,
+  postXAmzTargetAppRunnerCreateConnectionRouteHandler,
+  postXAmzTargetAppRunnerCreateObservabilityConfigurationRouteHandler,
+  postXAmzTargetAppRunnerCreateServiceRouteHandler,
+  postXAmzTargetAppRunnerCreateVpcConnectorRouteHandler,
+  postXAmzTargetAppRunnerCreateVpcIngressConnectionRouteHandler,
+  postXAmzTargetAppRunnerDeleteAutoScalingConfigurationRouteHandler,
+  postXAmzTargetAppRunnerDeleteConnectionRouteHandler,
+  postXAmzTargetAppRunnerDeleteObservabilityConfigurationRouteHandler,
+  postXAmzTargetAppRunnerDeleteServiceRouteHandler,
+  postXAmzTargetAppRunnerDeleteVpcConnectorRouteHandler,
+  postXAmzTargetAppRunnerDeleteVpcIngressConnectionRouteHandler,
+  postXAmzTargetAppRunnerDescribeAutoScalingConfigurationRouteHandler,
+  postXAmzTargetAppRunnerDescribeCustomDomainsRouteHandler,
+  postXAmzTargetAppRunnerDescribeObservabilityConfigurationRouteHandler,
+  postXAmzTargetAppRunnerDescribeServiceRouteHandler,
+  postXAmzTargetAppRunnerDescribeVpcConnectorRouteHandler,
+  postXAmzTargetAppRunnerDescribeVpcIngressConnectionRouteHandler,
+  postXAmzTargetAppRunnerDisassociateCustomDomainRouteHandler,
+  postXAmzTargetAppRunnerListAutoScalingConfigurationsRouteHandler,
+  postXAmzTargetAppRunnerListConnectionsRouteHandler,
+  postXAmzTargetAppRunnerListObservabilityConfigurationsRouteHandler,
+  postXAmzTargetAppRunnerListOperationsRouteHandler,
+  postXAmzTargetAppRunnerListServicesRouteHandler,
+  postXAmzTargetAppRunnerListTagsForResourceRouteHandler,
+  postXAmzTargetAppRunnerListVpcConnectorsRouteHandler,
+  postXAmzTargetAppRunnerListVpcIngressConnectionsRouteHandler,
+  postXAmzTargetAppRunnerPauseServiceRouteHandler,
+  postXAmzTargetAppRunnerResumeServiceRouteHandler,
+  postXAmzTargetAppRunnerStartDeploymentRouteHandler,
+  postXAmzTargetAppRunnerTagResourceRouteHandler,
+  postXAmzTargetAppRunnerUntagResourceRouteHandler,
+  postXAmzTargetAppRunnerUpdateServiceRouteHandler,
+  postXAmzTargetAppRunnerUpdateVpcIngressConnectionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAppRunnerAssociateCustomDomainHandler)
-  .route('/', xAmzTargetAppRunnerCreateAutoScalingConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerCreateConnectionHandler)
-  .route('/', xAmzTargetAppRunnerCreateObservabilityConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerCreateServiceHandler)
-  .route('/', xAmzTargetAppRunnerCreateVpcConnectorHandler)
-  .route('/', xAmzTargetAppRunnerCreateVpcIngressConnectionHandler)
-  .route('/', xAmzTargetAppRunnerDeleteAutoScalingConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerDeleteConnectionHandler)
-  .route('/', xAmzTargetAppRunnerDeleteObservabilityConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerDeleteServiceHandler)
-  .route('/', xAmzTargetAppRunnerDeleteVpcConnectorHandler)
-  .route('/', xAmzTargetAppRunnerDeleteVpcIngressConnectionHandler)
-  .route('/', xAmzTargetAppRunnerDescribeAutoScalingConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerDescribeCustomDomainsHandler)
-  .route('/', xAmzTargetAppRunnerDescribeObservabilityConfigurationHandler)
-  .route('/', xAmzTargetAppRunnerDescribeServiceHandler)
-  .route('/', xAmzTargetAppRunnerDescribeVpcConnectorHandler)
-  .route('/', xAmzTargetAppRunnerDescribeVpcIngressConnectionHandler)
-  .route('/', xAmzTargetAppRunnerDisassociateCustomDomainHandler)
-  .route('/', xAmzTargetAppRunnerListAutoScalingConfigurationsHandler)
-  .route('/', xAmzTargetAppRunnerListConnectionsHandler)
-  .route('/', xAmzTargetAppRunnerListObservabilityConfigurationsHandler)
-  .route('/', xAmzTargetAppRunnerListOperationsHandler)
-  .route('/', xAmzTargetAppRunnerListServicesHandler)
-  .route('/', xAmzTargetAppRunnerListTagsForResourceHandler)
-  .route('/', xAmzTargetAppRunnerListVpcConnectorsHandler)
-  .route('/', xAmzTargetAppRunnerListVpcIngressConnectionsHandler)
-  .route('/', xAmzTargetAppRunnerPauseServiceHandler)
-  .route('/', xAmzTargetAppRunnerResumeServiceHandler)
-  .route('/', xAmzTargetAppRunnerStartDeploymentHandler)
-  .route('/', xAmzTargetAppRunnerTagResourceHandler)
-  .route('/', xAmzTargetAppRunnerUntagResourceHandler)
-  .route('/', xAmzTargetAppRunnerUpdateServiceHandler)
-  .route('/', xAmzTargetAppRunnerUpdateVpcIngressConnectionHandler)
+  .openapi(
+    postXAmzTargetAppRunnerAssociateCustomDomainRoute,
+    postXAmzTargetAppRunnerAssociateCustomDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateAutoScalingConfigurationRoute,
+    postXAmzTargetAppRunnerCreateAutoScalingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateConnectionRoute,
+    postXAmzTargetAppRunnerCreateConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute,
+    postXAmzTargetAppRunnerCreateObservabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateServiceRoute,
+    postXAmzTargetAppRunnerCreateServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateVpcConnectorRoute,
+    postXAmzTargetAppRunnerCreateVpcConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerCreateVpcIngressConnectionRoute,
+    postXAmzTargetAppRunnerCreateVpcIngressConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteAutoScalingConfigurationRoute,
+    postXAmzTargetAppRunnerDeleteAutoScalingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteConnectionRoute,
+    postXAmzTargetAppRunnerDeleteConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteObservabilityConfigurationRoute,
+    postXAmzTargetAppRunnerDeleteObservabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteServiceRoute,
+    postXAmzTargetAppRunnerDeleteServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteVpcConnectorRoute,
+    postXAmzTargetAppRunnerDeleteVpcConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDeleteVpcIngressConnectionRoute,
+    postXAmzTargetAppRunnerDeleteVpcIngressConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeAutoScalingConfigurationRoute,
+    postXAmzTargetAppRunnerDescribeAutoScalingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeCustomDomainsRoute,
+    postXAmzTargetAppRunnerDescribeCustomDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeObservabilityConfigurationRoute,
+    postXAmzTargetAppRunnerDescribeObservabilityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeServiceRoute,
+    postXAmzTargetAppRunnerDescribeServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeVpcConnectorRoute,
+    postXAmzTargetAppRunnerDescribeVpcConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDescribeVpcIngressConnectionRoute,
+    postXAmzTargetAppRunnerDescribeVpcIngressConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerDisassociateCustomDomainRoute,
+    postXAmzTargetAppRunnerDisassociateCustomDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListAutoScalingConfigurationsRoute,
+    postXAmzTargetAppRunnerListAutoScalingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListConnectionsRoute,
+    postXAmzTargetAppRunnerListConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListObservabilityConfigurationsRoute,
+    postXAmzTargetAppRunnerListObservabilityConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListOperationsRoute,
+    postXAmzTargetAppRunnerListOperationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListServicesRoute,
+    postXAmzTargetAppRunnerListServicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListTagsForResourceRoute,
+    postXAmzTargetAppRunnerListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListVpcConnectorsRoute,
+    postXAmzTargetAppRunnerListVpcConnectorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerListVpcIngressConnectionsRoute,
+    postXAmzTargetAppRunnerListVpcIngressConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerPauseServiceRoute,
+    postXAmzTargetAppRunnerPauseServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerResumeServiceRoute,
+    postXAmzTargetAppRunnerResumeServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerStartDeploymentRoute,
+    postXAmzTargetAppRunnerStartDeploymentRouteHandler,
+  )
+  .openapi(postXAmzTargetAppRunnerTagResourceRoute, postXAmzTargetAppRunnerTagResourceRouteHandler)
+  .openapi(
+    postXAmzTargetAppRunnerUntagResourceRoute,
+    postXAmzTargetAppRunnerUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerUpdateServiceRoute,
+    postXAmzTargetAppRunnerUpdateServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAppRunnerUpdateVpcIngressConnectionRoute,
+    postXAmzTargetAppRunnerUpdateVpcIngressConnectionRouteHandler,
+  )
 
 export default app

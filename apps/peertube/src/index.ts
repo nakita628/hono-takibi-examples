@@ -1,12 +1,1274 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler, downloadHandler, feedsHandler, staticHandler } from './handlers'
+import {
+  deleteApiV1AbusesAbuseIdMessagesAbuseMessageIdRoute,
+  deleteApiV1AbusesAbuseIdRoute,
+  deleteApiV1ConfigCustomRoute,
+  deleteApiV1ConfigInstanceAvatarRoute,
+  deleteApiV1ConfigInstanceBannerRoute,
+  deleteApiV1ConfigInstanceLogoLogoTypeRoute,
+  deleteApiV1RunnersJobsJobUUIDRoute,
+  deleteApiV1RunnersRegistrationTokensRegistrationTokenIdRoute,
+  deleteApiV1RunnersRunnerIdRoute,
+  deleteApiV1ServerBlocklistAccountsAccountNameRoute,
+  deleteApiV1ServerBlocklistServersHostRoute,
+  deleteApiV1ServerBlocklistSubscriptionsIdRoute,
+  deleteApiV1ServerFollowersHandleRoute,
+  deleteApiV1ServerFollowingHostOrHandleRoute,
+  deleteApiV1ServerRedundancyVideosRedundancyIdRoute,
+  deleteApiV1UsersIdRoute,
+  deleteApiV1UsersMeAvatarRoute,
+  deleteApiV1UsersMeBlocklistAccountsAccountNameRoute,
+  deleteApiV1UsersMeBlocklistServersHostRoute,
+  deleteApiV1UsersMeHistoryVideosVideoIdOrUUIDRoute,
+  deleteApiV1UsersMeRoute,
+  deleteApiV1UsersMeSubscriptionsSubscriptionHandleRoute,
+  deleteApiV1UsersRegistrationsRegistrationIdRoute,
+  deleteApiV1UsersUserIdExportsIdRoute,
+  deleteApiV1UsersUserIdImportsImportResumableRoute,
+  deleteApiV1VideoChannelsChannelHandleAvatarRoute,
+  deleteApiV1VideoChannelsChannelHandleBannerRoute,
+  deleteApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRoute,
+  deleteApiV1VideoChannelsChannelHandleRoute,
+  deleteApiV1VideoChannelsOwnershipIdRoute,
+  deleteApiV1VideoChannelSyncsChannelSyncIdRoute,
+  deleteApiV1VideoPlaylistsPlaylistIdRoute,
+  deleteApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRoute,
+  deleteApiV1VideosIdBlacklistRoute,
+  deleteApiV1VideosIdCaptionsCaptionLanguageRoute,
+  deleteApiV1VideosIdCommentsCommentIdRoute,
+  deleteApiV1VideosIdHlsRoute,
+  deleteApiV1VideosIdPasswordsPasswordIdRoute,
+  deleteApiV1VideosIdRoute,
+  deleteApiV1VideosIdSourceFileRoute,
+  deleteApiV1VideosIdSourceReplaceResumableRoute,
+  deleteApiV1VideosIdWebVideosRoute,
+  deleteApiV1VideosImportsIdRoute,
+  deleteApiV1VideosOwnershipIdRoute,
+  deleteApiV1VideosUploadResumableRoute,
+  deleteApiV1WatchedWordsAccountsAccountNameListsListIdRoute,
+  deleteApiV1WatchedWordsAccountsAccountNameSubscriptionsIdRoute,
+  deleteApiV1WatchedWordsServerListsListIdRoute,
+  deleteApiV1WatchedWordsServerSubscriptionsIdRoute,
+  getApiV1AbusesAbuseIdMessagesRoute,
+  getApiV1AbusesRoute,
+  getApiV1AccountsNameFollowersRoute,
+  getApiV1AccountsNameRatingsRoute,
+  getApiV1AccountsNameRoute,
+  getApiV1AccountsNameVideoChannelsRoute,
+  getApiV1AccountsNameVideoChannelSyncsRoute,
+  getApiV1AccountsNameVideoPlaylistsRoute,
+  getApiV1AccountsNameVideosRoute,
+  getApiV1AccountsRoute,
+  getApiV1AutomaticTagsAccountsAccountNameAvailableRoute,
+  getApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute,
+  getApiV1AutomaticTagsPoliciesServerVideosRoute,
+  getApiV1AutomaticTagsServerAvailableRoute,
+  getApiV1BlocklistStatusRoute,
+  getApiV1ConfigAboutRoute,
+  getApiV1ConfigCustomRoute,
+  getApiV1ConfigRoute,
+  getApiV1CustomPagesHomepageInstanceRoute,
+  getApiV1JobsStateRoute,
+  getApiV1OauthClientsLocalRoute,
+  getApiV1PlayerSettingsVideoChannelsChannelHandleRoute,
+  getApiV1PlayerSettingsVideosIdRoute,
+  getApiV1PluginsAvailableRoute,
+  getApiV1PluginsNpmNamePublicSettingsRoute,
+  getApiV1PluginsNpmNameRegisteredSettingsRoute,
+  getApiV1PluginsNpmNameRoute,
+  getApiV1PluginsRoute,
+  getApiV1RecommendationsVideosRoute,
+  getApiV1RunnersJobsRoute,
+  getApiV1RunnersRegistrationTokensRoute,
+  getApiV1RunnersRoute,
+  getApiV1SearchVideoChannelsRoute,
+  getApiV1SearchVideoPlaylistsRoute,
+  getApiV1SearchVideosRoute,
+  getApiV1ServerAuditLogsRoute,
+  getApiV1ServerBlocklistAccountsRoute,
+  getApiV1ServerBlocklistPublicLogRoute,
+  getApiV1ServerBlocklistServersRoute,
+  getApiV1ServerBlocklistSubscriptionsRoute,
+  getApiV1ServerDebugRoute,
+  getApiV1ServerFollowersRoute,
+  getApiV1ServerFollowingRoute,
+  getApiV1ServerLogsRoute,
+  getApiV1ServerRedundancyVideosRoute,
+  getApiV1ServerStatsRoute,
+  getApiV1UsersIdRoute,
+  getApiV1UsersIdTokenSessionsRoute,
+  getApiV1UsersMeAbusesRoute,
+  getApiV1UsersMeBlocklistAccountsRoute,
+  getApiV1UsersMeBlocklistServersRoute,
+  getApiV1UsersMeHistoryVideosRoute,
+  getApiV1UsersMeNotificationsRoute,
+  getApiV1UsersMeRoute,
+  getApiV1UsersMeSubscriptionsExistRoute,
+  getApiV1UsersMeSubscriptionsRoute,
+  getApiV1UsersMeSubscriptionsSubscriptionHandleRoute,
+  getApiV1UsersMeSubscriptionsVideosRoute,
+  getApiV1UsersMeVideoPlaylistsVideosExistRoute,
+  getApiV1UsersMeVideoQuotaUsedRoute,
+  getApiV1UsersMeVideosCommentsRoute,
+  getApiV1UsersMeVideosImportsRoute,
+  getApiV1UsersMeVideosRoute,
+  getApiV1UsersMeVideosVideoIdOrUUIDRatingRoute,
+  getApiV1UsersRegistrationsRoute,
+  getApiV1UsersRoute,
+  getApiV1UsersUserIdExportsRoute,
+  getApiV1UsersUserIdImportsLatestRoute,
+  getApiV1VideoChannelsChannelHandleActivitiesRoute,
+  getApiV1VideoChannelsChannelHandleCollaboratorsRoute,
+  getApiV1VideoChannelsChannelHandleFollowersRoute,
+  getApiV1VideoChannelsChannelHandleOwnershipRoute,
+  getApiV1VideoChannelsChannelHandleRoute,
+  getApiV1VideoChannelsChannelHandleVideoPlaylistsRoute,
+  getApiV1VideoChannelsChannelHandleVideosRoute,
+  getApiV1VideoChannelsOwnershipRoute,
+  getApiV1VideoChannelsRoute,
+  getApiV1VideoPlaylistsPlaylistIdRoute,
+  getApiV1VideoPlaylistsPlaylistIdVideosRoute,
+  getApiV1VideoPlaylistsPrivaciesRoute,
+  getApiV1VideoPlaylistsRoute,
+  getApiV1VideosBlacklistRoute,
+  getApiV1VideosCategoriesRoute,
+  getApiV1VideosCommentsRoute,
+  getApiV1VideosIdCaptionsRoute,
+  getApiV1VideosIdChaptersRoute,
+  getApiV1VideosIdCommentsCommentIdRepliesRoute,
+  getApiV1VideosIdCommentThreadsRoute,
+  getApiV1VideosIdCommentThreadsThreadIdRoute,
+  getApiV1VideosIdEmbedPrivacyAllowedRoute,
+  getApiV1VideosIdEmbedPrivacyRoute,
+  getApiV1VideosIdLiveSessionRoute,
+  getApiV1VideosIdPasswordsRoute,
+  getApiV1VideosIdRoute,
+  getApiV1VideosIdSourceRoute,
+  getApiV1VideosIdStatsOverallRoute,
+  getApiV1VideosIdStatsRetentionRoute,
+  getApiV1VideosIdStatsTimeseriesMetricRoute,
+  getApiV1VideosIdStatsUserAgentRoute,
+  getApiV1VideosIdStoryboardsRoute,
+  getApiV1VideosLanguagesRoute,
+  getApiV1VideosLicencesRoute,
+  getApiV1VideosLiveIdRoute,
+  getApiV1VideosLiveIdSessionsRoute,
+  getApiV1VideosOwnershipRoute,
+  getApiV1VideosPrivaciesRoute,
+  getApiV1VideosRoute,
+  getApiV1VideosVideoIdOrUUIDOwnershipRoute,
+  getApiV1WatchedWordsAccountsAccountNameListsRoute,
+  getApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute,
+  getApiV1WatchedWordsServerListsRoute,
+  getApiV1WatchedWordsServerSubscriptionsRoute,
+  getDownloadVideosGenerateVideoIdOrUUIDRoute,
+  getFeedsPodcastVideoChaptersJsonRoute,
+  getFeedsPodcastVideosXmlRoute,
+  getFeedsSubscriptionsFormatRoute,
+  getFeedsVideoCommentsFormatRoute,
+  getFeedsVideosFormatRoute,
+  getStaticStreamingPlaylistsHlsFilenameRoute,
+  getStaticStreamingPlaylistsHlsPrivateFilenameRoute,
+  getStaticWebVideosFilenameRoute,
+  getStaticWebVideosPrivateFilenameRoute,
+  postApiV1AbusesAbuseIdMessagesRoute,
+  postApiV1AbusesRoute,
+  postApiV1ClientConfigUpdateInterfaceLanguageRoute,
+  postApiV1ClientConfigUpdateLanguageRoute,
+  postApiV1ConfigInstanceAvatarPickRoute,
+  postApiV1ConfigInstanceBannerPickRoute,
+  postApiV1ConfigInstanceLogoLogoTypePickRoute,
+  postApiV1JobsJobTypeJobIdCancelRoute,
+  postApiV1JobsPauseRoute,
+  postApiV1JobsResumeRoute,
+  postApiV1MetricsPlaybackRoute,
+  postApiV1PluginsInstallRoute,
+  postApiV1PluginsUninstallRoute,
+  postApiV1PluginsUpdateRoute,
+  postApiV1RunnersJobsJobUUIDAbortRoute,
+  postApiV1RunnersJobsJobUUIDAcceptRoute,
+  postApiV1RunnersJobsJobUUIDCancelRoute,
+  postApiV1RunnersJobsJobUUIDErrorRoute,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityAudioRoute,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityRoute,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDPreviewsMaxQualityRoute,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDStudioTaskFilesFilenameRoute,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDThumbnailsMaxQualityRoute,
+  postApiV1RunnersJobsJobUUIDSuccessRoute,
+  postApiV1RunnersJobsJobUUIDUpdateRoute,
+  postApiV1RunnersJobsRequestRoute,
+  postApiV1RunnersRegisterRoute,
+  postApiV1RunnersRegistrationTokensGenerateRoute,
+  postApiV1RunnersUnregisterRoute,
+  postApiV1ServerBlocklistAccountsRoute,
+  postApiV1ServerBlocklistServersRoute,
+  postApiV1ServerBlocklistSubscriptionsRoute,
+  postApiV1ServerContactRoute,
+  postApiV1ServerDebugRunCommandRoute,
+  postApiV1ServerFollowersHandleAcceptRoute,
+  postApiV1ServerFollowersHandleRejectRoute,
+  postApiV1ServerFollowingRoute,
+  postApiV1ServerLogsClientRoute,
+  postApiV1ServerRedundancyVideosRoute,
+  postApiV1UsersAskResetPasswordRoute,
+  postApiV1UsersAskSendVerifyEmailRoute,
+  postApiV1UsersIdBlockRoute,
+  postApiV1UsersIdResetPasswordRoute,
+  postApiV1UsersIdTokenSessionsTokenSessionIdRevokeRoute,
+  postApiV1UsersIdTwoFactorConfirmRequestRoute,
+  postApiV1UsersIdTwoFactorDisableRoute,
+  postApiV1UsersIdTwoFactorRequestRoute,
+  postApiV1UsersIdUnblockRoute,
+  postApiV1UsersIdVerifyEmailRoute,
+  postApiV1UsersMeAvatarPickRoute,
+  postApiV1UsersMeBlocklistAccountsRoute,
+  postApiV1UsersMeBlocklistServersRoute,
+  postApiV1UsersMeHistoryVideosRemoveRoute,
+  postApiV1UsersMeNewFeatureInfoReadRoute,
+  postApiV1UsersMeNotificationsReadAllRoute,
+  postApiV1UsersMeNotificationsReadRoute,
+  postApiV1UsersMeSubscriptionsRoute,
+  postApiV1UsersRegisterRoute,
+  postApiV1UsersRegistrationsAskSendVerifyEmailRoute,
+  postApiV1UsersRegistrationsRegistrationIdAcceptRoute,
+  postApiV1UsersRegistrationsRegistrationIdRejectRoute,
+  postApiV1UsersRegistrationsRegistrationIdVerifyEmailRoute,
+  postApiV1UsersRegistrationsRequestRoute,
+  postApiV1UsersRevokeTokenRoute,
+  postApiV1UsersRoute,
+  postApiV1UsersTokenRoute,
+  postApiV1UsersUserIdExportsRequestRoute,
+  postApiV1UsersUserIdImportsImportResumableRoute,
+  postApiV1VideoChannelsChannelHandleAvatarPickRoute,
+  postApiV1VideoChannelsChannelHandleBannerPickRoute,
+  postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdAcceptRoute,
+  postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRejectRoute,
+  postApiV1VideoChannelsChannelHandleCollaboratorsInviteRoute,
+  postApiV1VideoChannelsChannelHandleGiveOwnershipRoute,
+  postApiV1VideoChannelsChannelHandleImportVideosRoute,
+  postApiV1VideoChannelsChannelHandleVideoPlaylistsReorderRoute,
+  postApiV1VideoChannelsOwnershipIdAcceptRoute,
+  postApiV1VideoChannelsOwnershipIdRefuseRoute,
+  postApiV1VideoChannelsRoute,
+  postApiV1VideoChannelSyncsChannelSyncIdSyncRoute,
+  postApiV1VideoChannelSyncsRoute,
+  postApiV1VideoPlaylistsPlaylistIdVideosReorderRoute,
+  postApiV1VideoPlaylistsPlaylistIdVideosRoute,
+  postApiV1VideoPlaylistsRoute,
+  postApiV1VideosIdBlacklistRoute,
+  postApiV1VideosIdCaptionsGenerateRoute,
+  postApiV1VideosIdCommentsCommentIdApproveRoute,
+  postApiV1VideosIdCommentsCommentIdRoute,
+  postApiV1VideosIdCommentThreadsRoute,
+  postApiV1VideosIdDuplicateRoute,
+  postApiV1VideosIdImportRetryRoute,
+  postApiV1VideosIdPasswordsRoute,
+  postApiV1VideosIdSourceReplaceResumableRoute,
+  postApiV1VideosIdStudioEditRoute,
+  postApiV1VideosIdTokenRoute,
+  postApiV1VideosIdTranscodingRoute,
+  postApiV1VideosIdViewsRoute,
+  postApiV1VideosImportsIdCancelRoute,
+  postApiV1VideosImportsIdRetryRoute,
+  postApiV1VideosImportsRoute,
+  postApiV1VideosLiveRoute,
+  postApiV1VideosOwnershipIdAcceptRoute,
+  postApiV1VideosOwnershipIdRefuseRoute,
+  postApiV1VideosUploadResumableRoute,
+  postApiV1VideosUploadRoute,
+  postApiV1VideosVideoIdOrUUIDGiveOwnershipRoute,
+  postApiV1WatchedWordsAccountsAccountNameListsRoute,
+  postApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute,
+  postApiV1WatchedWordsServerListsRoute,
+  postApiV1WatchedWordsServerSubscriptionsRoute,
+  putApiV1AbusesAbuseIdRoute,
+  putApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute,
+  putApiV1AutomaticTagsPoliciesServerVideosRoute,
+  putApiV1ConfigCustomRoute,
+  putApiV1CustomPagesHomepageInstanceRoute,
+  putApiV1PlayerSettingsVideoChannelsChannelHandleRoute,
+  putApiV1PlayerSettingsVideosIdRoute,
+  putApiV1PluginsNpmNameSettingsRoute,
+  putApiV1ServerRedundancyHostRoute,
+  putApiV1UsersIdRoute,
+  putApiV1UsersMeNotificationSettingsRoute,
+  putApiV1UsersMeRoute,
+  putApiV1UsersUserIdImportsImportResumableRoute,
+  putApiV1VideoChannelsChannelHandleRoute,
+  putApiV1VideoPlaylistsPlaylistIdRoute,
+  putApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRoute,
+  putApiV1VideosIdBlacklistRoute,
+  putApiV1VideosIdCaptionsCaptionLanguageRoute,
+  putApiV1VideosIdChaptersRoute,
+  putApiV1VideosIdEmbedPrivacyRoute,
+  putApiV1VideosIdPasswordsRoute,
+  putApiV1VideosIdRateRoute,
+  putApiV1VideosIdRoute,
+  putApiV1VideosIdSourceReplaceResumableRoute,
+  putApiV1VideosLiveIdRoute,
+  putApiV1VideosUploadResumableRoute,
+  putApiV1WatchedWordsAccountsAccountNameListsListIdRoute,
+  putApiV1WatchedWordsServerListsListIdRoute,
+} from './routes'
+import {
+  deleteApiV1AbusesAbuseIdMessagesAbuseMessageIdRouteHandler,
+  deleteApiV1AbusesAbuseIdRouteHandler,
+  deleteApiV1ConfigCustomRouteHandler,
+  deleteApiV1ConfigInstanceAvatarRouteHandler,
+  deleteApiV1ConfigInstanceBannerRouteHandler,
+  deleteApiV1ConfigInstanceLogoLogoTypeRouteHandler,
+  deleteApiV1RunnersJobsJobUUIDRouteHandler,
+  deleteApiV1RunnersRegistrationTokensRegistrationTokenIdRouteHandler,
+  deleteApiV1RunnersRunnerIdRouteHandler,
+  deleteApiV1ServerBlocklistAccountsAccountNameRouteHandler,
+  deleteApiV1ServerBlocklistServersHostRouteHandler,
+  deleteApiV1ServerBlocklistSubscriptionsIdRouteHandler,
+  deleteApiV1ServerFollowersHandleRouteHandler,
+  deleteApiV1ServerFollowingHostOrHandleRouteHandler,
+  deleteApiV1ServerRedundancyVideosRedundancyIdRouteHandler,
+  deleteApiV1UsersIdRouteHandler,
+  deleteApiV1UsersMeAvatarRouteHandler,
+  deleteApiV1UsersMeBlocklistAccountsAccountNameRouteHandler,
+  deleteApiV1UsersMeBlocklistServersHostRouteHandler,
+  deleteApiV1UsersMeHistoryVideosVideoIdOrUUIDRouteHandler,
+  deleteApiV1UsersMeRouteHandler,
+  deleteApiV1UsersMeSubscriptionsSubscriptionHandleRouteHandler,
+  deleteApiV1UsersRegistrationsRegistrationIdRouteHandler,
+  deleteApiV1UsersUserIdExportsIdRouteHandler,
+  deleteApiV1UsersUserIdImportsImportResumableRouteHandler,
+  deleteApiV1VideoChannelsChannelHandleAvatarRouteHandler,
+  deleteApiV1VideoChannelsChannelHandleBannerRouteHandler,
+  deleteApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRouteHandler,
+  deleteApiV1VideoChannelsChannelHandleRouteHandler,
+  deleteApiV1VideoChannelsOwnershipIdRouteHandler,
+  deleteApiV1VideoChannelSyncsChannelSyncIdRouteHandler,
+  deleteApiV1VideoPlaylistsPlaylistIdRouteHandler,
+  deleteApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRouteHandler,
+  deleteApiV1VideosIdBlacklistRouteHandler,
+  deleteApiV1VideosIdCaptionsCaptionLanguageRouteHandler,
+  deleteApiV1VideosIdCommentsCommentIdRouteHandler,
+  deleteApiV1VideosIdHlsRouteHandler,
+  deleteApiV1VideosIdPasswordsPasswordIdRouteHandler,
+  deleteApiV1VideosIdRouteHandler,
+  deleteApiV1VideosIdSourceFileRouteHandler,
+  deleteApiV1VideosIdSourceReplaceResumableRouteHandler,
+  deleteApiV1VideosIdWebVideosRouteHandler,
+  deleteApiV1VideosImportsIdRouteHandler,
+  deleteApiV1VideosOwnershipIdRouteHandler,
+  deleteApiV1VideosUploadResumableRouteHandler,
+  deleteApiV1WatchedWordsAccountsAccountNameListsListIdRouteHandler,
+  deleteApiV1WatchedWordsAccountsAccountNameSubscriptionsIdRouteHandler,
+  deleteApiV1WatchedWordsServerListsListIdRouteHandler,
+  deleteApiV1WatchedWordsServerSubscriptionsIdRouteHandler,
+  getApiV1AbusesAbuseIdMessagesRouteHandler,
+  getApiV1AbusesRouteHandler,
+  getApiV1AccountsNameFollowersRouteHandler,
+  getApiV1AccountsNameRatingsRouteHandler,
+  getApiV1AccountsNameRouteHandler,
+  getApiV1AccountsNameVideoChannelsRouteHandler,
+  getApiV1AccountsNameVideoChannelSyncsRouteHandler,
+  getApiV1AccountsNameVideoPlaylistsRouteHandler,
+  getApiV1AccountsNameVideosRouteHandler,
+  getApiV1AccountsRouteHandler,
+  getApiV1AutomaticTagsAccountsAccountNameAvailableRouteHandler,
+  getApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRouteHandler,
+  getApiV1AutomaticTagsPoliciesServerVideosRouteHandler,
+  getApiV1AutomaticTagsServerAvailableRouteHandler,
+  getApiV1BlocklistStatusRouteHandler,
+  getApiV1ConfigAboutRouteHandler,
+  getApiV1ConfigCustomRouteHandler,
+  getApiV1ConfigRouteHandler,
+  getApiV1CustomPagesHomepageInstanceRouteHandler,
+  getApiV1JobsStateRouteHandler,
+  getApiV1OauthClientsLocalRouteHandler,
+  getApiV1PlayerSettingsVideoChannelsChannelHandleRouteHandler,
+  getApiV1PlayerSettingsVideosIdRouteHandler,
+  getApiV1PluginsAvailableRouteHandler,
+  getApiV1PluginsNpmNamePublicSettingsRouteHandler,
+  getApiV1PluginsNpmNameRegisteredSettingsRouteHandler,
+  getApiV1PluginsNpmNameRouteHandler,
+  getApiV1PluginsRouteHandler,
+  getApiV1RecommendationsVideosRouteHandler,
+  getApiV1RunnersJobsRouteHandler,
+  getApiV1RunnersRegistrationTokensRouteHandler,
+  getApiV1RunnersRouteHandler,
+  getApiV1SearchVideoChannelsRouteHandler,
+  getApiV1SearchVideoPlaylistsRouteHandler,
+  getApiV1SearchVideosRouteHandler,
+  getApiV1ServerAuditLogsRouteHandler,
+  getApiV1ServerBlocklistAccountsRouteHandler,
+  getApiV1ServerBlocklistPublicLogRouteHandler,
+  getApiV1ServerBlocklistServersRouteHandler,
+  getApiV1ServerBlocklistSubscriptionsRouteHandler,
+  getApiV1ServerDebugRouteHandler,
+  getApiV1ServerFollowersRouteHandler,
+  getApiV1ServerFollowingRouteHandler,
+  getApiV1ServerLogsRouteHandler,
+  getApiV1ServerRedundancyVideosRouteHandler,
+  getApiV1ServerStatsRouteHandler,
+  getApiV1UsersIdRouteHandler,
+  getApiV1UsersIdTokenSessionsRouteHandler,
+  getApiV1UsersMeAbusesRouteHandler,
+  getApiV1UsersMeBlocklistAccountsRouteHandler,
+  getApiV1UsersMeBlocklistServersRouteHandler,
+  getApiV1UsersMeHistoryVideosRouteHandler,
+  getApiV1UsersMeNotificationsRouteHandler,
+  getApiV1UsersMeRouteHandler,
+  getApiV1UsersMeSubscriptionsExistRouteHandler,
+  getApiV1UsersMeSubscriptionsRouteHandler,
+  getApiV1UsersMeSubscriptionsSubscriptionHandleRouteHandler,
+  getApiV1UsersMeSubscriptionsVideosRouteHandler,
+  getApiV1UsersMeVideoPlaylistsVideosExistRouteHandler,
+  getApiV1UsersMeVideoQuotaUsedRouteHandler,
+  getApiV1UsersMeVideosCommentsRouteHandler,
+  getApiV1UsersMeVideosImportsRouteHandler,
+  getApiV1UsersMeVideosRouteHandler,
+  getApiV1UsersMeVideosVideoIdOrUUIDRatingRouteHandler,
+  getApiV1UsersRegistrationsRouteHandler,
+  getApiV1UsersRouteHandler,
+  getApiV1UsersUserIdExportsRouteHandler,
+  getApiV1UsersUserIdImportsLatestRouteHandler,
+  getApiV1VideoChannelsChannelHandleActivitiesRouteHandler,
+  getApiV1VideoChannelsChannelHandleCollaboratorsRouteHandler,
+  getApiV1VideoChannelsChannelHandleFollowersRouteHandler,
+  getApiV1VideoChannelsChannelHandleOwnershipRouteHandler,
+  getApiV1VideoChannelsChannelHandleRouteHandler,
+  getApiV1VideoChannelsChannelHandleVideoPlaylistsRouteHandler,
+  getApiV1VideoChannelsChannelHandleVideosRouteHandler,
+  getApiV1VideoChannelsOwnershipRouteHandler,
+  getApiV1VideoChannelsRouteHandler,
+  getApiV1VideoPlaylistsPlaylistIdRouteHandler,
+  getApiV1VideoPlaylistsPlaylistIdVideosRouteHandler,
+  getApiV1VideoPlaylistsPrivaciesRouteHandler,
+  getApiV1VideoPlaylistsRouteHandler,
+  getApiV1VideosBlacklistRouteHandler,
+  getApiV1VideosCategoriesRouteHandler,
+  getApiV1VideosCommentsRouteHandler,
+  getApiV1VideosIdCaptionsRouteHandler,
+  getApiV1VideosIdChaptersRouteHandler,
+  getApiV1VideosIdCommentsCommentIdRepliesRouteHandler,
+  getApiV1VideosIdCommentThreadsRouteHandler,
+  getApiV1VideosIdCommentThreadsThreadIdRouteHandler,
+  getApiV1VideosIdEmbedPrivacyAllowedRouteHandler,
+  getApiV1VideosIdEmbedPrivacyRouteHandler,
+  getApiV1VideosIdLiveSessionRouteHandler,
+  getApiV1VideosIdPasswordsRouteHandler,
+  getApiV1VideosIdRouteHandler,
+  getApiV1VideosIdSourceRouteHandler,
+  getApiV1VideosIdStatsOverallRouteHandler,
+  getApiV1VideosIdStatsRetentionRouteHandler,
+  getApiV1VideosIdStatsTimeseriesMetricRouteHandler,
+  getApiV1VideosIdStatsUserAgentRouteHandler,
+  getApiV1VideosIdStoryboardsRouteHandler,
+  getApiV1VideosLanguagesRouteHandler,
+  getApiV1VideosLicencesRouteHandler,
+  getApiV1VideosLiveIdRouteHandler,
+  getApiV1VideosLiveIdSessionsRouteHandler,
+  getApiV1VideosOwnershipRouteHandler,
+  getApiV1VideosPrivaciesRouteHandler,
+  getApiV1VideosRouteHandler,
+  getApiV1VideosVideoIdOrUUIDOwnershipRouteHandler,
+  getApiV1WatchedWordsAccountsAccountNameListsRouteHandler,
+  getApiV1WatchedWordsAccountsAccountNameSubscriptionsRouteHandler,
+  getApiV1WatchedWordsServerListsRouteHandler,
+  getApiV1WatchedWordsServerSubscriptionsRouteHandler,
+  getDownloadVideosGenerateVideoIdOrUUIDRouteHandler,
+  getFeedsPodcastVideoChaptersJsonRouteHandler,
+  getFeedsPodcastVideosXmlRouteHandler,
+  getFeedsSubscriptionsFormatRouteHandler,
+  getFeedsVideoCommentsFormatRouteHandler,
+  getFeedsVideosFormatRouteHandler,
+  getStaticStreamingPlaylistsHlsFilenameRouteHandler,
+  getStaticStreamingPlaylistsHlsPrivateFilenameRouteHandler,
+  getStaticWebVideosFilenameRouteHandler,
+  getStaticWebVideosPrivateFilenameRouteHandler,
+  postApiV1AbusesAbuseIdMessagesRouteHandler,
+  postApiV1AbusesRouteHandler,
+  postApiV1ClientConfigUpdateInterfaceLanguageRouteHandler,
+  postApiV1ClientConfigUpdateLanguageRouteHandler,
+  postApiV1ConfigInstanceAvatarPickRouteHandler,
+  postApiV1ConfigInstanceBannerPickRouteHandler,
+  postApiV1ConfigInstanceLogoLogoTypePickRouteHandler,
+  postApiV1JobsJobTypeJobIdCancelRouteHandler,
+  postApiV1JobsPauseRouteHandler,
+  postApiV1JobsResumeRouteHandler,
+  postApiV1MetricsPlaybackRouteHandler,
+  postApiV1PluginsInstallRouteHandler,
+  postApiV1PluginsUninstallRouteHandler,
+  postApiV1PluginsUpdateRouteHandler,
+  postApiV1RunnersJobsJobUUIDAbortRouteHandler,
+  postApiV1RunnersJobsJobUUIDAcceptRouteHandler,
+  postApiV1RunnersJobsJobUUIDCancelRouteHandler,
+  postApiV1RunnersJobsJobUUIDErrorRouteHandler,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityAudioRouteHandler,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityRouteHandler,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDPreviewsMaxQualityRouteHandler,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDStudioTaskFilesFilenameRouteHandler,
+  postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDThumbnailsMaxQualityRouteHandler,
+  postApiV1RunnersJobsJobUUIDSuccessRouteHandler,
+  postApiV1RunnersJobsJobUUIDUpdateRouteHandler,
+  postApiV1RunnersJobsRequestRouteHandler,
+  postApiV1RunnersRegisterRouteHandler,
+  postApiV1RunnersRegistrationTokensGenerateRouteHandler,
+  postApiV1RunnersUnregisterRouteHandler,
+  postApiV1ServerBlocklistAccountsRouteHandler,
+  postApiV1ServerBlocklistServersRouteHandler,
+  postApiV1ServerBlocklistSubscriptionsRouteHandler,
+  postApiV1ServerContactRouteHandler,
+  postApiV1ServerDebugRunCommandRouteHandler,
+  postApiV1ServerFollowersHandleAcceptRouteHandler,
+  postApiV1ServerFollowersHandleRejectRouteHandler,
+  postApiV1ServerFollowingRouteHandler,
+  postApiV1ServerLogsClientRouteHandler,
+  postApiV1ServerRedundancyVideosRouteHandler,
+  postApiV1UsersAskResetPasswordRouteHandler,
+  postApiV1UsersAskSendVerifyEmailRouteHandler,
+  postApiV1UsersIdBlockRouteHandler,
+  postApiV1UsersIdResetPasswordRouteHandler,
+  postApiV1UsersIdTokenSessionsTokenSessionIdRevokeRouteHandler,
+  postApiV1UsersIdTwoFactorConfirmRequestRouteHandler,
+  postApiV1UsersIdTwoFactorDisableRouteHandler,
+  postApiV1UsersIdTwoFactorRequestRouteHandler,
+  postApiV1UsersIdUnblockRouteHandler,
+  postApiV1UsersIdVerifyEmailRouteHandler,
+  postApiV1UsersMeAvatarPickRouteHandler,
+  postApiV1UsersMeBlocklistAccountsRouteHandler,
+  postApiV1UsersMeBlocklistServersRouteHandler,
+  postApiV1UsersMeHistoryVideosRemoveRouteHandler,
+  postApiV1UsersMeNewFeatureInfoReadRouteHandler,
+  postApiV1UsersMeNotificationsReadAllRouteHandler,
+  postApiV1UsersMeNotificationsReadRouteHandler,
+  postApiV1UsersMeSubscriptionsRouteHandler,
+  postApiV1UsersRegisterRouteHandler,
+  postApiV1UsersRegistrationsAskSendVerifyEmailRouteHandler,
+  postApiV1UsersRegistrationsRegistrationIdAcceptRouteHandler,
+  postApiV1UsersRegistrationsRegistrationIdRejectRouteHandler,
+  postApiV1UsersRegistrationsRegistrationIdVerifyEmailRouteHandler,
+  postApiV1UsersRegistrationsRequestRouteHandler,
+  postApiV1UsersRevokeTokenRouteHandler,
+  postApiV1UsersRouteHandler,
+  postApiV1UsersTokenRouteHandler,
+  postApiV1UsersUserIdExportsRequestRouteHandler,
+  postApiV1UsersUserIdImportsImportResumableRouteHandler,
+  postApiV1VideoChannelsChannelHandleAvatarPickRouteHandler,
+  postApiV1VideoChannelsChannelHandleBannerPickRouteHandler,
+  postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdAcceptRouteHandler,
+  postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRejectRouteHandler,
+  postApiV1VideoChannelsChannelHandleCollaboratorsInviteRouteHandler,
+  postApiV1VideoChannelsChannelHandleGiveOwnershipRouteHandler,
+  postApiV1VideoChannelsChannelHandleImportVideosRouteHandler,
+  postApiV1VideoChannelsChannelHandleVideoPlaylistsReorderRouteHandler,
+  postApiV1VideoChannelsOwnershipIdAcceptRouteHandler,
+  postApiV1VideoChannelsOwnershipIdRefuseRouteHandler,
+  postApiV1VideoChannelsRouteHandler,
+  postApiV1VideoChannelSyncsChannelSyncIdSyncRouteHandler,
+  postApiV1VideoChannelSyncsRouteHandler,
+  postApiV1VideoPlaylistsPlaylistIdVideosReorderRouteHandler,
+  postApiV1VideoPlaylistsPlaylistIdVideosRouteHandler,
+  postApiV1VideoPlaylistsRouteHandler,
+  postApiV1VideosIdBlacklistRouteHandler,
+  postApiV1VideosIdCaptionsGenerateRouteHandler,
+  postApiV1VideosIdCommentsCommentIdApproveRouteHandler,
+  postApiV1VideosIdCommentsCommentIdRouteHandler,
+  postApiV1VideosIdCommentThreadsRouteHandler,
+  postApiV1VideosIdDuplicateRouteHandler,
+  postApiV1VideosIdImportRetryRouteHandler,
+  postApiV1VideosIdPasswordsRouteHandler,
+  postApiV1VideosIdSourceReplaceResumableRouteHandler,
+  postApiV1VideosIdStudioEditRouteHandler,
+  postApiV1VideosIdTokenRouteHandler,
+  postApiV1VideosIdTranscodingRouteHandler,
+  postApiV1VideosIdViewsRouteHandler,
+  postApiV1VideosImportsIdCancelRouteHandler,
+  postApiV1VideosImportsIdRetryRouteHandler,
+  postApiV1VideosImportsRouteHandler,
+  postApiV1VideosLiveRouteHandler,
+  postApiV1VideosOwnershipIdAcceptRouteHandler,
+  postApiV1VideosOwnershipIdRefuseRouteHandler,
+  postApiV1VideosUploadResumableRouteHandler,
+  postApiV1VideosUploadRouteHandler,
+  postApiV1VideosVideoIdOrUUIDGiveOwnershipRouteHandler,
+  postApiV1WatchedWordsAccountsAccountNameListsRouteHandler,
+  postApiV1WatchedWordsAccountsAccountNameSubscriptionsRouteHandler,
+  postApiV1WatchedWordsServerListsRouteHandler,
+  postApiV1WatchedWordsServerSubscriptionsRouteHandler,
+  putApiV1AbusesAbuseIdRouteHandler,
+  putApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRouteHandler,
+  putApiV1AutomaticTagsPoliciesServerVideosRouteHandler,
+  putApiV1ConfigCustomRouteHandler,
+  putApiV1CustomPagesHomepageInstanceRouteHandler,
+  putApiV1PlayerSettingsVideoChannelsChannelHandleRouteHandler,
+  putApiV1PlayerSettingsVideosIdRouteHandler,
+  putApiV1PluginsNpmNameSettingsRouteHandler,
+  putApiV1ServerRedundancyHostRouteHandler,
+  putApiV1UsersIdRouteHandler,
+  putApiV1UsersMeNotificationSettingsRouteHandler,
+  putApiV1UsersMeRouteHandler,
+  putApiV1UsersUserIdImportsImportResumableRouteHandler,
+  putApiV1VideoChannelsChannelHandleRouteHandler,
+  putApiV1VideoPlaylistsPlaylistIdRouteHandler,
+  putApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRouteHandler,
+  putApiV1VideosIdBlacklistRouteHandler,
+  putApiV1VideosIdCaptionsCaptionLanguageRouteHandler,
+  putApiV1VideosIdChaptersRouteHandler,
+  putApiV1VideosIdEmbedPrivacyRouteHandler,
+  putApiV1VideosIdPasswordsRouteHandler,
+  putApiV1VideosIdRateRouteHandler,
+  putApiV1VideosIdRouteHandler,
+  putApiV1VideosIdSourceReplaceResumableRouteHandler,
+  putApiV1VideosLiveIdRouteHandler,
+  putApiV1VideosUploadResumableRouteHandler,
+  putApiV1WatchedWordsAccountsAccountNameListsListIdRouteHandler,
+  putApiV1WatchedWordsServerListsListIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', staticHandler)
-  .route('/', downloadHandler)
-  .route('/', feedsHandler)
-  .route('/', apiHandler)
+  .openapi(getStaticWebVideosFilenameRoute, getStaticWebVideosFilenameRouteHandler)
+  .openapi(getStaticWebVideosPrivateFilenameRoute, getStaticWebVideosPrivateFilenameRouteHandler)
+  .openapi(
+    getStaticStreamingPlaylistsHlsFilenameRoute,
+    getStaticStreamingPlaylistsHlsFilenameRouteHandler,
+  )
+  .openapi(
+    getStaticStreamingPlaylistsHlsPrivateFilenameRoute,
+    getStaticStreamingPlaylistsHlsPrivateFilenameRouteHandler,
+  )
+  .openapi(
+    getDownloadVideosGenerateVideoIdOrUUIDRoute,
+    getDownloadVideosGenerateVideoIdOrUUIDRouteHandler,
+  )
+  .openapi(getFeedsVideoCommentsFormatRoute, getFeedsVideoCommentsFormatRouteHandler)
+  .openapi(getFeedsVideosFormatRoute, getFeedsVideosFormatRouteHandler)
+  .openapi(getFeedsSubscriptionsFormatRoute, getFeedsSubscriptionsFormatRouteHandler)
+  .openapi(getFeedsPodcastVideosXmlRoute, getFeedsPodcastVideosXmlRouteHandler)
+  .openapi(getFeedsPodcastVideoChaptersJsonRoute, getFeedsPodcastVideoChaptersJsonRouteHandler)
+  .openapi(getApiV1AccountsNameRoute, getApiV1AccountsNameRouteHandler)
+  .openapi(getApiV1AccountsNameVideosRoute, getApiV1AccountsNameVideosRouteHandler)
+  .openapi(getApiV1AccountsNameFollowersRoute, getApiV1AccountsNameFollowersRouteHandler)
+  .openapi(getApiV1AccountsRoute, getApiV1AccountsRouteHandler)
+  .openapi(getApiV1ConfigRoute, getApiV1ConfigRouteHandler)
+  .openapi(getApiV1ConfigAboutRoute, getApiV1ConfigAboutRouteHandler)
+  .openapi(getApiV1ConfigCustomRoute, getApiV1ConfigCustomRouteHandler)
+  .openapi(putApiV1ConfigCustomRoute, putApiV1ConfigCustomRouteHandler)
+  .openapi(deleteApiV1ConfigCustomRoute, deleteApiV1ConfigCustomRouteHandler)
+  .openapi(postApiV1ConfigInstanceBannerPickRoute, postApiV1ConfigInstanceBannerPickRouteHandler)
+  .openapi(deleteApiV1ConfigInstanceBannerRoute, deleteApiV1ConfigInstanceBannerRouteHandler)
+  .openapi(postApiV1ConfigInstanceAvatarPickRoute, postApiV1ConfigInstanceAvatarPickRouteHandler)
+  .openapi(deleteApiV1ConfigInstanceAvatarRoute, deleteApiV1ConfigInstanceAvatarRouteHandler)
+  .openapi(
+    postApiV1ConfigInstanceLogoLogoTypePickRoute,
+    postApiV1ConfigInstanceLogoLogoTypePickRouteHandler,
+  )
+  .openapi(
+    deleteApiV1ConfigInstanceLogoLogoTypeRoute,
+    deleteApiV1ConfigInstanceLogoLogoTypeRouteHandler,
+  )
+  .openapi(
+    getApiV1CustomPagesHomepageInstanceRoute,
+    getApiV1CustomPagesHomepageInstanceRouteHandler,
+  )
+  .openapi(
+    putApiV1CustomPagesHomepageInstanceRoute,
+    putApiV1CustomPagesHomepageInstanceRouteHandler,
+  )
+  .openapi(postApiV1JobsPauseRoute, postApiV1JobsPauseRouteHandler)
+  .openapi(postApiV1JobsResumeRoute, postApiV1JobsResumeRouteHandler)
+  .openapi(getApiV1JobsStateRoute, getApiV1JobsStateRouteHandler)
+  .openapi(postApiV1JobsJobTypeJobIdCancelRoute, postApiV1JobsJobTypeJobIdCancelRouteHandler)
+  .openapi(getApiV1ServerFollowersRoute, getApiV1ServerFollowersRouteHandler)
+  .openapi(deleteApiV1ServerFollowersHandleRoute, deleteApiV1ServerFollowersHandleRouteHandler)
+  .openapi(
+    postApiV1ServerFollowersHandleRejectRoute,
+    postApiV1ServerFollowersHandleRejectRouteHandler,
+  )
+  .openapi(
+    postApiV1ServerFollowersHandleAcceptRoute,
+    postApiV1ServerFollowersHandleAcceptRouteHandler,
+  )
+  .openapi(getApiV1ServerFollowingRoute, getApiV1ServerFollowingRouteHandler)
+  .openapi(postApiV1ServerFollowingRoute, postApiV1ServerFollowingRouteHandler)
+  .openapi(
+    deleteApiV1ServerFollowingHostOrHandleRoute,
+    deleteApiV1ServerFollowingHostOrHandleRouteHandler,
+  )
+  .openapi(postApiV1UsersRoute, postApiV1UsersRouteHandler)
+  .openapi(getApiV1UsersRoute, getApiV1UsersRouteHandler)
+  .openapi(deleteApiV1UsersIdRoute, deleteApiV1UsersIdRouteHandler)
+  .openapi(getApiV1UsersIdRoute, getApiV1UsersIdRouteHandler)
+  .openapi(putApiV1UsersIdRoute, putApiV1UsersIdRouteHandler)
+  .openapi(postApiV1UsersIdBlockRoute, postApiV1UsersIdBlockRouteHandler)
+  .openapi(postApiV1UsersIdUnblockRoute, postApiV1UsersIdUnblockRouteHandler)
+  .openapi(getApiV1OauthClientsLocalRoute, getApiV1OauthClientsLocalRouteHandler)
+  .openapi(postApiV1UsersTokenRoute, postApiV1UsersTokenRouteHandler)
+  .openapi(postApiV1UsersRevokeTokenRoute, postApiV1UsersRevokeTokenRouteHandler)
+  .openapi(getApiV1UsersIdTokenSessionsRoute, getApiV1UsersIdTokenSessionsRouteHandler)
+  .openapi(
+    postApiV1UsersIdTokenSessionsTokenSessionIdRevokeRoute,
+    postApiV1UsersIdTokenSessionsTokenSessionIdRevokeRouteHandler,
+  )
+  .openapi(postApiV1UsersAskSendVerifyEmailRoute, postApiV1UsersAskSendVerifyEmailRouteHandler)
+  .openapi(
+    postApiV1UsersRegistrationsAskSendVerifyEmailRoute,
+    postApiV1UsersRegistrationsAskSendVerifyEmailRouteHandler,
+  )
+  .openapi(postApiV1UsersIdVerifyEmailRoute, postApiV1UsersIdVerifyEmailRouteHandler)
+  .openapi(
+    postApiV1UsersRegistrationsRegistrationIdVerifyEmailRoute,
+    postApiV1UsersRegistrationsRegistrationIdVerifyEmailRouteHandler,
+  )
+  .openapi(postApiV1UsersAskResetPasswordRoute, postApiV1UsersAskResetPasswordRouteHandler)
+  .openapi(postApiV1UsersIdResetPasswordRoute, postApiV1UsersIdResetPasswordRouteHandler)
+  .openapi(postApiV1UsersIdTwoFactorRequestRoute, postApiV1UsersIdTwoFactorRequestRouteHandler)
+  .openapi(
+    postApiV1UsersIdTwoFactorConfirmRequestRoute,
+    postApiV1UsersIdTwoFactorConfirmRequestRouteHandler,
+  )
+  .openapi(postApiV1UsersIdTwoFactorDisableRoute, postApiV1UsersIdTwoFactorDisableRouteHandler)
+  .openapi(
+    postApiV1UsersUserIdImportsImportResumableRoute,
+    postApiV1UsersUserIdImportsImportResumableRouteHandler,
+  )
+  .openapi(
+    putApiV1UsersUserIdImportsImportResumableRoute,
+    putApiV1UsersUserIdImportsImportResumableRouteHandler,
+  )
+  .openapi(
+    deleteApiV1UsersUserIdImportsImportResumableRoute,
+    deleteApiV1UsersUserIdImportsImportResumableRouteHandler,
+  )
+  .openapi(getApiV1UsersUserIdImportsLatestRoute, getApiV1UsersUserIdImportsLatestRouteHandler)
+  .openapi(postApiV1UsersUserIdExportsRequestRoute, postApiV1UsersUserIdExportsRequestRouteHandler)
+  .openapi(getApiV1UsersUserIdExportsRoute, getApiV1UsersUserIdExportsRouteHandler)
+  .openapi(deleteApiV1UsersUserIdExportsIdRoute, deleteApiV1UsersUserIdExportsIdRouteHandler)
+  .openapi(getApiV1UsersMeRoute, getApiV1UsersMeRouteHandler)
+  .openapi(putApiV1UsersMeRoute, putApiV1UsersMeRouteHandler)
+  .openapi(deleteApiV1UsersMeRoute, deleteApiV1UsersMeRouteHandler)
+  .openapi(getApiV1UsersMeVideosCommentsRoute, getApiV1UsersMeVideosCommentsRouteHandler)
+  .openapi(getApiV1UsersMeVideosImportsRoute, getApiV1UsersMeVideosImportsRouteHandler)
+  .openapi(getApiV1UsersMeVideoQuotaUsedRoute, getApiV1UsersMeVideoQuotaUsedRouteHandler)
+  .openapi(
+    getApiV1UsersMeVideosVideoIdOrUUIDRatingRoute,
+    getApiV1UsersMeVideosVideoIdOrUUIDRatingRouteHandler,
+  )
+  .openapi(getApiV1UsersMeVideosRoute, getApiV1UsersMeVideosRouteHandler)
+  .openapi(getApiV1UsersMeSubscriptionsRoute, getApiV1UsersMeSubscriptionsRouteHandler)
+  .openapi(postApiV1UsersMeSubscriptionsRoute, postApiV1UsersMeSubscriptionsRouteHandler)
+  .openapi(getApiV1UsersMeSubscriptionsExistRoute, getApiV1UsersMeSubscriptionsExistRouteHandler)
+  .openapi(getApiV1UsersMeSubscriptionsVideosRoute, getApiV1UsersMeSubscriptionsVideosRouteHandler)
+  .openapi(
+    getApiV1UsersMeSubscriptionsSubscriptionHandleRoute,
+    getApiV1UsersMeSubscriptionsSubscriptionHandleRouteHandler,
+  )
+  .openapi(
+    deleteApiV1UsersMeSubscriptionsSubscriptionHandleRoute,
+    deleteApiV1UsersMeSubscriptionsSubscriptionHandleRouteHandler,
+  )
+  .openapi(getApiV1UsersMeNotificationsRoute, getApiV1UsersMeNotificationsRouteHandler)
+  .openapi(postApiV1UsersMeNotificationsReadRoute, postApiV1UsersMeNotificationsReadRouteHandler)
+  .openapi(
+    postApiV1UsersMeNotificationsReadAllRoute,
+    postApiV1UsersMeNotificationsReadAllRouteHandler,
+  )
+  .openapi(
+    putApiV1UsersMeNotificationSettingsRoute,
+    putApiV1UsersMeNotificationSettingsRouteHandler,
+  )
+  .openapi(postApiV1UsersMeNewFeatureInfoReadRoute, postApiV1UsersMeNewFeatureInfoReadRouteHandler)
+  .openapi(getApiV1UsersMeHistoryVideosRoute, getApiV1UsersMeHistoryVideosRouteHandler)
+  .openapi(
+    deleteApiV1UsersMeHistoryVideosVideoIdOrUUIDRoute,
+    deleteApiV1UsersMeHistoryVideosVideoIdOrUUIDRouteHandler,
+  )
+  .openapi(
+    postApiV1UsersMeHistoryVideosRemoveRoute,
+    postApiV1UsersMeHistoryVideosRemoveRouteHandler,
+  )
+  .openapi(postApiV1UsersMeAvatarPickRoute, postApiV1UsersMeAvatarPickRouteHandler)
+  .openapi(deleteApiV1UsersMeAvatarRoute, deleteApiV1UsersMeAvatarRouteHandler)
+  .openapi(postApiV1UsersRegisterRoute, postApiV1UsersRegisterRouteHandler)
+  .openapi(postApiV1UsersRegistrationsRequestRoute, postApiV1UsersRegistrationsRequestRouteHandler)
+  .openapi(
+    postApiV1UsersRegistrationsRegistrationIdAcceptRoute,
+    postApiV1UsersRegistrationsRegistrationIdAcceptRouteHandler,
+  )
+  .openapi(
+    postApiV1UsersRegistrationsRegistrationIdRejectRoute,
+    postApiV1UsersRegistrationsRegistrationIdRejectRouteHandler,
+  )
+  .openapi(
+    deleteApiV1UsersRegistrationsRegistrationIdRoute,
+    deleteApiV1UsersRegistrationsRegistrationIdRouteHandler,
+  )
+  .openapi(getApiV1UsersRegistrationsRoute, getApiV1UsersRegistrationsRouteHandler)
+  .openapi(getApiV1VideosOwnershipRoute, getApiV1VideosOwnershipRouteHandler)
+  .openapi(postApiV1VideosOwnershipIdAcceptRoute, postApiV1VideosOwnershipIdAcceptRouteHandler)
+  .openapi(postApiV1VideosOwnershipIdRefuseRoute, postApiV1VideosOwnershipIdRefuseRouteHandler)
+  .openapi(deleteApiV1VideosOwnershipIdRoute, deleteApiV1VideosOwnershipIdRouteHandler)
+  .openapi(
+    getApiV1VideosVideoIdOrUUIDOwnershipRoute,
+    getApiV1VideosVideoIdOrUUIDOwnershipRouteHandler,
+  )
+  .openapi(
+    postApiV1VideosVideoIdOrUUIDGiveOwnershipRoute,
+    postApiV1VideosVideoIdOrUUIDGiveOwnershipRouteHandler,
+  )
+  .openapi(getApiV1VideoChannelsOwnershipRoute, getApiV1VideoChannelsOwnershipRouteHandler)
+  .openapi(
+    postApiV1VideoChannelsOwnershipIdAcceptRoute,
+    postApiV1VideoChannelsOwnershipIdAcceptRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsOwnershipIdRefuseRoute,
+    postApiV1VideoChannelsOwnershipIdRefuseRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideoChannelsOwnershipIdRoute,
+    deleteApiV1VideoChannelsOwnershipIdRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleOwnershipRoute,
+    getApiV1VideoChannelsChannelHandleOwnershipRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleGiveOwnershipRoute,
+    postApiV1VideoChannelsChannelHandleGiveOwnershipRouteHandler,
+  )
+  .openapi(postApiV1VideosIdTokenRoute, postApiV1VideosIdTokenRouteHandler)
+  .openapi(postApiV1VideosIdStudioEditRoute, postApiV1VideosIdStudioEditRouteHandler)
+  .openapi(postApiV1VideosIdDuplicateRoute, postApiV1VideosIdDuplicateRouteHandler)
+  .openapi(getApiV1VideosRoute, getApiV1VideosRouteHandler)
+  .openapi(getApiV1RecommendationsVideosRoute, getApiV1RecommendationsVideosRouteHandler)
+  .openapi(getApiV1VideosCategoriesRoute, getApiV1VideosCategoriesRouteHandler)
+  .openapi(getApiV1VideosLicencesRoute, getApiV1VideosLicencesRouteHandler)
+  .openapi(getApiV1VideosLanguagesRoute, getApiV1VideosLanguagesRouteHandler)
+  .openapi(getApiV1VideosPrivaciesRoute, getApiV1VideosPrivaciesRouteHandler)
+  .openapi(putApiV1VideosIdRoute, putApiV1VideosIdRouteHandler)
+  .openapi(getApiV1VideosIdRoute, getApiV1VideosIdRouteHandler)
+  .openapi(deleteApiV1VideosIdRoute, deleteApiV1VideosIdRouteHandler)
+  .openapi(postApiV1VideosIdViewsRoute, postApiV1VideosIdViewsRouteHandler)
+  .openapi(getApiV1VideosIdStatsOverallRoute, getApiV1VideosIdStatsOverallRouteHandler)
+  .openapi(getApiV1VideosIdStatsUserAgentRoute, getApiV1VideosIdStatsUserAgentRouteHandler)
+  .openapi(getApiV1VideosIdStatsRetentionRoute, getApiV1VideosIdStatsRetentionRouteHandler)
+  .openapi(
+    getApiV1VideosIdStatsTimeseriesMetricRoute,
+    getApiV1VideosIdStatsTimeseriesMetricRouteHandler,
+  )
+  .openapi(postApiV1VideosUploadRoute, postApiV1VideosUploadRouteHandler)
+  .openapi(postApiV1VideosUploadResumableRoute, postApiV1VideosUploadResumableRouteHandler)
+  .openapi(putApiV1VideosUploadResumableRoute, putApiV1VideosUploadResumableRouteHandler)
+  .openapi(deleteApiV1VideosUploadResumableRoute, deleteApiV1VideosUploadResumableRouteHandler)
+  .openapi(postApiV1VideosImportsRoute, postApiV1VideosImportsRouteHandler)
+  .openapi(postApiV1VideosImportsIdCancelRoute, postApiV1VideosImportsIdCancelRouteHandler)
+  .openapi(postApiV1VideosImportsIdRetryRoute, postApiV1VideosImportsIdRetryRouteHandler)
+  .openapi(postApiV1VideosIdImportRetryRoute, postApiV1VideosIdImportRetryRouteHandler)
+  .openapi(deleteApiV1VideosImportsIdRoute, deleteApiV1VideosImportsIdRouteHandler)
+  .openapi(postApiV1VideosLiveRoute, postApiV1VideosLiveRouteHandler)
+  .openapi(getApiV1VideosLiveIdRoute, getApiV1VideosLiveIdRouteHandler)
+  .openapi(putApiV1VideosLiveIdRoute, putApiV1VideosLiveIdRouteHandler)
+  .openapi(getApiV1VideosLiveIdSessionsRoute, getApiV1VideosLiveIdSessionsRouteHandler)
+  .openapi(getApiV1VideosIdLiveSessionRoute, getApiV1VideosIdLiveSessionRouteHandler)
+  .openapi(getApiV1VideosIdSourceRoute, getApiV1VideosIdSourceRouteHandler)
+  .openapi(deleteApiV1VideosIdSourceFileRoute, deleteApiV1VideosIdSourceFileRouteHandler)
+  .openapi(
+    postApiV1VideosIdSourceReplaceResumableRoute,
+    postApiV1VideosIdSourceReplaceResumableRouteHandler,
+  )
+  .openapi(
+    putApiV1VideosIdSourceReplaceResumableRoute,
+    putApiV1VideosIdSourceReplaceResumableRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideosIdSourceReplaceResumableRoute,
+    deleteApiV1VideosIdSourceReplaceResumableRouteHandler,
+  )
+  .openapi(getApiV1UsersMeAbusesRoute, getApiV1UsersMeAbusesRouteHandler)
+  .openapi(getApiV1AbusesRoute, getApiV1AbusesRouteHandler)
+  .openapi(postApiV1AbusesRoute, postApiV1AbusesRouteHandler)
+  .openapi(putApiV1AbusesAbuseIdRoute, putApiV1AbusesAbuseIdRouteHandler)
+  .openapi(deleteApiV1AbusesAbuseIdRoute, deleteApiV1AbusesAbuseIdRouteHandler)
+  .openapi(getApiV1AbusesAbuseIdMessagesRoute, getApiV1AbusesAbuseIdMessagesRouteHandler)
+  .openapi(postApiV1AbusesAbuseIdMessagesRoute, postApiV1AbusesAbuseIdMessagesRouteHandler)
+  .openapi(
+    deleteApiV1AbusesAbuseIdMessagesAbuseMessageIdRoute,
+    deleteApiV1AbusesAbuseIdMessagesAbuseMessageIdRouteHandler,
+  )
+  .openapi(postApiV1VideosIdBlacklistRoute, postApiV1VideosIdBlacklistRouteHandler)
+  .openapi(putApiV1VideosIdBlacklistRoute, putApiV1VideosIdBlacklistRouteHandler)
+  .openapi(deleteApiV1VideosIdBlacklistRoute, deleteApiV1VideosIdBlacklistRouteHandler)
+  .openapi(getApiV1VideosBlacklistRoute, getApiV1VideosBlacklistRouteHandler)
+  .openapi(getApiV1VideosIdStoryboardsRoute, getApiV1VideosIdStoryboardsRouteHandler)
+  .openapi(getApiV1VideosIdCaptionsRoute, getApiV1VideosIdCaptionsRouteHandler)
+  .openapi(postApiV1VideosIdCaptionsGenerateRoute, postApiV1VideosIdCaptionsGenerateRouteHandler)
+  .openapi(
+    putApiV1VideosIdCaptionsCaptionLanguageRoute,
+    putApiV1VideosIdCaptionsCaptionLanguageRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideosIdCaptionsCaptionLanguageRoute,
+    deleteApiV1VideosIdCaptionsCaptionLanguageRouteHandler,
+  )
+  .openapi(getApiV1VideosIdChaptersRoute, getApiV1VideosIdChaptersRouteHandler)
+  .openapi(putApiV1VideosIdChaptersRoute, putApiV1VideosIdChaptersRouteHandler)
+  .openapi(getApiV1VideosIdEmbedPrivacyRoute, getApiV1VideosIdEmbedPrivacyRouteHandler)
+  .openapi(putApiV1VideosIdEmbedPrivacyRoute, putApiV1VideosIdEmbedPrivacyRouteHandler)
+  .openapi(
+    getApiV1VideosIdEmbedPrivacyAllowedRoute,
+    getApiV1VideosIdEmbedPrivacyAllowedRouteHandler,
+  )
+  .openapi(getApiV1VideosIdPasswordsRoute, getApiV1VideosIdPasswordsRouteHandler)
+  .openapi(putApiV1VideosIdPasswordsRoute, putApiV1VideosIdPasswordsRouteHandler)
+  .openapi(postApiV1VideosIdPasswordsRoute, postApiV1VideosIdPasswordsRouteHandler)
+  .openapi(
+    deleteApiV1VideosIdPasswordsPasswordIdRoute,
+    deleteApiV1VideosIdPasswordsPasswordIdRouteHandler,
+  )
+  .openapi(getApiV1VideoChannelsRoute, getApiV1VideoChannelsRouteHandler)
+  .openapi(postApiV1VideoChannelsRoute, postApiV1VideoChannelsRouteHandler)
+  .openapi(getApiV1VideoChannelsChannelHandleRoute, getApiV1VideoChannelsChannelHandleRouteHandler)
+  .openapi(putApiV1VideoChannelsChannelHandleRoute, putApiV1VideoChannelsChannelHandleRouteHandler)
+  .openapi(
+    deleteApiV1VideoChannelsChannelHandleRoute,
+    deleteApiV1VideoChannelsChannelHandleRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleVideosRoute,
+    getApiV1VideoChannelsChannelHandleVideosRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleActivitiesRoute,
+    getApiV1VideoChannelsChannelHandleActivitiesRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleVideoPlaylistsRoute,
+    getApiV1VideoChannelsChannelHandleVideoPlaylistsRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleVideoPlaylistsReorderRoute,
+    postApiV1VideoChannelsChannelHandleVideoPlaylistsReorderRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleFollowersRoute,
+    getApiV1VideoChannelsChannelHandleFollowersRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleAvatarPickRoute,
+    postApiV1VideoChannelsChannelHandleAvatarPickRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideoChannelsChannelHandleAvatarRoute,
+    deleteApiV1VideoChannelsChannelHandleAvatarRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleBannerPickRoute,
+    postApiV1VideoChannelsChannelHandleBannerPickRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideoChannelsChannelHandleBannerRoute,
+    deleteApiV1VideoChannelsChannelHandleBannerRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleImportVideosRoute,
+    postApiV1VideoChannelsChannelHandleImportVideosRouteHandler,
+  )
+  .openapi(postApiV1VideoChannelSyncsRoute, postApiV1VideoChannelSyncsRouteHandler)
+  .openapi(
+    deleteApiV1VideoChannelSyncsChannelSyncIdRoute,
+    deleteApiV1VideoChannelSyncsChannelSyncIdRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelSyncsChannelSyncIdSyncRoute,
+    postApiV1VideoChannelSyncsChannelSyncIdSyncRouteHandler,
+  )
+  .openapi(getApiV1PlayerSettingsVideosIdRoute, getApiV1PlayerSettingsVideosIdRouteHandler)
+  .openapi(putApiV1PlayerSettingsVideosIdRoute, putApiV1PlayerSettingsVideosIdRouteHandler)
+  .openapi(
+    getApiV1PlayerSettingsVideoChannelsChannelHandleRoute,
+    getApiV1PlayerSettingsVideoChannelsChannelHandleRouteHandler,
+  )
+  .openapi(
+    putApiV1PlayerSettingsVideoChannelsChannelHandleRoute,
+    putApiV1PlayerSettingsVideoChannelsChannelHandleRouteHandler,
+  )
+  .openapi(getApiV1VideoPlaylistsPrivaciesRoute, getApiV1VideoPlaylistsPrivaciesRouteHandler)
+  .openapi(getApiV1VideoPlaylistsRoute, getApiV1VideoPlaylistsRouteHandler)
+  .openapi(postApiV1VideoPlaylistsRoute, postApiV1VideoPlaylistsRouteHandler)
+  .openapi(getApiV1VideoPlaylistsPlaylistIdRoute, getApiV1VideoPlaylistsPlaylistIdRouteHandler)
+  .openapi(putApiV1VideoPlaylistsPlaylistIdRoute, putApiV1VideoPlaylistsPlaylistIdRouteHandler)
+  .openapi(
+    deleteApiV1VideoPlaylistsPlaylistIdRoute,
+    deleteApiV1VideoPlaylistsPlaylistIdRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoPlaylistsPlaylistIdVideosRoute,
+    getApiV1VideoPlaylistsPlaylistIdVideosRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoPlaylistsPlaylistIdVideosRoute,
+    postApiV1VideoPlaylistsPlaylistIdVideosRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoPlaylistsPlaylistIdVideosReorderRoute,
+    postApiV1VideoPlaylistsPlaylistIdVideosReorderRouteHandler,
+  )
+  .openapi(
+    putApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRoute,
+    putApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRoute,
+    deleteApiV1VideoPlaylistsPlaylistIdVideosPlaylistElementIdRouteHandler,
+  )
+  .openapi(
+    getApiV1UsersMeVideoPlaylistsVideosExistRoute,
+    getApiV1UsersMeVideoPlaylistsVideosExistRouteHandler,
+  )
+  .openapi(getApiV1AccountsNameVideoPlaylistsRoute, getApiV1AccountsNameVideoPlaylistsRouteHandler)
+  .openapi(getApiV1AccountsNameVideoChannelsRoute, getApiV1AccountsNameVideoChannelsRouteHandler)
+  .openapi(
+    getApiV1AccountsNameVideoChannelSyncsRoute,
+    getApiV1AccountsNameVideoChannelSyncsRouteHandler,
+  )
+  .openapi(getApiV1AccountsNameRatingsRoute, getApiV1AccountsNameRatingsRouteHandler)
+  .openapi(getApiV1VideosIdCommentThreadsRoute, getApiV1VideosIdCommentThreadsRouteHandler)
+  .openapi(postApiV1VideosIdCommentThreadsRoute, postApiV1VideosIdCommentThreadsRouteHandler)
+  .openapi(
+    getApiV1VideosIdCommentThreadsThreadIdRoute,
+    getApiV1VideosIdCommentThreadsThreadIdRouteHandler,
+  )
+  .openapi(
+    getApiV1VideosIdCommentsCommentIdRepliesRoute,
+    getApiV1VideosIdCommentsCommentIdRepliesRouteHandler,
+  )
+  .openapi(getApiV1VideosCommentsRoute, getApiV1VideosCommentsRouteHandler)
+  .openapi(postApiV1VideosIdCommentsCommentIdRoute, postApiV1VideosIdCommentsCommentIdRouteHandler)
+  .openapi(
+    deleteApiV1VideosIdCommentsCommentIdRoute,
+    deleteApiV1VideosIdCommentsCommentIdRouteHandler,
+  )
+  .openapi(
+    postApiV1VideosIdCommentsCommentIdApproveRoute,
+    postApiV1VideosIdCommentsCommentIdApproveRouteHandler,
+  )
+  .openapi(putApiV1VideosIdRateRoute, putApiV1VideosIdRateRouteHandler)
+  .openapi(deleteApiV1VideosIdHlsRoute, deleteApiV1VideosIdHlsRouteHandler)
+  .openapi(deleteApiV1VideosIdWebVideosRoute, deleteApiV1VideosIdWebVideosRouteHandler)
+  .openapi(postApiV1VideosIdTranscodingRoute, postApiV1VideosIdTranscodingRouteHandler)
+  .openapi(getApiV1SearchVideosRoute, getApiV1SearchVideosRouteHandler)
+  .openapi(getApiV1SearchVideoChannelsRoute, getApiV1SearchVideoChannelsRouteHandler)
+  .openapi(getApiV1SearchVideoPlaylistsRoute, getApiV1SearchVideoPlaylistsRouteHandler)
+  .openapi(getApiV1BlocklistStatusRoute, getApiV1BlocklistStatusRouteHandler)
+  .openapi(getApiV1UsersMeBlocklistAccountsRoute, getApiV1UsersMeBlocklistAccountsRouteHandler)
+  .openapi(postApiV1UsersMeBlocklistAccountsRoute, postApiV1UsersMeBlocklistAccountsRouteHandler)
+  .openapi(
+    deleteApiV1UsersMeBlocklistAccountsAccountNameRoute,
+    deleteApiV1UsersMeBlocklistAccountsAccountNameRouteHandler,
+  )
+  .openapi(getApiV1UsersMeBlocklistServersRoute, getApiV1UsersMeBlocklistServersRouteHandler)
+  .openapi(postApiV1UsersMeBlocklistServersRoute, postApiV1UsersMeBlocklistServersRouteHandler)
+  .openapi(
+    deleteApiV1UsersMeBlocklistServersHostRoute,
+    deleteApiV1UsersMeBlocklistServersHostRouteHandler,
+  )
+  .openapi(getApiV1ServerBlocklistAccountsRoute, getApiV1ServerBlocklistAccountsRouteHandler)
+  .openapi(postApiV1ServerBlocklistAccountsRoute, postApiV1ServerBlocklistAccountsRouteHandler)
+  .openapi(
+    deleteApiV1ServerBlocklistAccountsAccountNameRoute,
+    deleteApiV1ServerBlocklistAccountsAccountNameRouteHandler,
+  )
+  .openapi(getApiV1ServerBlocklistServersRoute, getApiV1ServerBlocklistServersRouteHandler)
+  .openapi(postApiV1ServerBlocklistServersRoute, postApiV1ServerBlocklistServersRouteHandler)
+  .openapi(
+    deleteApiV1ServerBlocklistServersHostRoute,
+    deleteApiV1ServerBlocklistServersHostRouteHandler,
+  )
+  .openapi(
+    getApiV1ServerBlocklistSubscriptionsRoute,
+    getApiV1ServerBlocklistSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postApiV1ServerBlocklistSubscriptionsRoute,
+    postApiV1ServerBlocklistSubscriptionsRouteHandler,
+  )
+  .openapi(
+    deleteApiV1ServerBlocklistSubscriptionsIdRoute,
+    deleteApiV1ServerBlocklistSubscriptionsIdRouteHandler,
+  )
+  .openapi(getApiV1ServerBlocklistPublicLogRoute, getApiV1ServerBlocklistPublicLogRouteHandler)
+  .openapi(putApiV1ServerRedundancyHostRoute, putApiV1ServerRedundancyHostRouteHandler)
+  .openapi(getApiV1ServerRedundancyVideosRoute, getApiV1ServerRedundancyVideosRouteHandler)
+  .openapi(postApiV1ServerRedundancyVideosRoute, postApiV1ServerRedundancyVideosRouteHandler)
+  .openapi(
+    deleteApiV1ServerRedundancyVideosRedundancyIdRoute,
+    deleteApiV1ServerRedundancyVideosRedundancyIdRouteHandler,
+  )
+  .openapi(getApiV1ServerStatsRoute, getApiV1ServerStatsRouteHandler)
+  .openapi(postApiV1ServerContactRoute, postApiV1ServerContactRouteHandler)
+  .openapi(getApiV1ServerDebugRoute, getApiV1ServerDebugRouteHandler)
+  .openapi(postApiV1ServerDebugRunCommandRoute, postApiV1ServerDebugRunCommandRouteHandler)
+  .openapi(postApiV1ServerLogsClientRoute, postApiV1ServerLogsClientRouteHandler)
+  .openapi(getApiV1ServerLogsRoute, getApiV1ServerLogsRouteHandler)
+  .openapi(getApiV1ServerAuditLogsRoute, getApiV1ServerAuditLogsRouteHandler)
+  .openapi(getApiV1PluginsRoute, getApiV1PluginsRouteHandler)
+  .openapi(getApiV1PluginsAvailableRoute, getApiV1PluginsAvailableRouteHandler)
+  .openapi(postApiV1PluginsInstallRoute, postApiV1PluginsInstallRouteHandler)
+  .openapi(postApiV1PluginsUpdateRoute, postApiV1PluginsUpdateRouteHandler)
+  .openapi(postApiV1PluginsUninstallRoute, postApiV1PluginsUninstallRouteHandler)
+  .openapi(getApiV1PluginsNpmNameRoute, getApiV1PluginsNpmNameRouteHandler)
+  .openapi(putApiV1PluginsNpmNameSettingsRoute, putApiV1PluginsNpmNameSettingsRouteHandler)
+  .openapi(
+    getApiV1PluginsNpmNamePublicSettingsRoute,
+    getApiV1PluginsNpmNamePublicSettingsRouteHandler,
+  )
+  .openapi(
+    getApiV1PluginsNpmNameRegisteredSettingsRoute,
+    getApiV1PluginsNpmNameRegisteredSettingsRouteHandler,
+  )
+  .openapi(postApiV1MetricsPlaybackRoute, postApiV1MetricsPlaybackRouteHandler)
+  .openapi(
+    postApiV1RunnersRegistrationTokensGenerateRoute,
+    postApiV1RunnersRegistrationTokensGenerateRouteHandler,
+  )
+  .openapi(
+    deleteApiV1RunnersRegistrationTokensRegistrationTokenIdRoute,
+    deleteApiV1RunnersRegistrationTokensRegistrationTokenIdRouteHandler,
+  )
+  .openapi(getApiV1RunnersRegistrationTokensRoute, getApiV1RunnersRegistrationTokensRouteHandler)
+  .openapi(postApiV1RunnersRegisterRoute, postApiV1RunnersRegisterRouteHandler)
+  .openapi(postApiV1RunnersUnregisterRoute, postApiV1RunnersUnregisterRouteHandler)
+  .openapi(deleteApiV1RunnersRunnerIdRoute, deleteApiV1RunnersRunnerIdRouteHandler)
+  .openapi(getApiV1RunnersRoute, getApiV1RunnersRouteHandler)
+  .openapi(postApiV1RunnersJobsRequestRoute, postApiV1RunnersJobsRequestRouteHandler)
+  .openapi(postApiV1RunnersJobsJobUUIDAcceptRoute, postApiV1RunnersJobsJobUUIDAcceptRouteHandler)
+  .openapi(postApiV1RunnersJobsJobUUIDAbortRoute, postApiV1RunnersJobsJobUUIDAbortRouteHandler)
+  .openapi(postApiV1RunnersJobsJobUUIDUpdateRoute, postApiV1RunnersJobsJobUUIDUpdateRouteHandler)
+  .openapi(postApiV1RunnersJobsJobUUIDErrorRoute, postApiV1RunnersJobsJobUUIDErrorRouteHandler)
+  .openapi(postApiV1RunnersJobsJobUUIDSuccessRoute, postApiV1RunnersJobsJobUUIDSuccessRouteHandler)
+  .openapi(
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityAudioRoute,
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityAudioRouteHandler,
+  )
+  .openapi(
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityRoute,
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityRouteHandler,
+  )
+  .openapi(
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDThumbnailsMaxQualityRoute,
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDThumbnailsMaxQualityRouteHandler,
+  )
+  .openapi(
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDPreviewsMaxQualityRoute,
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDPreviewsMaxQualityRouteHandler,
+  )
+  .openapi(
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDStudioTaskFilesFilenameRoute,
+    postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDStudioTaskFilesFilenameRouteHandler,
+  )
+  .openapi(postApiV1RunnersJobsJobUUIDCancelRoute, postApiV1RunnersJobsJobUUIDCancelRouteHandler)
+  .openapi(deleteApiV1RunnersJobsJobUUIDRoute, deleteApiV1RunnersJobsJobUUIDRouteHandler)
+  .openapi(getApiV1RunnersJobsRoute, getApiV1RunnersJobsRouteHandler)
+  .openapi(
+    getApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute,
+    getApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRouteHandler,
+  )
+  .openapi(
+    putApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute,
+    putApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRouteHandler,
+  )
+  .openapi(
+    getApiV1AutomaticTagsAccountsAccountNameAvailableRoute,
+    getApiV1AutomaticTagsAccountsAccountNameAvailableRouteHandler,
+  )
+  .openapi(
+    getApiV1AutomaticTagsServerAvailableRoute,
+    getApiV1AutomaticTagsServerAvailableRouteHandler,
+  )
+  .openapi(
+    getApiV1AutomaticTagsPoliciesServerVideosRoute,
+    getApiV1AutomaticTagsPoliciesServerVideosRouteHandler,
+  )
+  .openapi(
+    putApiV1AutomaticTagsPoliciesServerVideosRoute,
+    putApiV1AutomaticTagsPoliciesServerVideosRouteHandler,
+  )
+  .openapi(
+    getApiV1WatchedWordsAccountsAccountNameListsRoute,
+    getApiV1WatchedWordsAccountsAccountNameListsRouteHandler,
+  )
+  .openapi(
+    postApiV1WatchedWordsAccountsAccountNameListsRoute,
+    postApiV1WatchedWordsAccountsAccountNameListsRouteHandler,
+  )
+  .openapi(
+    putApiV1WatchedWordsAccountsAccountNameListsListIdRoute,
+    putApiV1WatchedWordsAccountsAccountNameListsListIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1WatchedWordsAccountsAccountNameListsListIdRoute,
+    deleteApiV1WatchedWordsAccountsAccountNameListsListIdRouteHandler,
+  )
+  .openapi(getApiV1WatchedWordsServerListsRoute, getApiV1WatchedWordsServerListsRouteHandler)
+  .openapi(postApiV1WatchedWordsServerListsRoute, postApiV1WatchedWordsServerListsRouteHandler)
+  .openapi(
+    putApiV1WatchedWordsServerListsListIdRoute,
+    putApiV1WatchedWordsServerListsListIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1WatchedWordsServerListsListIdRoute,
+    deleteApiV1WatchedWordsServerListsListIdRouteHandler,
+  )
+  .openapi(
+    getApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute,
+    getApiV1WatchedWordsAccountsAccountNameSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute,
+    postApiV1WatchedWordsAccountsAccountNameSubscriptionsRouteHandler,
+  )
+  .openapi(
+    deleteApiV1WatchedWordsAccountsAccountNameSubscriptionsIdRoute,
+    deleteApiV1WatchedWordsAccountsAccountNameSubscriptionsIdRouteHandler,
+  )
+  .openapi(
+    getApiV1WatchedWordsServerSubscriptionsRoute,
+    getApiV1WatchedWordsServerSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postApiV1WatchedWordsServerSubscriptionsRoute,
+    postApiV1WatchedWordsServerSubscriptionsRouteHandler,
+  )
+  .openapi(
+    deleteApiV1WatchedWordsServerSubscriptionsIdRoute,
+    deleteApiV1WatchedWordsServerSubscriptionsIdRouteHandler,
+  )
+  .openapi(
+    postApiV1ClientConfigUpdateLanguageRoute,
+    postApiV1ClientConfigUpdateLanguageRouteHandler,
+  )
+  .openapi(
+    postApiV1ClientConfigUpdateInterfaceLanguageRoute,
+    postApiV1ClientConfigUpdateInterfaceLanguageRouteHandler,
+  )
+  .openapi(
+    getApiV1VideoChannelsChannelHandleCollaboratorsRoute,
+    getApiV1VideoChannelsChannelHandleCollaboratorsRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleCollaboratorsInviteRoute,
+    postApiV1VideoChannelsChannelHandleCollaboratorsInviteRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdAcceptRoute,
+    postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdAcceptRouteHandler,
+  )
+  .openapi(
+    postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRejectRoute,
+    postApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRejectRouteHandler,
+  )
+  .openapi(
+    deleteApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRoute,
+    deleteApiV1VideoChannelsChannelHandleCollaboratorsCollaboratorIdRouteHandler,
+  )
 
 export default app

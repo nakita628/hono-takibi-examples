@@ -970,9 +970,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[EntityTransfer](#schemaentitytransfer)]|false|none|none|
 
 Status Code **default**
@@ -1035,8 +1035,7 @@ This operation is deprecated
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|The entities to include in this transfer request.|
-|» entities|body|object|true|A collection of the entities to include in this transfer request, separated by type.<br>|
-|» » linodes|body|[integer]|false|An array containing the IDs of each of the Linodes included in this transfer.<br>|
+|» entities|body|[EntityTransferEntities](#schemaentitytransferentities)|true|A collection of the entities to include in this transfer request, separated by type.<br>|
 
 > Example responses
 
@@ -1402,9 +1401,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Event](#schemaevent)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -1714,9 +1713,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Invoice](#schemainvoice)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -1881,9 +1880,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[InvoiceItem](#schemainvoiceitem)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -1961,9 +1960,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Login](#schemalogin)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -2118,9 +2117,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Maintenance](#schemamaintenance)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -2207,9 +2206,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Notification](#schemanotification)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -2296,9 +2295,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[OAuthClient](#schemaoauthclient)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -2906,9 +2905,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[PaymentMethod](#schemapaymentmethod)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -2982,7 +2981,7 @@ with a valid `zip` by using the Account Update ([PUT /account](/docs/api/account
 |---|---|---|---|---|
 |body|body|object|true|The details of the Payment Method to add.|
 |» data|body|[CreditCard](#schemacreditcard)|true|An object representing the credit card information you have on file with<br>Linode to make Payments against your Account.<br>|
-|» is_default|body|boolean|true|Whether this Payment Method is the default method for automatically processing service charges.<br>|
+|» is_default|body|[PaymentMethodIsDefault](#schemapaymentmethodisdefault)|true|Whether this Payment Method is the default method for automatically processing service charges.<br>|
 |» type|body|string|true|The type of Payment Method.<br><br>Alternative Payment Methods including Google Pay and PayPal can be added using the Cloud Manager. See the [Manage Payment Methods](/docs/products/platform/billing/guides/payment-methods/) guide<br>for details and instructions.<br>|
 
 #### Enumerated Values
@@ -3314,9 +3313,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Payment](#schemapayment)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -3928,9 +3927,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ServiceTransfer](#schemaservicetransfer)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -4023,8 +4022,7 @@ incomplete.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|The services to include in this transfer request.|
-|» entities|body|object|true|A collection of the services to include in this transfer request, separated by type.<br>|
-|» » linodes|body|[integer]|false|An array containing the IDs of each of the Linodes included in this transfer.<br>|
+|» entities|body|[ServiceTransferEntities](#schemaservicetransferentities)|true|A collection of the services to include in this transfer request, separated by type.<br>|
 
 > Example responses
 
@@ -4613,9 +4611,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[User](#schemauser)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -5490,9 +5488,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseEngine](#schemadatabaseengine)]|false|none|none|
 
 Status Code **default**
@@ -5668,9 +5666,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[Database](#schemadatabase)]|false|none|none|
 
 Status Code **default**
@@ -5788,9 +5786,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseMongoDB](#schemadatabasemongodb)]|false|none|none|
 
 Status Code **default**
@@ -5987,21 +5985,9 @@ All Managed Databases include automatic patch updates, which apply security patc
 |---|---|---|---|---|
 |instanceId|path|integer|true|The ID of the Managed MongoDB Database.|
 |body|body|object|true|Updated information for the Managed MongoDB Database.|
-|» allow_list|body|[string(ipv4/prefix_length)]|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|» label|body|string|false|A unique, user-defined string referring to the Managed Database.|
-|» updates|body|object|false|Configuration settings for automated patch update maintenance for the Managed Database.|
-|» » day_of_week|body|integer|false|The day to perform maintenance. 1=Monday, 2=Tuesday, etc.|
-|» » duration|body|integer|false|The maximum maintenance window time in hours.|
-|» » frequency|body|string|false|Whether maintenance occurs on a weekly or monthly basis.|
-|» » hour_of_day|body|integer|false|The hour to begin maintenance based in UTC time.|
-|» » week_of_month|body|integer \| null|false|The week of the month to perform `monthly` frequency updates. Defaults to `null`.<br><br>* Required for `monthly` frequency updates.<br><br>* Must be `null` for `weekly` frequency updates.<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » frequency|weekly|
-|» » frequency|monthly|
+|» allow_list|body|[DatabaseAllowList](#schemadatabaseallowlist)|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|» label|body|[DatabaseLabel](#schemadatabaselabel)|false|A unique, user-defined string referring to the Managed Database.|
+|» updates|body|[DatabaseUpdates](#schemadatabaseupdates)|false|Configuration settings for automated patch update maintenance for the Managed Database.|
 
 > Example responses
 
@@ -6233,9 +6219,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseBackup](#schemadatabasebackup)]|false|none|none|
 
 Status Code **default**
@@ -6957,9 +6943,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseMySQL](#schemadatabasemysql)]|false|none|none|
 
 Status Code **default**
@@ -7052,15 +7038,15 @@ All Managed Databases include automatic patch updates, which apply security patc
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DatabaseMySQLRequest](#schemadatabasemysqlrequest)|true|Information about the Managed MySQL Database you are creating.|
-|» allow_list|body|[string(ipv4/prefix_length)]|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|» cluster_size|body|integer|false|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|» encrypted|body|boolean|false|Whether the Managed Databases is encrypted.|
+|» allow_list|body|[DatabaseAllowList](#schemadatabaseallowlist)|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|» cluster_size|body|[DatabaseClusterSize](#schemadatabaseclustersize)|false|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|» encrypted|body|[DatabaseEncrypted](#schemadatabaseencrypted)|false|Whether the Managed Databases is encrypted.|
 |» engine|body|string|true|The Managed Database engine in engine/version format.|
-|» label|body|string|true|A unique, user-defined string referring to the Managed Database.|
-|» region|body|string|true|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|» replication_type|body|string|false|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|» ssl_connection|body|boolean|false|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
-|» type|body|string|true|The Linode Instance type used by the Managed Database for its nodes.|
+|» label|body|[DatabaseLabel](#schemadatabaselabel)|true|A unique, user-defined string referring to the Managed Database.|
+|» region|body|[DatabaseRegion](#schemadatabaseregion)|true|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|» replication_type|body|[DatabaseMySQLReplicationType](#schemadatabasemysqlreplicationtype)|false|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|» ssl_connection|body|[DatabaseMySQLSslConnection](#schemadatabasemysqlsslconnection)|false|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
+|» type|body|[DatabaseType2](#schemadatabasetype2)|true|The Linode Instance type used by the Managed Database for its nodes.|
 
 #### Enumerated Values
 
@@ -7315,21 +7301,9 @@ All Managed Databases include automatic patch updates, which apply security patc
 |---|---|---|---|---|
 |instanceId|path|integer|true|The ID of the Managed MySQL Database.|
 |body|body|object|true|Updated information for the Managed MySQL Database.|
-|» allow_list|body|[string(ipv4/prefix_length)]|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|» label|body|string|false|A unique, user-defined string referring to the Managed Database.|
-|» updates|body|object|false|Configuration settings for automated patch update maintenance for the Managed Database.|
-|» » day_of_week|body|integer|false|The day to perform maintenance. 1=Monday, 2=Tuesday, etc.|
-|» » duration|body|integer|false|The maximum maintenance window time in hours.|
-|» » frequency|body|string|false|Whether maintenance occurs on a weekly or monthly basis.|
-|» » hour_of_day|body|integer|false|The hour to begin maintenance based in UTC time.|
-|» » week_of_month|body|integer \| null|false|The week of the month to perform `monthly` frequency updates. Defaults to `null`.<br><br>* Required for `monthly` frequency updates.<br><br>* Must be `null` for `weekly` frequency updates.<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » frequency|weekly|
-|» » frequency|monthly|
+|» allow_list|body|[DatabaseAllowList](#schemadatabaseallowlist)|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|» label|body|[DatabaseLabel](#schemadatabaselabel)|false|A unique, user-defined string referring to the Managed Database.|
+|» updates|body|[DatabaseUpdates](#schemadatabaseupdates)|false|Configuration settings for automated patch update maintenance for the Managed Database.|
 
 > Example responses
 
@@ -7550,9 +7524,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseBackup](#schemadatabasebackup)]|false|none|none|
 
 Status Code **default**
@@ -8260,9 +8234,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabasePostgreSQL](#schemadatabasepostgresql)]|false|none|none|
 
 Status Code **default**
@@ -8357,16 +8331,16 @@ All Managed Databases include automatic patch updates, which apply security patc
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[DatabasePostgreSQLRequest](#schemadatabasepostgresqlrequest)|true|Information about the Managed PostgreSQL Database you are creating.|
-|» allow_list|body|[string(ipv4/prefix_length)]|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|» cluster_size|body|integer|false|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|» encrypted|body|boolean|false|Whether the Managed Databases is encrypted.|
+|» allow_list|body|[DatabaseAllowList](#schemadatabaseallowlist)|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|» cluster_size|body|[DatabaseClusterSize](#schemadatabaseclustersize)|false|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|» encrypted|body|[DatabaseEncrypted](#schemadatabaseencrypted)|false|Whether the Managed Databases is encrypted.|
 |» engine|body|string|true|The Managed Database engine in engine/version format.|
-|» label|body|string|true|A unique, user-defined string referring to the Managed Database.|
-|» region|body|string|true|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|» replication_commit_type|body|string|false|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
-|» replication_type|body|string|false|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|» ssl_connection|body|boolean|false|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
-|» type|body|string|true|The Linode Instance type used by the Managed Database for its nodes.|
+|» label|body|[DatabaseLabel](#schemadatabaselabel)|true|A unique, user-defined string referring to the Managed Database.|
+|» region|body|[DatabaseRegion](#schemadatabaseregion)|true|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|» replication_commit_type|body|[DatabasePostgreSQLReplicationCommitType](#schemadatabasepostgresqlreplicationcommittype)|false|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
+|» replication_type|body|[DatabasePostgreSQLReplicationType](#schemadatabasepostgresqlreplicationtype)|false|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|» ssl_connection|body|[DatabasePostgreSQLSslConnection](#schemadatabasepostgresqlsslconnection)|false|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
+|» type|body|[DatabaseType2](#schemadatabasetype2)|true|The Linode Instance type used by the Managed Database for its nodes.|
 
 #### Enumerated Values
 
@@ -8628,21 +8602,9 @@ All Managed Databases include automatic patch updates, which apply security patc
 |---|---|---|---|---|
 |instanceId|path|integer|true|The ID of the Managed PostgreSQL Database.|
 |body|body|object|true|Updated information for the Managed PostgreSQL Database.|
-|» allow_list|body|[string(ipv4/prefix_length)]|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|» label|body|string|false|A unique, user-defined string referring to the Managed Database.|
-|» updates|body|object|false|Configuration settings for automated patch update maintenance for the Managed Database.|
-|» » day_of_week|body|integer|false|The day to perform maintenance. 1=Monday, 2=Tuesday, etc.|
-|» » duration|body|integer|false|The maximum maintenance window time in hours.|
-|» » frequency|body|string|false|Whether maintenance occurs on a weekly or monthly basis.|
-|» » hour_of_day|body|integer|false|The hour to begin maintenance based in UTC time.|
-|» » week_of_month|body|integer \| null|false|The week of the month to perform `monthly` frequency updates. Defaults to `null`.<br><br>* Required for `monthly` frequency updates.<br><br>* Must be `null` for `weekly` frequency updates.<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » frequency|weekly|
-|» » frequency|monthly|
+|» allow_list|body|[DatabaseAllowList](#schemadatabaseallowlist)|false|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|» label|body|[DatabaseLabel](#schemadatabaselabel)|false|A unique, user-defined string referring to the Managed Database.|
+|» updates|body|[DatabaseUpdates](#schemadatabaseupdates)|false|Configuration settings for automated patch update maintenance for the Managed Database.|
 
 > Example responses
 
@@ -8864,9 +8826,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseBackup](#schemadatabasebackup)]|false|none|none|
 
 Status Code **default**
@@ -9581,9 +9543,9 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 |data|[[DatabaseType](#schemadatabasetype)]|false|none|none|
 
 Status Code **default**
@@ -9785,9 +9747,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Domain](#schemadomain)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -10512,9 +10474,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[DomainRecord](#schemadomainrecord)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -10577,16 +10539,16 @@ Each domain can have up to 12,000 active records.
 |---|---|---|---|---|
 |domainId|path|integer|true|The ID of the Domain we are accessing Records for.|
 |body|body|object|true|Information about the new Record to add.<br>|
-|» name|body|string|false|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
-|» port|body|integer|false|The port this Record points to. Only valid and required for SRV record requests.<br>|
-|» priority|body|integer|false|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
-|» protocol|body|string \| null|false|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
-|» service|body|string \| null|false|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
-|» tag|body|string \| null|false|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
-|» target|body|string|false|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
-|» ttl_sec|body|integer|false|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
+|» name|body|[DomainRecordName](#schemadomainrecordname)|false|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
+|» port|body|[DomainRecordPort](#schemadomainrecordport)|false|The port this Record points to. Only valid and required for SRV record requests.<br>|
+|» priority|body|[DomainRecordPriority](#schemadomainrecordpriority)|false|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
+|» protocol|body|[DomainRecordProtocol](#schemadomainrecordprotocol)|false|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
+|» service|body|[DomainRecordService](#schemadomainrecordservice)|false|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
+|» tag|body|[DomainRecordTag](#schemadomainrecordtag)|false|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
+|» target|body|[DomainRecordTarget](#schemadomainrecordtarget)|false|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
+|» ttl_sec|body|[DomainRecordTtlSec](#schemadomainrecordttlsec)|false|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
 |» type|body|string|true|The type of Record this is in the DNS system. For example, A records associate a domain name with an IPv4 address, and AAAA records associate a domain name with an IPv6 address. For more information, see the guides on [DNS Record Types](/docs/products/networking/dns-manager/guides/#dns-record-types).<br>|
-|» weight|body|integer|false|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
+|» weight|body|[DomainRecordWeight](#schemadomainrecordweight)|false|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
 
 #### Enumerated Values
 
@@ -10792,15 +10754,15 @@ Updates a single Record on this Domain.
 |domainId|path|integer|true|The ID of the Domain whose Record you are accessing.|
 |recordId|path|integer|true|The ID of the Record you are accessing.|
 |body|body|object|true|The values to change.|
-|» name|body|string|false|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
-|» port|body|integer|false|The port this Record points to. Only valid and required for SRV record requests.<br>|
-|» priority|body|integer|false|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
-|» protocol|body|string \| null|false|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
-|» service|body|string \| null|false|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
-|» tag|body|string \| null|false|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
-|» target|body|string|false|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
-|» ttl_sec|body|integer|false|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
-|» weight|body|integer|false|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
+|» name|body|[DomainRecordName](#schemadomainrecordname)|false|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
+|» port|body|[DomainRecordPort](#schemadomainrecordport)|false|The port this Record points to. Only valid and required for SRV record requests.<br>|
+|» priority|body|[DomainRecordPriority](#schemadomainrecordpriority)|false|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
+|» protocol|body|[DomainRecordProtocol](#schemadomainrecordprotocol)|false|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
+|» service|body|[DomainRecordService](#schemadomainrecordservice)|false|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
+|» tag|body|[DomainRecordTag](#schemadomainrecordtag)|false|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
+|» target|body|[DomainRecordTarget](#schemadomainrecordtarget)|false|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
+|» ttl_sec|body|[DomainRecordTtlSec](#schemadomainrecordttlsec)|false|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
+|» weight|body|[DomainRecordWeight](#schemadomainrecordweight)|false|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
 
 #### Enumerated Values
 
@@ -11105,9 +11067,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Image](#schemaimage)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -11714,9 +11676,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Linode](#schemalinode)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -11883,22 +11845,22 @@ tags on Linodes.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|The requested initial state of a new Linode.|
-|» authorized_keys|body|[string]|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
-|» authorized_users|body|[string]|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
+|» authorized_keys|body|[DiskRequestAuthorizedKeys](#schemadiskrequestauthorizedkeys)|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
+|» authorized_users|body|[DiskRequestAuthorizedUsers](#schemadiskrequestauthorizedusers)|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
 |» booted|body|boolean|false|This field defaults to `true` if the Linode is created with an Image or from a Backup.<br>If it is deployed from an Image or a Backup and you wish it to remain `offline` after deployment, set this to `false`.<br>|
-|» image|body|string|false|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
-|» root_pass|body|string(password)|false|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
-|» stackscript_data|body|object|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
-|» stackscript_id|body|integer|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
+|» image|body|[DiskRequestImage](#schemadiskrequestimage)|false|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
+|» root_pass|body|[DiskRequestRootPass](#schemadiskrequestrootpass)|false|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
+|» stackscript_data|body|[DiskRequestStackscriptData](#schemadiskrequeststackscriptdata)|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
+|» stackscript_id|body|[DiskRequestStackscriptId](#schemadiskrequeststackscriptid)|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
 |» backup_id|body|integer|false|A Backup ID from another Linode's available backups. Your User must have<br>`read_write` access to that Linode, the Backup must have a `status` of<br>`successful`, and the Linode must be deployed to the same `region` as the Backup.<br>See [GET /linode/instances/{linodeId}/backups](/docs/api/linode-instances/#backups-list)<br>for a Linode's available backups.<br><br>This field and the `image` field are mutually exclusive.<br>|
 |» backups_enabled|body|boolean|false|If this field is set to `true`, the created Linode will automatically be<br>enrolled in the Linode Backup service. This will incur an additional charge.<br>The cost for the Backup service is dependent on the Type of Linode deployed.<br><br>This option is always treated as `true` if the account-wide `backups_enabled`<br>setting is `true`.  See [account settings](/docs/api/account/#account-settings-view)<br>for more information.<br><br>Backup pricing is included in the response from [/linodes/types](/docs/api/linode-types/#types-list)<br>|
-|» group|body|string|false|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
+|» group|body|[LinodeGroup](#schemalinodegroup)|false|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
 |» interfaces|body|[LinodeConfigInterfaces](#schemalinodeconfiginterfaces)|false|An array of Network Interfaces to add to this Linode's Configuration Profile.<br><br>Up to three interface objects can be entered in this array. The position in the array determines the interface to which the settings apply:<br><br>- First/0:  eth0<br>- Second/1: eth1<br>- Third/2:  eth2<br><br>When updating a Linode's interfaces, *each interface must be redefined*. An empty interfaces array results in a default public interface configuration only.<br><br>If no public interface is configured, public IP addresses are still assigned to the Linode but will not be usable without manual configuration.<br><br>**Note:** Changes to Linode interface configurations can be enabled by rebooting the Linode.<br><br>**Note:** Only Next Generation Network (NGN) data centers support VLANs. Use the Regions ([/regions](/docs/api/regions/)) endpoint to view the capabilities of data center regions.<br>If a VLAN is attached to your Linode and you attempt to migrate or clone it to a non-NGN data center,<br>the migration or cloning will not initiate. If a Linode cannot be migrated because of an incompatibility,<br>you will be prompted to select a different data center or contact support.<br><br>**Note:** See the [VLANs Overview](/docs/products/networking/vlans/#technical-specifications) guide to view additional specifications and limitations.<br>|
-|» label|body|string|false|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
+|» label|body|[LinodeLabel](#schemalinodelabel)|false|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
 |» private_ip|body|boolean|false|If true, the created Linode will have private networking enabled and assigned a private IPv4 address.<br>|
 |» region|body|string|true|The [Region](/docs/api/regions/#regions-list) where the Linode will be located.<br>|
 |» swap_size|body|integer|false|When deploying from an Image, this field is optional, otherwise it is ignored. This is used to set the swap disk size for the newly-created Linode.<br>|
-|» tags|body|[string]|false|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
+|» tags|body|[LinodeTags](#schemalinodetags)|false|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
 |» type|body|string|true|The [Linode Type](/docs/api/linode-types/#types-list) of the Linode you are creating.<br>|
 
 > Example responses
@@ -12179,9 +12141,9 @@ Updates a Linode that you have permission to `read_write`.
 |» » schedule|body|object|false|none|
 |» » » day|body|string \| null|false|The day of the week that your Linode's weekly Backup is taken.<br>If not set manually, a day will be chosen for you. Backups<br>are taken every day, but backups taken on this day are<br>preferred when selecting backups to retain for a longer period.<br><br><br>If not set manually, then when backups are initially enabled, this<br>may come back as `Scheduling` until the `day` is automatically selected.<br>|
 |» » » window|body|string \| null|false|The window in which your backups will be taken, in UTC. A<br>backups window is a two-hour span of time in which the backup<br>may occur.<br><br><br>For example, `W10` indicates that your backups should be<br>taken between 10:00 and 12:00. If you do not choose a backup<br>window, one will be selected for you automatically.<br><br><br>If not set manually, when backups are initially enabled this<br>may come back as `Scheduling` until the `window` is automatically selected.<br>|
-|» group|body|string|false|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
-|» label|body|string|false|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
-|» tags|body|[string]|false|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
+|» group|body|[LinodeGroup](#schemalinodegroup)|false|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
+|» label|body|[LinodeLabel](#schemalinodelabel)|false|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
+|» tags|body|[LinodeTags](#schemalinodetags)|false|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
 |» watchdog_enabled|body|boolean|false|The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly. It works by issuing a boot job when your Linode powers off without a shutdown job being responsible.<br>To prevent a loop, Lassie will give up if there have been more than 5 boot jobs issued within 15 minutes.<br>|
 
 #### Enumerated Values
@@ -12498,7 +12460,7 @@ Status Code **200**
 |» configs|[string]|false|read-only|A list of the labels of the Configuration profiles that are part of the Backup.<br>|
 |» created|string(date-time)|false|read-only|The date the Backup was taken.|
 |» disks|[object]|false|read-only|A list of the disks that are part of the Backup.<br>|
-|» » filesystem|string|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
+|» » filesystem|[DiskFilesystem](#schemadiskfilesystem)|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
 |» » label|string|false|none|none|
 |» » size|integer|false|none|none|
 |» finished|string(date-time)|false|read-only|The date the Backup completed.|
@@ -13302,9 +13264,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LinodeConfig](#schemalinodeconfig)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -14111,9 +14073,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Disk](#schemadisk)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -14212,15 +14174,15 @@ of the Image is used unless otherwise specified.
 |---|---|---|---|---|
 |linodeId|path|integer|true|ID of the Linode to look up.|
 |body|body|object|true|The parameters to set when creating the Disk.<br>|
-|» authorized_keys|body|[string]|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
-|» authorized_users|body|[string]|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
-|» filesystem|body|string|false|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
-|» image|body|string|false|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
-|» label|body|string|false|The Disk's label is for display purposes only.<br>|
-|» root_pass|body|string(password)|false|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
+|» authorized_keys|body|[DiskRequestAuthorizedKeys](#schemadiskrequestauthorizedkeys)|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
+|» authorized_users|body|[DiskRequestAuthorizedUsers](#schemadiskrequestauthorizedusers)|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
+|» filesystem|body|[DiskFilesystem](#schemadiskfilesystem)|false|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
+|» image|body|[DiskRequestImage](#schemadiskrequestimage)|false|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
+|» label|body|[DiskLabel](#schemadisklabel)|false|The Disk's label is for display purposes only.<br>|
+|» root_pass|body|[DiskRequestRootPass](#schemadiskrequestrootpass)|false|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
 |» size|body|integer|true|The size of the Disk in MB.<br><br>Images require a minimum size. Access the Image View ([GET /images/{imageID}](/docs/api/images/#image-view)) endpoint to view its size.<br>|
-|» stackscript_data|body|object|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
-|» stackscript_id|body|integer|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
+|» stackscript_data|body|[DiskRequestStackscriptData](#schemadiskrequeststackscriptdata)|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
+|» stackscript_id|body|[DiskRequestStackscriptId](#schemadiskrequeststackscriptid)|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
 
 #### Enumerated Values
 
@@ -14395,8 +14357,8 @@ Updates a Disk that you have permission to `read_write`.
 |linodeId|path|integer|true|ID of the Linode to look up.|
 |diskId|path|integer|true|ID of the Disk to look up.|
 |body|body|[Disk](#schemadisk)|true|Updates the parameters of a single Disk.<br>|
-|» filesystem|body|string|false|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
-|» label|body|string|false|The Disk's label is for display purposes only.<br>|
+|» filesystem|body|[DiskFilesystem](#schemadiskfilesystem)|false|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
+|» label|body|[DiskLabel](#schemadisklabel)|false|The Disk's label is for display purposes only.<br>|
 |» size|body|integer|false|The size of the Disk in MB.|
 
 #### Enumerated Values
@@ -14883,9 +14845,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Firewall](#schemafirewall)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -15631,9 +15593,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[NodeBalancer](#schemanodebalancer)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -15869,13 +15831,13 @@ A rebuild will first shut down the Linode, delete all disks and configs on the L
 |---|---|---|---|---|
 |linodeId|path|integer|true|ID of the Linode to rebuild.|
 |body|body|object|true|The requested state your Linode will be rebuilt into.|
-|» authorized_keys|body|[string]|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
-|» authorized_users|body|[string]|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
+|» authorized_keys|body|[DiskRequestAuthorizedKeys](#schemadiskrequestauthorizedkeys)|false|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
+|» authorized_users|body|[DiskRequestAuthorizedUsers](#schemadiskrequestauthorizedusers)|false|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
 |» booted|body|boolean|false|This field defaults to `true` if the Linode is created with an Image or from a Backup.<br>If it is deployed from an Image or a Backup and you wish it to remain `offline` after deployment, set this to `false`.<br>|
-|» image|body|string|true|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
-|» root_pass|body|string(password)|true|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
-|» stackscript_data|body|object|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
-|» stackscript_id|body|integer|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
+|» image|body|[DiskRequestImage](#schemadiskrequestimage)|true|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
+|» root_pass|body|[DiskRequestRootPass](#schemadiskrequestrootpass)|true|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
+|» stackscript_data|body|[DiskRequestStackscriptData](#schemadiskrequeststackscriptdata)|false|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
+|» stackscript_id|body|[DiskRequestStackscriptId](#schemadiskrequeststackscriptid)|false|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
 
 > Example responses
 
@@ -16811,9 +16773,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Volume](#schemavolume)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -16901,9 +16863,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Kernel](#schemakernel)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -17072,9 +17034,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LinodeType](#schemalinodetype)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -17248,9 +17210,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LKECluster](#schemalkecluster)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -17365,11 +17327,11 @@ are ready.
 |body|body|object|false|Configuration for the Kubernetes cluster|
 |» control_plane|body|object|false|Defines settings for the Kubernetes Control Plane. Allows for the enabling of High Availability (HA) for Control Plane Components. Enabling High Availability for LKE is an **irreversible** change.<br>|
 |» » high_availability|body|boolean|false|Defines whether High Availability is enabled for the Control Plane Components of the cluster. Defaults to `false`.<br>|
-|» k8s_version|body|string|true|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
-|» label|body|string|true|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
+|» k8s_version|body|[LKEClusterK8sVersion](#schemalkeclusterk8sversion)|true|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
+|» label|body|[LKEClusterLabel](#schemalkeclusterlabel)|true|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
 |» node_pools|body|[[LKENodePoolRequestBody](#schemalkenodepoolrequestbody)]|true|none|
-|» region|body|string|true|This Kubernetes cluster's location.|
-|» tags|body|[string]|false|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.<br>|
+|» region|body|[LKEClusterRegion](#schemalkeclusterregion)|true|This Kubernetes cluster's location.|
+|» tags|body|[LKEClusterTags](#schemalkeclustertags)|false|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.<br>|
 
 > Example responses
 
@@ -17563,7 +17525,7 @@ Updates a Kubernetes cluster.
 |» control_plane|body|object|false|Defines settings for the Kubernetes Control Plane. Allows for the enabling of High Availability (HA) for Control Plane Components.<br><br>Enabling High Availability for LKE is an **irreversible** change.<br><br>When upgrading pre-existing LKE clusters to use the HA Control Plane, the following changes will additionally occur:<br><br>- All nodes will be deleted and new nodes will be created to replace them.<br><br>- Any local storage (such as `hostPath` volumes) will be erased.<br><br>- The upgrade process may take several minutes to complete, as nodes will be replaced on a rolling basis.<br>|
 |» » high_availability|body|boolean|false|Defines whether High Availability is enabled for the Control Plane Components of the cluster. Defaults to `false`.<br>|
 |» k8s_version|body|string|false|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;. New and recycled Nodes in this cluster will be installed with the latest available patch for the Cluster's Kubernetes version.<br><br>When upgrading the Kubernetes version, only the next latest minor version following the current version can be deployed. For example, a cluster with Kubernetes version 1.19 can be upgraded to version 1.20, but not directly to 1.21.<br><br>The Kubernetes version of a cluster can not be downgraded.<br>|
-|» label|body|string|false|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
+|» label|body|[LKEClusterLabel](#schemalkeclusterlabel)|false|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
 |» tags|body|[string]|false|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only. To delete a tag, exclude it from your `tags` array.<br>|
 
 > Example responses
@@ -17598,12 +17560,12 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|created|string(date-time)|false|read-only|When this Kubernetes cluster was created.|
-|k8s_version|string|false|none|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
-|label|string|false|none|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
-|region|string|false|none|This Kubernetes cluster's location.|
+|created|[LKEClusterCreated](#schemalkeclustercreated)|false|read-only|When this Kubernetes cluster was created.|
+|k8s_version|[LKEClusterK8sVersion](#schemalkeclusterk8sversion)|false|none|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
+|label|[LKEClusterLabel](#schemalkeclusterlabel)|false|none|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
+|region|[LKEClusterRegion](#schemalkeclusterregion)|false|none|This Kubernetes cluster's location.|
 |tags|[string]|false|none|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only. To delete a tag, exclude it from your `tags` array.<br>|
-|updated|string(date-time)|false|read-only|When this Kubernetes cluster was updated.|
+|updated|[LKEClusterUpdated](#schemalkeclusterupdated)|false|read-only|When this Kubernetes cluster was updated.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17753,9 +17715,9 @@ Status Code **200**
 |---|---|---|---|---|
 |data|[object]|false|none|none|
 |» endpoint|string|false|read-only|A Kubernetes API server endpoint for this cluster.<br>|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -18299,9 +18261,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LKENodePool](#schemalkenodepool)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -18382,23 +18344,11 @@ Creates a new Node Pool for the designated Kubernetes cluster.
 |---|---|---|---|---|
 |clusterId|path|integer|true|ID of the Kubernetes cluster to look up.|
 |body|body|object|true|Configuration for the Node Pool|
-|» autoscaler|body|object|false|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
-|» » enabled|body|boolean|false|Whether autoscaling is enabled for this Node Pool. Defaults to `false`.|
-|» » max|body|integer|false|The maximum number of nodes to autoscale to. Defaults to the Node Pool's `count`. Defaults to the value provided by the `count` field.<br>|
-|» » min|body|integer|false|The minimum number of nodes to autoscale to. Defaults to the Node Pool's `count`.|
-|» count|body|integer|true|The number of nodes in the Node Pool.|
-|» disks|body|[object]|false|**Note**: This field should be omitted except for special use cases. The disks specified here are<br>partitions in *addition* to the primary partition and reduce the size of the primary partition,<br>which can lead to stability problems for the Node.<br><br>This Node Pool's custom disk layout. Each item in this array will create a new disk<br>partition for each node in this Node Pool.<br><br>  * The custom disk layout is applied to each node in this Node Pool.<br>  * The maximum number of custom disk partitions that can be configured is 7.<br>  * Once the requested disk paritions are allocated, the remaining disk space is allocated to the node's boot disk.<br>  * A Node Pool's custom disk layout is immutable over the lifetime of the Node Pool.<br>|
-|» » size|body|integer|false|The size of this custom disk partition in MB.<br><br>  * The size of this disk partition must not exceed the capacity of the node's plan type.<br>|
-|» » type|body|string|false|This custom disk partition's filesystem type.<br>|
-|» tags|body|[string]|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
-|» type|body|string|true|The Linode Type for all of the nodes in the Node Pool.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » type|raw|
-|» » type|ext4|
+|» autoscaler|body|[LKENodePoolRequestBodyAutoscaler](#schemalkenodepoolrequestbodyautoscaler)|false|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
+|» count|body|[LKENodePoolCount](#schemalkenodepoolcount)|true|The number of nodes in the Node Pool.|
+|» disks|body|[[LKENodePoolDisksItems](#schemalkenodepooldisksitems)]|false|**Note**: This field should be omitted except for special use cases. The disks specified here are<br>partitions in *addition* to the primary partition and reduce the size of the primary partition,<br>which can lead to stability problems for the Node.<br><br>This Node Pool's custom disk layout. Each item in this array will create a new disk<br>partition for each node in this Node Pool.<br><br>  * The custom disk layout is applied to each node in this Node Pool.<br>  * The maximum number of custom disk partitions that can be configured is 7.<br>  * Once the requested disk paritions are allocated, the remaining disk space is allocated to the node's boot disk.<br>  * A Node Pool's custom disk layout is immutable over the lifetime of the Node Pool.<br>|
+|» tags|body|[LKENodePoolTags](#schemalkenodepooltags)|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|» type|body|[LKENodePoolType](#schemalkenodepooltype)|true|The Linode Type for all of the nodes in the Node Pool.|
 
 > Example responses
 
@@ -18587,11 +18537,8 @@ Linodes will be created or deleted to match changes to the Node Pool's count.
 |clusterId|path|integer|true|ID of the Kubernetes cluster to look up.|
 |poolId|path|integer|true|ID of the Pool to look up|
 |body|body|object|false|The fields to update|
-|» autoscaler|body|object|false|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
-|» » enabled|body|boolean|false|Whether autoscaling is enabled for this Node Pool. Defaults to `false`.|
-|» » max|body|integer|false|The maximum number of nodes to autoscale to. Defaults to the Node Pool's `count`. Defaults to the value provided by the `count` field.<br>|
-|» » min|body|integer|false|The minimum number of nodes to autoscale to. Defaults to the Node Pool's `count`.|
-|» count|body|integer|false|The number of nodes in the Node Pool.|
+|» autoscaler|body|[LKENodePoolRequestBodyAutoscaler](#schemalkenodepoolrequestbodyautoscaler)|false|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
+|» count|body|[LKENodePoolCount](#schemalkenodepoolcount)|false|The number of nodes in the Node Pool.|
 
 > Example responses
 
@@ -19063,9 +19010,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LKEVersion](#schemalkeversion)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -19226,9 +19173,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LongviewClient](#schemalongviewclient)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -19815,9 +19762,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[LongviewSubscription](#schemalongviewsubscription)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -19981,9 +19928,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ManagedContact](#schemamanagedcontact)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -20427,9 +20374,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ManagedCredential](#schemamanagedcredential)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -20992,9 +20939,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ManagedIssue](#schemamanagedissue)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -21165,9 +21112,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ManagedLinodeSettings](#schemamanagedlinodesettings)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -21439,9 +21386,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ManagedService](#schemamanagedservice)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -22263,9 +22210,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Firewall](#schemafirewall)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -22353,27 +22300,14 @@ Additional disabled Firewalls can be assigned to a service, but they cannot be e
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|Creates a Firewall object that can be applied to a Linode service to filter the service's network traffic.|
-|» label|body|string|true|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
-|» rules|body|object|true|The inbound and outbound access rules to apply to the Firewall.<br><br>A Firewall may have up to 25 rules across its inbound and outbound rulesets.<br>|
-|» » inbound|body|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|The inbound rules for the firewall, as a JSON array.<br>|
-|» » inbound_policy|body|string|false|The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.<br>|
-|» » outbound|body|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|The outbound rules for the firewall, as a JSON array.<br>|
-|» » outbound_policy|body|string|false|The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.<br>|
-|» tags|body|[string]|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|» label|body|[FirewallLabel](#schemafirewalllabel)|true|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
+|» rules|body|[FirewallRules](#schemafirewallrules)|true|The inbound and outbound access rules to apply to the Firewall.<br><br>A Firewall may have up to 25 rules across its inbound and outbound rulesets.<br>|
+|» tags|body|[FirewallTags](#schemafirewalltags)|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
 |» devices|body|object|false|Devices to create for this Firewall.<br>When a Device is created, the Firewall is assigned to its associated service.<br>Currently, Devices can only be created for Linode instances.<br>|
 |» » linodes|body|[integer]|false|An array of Linode IDs. A Firewall Device is created for each ID.<br>|
 |» rules|body|object|true|none|
 |» » inbound|body|object|false|none|
 |» » outbound|body|object|false|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » inbound_policy|ACCEPT|
-|» » inbound_policy|DROP|
-|» » outbound_policy|ACCEPT|
-|» » outbound_policy|DROP|
 
 > Example responses
 
@@ -22643,9 +22577,9 @@ If a Firewall's status is changed with this endpoint, a corresponding `firewall_
 |---|---|---|---|---|
 |firewallId|path|integer|true|ID of the Firewall to access.<br>|
 |body|body|object|false|The Firewall information to update.|
-|» label|body|string|false|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
+|» label|body|[FirewallLabel](#schemafirewalllabel)|false|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
 |» status|body|string|false|The status to be applied to this Firewall.<br> <br> * When a Firewall is first created its status is `enabled`.<br> * Use the [Delete Firewall](/docs/api/networking/#firewall-delete) endpoint to delete a Firewall.<br>|
-|» tags|body|[string]|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|» tags|body|[FirewallTags](#schemafirewalltags)|false|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
 
 #### Enumerated Values
 
@@ -22890,9 +22824,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[FirewallDevices](#schemafirewalldevices)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -23246,28 +23180,10 @@ Returns the inbound and outbound Rules for a Firewall.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The requested Firewall Rules.|Inline|
+|200|OK|The requested Firewall Rules.|[FirewallRules](#schemafirewallrules)|
 |default|Default|Error|Inline|
 
 <h3 id="firewall-rules-list-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|inbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The inbound rules for the firewall, as a JSON array.<br>|
-|inbound_policy|string|false|none|The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.<br>|
-|outbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The outbound rules for the firewall, as a JSON array.<br>|
-|outbound_policy|string|false|none|The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|inbound_policy|ACCEPT|
-|inbound_policy|DROP|
-|outbound_policy|ACCEPT|
-|outbound_policy|DROP|
 
 Status Code **default**
 
@@ -23402,28 +23318,10 @@ Updates the inbound and outbound Rules for a Firewall.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Firewall Rules updated successfully.|Inline|
+|200|OK|Firewall Rules updated successfully.|[FirewallRules](#schemafirewallrules)|
 |default|Default|Error|Inline|
 
 <h3 id="firewall-rules-update-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|inbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The inbound rules for the firewall, as a JSON array.<br>|
-|inbound_policy|string|false|none|The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.<br>|
-|outbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The outbound rules for the firewall, as a JSON array.<br>|
-|outbound_policy|string|false|none|The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|inbound_policy|ACCEPT|
-|inbound_policy|DROP|
-|outbound_policy|ACCEPT|
-|outbound_policy|DROP|
 
 Status Code **default**
 
@@ -23505,9 +23403,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[IPAddress](#schemaipaddress)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -24248,9 +24146,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[IPv6Pool](#schemaipv6pool)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -24341,9 +24239,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[IPv6Range](#schemaipv6range)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -24701,9 +24599,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Vlans](#schemavlans)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -24805,9 +24703,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[NodeBalancer](#schemanodebalancer)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -24917,25 +24815,25 @@ When using the Linode CLI to create a NodeBalancer, first create a NodeBalancer 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|Information about the NodeBalancer to create.|
-|» client_conn_throttle|body|integer|false|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
+|» client_conn_throttle|body|[NodeBalancerClientConnThrottle](#schemanodebalancerclientconnthrottle)|false|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
 |» configs|body|[object]|false|The port Config(s) to create for this NodeBalancer.<br><br>Each Config must have a unique port and at least one Node.<br>|
-|» » algorithm|body|string|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
-|» » check|body|string|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
-|» » check_attempts|body|integer|false|How many times to attempt a check before considering a backend to be down.<br>|
-|» » check_body|body|string|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
-|» » check_interval|body|integer|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
-|» » check_passive|body|boolean|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
-|» » check_path|body|string|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
-|» » check_timeout|body|integer|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
-|» » cipher_suite|body|string|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
+|» » algorithm|body|[NodeBalancerConfigAlgorithm](#schemanodebalancerconfigalgorithm)|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
+|» » check|body|[NodeBalancerConfigCheck](#schemanodebalancerconfigcheck)|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
+|» » check_attempts|body|[NodeBalancerConfigCheckAttempts](#schemanodebalancerconfigcheckattempts)|false|How many times to attempt a check before considering a backend to be down.<br>|
+|» » check_body|body|[NodeBalancerConfigCheckBody](#schemanodebalancerconfigcheckbody)|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
+|» » check_interval|body|[NodeBalancerConfigCheckInterval](#schemanodebalancerconfigcheckinterval)|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
+|» » check_passive|body|[NodeBalancerConfigCheckPassive](#schemanodebalancerconfigcheckpassive)|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
+|» » check_path|body|[NodeBalancerConfigCheckPath](#schemanodebalancerconfigcheckpath)|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
+|» » check_timeout|body|[NodeBalancerConfigCheckTimeout](#schemanodebalancerconfigchecktimeout)|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
+|» » cipher_suite|body|[NodeBalancerConfigCipherSuite](#schemanodebalancerconfigciphersuite)|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
 |» » nodes|body|[[NodeBalancerNode](#schemanodebalancernode)]|false|The NodeBalancer Node(s) that serve this Config.<br>|
-|» » port|body|integer|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
-|» » protocol|body|string|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
-|» » proxy_protocol|body|string|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
-|» » ssl_cert|body|string(ssl-cert) \| null|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» » ssl_key|body|string(ssl-key) \| null|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» » stickiness|body|string|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
-|» label|body|string|false|This NodeBalancer's label. These must be unique on your Account.<br>|
+|» » port|body|[NodeBalancerConfigPort](#schemanodebalancerconfigport)|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
+|» » protocol|body|[NodeBalancerConfigProtocol](#schemanodebalancerconfigprotocol)|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
+|» » proxy_protocol|body|[NodeBalancerConfigProxyProtocol](#schemanodebalancerconfigproxyprotocol)|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
+|» » ssl_cert|body|[NodeBalancerConfigSslCert](#schemanodebalancerconfigsslcert)|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» » ssl_key|body|[NodeBalancerConfigSslKey](#schemanodebalancerconfigsslkey)|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» » stickiness|body|[NodeBalancerConfigStickiness](#schemanodebalancerconfigstickiness)|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
+|» label|body|[NodeBalancerLabel](#schemanodebalancerlabel)|false|This NodeBalancer's label. These must be unique on your Account.<br>|
 |» region|body|string|true|The ID of the Region to create this NodeBalancer in.<br>|
 
 #### Enumerated Values
@@ -25150,8 +25048,8 @@ Updates information about a NodeBalancer you can access.
 |---|---|---|---|---|
 |nodeBalancerId|path|integer|true|The ID of the NodeBalancer to access.|
 |body|body|[NodeBalancer](#schemanodebalancer)|true|The information to update.|
-|» client_conn_throttle|body|integer|false|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
-|» label|body|string|false|This NodeBalancer's label. These must be unique on your Account.<br>|
+|» client_conn_throttle|body|[NodeBalancerClientConnThrottle](#schemanodebalancerclientconnthrottle)|false|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
+|» label|body|[NodeBalancerLabel](#schemanodebalancerlabel)|false|This NodeBalancer's label. These must be unique on your Account.<br>|
 |» tags|body|[string]|false|An array of Tags applied to this object.  Tags are for organizational purposes only.<br>|
 
 > Example responses
@@ -25376,9 +25274,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[NodeBalancerConfig](#schemanodebalancerconfig)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -25455,21 +25353,21 @@ Creates a NodeBalancer Config, which allows the NodeBalancer to accept traffic o
 |---|---|---|---|---|
 |nodeBalancerId|path|integer|true|The ID of the NodeBalancer to access.|
 |body|body|[NodeBalancerConfig](#schemanodebalancerconfig)|false|Information about the port to configure.|
-|» algorithm|body|string|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
-|» check|body|string|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
-|» check_attempts|body|integer|false|How many times to attempt a check before considering a backend to be down.<br>|
-|» check_body|body|string|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
-|» check_interval|body|integer|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
-|» check_passive|body|boolean|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
-|» check_path|body|string|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
-|» check_timeout|body|integer|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
-|» cipher_suite|body|string|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
-|» port|body|integer|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
-|» protocol|body|string|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
-|» proxy_protocol|body|string|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
-|» ssl_cert|body|string(ssl-cert) \| null|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» ssl_key|body|string(ssl-key) \| null|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» stickiness|body|string|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
+|» algorithm|body|[NodeBalancerConfigAlgorithm](#schemanodebalancerconfigalgorithm)|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
+|» check|body|[NodeBalancerConfigCheck](#schemanodebalancerconfigcheck)|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
+|» check_attempts|body|[NodeBalancerConfigCheckAttempts](#schemanodebalancerconfigcheckattempts)|false|How many times to attempt a check before considering a backend to be down.<br>|
+|» check_body|body|[NodeBalancerConfigCheckBody](#schemanodebalancerconfigcheckbody)|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
+|» check_interval|body|[NodeBalancerConfigCheckInterval](#schemanodebalancerconfigcheckinterval)|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
+|» check_passive|body|[NodeBalancerConfigCheckPassive](#schemanodebalancerconfigcheckpassive)|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
+|» check_path|body|[NodeBalancerConfigCheckPath](#schemanodebalancerconfigcheckpath)|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
+|» check_timeout|body|[NodeBalancerConfigCheckTimeout](#schemanodebalancerconfigchecktimeout)|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
+|» cipher_suite|body|[NodeBalancerConfigCipherSuite](#schemanodebalancerconfigciphersuite)|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
+|» port|body|[NodeBalancerConfigPort](#schemanodebalancerconfigport)|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
+|» protocol|body|[NodeBalancerConfigProtocol](#schemanodebalancerconfigprotocol)|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
+|» proxy_protocol|body|[NodeBalancerConfigProxyProtocol](#schemanodebalancerconfigproxyprotocol)|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
+|» ssl_cert|body|[NodeBalancerConfigSslCert](#schemanodebalancerconfigsslcert)|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» ssl_key|body|[NodeBalancerConfigSslKey](#schemanodebalancerconfigsslkey)|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» stickiness|body|[NodeBalancerConfigStickiness](#schemanodebalancerconfigstickiness)|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
 
 #### Enumerated Values
 
@@ -25713,21 +25611,21 @@ Updates the configuration for a single port on a NodeBalancer.
 |nodeBalancerId|path|integer|true|The ID of the NodeBalancer to access.|
 |configId|path|integer|true|The ID of the config to access.|
 |body|body|[NodeBalancerConfig](#schemanodebalancerconfig)|true|The fields to update.|
-|» algorithm|body|string|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
-|» check|body|string|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
-|» check_attempts|body|integer|false|How many times to attempt a check before considering a backend to be down.<br>|
-|» check_body|body|string|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
-|» check_interval|body|integer|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
-|» check_passive|body|boolean|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
-|» check_path|body|string|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
-|» check_timeout|body|integer|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
-|» cipher_suite|body|string|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
-|» port|body|integer|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
-|» protocol|body|string|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
-|» proxy_protocol|body|string|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
-|» ssl_cert|body|string(ssl-cert) \| null|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» ssl_key|body|string(ssl-key) \| null|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» stickiness|body|string|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
+|» algorithm|body|[NodeBalancerConfigAlgorithm](#schemanodebalancerconfigalgorithm)|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
+|» check|body|[NodeBalancerConfigCheck](#schemanodebalancerconfigcheck)|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
+|» check_attempts|body|[NodeBalancerConfigCheckAttempts](#schemanodebalancerconfigcheckattempts)|false|How many times to attempt a check before considering a backend to be down.<br>|
+|» check_body|body|[NodeBalancerConfigCheckBody](#schemanodebalancerconfigcheckbody)|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
+|» check_interval|body|[NodeBalancerConfigCheckInterval](#schemanodebalancerconfigcheckinterval)|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
+|» check_passive|body|[NodeBalancerConfigCheckPassive](#schemanodebalancerconfigcheckpassive)|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
+|» check_path|body|[NodeBalancerConfigCheckPath](#schemanodebalancerconfigcheckpath)|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
+|» check_timeout|body|[NodeBalancerConfigCheckTimeout](#schemanodebalancerconfigchecktimeout)|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
+|» cipher_suite|body|[NodeBalancerConfigCipherSuite](#schemanodebalancerconfigciphersuite)|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
+|» port|body|[NodeBalancerConfigPort](#schemanodebalancerconfigport)|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
+|» protocol|body|[NodeBalancerConfigProtocol](#schemanodebalancerconfigprotocol)|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
+|» proxy_protocol|body|[NodeBalancerConfigProxyProtocol](#schemanodebalancerconfigproxyprotocol)|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
+|» ssl_cert|body|[NodeBalancerConfigSslCert](#schemanodebalancerconfigsslcert)|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» ssl_key|body|[NodeBalancerConfigSslKey](#schemanodebalancerconfigsslkey)|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» stickiness|body|[NodeBalancerConfigStickiness](#schemanodebalancerconfigstickiness)|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
 
 #### Enumerated Values
 
@@ -25964,9 +25862,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[NodeBalancerNode](#schemanodebalancernode)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -26022,10 +25920,10 @@ Creates a NodeBalancer Node, a backend that can accept traffic for this NodeBala
 |nodeBalancerId|path|integer|true|The ID of the NodeBalancer to access.|
 |configId|path|integer|true|The ID of the NodeBalancer config to access.|
 |body|body|object|true|Information about the Node to create.|
-|» address|body|string(ip)|true|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
-|» label|body|string|true|The label for this node.  This is for display purposes only.<br>|
-|» mode|body|string|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
-|» weight|body|integer|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
+|» address|body|[NodeBalancerNodeAddress](#schemanodebalancernodeaddress)|true|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
+|» label|body|[NodeBalancerNodeLabel](#schemanodebalancernodelabel)|true|The label for this node.  This is for display purposes only.<br>|
+|» mode|body|[NodeBalancerNodeMode](#schemanodebalancernodemode)|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
+|» weight|body|[NodeBalancerNodeWeight](#schemanodebalancernodeweight)|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
 
 #### Enumerated Values
 
@@ -26205,10 +26103,10 @@ Updates information about a Node, a backend for this NodeBalancer's configured p
 |configId|path|integer|true|The ID of the Config to access|
 |nodeId|path|integer|true|The ID of the Node to access|
 |body|body|[NodeBalancerNode](#schemanodebalancernode)|true|The fields to update.|
-|» address|body|string(ip)|false|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
-|» label|body|string|false|The label for this node.  This is for display purposes only.<br>|
-|» mode|body|string|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
-|» weight|body|integer|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
+|» address|body|[NodeBalancerNodeAddress](#schemanodebalancernodeaddress)|false|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
+|» label|body|[NodeBalancerNodeLabel](#schemanodebalancernodelabel)|false|The label for this node.  This is for display purposes only.<br>|
+|» mode|body|[NodeBalancerNodeMode](#schemanodebalancernodemode)|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
+|» weight|body|[NodeBalancerNodeWeight](#schemanodebalancernodeweight)|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
 
 #### Enumerated Values
 
@@ -26423,27 +26321,27 @@ Use this command to update a NodeBalancer's Config and Nodes with a single reque
 |nodeBalancerId|path|integer|true|The ID of the NodeBalancer to access.|
 |configId|path|integer|true|The ID of the Config to access.|
 |body|body|object|true|Information about the NodeBalancer Config to rebuild.<br>|
-|» algorithm|body|string|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
-|» check|body|string|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
-|» check_attempts|body|integer|false|How many times to attempt a check before considering a backend to be down.<br>|
-|» check_body|body|string|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
-|» check_interval|body|integer|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
-|» check_passive|body|boolean|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
-|» check_path|body|string|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
-|» check_timeout|body|integer|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
-|» cipher_suite|body|string|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
-|» port|body|integer|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
-|» protocol|body|string|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
-|» proxy_protocol|body|string|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
-|» ssl_cert|body|string(ssl-cert) \| null|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» ssl_key|body|string(ssl-key) \| null|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|» stickiness|body|string|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
+|» algorithm|body|[NodeBalancerConfigAlgorithm](#schemanodebalancerconfigalgorithm)|false|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
+|» check|body|[NodeBalancerConfigCheck](#schemanodebalancerconfigcheck)|false|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
+|» check_attempts|body|[NodeBalancerConfigCheckAttempts](#schemanodebalancerconfigcheckattempts)|false|How many times to attempt a check before considering a backend to be down.<br>|
+|» check_body|body|[NodeBalancerConfigCheckBody](#schemanodebalancerconfigcheckbody)|false|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
+|» check_interval|body|[NodeBalancerConfigCheckInterval](#schemanodebalancerconfigcheckinterval)|false|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
+|» check_passive|body|[NodeBalancerConfigCheckPassive](#schemanodebalancerconfigcheckpassive)|false|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
+|» check_path|body|[NodeBalancerConfigCheckPath](#schemanodebalancerconfigcheckpath)|false|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
+|» check_timeout|body|[NodeBalancerConfigCheckTimeout](#schemanodebalancerconfigchecktimeout)|false|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
+|» cipher_suite|body|[NodeBalancerConfigCipherSuite](#schemanodebalancerconfigciphersuite)|false|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
+|» port|body|[NodeBalancerConfigPort](#schemanodebalancerconfigport)|false|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
+|» protocol|body|[NodeBalancerConfigProtocol](#schemanodebalancerconfigprotocol)|false|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
+|» proxy_protocol|body|[NodeBalancerConfigProxyProtocol](#schemanodebalancerconfigproxyprotocol)|false|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
+|» ssl_cert|body|[NodeBalancerConfigSslCert](#schemanodebalancerconfigsslcert)|false|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» ssl_key|body|[NodeBalancerConfigSslKey](#schemanodebalancerconfigsslkey)|false|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|» stickiness|body|[NodeBalancerConfigStickiness](#schemanodebalancerconfigstickiness)|false|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
 |» nodes|body|[object]|true|The NodeBalancer Node(s) that serve this Config.<br><br>Some considerations for Nodes when rebuilding a config:<br>  * Current Nodes excluded from the request body will be deleted from the Config.<br>  * Current Nodes (identified by their Node ID) will be updated.<br>  * New Nodes (included without a Node ID) will be created.<br>|
-|» » address|body|string(ip)|false|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
+|» » address|body|[NodeBalancerNodeAddress](#schemanodebalancernodeaddress)|false|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
 |» » id|body|integer|false|The unique ID of the Node to update.|
-|» » label|body|string|false|The label for this node.  This is for display purposes only.<br>|
-|» » mode|body|string|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
-|» » weight|body|integer|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
+|» » label|body|[NodeBalancerNodeLabel](#schemanodebalancernodelabel)|false|The label for this node.  This is for display purposes only.<br>|
+|» » mode|body|[NodeBalancerNodeMode](#schemanodebalancernodemode)|false|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
+|» » weight|body|[NodeBalancerNodeWeight](#schemanodebalancernodeweight)|false|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
 
 #### Enumerated Values
 
@@ -26697,9 +26595,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ObjectStorageBucket](#schemaobjectstoragebucket)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -26897,9 +26795,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ObjectStorageBucket](#schemaobjectstoragebucket)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -28017,9 +27915,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ObjectStorageCluster](#schemaobjectstoragecluster)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -28172,9 +28070,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ObjectStorageKey](#schemaobjectstoragekey)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -28901,9 +28799,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[AuthorizedApp](#schemaauthorizedapp)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -29119,9 +29017,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[TrustedDevice](#schematrusteddevice)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -29469,9 +29367,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Login](#schemalogin)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -30048,8 +29946,8 @@ Previous responses are overwritten if answered or reset to `null` if unanswered.
 |---|---|---|---|---|
 |body|body|[SecurityQuestionsPost](#schemasecurityquestionspost)|false|Answer Security Questions|
 |» security_questions|body|[object]|false|none|
-|» » question_id|body|integer|false|The ID representing the security question.|
-|» » response|body|string|false|The security question response.<br>|
+|» » question_id|body|[SecurityQuestionId](#schemasecurityquestionid)|false|The ID representing the security question.|
+|» » response|body|[SecurityQuestionResponse](#schemasecurityquestionresponse)|false|The security question response.<br>|
 
 > Example responses
 
@@ -30171,9 +30069,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[SSHKey](#schemasshkey)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -30223,7 +30121,7 @@ Adds an SSH Key to your Account profile.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[SSHKey](#schemasshkey)|false|Add SSH Key|
-|» label|body|string|false|A label for the SSH Key.<br>|
+|» label|body|[SSHKeyLabel](#schemasshkeylabel)|false|A label for the SSH Key.<br>|
 |» ssh_key|body|string(ssh-key)|false|The public SSH Key, which is used to authenticate to the root user of the Linodes you deploy.<br><br>Accepted formats:<br>* ssh-dss<br>* ssh-rsa<br>* ecdsa-sha2-nistp<br>* ssh-ed25519<br>* sk-ecdsa-sha2-nistp256 (Akamai-specific)<br>|
 
 > Example responses
@@ -30379,7 +30277,7 @@ Only SSH key labels can be updated.
 |---|---|---|---|---|
 |sshKeyId|path|integer|true|The ID of the SSHKey|
 |body|body|object|true|The fields to update.<br>|
-|» label|body|string|false|A label for the SSH Key.<br>|
+|» label|body|[SSHKeyLabel](#schemasshkeylabel)|false|A label for the SSH Key.<br>|
 
 > Example responses
 
@@ -30778,9 +30676,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[PersonalAccessToken](#schemapersonalaccesstoken)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -30833,7 +30731,7 @@ Creates a Personal Access Token for your User. The raw token will be returned in
 |---|---|---|---|---|
 |body|body|object|true|Information about the requested token.|
 |» expiry|body|string(date-time)|false|When this token should be valid until.  If omitted, the new token will be valid until it is manually revoked.<br>|
-|» label|body|string|false|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
+|» label|body|[PersonalAccessTokenLabel](#schemapersonalaccesstokenlabel)|false|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
 |» scopes|body|string(oauth-scope)|false|The scopes to create the token with.  These cannot be changed after creation, and may not exceed the scopes of the acting token. If omitted, the new token will have the same scopes as the acting token.<br>|
 
 > Example responses
@@ -30991,7 +30889,7 @@ Updates a Personal Access Token.
 |---|---|---|---|---|
 |tokenId|path|integer|true|The ID of the token to access.|
 |body|body|[PersonalAccessToken](#schemapersonalaccesstoken)|true|The fields to update.|
-|» label|body|string|false|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
+|» label|body|[PersonalAccessTokenLabel](#schemapersonalaccesstokenlabel)|false|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
 
 > Example responses
 
@@ -31184,9 +31082,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Region](#schemaregion)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -31370,9 +31268,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[StackScript](#schemastackscript)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -31879,9 +31777,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[SupportTicket](#schemasupportticket)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -32342,9 +32240,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[SupportTicketReply](#schemasupportticketreply)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -32517,9 +32415,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Tag](#schematag)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -32770,9 +32668,9 @@ Status Code **200**
 |» » *oneOf*|[Volume](#schemavolume)|false|none|A Block Storage Volume associated with your Account.<br>|
 |» » *oneOf*|[NodeBalancer](#schemanodebalancer)|false|none|Linode's load balancing solution.  Can handle multiple ports, SSL termination, and any number of backends.  NodeBalancer ports are configured with NodeBalancer Configs, and each config is given one or more NodeBalancer Node that accepts traffic.  The traffic should be routed to the  NodeBalancer's ip address, the NodeBalancer will handle routing individual requests to backends.<br>|
 |» type|string|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -32938,9 +32836,9 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Volume](#schemavolume)]|false|none|none|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 Status Code **default**
 
@@ -33198,9 +33096,9 @@ Updates a Volume that you have permission to `read_write`.
 |---|---|---|---|---|
 |volumeId|path|integer|true|ID of the Volume to look up.|
 |body|body|object|true|If any updated field fails to pass validation, the Volume will not be updated.<br>|
-|» label|body|string|false|The Volume's label is for display purposes only.<br>|
+|» label|body|[VolumeLabel](#schemavolumelabel)|false|The Volume's label is for display purposes only.<br>|
 |» linode_id|body|integer \| null|false|If a Volume is attached to a specific Linode, the ID of that Linode will be displayed here.<br>|
-|» size|body|integer|false|The Volume's size, in GiB.<br>|
+|» size|body|[VolumeSize](#schemavolumesize)|false|The Volume's size, in GiB.<br>|
 |» tags|body|[string]|false|An array of Tags applied to this object.  Tags are for organizational purposes only.<br>|
 
 > Example responses
@@ -33470,7 +33368,7 @@ Creates a Volume on your Account. In order for this request to complete successf
 |---|---|---|---|---|
 |volumeId|path|integer|true|ID of the Volume to clone.|
 |body|body|object|true|The requested state your Volume will be cloned into.|
-|» label|body|string|true|The Volume's label is for display purposes only.<br>|
+|» label|body|[VolumeLabel](#schemavolumelabel)|true|The Volume's label is for display purposes only.<br>|
 
 > Example responses
 
@@ -33632,7 +33530,7 @@ Resize an existing Volume on your Account. In order for this request to complete
 |---|---|---|---|---|
 |volumeId|path|integer|true|ID of the Volume to resize.|
 |body|body|object|true|The requested size to increase your Volume to.|
-|» size|body|integer|true|The Volume's size, in GiB.<br>|
+|» size|body|[VolumeSize](#schemavolumesize)|true|The Volume's size, in GiB.<br>|
 
 > Example responses
 
@@ -34081,20 +33979,20 @@ A general Managed Database instance object containing properties that are identi
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|created|string(date-time)|false|read-only|When this Managed Database was created.|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|created|[DatabaseCreated](#schemadatabasecreated)|false|read-only|When this Managed Database was created.|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|false|read-only|The Managed Database engine type.|
-|hosts|object|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
-|id|integer|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
+|hosts|[DatabaseHosts](#schemadatabasehosts)|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
+|id|[DatabaseId](#schemadatabaseid)|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
 |instance_uri|string|false|read-only|Append this to `https://api.linode.com` to run commands for the Managed Database.<br>|
-|label|string|false|none|A unique, user-defined string referring to the Managed Database.|
-|region|string|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|status|string|false|read-only|The operating status of the Managed Database.|
-|type|string|false|none|The Linode Instance type used by the Managed Database for its nodes.|
-|updated|string(date-time)|false|read-only|When this Managed Database was last updated.|
-|updates|object|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
+|label|[DatabaseLabel](#schemadatabaselabel)|false|none|A unique, user-defined string referring to the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|status|[DatabaseStatus](#schemadatabasestatus)|false|read-only|The operating status of the Managed Database.|
+|type|[DatabaseType2](#schemadatabasetype2)|false|none|The Linode Instance type used by the Managed Database for its nodes.|
+|updated|[DatabaseUpdated](#schemadatabaseupdated)|false|read-only|When this Managed Database was last updated.|
+|updates|[DatabaseUpdates](#schemadatabaseupdates)|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
 |version|string|false|read-only|The Managed Database engine version.|
 
 #### Enumerated Values
@@ -34283,25 +34181,25 @@ Managed MongoDB Databases object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|compression_type|string|false|none|The type of data compression for this Database.<br><br>Snappy has a lower comparative compression ratio and resource consumption rate.<br><br>Zlip has a higher comparative compression ratio and resource consumption rate.<br>|
-|created|string(date-time)|false|read-only|When this Managed Database was created.|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|compression_type|[DatabaseMongoDBCompressionType](#schemadatabasemongodbcompressiontype)|false|none|The type of data compression for this Database.<br><br>Snappy has a lower comparative compression ratio and resource consumption rate.<br><br>Zlip has a higher comparative compression ratio and resource consumption rate.<br>|
+|created|[DatabaseCreated](#schemadatabasecreated)|false|read-only|When this Managed Database was created.|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|false|read-only|The Managed Database engine type.|
 |hosts|object|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
-|id|integer|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
-|label|string|false|none|A unique, user-defined string referring to the Managed Database.|
+|id|[DatabaseId](#schemadatabaseid)|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
+|label|[DatabaseLabel](#schemadatabaselabel)|false|none|A unique, user-defined string referring to the Managed Database.|
 |peers|[string]|false|none|An array of peer addresses for this Database.<br>|
 |port|integer|false|none|The access port for this Managed Database.|
-|region|string|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replica_set|string \| null|false|none|Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.<br><br>If `null`, the Database is not included in any replica set.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.<br>|
-|status|string|false|read-only|The operating status of the Managed Database.|
-|storage_engine|string|false|none|The type of storage engine for this Database.<br><br>**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.<br>|
-|type|string|false|none|The Linode Instance type used by the Managed Database for its nodes.|
-|updated|string(date-time)|false|read-only|When this Managed Database was last updated.|
-|updates|object|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replica_set|[DatabaseMongoDBReplicaSet](#schemadatabasemongodbreplicaset)|false|none|Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.<br><br>If `null`, the Database is not included in any replica set.<br>|
+|ssl_connection|[DatabaseMongoDBSslConnection](#schemadatabasemongodbsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.<br>|
+|status|[DatabaseStatus](#schemadatabasestatus)|false|read-only|The operating status of the Managed Database.|
+|storage_engine|[DatabaseMongoDBStorageEngine](#schemadatabasemongodbstorageengine)|false|none|The type of storage engine for this Database.<br><br>**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.<br>|
+|type|[DatabaseType2](#schemadatabasetype2)|false|none|The Linode Instance type used by the Managed Database for its nodes.|
+|updated|[DatabaseUpdated](#schemadatabaseupdated)|false|read-only|When this Managed Database was last updated.|
+|updates|[DatabaseUpdates](#schemadatabaseupdates)|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
 |version|string|false|read-only|The Managed Database engine version.|
 
 #### Enumerated Values
@@ -34358,17 +34256,17 @@ Managed MongoDB Database request object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|compression_type|string|false|none|The type of data compression for this Database.<br><br>Snappy has a lower comparative compression ratio and resource consumption rate.<br><br>Zlip has a higher comparative compression ratio and resource consumption rate.<br>|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|compression_type|[DatabaseMongoDBCompressionType](#schemadatabasemongodbcompressiontype)|false|none|The type of data compression for this Database.<br><br>Snappy has a lower comparative compression ratio and resource consumption rate.<br><br>Zlip has a higher comparative compression ratio and resource consumption rate.<br>|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|true|none|The Managed Database engine in engine/version format.|
-|label|string|true|none|A unique, user-defined string referring to the Managed Database.|
-|region|string|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replica_set|string \| null|false|none|Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.<br><br>If `null`, the Database is not included in any replica set.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.<br>|
-|storage_engine|string|false|none|The type of storage engine for this Database.<br><br>**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.<br>|
-|type|string|true|none|The Linode Instance type used by the Managed Database for its nodes.|
+|label|[DatabaseLabel](#schemadatabaselabel)|true|none|A unique, user-defined string referring to the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replica_set|[DatabaseMongoDBReplicaSet](#schemadatabasemongodbreplicaset)|false|none|Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.<br><br>If `null`, the Database is not included in any replica set.<br>|
+|ssl_connection|[DatabaseMongoDBSslConnection](#schemadatabasemongodbsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.<br>|
+|storage_engine|[DatabaseMongoDBStorageEngine](#schemadatabasemongodbstorageengine)|false|none|The type of storage engine for this Database.<br><br>**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.<br>|
+|type|[DatabaseType2](#schemadatabasetype2)|true|none|The Linode Instance type used by the Managed Database for its nodes.|
 
 #### Enumerated Values
 
@@ -34429,22 +34327,22 @@ Managed MySQL Databases object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|created|string(date-time)|false|read-only|When this Managed Database was created.|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|created|[DatabaseCreated](#schemadatabasecreated)|false|read-only|When this Managed Database was created.|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|false|read-only|The Managed Database engine type.|
-|hosts|object|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
-|id|integer|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
-|label|string|false|none|A unique, user-defined string referring to the Managed Database.|
+|hosts|[DatabaseHosts](#schemadatabasehosts)|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
+|id|[DatabaseId](#schemadatabaseid)|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
+|label|[DatabaseLabel](#schemadatabaselabel)|false|none|A unique, user-defined string referring to the Managed Database.|
 |port|integer|false|none|The access port for this Managed Database.|
-|region|string|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replication_type|string|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
-|status|string|false|read-only|The operating status of the Managed Database.|
-|type|string|false|none|The Linode Instance type used by the Managed Database for its nodes.|
-|updated|string(date-time)|false|read-only|When this Managed Database was last updated.|
-|updates|object|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replication_type|[DatabaseMySQLReplicationType](#schemadatabasemysqlreplicationtype)|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|ssl_connection|[DatabaseMySQLSslConnection](#schemadatabasemysqlsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
+|status|[DatabaseStatus](#schemadatabasestatus)|false|read-only|The operating status of the Managed Database.|
+|type|[DatabaseType2](#schemadatabasetype2)|false|none|The Linode Instance type used by the Managed Database for its nodes.|
+|updated|[DatabaseUpdated](#schemadatabaseupdated)|false|read-only|When this Managed Database was last updated.|
+|updates|[DatabaseUpdates](#schemadatabaseupdates)|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
 |version|string|false|read-only|The Managed Database engine version.|
 
 #### Enumerated Values
@@ -34497,15 +34395,15 @@ Managed MySQL Database request object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|true|none|The Managed Database engine in engine/version format.|
-|label|string|true|none|A unique, user-defined string referring to the Managed Database.|
-|region|string|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replication_type|string|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
-|type|string|true|none|The Linode Instance type used by the Managed Database for its nodes.|
+|label|[DatabaseLabel](#schemadatabaselabel)|true|none|A unique, user-defined string referring to the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replication_type|[DatabaseMySQLReplicationType](#schemadatabasemysqlreplicationtype)|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|ssl_connection|[DatabaseMySQLSslConnection](#schemadatabasemysqlsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.<br>|
+|type|[DatabaseType2](#schemadatabasetype2)|true|none|The Linode Instance type used by the Managed Database for its nodes.|
 
 #### Enumerated Values
 
@@ -34565,23 +34463,23 @@ Managed PostgreSQL Databases object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|created|string(date-time)|false|read-only|When this Managed Database was created.|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|created|[DatabaseCreated](#schemadatabasecreated)|false|read-only|When this Managed Database was created.|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|false|read-only|The Managed Database engine type.|
 |hosts|object|false|read-only|The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.|
-|id|integer|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
-|label|string|false|none|A unique, user-defined string referring to the Managed Database.|
+|id|[DatabaseId](#schemadatabaseid)|false|read-only|A unique ID that can be used to identify and reference the Managed Database.|
+|label|[DatabaseLabel](#schemadatabaselabel)|false|none|A unique, user-defined string referring to the Managed Database.|
 |port|integer|false|none|The access port for this Managed Database.|
-|region|string|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replication_commit_type|string|false|none|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
-|replication_type|string|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
-|status|string|false|read-only|The operating status of the Managed Database.|
-|type|string|false|none|The Linode Instance type used by the Managed Database for its nodes.|
-|updated|string(date-time)|false|read-only|When this Managed Database was last updated.|
-|updates|object|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|false|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replication_commit_type|[DatabasePostgreSQLReplicationCommitType](#schemadatabasepostgresqlreplicationcommittype)|false|none|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
+|replication_type|[DatabasePostgreSQLReplicationType](#schemadatabasepostgresqlreplicationtype)|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|ssl_connection|[DatabasePostgreSQLSslConnection](#schemadatabasepostgresqlsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
+|status|[DatabaseStatus](#schemadatabasestatus)|false|read-only|The operating status of the Managed Database.|
+|type|[DatabaseType2](#schemadatabasetype2)|false|none|The Linode Instance type used by the Managed Database for its nodes.|
+|updated|[DatabaseUpdated](#schemadatabaseupdated)|false|read-only|When this Managed Database was last updated.|
+|updates|[DatabaseUpdates](#schemadatabaseupdates)|false|none|Configuration settings for automated patch update maintenance for the Managed Database.|
 |version|string|false|read-only|The Managed Database engine version.|
 
 #### Enumerated Values
@@ -34640,16 +34538,16 @@ Managed PostgreSQL Database request object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_list|[string(ipv4/prefix_length)]|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
-|cluster_size|integer|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
-|encrypted|boolean|false|none|Whether the Managed Databases is encrypted.|
+|allow_list|[DatabaseAllowList](#schemadatabaseallowlist)|false|none|A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.<br><br>By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.<br><br>If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.<br>|
+|cluster_size|[DatabaseClusterSize](#schemadatabaseclustersize)|false|none|The number of Linode Instance nodes deployed to the Managed Database.<br><br>Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.<br>|
+|encrypted|[DatabaseEncrypted](#schemadatabaseencrypted)|false|none|Whether the Managed Databases is encrypted.|
 |engine|string|true|none|The Managed Database engine in engine/version format.|
-|label|string|true|none|A unique, user-defined string referring to the Managed Database.|
-|region|string|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
-|replication_commit_type|string|false|none|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
-|replication_type|string|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
-|ssl_connection|boolean|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
-|type|string|true|none|The Linode Instance type used by the Managed Database for its nodes.|
+|label|[DatabaseLabel](#schemadatabaselabel)|true|none|A unique, user-defined string referring to the Managed Database.|
+|region|[DatabaseRegion](#schemadatabaseregion)|true|none|The [Region](/docs/api/regions/) ID for the Managed Database.|
+|replication_commit_type|[DatabasePostgreSQLReplicationCommitType](#schemadatabasepostgresqlreplicationcommittype)|false|none|The synchronization level of the replicating server.<br><br>Must be `local` or `off` for the `asynch` replication type.<br><br>Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.<br>|
+|replication_type|[DatabasePostgreSQLReplicationType](#schemadatabasepostgresqlreplicationtype)|false|none|The replication method used for the Managed Database.<br><br>Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.<br><br>Must be `none` for a single node cluster.<br><br>Must be `asynch` or `semi_synch` for a high availability cluster.<br>|
+|ssl_connection|[DatabasePostgreSQLSslConnection](#schemadatabasepostgresqlsslconnection)|false|none|Whether to require SSL credentials to establish a connection to the Managed Database.<br><br>Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.<br>|
+|type|[DatabaseType2](#schemadatabasetype2)|true|none|The Linode Instance type used by the Managed Database for its nodes.|
 
 #### Enumerated Values
 
@@ -34891,9 +34789,9 @@ A dictionary of device disks to use as a device map in a Linode's configuration 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created|string(date-time)|false|read-only|When this Disk was created.|
-|filesystem|string|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
+|filesystem|[DiskFilesystem](#schemadiskfilesystem)|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
 |id|integer|false|read-only|This Disk's ID which must be provided for all operations impacting this Disk.<br>|
-|label|string|false|none|The Disk's label is for display purposes only.<br>|
+|label|[DiskLabel](#schemadisklabel)|false|none|The Disk's label is for display purposes only.<br>|
 |size|integer|false|none|The size of the Disk in MB.|
 |status|string|false|read-only|A brief description of this Disk's current state. This field may change without direct action from you, as a result of operations performed to the Disk or the Linode containing the Disk.<br>|
 |updated|string(date-time)|false|read-only|When this Disk was last updated.|
@@ -34945,15 +34843,15 @@ Disk object request.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|authorized_keys|[string]|false|write-only|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
-|authorized_users|[string]|false|write-only|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
-|filesystem|string|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
-|image|string|false|none|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
-|label|string|false|none|The Disk's label is for display purposes only.<br>|
-|root_pass|string(password)|false|write-only|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
+|authorized_keys|[DiskRequestAuthorizedKeys](#schemadiskrequestauthorizedkeys)|false|write-only|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
+|authorized_users|[DiskRequestAuthorizedUsers](#schemadiskrequestauthorizedusers)|false|write-only|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
+|filesystem|[DiskFilesystem](#schemadiskfilesystem)|false|none|The Disk filesystem can be one of:<br><br>  * raw - No filesystem, just a raw binary stream.<br>  * swap - Linux swap area.<br>  * ext3 - The ext3 journaling filesystem for Linux.<br>  * ext4 - The ext4 journaling filesystem for Linux.<br>  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).<br>|
+|image|[DiskRequestImage](#schemadiskrequestimage)|false|none|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
+|label|[DiskLabel](#schemadisklabel)|false|none|The Disk's label is for display purposes only.<br>|
+|root_pass|[DiskRequestRootPass](#schemadiskrequestrootpass)|false|write-only|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
 |size|integer|false|none|The size of the Disk in MB.<br><br>Images require a minimum size. Access the Image View ([GET /images/{imageID}](/docs/api/images/#image-view)) endpoint to view its size.<br>|
-|stackscript_data|object|false|none|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
-|stackscript_id|integer|false|none|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
+|stackscript_data|[DiskRequestStackscriptData](#schemadiskrequeststackscriptdata)|false|none|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
+|stackscript_id|[DiskRequestStackscriptId](#schemadiskrequeststackscriptid)|false|none|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
 
 #### Enumerated Values
 
@@ -35057,17 +34955,17 @@ A single record on a Domain.
 |---|---|---|---|---|
 |created|string(date-time)|false|read-only|When this Domain Record was created.|
 |id|integer|false|read-only|This Record's unique ID.|
-|name|string|false|none|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
-|port|integer|false|none|The port this Record points to. Only valid and required for SRV record requests.<br>|
-|priority|integer|false|none|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
-|protocol|string \| null|false|none|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
-|service|string \| null|false|none|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
-|tag|string \| null|false|none|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
-|target|string|false|none|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
-|ttl_sec|integer|false|none|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
+|name|[DomainRecordName](#schemadomainrecordname)|false|none|The name of this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The hostname or FQDN of the Record.<br><br>`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.<br><br>`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`<br>Domain. Must be an empty string (`""`) for a Null MX Record.<br><br>`CNAME`: The hostname. Must be unique. Required.<br><br>`TXT`: The hostname.<br><br>`SRV`: Unused. Use the `service` property to set the service name for this record.<br><br>`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.<br><br>`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br>|
+|port|[DomainRecordPort](#schemadomainrecordport)|false|none|The port this Record points to. Only valid and required for SRV record requests.<br>|
+|priority|[DomainRecordPriority](#schemadomainrecordpriority)|false|none|The priority of the target host for this Record. Lower values are preferred. Only valid for<br>MX and SRV record requests. Required for SRV record requests.<br><br>Defaults to `0` for MX record requests. Must be `0` for Null MX records.<br>|
+|protocol|[DomainRecordProtocol](#schemadomainrecordprotocol)|false|none|The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.<br>|
+|service|[DomainRecordService](#schemadomainrecordservice)|false|none|The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.<br>|
+|tag|[DomainRecordTag](#schemadomainrecordtag)|false|none|The tag portion of a CAA record. Only valid and required for CAA record requests.<br>|
+|target|[DomainRecordTarget](#schemadomainrecordtarget)|false|none|The target for this Record. For requests, this property's actual usage and whether it is required depends<br>on the type of record this represents:<br><br>`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.<br><br>`NS`: The name server. Must be a valid domain. Required.<br><br>`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a<br>[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first<br>[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings<br>(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.<br><br>`CNAME`: The alias. Must be a valid domain. Required.<br><br>`TXT`: The value. Required.<br><br>`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.<br>To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for<br>`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a<br>target set to `sample.com`. Required.<br><br>`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`<br>tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:<br>  * `issue`: The domain of your certificate issuer. Must be a valid domain.<br>  * `issuewild`: Must begin with `*`.<br>  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.<br><br>`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS<br>(rDNS)](/docs/guides/configure-rdns/).<br><br>With the exception of A, AAAA, and CAA records, this field accepts a trailing period.<br>|
+|ttl_sec|[DomainRecordTtlSec](#schemadomainrecordttlsec)|false|none|"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.<br>|
 |type|string|false|none|The type of Record this is in the DNS system. For example, A records associate a domain name with an IPv4 address, and AAAA records associate a domain name with an IPv6 address. For more information, see the guides on [DNS Record Types](/docs/products/networking/dns-manager/guides/#dns-record-types).<br>|
 |updated|string(date-time)|false|read-only|When this Domain Record was last updated.|
-|weight|integer|false|none|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
+|weight|[DomainRecordWeight](#schemadomainrecordweight)|false|none|The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.<br>|
 
 #### Enumerated Values
 
@@ -35117,7 +35015,7 @@ An object representing an Entity Transfer.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created|string(date-time)|false|none|When this transfer was created.<br>|
-|entities|object|false|none|A collection of the entities to include in this transfer request, separated by type.<br>|
+|entities|[EntityTransferEntities](#schemaentitytransferentities)|false|none|A collection of the entities to include in this transfer request, separated by type.<br>|
 |expiry|string(date-time)|false|none|When this transfer expires. Transfers will automatically expire 24 hours after creation.<br>|
 |is_sender|boolean|false|none|If the requesting account created this transfer.<br>|
 |status|string|false|none|The status of the transfer request.<br><br>`accepted`: The transfer has been accepted by another user and is currently in progress. Transfers can take up to 3 hours to complete.<br><br>`cancelled`: The transfer has been cancelled by the sender.<br><br>`completed`: The transfer has completed successfully.<br><br>`failed`: The transfer has failed after initiation.<br><br>`pending`: The transfer is ready to be accepted.<br><br>`stale`: The transfer has exceeded its expiration date. It can no longer be accepted or cancelled.<br>|
@@ -35409,10 +35307,10 @@ A resource that controls incoming and outgoing network traffic to a Linode servi
 |---|---|---|---|---|
 |created|string(date-time)|false|read-only|When this Firewall was created.<br>|
 |id|integer|false|read-only|The Firewall's unique ID.<br>|
-|label|string|false|none|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
-|rules|object|false|none|The inbound and outbound access rules to apply to the Firewall.<br><br>A Firewall may have up to 25 rules across its inbound and outbound rulesets.<br>|
+|label|[FirewallLabel](#schemafirewalllabel)|false|none|The Firewall's label, for display purposes only.<br><br>Firewall labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>  * Must be between 3 and 32 characters.<br>  * Must be unique.<br>|
+|rules|[FirewallRules](#schemafirewallrules)|false|none|The inbound and outbound access rules to apply to the Firewall.<br><br>A Firewall may have up to 25 rules across its inbound and outbound rulesets.<br>|
 |status|string|false|read-only|The status of this Firewall.<br><br>  * When a Firewall is first created its status is `enabled`.<br>  * Use the [Update Firewall](/docs/api/networking/#firewall-update) endpoint to set a Firewall's status to `enabled` or `disabled`.<br>  * Use the [Delete Firewall](/docs/api/networking/#firewall-delete) endpoint to delete a Firewall.<br>|
-|tags|[string]|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|tags|[FirewallTags](#schemafirewalltags)|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
 |updated|string(date-time)|false|read-only|When this Firewall was last updated.<br>|
 
 #### Enumerated Values
@@ -35451,7 +35349,7 @@ Associates a Firewall with a Linode service. A Firewall can be assigned to a sin
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created|string(date-time)|false|read-only|When this Device was created.<br>|
-|entity|object|false|read-only|The Linode service that this Firewall has been applied to.<br>|
+|entity|[FirewallDevicesEntity](#schemafirewalldevicesentity)|false|read-only|The Linode service that this Firewall has been applied to.<br>|
 |id|integer|false|none|The Device's unique ID<br>|
 |updated|string(date-time)|false|read-only|When this Device was last updated.<br>|
 
@@ -36170,13 +36068,13 @@ A Kubernetes cluster.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |control_plane|object|false|none|Defines settings for the Kubernetes Control Plane. Allows for the enabling of High Availability (HA) for Control Plane Components. Enabling High Avaialability for LKE is an **irreversible** change.<br>|
-|created|string(date-time)|false|read-only|When this Kubernetes cluster was created.|
+|created|[LKEClusterCreated](#schemalkeclustercreated)|false|read-only|When this Kubernetes cluster was created.|
 |id|integer|false|read-only|This Kubernetes cluster's unique ID.|
-|k8s_version|string|false|none|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
-|label|string|false|none|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
-|region|string|false|none|This Kubernetes cluster's location.|
-|tags|[string]|false|none|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.<br>|
-|updated|string(date-time)|false|read-only|When this Kubernetes cluster was updated.|
+|k8s_version|[LKEClusterK8sVersion](#schemalkeclusterk8sversion)|false|none|The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.<br>|
+|label|[LKEClusterLabel](#schemalkeclusterlabel)|false|none|This Kubernetes cluster's unique label for display purposes only.<br>Labels have the following constraints:<br><br>  * UTF-8 characters will be returned by the API using escape<br>    sequences of their Unicode code points. For example, the<br>    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its<br>    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this<br>    character and the API will return it as the escape sequence<br>    using six 1 byte characters which represent 2 bytes of Unicode<br>    code point (`"\u30ab"`).<br>  * 4 byte UTF-8 characters are not supported.<br>  * If the label is entirely composed of UTF-8 characters, the API<br>    response will return the code points using up to 193 1 byte<br>    characters.<br>|
+|region|[LKEClusterRegion](#schemalkeclusterregion)|false|none|This Kubernetes cluster's location.|
+|tags|[LKEClusterTags](#schemalkeclustertags)|false|none|An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.<br>|
+|updated|[LKEClusterUpdated](#schemalkeclusterupdated)|false|read-only|When this Kubernetes cluster was updated.|
 
 <h2 id="tocS_LKENodePool">LKENodePool</h2>
 <!-- backwards compatibility -->
@@ -36222,12 +36120,12 @@ The set of Node Pools which are members of the Kubernetes cluster. Node Pools co
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |autoscaler|object|false|none|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br>|
-|count|integer|false|none|The number of nodes in the Node Pool.|
-|disks|[object]|false|none|This Node Pool's custom disk layout.<br>|
+|count|[LKENodePoolCount](#schemalkenodepoolcount)|false|none|The number of nodes in the Node Pool.|
+|disks|[[LKENodePoolDisksItems](#schemalkenodepooldisksitems)]|false|none|This Node Pool's custom disk layout.<br>|
 |id|integer|false|none|This Node Pool's unique ID.<br>|
 |nodes|[[LKENodeStatus](#schemalkenodestatus)]|false|none|Status information for the Nodes which are members of this Node Pool. If a Linode has not been provisioned for a given Node slot, the instance_id will be returned as null.<br>|
-|tags|[string]|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
-|type|string|false|none|The Linode Type for all of the nodes in the Node Pool.|
+|tags|[LKENodePoolTags](#schemalkenodepooltags)|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|type|[LKENodePoolType](#schemalkenodepooltype)|false|none|The Linode Type for all of the nodes in the Node Pool.|
 
 <h2 id="tocS_LKENodePoolRequestBody">LKENodePoolRequestBody</h2>
 <!-- backwards compatibility -->
@@ -36264,11 +36162,11 @@ Specifies a collection of Linodes which will be members of a Kubernetes cluster.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|autoscaler|object|false|none|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
-|count|integer|false|none|The number of nodes in the Node Pool.|
-|disks|[object]|false|none|**Note**: This field should be omitted except for special use cases. The disks specified here are<br>partitions in *addition* to the primary partition and reduce the size of the primary partition,<br>which can lead to stability problems for the Node.<br><br>This Node Pool's custom disk layout. Each item in this array will create a new disk<br>partition for each node in this Node Pool.<br><br>  * The custom disk layout is applied to each node in this Node Pool.<br>  * The maximum number of custom disk partitions that can be configured is 7.<br>  * Once the requested disk paritions are allocated, the remaining disk space is allocated to the node's boot disk.<br>  * A Node Pool's custom disk layout is immutable over the lifetime of the Node Pool.<br>|
-|tags|[string]|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
-|type|string|false|none|The Linode Type for all of the nodes in the Node Pool.|
+|autoscaler|[LKENodePoolRequestBodyAutoscaler](#schemalkenodepoolrequestbodyautoscaler)|false|none|When enabled, the number of nodes autoscales within the defined minimum and maximum values.<br><br>When making a request, `max` and `min` require each other.<br>|
+|count|[LKENodePoolCount](#schemalkenodepoolcount)|false|none|The number of nodes in the Node Pool.|
+|disks|[[LKENodePoolDisksItems](#schemalkenodepooldisksitems)]|false|none|**Note**: This field should be omitted except for special use cases. The disks specified here are<br>partitions in *addition* to the primary partition and reduce the size of the primary partition,<br>which can lead to stability problems for the Node.<br><br>This Node Pool's custom disk layout. Each item in this array will create a new disk<br>partition for each node in this Node Pool.<br><br>  * The custom disk layout is applied to each node in this Node Pool.<br>  * The maximum number of custom disk partitions that can be configured is 7.<br>  * Once the requested disk paritions are allocated, the remaining disk space is allocated to the node's boot disk.<br>  * A Node Pool's custom disk layout is immutable over the lifetime of the Node Pool.<br>|
+|tags|[LKENodePoolTags](#schemalkenodepooltags)|false|none|An array of tags applied to this object. Tags are for organizational purposes only.<br>|
+|type|[LKENodePoolType](#schemalkenodepooltype)|false|none|The Linode Type for all of the nodes in the Node Pool.|
 
 <h2 id="tocS_LKENodeStatus">LKENodeStatus</h2>
 <!-- backwards compatibility -->
@@ -36385,18 +36283,18 @@ LKE versions
 |alerts|object|false|none|none|
 |backups|object|false|none|Information about this Linode's backups status. For information about available backups, see [/linode/instances/{linodeId}/backups](/docs/api/linode-instances/#backups-list).<br>|
 |created|string(date-time)|false|read-only|When this Linode was created.|
-|group|string|false|none|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
+|group|[LinodeGroup](#schemalinodegroup)|false|none|**Deprecated.** A deprecated property denoting a group label for this Linode.<br>|
 |host_uuid|string(uuid)|false|read-only|The Linode's host machine, as a UUID.|
 |hypervisor|string|false|read-only|The virtualization software powering this Linode.<br>|
 |id|integer|false|read-only|This Linode's ID which must be provided for all operations impacting this Linode.<br>|
 |image|object \| null|false|read-only|none|
 |ipv4|[string]|false|read-only|This Linode's IPv4 Addresses. Each Linode is assigned a single public IPv4 address<br>upon creation, and may get a single private IPv4 address if needed. You may need to<br>[open a support ticket](/docs/api/support/#support-ticket-open)<br>to get additional IPv4 addresses.<br><br>IPv4 addresses may be reassigned between your Linodes, or shared with other Linodes.<br>See the [/networking](/docs/api/networking/) endpoints for details.<br>|
 |ipv6|string(ipv6/128) \| null|false|read-only|This Linode's IPv6 SLAAC address. This address is specific to a Linode, and may not be shared. If the Linode has not been assigned an IPv6 address, the return value will be `null`.<br>|
-|label|string|false|none|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
+|label|[LinodeLabel](#schemalinodelabel)|false|none|The Linode's label is for display purposes only. If no label is provided for a Linode,<br>a default will be assigned.<br><br>Linode labels have the following constraints:<br><br>  * Must begin and end with an alphanumeric character.<br>  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).<br>  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.<br>|
 |region|string|false|read-only|This is the [Region](/docs/api/regions/#regions-list) where the Linode was deployed. A Linode's region can only be changed by initiating a [cross data center migration](/docs/api/linode-instances/#dc-migrationpending-host-migration-initiate).<br>|
 |specs|object|false|read-only|Information about the resources available to this Linode.|
 |status|string|false|read-only|A brief description of this Linode's current state. This field may change without direct action from you. For example, when a Linode goes into maintenance mode its status will display "stopped".<br>|
-|tags|[string]|false|none|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
+|tags|[LinodeTags](#schemalinodetags)|false|none|An array of tags applied to this object.  Tags are for organizational purposes only.<br>|
 |type|string|false|read-only|This is the [Linode Type](/docs/api/linode-types/#types-list) that this Linode was deployed with.<br>To change a Linode's Type, use [POST /linode/instances/{linodeId}/resize](/docs/api/linode-instances/#linode-resize).<br>|
 |updated|string(date-time)|false|read-only|When this Linode was last updated.|
 |watchdog_enabled|boolean|false|none|The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly. It works by issuing a boot job when your Linode powers off without a shutdown job being responsible.<br>To prevent a loop, Lassie will give up if there have been more than 5 boot jobs issued within 15 minutes.<br>|
@@ -36615,13 +36513,13 @@ Common properties for creating and rebuilding Linodes.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|authorized_keys|[string]|false|write-only|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
-|authorized_users|[string]|false|write-only|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
+|authorized_keys|[DiskRequestAuthorizedKeys](#schemadiskrequestauthorizedkeys)|false|write-only|A list of public SSH keys that will be automatically appended<br>to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.<br>|
+|authorized_users|[DiskRequestAuthorizedUsers](#schemadiskrequestauthorizedusers)|false|write-only|A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.<br>|
 |booted|boolean|false|write-only|This field defaults to `true` if the Linode is created with an Image or from a Backup.<br>If it is deployed from an Image or a Backup and you wish it to remain `offline` after deployment, set this to `false`.<br>|
-|image|string|false|none|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
-|root_pass|string(password)|false|write-only|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
-|stackscript_data|object|false|none|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
-|stackscript_id|integer|false|none|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
+|image|[DiskRequestImage](#schemadiskrequestimage)|false|none|An Image ID to deploy the Linode Disk from.<br><br>Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view<br>all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating<br>a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's<br>Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to<br>adjust permissions for an Account Image.<br>|
+|root_pass|[DiskRequestRootPass](#schemadiskrequestrootpass)|false|write-only|This sets the root user's password on a newly-created Linode Disk when deploying from an Image.<br><br>* **Required** when creating a Linode Disk from an Image, including when using a StackScript.<br><br>* Must meet a password strength score requirement that is calculated internally by the API.<br>If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.<br>|
+|stackscript_data|[DiskRequestStackscriptData](#schemadiskrequeststackscriptdata)|false|none|This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.<br><br>This field is required to be valid JSON.<br><br>Total length cannot exceed 65,535 characters.<br>|
+|stackscript_id|[DiskRequestStackscriptId](#schemadiskrequeststackscriptid)|false|none|A StackScript ID that will cause the referenced StackScript to be run during<br>deployment of this Linode. A compatible `image` is required to use a<br>StackScript. To get a list of available StackScript and their permitted Images<br>see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).<br>This field cannot be used when deploying from a Backup or a Private Image.<br>|
 
 <h2 id="tocS_LinodeStats">LinodeStats</h2>
 <!-- backwards compatibility -->
@@ -37204,13 +37102,13 @@ Linode's load balancing solution.  Can handle multiple ports, SSL termination, a
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|client_conn_throttle|integer|false|none|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
+|client_conn_throttle|[NodeBalancerClientConnThrottle](#schemanodebalancerclientconnthrottle)|false|none|Throttle connections per second.  Set to 0 (zero) to disable throttling.<br>|
 |created|string(date-time)|false|read-only|When this NodeBalancer was created.<br>|
 |hostname|string|false|read-only|This NodeBalancer's hostname, beginning with its IP address and ending with _.ip.linodeusercontent.com_.<br>|
 |id|integer|false|read-only|This NodeBalancer's unique ID.<br>|
 |ipv4|string(ip)|false|read-only|This NodeBalancer's public IPv4 address.<br>|
 |ipv6|string(ip) \| null|false|read-only|This NodeBalancer's public IPv6 address.<br>|
-|label|string|false|none|This NodeBalancer's label. These must be unique on your Account.<br>|
+|label|[NodeBalancerLabel](#schemanodebalancerlabel)|false|none|This NodeBalancer's label. These must be unique on your Account.<br>|
 |region|string|false|read-only|The Region where this NodeBalancer is located. NodeBalancers only support backends in the same Region.<br>|
 |tags|[string]|false|none|An array of Tags applied to this object.  Tags are for organizational purposes only.<br>|
 |transfer|object|false|read-only|Information about the amount of transfer this NodeBalancer has had so far this month.<br>|
@@ -37259,26 +37157,26 @@ NodeBalancer configs have a list of backends, called "nodes," that they forward 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|algorithm|string|false|none|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
-|check|string|false|none|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
-|check_attempts|integer|false|none|How many times to attempt a check before considering a backend to be down.<br>|
-|check_body|string|false|none|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
-|check_interval|integer|false|none|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
-|check_passive|boolean|false|none|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
-|check_path|string|false|none|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
-|check_timeout|integer|false|none|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
-|cipher_suite|string|false|none|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
+|algorithm|[NodeBalancerConfigAlgorithm](#schemanodebalancerconfigalgorithm)|false|none|What algorithm this NodeBalancer should use for routing traffic to backends.<br>|
+|check|[NodeBalancerConfigCheck](#schemanodebalancerconfigcheck)|false|none|The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.<br>* If `none` no check is performed.<br>* `connection` requires only a connection to the backend to succeed.<br>* `http` and `http_body` rely on the backend serving HTTP, and that<br>  the response returned matches what is expected.<br>|
+|check_attempts|[NodeBalancerConfigCheckAttempts](#schemanodebalancerconfigcheckattempts)|false|none|How many times to attempt a check before considering a backend to be down.<br>|
+|check_body|[NodeBalancerConfigCheckBody](#schemanodebalancerconfigcheckbody)|false|none|This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.<br>|
+|check_interval|[NodeBalancerConfigCheckInterval](#schemanodebalancerconfigcheckinterval)|false|none|How often, in seconds, to check that backends are up and serving requests.<br><br>Must be greater than `check_timeout`.<br>|
+|check_passive|[NodeBalancerConfigCheckPassive](#schemanodebalancerconfigcheckpassive)|false|none|If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.<br>|
+|check_path|[NodeBalancerConfigCheckPath](#schemanodebalancerconfigcheckpath)|false|none|The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.<br>|
+|check_timeout|[NodeBalancerConfigCheckTimeout](#schemanodebalancerconfigchecktimeout)|false|none|How long, in seconds, to wait for a check attempt before considering it failed.<br><br>Must be less than `check_interval`.<br>|
+|cipher_suite|[NodeBalancerConfigCipherSuite](#schemanodebalancerconfigciphersuite)|false|none|What ciphers to use for SSL connections served by this NodeBalancer.<br><br>* `legacy` is considered insecure and should only be used if necessary.<br>|
 |id|integer|false|read-only|This config's unique ID|
 |nodebalancer_id|integer|false|read-only|The ID for the NodeBalancer this config belongs to.<br>|
 |nodes_status|object|false|read-only|A structure containing information about the health of the backends for this port.  This information is updated periodically as checks are performed against backends.<br>|
-|port|integer|false|none|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
-|protocol|string|false|none|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
-|proxy_protocol|string|false|none|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
-|ssl_cert|string(ssl-cert) \| null|false|none|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|port|[NodeBalancerConfigPort](#schemanodebalancerconfigport)|false|none|The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.<br>|
+|protocol|[NodeBalancerConfigProtocol](#schemanodebalancerconfigprotocol)|false|none|The protocol this port is configured to serve.<br><br>* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.<br><br>* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.<br><br>Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.<br>|
+|proxy_protocol|[NodeBalancerConfigProxyProtocol](#schemanodebalancerconfigproxyprotocol)|false|none|ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.<br><br>* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.<br>* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.<br>* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.<br>|
+|ssl_cert|[NodeBalancerConfigSslCert](#schemanodebalancerconfigsslcert)|false|none|The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL<br>certificate and Certificate Authority chain) that should be served on this<br>NodeBalancerConfig's port.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
 |ssl_commonname|string|false|read-only|The read-only common name automatically derived from the SSL certificate assigned to this NodeBalancerConfig. Please refer to this field to verify that the appropriate certificate is assigned to your NodeBalancerConfig.<br>|
 |ssl_fingerprint|string|false|read-only|The read-only SHA1-encoded fingerprint automatically derived from the SSL certificate assigned to this NodeBalancerConfig. Please refer to this field to verify that the appropriate certificate is assigned to your NodeBalancerConfig.<br>|
-|ssl_key|string(ssl-key) \| null|false|none|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
-|stickiness|string|false|none|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
+|ssl_key|[NodeBalancerConfigSslKey](#schemanodebalancerconfigsslkey)|false|none|The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.<br><br>Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).<br><br>The contents of this field will not be shown in any responses that display<br>the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field<br>appears.<br><br>The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig<br>response are automatically derived from your certificate. Please refer to these fields to<br>verify that the appropriate certificate was assigned to your NodeBalancerConfig.<br>|
+|stickiness|[NodeBalancerConfigStickiness](#schemanodebalancerconfigstickiness)|false|none|Controls how session stickiness is handled on this port.<br>* If set to `none` connections will always be assigned a backend based on the algorithm configured.<br>* If set to `table` sessions from the same remote address will be routed to the same<br>  backend.<br><br>* For HTTP or HTTPS clients, `http_cookie` allows sessions to be<br>  routed to the same backend based on a cookie set by the NodeBalancer.<br>|
 
 #### Enumerated Values
 
@@ -37329,14 +37227,14 @@ A NodeBalancerNode represents a single backend serving requests for a single por
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|address|string(ip)|false|none|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
+|address|[NodeBalancerNodeAddress](#schemanodebalancernodeaddress)|false|none|The private IP Address where this backend can be reached. This _must_ be a private IP address.<br>|
 |config_id|integer|false|read-only|The NodeBalancer Config ID that this Node belongs to.<br>|
 |id|integer|false|read-only|This node's unique ID.|
-|label|string|false|none|The label for this node.  This is for display purposes only.<br>|
-|mode|string|false|none|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
+|label|[NodeBalancerNodeLabel](#schemanodebalancernodelabel)|false|none|The label for this node.  This is for display purposes only.<br>|
+|mode|[NodeBalancerNodeMode](#schemanodebalancernodemode)|false|none|The mode this NodeBalancer should use when sending traffic to this backend.<br>* If set to `accept` this backend is accepting traffic.<br>* If set to `reject` this backend will not receive traffic.<br>* If set to `drain` this backend will not receive _new_ traffic, but connections already<br>  pinned to it will continue to be routed to it.<br><br>* If set to `backup`, this backend will only receive traffic if all `accept` nodes<br>  are down.<br>|
 |nodebalancer_id|integer|false|read-only|The NodeBalancer ID that this Node belongs to.<br>|
 |status|string|false|read-only|The current status of this node, based on the configured checks of its NodeBalancer Config.<br>|
-|weight|integer|false|none|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
+|weight|[NodeBalancerNodeWeight](#schemanodebalancernodeweight)|false|none|Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.<br>|
 
 #### Enumerated Values
 
@@ -37696,9 +37594,9 @@ An envelope for paginated response. When accessing a collection through a GET en
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|page|integer|false|read-only|The current [page](/docs/api/#pagination).|
-|pages|integer|false|read-only|The total number of [pages](/docs/api/#pagination).|
-|results|integer|false|read-only|The total number of results.|
+|page|[PaginationEnvelopePage](#schemapaginationenvelopepage)|false|read-only|The current [page](/docs/api/#pagination).|
+|pages|[PaginationEnvelopePages](#schemapaginationenvelopepages)|false|read-only|The total number of [pages](/docs/api/#pagination).|
+|results|[PaginationEnvelopeResults](#schemapaginationenveloperesults)|false|read-only|The total number of results.|
 
 <h2 id="tocS_PayPal">PayPal</h2>
 <!-- backwards compatibility -->
@@ -37826,7 +37724,7 @@ Payment Method Response Object.
 |created|string(date-time)|false|read-only|When the Payment Method was added to the Account.|
 |data|[CreditCardData](#schemacreditcarddata) \| [GooglePayData](#schemagooglepaydata) \| [PayPalData](#schemapaypaldata)|false|none|none|
 |id|integer|false|none|The unique ID of this Payment Method.|
-|is_default|boolean|false|none|Whether this Payment Method is the default method for automatically processing service charges.<br>|
+|is_default|[PaymentMethodIsDefault](#schemapaymentmethodisdefault)|false|none|Whether this Payment Method is the default method for automatically processing service charges.<br>|
 |type|string|false|none|The type of Payment Method.|
 
 #### Enumerated Values
@@ -37889,7 +37787,7 @@ A Personal Access Token is a token generated manually to access the API without 
 |created|string(date-time)|false|read-only|The date and time this token was created.<br>|
 |expiry|string(date-time)|false|read-only|When this token will expire.  Personal Access Tokens cannot be renewed, so after this time the token will be completely unusable and a new token will need to be generated.  Tokens may be created with "null" as their expiry and will never expire unless revoked.<br>|
 |id|integer|false|read-only|This token's unique ID, which can be used to revoke it.<br>|
-|label|string|false|none|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
+|label|[PersonalAccessTokenLabel](#schemapersonalaccesstokenlabel)|false|none|This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.<br>|
 |scopes|string(oauth-scopes)|false|read-only|The scopes this token was created with. These define what parts of the Account the token can be used to access. Many command-line tools, such as the <a target="_top" href="https://github.com/linode/linode-cli">Linode CLI</a>, require tokens with access to `*`. Tokens with more restrictive scopes are generally more secure.<br>|
 |token|string|false|read-only|The token used to access the API.  When the token is created, the full token is returned here.  Otherwise, only the first 16 characters are returned.<br>|
 
@@ -38049,7 +37947,7 @@ An area where Linode services are available.
 |---|---|---|---|---|
 |capabilities|[string]|false|read-only|A list of capabilities of this region.<br>|
 |country|string|false|read-only|The country where this Region resides.|
-|id|string|false|read-only|The unique ID of this Region.|
+|id|[RegionId](#schemaregionid)|false|read-only|The unique ID of this Region.|
 |label|string|false|read-only|Detailed location information for this Region, including city, state or region, and country.|
 |resolvers|object|false|read-only|none|
 |status|string|false|read-only|This region's current operational status.<br>|
@@ -38137,7 +38035,7 @@ A credential object for authenticating a User's secure shell connection to a Lin
 |---|---|---|---|---|
 |created|string(date-time)|false|read-only|The date this key was added.<br>|
 |id|integer|false|read-only|The unique identifier of an SSH Key object.<br>|
-|label|string|false|none|A label for the SSH Key.<br>|
+|label|[SSHKeyLabel](#schemasshkeylabel)|false|none|A label for the SSH Key.<br>|
 |ssh_key|string(ssh-key)|false|none|The public SSH Key, which is used to authenticate to the root user of the Linodes you deploy.<br><br>Accepted formats:<br>* ssh-dss<br>* ssh-rsa<br>* ecdsa-sha2-nistp<br>* ssh-ed25519<br>* sk-ecdsa-sha2-nistp256 (Akamai-specific)<br>|
 
 <h2 id="tocS_SecurityQuestion">SecurityQuestion</h2>
@@ -38161,9 +38059,9 @@ Single security question and response object.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|false|none|The ID representing the security question.|
-|question|string|false|read-only|The security question.|
-|response|string|false|none|The security question response.<br>|
+|id|[SecurityQuestionId](#schemasecurityquestionid)|false|none|The ID representing the security question.|
+|question|[SecurityQuestionQuestion](#schemasecurityquestionquestion)|false|read-only|The security question.|
+|response|[SecurityQuestionResponse](#schemasecurityquestionresponse)|false|none|The security question response.<br>|
 
 <h2 id="tocS_SecurityQuestionsGet">SecurityQuestionsGet</h2>
 <!-- backwards compatibility -->
@@ -38250,7 +38148,7 @@ An object representing a Service Transfer.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created|string(date-time)|false|none|When this transfer was created.<br>|
-|entities|object|false|none|A collection of the services to include in this transfer request, separated by type.<br>|
+|entities|[ServiceTransferEntities](#schemaservicetransferentities)|false|none|A collection of the services to include in this transfer request, separated by type.<br>|
 |expiry|string(date-time)|false|none|When this transfer expires. Transfers will automatically expire 24 hours after creation.<br>|
 |is_sender|boolean|false|none|If the requesting account created this transfer.<br>|
 |status|string|false|none|The status of the transfer request.<br><br>`accepted`: The transfer has been accepted by another user and is currently in progress.<br>Transfers can take up to 3 hours to complete.<br><br>`cancelled`: The transfer has been cancelled by the sender.<br><br>`completed`: The transfer has completed successfully.<br><br>`failed`: The transfer has failed after initiation.<br><br>`pending`: The transfer is ready to be accepted.<br><br>`stale`: The transfer has exceeded its expiration date. It can no longer be accepted or<br>cancelled.<br>|
@@ -38763,11 +38661,11 @@ A Block Storage Volume associated with your Account.
 |filesystem_path|string|false|read-only|The full filesystem path for the Volume based on the Volume's label. Path is /dev/disk/by-id/scsi-0Linode_Volume_ + Volume label.<br>|
 |hardware_type|string|false|read-only|The storage type of this Volume.|
 |id|integer|false|read-only|The unique ID of this Volume.|
-|label|string|false|none|The Volume's label is for display purposes only.<br>|
+|label|[VolumeLabel](#schemavolumelabel)|false|none|The Volume's label is for display purposes only.<br>|
 |linode_id|integer \| null|false|none|If a Volume is attached to a specific Linode, the ID of that Linode will be displayed here.<br>|
 |linode_label|string \| null|false|read-only|If a Volume is attached to a specific Linode, the label of that Linode will be displayed here.<br>|
-|region|string|false|read-only|The unique ID of this Region.|
-|size|integer|false|none|The Volume's size, in GiB.<br>|
+|region|[RegionId](#schemaregionid)|false|read-only|The unique ID of this Region.|
+|size|[VolumeSize](#schemavolumesize)|false|none|The Volume's size, in GiB.<br>|
 |status|string|false|read-only|The current status of the volume.  Can be one of:<br><br>  * `creating` - the Volume is being created and is not yet available<br>    for use.<br>  * `active` - the Volume is online and available for use.<br>  * `resizing` - the Volume is in the process of upgrading<br>    its current capacity.<br>|
 |tags|[string]|false|none|An array of Tags applied to this object.  Tags are for organizational purposes only.<br>|
 |updated|string(date-time)|false|read-only|When this Volume was last updated.|
@@ -38804,3 +38702,1570 @@ An object for describing a single warning associated with a response.
 |---|---|---|---|---|
 |details|string|false|none|Specific information related to the warning.<br>|
 |title|string|false|none|The general warning message.<br>|
+
+<h2 id="tocS_EntityTransferEntities">EntityTransferEntities</h2>
+<!-- backwards compatibility -->
+<a id="schemaentitytransferentities"></a>
+<a id="schema_EntityTransferEntities"></a>
+<a id="tocSentitytransferentities"></a>
+<a id="tocsentitytransferentities"></a>
+
+```json
+{
+  "linodes": [
+    111,
+    222
+  ]
+}
+```
+
+A collection of the entities to include in this transfer request, separated by type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|linodes|[integer]|false|none|An array containing the IDs of each of the Linodes included in this transfer.<br>|
+
+<h2 id="tocS_PaginationEnvelopePage">PaginationEnvelopePage</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginationenvelopepage"></a>
+<a id="schema_PaginationEnvelopePage"></a>
+<a id="tocSpaginationenvelopepage"></a>
+<a id="tocspaginationenvelopepage"></a>
+
+```json
+1
+```
+
+The current [page](/docs/api/#pagination).
+
+<h2 id="tocS_PaginationEnvelopePages">PaginationEnvelopePages</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginationenvelopepages"></a>
+<a id="schema_PaginationEnvelopePages"></a>
+<a id="tocSpaginationenvelopepages"></a>
+<a id="tocspaginationenvelopepages"></a>
+
+```json
+1
+```
+
+The total number of [pages](/docs/api/#pagination).
+
+<h2 id="tocS_PaginationEnvelopeResults">PaginationEnvelopeResults</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginationenveloperesults"></a>
+<a id="schema_PaginationEnvelopeResults"></a>
+<a id="tocSpaginationenveloperesults"></a>
+<a id="tocspaginationenveloperesults"></a>
+
+```json
+1
+```
+
+The total number of results.
+
+<h2 id="tocS_PaymentMethodIsDefault">PaymentMethodIsDefault</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodisdefault"></a>
+<a id="schema_PaymentMethodIsDefault"></a>
+<a id="tocSpaymentmethodisdefault"></a>
+<a id="tocspaymentmethodisdefault"></a>
+
+```json
+true
+```
+
+Whether this Payment Method is the default method for automatically processing service charges.
+
+<h2 id="tocS_ServiceTransferEntities">ServiceTransferEntities</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicetransferentities"></a>
+<a id="schema_ServiceTransferEntities"></a>
+<a id="tocSservicetransferentities"></a>
+<a id="tocsservicetransferentities"></a>
+
+```json
+{
+  "linodes": [
+    111,
+    222
+  ]
+}
+```
+
+A collection of the services to include in this transfer request, separated by type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|linodes|[integer]|false|none|An array containing the IDs of each of the Linodes included in this transfer.<br>|
+
+<h2 id="tocS_DatabaseAllowList">DatabaseAllowList</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseallowlist"></a>
+<a id="schema_DatabaseAllowList"></a>
+<a id="tocSdatabaseallowlist"></a>
+<a id="tocsdatabaseallowlist"></a>
+
+```json
+[
+  "203.0.113.1/32",
+  "192.0.1.0/24"
+]
+```
+
+A list of IP addresses that can access the Managed Database. Each item can be a single IP address or a range in CIDR format.
+
+By default, this is an empty array (`[]`), which blocks all connections (both public and private) to the Managed Database.
+
+If `0.0.0.0/0` is a value in this list, then all IP addresses can access the Managed Database.
+
+<h2 id="tocS_DatabaseUpdates">DatabaseUpdates</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseupdates"></a>
+<a id="schema_DatabaseUpdates"></a>
+<a id="tocSdatabaseupdates"></a>
+<a id="tocsdatabaseupdates"></a>
+
+```json
+{
+  "day_of_week": 1,
+  "duration": 3,
+  "frequency": "weekly",
+  "hour_of_day": 0,
+  "week_of_month": null
+}
+```
+
+Configuration settings for automated patch update maintenance for the Managed Database.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|day_of_week|integer|false|none|The day to perform maintenance. 1=Monday, 2=Tuesday, etc.|
+|duration|integer|false|none|The maximum maintenance window time in hours.|
+|frequency|string|false|none|Whether maintenance occurs on a weekly or monthly basis.|
+|hour_of_day|integer|false|none|The hour to begin maintenance based in UTC time.|
+|week_of_month|integer \| null|false|none|The week of the month to perform `monthly` frequency updates. Defaults to `null`.<br><br>* Required for `monthly` frequency updates.<br><br>* Must be `null` for `weekly` frequency updates.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|frequency|weekly|
+|frequency|monthly|
+
+<h2 id="tocS_DomainRecordName">DomainRecordName</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordname"></a>
+<a id="schema_DomainRecordName"></a>
+<a id="tocSdomainrecordname"></a>
+<a id="tocsdomainrecordname"></a>
+
+```json
+"test"
+```
+
+The name of this Record. For requests, this property's actual usage and whether it is required depends
+on the type of record this represents:
+
+`A` and `AAAA`: The hostname or FQDN of the Record.
+
+`NS`: The subdomain, if any, to use with the Domain of the Record. Wildcard NS records (`*`) are not supported.
+
+`MX`: The mail subdomain. For example, `sub` for the address `user@sub.example.com` under the `example.com`
+Domain. Must be an empty string (`""`) for a Null MX Record.
+
+`CNAME`: The hostname. Must be unique. Required.
+
+`TXT`: The hostname.
+
+`SRV`: Unused. Use the `service` property to set the service name for this record.
+
+`CAA`: The subdomain. Omit or enter an empty string (`""`) to apply to the entire Domain.
+
+`PTR`: See our guide on how to [Configure Your Linode for Reverse DNS
+(rDNS)](/docs/guides/configure-rdns/).
+
+<h2 id="tocS_DomainRecordPort">DomainRecordPort</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordport"></a>
+<a id="schema_DomainRecordPort"></a>
+<a id="tocSdomainrecordport"></a>
+<a id="tocsdomainrecordport"></a>
+
+```json
+80
+```
+
+The port this Record points to. Only valid and required for SRV record requests.
+
+<h2 id="tocS_DomainRecordPriority">DomainRecordPriority</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordpriority"></a>
+<a id="schema_DomainRecordPriority"></a>
+<a id="tocSdomainrecordpriority"></a>
+<a id="tocsdomainrecordpriority"></a>
+
+```json
+50
+```
+
+The priority of the target host for this Record. Lower values are preferred. Only valid for
+MX and SRV record requests. Required for SRV record requests.
+
+Defaults to `0` for MX record requests. Must be `0` for Null MX records.
+
+<h2 id="tocS_DomainRecordProtocol">DomainRecordProtocol</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordprotocol"></a>
+<a id="schema_DomainRecordProtocol"></a>
+<a id="tocSdomainrecordprotocol"></a>
+<a id="tocsdomainrecordprotocol"></a>
+
+```json
+null
+```
+
+The protocol this Record's service communicates with. An underscore (`_`) is prepended automatically to the submitted value for this property. Only valid for SRV record requests.
+
+<h2 id="tocS_DomainRecordService">DomainRecordService</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordservice"></a>
+<a id="schema_DomainRecordService"></a>
+<a id="tocSdomainrecordservice"></a>
+<a id="tocsdomainrecordservice"></a>
+
+```json
+null
+```
+
+The name of the service. An underscore (`_`) is prepended and a period (`.`) is appended automatically to the submitted value for this property. Only valid and required for SRV record requests.
+
+<h2 id="tocS_DomainRecordTag">DomainRecordTag</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordtag"></a>
+<a id="schema_DomainRecordTag"></a>
+<a id="tocSdomainrecordtag"></a>
+<a id="tocsdomainrecordtag"></a>
+
+```json
+null
+```
+
+The tag portion of a CAA record. Only valid and required for CAA record requests.
+
+<h2 id="tocS_DomainRecordTarget">DomainRecordTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordtarget"></a>
+<a id="schema_DomainRecordTarget"></a>
+<a id="tocSdomainrecordtarget"></a>
+<a id="tocsdomainrecordtarget"></a>
+
+```json
+"192.0.2.0"
+```
+
+The target for this Record. For requests, this property's actual usage and whether it is required depends
+on the type of record this represents:
+
+`A` and `AAAA`: The IP address. Use `[remote_addr]` to submit the IPv4 address of the request. Required.
+
+`NS`: The name server. Must be a valid domain. Required.
+
+`MX`: The mail server. Must be a valid domain unless creating a Null MX Record. To create a
+[Null MX Record](https://datatracker.ietf.org/doc/html/rfc7505), first
+[remove](/docs/api/domains/#domain-record-delete) any additional MX records, create an MX record with empty strings
+(`""`) for the `target` and `name`. If a Domain has a Null MX record, new MX records cannot be created. Required.
+
+`CNAME`: The alias. Must be a valid domain. Required.
+
+`TXT`: The value. Required.
+
+`SRV`: The target domain or subdomain. If a subdomain is entered, it is automatically used with the Domain.
+To configure for a different domain, enter a valid FQDN. For example, the value `www` with a Domain for
+`example.com` results in a target set to `www.example.com`, whereas the value `sample.com` results in a
+target set to `sample.com`. Required.
+
+`CAA`: The value. For `issue` or `issuewild` tags, the domain of your certificate issuer. For the `iodef`
+tag, a contact or submission URL (domain, http, https, or mailto). Requirements depend on the tag for this record:
+  * `issue`: The domain of your certificate issuer. Must be a valid domain.
+  * `issuewild`: Must begin with `*`.
+  * `iodef`: Must be either (1) a valid domain, (2) a valid domain prepended with `http://` or `https://`, or (3) a valid email address prepended with `mailto:`.
+
+`PTR`: Required. See our guide on how to [Configure Your Linode for Reverse DNS
+(rDNS)](/docs/guides/configure-rdns/).
+
+With the exception of A, AAAA, and CAA records, this field accepts a trailing period.
+
+<h2 id="tocS_DomainRecordTtlSec">DomainRecordTtlSec</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordttlsec"></a>
+<a id="schema_DomainRecordTtlSec"></a>
+<a id="tocSdomainrecordttlsec"></a>
+<a id="tocsdomainrecordttlsec"></a>
+
+```json
+604800
+```
+
+"Time to Live" - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.
+
+<h2 id="tocS_DomainRecordWeight">DomainRecordWeight</h2>
+<!-- backwards compatibility -->
+<a id="schemadomainrecordweight"></a>
+<a id="schema_DomainRecordWeight"></a>
+<a id="tocSdomainrecordweight"></a>
+<a id="tocsdomainrecordweight"></a>
+
+```json
+50
+```
+
+The relative weight of this Record used in the case of identical priority. Higher values are preferred. Only valid and required for SRV record requests.
+
+<h2 id="tocS_LinodeGroup">LinodeGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemalinodegroup"></a>
+<a id="schema_LinodeGroup"></a>
+<a id="tocSlinodegroup"></a>
+<a id="tocslinodegroup"></a>
+
+```json
+"Linode-Group"
+```
+
+A deprecated property denoting a group label for this Linode.
+
+<h2 id="tocS_LinodeLabel">LinodeLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemalinodelabel"></a>
+<a id="schema_LinodeLabel"></a>
+<a id="tocSlinodelabel"></a>
+<a id="tocslinodelabel"></a>
+
+```json
+"linode123"
+```
+
+The Linode's label is for display purposes only. If no label is provided for a Linode,
+a default will be assigned.
+
+Linode labels have the following constraints:
+
+  * Must begin and end with an alphanumeric character.
+  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).
+  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.
+
+<h2 id="tocS_LinodeTags">LinodeTags</h2>
+<!-- backwards compatibility -->
+<a id="schemalinodetags"></a>
+<a id="schema_LinodeTags"></a>
+<a id="tocSlinodetags"></a>
+<a id="tocslinodetags"></a>
+
+```json
+[
+  "example tag",
+  "another example"
+]
+```
+
+An array of tags applied to this object.  Tags are for organizational purposes only.
+
+<h2 id="tocS_LKEClusterK8sVersion">LKEClusterK8sVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclusterk8sversion"></a>
+<a id="schema_LKEClusterK8sVersion"></a>
+<a id="tocSlkeclusterk8sversion"></a>
+<a id="tocslkeclusterk8sversion"></a>
+
+```json
+"1.25"
+```
+
+The desired Kubernetes version for this Kubernetes cluster in the format of &lt;major&gt;.&lt;minor&gt;, and the latest supported patch version will be deployed.
+
+<h2 id="tocS_LKEClusterLabel">LKEClusterLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclusterlabel"></a>
+<a id="schema_LKEClusterLabel"></a>
+<a id="tocSlkeclusterlabel"></a>
+<a id="tocslkeclusterlabel"></a>
+
+```json
+"lkecluster12345"
+```
+
+This Kubernetes cluster's unique label for display purposes only.
+Labels have the following constraints:
+
+  * UTF-8 characters will be returned by the API using escape
+    sequences of their Unicode code points. For example, the
+    Japanese character *か* is 3 bytes in UTF-8 (`0xE382AB`). Its
+    Unicode code point is 2 bytes (`0x30AB`). APIv4 supports this
+    character and the API will return it as the escape sequence
+    using six 1 byte characters which represent 2 bytes of Unicode
+    code point (`"\u30ab"`).
+  * 4 byte UTF-8 characters are not supported.
+  * If the label is entirely composed of UTF-8 characters, the API
+    response will return the code points using up to 193 1 byte
+    characters.
+
+<h2 id="tocS_LKEClusterRegion">LKEClusterRegion</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclusterregion"></a>
+<a id="schema_LKEClusterRegion"></a>
+<a id="tocSlkeclusterregion"></a>
+<a id="tocslkeclusterregion"></a>
+
+```json
+"us-central"
+```
+
+This Kubernetes cluster's location.
+
+<h2 id="tocS_LKEClusterTags">LKEClusterTags</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclustertags"></a>
+<a id="schema_LKEClusterTags"></a>
+<a id="tocSlkeclustertags"></a>
+<a id="tocslkeclustertags"></a>
+
+```json
+[
+  "ecomm",
+  "blogs"
+]
+```
+
+An array of tags applied to the Kubernetes cluster. Tags are for organizational purposes only.
+
+<h2 id="tocS_LKEClusterCreated">LKEClusterCreated</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclustercreated"></a>
+<a id="schema_LKEClusterCreated"></a>
+<a id="tocSlkeclustercreated"></a>
+<a id="tocslkeclustercreated"></a>
+
+```json
+"2019-09-12T21:25:30Z"
+```
+
+When this Kubernetes cluster was created.
+
+<h2 id="tocS_LKEClusterUpdated">LKEClusterUpdated</h2>
+<!-- backwards compatibility -->
+<a id="schemalkeclusterupdated"></a>
+<a id="schema_LKEClusterUpdated"></a>
+<a id="tocSlkeclusterupdated"></a>
+<a id="tocslkeclusterupdated"></a>
+
+```json
+"2019-09-13T21:24:16Z"
+```
+
+When this Kubernetes cluster was updated.
+
+<h2 id="tocS_LKENodePoolRequestBodyAutoscaler">LKENodePoolRequestBodyAutoscaler</h2>
+<!-- backwards compatibility -->
+<a id="schemalkenodepoolrequestbodyautoscaler"></a>
+<a id="schema_LKENodePoolRequestBodyAutoscaler"></a>
+<a id="tocSlkenodepoolrequestbodyautoscaler"></a>
+<a id="tocslkenodepoolrequestbodyautoscaler"></a>
+
+```json
+{
+  "enabled": true,
+  "max": 12,
+  "min": 3
+}
+```
+
+When enabled, the number of nodes autoscales within the defined minimum and maximum values.
+
+When making a request, `max` and `min` require each other.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enabled|boolean|false|none|Whether autoscaling is enabled for this Node Pool. Defaults to `false`.|
+|max|integer|false|none|The maximum number of nodes to autoscale to. Defaults to the Node Pool's `count`. Defaults to the value provided by the `count` field.<br>|
+|min|integer|false|none|The minimum number of nodes to autoscale to. Defaults to the Node Pool's `count`.|
+
+<h2 id="tocS_LKENodePoolCount">LKENodePoolCount</h2>
+<!-- backwards compatibility -->
+<a id="schemalkenodepoolcount"></a>
+<a id="schema_LKENodePoolCount"></a>
+<a id="tocSlkenodepoolcount"></a>
+<a id="tocslkenodepoolcount"></a>
+
+```json
+6
+```
+
+The number of nodes in the Node Pool.
+
+<h2 id="tocS_FirewallLabel">FirewallLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewalllabel"></a>
+<a id="schema_FirewallLabel"></a>
+<a id="tocSfirewalllabel"></a>
+<a id="tocsfirewalllabel"></a>
+
+```json
+"firewall123"
+```
+
+The Firewall's label, for display purposes only.
+
+Firewall labels have the following constraints:
+
+  * Must begin and end with an alphanumeric character.
+  * May only consist of alphanumeric characters, dashes (`-`), underscores (`_`) or periods (`.`).
+  * Cannot have two dashes (`--`), underscores (`__`) or periods (`..`) in a row.
+  * Must be between 3 and 32 characters.
+  * Must be unique.
+
+<h2 id="tocS_FirewallTags">FirewallTags</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewalltags"></a>
+<a id="schema_FirewallTags"></a>
+<a id="tocSfirewalltags"></a>
+<a id="tocsfirewalltags"></a>
+
+```json
+[
+  "example tag",
+  "another example"
+]
+```
+
+An array of tags applied to this object. Tags are for organizational purposes only.
+
+<h2 id="tocS_FirewallDevicesEntity">FirewallDevicesEntity</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewalldevicesentity"></a>
+<a id="schema_FirewallDevicesEntity"></a>
+<a id="tocSfirewalldevicesentity"></a>
+<a id="tocsfirewalldevicesentity"></a>
+
+```json
+{
+  "id": 123,
+  "label": "my-linode",
+  "type": "linode",
+  "url": "/v4/linode/instances/123"
+}
+```
+
+The Linode service that this Firewall has been applied to.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|false|none|The entity's ID|
+|label|string|false|read-only|The entity's label.|
+|type|string|false|none|The entity's type.|
+|url|string(url)|false|read-only|The URL you can use to access this entity.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|linode|
+
+<h2 id="tocS_FirewallRules">FirewallRules</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewallrules"></a>
+<a id="schema_FirewallRules"></a>
+<a id="tocSfirewallrules"></a>
+<a id="tocsfirewallrules"></a>
+
+```json
+{
+  "inbound": [
+    {
+      "action": "ACCEPT",
+      "addresses": {
+        "ipv4": [
+          "192.0.2.0/24"
+        ],
+        "ipv6": [
+          "2001:DB8::/32"
+        ]
+      },
+      "description": "An example firewall rule description.",
+      "label": "firewallrule123",
+      "ports": "22-24, 80, 443",
+      "protocol": "TCP"
+    }
+  ],
+  "inbound_policy": "DROP",
+  "outbound": [
+    {
+      "action": "ACCEPT",
+      "addresses": {
+        "ipv4": [
+          "192.0.2.0/24"
+        ],
+        "ipv6": [
+          "2001:DB8::/32"
+        ]
+      },
+      "description": "An example firewall rule description.",
+      "label": "firewallrule123",
+      "ports": "22-24, 80, 443",
+      "protocol": "TCP"
+    }
+  ],
+  "outbound_policy": "DROP"
+}
+```
+
+The inbound and outbound access rules to apply to the Firewall.
+
+A Firewall may have up to 25 rules across its inbound and outbound rulesets.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|inbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The inbound rules for the firewall, as a JSON array.<br>|
+|inbound_policy|string|false|none|The default behavior for inbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `inbound.action` property of the Firewall Rule.<br>|
+|outbound|[[FirewallRuleConfig](#schemafirewallruleconfig)]|false|none|The outbound rules for the firewall, as a JSON array.<br>|
+|outbound_policy|string|false|none|The default behavior for outbound traffic. This setting can be overridden by [updating](/docs/api/networking/#firewall-rules-update) the `outbound.action` property of the Firewall Rule.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|inbound_policy|ACCEPT|
+|inbound_policy|DROP|
+|outbound_policy|ACCEPT|
+|outbound_policy|DROP|
+
+<h2 id="tocS_NodeBalancerClientConnThrottle">NodeBalancerClientConnThrottle</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerclientconnthrottle"></a>
+<a id="schema_NodeBalancerClientConnThrottle"></a>
+<a id="tocSnodebalancerclientconnthrottle"></a>
+<a id="tocsnodebalancerclientconnthrottle"></a>
+
+```json
+0
+```
+
+Throttle connections per second.  Set to 0 (zero) to disable throttling.
+
+<h2 id="tocS_NodeBalancerConfigAlgorithm">NodeBalancerConfigAlgorithm</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigalgorithm"></a>
+<a id="schema_NodeBalancerConfigAlgorithm"></a>
+<a id="tocSnodebalancerconfigalgorithm"></a>
+<a id="tocsnodebalancerconfigalgorithm"></a>
+
+```json
+"roundrobin"
+```
+
+What algorithm this NodeBalancer should use for routing traffic to backends.
+
+<h2 id="tocS_NodeBalancerConfigCheck">NodeBalancerConfigCheck</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheck"></a>
+<a id="schema_NodeBalancerConfigCheck"></a>
+<a id="tocSnodebalancerconfigcheck"></a>
+<a id="tocsnodebalancerconfigcheck"></a>
+
+```json
+"http_body"
+```
+
+The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down.
+* If `none` no check is performed.
+* `connection` requires only a connection to the backend to succeed.
+* `http` and `http_body` rely on the backend serving HTTP, and that
+  the response returned matches what is expected.
+
+<h2 id="tocS_NodeBalancerConfigCheckAttempts">NodeBalancerConfigCheckAttempts</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheckattempts"></a>
+<a id="schema_NodeBalancerConfigCheckAttempts"></a>
+<a id="tocSnodebalancerconfigcheckattempts"></a>
+<a id="tocsnodebalancerconfigcheckattempts"></a>
+
+```json
+3
+```
+
+How many times to attempt a check before considering a backend to be down.
+
+<h2 id="tocS_NodeBalancerConfigCheckBody">NodeBalancerConfigCheckBody</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheckbody"></a>
+<a id="schema_NodeBalancerConfigCheckBody"></a>
+<a id="tocSnodebalancerconfigcheckbody"></a>
+<a id="tocsnodebalancerconfigcheckbody"></a>
+
+```json
+"it works"
+```
+
+This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down.
+
+<h2 id="tocS_NodeBalancerConfigCheckInterval">NodeBalancerConfigCheckInterval</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheckinterval"></a>
+<a id="schema_NodeBalancerConfigCheckInterval"></a>
+<a id="tocSnodebalancerconfigcheckinterval"></a>
+<a id="tocsnodebalancerconfigcheckinterval"></a>
+
+```json
+90
+```
+
+How often, in seconds, to check that backends are up and serving requests.
+
+Must be greater than `check_timeout`.
+
+<h2 id="tocS_NodeBalancerConfigCheckPassive">NodeBalancerConfigCheckPassive</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheckpassive"></a>
+<a id="schema_NodeBalancerConfigCheckPassive"></a>
+<a id="tocSnodebalancerconfigcheckpassive"></a>
+<a id="tocsnodebalancerconfigcheckpassive"></a>
+
+```json
+true
+```
+
+If true, any response from this backend with a `5xx` status code will be enough for it to be considered unhealthy and taken out of rotation.
+
+<h2 id="tocS_NodeBalancerConfigCheckPath">NodeBalancerConfigCheckPath</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigcheckpath"></a>
+<a id="schema_NodeBalancerConfigCheckPath"></a>
+<a id="tocSnodebalancerconfigcheckpath"></a>
+<a id="tocsnodebalancerconfigcheckpath"></a>
+
+```json
+"/test"
+```
+
+The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.
+
+<h2 id="tocS_NodeBalancerConfigCheckTimeout">NodeBalancerConfigCheckTimeout</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigchecktimeout"></a>
+<a id="schema_NodeBalancerConfigCheckTimeout"></a>
+<a id="tocSnodebalancerconfigchecktimeout"></a>
+<a id="tocsnodebalancerconfigchecktimeout"></a>
+
+```json
+10
+```
+
+How long, in seconds, to wait for a check attempt before considering it failed.
+
+Must be less than `check_interval`.
+
+<h2 id="tocS_NodeBalancerConfigCipherSuite">NodeBalancerConfigCipherSuite</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigciphersuite"></a>
+<a id="schema_NodeBalancerConfigCipherSuite"></a>
+<a id="tocSnodebalancerconfigciphersuite"></a>
+<a id="tocsnodebalancerconfigciphersuite"></a>
+
+```json
+"recommended"
+```
+
+What ciphers to use for SSL connections served by this NodeBalancer.
+
+* `legacy` is considered insecure and should only be used if necessary.
+
+<h2 id="tocS_NodeBalancerConfigPort">NodeBalancerConfigPort</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigport"></a>
+<a id="schema_NodeBalancerConfigPort"></a>
+<a id="tocSnodebalancerconfigport"></a>
+<a id="tocsnodebalancerconfigport"></a>
+
+```json
+80
+```
+
+The port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example).  While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.
+
+<h2 id="tocS_NodeBalancerConfigProtocol">NodeBalancerConfigProtocol</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigprotocol"></a>
+<a id="schema_NodeBalancerConfigProtocol"></a>
+<a id="tocSnodebalancerconfigprotocol"></a>
+<a id="tocsnodebalancerconfigprotocol"></a>
+
+```json
+"http"
+```
+
+The protocol this port is configured to serve.
+
+* The `http` and `tcp` protocols do not support `ssl_cert` and `ssl_key`.
+
+* The `https` protocol is mutually required with `ssl_cert` and `ssl_key`.
+
+Review our guide on [Available Protocols](/docs/products/networking/nodebalancers/guides/protocols/) for information on protocol features.
+
+<h2 id="tocS_NodeBalancerConfigProxyProtocol">NodeBalancerConfigProxyProtocol</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigproxyprotocol"></a>
+<a id="schema_NodeBalancerConfigProxyProtocol"></a>
+<a id="tocSnodebalancerconfigproxyprotocol"></a>
+<a id="tocsnodebalancerconfigproxyprotocol"></a>
+
+```json
+"none"
+```
+
+ProxyProtocol is a TCP extension that sends initial TCP connection information such as source/destination IPs and ports to backend devices. This information would be lost otherwise. Backend devices must be configured to work with ProxyProtocol if enabled.
+
+* If ommited, or set to `none`, the NodeBalancer doesn't send any auxilary data over TCP connections. This is the default.
+* If set to `v1`, the human-readable header format (Version 1) is used. Requires `tcp` protocol.
+* If set to `v2`, the binary header format (Version 2) is used. Requires `tcp` protocol.
+
+<h2 id="tocS_NodeBalancerConfigSslCert">NodeBalancerConfigSslCert</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigsslcert"></a>
+<a id="schema_NodeBalancerConfigSslCert"></a>
+<a id="tocSnodebalancerconfigsslcert"></a>
+<a id="tocsnodebalancerconfigsslcert"></a>
+
+```json
+"<REDACTED>"
+```
+
+The PEM-formatted public SSL certificate (or the combined PEM-formatted SSL
+certificate and Certificate Authority chain) that should be served on this
+NodeBalancerConfig's port.
+
+Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).
+
+[Diffie-Hellman Parameters](/docs/products/networking/nodebalancers/guides/ssl-termination/#diffie-hellman-parameters) can be included in this value to enable forward secrecy.
+
+The contents of this field will not be shown in any responses that display
+the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field
+appears.
+
+The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig
+response are automatically derived from your certificate. Please refer to these fields to
+verify that the appropriate certificate was assigned to your NodeBalancerConfig.
+
+<h2 id="tocS_NodeBalancerConfigSslKey">NodeBalancerConfigSslKey</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigsslkey"></a>
+<a id="schema_NodeBalancerConfigSslKey"></a>
+<a id="tocSnodebalancerconfigsslkey"></a>
+<a id="tocsnodebalancerconfigsslkey"></a>
+
+```json
+"<REDACTED>"
+```
+
+The PEM-formatted private key for the SSL certificate set in the `ssl_cert` field.
+
+Line breaks must be represented as "\n" in the string for requests (but not when using the Linode CLI).
+
+The contents of this field will not be shown in any responses that display
+the NodeBalancerConfig. Instead, `<REDACTED>` will be printed where the field
+appears.
+
+The read-only `ssl_commonname` and `ssl_fingerprint` fields in a NodeBalancerConfig
+response are automatically derived from your certificate. Please refer to these fields to
+verify that the appropriate certificate was assigned to your NodeBalancerConfig.
+
+<h2 id="tocS_NodeBalancerConfigStickiness">NodeBalancerConfigStickiness</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerconfigstickiness"></a>
+<a id="schema_NodeBalancerConfigStickiness"></a>
+<a id="tocSnodebalancerconfigstickiness"></a>
+<a id="tocsnodebalancerconfigstickiness"></a>
+
+```json
+"http_cookie"
+```
+
+Controls how session stickiness is handled on this port.
+* If set to `none` connections will always be assigned a backend based on the algorithm configured.
+* If set to `table` sessions from the same remote address will be routed to the same
+  backend.
+
+* For HTTP or HTTPS clients, `http_cookie` allows sessions to be
+  routed to the same backend based on a cookie set by the NodeBalancer.
+
+<h2 id="tocS_NodeBalancerLabel">NodeBalancerLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancerlabel"></a>
+<a id="schema_NodeBalancerLabel"></a>
+<a id="tocSnodebalancerlabel"></a>
+<a id="tocsnodebalancerlabel"></a>
+
+```json
+"balancer12345"
+```
+
+This NodeBalancer's label. These must be unique on your Account.
+
+<h2 id="tocS_NodeBalancerNodeAddress">NodeBalancerNodeAddress</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancernodeaddress"></a>
+<a id="schema_NodeBalancerNodeAddress"></a>
+<a id="tocSnodebalancernodeaddress"></a>
+<a id="tocsnodebalancernodeaddress"></a>
+
+```json
+"192.168.210.120:80"
+```
+
+The private IP Address where this backend can be reached. This _must_ be a private IP address.
+
+<h2 id="tocS_NodeBalancerNodeLabel">NodeBalancerNodeLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancernodelabel"></a>
+<a id="schema_NodeBalancerNodeLabel"></a>
+<a id="tocSnodebalancernodelabel"></a>
+<a id="tocsnodebalancernodelabel"></a>
+
+```json
+"node54321"
+```
+
+The label for this node.  This is for display purposes only.
+
+<h2 id="tocS_NodeBalancerNodeMode">NodeBalancerNodeMode</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancernodemode"></a>
+<a id="schema_NodeBalancerNodeMode"></a>
+<a id="tocSnodebalancernodemode"></a>
+<a id="tocsnodebalancernodemode"></a>
+
+```json
+"accept"
+```
+
+The mode this NodeBalancer should use when sending traffic to this backend.
+* If set to `accept` this backend is accepting traffic.
+* If set to `reject` this backend will not receive traffic.
+* If set to `drain` this backend will not receive _new_ traffic, but connections already
+  pinned to it will continue to be routed to it.
+
+* If set to `backup`, this backend will only receive traffic if all `accept` nodes
+  are down.
+
+<h2 id="tocS_NodeBalancerNodeWeight">NodeBalancerNodeWeight</h2>
+<!-- backwards compatibility -->
+<a id="schemanodebalancernodeweight"></a>
+<a id="schema_NodeBalancerNodeWeight"></a>
+<a id="tocSnodebalancernodeweight"></a>
+<a id="tocsnodebalancernodeweight"></a>
+
+```json
+50
+```
+
+Used when picking a backend to serve a request and is not pinned to a single backend yet.  Nodes with a higher weight will receive more traffic.
+
+<h2 id="tocS_SSHKeyLabel">SSHKeyLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemasshkeylabel"></a>
+<a id="schema_SSHKeyLabel"></a>
+<a id="tocSsshkeylabel"></a>
+<a id="tocssshkeylabel"></a>
+
+```json
+"My SSH Key"
+```
+
+A label for the SSH Key.
+
+<h2 id="tocS_PersonalAccessTokenLabel">PersonalAccessTokenLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemapersonalaccesstokenlabel"></a>
+<a id="schema_PersonalAccessTokenLabel"></a>
+<a id="tocSpersonalaccesstokenlabel"></a>
+<a id="tocspersonalaccesstokenlabel"></a>
+
+```json
+"linode-cli"
+```
+
+This token's label.  This is for display purposes only, but can be used to more easily track what you're using each token for.
+
+<h2 id="tocS_VolumeLabel">VolumeLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemavolumelabel"></a>
+<a id="schema_VolumeLabel"></a>
+<a id="tocSvolumelabel"></a>
+<a id="tocsvolumelabel"></a>
+
+```json
+"my-volume"
+```
+
+The Volume's label is for display purposes only.
+
+<h2 id="tocS_VolumeSize">VolumeSize</h2>
+<!-- backwards compatibility -->
+<a id="schemavolumesize"></a>
+<a id="schema_VolumeSize"></a>
+<a id="tocSvolumesize"></a>
+<a id="tocsvolumesize"></a>
+
+```json
+30
+```
+
+The Volume's size, in GiB.
+
+<h2 id="tocS_DiskFilesystem">DiskFilesystem</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskfilesystem"></a>
+<a id="schema_DiskFilesystem"></a>
+<a id="tocSdiskfilesystem"></a>
+<a id="tocsdiskfilesystem"></a>
+
+```json
+"ext4"
+```
+
+The Disk filesystem can be one of:
+
+  * raw - No filesystem, just a raw binary stream.
+  * swap - Linux swap area.
+  * ext3 - The ext3 journaling filesystem for Linux.
+  * ext4 - The ext4 journaling filesystem for Linux.
+  * initrd - initrd (uncompressed initrd, ext2, max 32 MB).
+
+<h2 id="tocS_DatabaseClusterSize">DatabaseClusterSize</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseclustersize"></a>
+<a id="schema_DatabaseClusterSize"></a>
+<a id="tocSdatabaseclustersize"></a>
+<a id="tocsdatabaseclustersize"></a>
+
+```json
+3
+```
+
+The number of Linode Instance nodes deployed to the Managed Database.
+
+Choosing 3 nodes creates a high availability cluster consisting of 1 primary node and 2 replica nodes.
+
+<h2 id="tocS_DatabaseCreated">DatabaseCreated</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasecreated"></a>
+<a id="schema_DatabaseCreated"></a>
+<a id="tocSdatabasecreated"></a>
+<a id="tocsdatabasecreated"></a>
+
+```json
+"2022-01-01T00:01:01"
+```
+
+When this Managed Database was created.
+
+<h2 id="tocS_DatabaseEncrypted">DatabaseEncrypted</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseencrypted"></a>
+<a id="schema_DatabaseEncrypted"></a>
+<a id="tocSdatabaseencrypted"></a>
+<a id="tocsdatabaseencrypted"></a>
+
+```json
+false
+```
+
+Whether the Managed Databases is encrypted.
+
+<h2 id="tocS_DatabaseId">DatabaseId</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseid"></a>
+<a id="schema_DatabaseId"></a>
+<a id="tocSdatabaseid"></a>
+<a id="tocsdatabaseid"></a>
+
+```json
+123
+```
+
+A unique ID that can be used to identify and reference the Managed Database.
+
+<h2 id="tocS_DatabaseLabel">DatabaseLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaselabel"></a>
+<a id="schema_DatabaseLabel"></a>
+<a id="tocSdatabaselabel"></a>
+<a id="tocsdatabaselabel"></a>
+
+```json
+"example-db"
+```
+
+A unique, user-defined string referring to the Managed Database.
+
+<h2 id="tocS_DatabaseRegion">DatabaseRegion</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseregion"></a>
+<a id="schema_DatabaseRegion"></a>
+<a id="tocSdatabaseregion"></a>
+<a id="tocsdatabaseregion"></a>
+
+```json
+"us-east"
+```
+
+The [Region](/docs/api/regions/) ID for the Managed Database.
+
+<h2 id="tocS_DatabaseStatus">DatabaseStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasestatus"></a>
+<a id="schema_DatabaseStatus"></a>
+<a id="tocSdatabasestatus"></a>
+<a id="tocsdatabasestatus"></a>
+
+```json
+"active"
+```
+
+The operating status of the Managed Database.
+
+<h2 id="tocS_DatabaseType2">DatabaseType2</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasetype2"></a>
+<a id="schema_DatabaseType2"></a>
+<a id="tocSdatabasetype2"></a>
+<a id="tocsdatabasetype2"></a>
+
+```json
+"g6-dedicated-2"
+```
+
+The Linode Instance type used by the Managed Database for its nodes.
+
+<h2 id="tocS_DatabaseUpdated">DatabaseUpdated</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabaseupdated"></a>
+<a id="schema_DatabaseUpdated"></a>
+<a id="tocSdatabaseupdated"></a>
+<a id="tocsdatabaseupdated"></a>
+
+```json
+"2022-01-01T00:01:01"
+```
+
+When this Managed Database was last updated.
+
+<h2 id="tocS_DatabaseMongoDBCompressionType">DatabaseMongoDBCompressionType</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemongodbcompressiontype"></a>
+<a id="schema_DatabaseMongoDBCompressionType"></a>
+<a id="tocSdatabasemongodbcompressiontype"></a>
+<a id="tocsdatabasemongodbcompressiontype"></a>
+
+```json
+"none"
+```
+
+The type of data compression for this Database.
+
+Snappy has a lower comparative compression ratio and resource consumption rate.
+
+Zlip has a higher comparative compression ratio and resource consumption rate.
+
+<h2 id="tocS_DatabaseMongoDBReplicaSet">DatabaseMongoDBReplicaSet</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemongodbreplicaset"></a>
+<a id="schema_DatabaseMongoDBReplicaSet"></a>
+<a id="tocSdatabasemongodbreplicaset"></a>
+<a id="tocsdatabasemongodbreplicaset"></a>
+
+```json
+null
+```
+
+Label for configuring a MongoDB [replica set](https://www.mongodb.com/docs/manual/replication/). Choose the same label on multiple Databases to include them in the same replica set.
+
+If `null`, the Database is not included in any replica set.
+
+<h2 id="tocS_DatabaseMongoDBSslConnection">DatabaseMongoDBSslConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemongodbsslconnection"></a>
+<a id="schema_DatabaseMongoDBSslConnection"></a>
+<a id="tocSdatabasemongodbsslconnection"></a>
+<a id="tocsdatabasemongodbsslconnection"></a>
+
+```json
+true
+```
+
+Whether to require SSL credentials to establish a connection to the Managed Database.
+
+Use the **Managed MongoDB Database Credentials View** ([GET /databases/mongodb/instances/{instanceId}/credentials](/docs/api/databases/#managed-mongodb-database-credentials-view)) command for access information.
+
+<h2 id="tocS_DatabaseMongoDBStorageEngine">DatabaseMongoDBStorageEngine</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemongodbstorageengine"></a>
+<a id="schema_DatabaseMongoDBStorageEngine"></a>
+<a id="tocSdatabasemongodbstorageengine"></a>
+<a id="tocsdatabasemongodbstorageengine"></a>
+
+```json
+"wiredtiger"
+```
+
+The type of storage engine for this Database.
+
+**Note:** MMAPV1 is not available for MongoDB versions 4.0 and above.
+
+<h2 id="tocS_DatabaseHosts">DatabaseHosts</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasehosts"></a>
+<a id="schema_DatabaseHosts"></a>
+<a id="tocSdatabasehosts"></a>
+<a id="tocsdatabasehosts"></a>
+
+```json
+{
+  "primary": "lin-123-456-mysql-mysql-primary.servers.linodedb.net",
+  "secondary": "lin-123-456-mysql-primary-private.servers.linodedb.net"
+}
+```
+
+The primary and secondary hosts for the Managed Database. These are assigned after provisioning is complete.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|primary|string \| null|false|none|The primary host for the Managed Database.|
+|secondary|string \| null|false|none|The secondary/private network host for the Managed Database.<br><br>A private network host and a private IP can only be used to access a Database Cluster from Linodes in the same data center and will not incur transfer costs.<br><br>**Note**: The secondary hostname is publicly viewable and accessible.<br>|
+
+<h2 id="tocS_DatabaseMySQLReplicationType">DatabaseMySQLReplicationType</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemysqlreplicationtype"></a>
+<a id="schema_DatabaseMySQLReplicationType"></a>
+<a id="tocSdatabasemysqlreplicationtype"></a>
+<a id="tocsdatabasemysqlreplicationtype"></a>
+
+```json
+"semi_synch"
+```
+
+The replication method used for the Managed Database.
+
+Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.
+
+Must be `none` for a single node cluster.
+
+Must be `asynch` or `semi_synch` for a high availability cluster.
+
+<h2 id="tocS_DatabaseMySQLSslConnection">DatabaseMySQLSslConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasemysqlsslconnection"></a>
+<a id="schema_DatabaseMySQLSslConnection"></a>
+<a id="tocSdatabasemysqlsslconnection"></a>
+<a id="tocsdatabasemysqlsslconnection"></a>
+
+```json
+true
+```
+
+Whether to require SSL credentials to establish a connection to the Managed Database.
+
+Use the **Managed MySQL Database Credentials View** ([GET /databases/mysql/instances/{instanceId}/credentials](/docs/api/databases/#managed-mysql-database-credentials-view)) command for access information.
+
+<h2 id="tocS_DatabasePostgreSQLReplicationCommitType">DatabasePostgreSQLReplicationCommitType</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasepostgresqlreplicationcommittype"></a>
+<a id="schema_DatabasePostgreSQLReplicationCommitType"></a>
+<a id="tocSdatabasepostgresqlreplicationcommittype"></a>
+<a id="tocsdatabasepostgresqlreplicationcommittype"></a>
+
+```json
+"local"
+```
+
+The synchronization level of the replicating server.
+
+Must be `local` or `off` for the `asynch` replication type.
+
+Must be `on`, `remote_write`, or `remote_apply` for the `semi_synch` replication type.
+
+<h2 id="tocS_DatabasePostgreSQLReplicationType">DatabasePostgreSQLReplicationType</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasepostgresqlreplicationtype"></a>
+<a id="schema_DatabasePostgreSQLReplicationType"></a>
+<a id="tocSdatabasepostgresqlreplicationtype"></a>
+<a id="tocsdatabasepostgresqlreplicationtype"></a>
+
+```json
+"semi_synch"
+```
+
+The replication method used for the Managed Database.
+
+Defaults to `none` for a single cluster and `semi_synch` for a high availability cluster.
+
+Must be `none` for a single node cluster.
+
+Must be `asynch` or `semi_synch` for a high availability cluster.
+
+<h2 id="tocS_DatabasePostgreSQLSslConnection">DatabasePostgreSQLSslConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemadatabasepostgresqlsslconnection"></a>
+<a id="schema_DatabasePostgreSQLSslConnection"></a>
+<a id="tocSdatabasepostgresqlsslconnection"></a>
+<a id="tocsdatabasepostgresqlsslconnection"></a>
+
+```json
+true
+```
+
+Whether to require SSL credentials to establish a connection to the Managed Database.
+
+Use the **Managed PostgreSQL Database Credentials View** ([GET /databases/postgresql/instances/{instanceId}/credentials](/docs/api/databases/#managed-postgresql-database-credentials-view)) command for access information.
+
+<h2 id="tocS_DiskLabel">DiskLabel</h2>
+<!-- backwards compatibility -->
+<a id="schemadisklabel"></a>
+<a id="schema_DiskLabel"></a>
+<a id="tocSdisklabel"></a>
+<a id="tocsdisklabel"></a>
+
+```json
+"Debian 9 Disk"
+```
+
+The Disk's label is for display purposes only.
+
+<h2 id="tocS_LKENodePoolDisksItems">LKENodePoolDisksItems</h2>
+<!-- backwards compatibility -->
+<a id="schemalkenodepooldisksitems"></a>
+<a id="schema_LKENodePoolDisksItems"></a>
+<a id="tocSlkenodepooldisksitems"></a>
+<a id="tocslkenodepooldisksitems"></a>
+
+```json
+{
+  "size": 1024,
+  "type": "ext-4"
+}
+```
+
+The values to assign to each partition in this Node Pool's custom disk layout.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|size|integer|false|none|The size of this custom disk partition in MB.<br><br>  * The size of this disk partition must not exceed the capacity of the node's plan type.<br>|
+|type|string|false|none|This custom disk partition's filesystem type.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|raw|
+|type|ext4|
+
+<h2 id="tocS_LKENodePoolTags">LKENodePoolTags</h2>
+<!-- backwards compatibility -->
+<a id="schemalkenodepooltags"></a>
+<a id="schema_LKENodePoolTags"></a>
+<a id="tocSlkenodepooltags"></a>
+<a id="tocslkenodepooltags"></a>
+
+```json
+[
+  "example tag",
+  "another example"
+]
+```
+
+An array of tags applied to this object. Tags are for organizational purposes only.
+
+<h2 id="tocS_LKENodePoolType">LKENodePoolType</h2>
+<!-- backwards compatibility -->
+<a id="schemalkenodepooltype"></a>
+<a id="schema_LKENodePoolType"></a>
+<a id="tocSlkenodepooltype"></a>
+<a id="tocslkenodepooltype"></a>
+
+```json
+"g6-standard-4"
+```
+
+The Linode Type for all of the nodes in the Node Pool.
+
+<h2 id="tocS_DiskRequestImage">DiskRequestImage</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequestimage"></a>
+<a id="schema_DiskRequestImage"></a>
+<a id="tocSdiskrequestimage"></a>
+<a id="tocsdiskrequestimage"></a>
+
+```json
+"linode/debian9"
+```
+
+An Image ID to deploy the Linode Disk from.
+
+Access the Images List ([GET /images](/docs/api/images/#images-list)) endpoint with authentication to view
+all available Images. Official Linode Images start with `linode/`, while your Account's Images start with `private/`. Creating
+a disk from a Private Image requires `read_only` or `read_write` permissions for that Image. Access the User's
+Grant Update ([PUT /account/users/{username}/grants](/docs/api/account/#users-grants-update)) endpoint to
+adjust permissions for an Account Image.
+
+<h2 id="tocS_DiskRequestAuthorizedKeys">DiskRequestAuthorizedKeys</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequestauthorizedkeys"></a>
+<a id="schema_DiskRequestAuthorizedKeys"></a>
+<a id="tocSdiskrequestauthorizedkeys"></a>
+<a id="tocsdiskrequestauthorizedkeys"></a>
+
+```json
+[
+  "ssh-rsa AAAA_valid_public_ssh_key_123456785== user@their-computer"
+]
+```
+
+A list of public SSH keys that will be automatically appended
+to the root user's `~/.ssh/authorized_keys` file when deploying from an Image.
+
+<h2 id="tocS_DiskRequestAuthorizedUsers">DiskRequestAuthorizedUsers</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequestauthorizedusers"></a>
+<a id="schema_DiskRequestAuthorizedUsers"></a>
+<a id="tocSdiskrequestauthorizedusers"></a>
+<a id="tocsdiskrequestauthorizedusers"></a>
+
+```json
+[
+  "myUser",
+  "secondaryUser"
+]
+```
+
+A list of usernames. If the usernames have associated SSH keys, the keys will be appended to the root users `~/.ssh/authorized_keys` file automatically when deploying from an Image.
+
+<h2 id="tocS_DiskRequestRootPass">DiskRequestRootPass</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequestrootpass"></a>
+<a id="schema_DiskRequestRootPass"></a>
+<a id="tocSdiskrequestrootpass"></a>
+<a id="tocsdiskrequestrootpass"></a>
+
+```json
+"aComplexP@ssword"
+```
+
+This sets the root user's password on a newly-created Linode Disk when deploying from an Image.
+
+* **Required** when creating a Linode Disk from an Image, including when using a StackScript.
+
+* Must meet a password strength score requirement that is calculated internally by the API.
+If the strength requirement is not met, you will receive a `Password does not meet strength requirement` error.
+
+<h2 id="tocS_DiskRequestStackscriptData">DiskRequestStackscriptData</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequeststackscriptdata"></a>
+<a id="schema_DiskRequestStackscriptData"></a>
+<a id="tocSdiskrequeststackscriptdata"></a>
+<a id="tocsdiskrequeststackscriptdata"></a>
+
+```json
+{
+  "gh_username": "linode"
+}
+```
+
+This field is required only if the StackScript being deployed requires input data from the User for successful completion. See [User Defined Fields (UDFs)](/docs/guides/writing-scripts-for-use-with-linode-stackscripts-a-tutorial/#user-defined-fields-udfs) for more details.
+
+This field is required to be valid JSON.
+
+Total length cannot exceed 65,535 characters.
+
+<h2 id="tocS_DiskRequestStackscriptId">DiskRequestStackscriptId</h2>
+<!-- backwards compatibility -->
+<a id="schemadiskrequeststackscriptid"></a>
+<a id="schema_DiskRequestStackscriptId"></a>
+<a id="tocSdiskrequeststackscriptid"></a>
+<a id="tocsdiskrequeststackscriptid"></a>
+
+```json
+10079
+```
+
+A StackScript ID that will cause the referenced StackScript to be run during
+deployment of this Linode. A compatible `image` is required to use a
+StackScript. To get a list of available StackScript and their permitted Images
+see [/stackscripts](/docs/api/stackscripts/#stackscripts-list).
+This field cannot be used when deploying from a Backup or a Private Image.
+
+<h2 id="tocS_SecurityQuestionId">SecurityQuestionId</h2>
+<!-- backwards compatibility -->
+<a id="schemasecurityquestionid"></a>
+<a id="schema_SecurityQuestionId"></a>
+<a id="tocSsecurityquestionid"></a>
+<a id="tocssecurityquestionid"></a>
+
+```json
+1
+```
+
+The ID representing the security question.
+
+<h2 id="tocS_SecurityQuestionQuestion">SecurityQuestionQuestion</h2>
+<!-- backwards compatibility -->
+<a id="schemasecurityquestionquestion"></a>
+<a id="schema_SecurityQuestionQuestion"></a>
+<a id="tocSsecurityquestionquestion"></a>
+<a id="tocssecurityquestionquestion"></a>
+
+```json
+"In what city were you born?"
+```
+
+The security question.
+
+<h2 id="tocS_SecurityQuestionResponse">SecurityQuestionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasecurityquestionresponse"></a>
+<a id="schema_SecurityQuestionResponse"></a>
+<a id="tocSsecurityquestionresponse"></a>
+<a id="tocssecurityquestionresponse"></a>
+
+```json
+"Gotham City"
+```
+
+The security question response.
+
+<h2 id="tocS_RegionId">RegionId</h2>
+<!-- backwards compatibility -->
+<a id="schemaregionid"></a>
+<a id="schema_RegionId"></a>
+<a id="tocSregionid"></a>
+<a id="tocsregionid"></a>
+
+```json
+"us-east"
+```
+
+The unique ID of this Region.

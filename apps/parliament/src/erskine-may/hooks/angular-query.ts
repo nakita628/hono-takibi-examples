@@ -807,29 +807,29 @@ export function injectApiSectionSectionId<
 }
 
 export function getApiSectionSectionIdStepQueryKey(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
 ) {
-  return ['api', '/api/Section/:sectionId,:step', args] as const
+  return ['api', '/api/Section/:sectionId,{step}', args] as const
 }
 
 export function getApiSectionSectionIdStepQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+          Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
         >
       >
     >,
@@ -840,7 +840,7 @@ export function getApiSectionSectionIdStepQueryOptions<
     queryKey: getApiSectionSectionIdStepQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.Section[':sectionId,:step'].$get(args, {
+        client.api.Section[':sectionId,{step}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -853,20 +853,20 @@ export function injectApiSectionSectionIdStep<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: () => InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+              Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
             >
           >
         >,

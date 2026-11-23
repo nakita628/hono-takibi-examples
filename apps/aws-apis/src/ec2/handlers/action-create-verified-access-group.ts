@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateVerifiedAccessGroupRoute,
   postActionCreateVerifiedAccessGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateVerifiedAccessGroupRouteHandler: RouteHandler<
+  typeof getActionCreateVerifiedAccessGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateVerifiedAccessGroupHandler = app
-  .openapi(getActionCreateVerifiedAccessGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateVerifiedAccessGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateVerifiedAccessGroupRouteHandler: RouteHandler<
+  typeof postActionCreateVerifiedAccessGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

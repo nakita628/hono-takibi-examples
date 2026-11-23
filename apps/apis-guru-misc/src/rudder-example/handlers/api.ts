@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getApiChangeRequestsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getApiChangeRequestsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const apiHandler = app.openapi(getApiChangeRequestsRoute, (c) => {
+export const getApiChangeRequestsRouteHandler: RouteHandler<
+  typeof getApiChangeRequestsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

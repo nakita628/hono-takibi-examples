@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getShieldInformationBarriersRoute,
   getShieldInformationBarriersShieldInformationBarrierIdRoute,
   postShieldInformationBarriersChangeStatusRoute,
   postShieldInformationBarriersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShieldInformationBarriersRouteHandler: RouteHandler<
+  typeof getShieldInformationBarriersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shieldInformationBarriersHandler = app
-  .openapi(getShieldInformationBarriersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShieldInformationBarriersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShieldInformationBarriersChangeStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShieldInformationBarriersShieldInformationBarrierIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postShieldInformationBarriersRouteHandler: RouteHandler<
+  typeof postShieldInformationBarriersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShieldInformationBarriersChangeStatusRouteHandler: RouteHandler<
+  typeof postShieldInformationBarriersChangeStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShieldInformationBarriersShieldInformationBarrierIdRouteHandler: RouteHandler<
+  typeof getShieldInformationBarriersShieldInformationBarrierIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

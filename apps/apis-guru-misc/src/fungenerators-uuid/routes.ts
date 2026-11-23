@@ -35,10 +35,7 @@ export const getUuidRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -62,10 +59,7 @@ export const postUuidRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -146,9 +140,6 @@ export const getUuidVersionVersionRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })

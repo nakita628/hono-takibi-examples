@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionListDeadLetterSourceQueuesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionListDeadLetterSourceQueuesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionListDeadLetterSourceQueuesHandler = app.openapi(
-  postActionListDeadLetterSourceQueuesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postActionListDeadLetterSourceQueuesRouteHandler: RouteHandler<
+  typeof postActionListDeadLetterSourceQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

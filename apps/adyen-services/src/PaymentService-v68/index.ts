@@ -1,35 +1,50 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  adjustAuthorisationHandler,
-  authorise3dHandler,
-  authorise3ds2Handler,
-  authoriseHandler,
-  cancelHandler,
-  cancelOrRefundHandler,
-  captureHandler,
-  donateHandler,
-  getAuthenticationResultHandler,
-  refundHandler,
-  retrieve3ds2ResultHandler,
-  technicalCancelHandler,
-  voidPendingRefundHandler,
+  postAdjustAuthorisationRoute,
+  postAuthorise3dRoute,
+  postAuthorise3ds2Route,
+  postAuthoriseRoute,
+  postCancelOrRefundRoute,
+  postCancelRoute,
+  postCaptureRoute,
+  postDonateRoute,
+  postGetAuthenticationResultRoute,
+  postRefundRoute,
+  postRetrieve3ds2ResultRoute,
+  postTechnicalCancelRoute,
+  postVoidPendingRefundRoute,
+} from './routes'
+import {
+  postAdjustAuthorisationRouteHandler,
+  postAuthorise3dRouteHandler,
+  postAuthorise3ds2RouteHandler,
+  postAuthoriseRouteHandler,
+  postCancelOrRefundRouteHandler,
+  postCancelRouteHandler,
+  postCaptureRouteHandler,
+  postDonateRouteHandler,
+  postGetAuthenticationResultRouteHandler,
+  postRefundRouteHandler,
+  postRetrieve3ds2ResultRouteHandler,
+  postTechnicalCancelRouteHandler,
+  postVoidPendingRefundRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', adjustAuthorisationHandler)
-  .route('/', authoriseHandler)
-  .route('/', authorise3dHandler)
-  .route('/', authorise3ds2Handler)
-  .route('/', cancelHandler)
-  .route('/', cancelOrRefundHandler)
-  .route('/', captureHandler)
-  .route('/', donateHandler)
-  .route('/', getAuthenticationResultHandler)
-  .route('/', refundHandler)
-  .route('/', retrieve3ds2ResultHandler)
-  .route('/', technicalCancelHandler)
-  .route('/', voidPendingRefundHandler)
+  .openapi(postAdjustAuthorisationRoute, postAdjustAuthorisationRouteHandler)
+  .openapi(postAuthoriseRoute, postAuthoriseRouteHandler)
+  .openapi(postAuthorise3dRoute, postAuthorise3dRouteHandler)
+  .openapi(postAuthorise3ds2Route, postAuthorise3ds2RouteHandler)
+  .openapi(postCancelRoute, postCancelRouteHandler)
+  .openapi(postCancelOrRefundRoute, postCancelOrRefundRouteHandler)
+  .openapi(postCaptureRoute, postCaptureRouteHandler)
+  .openapi(postDonateRoute, postDonateRouteHandler)
+  .openapi(postGetAuthenticationResultRoute, postGetAuthenticationResultRouteHandler)
+  .openapi(postRefundRoute, postRefundRouteHandler)
+  .openapi(postRetrieve3ds2ResultRoute, postRetrieve3ds2ResultRouteHandler)
+  .openapi(postTechnicalCancelRoute, postTechnicalCancelRouteHandler)
+  .openapi(postVoidPendingRefundRoute, postVoidPendingRefundRouteHandler)
 
 export default app

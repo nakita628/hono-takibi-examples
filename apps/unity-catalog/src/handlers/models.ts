@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteModelsFullNameRoute,
   deleteModelsFullNameVersionsVersionRoute,
   getModelsFullNameRoute,
@@ -13,39 +13,64 @@ import {
   postModelsVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postModelsRouteHandler: RouteHandler<typeof postModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const modelsHandler = app
-  .openapi(postModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModelsFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModelsVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsFullNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModelsFullNameVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsFullNameVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModelsFullNameVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchModelsFullNameVersionsVersionFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getModelsRouteHandler: RouteHandler<typeof getModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsFullNameRouteHandler: RouteHandler<typeof getModelsFullNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsFullNameRouteHandler: RouteHandler<
+  typeof patchModelsFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModelsFullNameRouteHandler: RouteHandler<
+  typeof deleteModelsFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModelsVersionsRouteHandler: RouteHandler<typeof postModelsVersionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsFullNameVersionsRouteHandler: RouteHandler<
+  typeof getModelsFullNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModelsFullNameVersionsVersionRouteHandler: RouteHandler<
+  typeof getModelsFullNameVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsFullNameVersionsVersionRouteHandler: RouteHandler<
+  typeof patchModelsFullNameVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteModelsFullNameVersionsVersionRouteHandler: RouteHandler<
+  typeof deleteModelsFullNameVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchModelsFullNameVersionsVersionFinalizeRouteHandler: RouteHandler<
+  typeof patchModelsFullNameVersionsVersionFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

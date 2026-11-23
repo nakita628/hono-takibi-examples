@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePoolsPoolNameRoute,
   getPoolsPoolNameRoute,
   getPoolsRoute,
@@ -7,21 +7,28 @@ import {
   postPoolsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPoolsRouteHandler: RouteHandler<typeof getPoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const poolsHandler = app
-  .openapi(getPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPoolsRouteHandler: RouteHandler<typeof postPoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePoolsPoolNameRouteHandler: RouteHandler<
+  typeof deletePoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolNameRouteHandler: RouteHandler<typeof getPoolsPoolNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPoolsPoolNameRouteHandler: RouteHandler<typeof patchPoolsPoolNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

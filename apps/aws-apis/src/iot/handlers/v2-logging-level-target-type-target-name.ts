@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteV2LoggingLevelTargetTypeTargetNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteV2LoggingLevelTargetTypeTargetNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v2LoggingLevelTargetTypeTargetNameHandler = app.openapi(
-  deleteV2LoggingLevelTargetTypeTargetNameRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteV2LoggingLevelTargetTypeTargetNameRouteHandler: RouteHandler<
+  typeof deleteV2LoggingLevelTargetTypeTargetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

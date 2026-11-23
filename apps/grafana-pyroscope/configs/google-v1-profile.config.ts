@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/google/v1/profile.openapi.yaml',
   output: './src/google-v1-profile/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/google-v1-profile/types.ts' },
   client: { output: './src/google-v1-profile/client.ts', baseUrl: '/' },
   rpc: { output: './src/google-v1-profile/rpc.ts', parseResponse: true },

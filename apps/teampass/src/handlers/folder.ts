@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFolderDeleteRoute,
   getFolderListFoldersRoute,
   getFolderWritableFoldersRoute,
@@ -7,21 +7,30 @@ import {
   putFolderUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFolderListFoldersRouteHandler: RouteHandler<
+  typeof getFolderListFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const folderHandler = app
-  .openapi(getFolderListFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFolderWritableFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFolderCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFolderUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFolderDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFolderWritableFoldersRouteHandler: RouteHandler<
+  typeof getFolderWritableFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFolderCreateRouteHandler: RouteHandler<typeof postFolderCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putFolderUpdateRouteHandler: RouteHandler<typeof putFolderUpdateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFolderDeleteRouteHandler: RouteHandler<typeof deleteFolderDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { referenceDataHandler } from './handlers'
+import { getReferenceDataRecommendedLocationsRoute } from './routes'
+import { getReferenceDataRecommendedLocationsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', referenceDataHandler)
+export const api = app.openapi(
+  getReferenceDataRecommendedLocationsRoute,
+  getReferenceDataRecommendedLocationsRouteHandler,
+)
 
 export default app

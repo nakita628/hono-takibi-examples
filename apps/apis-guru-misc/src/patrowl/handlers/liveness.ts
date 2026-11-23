@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLivenessRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLivenessRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const livenessHandler = app.openapi(getLivenessRoute, (c) => {
+export const getLivenessRouteHandler: RouteHandler<typeof getLivenessRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

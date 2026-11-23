@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRecipesNameRecipeVersionRecipeVersionRoute,
   getRecipesNameRoute,
   getRecipesRoute,
@@ -9,27 +9,36 @@ import {
   putRecipesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRecipesNameBatchDeleteRecipeVersionRouteHandler: RouteHandler<
+  typeof postRecipesNameBatchDeleteRecipeVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const recipesHandler = app
-  .openapi(postRecipesNameBatchDeleteRecipeVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecipesNameRecipeVersionRecipeVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipesNamePublishRecipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRecipesRouteHandler: RouteHandler<typeof postRecipesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipesRouteHandler: RouteHandler<typeof getRecipesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecipesNameRecipeVersionRecipeVersionRouteHandler: RouteHandler<
+  typeof deleteRecipesNameRecipeVersionRecipeVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipesNameRouteHandler: RouteHandler<typeof getRecipesNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipesNameRouteHandler: RouteHandler<typeof putRecipesNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipesNamePublishRecipeRouteHandler: RouteHandler<
+  typeof postRecipesNamePublishRecipeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { egm2008Handler } from './handlers'
+import { getEgm2008GeoidHeightRoute, getEgm2008GravityAnomalyRoute } from './routes'
+import { getEgm2008GeoidHeightRouteHandler, getEgm2008GravityAnomalyRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', egm2008Handler)
+export const api = app
+  .openapi(getEgm2008GeoidHeightRoute, getEgm2008GeoidHeightRouteHandler)
+  .openapi(getEgm2008GravityAnomalyRoute, getEgm2008GravityAnomalyRouteHandler)
 
 export default app

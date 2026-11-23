@@ -213,16 +213,16 @@ const ServiceListSchema = z.array(ServiceSchema).openapi('ServiceList')
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 type GetServiceGraphResultType = {
-  StartTime?: z.infer<typeof TimestampSchema> & unknown
-  EndTime?: z.infer<typeof TimestampSchema> & unknown
-  Services?: z.infer<typeof ServiceListSchema> & unknown
-  ContainsOldGroupVersions?: z.infer<typeof BooleanSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  StartTime?: z.infer<typeof TimestampSchema>
+  EndTime?: z.infer<typeof TimestampSchema>
+  Services?: z.infer<typeof ServiceListSchema>
+  ContainsOldGroupVersions?: z.infer<typeof BooleanSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type GetTraceGraphResultType = {
-  Services?: z.infer<typeof ServiceListSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Services?: z.infer<typeof ServiceListSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const TraceIdSchema = z.string().min(1).max(35).openapi('TraceId')
@@ -565,26 +565,26 @@ const ResponseTimeRootCausesSchema = z
   .openapi('ResponseTimeRootCauses')
 
 type TraceSummaryType = {
-  Id?: z.infer<typeof TraceIdSchema> & unknown
-  Duration?: z.infer<typeof NullableDoubleSchema> & unknown
-  ResponseTime?: z.infer<typeof NullableDoubleSchema> & unknown
-  HasFault?: z.infer<typeof NullableBooleanSchema> & unknown
-  HasError?: z.infer<typeof NullableBooleanSchema> & unknown
-  HasThrottle?: z.infer<typeof NullableBooleanSchema> & unknown
-  IsPartial?: z.infer<typeof NullableBooleanSchema> & unknown
-  Http?: z.infer<typeof HttpSchema> & unknown
-  Annotations?: z.infer<typeof AnnotationsSchema> & unknown
-  Users?: z.infer<typeof TraceUsersSchema> & unknown
-  ServiceIds?: z.infer<typeof ServiceIdsSchema> & unknown
-  ResourceARNs?: z.infer<typeof TraceResourceARNsSchema> & unknown
-  InstanceIds?: z.infer<typeof TraceInstanceIdsSchema> & unknown
-  AvailabilityZones?: z.infer<typeof TraceAvailabilityZonesSchema> & unknown
-  EntryPoint?: z.infer<typeof ServiceIdSchema> & unknown
-  FaultRootCauses?: z.infer<typeof FaultRootCausesSchema> & unknown
-  ErrorRootCauses?: z.infer<typeof ErrorRootCausesSchema> & unknown
-  ResponseTimeRootCauses?: z.infer<typeof ResponseTimeRootCausesSchema> & unknown
-  Revision?: z.infer<typeof IntegerSchema> & unknown
-  MatchedEventTime?: z.infer<typeof TimestampSchema> & unknown
+  Id?: z.infer<typeof TraceIdSchema>
+  Duration?: z.infer<typeof NullableDoubleSchema>
+  ResponseTime?: z.infer<typeof NullableDoubleSchema>
+  HasFault?: z.infer<typeof NullableBooleanSchema>
+  HasError?: z.infer<typeof NullableBooleanSchema>
+  HasThrottle?: z.infer<typeof NullableBooleanSchema>
+  IsPartial?: z.infer<typeof NullableBooleanSchema>
+  Http?: z.infer<typeof HttpSchema>
+  Annotations?: z.infer<typeof AnnotationsSchema>
+  Users?: z.infer<typeof TraceUsersSchema>
+  ServiceIds?: z.infer<typeof ServiceIdsSchema>
+  ResourceARNs?: z.infer<typeof TraceResourceARNsSchema>
+  InstanceIds?: z.infer<typeof TraceInstanceIdsSchema>
+  AvailabilityZones?: z.infer<typeof TraceAvailabilityZonesSchema>
+  EntryPoint?: z.infer<typeof ServiceIdSchema>
+  FaultRootCauses?: z.infer<typeof FaultRootCausesSchema>
+  ErrorRootCauses?: z.infer<typeof ErrorRootCausesSchema>
+  ResponseTimeRootCauses?: z.infer<typeof ResponseTimeRootCausesSchema>
+  Revision?: z.infer<typeof IntegerSchema>
+  MatchedEventTime?: z.infer<typeof TimestampSchema>
 }
 
 const TraceSummarySchema: z.ZodType<TraceSummaryType> = z
@@ -666,10 +666,10 @@ const TraceSummaryListSchema: z.ZodType<TraceSummaryListType> = z
   .openapi('TraceSummaryList')
 
 type GetTraceSummariesResultType = {
-  TraceSummaries?: z.infer<typeof TraceSummaryListSchema> & unknown
-  ApproximateTime?: z.infer<typeof TimestampSchema> & unknown
-  TracesProcessedCount?: z.infer<typeof NullableLongSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  TraceSummaries?: z.infer<typeof TraceSummaryListSchema>
+  ApproximateTime?: z.infer<typeof TimestampSchema>
+  TracesProcessedCount?: z.infer<typeof NullableLongSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const SegmentIdSchema = z.string().openapi('SegmentId')

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getParcelsPidsSiteIDOutputFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getParcelsPidsSiteIDOutputFormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const parcelsHandler = app.openapi(getParcelsPidsSiteIDOutputFormatRoute, (c) => {
+export const getParcelsPidsSiteIDOutputFormatRouteHandler: RouteHandler<
+  typeof getParcelsPidsSiteIDOutputFormatRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

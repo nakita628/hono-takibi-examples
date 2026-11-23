@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/parameters-cookies.yaml',
   output: './src/3-0-parameters-cookies/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-parameters-cookies/types.ts' },
   client: { output: './src/3-0-parameters-cookies/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-parameters-cookies/rpc.ts', parseResponse: true },

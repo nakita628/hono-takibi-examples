@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDiscoverGenresliderMovieRoute,
   getDiscoverGenresliderTvRoute,
   getDiscoverKeywordKeywordIdMoviesRoute,
@@ -17,51 +17,90 @@ import {
   getDiscoverWatchlistRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDiscoverMoviesRouteHandler: RouteHandler<typeof getDiscoverMoviesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const discoverHandler = app
-  .openapi(getDiscoverMoviesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverMoviesGenreGenreIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverMoviesLanguageLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverMoviesStudioStudioIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverMoviesUpcomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTvLanguageLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTvGenreGenreIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTvNetworkNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTvUpcomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverTrendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverKeywordKeywordIdMoviesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverGenresliderMovieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverGenresliderTvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoverWatchlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDiscoverMoviesGenreGenreIdRouteHandler: RouteHandler<
+  typeof getDiscoverMoviesGenreGenreIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverMoviesLanguageLanguageRouteHandler: RouteHandler<
+  typeof getDiscoverMoviesLanguageLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverMoviesStudioStudioIdRouteHandler: RouteHandler<
+  typeof getDiscoverMoviesStudioStudioIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverMoviesUpcomingRouteHandler: RouteHandler<
+  typeof getDiscoverMoviesUpcomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTvRouteHandler: RouteHandler<typeof getDiscoverTvRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTvLanguageLanguageRouteHandler: RouteHandler<
+  typeof getDiscoverTvLanguageLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTvGenreGenreIdRouteHandler: RouteHandler<
+  typeof getDiscoverTvGenreGenreIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTvNetworkNetworkIdRouteHandler: RouteHandler<
+  typeof getDiscoverTvNetworkNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTvUpcomingRouteHandler: RouteHandler<
+  typeof getDiscoverTvUpcomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverTrendingRouteHandler: RouteHandler<
+  typeof getDiscoverTrendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverKeywordKeywordIdMoviesRouteHandler: RouteHandler<
+  typeof getDiscoverKeywordKeywordIdMoviesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverGenresliderMovieRouteHandler: RouteHandler<
+  typeof getDiscoverGenresliderMovieRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverGenresliderTvRouteHandler: RouteHandler<
+  typeof getDiscoverGenresliderTvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoverWatchlistRouteHandler: RouteHandler<
+  typeof getDiscoverWatchlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

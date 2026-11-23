@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceHandler =
-  app.openapi(
-    postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/digitalocean.com/2.0/openapi.yaml',
   output: './src/digitalocean/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/digitalocean/types.ts' },
   client: { output: './src/digitalocean/client.ts', baseUrl: '/' },
   rpc: { output: './src/digitalocean/rpc.ts', parseResponse: true },

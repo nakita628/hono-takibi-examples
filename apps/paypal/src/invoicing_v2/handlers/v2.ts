@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2InvoicingInvoicesInvoiceIdPaymentsTransactionIdRoute,
   deleteV2InvoicingInvoicesInvoiceIdRefundsTransactionIdRoute,
   deleteV2InvoicingInvoicesInvoiceIdRoute,
@@ -24,72 +24,134 @@ import {
   putV2InvoicingTemplatesTemplateIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2InvoicingInvoicesRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2InvoicingInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdRemindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2InvoicingInvoicesInvoiceIdPaymentsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2InvoicingInvoicesInvoiceIdRefundsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingInvoicesInvoiceIdGenerateQrCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingGenerateNextInvoiceNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2InvoicingInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2InvoicingInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingSearchInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InvoicingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2InvoicingTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2InvoicingTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingAccountingSyncMerchantConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InvoicingAccountingSyncInvoicesIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2InvoicingInvoicesRouteHandler: RouteHandler<
+  typeof getV2InvoicingInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdSendRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdRemindRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdRemindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdCancelRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdPaymentsRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InvoicingInvoicesInvoiceIdPaymentsTransactionIdRouteHandler: RouteHandler<
+  typeof deleteV2InvoicingInvoicesInvoiceIdPaymentsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdRefundsRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InvoicingInvoicesInvoiceIdRefundsTransactionIdRouteHandler: RouteHandler<
+  typeof deleteV2InvoicingInvoicesInvoiceIdRefundsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingInvoicesInvoiceIdGenerateQrCodeRouteHandler: RouteHandler<
+  typeof postV2InvoicingInvoicesInvoiceIdGenerateQrCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingGenerateNextInvoiceNumberRouteHandler: RouteHandler<
+  typeof postV2InvoicingGenerateNextInvoiceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InvoicingInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof getV2InvoicingInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2InvoicingInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof putV2InvoicingInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InvoicingInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof deleteV2InvoicingInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingSearchInvoicesRouteHandler: RouteHandler<
+  typeof postV2InvoicingSearchInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InvoicingTemplatesRouteHandler: RouteHandler<
+  typeof getV2InvoicingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InvoicingTemplatesRouteHandler: RouteHandler<
+  typeof postV2InvoicingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InvoicingTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getV2InvoicingTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2InvoicingTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof putV2InvoicingTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InvoicingTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteV2InvoicingTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InvoicingAccountingSyncMerchantConnectionsRouteHandler: RouteHandler<
+  typeof getV2InvoicingAccountingSyncMerchantConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InvoicingAccountingSyncInvoicesIdConnectionsRouteHandler: RouteHandler<
+  typeof getV2InvoicingAccountingSyncInvoicesIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

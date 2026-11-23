@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/pblabour/3.0.0/openapi.yaml',
   output: './src/pblabour/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pblabour/types.ts' },
   client: { output: './src/pblabour/client.ts', baseUrl: '/' },
   rpc: { output: './src/pblabour/rpc.ts', parseResponse: true },

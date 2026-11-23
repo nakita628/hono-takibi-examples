@@ -1,11 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { readHandler, recognizeTextHandler, textOperationsHandler } from './handlers'
+import {
+  getReadOperationsOperationIdRoute,
+  getTextOperationsOperationIdRoute,
+  postReadCoreAsyncBatchAnalyzeRoute,
+  postRecognizeTextRoute,
+} from './routes'
+import {
+  getReadOperationsOperationIdRouteHandler,
+  getTextOperationsOperationIdRouteHandler,
+  postReadCoreAsyncBatchAnalyzeRouteHandler,
+  postRecognizeTextRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', readHandler)
-  .route('/', recognizeTextHandler)
-  .route('/', textOperationsHandler)
+  .openapi(postReadCoreAsyncBatchAnalyzeRoute, postReadCoreAsyncBatchAnalyzeRouteHandler)
+  .openapi(getReadOperationsOperationIdRoute, getReadOperationsOperationIdRouteHandler)
+  .openapi(postRecognizeTextRoute, postRecognizeTextRouteHandler)
+  .openapi(getTextOperationsOperationIdRoute, getTextOperationsOperationIdRouteHandler)
 
 export default app

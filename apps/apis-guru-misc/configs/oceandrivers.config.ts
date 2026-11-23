@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/oceandrivers.com/1.0/openapi.yaml',
   output: './src/oceandrivers/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/oceandrivers/types.ts' },
   client: { output: './src/oceandrivers/client.ts', baseUrl: '/' },
   rpc: { output: './src/oceandrivers/rpc.ts', parseResponse: true },

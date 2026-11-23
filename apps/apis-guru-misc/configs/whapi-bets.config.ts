@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/whapi.com/bets/2.0.0/openapi.yaml',
   output: './src/whapi-bets/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/whapi-bets/types.ts' },
   client: { output: './src/whapi-bets/client.ts', baseUrl: '/' },
   rpc: { output: './src/whapi-bets/rpc.ts', parseResponse: true },

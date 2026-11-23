@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSystemMetadataAdminOnboardingRoute,
   getSystemMetadataReverseGeocodingStateRoute,
   getSystemMetadataVersionCheckStateRoute,
   postSystemMetadataAdminOnboardingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemMetadataAdminOnboardingRouteHandler: RouteHandler<
+  typeof getSystemMetadataAdminOnboardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemMetadataHandler = app
-  .openapi(getSystemMetadataAdminOnboardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemMetadataAdminOnboardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemMetadataReverseGeocodingStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemMetadataVersionCheckStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSystemMetadataAdminOnboardingRouteHandler: RouteHandler<
+  typeof postSystemMetadataAdminOnboardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemMetadataReverseGeocodingStateRouteHandler: RouteHandler<
+  typeof getSystemMetadataReverseGeocodingStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemMetadataVersionCheckStateRouteHandler: RouteHandler<
+  typeof getSystemMetadataVersionCheckStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

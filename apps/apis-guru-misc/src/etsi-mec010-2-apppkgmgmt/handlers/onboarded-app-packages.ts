@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOnboardedAppPackagesAppDIdAppdRoute,
   getOnboardedAppPackagesAppDIdPackageContentRoute,
   putOnboardedAppPackagesAppDIdPackageContentRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOnboardedAppPackagesAppDIdAppdRouteHandler: RouteHandler<
+  typeof getOnboardedAppPackagesAppDIdAppdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const onboardedAppPackagesHandler = app
-  .openapi(getOnboardedAppPackagesAppDIdAppdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOnboardedAppPackagesAppDIdPackageContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOnboardedAppPackagesAppDIdPackageContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOnboardedAppPackagesAppDIdPackageContentRouteHandler: RouteHandler<
+  typeof getOnboardedAppPackagesAppDIdPackageContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOnboardedAppPackagesAppDIdPackageContentRouteHandler: RouteHandler<
+  typeof putOnboardedAppPackagesAppDIdPackageContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

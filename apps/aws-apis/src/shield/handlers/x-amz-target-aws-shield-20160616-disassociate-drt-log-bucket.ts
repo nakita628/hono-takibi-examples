@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShield20160616DisassociateDrtLogBucketHandler = app.openapi(
-  postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

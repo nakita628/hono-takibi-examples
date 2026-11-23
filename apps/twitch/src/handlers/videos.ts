@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteVideosRoute, getVideosRoute, postVideosClipsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteVideosRoute, getVideosRoute, postVideosClipsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVideosClipsRouteHandler: RouteHandler<typeof postVideosClipsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const videosHandler = app
-  .openapi(postVideosClipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVideosRouteHandler: RouteHandler<typeof getVideosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVideosRouteHandler: RouteHandler<typeof deleteVideosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

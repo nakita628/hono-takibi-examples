@@ -202,7 +202,7 @@ export const getHyponymsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'response', content: {} } },
+  responses: { 200: { description: 'response' } },
 })
 
 export const getInflectionsRoute = createRoute({

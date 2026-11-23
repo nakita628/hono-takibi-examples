@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPaymentsAssetsPayButtonTokenButtonPngRoute,
   getPaymentsCouponsNameRoute,
   getPaymentsProvidersRoute,
@@ -7,21 +7,32 @@ import {
   postPaymentsBidEndStripeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentsAssetsPayButtonTokenButtonPngRouteHandler: RouteHandler<
+  typeof getPaymentsAssetsPayButtonTokenButtonPngRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentsHandler = app
-  .openapi(getPaymentsAssetsPayButtonTokenButtonPngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsCouponsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsTokensStripeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsBidEndStripeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPaymentsCouponsNameRouteHandler: RouteHandler<
+  typeof getPaymentsCouponsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsProvidersRouteHandler: RouteHandler<
+  typeof getPaymentsProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsTokensStripeRouteHandler: RouteHandler<
+  typeof getPaymentsTokensStripeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsBidEndStripeRouteHandler: RouteHandler<
+  typeof postPaymentsBidEndStripeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

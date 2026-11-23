@@ -1,23 +1,32 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  disableUserHandler,
-  enableUserHandler,
-  loginHandler,
-  registerHandler,
-  serversHandler,
-  serverSummariesHandler,
-  usernameAvailableHandler,
+  getServersRoute,
+  getServerSummariesRoute,
+  postDisableUserRoute,
+  postEnableUserRoute,
+  postLoginRoute,
+  postRegisterRoute,
+  postUsernameAvailableRoute,
+} from './routes'
+import {
+  getServersRouteHandler,
+  getServerSummariesRouteHandler,
+  postDisableUserRouteHandler,
+  postEnableUserRouteHandler,
+  postLoginRouteHandler,
+  postRegisterRouteHandler,
+  postUsernameAvailableRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', disableUserHandler)
-  .route('/', enableUserHandler)
-  .route('/', loginHandler)
-  .route('/', registerHandler)
-  .route('/', serverSummariesHandler)
-  .route('/', serversHandler)
-  .route('/', usernameAvailableHandler)
+  .openapi(postDisableUserRoute, postDisableUserRouteHandler)
+  .openapi(postEnableUserRoute, postEnableUserRouteHandler)
+  .openapi(postLoginRoute, postLoginRouteHandler)
+  .openapi(postRegisterRoute, postRegisterRouteHandler)
+  .openapi(getServerSummariesRoute, getServerSummariesRouteHandler)
+  .openapi(getServersRoute, getServersRouteHandler)
+  .openapi(postUsernameAvailableRoute, postUsernameAvailableRouteHandler)
 
 export default app

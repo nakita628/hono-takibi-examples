@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLiasettingsPosdataprovidersRoute, postLiasettingsBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLiasettingsPosdataprovidersRoute, postLiasettingsBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLiasettingsBatchRouteHandler: RouteHandler<
+  typeof postLiasettingsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const liasettingsHandler = app
-  .openapi(postLiasettingsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLiasettingsPosdataprovidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLiasettingsPosdataprovidersRouteHandler: RouteHandler<
+  typeof getLiasettingsPosdataprovidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

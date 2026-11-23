@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute,
   postDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDbaasExternalIntegrationSettingsDatadogIntegrationIdRouteHandler: RouteHandler<
+  typeof postDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasExternalIntegrationSettingsDatadogHandler = app
-  .openapi(postDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDbaasExternalIntegrationSettingsDatadogIntegrationIdRouteHandler: RouteHandler<
+  typeof getDbaasExternalIntegrationSettingsDatadogIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

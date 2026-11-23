@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1NameRoute,
   getV1ParentPolicySchemasRoute,
   postV1CustomerPoliciesFilesUploadPolicyFileRoute,
@@ -16,48 +16,84 @@ import {
   postV1CustomerPoliciesResolveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1CustomerPoliciesFilesUploadPolicyFileRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesFilesUploadPolicyFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1CustomerPoliciesFilesUploadPolicyFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesGroupsBatchDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesGroupsBatchModifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesGroupsListGroupPriorityOrderingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesGroupsUpdateGroupPriorityOrderingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesNetworksDefineCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesNetworksDefineNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesNetworksRemoveCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesNetworksRemoveNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesOrgunitsBatchInheritRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesOrgunitsBatchModifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CustomerPoliciesResolveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentPolicySchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1CustomerPoliciesGroupsBatchDeleteRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesGroupsBatchDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesGroupsBatchModifyRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesGroupsBatchModifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesGroupsListGroupPriorityOrderingRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesGroupsListGroupPriorityOrderingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesGroupsUpdateGroupPriorityOrderingRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesGroupsUpdateGroupPriorityOrderingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesNetworksDefineCertificateRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesNetworksDefineCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesNetworksDefineNetworkRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesNetworksDefineNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesNetworksRemoveCertificateRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesNetworksRemoveCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesNetworksRemoveNetworkRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesNetworksRemoveNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesOrgunitsBatchInheritRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesOrgunitsBatchInheritRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesOrgunitsBatchModifyRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesOrgunitsBatchModifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CustomerPoliciesResolveRouteHandler: RouteHandler<
+  typeof postV1CustomerPoliciesResolveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentPolicySchemasRouteHandler: RouteHandler<
+  typeof getV1ParentPolicySchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

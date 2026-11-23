@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/auditmanager/2017-07-25/openapi.yaml',
   output: './src/auditmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/auditmanager/types.ts' },
   client: { output: './src/auditmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/auditmanager/rpc.ts', parseResponse: true },

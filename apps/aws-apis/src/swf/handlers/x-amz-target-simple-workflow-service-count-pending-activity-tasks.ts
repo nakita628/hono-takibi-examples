@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSimpleWorkflowServiceCountPendingActivityTasksHandler = app.openapi(
-  postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRouteHandler: RouteHandler<
+  typeof postXAmzTargetSimpleWorkflowServiceCountPendingActivityTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute,
   deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
   getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdAssociationsToObjectTypeRoute,
@@ -19,63 +19,104 @@ import {
   putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmObjects202609FeedbackSubmissionsRouteHandler: RouteHandler<
+  typeof getCrmObjects202609FeedbackSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmObjects202609FeedbackSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsBatchUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsGdprDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609FeedbackSubmissionsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdAssociationsToObjectTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmObjects202609FeedbackSubmissionsRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsBatchArchiveRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsBatchCreateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsBatchReadRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsBatchUpdateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsBatchUpsertRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsBatchUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsGdprDeleteRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsGdprDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsMergeRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609FeedbackSubmissionsSearchRouteHandler: RouteHandler<
+  typeof postCrmObjects202609FeedbackSubmissionsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRouteHandler: RouteHandler<
+  typeof getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRouteHandler: RouteHandler<
+  typeof patchCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdAssociationsToObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmObjects202609FeedbackSubmissionsFeedbackSubmissionIdAssociationsToObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

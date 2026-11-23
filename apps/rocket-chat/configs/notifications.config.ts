@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/notifications.yaml',
   output: './src/notifications/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/notifications/types.ts' },
   client: { output: './src/notifications/client.ts', baseUrl: '/' },
   rpc: { output: './src/notifications/rpc.ts', parseResponse: true },

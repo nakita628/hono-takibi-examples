@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAbortRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAbortRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const abortHandler = app.openapi(postAbortRoute, (c) => {
+export const postAbortRouteHandler: RouteHandler<typeof postAbortRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTvTvIdRatingsRoute,
   getTvTvIdRecommendationsRoute,
   getTvTvIdRoute,
@@ -7,21 +7,30 @@ import {
   getTvTvIdSimilarRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTvTvIdRouteHandler: RouteHandler<typeof getTvTvIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tvHandler = app
-  .openapi(getTvTvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTvTvIdSeasonSeasonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTvTvIdRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTvTvIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTvTvIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTvTvIdSeasonSeasonIdRouteHandler: RouteHandler<
+  typeof getTvTvIdSeasonSeasonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTvTvIdRecommendationsRouteHandler: RouteHandler<
+  typeof getTvTvIdRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTvTvIdSimilarRouteHandler: RouteHandler<typeof getTvTvIdSimilarRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTvTvIdRatingsRouteHandler: RouteHandler<typeof getTvTvIdRatingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

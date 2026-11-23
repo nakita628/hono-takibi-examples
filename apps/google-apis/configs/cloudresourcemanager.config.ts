@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/cloudresourcemanager/v3/openapi.yaml',
   output: './src/cloudresourcemanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudresourcemanager/types.ts' },
   client: { output: './src/cloudresourcemanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudresourcemanager/rpc.ts', parseResponse: true },

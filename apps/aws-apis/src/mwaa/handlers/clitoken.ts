@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postClitokenNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postClitokenNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const clitokenHandler = app.openapi(postClitokenNameRoute, (c) => {
+export const postClitokenNameRouteHandler: RouteHandler<typeof postClitokenNameRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

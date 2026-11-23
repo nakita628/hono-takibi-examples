@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWidgetMetadataUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWidgetMetadataUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const widgetMetadataUrlPathPlaceholderHandler = app.openapi(
-  getWidgetMetadataUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getWidgetMetadataUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof getWidgetMetadataUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

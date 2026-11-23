@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWorldTimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWorldTimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const worldTimeHandler = app.openapi(postWorldTimeRoute, (c) => {
+export const postWorldTimeRouteHandler: RouteHandler<typeof postWorldTimeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

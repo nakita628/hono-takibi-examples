@@ -5456,16 +5456,16 @@ export function useFilesIdDownload<
 
 export function getFilesIdDownloadExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>
+    InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['files', '/files/:id/download:extension', keyArgs] as const
+  return ['files', '/files/:id/download{extension}', keyArgs] as const
 }
 
 export function getFilesIdDownloadExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>
+    InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -5473,7 +5473,7 @@ export function getFilesIdDownloadExtensionQueryOptions(
     queryKey: computed(() => getFilesIdDownloadExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.files[':id']['download:extension'].$get(toValue(args), {
+        client.files[':id']['download{extension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -5486,14 +5486,14 @@ export function useFilesIdDownloadExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>
+    InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -5502,7 +5502,7 @@ export function useFilesIdDownloadExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+                Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
               >
             >
           >,
@@ -5511,7 +5511,7 @@ export function useFilesIdDownloadExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+                Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
               >
             >
           >,
@@ -5530,7 +5530,7 @@ export function useFilesIdDownloadExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+          Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
         >
       >
     >,
@@ -5543,7 +5543,7 @@ export function useFilesIdDownloadExtension<
       queryKey: computed(() => getFilesIdDownloadExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.files[':id']['download:extension'].$get(toValue(args), {
+          client.files[':id']['download{extension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

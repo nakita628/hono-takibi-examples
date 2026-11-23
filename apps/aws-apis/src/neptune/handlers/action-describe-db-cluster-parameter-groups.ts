@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeDBClusterParameterGroupsRoute,
   postActionDescribeDBClusterParameterGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeDBClusterParameterGroupsRouteHandler: RouteHandler<
+  typeof getActionDescribeDBClusterParameterGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeDbClusterParameterGroupsHandler = app
-  .openapi(getActionDescribeDBClusterParameterGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeDBClusterParameterGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeDBClusterParameterGroupsRouteHandler: RouteHandler<
+  typeof postActionDescribeDBClusterParameterGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/rekognition/2016-06-27/openapi.yaml',
   output: './src/rekognition/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rekognition/types.ts' },
   client: { output: './src/rekognition/client.ts', baseUrl: '/' },
   rpc: { output: './src/rekognition/rpc.ts', parseResponse: true },

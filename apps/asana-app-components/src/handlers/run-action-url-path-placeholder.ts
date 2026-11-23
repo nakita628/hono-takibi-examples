@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRunActionUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRunActionUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const runActionUrlPathPlaceholderHandler = app.openapi(
-  postRunActionUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRunActionUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof postRunActionUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

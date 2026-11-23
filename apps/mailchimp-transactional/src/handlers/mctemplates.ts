@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMctemplatesInfoRoute,
   postMctemplatesListRoute,
   postMctemplatesRenderRoute,
   postMctemplatesTimeSeriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMctemplatesInfoRouteHandler: RouteHandler<
+  typeof postMctemplatesInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mctemplatesHandler = app
-  .openapi(postMctemplatesInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMctemplatesListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMctemplatesRenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMctemplatesTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMctemplatesListRouteHandler: RouteHandler<
+  typeof postMctemplatesListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMctemplatesRenderRouteHandler: RouteHandler<
+  typeof postMctemplatesRenderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMctemplatesTimeSeriesRouteHandler: RouteHandler<
+  typeof postMctemplatesTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

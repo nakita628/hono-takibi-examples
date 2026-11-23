@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFontFontstackStartEndRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFontFontstackStartEndRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const fontHandler = app.openapi(getFontFontstackStartEndRoute, (c) => {
+export const getFontFontstackStartEndRouteHandler: RouteHandler<
+  typeof getFontFontstackStartEndRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

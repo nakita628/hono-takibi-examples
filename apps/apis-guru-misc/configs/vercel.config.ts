@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vercel.com/0.0.1/openapi.yaml',
   output: './src/vercel/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vercel/types.ts' },
   client: { output: './src/vercel/client.ts', baseUrl: '/' },
   rpc: { output: './src/vercel/rpc.ts', parseResponse: true },

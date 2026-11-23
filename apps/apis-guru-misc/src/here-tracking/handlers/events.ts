@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEventsV3HealthRoute,
   getEventsV3Route,
   getEventsV3StatusesDeviceCountsRoute,
@@ -8,24 +8,36 @@ import {
   getEventsV3VersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEventsV3RouteHandler: RouteHandler<typeof getEventsV3Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsHandler = app
-  .openapi(getEventsV3Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsV3HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsV3StatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsV3StatusesDeviceCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsV3VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsV3TrackingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEventsV3HealthRouteHandler: RouteHandler<typeof getEventsV3HealthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsV3StatusesRouteHandler: RouteHandler<
+  typeof getEventsV3StatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsV3StatusesDeviceCountsRouteHandler: RouteHandler<
+  typeof getEventsV3StatusesDeviceCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsV3VersionRouteHandler: RouteHandler<typeof getEventsV3VersionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsV3TrackingIdRouteHandler: RouteHandler<
+  typeof getEventsV3TrackingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

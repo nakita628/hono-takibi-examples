@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAwsProton20200720GetAccountSettingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAwsProton20200720GetAccountSettingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsProton20200720GetAccountSettingsHandler = app.openapi(
-  postXAmzTargetAwsProton20200720GetAccountSettingsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAwsProton20200720GetAccountSettingsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAwsProton20200720GetAccountSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

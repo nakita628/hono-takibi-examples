@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Search-API/1.0/openapi.yaml',
   output: './src/search-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/search-api/types.ts' },
   client: { output: './src/search-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/search-api/rpc.ts', parseResponse: true },

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSwissIdTrfRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSwissIdTrfRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const swissHandler = app.openapi(getSwissIdTrfRoute, (c) => {
+export const getSwissIdTrfRouteHandler: RouteHandler<typeof getSwissIdTrfRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

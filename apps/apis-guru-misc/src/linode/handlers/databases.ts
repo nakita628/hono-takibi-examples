@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute,
   deleteDatabasesMongodbInstancesInstanceIdRoute,
   deleteDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute,
@@ -48,144 +48,278 @@ import {
   putDatabasesPostgresqlInstancesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDatabasesEnginesRouteHandler: RouteHandler<
+  typeof getDatabasesEnginesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const databasesHandler = app
-  .openapi(getDatabasesEnginesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesEnginesEngineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesMongodbInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatabasesMongodbInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMongodbInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMongodbInstancesInstanceIdBackupsBackupIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesInstanceIdCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMongodbInstancesInstanceIdCredentialsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMongodbInstancesInstanceIdPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMongodbInstancesInstanceIdSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMysqlInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesMysqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatabasesMysqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMysqlInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMysqlInstancesInstanceIdBackupsBackupIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesInstanceIdCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMysqlInstancesInstanceIdCredentialsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesMysqlInstancesInstanceIdPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesMysqlInstancesInstanceIdSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesPostgresqlInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesPostgresqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatabasesPostgresqlInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesPostgresqlInstancesInstanceIdBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesInstanceIdCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesPostgresqlInstancesInstanceIdCredentialsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatabasesPostgresqlInstancesInstanceIdPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesPostgresqlInstancesInstanceIdSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatabasesTypesTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDatabasesEnginesEngineIdRouteHandler: RouteHandler<
+  typeof getDatabasesEnginesEngineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesInstancesRouteHandler: RouteHandler<
+  typeof getDatabasesInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesMongodbInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesMongodbInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatabasesMongodbInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof putDatabasesMongodbInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMongodbInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof postDatabasesMongodbInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesMongodbInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMongodbInstancesInstanceIdBackupsBackupIdRestoreRouteHandler: RouteHandler<
+  typeof postDatabasesMongodbInstancesInstanceIdBackupsBackupIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesInstanceIdCredentialsRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesInstanceIdCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMongodbInstancesInstanceIdCredentialsResetRouteHandler: RouteHandler<
+  typeof postDatabasesMongodbInstancesInstanceIdCredentialsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMongodbInstancesInstanceIdPatchRouteHandler: RouteHandler<
+  typeof postDatabasesMongodbInstancesInstanceIdPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMongodbInstancesInstanceIdSslRouteHandler: RouteHandler<
+  typeof getDatabasesMongodbInstancesInstanceIdSslRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMysqlInstancesRouteHandler: RouteHandler<
+  typeof postDatabasesMysqlInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesMysqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesMysqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatabasesMysqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof putDatabasesMysqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMysqlInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof postDatabasesMysqlInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesMysqlInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMysqlInstancesInstanceIdBackupsBackupIdRestoreRouteHandler: RouteHandler<
+  typeof postDatabasesMysqlInstancesInstanceIdBackupsBackupIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesInstanceIdCredentialsRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesInstanceIdCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMysqlInstancesInstanceIdCredentialsResetRouteHandler: RouteHandler<
+  typeof postDatabasesMysqlInstancesInstanceIdCredentialsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesMysqlInstancesInstanceIdPatchRouteHandler: RouteHandler<
+  typeof postDatabasesMysqlInstancesInstanceIdPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesMysqlInstancesInstanceIdSslRouteHandler: RouteHandler<
+  typeof getDatabasesMysqlInstancesInstanceIdSslRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesPostgresqlInstancesRouteHandler: RouteHandler<
+  typeof postDatabasesPostgresqlInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesPostgresqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesPostgresqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatabasesPostgresqlInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof putDatabasesPostgresqlInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesPostgresqlInstancesInstanceIdBackupsRouteHandler: RouteHandler<
+  typeof postDatabasesPostgresqlInstancesInstanceIdBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof deleteDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRestoreRouteHandler: RouteHandler<
+  typeof postDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesInstanceIdCredentialsRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesInstanceIdCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesPostgresqlInstancesInstanceIdCredentialsResetRouteHandler: RouteHandler<
+  typeof postDatabasesPostgresqlInstancesInstanceIdCredentialsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatabasesPostgresqlInstancesInstanceIdPatchRouteHandler: RouteHandler<
+  typeof postDatabasesPostgresqlInstancesInstanceIdPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesPostgresqlInstancesInstanceIdSslRouteHandler: RouteHandler<
+  typeof getDatabasesPostgresqlInstancesInstanceIdSslRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesTypesRouteHandler: RouteHandler<typeof getDatabasesTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatabasesTypesTypeIdRouteHandler: RouteHandler<
+  typeof getDatabasesTypesTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

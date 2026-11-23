@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPaymentReceiptsLagoIdRoute, getPaymentReceiptsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPaymentReceiptsLagoIdRoute, getPaymentReceiptsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentReceiptsRouteHandler: RouteHandler<typeof getPaymentReceiptsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentReceiptsHandler = app
-  .openapi(getPaymentReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentReceiptsLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPaymentReceiptsLagoIdRouteHandler: RouteHandler<
+  typeof getPaymentReceiptsLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

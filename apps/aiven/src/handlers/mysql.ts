@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMysqlDatabaseMetadataQueryRoute,
   postMysqlQueryMetadataValidateRoute,
   postMysqlQueryValidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMysqlDatabaseMetadataQueryRouteHandler: RouteHandler<
+  typeof getMysqlDatabaseMetadataQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mysqlHandler = app
-  .openapi(getMysqlDatabaseMetadataQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMysqlQueryMetadataValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMysqlQueryValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMysqlQueryMetadataValidateRouteHandler: RouteHandler<
+  typeof postMysqlQueryMetadataValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMysqlQueryValidateRouteHandler: RouteHandler<
+  typeof postMysqlQueryValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

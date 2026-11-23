@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pay1.de/link/v1/openapi.yaml',
   output: './src/pay1-de-link/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pay1-de-link/types.ts' },
   client: { output: './src/pay1-de-link/client.ts', baseUrl: '/' },
   rpc: { output: './src/pay1-de-link/rpc.ts', parseResponse: true },

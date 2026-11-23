@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUserCipherUsesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUserCipherUsesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userCipherUsesHandler = app.openapi(getUserCipherUsesRoute, (c) => {
+export const getUserCipherUsesRouteHandler: RouteHandler<typeof getUserCipherUsesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postExportsActivityRoute,
   postExportsAllowlistRoute,
   postExportsInfoRoute,
@@ -8,24 +8,34 @@ import {
   postExportsWhitelistRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postExportsInfoRouteHandler: RouteHandler<typeof postExportsInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const exportsHandler = app
-  .openapi(postExportsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsRejectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsWhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsAllowlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postExportsListRouteHandler: RouteHandler<typeof postExportsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsRejectsRouteHandler: RouteHandler<typeof postExportsRejectsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsWhitelistRouteHandler: RouteHandler<
+  typeof postExportsWhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsAllowlistRouteHandler: RouteHandler<
+  typeof postExportsAllowlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsActivityRouteHandler: RouteHandler<
+  typeof postExportsActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

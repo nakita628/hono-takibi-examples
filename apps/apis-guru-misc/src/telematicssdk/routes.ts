@@ -2720,7 +2720,6 @@ export const getStatisticsV1ScoringsConsolidatedRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: {},
       headers: z.object({
         'Content-Length': z
           .string()
@@ -3398,7 +3397,6 @@ export const getStatisticsV1StatisticsConsolidatedRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: {},
       headers: z.object({
         'Content-Length': z
           .string()
@@ -3530,7 +3528,6 @@ export const getStatisticsV1StatisticsConsolidatedDailyRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: {},
       headers: z.object({
         'Content-Length': z
           .string()

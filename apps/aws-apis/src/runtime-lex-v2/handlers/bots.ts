@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute,
   getBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute,
   postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute,
@@ -7,24 +7,32 @@ import {
   postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdUtteranceContentTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof deleteBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const botsHandler = app
-  .openapi(deleteBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdUtteranceContentTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof getBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdTextRouteHandler: RouteHandler<
+  typeof postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdUtteranceContentTypeRouteHandler: RouteHandler<
+  typeof postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionIdUtteranceContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

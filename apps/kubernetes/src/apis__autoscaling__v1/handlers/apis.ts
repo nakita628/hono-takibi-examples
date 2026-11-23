@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute,
   deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute,
   getApisAutoscalingV1HorizontalpodautoscalersRoute,
@@ -17,54 +17,92 @@ import {
   putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisAutoscalingV1IndexRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisAutoscalingV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1HorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1WatchHorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApisAutoscalingV1HorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1HorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof postApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler: RouteHandler<
+  typeof deleteApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler: RouteHandler<
+  typeof patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRouteHandler: RouteHandler<
+  typeof putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler: RouteHandler<
+  typeof patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRouteHandler: RouteHandler<
+  typeof putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1WatchHorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1WatchHorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRouteHandler: RouteHandler<
+  typeof getApisAutoscalingV1WatchNamespacesNamespaceHorizontalpodautoscalersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

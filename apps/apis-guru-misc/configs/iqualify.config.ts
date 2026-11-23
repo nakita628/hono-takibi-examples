@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/iqualify.com/v1/openapi.yaml',
   output: './src/iqualify/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iqualify/types.ts' },
   client: { output: './src/iqualify/client.ts', baseUrl: '/' },
   rpc: { output: './src/iqualify/rpc.ts', parseResponse: true },

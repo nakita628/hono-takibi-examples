@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIntegrationsGrafanaDashboardsUidRoute,
   getIntegrationsGrafanaFoldersRoute,
   getIntegrationsGrafanaStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsGrafanaStatusRouteHandler: RouteHandler<
+  typeof getIntegrationsGrafanaStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsGrafanaStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsGrafanaFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsGrafanaDashboardsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIntegrationsGrafanaFoldersRouteHandler: RouteHandler<
+  typeof getIntegrationsGrafanaFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsGrafanaDashboardsUidRouteHandler: RouteHandler<
+  typeof getIntegrationsGrafanaDashboardsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

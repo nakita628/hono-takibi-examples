@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rev.ai/v1/openapi.yaml',
   output: './src/rev-ai/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rev-ai/types.ts' },
   client: { output: './src/rev-ai/client.ts', baseUrl: '/' },
   rpc: { output: './src/rev-ai/rpc.ts', parseResponse: true },

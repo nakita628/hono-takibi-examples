@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRiftboundContentV1ContentsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRiftboundContentV1ContentsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const riftboundHandler = app.openapi(getRiftboundContentV1ContentsRoute, (c) => {
+export const getRiftboundContentV1ContentsRouteHandler: RouteHandler<
+  typeof getRiftboundContentV1ContentsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

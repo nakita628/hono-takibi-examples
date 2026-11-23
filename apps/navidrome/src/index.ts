@@ -1,11 +1,16 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { openapiJsonHandler, openapiYamlHandler, serverHandler } from './handlers'
+import { getOpenapiJsonRoute, getOpenapiYamlRoute, getServerRoute } from './routes'
+import {
+  getOpenapiJsonRouteHandler,
+  getOpenapiYamlRouteHandler,
+  getServerRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', serverHandler)
-  .route('/', openapiJsonHandler)
-  .route('/', openapiYamlHandler)
+  .openapi(getServerRoute, getServerRouteHandler)
+  .openapi(getOpenapiJsonRoute, getOpenapiJsonRouteHandler)
+  .openapi(getOpenapiYamlRoute, getOpenapiYamlRouteHandler)
 
 export default app

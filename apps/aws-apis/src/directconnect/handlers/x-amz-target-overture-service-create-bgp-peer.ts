@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceCreateBGPPeerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceCreateBGPPeerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceCreateBgpPeerHandler = app.openapi(
-  postXAmzTargetOvertureServiceCreateBGPPeerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceCreateBGPPeerRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceCreateBGPPeerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

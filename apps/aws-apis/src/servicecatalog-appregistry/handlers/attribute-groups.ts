@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAttributeGroupsAttributeGroupRoute,
   getAttributeGroupsAttributeGroupRoute,
   getAttributeGroupsRoute,
@@ -7,21 +7,32 @@ import {
   postAttributeGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAttributeGroupsRouteHandler: RouteHandler<
+  typeof postAttributeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const attributeGroupsHandler = app
-  .openapi(postAttributeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributeGroupsAttributeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributeGroupsAttributeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAttributeGroupsAttributeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAttributeGroupsRouteHandler: RouteHandler<typeof getAttributeGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAttributeGroupsAttributeGroupRouteHandler: RouteHandler<
+  typeof deleteAttributeGroupsAttributeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributeGroupsAttributeGroupRouteHandler: RouteHandler<
+  typeof getAttributeGroupsAttributeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAttributeGroupsAttributeGroupRouteHandler: RouteHandler<
+  typeof patchAttributeGroupsAttributeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

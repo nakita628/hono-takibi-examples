@@ -18,7 +18,6 @@ type AccountUnauthorized = {
 type NumberDetails = { country: Country; msisdn: string; target_api_key?: string | undefined }
 type Response = { 'error-code'?: string | undefined; 'error-code-label'?: string | undefined }
 type Unauthorized = { 'error-code'?: string | undefined; 'error-code-label'?: string | undefined }
-type Response420 = { 'error-code'?: string | undefined; 'error-code-label'?: string | undefined }
 type Availablenumber = {
   cost?: string | undefined
   country?: Country | undefined
@@ -135,18 +134,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: Unauthorized
             outputFormat: 'text'
             status: 401
-          }
-        | {
-            input: { json: NumberDetails } & { form: NumberDetails }
-            output: Response420
-            outputFormat: 'json'
-            status: 420
-          }
-        | {
-            input: { json: NumberDetails } & { form: NumberDetails }
-            output: Response420
-            outputFormat: 'text'
-            status: 420
           }
     }
   } & {

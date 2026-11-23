@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScrapeJobIdInteractRoute,
   getScrapeJobIdRoute,
   postScrapeJobIdInteractRoute,
   postScrapeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postScrapeRouteHandler: RouteHandler<typeof postScrapeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scrapeHandler = app
-  .openapi(postScrapeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrapeJobIdInteractRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScrapeJobIdInteractRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapeJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postScrapeJobIdInteractRouteHandler: RouteHandler<
+  typeof postScrapeJobIdInteractRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScrapeJobIdInteractRouteHandler: RouteHandler<
+  typeof deleteScrapeJobIdInteractRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScrapeJobIdRouteHandler: RouteHandler<typeof getScrapeJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

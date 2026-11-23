@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConsulMountPathRolesNameRoute,
   getConsulMountPathConfigAccessRoute,
   getConsulMountPathCredsRoleRoute,
@@ -9,27 +9,44 @@ import {
   postConsulMountPathRolesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConsulMountPathConfigAccessRouteHandler: RouteHandler<
+  typeof getConsulMountPathConfigAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const consulMountPathHandler = app
-  .openapi(getConsulMountPathConfigAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsulMountPathConfigAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsulMountPathCredsRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsulMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsulMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsulMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConsulMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConsulMountPathConfigAccessRouteHandler: RouteHandler<
+  typeof postConsulMountPathConfigAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsulMountPathCredsRoleRouteHandler: RouteHandler<
+  typeof getConsulMountPathCredsRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsulMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getConsulMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsulMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getConsulMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConsulMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postConsulMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConsulMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deleteConsulMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

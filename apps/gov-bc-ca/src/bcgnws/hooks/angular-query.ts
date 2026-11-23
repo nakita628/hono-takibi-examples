@@ -828,29 +828,29 @@ export function injectNamesSearch<
 }
 
 export function getNamesNameIdOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
 ) {
-  return ['names', '/names/:nameId.:outputFormat', args] as const
+  return ['names', '/names/:nameId.{outputFormat}', args] as const
 }
 
 export function getNamesNameIdOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -861,7 +861,7 @@ export function getNamesNameIdOutputFormatQueryOptions<
     queryKey: getNamesNameIdOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.names[':nameId.:outputFormat'].$get(args, {
+        client.names[':nameId.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -874,20 +874,20 @@ export function injectNamesNameIdOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+              Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
             >
           >
         >,

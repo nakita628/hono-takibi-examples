@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDAXV3RebootNodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDAXV3RebootNodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDaxv3RebootNodeHandler = app.openapi(
-  postXAmzTargetAmazonDAXV3RebootNodeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDAXV3RebootNodeRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDAXV3RebootNodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

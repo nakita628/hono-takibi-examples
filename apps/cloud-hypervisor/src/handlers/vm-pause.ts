@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmPauseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmPauseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmPauseHandler = app.openapi(putVmPauseRoute, (c) => {
+export const putVmPauseRouteHandler: RouteHandler<typeof putVmPauseRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

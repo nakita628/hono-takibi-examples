@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/worldtimeapi.org/20210108/openapi.yaml',
   output: './src/worldtimeapi-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/worldtimeapi-org/types.ts' },
   client: { output: './src/worldtimeapi-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/worldtimeapi-org/rpc.ts', parseResponse: true },

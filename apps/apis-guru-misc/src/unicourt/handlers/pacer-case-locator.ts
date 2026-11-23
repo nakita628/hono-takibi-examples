@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPacerCaseLocatorCaseSearchAllCourtsRoute,
   getPacerCaseLocatorCaseSearchAppealCourtsRoute,
   getPacerCaseLocatorCaseSearchBankruptcyCourtsRoute,
@@ -14,42 +14,74 @@ import {
   getPacerCaseLocatorPartySearchMultiDistrictCourtsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPacerCaseLocatorCaseSearchAllCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchAllCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pacerCaseLocatorHandler = app
-  .openapi(getPacerCaseLocatorCaseSearchAllCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorCaseSearchAppealCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorCaseSearchBankruptcyCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorCaseSearchCivilCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorCaseSearchCriminalCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorCaseSearchMultiDistrictCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchAllCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchAppealCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchBankruptcyCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchCivilCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchCriminalCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPacerCaseLocatorPartySearchMultiDistrictCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPacerCaseLocatorCaseSearchAppealCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchAppealCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorCaseSearchBankruptcyCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchBankruptcyCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorCaseSearchCivilCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchCivilCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorCaseSearchCriminalCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchCriminalCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorCaseSearchMultiDistrictCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorCaseSearchMultiDistrictCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchAllCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchAllCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchAppealCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchAppealCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchBankruptcyCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchBankruptcyCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchCivilCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchCivilCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchCriminalCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchCriminalCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPacerCaseLocatorPartySearchMultiDistrictCourtsRouteHandler: RouteHandler<
+  typeof getPacerCaseLocatorPartySearchMultiDistrictCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

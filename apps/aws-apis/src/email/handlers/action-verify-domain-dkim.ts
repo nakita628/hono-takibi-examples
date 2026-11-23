@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionVerifyDomainDkimRoute, postActionVerifyDomainDkimRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionVerifyDomainDkimRoute, postActionVerifyDomainDkimRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionVerifyDomainDkimRouteHandler: RouteHandler<
+  typeof getActionVerifyDomainDkimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionVerifyDomainDkimHandler = app
-  .openapi(getActionVerifyDomainDkimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionVerifyDomainDkimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionVerifyDomainDkimRouteHandler: RouteHandler<
+  typeof postActionVerifyDomainDkimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

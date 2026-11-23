@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/voice/1.3.10/openapi.yaml',
   output: './src/voice/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/voice/types.ts' },
   client: { output: './src/voice/client.ts', baseUrl: '/' },
   rpc: { output: './src/voice/rpc.ts', parseResponse: true },

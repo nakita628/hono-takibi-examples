@@ -1,15 +1,18 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUserCredentialsRoute, getUserRoute, postUserCredentialsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUserCredentialsRoute, getUserRoute, postUserCredentialsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserRouteHandler: RouteHandler<typeof getUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHandler = app
-  .openapi(getUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserCredentialsRouteHandler: RouteHandler<typeof getUserCredentialsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserCredentialsRouteHandler: RouteHandler<
+  typeof postUserCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

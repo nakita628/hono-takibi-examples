@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCompareStringsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCompareStringsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const compareStringsHandler = app.openapi(postCompareStringsRoute, (c) => {
+export const postCompareStringsRouteHandler: RouteHandler<typeof postCompareStringsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

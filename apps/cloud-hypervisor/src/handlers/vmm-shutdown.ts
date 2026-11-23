@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmmShutdownRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmmShutdownRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmmShutdownHandler = app.openapi(putVmmShutdownRoute, (c) => {
+export const putVmmShutdownRouteHandler: RouteHandler<typeof putVmmShutdownRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

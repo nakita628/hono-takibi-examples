@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getServiceRadarrRadarrIdRoute,
   getServiceRadarrRoute,
   getServiceSonarrLookupTmdbIdRoute,
@@ -7,21 +7,32 @@ import {
   getServiceSonarrSonarrIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServiceRadarrRouteHandler: RouteHandler<typeof getServiceRadarrRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const serviceHandler = app
-  .openapi(getServiceRadarrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceRadarrRadarrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceSonarrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceSonarrSonarrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceSonarrLookupTmdbIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getServiceRadarrRadarrIdRouteHandler: RouteHandler<
+  typeof getServiceRadarrRadarrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceSonarrRouteHandler: RouteHandler<typeof getServiceSonarrRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceSonarrSonarrIdRouteHandler: RouteHandler<
+  typeof getServiceSonarrSonarrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceSonarrLookupTmdbIdRouteHandler: RouteHandler<
+  typeof getServiceSonarrLookupTmdbIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

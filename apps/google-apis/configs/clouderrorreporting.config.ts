@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/clouderrorreporting/v1beta1/openapi.yaml',
   output: './src/clouderrorreporting/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/clouderrorreporting/types.ts' },
   client: { output: './src/clouderrorreporting/client.ts', baseUrl: '/' },
   rpc: { output: './src/clouderrorreporting/rpc.ts', parseResponse: true },

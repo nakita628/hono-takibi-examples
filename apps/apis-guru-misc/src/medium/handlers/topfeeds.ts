@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTopfeedsTagModeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTopfeedsTagModeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const topfeedsHandler = app.openapi(getTopfeedsTagModeRoute, (c) => {
+export const getTopfeedsTagModeRouteHandler: RouteHandler<typeof getTopfeedsTagModeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

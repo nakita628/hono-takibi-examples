@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSaveRevisionRoute, postSaveRevisionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSaveRevisionRoute, postSaveRevisionRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSaveRevisionRouteHandler: RouteHandler<typeof getSaveRevisionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const saveRevisionHandler = app
-  .openapi(getSaveRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSaveRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSaveRevisionRouteHandler: RouteHandler<typeof postSaveRevisionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

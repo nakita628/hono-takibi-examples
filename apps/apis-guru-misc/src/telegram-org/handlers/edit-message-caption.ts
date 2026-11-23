@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEditMessageCaptionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEditMessageCaptionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const editMessageCaptionHandler = app.openapi(postEditMessageCaptionRoute, (c) => {
+export const postEditMessageCaptionRouteHandler: RouteHandler<
+  typeof postEditMessageCaptionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

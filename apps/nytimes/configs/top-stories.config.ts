@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/top_stories/2.0.0/openapi.yaml',
   output: './src/top-stories/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/top-stories/types.ts' },
   client: { output: './src/top-stories/client.ts', baseUrl: '/' },
   rpc: { output: './src/top-stories/rpc.ts', parseResponse: true },

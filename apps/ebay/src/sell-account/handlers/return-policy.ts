@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReturnPolicyReturnPolicyIdRoute,
   getReturnPolicyGetByPolicyNameRoute,
   getReturnPolicyReturnPolicyIdRoute,
@@ -8,24 +8,36 @@ import {
   putReturnPolicyReturnPolicyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReturnPolicyRouteHandler: RouteHandler<typeof getReturnPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const returnPolicyHandler = app
-  .openapi(getReturnPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReturnPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReturnPolicyGetByPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReturnPolicyReturnPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReturnPolicyReturnPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReturnPolicyReturnPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postReturnPolicyRouteHandler: RouteHandler<typeof postReturnPolicyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReturnPolicyGetByPolicyNameRouteHandler: RouteHandler<
+  typeof getReturnPolicyGetByPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReturnPolicyReturnPolicyIdRouteHandler: RouteHandler<
+  typeof deleteReturnPolicyReturnPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReturnPolicyReturnPolicyIdRouteHandler: RouteHandler<
+  typeof getReturnPolicyReturnPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putReturnPolicyReturnPolicyIdRouteHandler: RouteHandler<
+  typeof putReturnPolicyReturnPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

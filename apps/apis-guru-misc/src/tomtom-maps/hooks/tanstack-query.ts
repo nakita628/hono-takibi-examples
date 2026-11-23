@@ -14,29 +14,29 @@ export function getMapKey() {
 }
 
 export function getMapVersionNumberCopyrightsFormatQueryKey(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
 ) {
-  return ['map', '/map/:versionNumber/copyrights.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights.{format}', args] as const
 }
 
 export function getMapVersionNumberCopyrightsFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>>
         >
       >
     >,
@@ -47,7 +47,7 @@ export function getMapVersionNumberCopyrightsFormatQueryOptions<
     queryKey: getMapVersionNumberCopyrightsFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.map[':versionNumber']['copyrights.:format'].$get(args, {
+        client.map[':versionNumber']['copyrights.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -60,13 +60,13 @@ export function useMapVersionNumberCopyrightsFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
@@ -74,7 +74,7 @@ export function useMapVersionNumberCopyrightsFormat<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>
+                ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
               >
             >
           >
@@ -103,13 +103,13 @@ export function useSuspenseMapVersionNumberCopyrightsFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
@@ -117,7 +117,7 @@ export function useSuspenseMapVersionNumberCopyrightsFormat<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>
+                ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
               >
             >
           >
@@ -144,10 +144,10 @@ export function useSuspenseMapVersionNumberCopyrightsFormat<
 
 export function getMapVersionNumberCopyrightsCaptionFormatQueryKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/copyrights/caption.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights/caption.{format}', args] as const
 }
 
 export function getMapVersionNumberCopyrightsCaptionFormatQueryOptions<
@@ -155,7 +155,9 @@ export function getMapVersionNumberCopyrightsCaptionFormatQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']>
+          ReturnType<
+            (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
+          >
         >
       >
     >
@@ -163,7 +165,7 @@ export function getMapVersionNumberCopyrightsCaptionFormatQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -173,7 +175,7 @@ export function getMapVersionNumberCopyrightsCaptionFormatQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+              (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
             >
           >
         >
@@ -186,7 +188,7 @@ export function getMapVersionNumberCopyrightsCaptionFormatQueryOptions<
     queryKey: getMapVersionNumberCopyrightsCaptionFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.map[':versionNumber'].copyrights['caption.:format'].$get(args, {
+        client.map[':versionNumber'].copyrights['caption.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -200,7 +202,9 @@ export function useMapVersionNumberCopyrightsCaptionFormat<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']>
+          ReturnType<
+            (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
+          >
         >
       >
     >
@@ -208,7 +212,7 @@ export function useMapVersionNumberCopyrightsCaptionFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -218,7 +222,7 @@ export function useMapVersionNumberCopyrightsCaptionFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
                 >
               >
             >
@@ -249,7 +253,9 @@ export function useSuspenseMapVersionNumberCopyrightsCaptionFormat<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']>
+          ReturnType<
+            (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
+          >
         >
       >
     >
@@ -257,7 +263,7 @@ export function useSuspenseMapVersionNumberCopyrightsCaptionFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -267,7 +273,7 @@ export function useSuspenseMapVersionNumberCopyrightsCaptionFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
                 >
               >
             >
@@ -295,12 +301,12 @@ export function useSuspenseMapVersionNumberCopyrightsCaptionFormat<
 
 export function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatQueryKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
 ) {
   return [
     'map',
-    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.:format',
+    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.{format}',
     args,
   ] as const
 }
@@ -311,7 +317,7 @@ export function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatQuery
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
           >
         >
       >
@@ -320,7 +326,7 @@ export function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatQuery
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -330,7 +336,7 @@ export function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatQuery
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+              (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
             >
           >
         >
@@ -344,7 +350,7 @@ export function getMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatQuery
     queryFn({ signal }) {
       return parseResponse(
         client.map[':versionNumber'].copyrights[':minLon'][':minLat'][':maxLon'][
-          ':maxLat.:format'
+          ':maxLat.{format}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -357,7 +363,7 @@ export function useMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
           >
         >
       >
@@ -366,7 +372,7 @@ export function useMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -376,7 +382,7 @@ export function useMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
                 >
               >
             >
@@ -411,7 +417,7 @@ export function useSuspenseMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFor
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
           >
         >
       >
@@ -420,7 +426,7 @@ export function useSuspenseMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFor
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -430,7 +436,7 @@ export function useSuspenseMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFor
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
                 >
               >
             >
@@ -461,10 +467,10 @@ export function useSuspenseMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFor
 
 export function getMapVersionNumberCopyrightsZoomXYFormatQueryKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/copyrights/:zoom/:X/:Y.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights/:zoom/:X/:Y.{format}', args] as const
 }
 
 export function getMapVersionNumberCopyrightsZoomXYFormatQueryOptions<
@@ -473,7 +479,7 @@ export function getMapVersionNumberCopyrightsZoomXYFormatQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -482,7 +488,7 @@ export function getMapVersionNumberCopyrightsZoomXYFormatQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -492,7 +498,7 @@ export function getMapVersionNumberCopyrightsZoomXYFormatQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+              (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
             >
           >
         >
@@ -505,7 +511,7 @@ export function getMapVersionNumberCopyrightsZoomXYFormatQueryOptions<
     queryKey: getMapVersionNumberCopyrightsZoomXYFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.:format'].$get(args, {
+        client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -520,7 +526,7 @@ export function useMapVersionNumberCopyrightsZoomXYFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -529,7 +535,7 @@ export function useMapVersionNumberCopyrightsZoomXYFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -539,7 +545,7 @@ export function useMapVersionNumberCopyrightsZoomXYFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
                 >
               >
             >
@@ -571,7 +577,7 @@ export function useSuspenseMapVersionNumberCopyrightsZoomXYFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -580,7 +586,7 @@ export function useSuspenseMapVersionNumberCopyrightsZoomXYFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -590,7 +596,7 @@ export function useSuspenseMapVersionNumberCopyrightsZoomXYFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                  (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
                 >
               >
             >
@@ -900,10 +906,10 @@ export function useSuspenseMapVersionNumberTileLayerStyleZoomXYPbf<
 
 export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.:format', args] as const
+  return ['map', '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.{format}', args] as const
 }
 
 export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryOptions<
@@ -912,7 +918,7 @@ export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -921,7 +927,7 @@ export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -931,7 +937,7 @@ export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+              (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
             >
           >
         >
@@ -944,7 +950,7 @@ export function getMapVersionNumberTileLayerStyleZoomXYFormatQueryOptions<
     queryKey: getMapVersionNumberTileLayerStyleZoomXYFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.:format'].$get(
+        client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.{format}'].$get(
           args,
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -959,7 +965,7 @@ export function useMapVersionNumberTileLayerStyleZoomXYFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -968,7 +974,7 @@ export function useMapVersionNumberTileLayerStyleZoomXYFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -978,7 +984,7 @@ export function useMapVersionNumberTileLayerStyleZoomXYFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                  (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
                 >
               >
             >
@@ -1013,7 +1019,7 @@ export function useSuspenseMapVersionNumberTileLayerStyleZoomXYFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+            (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
           >
         >
       >
@@ -1022,7 +1028,7 @@ export function useSuspenseMapVersionNumberTileLayerStyleZoomXYFormat<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -1032,7 +1038,7 @@ export function useSuspenseMapVersionNumberTileLayerStyleZoomXYFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                  (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
                 >
               >
             >

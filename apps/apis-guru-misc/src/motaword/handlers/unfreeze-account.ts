@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUnfreezeAccountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUnfreezeAccountRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const unfreezeAccountHandler = app.openapi(postUnfreezeAccountRoute, (c) => {
+export const postUnfreezeAccountRouteHandler: RouteHandler<
+  typeof postUnfreezeAccountRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

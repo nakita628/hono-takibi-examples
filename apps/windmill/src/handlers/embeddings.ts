@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEmbeddingsQueryHubScriptsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEmbeddingsQueryHubScriptsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const embeddingsHandler = app.openapi(getEmbeddingsQueryHubScriptsRoute, (c) => {
+export const getEmbeddingsQueryHubScriptsRouteHandler: RouteHandler<
+  typeof getEmbeddingsQueryHubScriptsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

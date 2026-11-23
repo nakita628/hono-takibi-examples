@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteWorkspacesWorkspaceIdRoute, getWorkspacesWorkspaceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteWorkspacesWorkspaceIdRoute, getWorkspacesWorkspaceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteWorkspacesWorkspaceIdRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workspacesHandler = app
-  .openapi(deleteWorkspacesWorkspaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkspacesWorkspaceIdRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

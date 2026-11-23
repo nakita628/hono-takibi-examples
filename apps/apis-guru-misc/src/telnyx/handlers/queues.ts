@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQueuesQueueNameCallsCallControlIdRoute,
   getQueuesQueueNameCallsRoute,
   getQueuesQueueNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueuesQueueNameRouteHandler: RouteHandler<typeof getQueuesQueueNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const queuesHandler = app
-  .openapi(getQueuesQueueNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesQueueNameCallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesQueueNameCallsCallControlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQueuesQueueNameCallsRouteHandler: RouteHandler<
+  typeof getQueuesQueueNameCallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueuesQueueNameCallsCallControlIdRouteHandler: RouteHandler<
+  typeof getQueuesQueueNameCallsCallControlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

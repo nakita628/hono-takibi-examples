@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLogs20140328DeleteSubscriptionFilterHandler = app.openapi(
-  postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLogs20140328DeleteSubscriptionFilterRouteHandler: RouteHandler<
+  typeof postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

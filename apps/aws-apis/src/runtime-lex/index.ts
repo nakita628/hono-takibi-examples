@@ -1,8 +1,41 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { botHandler } from './handlers'
+import {
+  deleteBotBotNameAliasBotAliasUserUserIdSessionRoute,
+  getBotBotNameAliasBotAliasUserUserIdSessionIndexRoute,
+  postBotBotNameAliasBotAliasUserUserIdContentContentTypeRoute,
+  postBotBotNameAliasBotAliasUserUserIdSessionRoute,
+  postBotBotNameAliasBotAliasUserUserIdTextRoute,
+} from './routes'
+import {
+  deleteBotBotNameAliasBotAliasUserUserIdSessionRouteHandler,
+  getBotBotNameAliasBotAliasUserUserIdSessionIndexRouteHandler,
+  postBotBotNameAliasBotAliasUserUserIdContentContentTypeRouteHandler,
+  postBotBotNameAliasBotAliasUserUserIdSessionRouteHandler,
+  postBotBotNameAliasBotAliasUserUserIdTextRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', botHandler)
+export const api = app
+  .openapi(
+    deleteBotBotNameAliasBotAliasUserUserIdSessionRoute,
+    deleteBotBotNameAliasBotAliasUserUserIdSessionRouteHandler,
+  )
+  .openapi(
+    postBotBotNameAliasBotAliasUserUserIdSessionRoute,
+    postBotBotNameAliasBotAliasUserUserIdSessionRouteHandler,
+  )
+  .openapi(
+    getBotBotNameAliasBotAliasUserUserIdSessionIndexRoute,
+    getBotBotNameAliasBotAliasUserUserIdSessionIndexRouteHandler,
+  )
+  .openapi(
+    postBotBotNameAliasBotAliasUserUserIdContentContentTypeRoute,
+    postBotBotNameAliasBotAliasUserUserIdContentContentTypeRouteHandler,
+  )
+  .openapi(
+    postBotBotNameAliasBotAliasUserUserIdTextRoute,
+    postBotBotNameAliasBotAliasUserUserIdTextRouteHandler,
+  )
 
 export default app

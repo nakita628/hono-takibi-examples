@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bigoven.com/partner/openapi.yaml',
   output: './src/bigoven/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigoven/types.ts' },
   client: { output: './src/bigoven/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigoven/rpc.ts', parseResponse: true },

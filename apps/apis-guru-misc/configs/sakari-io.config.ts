@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sakari.io/1.0.1/openapi.yaml',
   output: './src/sakari-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sakari-io/types.ts' },
   client: { output: './src/sakari-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/sakari-io/rpc.ts', parseResponse: true },

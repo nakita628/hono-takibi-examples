@@ -474,12 +474,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/hardware/device-monitors/:deviceId': {
-      $get: {
-        input: { param: { deviceId: number } }
-        output: ErrorResponse
-        outputFormat: 'text'
-        status: 500
-      }
+      $get:
+        | { input: { param: { deviceId: number } }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { param: { deviceId: number } }
+            output: ErrorResponse
+            outputFormat: 'text'
+            status: 500
+          }
     }
   } & {
     '/hardware/devices': {

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAssociationsessionsStartRoute, getAssociationsessionsVerifyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAssociationsessionsStartRoute, getAssociationsessionsVerifyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAssociationsessionsStartRouteHandler: RouteHandler<
+  typeof getAssociationsessionsStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const associationsessionsHandler = app
-  .openapi(getAssociationsessionsStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationsessionsVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAssociationsessionsVerifyRouteHandler: RouteHandler<
+  typeof getAssociationsessionsVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

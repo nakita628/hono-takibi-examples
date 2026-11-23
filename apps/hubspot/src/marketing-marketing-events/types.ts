@@ -513,18 +513,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/marketing-events/2026-09/associations/:externalAccountId/:externalEventId/lists/:listId': {
-      $put: {
-        input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
-      $delete: {
-        input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete:
+        | {
+            input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { externalAccountId: string; externalEventId: string; listId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/marketing-events/2026-09/associations/:marketingEventId/lists': {
@@ -544,18 +558,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/marketing-events/2026-09/associations/:marketingEventId/lists/:listId': {
-      $put: {
-        input: { param: { listId: string; marketingEventId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
-      $delete: {
-        input: { param: { listId: string; marketingEventId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { listId: string; marketingEventId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { listId: string; marketingEventId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete:
+        | {
+            input: { param: { listId: string; marketingEventId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { listId: string; marketingEventId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/marketing-events/2026-09/attendance/:externalEventId/:subscriberState/create': {
@@ -712,12 +740,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { externalEventId: string } } & { query: { externalAccountId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { externalEventId: string } } & { query: { externalAccountId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { externalEventId: string } } & { query: { externalAccountId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { externalEventId: string } } & {
@@ -969,12 +1004,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { objectId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { objectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectId: string } } & { json: MarketingEventPublicUpdateRequestV2 }

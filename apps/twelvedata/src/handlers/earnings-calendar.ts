@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEarningsCalendarRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEarningsCalendarRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const earningsCalendarHandler = app.openapi(getEarningsCalendarRoute, (c) => {
+export const getEarningsCalendarRouteHandler: RouteHandler<
+  typeof getEarningsCalendarRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

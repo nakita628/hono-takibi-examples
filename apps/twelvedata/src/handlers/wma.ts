@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWmaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWmaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const wmaHandler = app.openapi(getWmaRoute, (c) => {
+export const getWmaRouteHandler: RouteHandler<typeof getWmaRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

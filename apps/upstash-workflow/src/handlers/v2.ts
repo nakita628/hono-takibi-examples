@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2WorkflowsDlqCallbackDlqIdRoute,
   deleteV2WorkflowsDlqDlqIdRoute,
   deleteV2WorkflowsDlqRoute,
@@ -34,102 +34,190 @@ import {
   postV2WorkflowsDlqResumeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2TriggerWorkflowUrlRouteHandler: RouteHandler<
+  typeof postV2TriggerWorkflowUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2TriggerWorkflowUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BatchTriggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WorkflowsRunsWorkflowRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WorkflowsRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2MessagesMessageIdRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WorkflowsBulkActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WorkflowsBulkActionsActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WorkflowsLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WorkflowsDlqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WorkflowsDlqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WorkflowsDlqDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WorkflowsDlqDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WorkflowsDlqResumeDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WorkflowsDlqResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WorkflowsDlqRestartDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WorkflowsDlqRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WorkflowsDlqCallbackDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WorkflowsDlqCallbackDlqIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FlowControlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FlowControlFlowControlKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FlowControlFlowControlKeyPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FlowControlFlowControlKeyResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FlowControlFlowControlKeyPinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FlowControlFlowControlKeyUnpinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FlowControlFlowControlKeyResetRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2GlobalParallelismRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2KeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2KeysRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2KeysRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NotifyEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NotifyWorkflowRunIdEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WaitersEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2BatchTriggerRouteHandler: RouteHandler<typeof postV2BatchTriggerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WorkflowsRunsWorkflowRunIdRouteHandler: RouteHandler<
+  typeof deleteV2WorkflowsRunsWorkflowRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WorkflowsRunsRouteHandler: RouteHandler<
+  typeof deleteV2WorkflowsRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2MessagesMessageIdRetryRouteHandler: RouteHandler<
+  typeof postV2MessagesMessageIdRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WorkflowsBulkActionsRouteHandler: RouteHandler<
+  typeof getV2WorkflowsBulkActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WorkflowsBulkActionsActionIdRouteHandler: RouteHandler<
+  typeof getV2WorkflowsBulkActionsActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WorkflowsLogsRouteHandler: RouteHandler<typeof getV2WorkflowsLogsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WorkflowsDlqRouteHandler: RouteHandler<typeof getV2WorkflowsDlqRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WorkflowsDlqRouteHandler: RouteHandler<
+  typeof deleteV2WorkflowsDlqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WorkflowsDlqDlqIdRouteHandler: RouteHandler<
+  typeof getV2WorkflowsDlqDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WorkflowsDlqDlqIdRouteHandler: RouteHandler<
+  typeof deleteV2WorkflowsDlqDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WorkflowsDlqResumeDlqIdRouteHandler: RouteHandler<
+  typeof postV2WorkflowsDlqResumeDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WorkflowsDlqResumeRouteHandler: RouteHandler<
+  typeof postV2WorkflowsDlqResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WorkflowsDlqRestartDlqIdRouteHandler: RouteHandler<
+  typeof postV2WorkflowsDlqRestartDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WorkflowsDlqRestartRouteHandler: RouteHandler<
+  typeof postV2WorkflowsDlqRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WorkflowsDlqCallbackDlqIdRouteHandler: RouteHandler<
+  typeof postV2WorkflowsDlqCallbackDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WorkflowsDlqCallbackDlqIdRouteHandler: RouteHandler<
+  typeof deleteV2WorkflowsDlqCallbackDlqIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FlowControlRouteHandler: RouteHandler<typeof getV2FlowControlRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FlowControlFlowControlKeyRouteHandler: RouteHandler<
+  typeof getV2FlowControlFlowControlKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FlowControlFlowControlKeyPauseRouteHandler: RouteHandler<
+  typeof postV2FlowControlFlowControlKeyPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FlowControlFlowControlKeyResumeRouteHandler: RouteHandler<
+  typeof postV2FlowControlFlowControlKeyResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FlowControlFlowControlKeyPinRouteHandler: RouteHandler<
+  typeof postV2FlowControlFlowControlKeyPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FlowControlFlowControlKeyUnpinRouteHandler: RouteHandler<
+  typeof postV2FlowControlFlowControlKeyUnpinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FlowControlFlowControlKeyResetRateRouteHandler: RouteHandler<
+  typeof postV2FlowControlFlowControlKeyResetRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2GlobalParallelismRouteHandler: RouteHandler<
+  typeof getV2GlobalParallelismRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2KeysRouteHandler: RouteHandler<typeof getV2KeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2KeysRotateRouteHandler: RouteHandler<typeof postV2KeysRotateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2KeysRotateRouteHandler: RouteHandler<typeof getV2KeysRotateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NotifyEventIdRouteHandler: RouteHandler<
+  typeof postV2NotifyEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NotifyWorkflowRunIdEventIdRouteHandler: RouteHandler<
+  typeof postV2NotifyWorkflowRunIdEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WaitersEventIdRouteHandler: RouteHandler<
+  typeof getV2WaitersEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

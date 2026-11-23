@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataSourcesAristaSwitchesIdRoute,
   deleteDataSourcesBrocadeSwitchesIdRoute,
   deleteDataSourcesCheckpointFirewallsIdRoute,
@@ -100,300 +100,590 @@ import {
   putDataSourcesVcentersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataSourcesAristaSwitchesRouteHandler: RouteHandler<
+  typeof getDataSourcesAristaSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataSourcesHandler = app
-  .openapi(getDataSourcesAristaSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesAristaSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesAristaSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesAristaSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesAristaSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesAristaSwitchesIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesAristaSwitchesIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesAristaSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesAristaSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesBrocadeSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesBrocadeSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesBrocadeSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesBrocadeSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesBrocadeSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesBrocadeSwitchesIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesBrocadeSwitchesIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesBrocadeSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesBrocadeSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesCheckpointFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCheckpointFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesCheckpointFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesCheckpointFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesCheckpointFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCheckpointFirewallsIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCheckpointFirewallsIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesCiscoSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCiscoSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesCiscoSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesCiscoSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesCiscoSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCiscoSwitchesIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesCiscoSwitchesIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesCiscoSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesCiscoSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesDellSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesDellSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesDellSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesDellSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesDellSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesDellSwitchesIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesDellSwitchesIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesDellSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesDellSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesHpovManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpovManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesHpovManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesHpovManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesHpovManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpovManagersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpovManagersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesHpvcManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpvcManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesHpvcManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesHpvcManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesHpvcManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpvcManagersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesHpvcManagersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesJuniperSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesJuniperSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesJuniperSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesJuniperSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesJuniperSwitchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesJuniperSwitchesIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesJuniperSwitchesIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesJuniperSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesJuniperSwitchesIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesNsxvManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesNsxvManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesNsxvManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesNsxvManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesNsxvManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesNsxvManagersIdControllerClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesNsxvManagersIdControllerClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesNsxvManagersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesNsxvManagersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesPanoramaFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesPanoramaFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesPanoramaFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesPanoramaFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesPanoramaFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesPanoramaFirewallsIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesPanoramaFirewallsIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesUcsManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesUcsManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesUcsManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesUcsManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesUcsManagersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesUcsManagersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesUcsManagersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesUcsManagersIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesUcsManagersIdSnmpConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesVcentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesVcentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataSourcesVcentersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataSourcesVcentersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataSourcesVcentersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesVcentersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataSourcesVcentersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDataSourcesAristaSwitchesRouteHandler: RouteHandler<
+  typeof postDataSourcesAristaSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesAristaSwitchesIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesAristaSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesAristaSwitchesIdRouteHandler: RouteHandler<
+  typeof getDataSourcesAristaSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesAristaSwitchesIdRouteHandler: RouteHandler<
+  typeof putDataSourcesAristaSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesAristaSwitchesIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesAristaSwitchesIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesAristaSwitchesIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesAristaSwitchesIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesAristaSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesAristaSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesAristaSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesAristaSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesBrocadeSwitchesRouteHandler: RouteHandler<
+  typeof getDataSourcesBrocadeSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesBrocadeSwitchesRouteHandler: RouteHandler<
+  typeof postDataSourcesBrocadeSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesBrocadeSwitchesIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesBrocadeSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesBrocadeSwitchesIdRouteHandler: RouteHandler<
+  typeof getDataSourcesBrocadeSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesBrocadeSwitchesIdRouteHandler: RouteHandler<
+  typeof putDataSourcesBrocadeSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesBrocadeSwitchesIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesBrocadeSwitchesIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesBrocadeSwitchesIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesBrocadeSwitchesIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesBrocadeSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesBrocadeSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesBrocadeSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesBrocadeSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesCheckpointFirewallsRouteHandler: RouteHandler<
+  typeof getDataSourcesCheckpointFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCheckpointFirewallsRouteHandler: RouteHandler<
+  typeof postDataSourcesCheckpointFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesCheckpointFirewallsIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesCheckpointFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesCheckpointFirewallsIdRouteHandler: RouteHandler<
+  typeof getDataSourcesCheckpointFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesCheckpointFirewallsIdRouteHandler: RouteHandler<
+  typeof putDataSourcesCheckpointFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCheckpointFirewallsIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesCheckpointFirewallsIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCheckpointFirewallsIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesCheckpointFirewallsIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesCiscoSwitchesRouteHandler: RouteHandler<
+  typeof getDataSourcesCiscoSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCiscoSwitchesRouteHandler: RouteHandler<
+  typeof postDataSourcesCiscoSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesCiscoSwitchesIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesCiscoSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesCiscoSwitchesIdRouteHandler: RouteHandler<
+  typeof getDataSourcesCiscoSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesCiscoSwitchesIdRouteHandler: RouteHandler<
+  typeof putDataSourcesCiscoSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCiscoSwitchesIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesCiscoSwitchesIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesCiscoSwitchesIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesCiscoSwitchesIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesCiscoSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesCiscoSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesCiscoSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesCiscoSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesDellSwitchesRouteHandler: RouteHandler<
+  typeof getDataSourcesDellSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesDellSwitchesRouteHandler: RouteHandler<
+  typeof postDataSourcesDellSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesDellSwitchesIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesDellSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesDellSwitchesIdRouteHandler: RouteHandler<
+  typeof getDataSourcesDellSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesDellSwitchesIdRouteHandler: RouteHandler<
+  typeof putDataSourcesDellSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesDellSwitchesIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesDellSwitchesIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesDellSwitchesIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesDellSwitchesIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesDellSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesDellSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesDellSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesDellSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesHpovManagersRouteHandler: RouteHandler<
+  typeof getDataSourcesHpovManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpovManagersRouteHandler: RouteHandler<
+  typeof postDataSourcesHpovManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesHpovManagersIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesHpovManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesHpovManagersIdRouteHandler: RouteHandler<
+  typeof getDataSourcesHpovManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesHpovManagersIdRouteHandler: RouteHandler<
+  typeof putDataSourcesHpovManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpovManagersIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesHpovManagersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpovManagersIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesHpovManagersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesHpvcManagersRouteHandler: RouteHandler<
+  typeof getDataSourcesHpvcManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpvcManagersRouteHandler: RouteHandler<
+  typeof postDataSourcesHpvcManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesHpvcManagersIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesHpvcManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesHpvcManagersIdRouteHandler: RouteHandler<
+  typeof getDataSourcesHpvcManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesHpvcManagersIdRouteHandler: RouteHandler<
+  typeof putDataSourcesHpvcManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpvcManagersIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesHpvcManagersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesHpvcManagersIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesHpvcManagersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesJuniperSwitchesRouteHandler: RouteHandler<
+  typeof getDataSourcesJuniperSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesJuniperSwitchesRouteHandler: RouteHandler<
+  typeof postDataSourcesJuniperSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesJuniperSwitchesIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesJuniperSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesJuniperSwitchesIdRouteHandler: RouteHandler<
+  typeof getDataSourcesJuniperSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesJuniperSwitchesIdRouteHandler: RouteHandler<
+  typeof putDataSourcesJuniperSwitchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesJuniperSwitchesIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesJuniperSwitchesIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesJuniperSwitchesIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesJuniperSwitchesIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesJuniperSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesJuniperSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesJuniperSwitchesIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesJuniperSwitchesIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesNsxvManagersRouteHandler: RouteHandler<
+  typeof getDataSourcesNsxvManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesNsxvManagersRouteHandler: RouteHandler<
+  typeof postDataSourcesNsxvManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesNsxvManagersIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesNsxvManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesNsxvManagersIdRouteHandler: RouteHandler<
+  typeof getDataSourcesNsxvManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesNsxvManagersIdRouteHandler: RouteHandler<
+  typeof putDataSourcesNsxvManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesNsxvManagersIdControllerClusterRouteHandler: RouteHandler<
+  typeof getDataSourcesNsxvManagersIdControllerClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesNsxvManagersIdControllerClusterRouteHandler: RouteHandler<
+  typeof putDataSourcesNsxvManagersIdControllerClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesNsxvManagersIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesNsxvManagersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesNsxvManagersIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesNsxvManagersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesPanoramaFirewallsRouteHandler: RouteHandler<
+  typeof getDataSourcesPanoramaFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesPanoramaFirewallsRouteHandler: RouteHandler<
+  typeof postDataSourcesPanoramaFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesPanoramaFirewallsIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesPanoramaFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesPanoramaFirewallsIdRouteHandler: RouteHandler<
+  typeof getDataSourcesPanoramaFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesPanoramaFirewallsIdRouteHandler: RouteHandler<
+  typeof putDataSourcesPanoramaFirewallsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesPanoramaFirewallsIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesPanoramaFirewallsIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesPanoramaFirewallsIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesPanoramaFirewallsIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesUcsManagersRouteHandler: RouteHandler<
+  typeof getDataSourcesUcsManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesUcsManagersRouteHandler: RouteHandler<
+  typeof postDataSourcesUcsManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesUcsManagersIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesUcsManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesUcsManagersIdRouteHandler: RouteHandler<
+  typeof getDataSourcesUcsManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesUcsManagersIdRouteHandler: RouteHandler<
+  typeof putDataSourcesUcsManagersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesUcsManagersIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesUcsManagersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesUcsManagersIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesUcsManagersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesUcsManagersIdSnmpConfigRouteHandler: RouteHandler<
+  typeof getDataSourcesUcsManagersIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesUcsManagersIdSnmpConfigRouteHandler: RouteHandler<
+  typeof putDataSourcesUcsManagersIdSnmpConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesVcentersRouteHandler: RouteHandler<
+  typeof getDataSourcesVcentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesVcentersRouteHandler: RouteHandler<
+  typeof postDataSourcesVcentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataSourcesVcentersIdRouteHandler: RouteHandler<
+  typeof deleteDataSourcesVcentersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataSourcesVcentersIdRouteHandler: RouteHandler<
+  typeof getDataSourcesVcentersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataSourcesVcentersIdRouteHandler: RouteHandler<
+  typeof putDataSourcesVcentersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesVcentersIdDisableRouteHandler: RouteHandler<
+  typeof postDataSourcesVcentersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataSourcesVcentersIdEnableRouteHandler: RouteHandler<
+  typeof postDataSourcesVcentersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

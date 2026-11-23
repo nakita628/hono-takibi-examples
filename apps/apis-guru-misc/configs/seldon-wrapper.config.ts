@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/seldon.local/wrapper/0.1/openapi.yaml',
   output: './src/seldon-wrapper/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/seldon-wrapper/types.ts' },
   client: { output: './src/seldon-wrapper/client.ts', baseUrl: '/' },
   rpc: { output: './src/seldon-wrapper/rpc.ts', parseResponse: true },

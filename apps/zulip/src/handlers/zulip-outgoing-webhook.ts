@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postZulipOutgoingWebhookRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postZulipOutgoingWebhookRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const zulipOutgoingWebhookHandler = app.openapi(postZulipOutgoingWebhookRoute, (c) => {
+export const postZulipOutgoingWebhookRouteHandler: RouteHandler<
+  typeof postZulipOutgoingWebhookRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

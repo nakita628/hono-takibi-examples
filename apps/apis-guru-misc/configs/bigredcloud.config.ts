@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bigredcloud.com/v1/openapi.yaml',
   output: './src/bigredcloud/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigredcloud/types.ts' },
   client: { output: './src/bigredcloud/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigredcloud/rpc.ts', parseResponse: true },

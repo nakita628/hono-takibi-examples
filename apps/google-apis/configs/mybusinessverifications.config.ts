@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/mybusinessverifications/v1/openapi.yaml',
   output: './src/mybusinessverifications/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mybusinessverifications/types.ts' },
   client: { output: './src/mybusinessverifications/client.ts', baseUrl: '/' },
   rpc: { output: './src/mybusinessverifications/rpc.ts', parseResponse: true },

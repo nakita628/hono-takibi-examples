@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPotentiallyUndefinedFormDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPotentiallyUndefinedFormDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const potentiallyUndefinedFormDataHandler = app.openapi(
-  postPotentiallyUndefinedFormDataRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postPotentiallyUndefinedFormDataRouteHandler: RouteHandler<
+  typeof postPotentiallyUndefinedFormDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmbedAllRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmbedAllRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const embedAllHandler = app.openapi(postEmbedAllRoute, (c) => {
+export const postEmbedAllRouteHandler: RouteHandler<typeof postEmbedAllRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMmeDiseaseRoute,
   postMmeFlyRoute,
   postMmeMouseRoute,
@@ -7,21 +7,24 @@ import {
   postMmeZebrafishRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMmeDiseaseRouteHandler: RouteHandler<typeof postMmeDiseaseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mmeHandler = app
-  .openapi(postMmeDiseaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmeFlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmeMouseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmeNematodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMmeZebrafishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMmeFlyRouteHandler: RouteHandler<typeof postMmeFlyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMmeMouseRouteHandler: RouteHandler<typeof postMmeMouseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMmeNematodeRouteHandler: RouteHandler<typeof postMmeNematodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMmeZebrafishRouteHandler: RouteHandler<typeof postMmeZebrafishRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdvancedAuctionItemsGetRoute, postAdvancedAuctionItemsSubmitRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postAdvancedAuctionItemsGetRoute,
+  postAdvancedAuctionItemsSubmitRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postAdvancedAuctionItemsGetRouteHandler: RouteHandler<
+  typeof postAdvancedAuctionItemsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const advancedAuctionHandler = app
-  .openapi(postAdvancedAuctionItemsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvancedAuctionItemsSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdvancedAuctionItemsSubmitRouteHandler: RouteHandler<
+  typeof postAdvancedAuctionItemsSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

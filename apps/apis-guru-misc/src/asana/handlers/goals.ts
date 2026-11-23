@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGoalsGoalGidRoute,
   getGoalsGoalGidParentGoalsRoute,
   getGoalsGoalGidRoute,
@@ -14,42 +14,66 @@ import {
   putGoalsGoalGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGoalsRouteHandler: RouteHandler<typeof getGoalsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const goalsHandler = app
-  .openapi(getGoalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGoalsGoalGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGoalsGoalGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGoalsGoalGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidAddFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidAddSupportingRelationshipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGoalsGoalGidParentGoalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidRemoveFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidRemoveSupportingRelationshipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidSetMetricRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGoalsGoalGidSetMetricCurrentValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGoalsRouteHandler: RouteHandler<typeof postGoalsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGoalsGoalGidRouteHandler: RouteHandler<typeof deleteGoalsGoalGidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGoalsGoalGidRouteHandler: RouteHandler<typeof getGoalsGoalGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGoalsGoalGidRouteHandler: RouteHandler<typeof putGoalsGoalGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidAddFollowersRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidAddFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidAddSupportingRelationshipRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidAddSupportingRelationshipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGoalsGoalGidParentGoalsRouteHandler: RouteHandler<
+  typeof getGoalsGoalGidParentGoalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidRemoveFollowersRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidRemoveFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidRemoveSupportingRelationshipRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidRemoveSupportingRelationshipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidSetMetricRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidSetMetricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGoalsGoalGidSetMetricCurrentValueRouteHandler: RouteHandler<
+  typeof postGoalsGoalGidSetMetricCurrentValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

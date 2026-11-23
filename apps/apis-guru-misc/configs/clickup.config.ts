@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/clickup.com/1.0.0/openapi.yaml',
   output: './src/clickup/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/clickup/types.ts' },
   client: { output: './src/clickup/client.ts', baseUrl: '/' },
   rpc: { output: './src/clickup/rpc.ts', parseResponse: true },

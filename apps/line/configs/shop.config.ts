@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/shop.yml',
   output: './src/shop/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shop/types.ts' },
   client: { output: './src/shop/client.ts', baseUrl: '/' },
   rpc: { output: './src/shop/rpc.ts', parseResponse: true },

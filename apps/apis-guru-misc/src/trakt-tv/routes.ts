@@ -536,7 +536,6 @@ export const getCalendarsAllDvdStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -625,7 +624,6 @@ export const getCalendarsAllMoviesStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -714,7 +712,6 @@ export const getCalendarsAllShowsNewStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -803,7 +800,6 @@ export const getCalendarsAllShowsPremieresStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -892,7 +888,6 @@ export const getCalendarsAllShowsStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -982,7 +977,6 @@ export const getCalendarsMyDvdStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -1073,7 +1067,6 @@ export const getCalendarsMyMoviesStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -1164,7 +1157,6 @@ export const getCalendarsMyShowsNewStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -1255,7 +1247,6 @@ export const getCalendarsMyShowsPremieresStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -1346,7 +1337,6 @@ export const getCalendarsMyShowsStartDateDaysRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-End-Date': z
           .string()
@@ -1413,7 +1403,7 @@ export const getCertificationsTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postCheckinRoute = createRoute({
@@ -1509,12 +1499,8 @@ export const postCheckinRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
-    409: {
-      description: 'There is already a checkin in progress.',
-      content: {},
-      headers: z.object({}),
-    },
+    201: { description: 'Created', headers: z.object({}) },
+    409: { description: 'There is already a checkin in progress.', headers: z.object({}) },
   },
   security: [{ oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }],
 })
@@ -1652,7 +1638,7 @@ export const postCommentsRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }],
 })
 
@@ -1741,7 +1727,6 @@ export const getCommentsRecentCommentTypeTypeRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -1849,7 +1834,6 @@ export const getCommentsTrendingCommentTypeTypeRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -1957,7 +1941,6 @@ export const getCommentsUpdatesCommentTypeTypeRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -2035,7 +2018,6 @@ export const getCommentsIdRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Item-ID': z
           .string()
@@ -2117,7 +2099,7 @@ export const putCommentsIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -2236,7 +2218,7 @@ export const getCommentsIdItemRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postCommentsIdLikeRoute = createRoute({
@@ -2412,7 +2394,6 @@ export const getCommentsIdLikesRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -2490,7 +2471,6 @@ export const getCommentsIdRepliesRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -2576,7 +2556,7 @@ export const postCommentsIdRepliesRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -2631,7 +2611,7 @@ export const getCountriesTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getGenresTypeRoute = createRoute({
@@ -2685,7 +2665,7 @@ export const getGenresTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getLanguagesTypeRoute = createRoute({
@@ -2739,7 +2719,7 @@ export const getLanguagesTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsPopularRoute = createRoute({
@@ -2783,7 +2763,6 @@ export const getListsPopularRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -2847,7 +2826,6 @@ export const getListsTrendingRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -2933,7 +2911,6 @@ export const getListsIdRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Sort-By': z
           .string()
@@ -3023,7 +3000,6 @@ export const getListsIdCommentsSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3113,7 +3089,6 @@ export const getListsIdItemsTypeRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Private-User': z
           .string()
@@ -3186,7 +3161,6 @@ export const getListsIdLikesRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3250,7 +3224,6 @@ export const getMoviesAnticipatedRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3311,7 +3284,7 @@ export const getMoviesBoxofficeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesCollectedPeriodRoute = createRoute({
@@ -3369,7 +3342,6 @@ export const getMoviesCollectedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3447,7 +3419,6 @@ export const getMoviesPlayedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3511,7 +3482,6 @@ export const getMoviesPopularRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3589,7 +3559,6 @@ export const getMoviesRecommendedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3653,7 +3622,6 @@ export const getMoviesTrendingRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3735,7 +3703,6 @@ export const getMoviesUpdatesIdStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3817,7 +3784,6 @@ export const getMoviesUpdatesStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3899,7 +3865,6 @@ export const getMoviesWatchedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -3975,11 +3940,7 @@ export const getMoviesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: '```\n/movies/tron-legacy-2010?extended=full\n```',
-      content: {},
-      headers: z.object({}),
-    },
+    200: { description: '```\n/movies/tron-legacy-2010?extended=full\n```', headers: z.object({}) },
   },
 })
 
@@ -4034,7 +3995,7 @@ export const getMoviesIdAliasesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdCommentsSortRoute = createRoute({
@@ -4107,7 +4068,6 @@ export const getMoviesIdCommentsSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -4215,7 +4175,6 @@ export const getMoviesIdListsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -4290,7 +4249,7 @@ export const getMoviesIdPeopleRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdRatingsRoute = createRoute({
@@ -4344,7 +4303,7 @@ export const getMoviesIdRatingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdRelatedRoute = createRoute({
@@ -4402,7 +4361,6 @@ export const getMoviesIdRelatedRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -4489,7 +4447,7 @@ export const getMoviesIdReleasesCountryRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdStatsRoute = createRoute({
@@ -4543,7 +4501,7 @@ export const getMoviesIdStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdStudiosRoute = createRoute({
@@ -4597,7 +4555,7 @@ export const getMoviesIdStudiosRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdTranslationsLanguageRoute = createRoute({
@@ -4664,7 +4622,7 @@ export const getMoviesIdTranslationsLanguageRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMoviesIdWatchingRoute = createRoute({
@@ -4718,7 +4676,7 @@ export const getMoviesIdWatchingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getNetworksRoute = createRoute({
@@ -4758,7 +4716,7 @@ export const getNetworksRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getOauthAuthorizeRoute = createRoute({
@@ -4853,7 +4811,7 @@ export const postOauthDeviceCodeRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOauthDeviceTokenRoute = createRoute({
@@ -4886,7 +4844,7 @@ export const postOauthDeviceTokenRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOauthRevokeRoute = createRoute({
@@ -4919,7 +4877,7 @@ export const postOauthRevokeRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOauthTokenRoute = createRoute({
@@ -4959,12 +4917,10 @@ export const postOauthTokenRoute = createRoute({
   responses: {
     200: {
       description: "If the `refresh_token` is valid, you'll get the `access_token` back.",
-      content: {},
       headers: z.object({}),
     },
     401: {
       description: "If the `refresh_token` is invalid, you'll get a `401` error.",
-      content: {},
       headers: z.object({}),
     },
   },
@@ -5025,7 +4981,6 @@ export const getPeopleUpdatesIdStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -5107,7 +5062,6 @@ export const getPeopleUpdatesStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -5187,11 +5141,7 @@ export const getPeopleIdRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: '```\n/people/bryan-cranston?extended=full\n```',
-      content: {},
-      headers: z.object({}),
-    },
+    200: { description: '```\n/people/bryan-cranston?extended=full\n```', headers: z.object({}) },
   },
 })
 
@@ -5277,7 +5227,6 @@ export const getPeopleIdListsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -5352,7 +5301,7 @@ export const getPeopleIdMoviesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPeopleIdShowsRoute = createRoute({
@@ -5407,7 +5356,7 @@ export const getPeopleIdShowsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRecommendationsMoviesRoute = createRoute({
@@ -5479,7 +5428,6 @@ export const getRecommendationsMoviesRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Limit': z
           .string()
@@ -5619,7 +5567,6 @@ export const getRecommendationsShowsRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Limit': z
           .string()
@@ -5774,7 +5721,7 @@ export const postScrobblePauseRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -5862,7 +5809,7 @@ export const postScrobbleStartRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }],
 })
 
@@ -5951,12 +5898,8 @@ export const postScrobbleStopRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
-    409: {
-      description: 'The same item was recently scrobbled.',
-      content: {},
-      headers: z.object({}),
-    },
+    201: { description: 'Created', headers: z.object({}) },
+    409: { description: 'The same item was recently scrobbled.', headers: z.object({}) },
   },
   security: [{ oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }, { oauth2: [] }],
 })
@@ -6043,7 +5986,6 @@ export const getSearchIdTypeIdRoute = createRoute({
   responses: {
     200: {
       description: '```\n/search/trakt/12601?type=movie\n/search/imdb/tt1104001\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6153,7 +6095,6 @@ export const getSearchTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/search/movie,show,episode,person,list?query=tron\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6217,7 +6158,6 @@ export const getShowsAnticipatedRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6295,7 +6235,6 @@ export const getShowsCollectedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6373,7 +6312,6 @@ export const getShowsPlayedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6437,7 +6375,6 @@ export const getShowsPopularRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Limit': z
           .string()
@@ -6507,7 +6444,6 @@ export const getShowsRecommendedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6571,7 +6507,6 @@ export const getShowsTrendingRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6653,7 +6588,6 @@ export const getShowsUpdatesIdStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6735,7 +6669,6 @@ export const getShowsUpdatesStartDateRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6817,7 +6750,6 @@ export const getShowsWatchedPeriodRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -6893,11 +6825,7 @@ export const getShowsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: '```\n/shows/game-of-thrones?extended=full\n```',
-      content: {},
-      headers: z.object({}),
-    },
+    200: { description: '```\n/shows/game-of-thrones?extended=full\n```', headers: z.object({}) },
   },
 })
 
@@ -6952,7 +6880,7 @@ export const getShowsIdAliasesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdCertificationsRoute = createRoute({
@@ -7006,7 +6934,7 @@ export const getShowsIdCertificationsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdCommentsSortRoute = createRoute({
@@ -7088,7 +7016,6 @@ export const getShowsIdCommentsSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -7163,7 +7090,7 @@ export const getShowsIdLastEpisodeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdListsTypeSortRoute = createRoute({
@@ -7251,7 +7178,6 @@ export const getShowsIdListsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -7326,7 +7252,7 @@ export const getShowsIdNextEpisodeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdPeopleRoute = createRoute({
@@ -7384,7 +7310,6 @@ export const getShowsIdPeopleRoute = createRoute({
   responses: {
     200: {
       description: '```\n/shows/game-of-thrones/people?extended=guest_stars\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -7488,7 +7413,7 @@ export const getShowsIdProgressCollectionRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -7590,7 +7515,7 @@ export const getShowsIdProgressWatchedRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -7646,7 +7571,7 @@ export const postShowsIdProgressWatchedResetRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -7756,7 +7681,7 @@ export const getShowsIdRatingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdRelatedRoute = createRoute({
@@ -7814,7 +7739,6 @@ export const getShowsIdRelatedRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -7892,7 +7816,6 @@ export const getShowsIdSeasonsRoute = createRoute({
   responses: {
     200: {
       description: '```\n/shows/game-of-thrones/seasons?extended=episodes\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -7985,7 +7908,7 @@ export const getShowsIdSeasonsSeasonRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonCommentsSortRoute = createRoute({
@@ -8087,7 +8010,6 @@ export const getShowsIdSeasonsSeasonCommentsSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -8205,7 +8127,6 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/shows/game-of-thrones/seasons/1/episodes/1?extended=full\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -8321,7 +8242,6 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeCommentsSortRoute = createRou
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -8466,7 +8386,6 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeListsTypeSortRoute = createRo
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -8585,7 +8504,6 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodePeopleRoute = createRoute({
     200: {
       description:
         '```\n/shows/game-of-thrones/seasons/1/episodes/1/people?extended=guest_stars\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -8682,7 +8600,7 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeRatingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonEpisodesEpisodeStatsRoute = createRoute({
@@ -8776,7 +8694,7 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonEpisodesEpisodeTranslationsLanguageRoute = createRoute({
@@ -8883,7 +8801,7 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeTranslationsLanguageRoute = c
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonEpisodesEpisodeWatchingRoute = createRoute({
@@ -8976,7 +8894,7 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeWatchingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonListsTypeSortRoute = createRoute({
@@ -9081,7 +8999,6 @@ export const getShowsIdSeasonsSeasonListsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -9179,7 +9096,6 @@ export const getShowsIdSeasonsSeasonPeopleRoute = createRoute({
   responses: {
     200: {
       description: '```\n/shows/game-of-thrones/seasons/1/people?extended=guest_stars\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -9256,7 +9172,7 @@ export const getShowsIdSeasonsSeasonRatingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonStatsRoute = createRoute({
@@ -9330,7 +9246,7 @@ export const getShowsIdSeasonsSeasonStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonTranslationsLanguageRoute = createRoute({
@@ -9417,7 +9333,7 @@ export const getShowsIdSeasonsSeasonTranslationsLanguageRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdSeasonsSeasonWatchingRoute = createRoute({
@@ -9490,7 +9406,7 @@ export const getShowsIdSeasonsSeasonWatchingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdStatsRoute = createRoute({
@@ -9544,7 +9460,7 @@ export const getShowsIdStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdStudiosRoute = createRoute({
@@ -9598,7 +9514,7 @@ export const getShowsIdStudiosRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdTranslationsLanguageRoute = createRoute({
@@ -9665,7 +9581,7 @@ export const getShowsIdTranslationsLanguageRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getShowsIdWatchingRoute = createRoute({
@@ -9718,7 +9634,7 @@ export const getShowsIdWatchingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSyncCollectionRoute = createRoute({
@@ -9930,7 +9846,7 @@ export const postSyncCollectionRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -9973,7 +9889,7 @@ export const postSyncCollectionRemoveRoute = createRoute({
     }),
     body: RemoveItemsFromCollectionBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10032,7 +9948,6 @@ export const getSyncCollectionTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/sync/collection/shows?extended=metadata\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -10242,7 +10157,7 @@ export const postSyncHistoryRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10423,7 +10338,7 @@ export const postSyncHistoryRemoveRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10530,7 +10445,6 @@ export const getSyncHistoryTypeIdRoute = createRoute({
   responses: {
     200: {
       description: '```\n/sync/history/episodes\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -10592,7 +10506,7 @@ export const getSyncLastActivitiesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10740,7 +10654,7 @@ export const getSyncPlaybackTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10943,7 +10857,7 @@ export const postSyncRatingsRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -10986,7 +10900,7 @@ export const postSyncRatingsRemoveRoute = createRoute({
     }),
     body: RemoveItemsFromCollectionBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11065,9 +10979,7 @@ export const getSyncRatingsTypeRatingRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '```\n/sync/ratings/episodes\n```', content: {}, headers: z.object({}) },
-  },
+  responses: { 200: { description: '```\n/sync/ratings/episodes\n```', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11196,7 +11108,7 @@ export const postSyncRecommendationsRoute = createRoute({
       },
     },
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11311,7 +11223,7 @@ export const postSyncRecommendationsRemoveRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11354,7 +11266,7 @@ export const postSyncRecommendationsReorderRoute = createRoute({
     }),
     body: ReorderWatchlistItemsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11425,7 +11337,6 @@ export const getSyncRecommendationsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: '```\n/sync/recommendations/shows\n```',
-      content: {},
       headers: z.object({
         'X-Sort-By': z
           .string()
@@ -11494,11 +11405,7 @@ export const getSyncWatchedTypeRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: '```\n/sync/watched/shows?extended=noseasons\n```',
-      content: {},
-      headers: z.object({}),
-    },
+    200: { description: '```\n/sync/watched/shows?extended=noseasons\n```', headers: z.object({}) },
   },
   security: [{ oauth2: [] }],
 })
@@ -11683,7 +11590,7 @@ export const postSyncWatchlistRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
+    201: { description: 'Created', headers: z.object({}) },
     420: {
       description: '',
       headers: z.object({
@@ -11744,7 +11651,7 @@ export const postSyncWatchlistRemoveRoute = createRoute({
     }),
     body: RemoveItemsFromCollectionBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11787,7 +11694,7 @@ export const postSyncWatchlistReorderRoute = createRoute({
     }),
     body: ReorderWatchlistItemsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -11858,7 +11765,6 @@ export const getSyncWatchlistTypeSortRoute = createRoute({
   responses: {
     200: {
       description: '```\n/sync/watchlist/episodes\n```',
-      content: {},
       headers: z.object({
         'X-Sort-By': z
           .string()
@@ -11960,7 +11866,6 @@ export const getUsersHiddenSectionRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -12040,7 +11945,7 @@ export const postUsersHiddenSectionRoute = createRoute({
     }),
     body: AddHiddenItemsBodyRequestBody,
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12106,7 +12011,7 @@ export const postUsersHiddenSectionRemoveRoute = createRoute({
     }),
     body: AddHiddenItemsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12148,7 +12053,7 @@ export const getUsersRequestsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12190,7 +12095,7 @@ export const getUsersRequestsFollowingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12246,7 +12151,7 @@ export const postUsersRequestsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12360,7 +12265,6 @@ export const getUsersSavedFiltersSectionRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -12422,7 +12326,7 @@ export const getUsersSettingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12478,9 +12382,7 @@ export const getUsersIdRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '```\n/users/sean?extended=vip\n```', content: {}, headers: z.object({}) },
-  },
+  responses: { 200: { description: '```\n/users/sean?extended=vip\n```', headers: z.object({}) } },
 })
 
 export const getUsersIdCollectionTypeRoute = createRoute({
@@ -12549,7 +12451,6 @@ export const getUsersIdCollectionTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/collection/shows?extended=metadata\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -12652,7 +12553,6 @@ export const getUsersIdCommentsCommentTypeTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/comments\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -12727,7 +12627,7 @@ export const postUsersIdFollowRoute = createRoute({
         }),
     }),
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -12837,7 +12737,7 @@ export const getUsersIdFollowersRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUsersIdFollowingRoute = createRoute({
@@ -12892,7 +12792,7 @@ export const getUsersIdFollowingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUsersIdFriendsRoute = createRoute({
@@ -12947,7 +12847,7 @@ export const getUsersIdFriendsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUsersIdHistoryTypeItemIdRoute = createRoute({
@@ -13064,7 +12964,6 @@ export const getUsersIdHistoryTypeItemIdRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/history/episodes\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -13153,7 +13052,6 @@ export const getUsersIdLikesTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/likes/lists\n```',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -13229,7 +13127,7 @@ export const getUsersIdListsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postUsersIdListsRoute = createRoute({
@@ -13313,7 +13211,7 @@ export const postUsersIdListsRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
+    201: { description: 'Created', headers: z.object({}) },
     420: {
       description: '',
       headers: z.object({
@@ -13387,7 +13285,7 @@ export const getUsersIdListsCollaborationsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postUsersIdListsReorderRoute = createRoute({
@@ -13451,7 +13349,7 @@ export const postUsersIdListsReorderRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -13522,7 +13420,6 @@ export const getUsersIdListsListIdRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Sort-By': z
           .string()
@@ -13623,7 +13520,7 @@ export const putUsersIdListsListIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -13770,7 +13667,6 @@ export const getUsersIdListsListIdCommentsSortRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -13986,7 +13882,7 @@ export const postUsersIdListsListIdItemsRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
+    201: { description: 'Created', headers: z.object({}) },
     420: {
       description: '',
       headers: z.object({
@@ -14191,7 +14087,7 @@ export const postUsersIdListsListIdItemsRemoveRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -14260,7 +14156,7 @@ export const postUsersIdListsListIdItemsReorderRoute = createRoute({
     }),
     body: ReorderWatchlistItemsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ oauth2: [] }],
 })
 
@@ -14343,7 +14239,6 @@ export const getUsersIdListsListIdItemsTypeRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Private-User': z
           .string()
@@ -14561,7 +14456,6 @@ export const getUsersIdListsListIdLikesRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         'X-Pagination-Item-Count': z
           .string()
@@ -14671,11 +14565,7 @@ export const getUsersIdRatingsTypeRatingRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: '```\n/users/sean/ratings/episodes\n```',
-      content: {},
-      headers: z.object({}),
-    },
+    200: { description: '```\n/users/sean/ratings/episodes\n```', headers: z.object({}) },
   },
 })
 
@@ -14757,7 +14647,6 @@ export const getUsersIdRecommendationsTypeSortRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/justin/recommendations/shows\n```',
-      content: {},
       headers: z.object({
         'X-Sort-By': z
           .string()
@@ -14825,7 +14714,7 @@ export const getUsersIdStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUsersIdWatchedTypeRoute = createRoute({
@@ -14894,7 +14783,6 @@ export const getUsersIdWatchedTypeRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/watched/shows?extended=noseasons\n```',
-      content: {},
       headers: z.object({}),
     },
   },
@@ -14953,7 +14841,7 @@ export const getUsersIdWatchingRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Currently watching a `movie`.', content: {}, headers: z.object({}) },
+    200: { description: 'Currently watching a `movie`.', headers: z.object({}) },
     204: { description: 'Not watching anything.', headers: z.object({}) },
   },
 })
@@ -15036,7 +14924,6 @@ export const getUsersIdWatchlistTypeSortRoute = createRoute({
   responses: {
     200: {
       description: '```\n/users/sean/watchlist/episodes\n```',
-      content: {},
       headers: z.object({
         'X-Private-User': z
           .string()

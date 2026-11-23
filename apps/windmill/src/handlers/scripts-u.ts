@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getScriptsUTokenedRawWorkspaceTokenPathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getScriptsUTokenedRawWorkspaceTokenPathRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const scriptsUHandler = app.openapi(getScriptsUTokenedRawWorkspaceTokenPathRoute, (c) => {
+export const getScriptsUTokenedRawWorkspaceTokenPathRouteHandler: RouteHandler<
+  typeof getScriptsUTokenedRawWorkspaceTokenPathRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

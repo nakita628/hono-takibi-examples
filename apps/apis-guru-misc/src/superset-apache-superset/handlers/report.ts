@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReportIndexRoute,
   deleteReportPkRoute,
   getReportIndexRoute,
@@ -12,36 +12,50 @@ import {
   putReportPkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteReportIndexRouteHandler: RouteHandler<typeof deleteReportIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const reportHandler = app
-  .openapi(deleteReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportRelatedColumnNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReportPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPkLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPkLogLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReportIndexRouteHandler: RouteHandler<typeof getReportIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportIndexRouteHandler: RouteHandler<typeof postReportIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportInfoRouteHandler: RouteHandler<typeof getReportInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportRelatedColumnNameRouteHandler: RouteHandler<
+  typeof getReportRelatedColumnNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportPkRouteHandler: RouteHandler<typeof deleteReportPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPkRouteHandler: RouteHandler<typeof getReportPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putReportPkRouteHandler: RouteHandler<typeof putReportPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPkLogIndexRouteHandler: RouteHandler<
+  typeof getReportPkLogIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPkLogLogIdRouteHandler: RouteHandler<
+  typeof getReportPkLogLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

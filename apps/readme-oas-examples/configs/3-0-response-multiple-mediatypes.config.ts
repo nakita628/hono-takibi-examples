@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/response-multiple-mediatypes.yaml',
   output: './src/3-0-response-multiple-mediatypes/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-response-multiple-mediatypes/types.ts' },
   client: { output: './src/3-0-response-multiple-mediatypes/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-response-multiple-mediatypes/rpc.ts', parseResponse: true },

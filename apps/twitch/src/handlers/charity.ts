@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCharityCampaignsRoute, getCharityDonationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCharityCampaignsRoute, getCharityDonationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCharityCampaignsRouteHandler: RouteHandler<
+  typeof getCharityCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const charityHandler = app
-  .openapi(getCharityCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharityDonationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCharityDonationsRouteHandler: RouteHandler<
+  typeof getCharityDonationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

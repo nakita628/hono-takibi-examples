@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSendersDomainsDomainNameRoute,
   deleteSendersSenderIdRoute,
   getSendersDomainsDomainNameRoute,
@@ -14,42 +14,68 @@ import {
   putSendersSenderIdValidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSendersRouteHandler: RouteHandler<typeof getSendersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sendersHandler = app
-  .openapi(getSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSendersDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSendersDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSendersDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSendersDomainsDomainNameAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSendersIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSendersSenderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSendersSenderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSendersSenderIdIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSendersSenderIdValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSendersRouteHandler: RouteHandler<typeof postSendersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSendersDomainsRouteHandler: RouteHandler<typeof getSendersDomainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersDomainsRouteHandler: RouteHandler<typeof postSendersDomainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSendersDomainsDomainNameRouteHandler: RouteHandler<
+  typeof deleteSendersDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSendersDomainsDomainNameRouteHandler: RouteHandler<
+  typeof getSendersDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSendersDomainsDomainNameAuthenticateRouteHandler: RouteHandler<
+  typeof putSendersDomainsDomainNameAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSendersIpsRouteHandler: RouteHandler<typeof getSendersIpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSendersSenderIdRouteHandler: RouteHandler<
+  typeof deleteSendersSenderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSendersSenderIdRouteHandler: RouteHandler<typeof putSendersSenderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSendersSenderIdIpsRouteHandler: RouteHandler<
+  typeof getSendersSenderIdIpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSendersSenderIdValidateRouteHandler: RouteHandler<
+  typeof putSendersSenderIdValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

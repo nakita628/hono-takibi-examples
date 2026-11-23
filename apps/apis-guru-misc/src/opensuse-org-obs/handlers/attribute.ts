@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAttributeNamespaceAttributeNameMetaRoute,
   deleteAttributeNamespaceAttributeNameRoute,
   deleteAttributeNamespaceMetaRoute,
@@ -14,42 +14,72 @@ import {
   putAttributeNamespaceMetaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAttributeRouteHandler: RouteHandler<typeof getAttributeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const attributeHandler = app
-  .openapi(getAttributeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributeNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributeNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributeNamespaceMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributeNamespaceMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributeNamespaceMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAttributeNamespaceMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributeNamespaceAttributeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributeNamespaceAttributeNameMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributeNamespaceAttributeNameMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributeNamespaceAttributeNameMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAttributeNamespaceAttributeNameMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAttributeNamespaceRouteHandler: RouteHandler<
+  typeof deleteAttributeNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributeNamespaceRouteHandler: RouteHandler<
+  typeof getAttributeNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAttributeNamespaceMetaRouteHandler: RouteHandler<
+  typeof deleteAttributeNamespaceMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributeNamespaceMetaRouteHandler: RouteHandler<
+  typeof getAttributeNamespaceMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributeNamespaceMetaRouteHandler: RouteHandler<
+  typeof postAttributeNamespaceMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAttributeNamespaceMetaRouteHandler: RouteHandler<
+  typeof putAttributeNamespaceMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAttributeNamespaceAttributeNameRouteHandler: RouteHandler<
+  typeof deleteAttributeNamespaceAttributeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAttributeNamespaceAttributeNameMetaRouteHandler: RouteHandler<
+  typeof deleteAttributeNamespaceAttributeNameMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributeNamespaceAttributeNameMetaRouteHandler: RouteHandler<
+  typeof getAttributeNamespaceAttributeNameMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributeNamespaceAttributeNameMetaRouteHandler: RouteHandler<
+  typeof postAttributeNamespaceAttributeNameMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAttributeNamespaceAttributeNameMetaRouteHandler: RouteHandler<
+  typeof putAttributeNamespaceAttributeNameMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

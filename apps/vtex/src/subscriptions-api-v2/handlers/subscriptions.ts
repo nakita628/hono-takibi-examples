@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSubscriptionsListRoute,
   getSubscriptionsRoute,
   getSubscriptionsSubscriptionIdFrequencyOptionsRoute,
@@ -9,27 +9,44 @@ import {
   postSubscriptionsSubscriptionIdAddressesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSubscriptionsRouteHandler: RouteHandler<typeof getSubscriptionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const subscriptionsHandler = app
-  .openapi(getSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsSubscriptionIdAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSubscriptionsSubscriptionIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsSubscriptionIdFrequencyOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSubscriptionsListRouteHandler: RouteHandler<
+  typeof getSubscriptionsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof patchSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsSubscriptionIdAddressesRouteHandler: RouteHandler<
+  typeof postSubscriptionsSubscriptionIdAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSubscriptionsSubscriptionIdCancelRouteHandler: RouteHandler<
+  typeof patchSubscriptionsSubscriptionIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsSubscriptionIdFrequencyOptionsRouteHandler: RouteHandler<
+  typeof getSubscriptionsSubscriptionIdFrequencyOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

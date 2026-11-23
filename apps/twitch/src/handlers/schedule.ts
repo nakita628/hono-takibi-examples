@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScheduleSegmentRoute,
   getScheduleIcalendarRoute,
   getScheduleRoute,
@@ -8,24 +8,36 @@ import {
   postScheduleSegmentRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScheduleRouteHandler: RouteHandler<typeof getScheduleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scheduleHandler = app
-  .openapi(getScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScheduleIcalendarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchScheduleSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScheduleSegmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchScheduleSegmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScheduleSegmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScheduleIcalendarRouteHandler: RouteHandler<
+  typeof getScheduleIcalendarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchScheduleSettingsRouteHandler: RouteHandler<
+  typeof patchScheduleSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScheduleSegmentRouteHandler: RouteHandler<
+  typeof postScheduleSegmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchScheduleSegmentRouteHandler: RouteHandler<
+  typeof patchScheduleSegmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScheduleSegmentRouteHandler: RouteHandler<
+  typeof deleteScheduleSegmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

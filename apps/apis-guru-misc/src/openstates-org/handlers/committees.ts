@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCommitteesCommitteeIdRoute, getCommitteesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCommitteesCommitteeIdRoute, getCommitteesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommitteesRouteHandler: RouteHandler<typeof getCommitteesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const committeesHandler = app
-  .openapi(getCommitteesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteesCommitteeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCommitteesCommitteeIdRouteHandler: RouteHandler<
+  typeof getCommitteesCommitteeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

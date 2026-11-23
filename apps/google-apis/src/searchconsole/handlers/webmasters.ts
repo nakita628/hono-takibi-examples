@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebmastersV3SitesSiteUrlRoute,
   deleteWebmastersV3SitesSiteUrlSitemapsFeedpathRoute,
   getWebmastersV3SitesRoute,
@@ -11,33 +11,56 @@ import {
   putWebmastersV3SitesSiteUrlSitemapsFeedpathRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebmastersV3SitesRouteHandler: RouteHandler<
+  typeof getWebmastersV3SitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webmastersHandler = app
-  .openapi(getWebmastersV3SitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebmastersV3SitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebmastersV3SitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebmastersV3SitesSiteUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebmastersV3SitesSiteUrlSearchAnalyticsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebmastersV3SitesSiteUrlSitemapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebmastersV3SitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebmastersV3SitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebmastersV3SitesSiteUrlSitemapsFeedpathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteWebmastersV3SitesSiteUrlRouteHandler: RouteHandler<
+  typeof deleteWebmastersV3SitesSiteUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebmastersV3SitesSiteUrlRouteHandler: RouteHandler<
+  typeof getWebmastersV3SitesSiteUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebmastersV3SitesSiteUrlRouteHandler: RouteHandler<
+  typeof putWebmastersV3SitesSiteUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebmastersV3SitesSiteUrlSearchAnalyticsQueryRouteHandler: RouteHandler<
+  typeof postWebmastersV3SitesSiteUrlSearchAnalyticsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebmastersV3SitesSiteUrlSitemapsRouteHandler: RouteHandler<
+  typeof getWebmastersV3SitesSiteUrlSitemapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebmastersV3SitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof deleteWebmastersV3SitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebmastersV3SitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof getWebmastersV3SitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebmastersV3SitesSiteUrlSitemapsFeedpathRouteHandler: RouteHandler<
+  typeof putWebmastersV3SitesSiteUrlSitemapsFeedpathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

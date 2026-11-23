@@ -22,11 +22,11 @@ export function getOcsKey() {
 
 export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryKey(
   args: InferRequestType<
-    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v:version/:fileId', keyArgs] as const
+  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v{version}/:fileId', keyArgs] as const
 }
 
 export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryOptions<
@@ -35,7 +35,7 @@ export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+            (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
           >
         >
       >
@@ -44,7 +44,7 @@ export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54,7 +54,7 @@ export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
             >
           >
         >
@@ -67,7 +67,7 @@ export function getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryOptions<
     queryKey: getOcsV2PhpAppsFilesRemindersApiVVersionFileIdQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.ocs['v2.php'].apps.files_reminders.api['v:version'][':fileId'].$get(args, {
+        client.ocs['v2.php'].apps.files_reminders.api['v{version}'][':fileId'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -82,7 +82,7 @@ export function injectOcsV2PhpAppsFilesRemindersApiVVersionFileId<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+            (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
           >
         >
       >
@@ -91,7 +91,7 @@ export function injectOcsV2PhpAppsFilesRemindersApiVVersionFileId<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+    (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -101,7 +101,7 @@ export function injectOcsV2PhpAppsFilesRemindersApiVVersionFileId<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$get']
+                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$get']
                 >
               >
             >
@@ -130,7 +130,7 @@ export function injectOcsV2PhpAppsFilesRemindersApiVVersionFileId<
 }
 
 export function getPutOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationKey() {
-  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v:version/:fileId', 'PUT'] as const
+  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v{version}/:fileId', 'PUT'] as const
 }
 
 export function getPutOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOptions<
@@ -143,7 +143,7 @@ export function getPutOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOptions
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$put']
+              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$put']
             >
           >
         >
@@ -151,18 +151,18 @@ export function getPutOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOptions
     >,
     TError,
     InferRequestType<
-      (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$put']
+      (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$put']
     >,
     TOnMutateResult
   >({
     mutationKey: getPutOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$put']
+        (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$put']
       >,
     ) {
       return parseResponse(
-        client.ocs['v2.php'].apps.files_reminders.api['v:version'][':fileId'].$put(args, options),
+        client.ocs['v2.php'].apps.files_reminders.api['v{version}'][':fileId'].$put(args, options),
       )
     },
   })
@@ -180,7 +180,7 @@ export function injectPutOcsV2PhpAppsFilesRemindersApiVVersionFileId<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$put']
+                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$put']
                 >
               >
             >
@@ -188,7 +188,7 @@ export function injectPutOcsV2PhpAppsFilesRemindersApiVVersionFileId<
         >,
         TError,
         InferRequestType<
-          (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$put']
+          (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$put']
         >,
         TOnMutateResult
       >,
@@ -213,7 +213,7 @@ export function injectPutOcsV2PhpAppsFilesRemindersApiVVersionFileId<
 }
 
 export function getDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationKey() {
-  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v:version/:fileId', 'DELETE'] as const
+  return ['ocs', '/ocs/v2.php/apps/files_reminders/api/v{version}/:fileId', 'DELETE'] as const
 }
 
 export function getDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOptions<
@@ -226,7 +226,7 @@ export function getDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOpti
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$delete']
+              (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$delete']
             >
           >
         >
@@ -234,18 +234,18 @@ export function getDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationOpti
     >,
     TError,
     InferRequestType<
-      (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$delete']
+      (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$delete']
     >,
     TOnMutateResult
   >({
     mutationKey: getDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileIdMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$delete']
+        (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$delete']
       >,
     ) {
       return parseResponse(
-        client.ocs['v2.php'].apps.files_reminders.api['v:version'][':fileId'].$delete(
+        client.ocs['v2.php'].apps.files_reminders.api['v{version}'][':fileId'].$delete(
           args,
           options,
         ),
@@ -266,7 +266,7 @@ export function injectDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileId<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$delete']
+                  (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$delete']
                 >
               >
             >
@@ -274,7 +274,7 @@ export function injectDeleteOcsV2PhpAppsFilesRemindersApiVVersionFileId<
         >,
         TError,
         InferRequestType<
-          (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v:version'][':fileId']['$delete']
+          (typeof client.ocs)['v2.php']['apps']['files_reminders']['api']['v{version}'][':fileId']['$delete']
         >,
         TOnMutateResult
       >,

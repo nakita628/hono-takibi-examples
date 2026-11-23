@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/restful4up.local/1.0.0/openapi.yaml',
   output: './src/restful4up/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/restful4up/types.ts' },
   client: { output: './src/restful4up/client.ts', baseUrl: '/' },
   rpc: { output: './src/restful4up/rpc.ts', parseResponse: true },

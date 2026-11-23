@@ -3,7 +3,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/pdf/certificate': {
-      $post: { input: { json: CertificateRequest }; output: {}; outputFormat: string; status: 200 }
+      $post: { input: { json: CertificateRequest }; output: {}; outputFormat: string; status: 400 }
     }
   },
   '/'

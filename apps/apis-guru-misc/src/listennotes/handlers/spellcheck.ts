@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSpellcheckRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSpellcheckRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const spellcheckHandler = app.openapi(getSpellcheckRoute, (c) => {
+export const getSpellcheckRouteHandler: RouteHandler<typeof getSpellcheckRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

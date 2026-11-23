@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionModifyInstanceEventWindowRoute,
   postActionModifyInstanceEventWindowRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyInstanceEventWindowRouteHandler: RouteHandler<
+  typeof getActionModifyInstanceEventWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyInstanceEventWindowHandler = app
-  .openapi(getActionModifyInstanceEventWindowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyInstanceEventWindowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyInstanceEventWindowRouteHandler: RouteHandler<
+  typeof postActionModifyInstanceEventWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

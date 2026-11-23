@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/proxykingdom.com/v1/openapi.yaml',
   output: './src/proxykingdom/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/proxykingdom/types.ts' },
   client: { output: './src/proxykingdom/client.ts', baseUrl: '/' },
   rpc: { output: './src/proxykingdom/rpc.ts', parseResponse: true },

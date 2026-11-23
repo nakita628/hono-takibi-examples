@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIpBlocklistDownloadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIpBlocklistDownloadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ipBlocklistDownloadHandler = app.openapi(getIpBlocklistDownloadRoute, (c) => {
+export const getIpBlocklistDownloadRouteHandler: RouteHandler<
+  typeof getIpBlocklistDownloadRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

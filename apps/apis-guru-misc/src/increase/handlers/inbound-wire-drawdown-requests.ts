@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInboundWireDrawdownRequestsInboundWireDrawdownRequestIdRoute,
   getInboundWireDrawdownRequestsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInboundWireDrawdownRequestsRouteHandler: RouteHandler<
+  typeof getInboundWireDrawdownRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const inboundWireDrawdownRequestsHandler = app
-  .openapi(getInboundWireDrawdownRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInboundWireDrawdownRequestsInboundWireDrawdownRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInboundWireDrawdownRequestsInboundWireDrawdownRequestIdRouteHandler: RouteHandler<
+  typeof getInboundWireDrawdownRequestsInboundWireDrawdownRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

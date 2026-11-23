@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRadarProfilersStationIdRoute,
   getRadarQueuesHostRoute,
   getRadarServersIdRoute,
@@ -10,30 +10,46 @@ import {
   getRadarStationsStationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRadarServersRouteHandler: RouteHandler<typeof getRadarServersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const radarHandler = app
-  .openapi(getRadarServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarServersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarSpgdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarStationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarStationsStationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarStationsStationIdAlarmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarQueuesHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadarProfilersStationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRadarServersIdRouteHandler: RouteHandler<typeof getRadarServersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarSpgdsRouteHandler: RouteHandler<typeof getRadarSpgdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarStationsRouteHandler: RouteHandler<typeof getRadarStationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarStationsStationIdRouteHandler: RouteHandler<
+  typeof getRadarStationsStationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarStationsStationIdAlarmsRouteHandler: RouteHandler<
+  typeof getRadarStationsStationIdAlarmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarQueuesHostRouteHandler: RouteHandler<typeof getRadarQueuesHostRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarProfilersStationIdRouteHandler: RouteHandler<
+  typeof getRadarProfilersStationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -11639,12 +11639,12 @@ export function usePostRepositoriesWorkspaceRepoSlugIssuesExport<
 
 export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskIdZipQueryKey(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
 ) {
   return [
     'repositories',
-    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-:task_id.zip',
+    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-{task_id}.zip',
     args,
   ] as const
 }
@@ -11655,7 +11655,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
           >
         >
       >
@@ -11664,7 +11664,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -11674,7 +11674,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+              (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
             >
           >
         >
@@ -11688,7 +11688,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
     queryFn({ signal }) {
       return parseResponse(
         client.repositories[':workspace'][':repo_slug'].issues.export[
-          ':repo_name-issues-:task_id.zip'
+          ':repo_name-issues-{task_id}.zip'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -11701,7 +11701,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
           >
         >
       >
@@ -11710,7 +11710,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: {
     query?: Omit<
@@ -11720,7 +11720,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                  (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
                 >
               >
             >
@@ -11757,7 +11757,7 @@ export function useSuspenseRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssu
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
           >
         >
       >
@@ -11766,7 +11766,7 @@ export function useSuspenseRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssu
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: {
     query?: Omit<
@@ -11776,7 +11776,7 @@ export function useSuspenseRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssu
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                  (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
                 >
               >
             >

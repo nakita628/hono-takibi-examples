@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1AgentUserIdRoute,
   postV1DevicesQueryRoute,
   postV1DevicesReportStateAndNotificationRoute,
@@ -7,21 +7,32 @@ import {
   postV1DevicesSyncRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1DevicesQueryRouteHandler: RouteHandler<typeof postV1DevicesQueryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1DevicesQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DevicesReportStateAndNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DevicesRequestSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DevicesSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1AgentUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1DevicesReportStateAndNotificationRouteHandler: RouteHandler<
+  typeof postV1DevicesReportStateAndNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DevicesRequestSyncRouteHandler: RouteHandler<
+  typeof postV1DevicesRequestSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DevicesSyncRouteHandler: RouteHandler<typeof postV1DevicesSyncRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1AgentUserIdRouteHandler: RouteHandler<
+  typeof deleteV1AgentUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

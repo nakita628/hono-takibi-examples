@@ -1,18 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAchmeainsurancecontractsAchmeaInsuranceContractIdInsuredwagecalculationpercentagesRoute,
   getAchmeainsurancecontractsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAchmeainsurancecontractsRouteHandler: RouteHandler<
+  typeof getAchmeainsurancecontractsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const achmeainsurancecontractsHandler = app
-  .openapi(getAchmeainsurancecontractsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAchmeainsurancecontractsAchmeaInsuranceContractIdInsuredwagecalculationpercentagesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getAchmeainsurancecontractsAchmeaInsuranceContractIdInsuredwagecalculationpercentagesRouteHandler: RouteHandler<
+  typeof getAchmeainsurancecontractsAchmeaInsuranceContractIdInsuredwagecalculationpercentagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

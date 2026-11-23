@@ -2709,7 +2709,7 @@ export const deleteApiPatchV1SystemsInventoryIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Ok', content: {} } },
+  responses: { 200: { description: 'Ok' } },
   security: [{ RhIdentity: [] }],
 })
 

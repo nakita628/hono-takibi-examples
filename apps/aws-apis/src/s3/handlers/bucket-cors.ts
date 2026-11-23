@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBucketCorsRoute, getBucketCorsRoute, putBucketCorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteBucketCorsRoute, getBucketCorsRoute, putBucketCorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketCorsRouteHandler: RouteHandler<typeof deleteBucketCorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketCorsHandler = app
-  .openapi(deleteBucketCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketCorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketCorsRouteHandler: RouteHandler<typeof getBucketCorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketCorsRouteHandler: RouteHandler<typeof putBucketCorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

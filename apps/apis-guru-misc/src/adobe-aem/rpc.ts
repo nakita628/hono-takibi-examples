@@ -173,56 +173,58 @@ export async function getCrxServerCrxDefaultJcrRoot1Json(options?: ClientRequest
 }
 
 export async function getEtcPackagesGroupNameVersionZip(
-  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>,
+  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.etc.packages[':group'][':name-:version.zip'].$get(args, options),
+    client.etc.packages[':group'][':name-{version}.zip'].$get(args, options),
   )
 }
 
 export async function getEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTidy2Json(
   args: InferRequestType<
-    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.etc.packages[':group'][':name-:version.zip']['jcr:content']['vlt:definition'][
+    client.etc.packages[':group'][':name-{version}.zip']['jcr:content']['vlt:definition'][
       'filter.tidy.2.json'
     ].$get(args, options),
   )
 }
 
 export async function getEtcReplicationAgentsRunmode1Json(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.etc.replication['agents.:runmode.-1.json'].$get(args, options))
+  return await parseResponse(client.etc.replication['agents.{runmode}.-1.json'].$get(args, options))
 }
 
 export async function getEtcReplicationAgentsRunmodeName(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>,
-  options?: ClientRequestOptions,
-) {
-  return await parseResponse(client.etc.replication['agents.:runmode'][':name'].$get(args, options))
-}
-
-export async function postEtcReplicationAgentsRunmodeName(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.etc.replication['agents.:runmode'][':name'].$post(args, options),
+    client.etc.replication['agents.{runmode}'][':name'].$get(args, options),
+  )
+}
+
+export async function postEtcReplicationAgentsRunmodeName(
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.etc.replication['agents.{runmode}'][':name'].$post(args, options),
   )
 }
 
 export async function deleteEtcReplicationAgentsRunmodeName(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.etc.replication['agents.:runmode'][':name'].$delete(args, options),
+    client.etc.replication['agents.{runmode}'][':name'].$delete(args, options),
   )
 }
 

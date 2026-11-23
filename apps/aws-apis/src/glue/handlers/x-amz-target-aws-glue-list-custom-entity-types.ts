@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueListCustomEntityTypesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueListCustomEntityTypesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueListCustomEntityTypesHandler = app.openapi(
-  postXAmzTargetAWSGlueListCustomEntityTypesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueListCustomEntityTypesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueListCustomEntityTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

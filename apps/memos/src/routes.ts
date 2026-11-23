@@ -3195,7 +3195,7 @@ export const deleteApiAttachmentsAttachmentRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3263,7 +3263,7 @@ export const postApiAttachmentsBatchDeleteRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3367,7 +3367,7 @@ export const postApiAuthSignoutRoute = createRoute({
     'SignOut ends the current session.\n Revokes the refresh token from the cookie and clears the cookie.',
   operationId: 'AuthService_SignOut',
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3482,7 +3482,7 @@ export const deleteApiIdentityProvidersIdentityProviderRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3586,7 +3586,7 @@ export const postApiInstanceSettingsNotificationTestEmailRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3983,7 +3983,7 @@ export const deleteApiMemosMemoRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4135,7 +4135,7 @@ export const patchApiMemosMemoAttachmentsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4282,7 +4282,7 @@ export const deleteApiMemosMemoReactionsReactionRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4387,7 +4387,7 @@ export const patchApiMemosMemoRelationsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4495,7 +4495,7 @@ export const deleteApiMemosMemoSharesShareRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4678,7 +4678,7 @@ export const deleteApiSpacesSpaceRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -4911,7 +4911,7 @@ export const deleteApiSpacesSpaceInvitationsInvitationRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5003,7 +5003,7 @@ export const postApiSpacesSpaceInvitationsInvitationDeclineRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5157,7 +5157,7 @@ export const deleteApiSpacesSpaceMembersMemberRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5444,7 +5444,7 @@ export const deleteApiUsersUserRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5657,7 +5657,7 @@ export const deleteApiUsersUserLinkedIdentitiesLinkedIdentityRoute = createRoute
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5781,7 +5781,7 @@ export const deleteApiUsersUserNotificationsNotificationRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -5988,7 +5988,7 @@ export const deleteApiUsersUserPersonalAccessTokensPersonalAccessTokenRoute = cr
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -6485,7 +6485,7 @@ export const deleteApiUsersUserViewsViewRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -6686,7 +6686,7 @@ export const deleteApiUsersUserWebhooksWebhookRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },

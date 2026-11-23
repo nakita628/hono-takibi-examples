@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSharedLinksIdAssetsRoute,
   deleteSharedLinksIdRoute,
   getSharedLinksIdRoute,
@@ -11,33 +11,52 @@ import {
   putSharedLinksIdAssetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSharedLinksRouteHandler: RouteHandler<typeof getSharedLinksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sharedLinksHandler = app
-  .openapi(getSharedLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharedLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharedLinksLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLinksMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSharedLinksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLinksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSharedLinksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSharedLinksIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSharedLinksIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSharedLinksRouteHandler: RouteHandler<typeof postSharedLinksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSharedLinksLoginRouteHandler: RouteHandler<
+  typeof postSharedLinksLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLinksMeRouteHandler: RouteHandler<typeof getSharedLinksMeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSharedLinksIdRouteHandler: RouteHandler<
+  typeof deleteSharedLinksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLinksIdRouteHandler: RouteHandler<typeof getSharedLinksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSharedLinksIdRouteHandler: RouteHandler<typeof patchSharedLinksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSharedLinksIdAssetsRouteHandler: RouteHandler<
+  typeof deleteSharedLinksIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSharedLinksIdAssetsRouteHandler: RouteHandler<
+  typeof putSharedLinksIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

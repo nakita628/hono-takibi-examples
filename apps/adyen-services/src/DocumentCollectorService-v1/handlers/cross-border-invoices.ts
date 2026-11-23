@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCrossBorderInvoicesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCrossBorderInvoicesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const crossBorderInvoicesHandler = app.openapi(postCrossBorderInvoicesRoute, (c) => {
+export const postCrossBorderInvoicesRouteHandler: RouteHandler<
+  typeof postCrossBorderInvoicesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

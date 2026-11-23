@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBatchesBatchIdRoute,
   getBatchesRoute,
   postBatchesBatchIdCancelRoute,
   postBatchesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBatchesRouteHandler: RouteHandler<typeof postBatchesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const batchesHandler = app
-  .openapi(postBatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBatchesBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBatchesBatchIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBatchesRouteHandler: RouteHandler<typeof getBatchesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBatchesBatchIdRouteHandler: RouteHandler<typeof getBatchesBatchIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBatchesBatchIdCancelRouteHandler: RouteHandler<
+  typeof postBatchesBatchIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

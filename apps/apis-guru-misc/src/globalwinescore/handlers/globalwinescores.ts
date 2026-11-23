@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGlobalwinescoresIndexRoute, getGlobalwinescoresLatestIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGlobalwinescoresIndexRoute, getGlobalwinescoresLatestIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGlobalwinescoresIndexRouteHandler: RouteHandler<
+  typeof getGlobalwinescoresIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const globalwinescoresHandler = app
-  .openapi(getGlobalwinescoresIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalwinescoresLatestIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGlobalwinescoresLatestIndexRouteHandler: RouteHandler<
+  typeof getGlobalwinescoresLatestIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

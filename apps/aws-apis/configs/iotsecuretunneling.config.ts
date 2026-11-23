@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotsecuretunneling/2018-10-05/openapi.yaml',
   output: './src/iotsecuretunneling/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iotsecuretunneling/types.ts' },
   client: { output: './src/iotsecuretunneling/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotsecuretunneling/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTranscribeDeleteMedicalTranscriptionJobHandler = app.openapi(
-  postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetTranscribeDeleteMedicalTranscriptionJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteLegsLegIdRoute, getLegsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteLegsLegIdRoute, getLegsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLegsRouteHandler: RouteHandler<typeof getLegsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const legsHandler = app
-  .openapi(getLegsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLegsLegIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteLegsLegIdRouteHandler: RouteHandler<typeof deleteLegsLegIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

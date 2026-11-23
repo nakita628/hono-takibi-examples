@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMeSettingsCategoryRoute,
   getMeRoute,
   getMeSettingsRoute,
@@ -7,21 +7,28 @@ import {
   putMeSettingsCategoryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMeRouteHandler: RouteHandler<typeof getMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const meHandler = app
-  .openapi(getMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeSettingsCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeSettingsCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeDashboardsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMeSettingsRouteHandler: RouteHandler<typeof getMeSettingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeSettingsCategoryRouteHandler: RouteHandler<
+  typeof putMeSettingsCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeSettingsCategoryRouteHandler: RouteHandler<
+  typeof deleteMeSettingsCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeDashboardsResetRouteHandler: RouteHandler<
+  typeof postMeDashboardsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

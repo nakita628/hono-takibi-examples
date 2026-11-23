@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetChatMembersCountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetChatMembersCountRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getChatMembersCountHandler = app.openapi(postGetChatMembersCountRoute, (c) => {
+export const postGetChatMembersCountRouteHandler: RouteHandler<
+  typeof postGetChatMembersCountRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

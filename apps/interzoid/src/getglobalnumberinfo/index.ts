@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { getglobalnumberinfoHandler } from './handlers'
+import { getGetglobalnumberinfoRoute } from './routes'
+import { getGetglobalnumberinfoRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', getglobalnumberinfoHandler)
+export const api = app.openapi(getGetglobalnumberinfoRoute, getGetglobalnumberinfoRouteHandler)
 
 export default app

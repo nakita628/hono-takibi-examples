@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postLiveStreamsCloseRoute, postLiveStreamsOpenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postLiveStreamsCloseRoute, postLiveStreamsOpenRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLiveStreamsCloseRouteHandler: RouteHandler<
+  typeof postLiveStreamsCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const liveStreamsHandler = app
-  .openapi(postLiveStreamsCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveStreamsOpenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLiveStreamsOpenRouteHandler: RouteHandler<
+  typeof postLiveStreamsOpenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

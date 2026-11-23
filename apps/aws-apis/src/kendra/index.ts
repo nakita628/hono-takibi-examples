@@ -1,139 +1,401 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsKendraFrontendServiceAssociateEntitiesToExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceAssociatePersonasToEntitiesHandler,
-  xAmzTargetAwsKendraFrontendServiceBatchDeleteDocumentHandler,
-  xAmzTargetAwsKendraFrontendServiceBatchDeleteFeaturedResultsSetHandler,
-  xAmzTargetAwsKendraFrontendServiceBatchGetDocumentStatusHandler,
-  xAmzTargetAwsKendraFrontendServiceBatchPutDocumentHandler,
-  xAmzTargetAwsKendraFrontendServiceClearQuerySuggestionsHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateAccessControlConfigurationHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateDataSourceHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateFaqHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateFeaturedResultsSetHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateIndexHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateQuerySuggestionsBlockListHandler,
-  xAmzTargetAwsKendraFrontendServiceCreateThesaurusHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteAccessControlConfigurationHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteDataSourceHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteFaqHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteIndexHandler,
-  xAmzTargetAwsKendraFrontendServiceDeletePrincipalMappingHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteQuerySuggestionsBlockListHandler,
-  xAmzTargetAwsKendraFrontendServiceDeleteThesaurusHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeAccessControlConfigurationHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeDataSourceHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeFaqHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeFeaturedResultsSetHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeIndexHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribePrincipalMappingHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeQuerySuggestionsBlockListHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeQuerySuggestionsConfigHandler,
-  xAmzTargetAwsKendraFrontendServiceDescribeThesaurusHandler,
-  xAmzTargetAwsKendraFrontendServiceDisassociateEntitiesFromExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceDisassociatePersonasFromEntitiesHandler,
-  xAmzTargetAwsKendraFrontendServiceGetQuerySuggestionsHandler,
-  xAmzTargetAwsKendraFrontendServiceGetSnapshotsHandler,
-  xAmzTargetAwsKendraFrontendServiceListAccessControlConfigurationsHandler,
-  xAmzTargetAwsKendraFrontendServiceListDataSourcesHandler,
-  xAmzTargetAwsKendraFrontendServiceListDataSourceSyncJobsHandler,
-  xAmzTargetAwsKendraFrontendServiceListEntityPersonasHandler,
-  xAmzTargetAwsKendraFrontendServiceListExperienceEntitiesHandler,
-  xAmzTargetAwsKendraFrontendServiceListExperiencesHandler,
-  xAmzTargetAwsKendraFrontendServiceListFaqsHandler,
-  xAmzTargetAwsKendraFrontendServiceListFeaturedResultsSetsHandler,
-  xAmzTargetAwsKendraFrontendServiceListGroupsOlderThanOrderingIdHandler,
-  xAmzTargetAwsKendraFrontendServiceListIndicesHandler,
-  xAmzTargetAwsKendraFrontendServiceListQuerySuggestionsBlockListsHandler,
-  xAmzTargetAwsKendraFrontendServiceListTagsForResourceHandler,
-  xAmzTargetAwsKendraFrontendServiceListThesauriHandler,
-  xAmzTargetAwsKendraFrontendServicePutPrincipalMappingHandler,
-  xAmzTargetAwsKendraFrontendServiceQueryHandler,
-  xAmzTargetAwsKendraFrontendServiceStartDataSourceSyncJobHandler,
-  xAmzTargetAwsKendraFrontendServiceStopDataSourceSyncJobHandler,
-  xAmzTargetAwsKendraFrontendServiceSubmitFeedbackHandler,
-  xAmzTargetAwsKendraFrontendServiceTagResourceHandler,
-  xAmzTargetAwsKendraFrontendServiceUntagResourceHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateAccessControlConfigurationHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateDataSourceHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateExperienceHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateFeaturedResultsSetHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateIndexHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateQuerySuggestionsBlockListHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateQuerySuggestionsConfigHandler,
-  xAmzTargetAwsKendraFrontendServiceUpdateThesaurusHandler,
+  postXAmzTargetAWSKendraFrontendServiceAssociateEntitiesToExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceAssociatePersonasToEntitiesRoute,
+  postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute,
+  postXAmzTargetAWSKendraFrontendServiceBatchDeleteFeaturedResultsSetRoute,
+  postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute,
+  postXAmzTargetAWSKendraFrontendServiceBatchPutDocumentRoute,
+  postXAmzTargetAWSKendraFrontendServiceClearQuerySuggestionsRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateAccessControlConfigurationRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateDataSourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateFaqRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateFeaturedResultsSetRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateIndexRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateQuerySuggestionsBlockListRoute,
+  postXAmzTargetAWSKendraFrontendServiceCreateThesaurusRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteAccessControlConfigurationRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteDataSourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteFaqRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteIndexRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeletePrincipalMappingRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteQuerySuggestionsBlockListRoute,
+  postXAmzTargetAWSKendraFrontendServiceDeleteThesaurusRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeAccessControlConfigurationRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeDataSourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeFaqRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeFeaturedResultsSetRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeIndexRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribePrincipalMappingRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsBlockListRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsConfigRoute,
+  postXAmzTargetAWSKendraFrontendServiceDescribeThesaurusRoute,
+  postXAmzTargetAWSKendraFrontendServiceDisassociateEntitiesFromExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceDisassociatePersonasFromEntitiesRoute,
+  postXAmzTargetAWSKendraFrontendServiceGetQuerySuggestionsRoute,
+  postXAmzTargetAWSKendraFrontendServiceGetSnapshotsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListAccessControlConfigurationsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListDataSourcesRoute,
+  postXAmzTargetAWSKendraFrontendServiceListDataSourceSyncJobsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListEntityPersonasRoute,
+  postXAmzTargetAWSKendraFrontendServiceListExperienceEntitiesRoute,
+  postXAmzTargetAWSKendraFrontendServiceListExperiencesRoute,
+  postXAmzTargetAWSKendraFrontendServiceListFaqsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListFeaturedResultsSetsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListGroupsOlderThanOrderingIdRoute,
+  postXAmzTargetAWSKendraFrontendServiceListIndicesRoute,
+  postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute,
+  postXAmzTargetAWSKendraFrontendServiceListTagsForResourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceListThesauriRoute,
+  postXAmzTargetAWSKendraFrontendServicePutPrincipalMappingRoute,
+  postXAmzTargetAWSKendraFrontendServiceQueryRoute,
+  postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute,
+  postXAmzTargetAWSKendraFrontendServiceStopDataSourceSyncJobRoute,
+  postXAmzTargetAWSKendraFrontendServiceSubmitFeedbackRoute,
+  postXAmzTargetAWSKendraFrontendServiceTagResourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceUntagResourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateAccessControlConfigurationRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateDataSourceRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateExperienceRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateFeaturedResultsSetRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateIndexRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsBlockListRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsConfigRoute,
+  postXAmzTargetAWSKendraFrontendServiceUpdateThesaurusRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSKendraFrontendServiceAssociateEntitiesToExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceAssociatePersonasToEntitiesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceBatchDeleteFeaturedResultsSetRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceBatchPutDocumentRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceClearQuerySuggestionsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateAccessControlConfigurationRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateDataSourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateFaqRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateFeaturedResultsSetRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateIndexRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateQuerySuggestionsBlockListRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceCreateThesaurusRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteAccessControlConfigurationRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteDataSourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteFaqRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteIndexRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeletePrincipalMappingRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteQuerySuggestionsBlockListRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDeleteThesaurusRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeAccessControlConfigurationRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeDataSourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeFaqRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeFeaturedResultsSetRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeIndexRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribePrincipalMappingRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsBlockListRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsConfigRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDescribeThesaurusRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDisassociateEntitiesFromExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceDisassociatePersonasFromEntitiesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceGetQuerySuggestionsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceGetSnapshotsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListAccessControlConfigurationsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListDataSourcesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListDataSourceSyncJobsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListEntityPersonasRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListExperienceEntitiesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListExperiencesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListFaqsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListFeaturedResultsSetsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListGroupsOlderThanOrderingIdRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListIndicesRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListTagsForResourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceListThesauriRouteHandler,
+  postXAmzTargetAWSKendraFrontendServicePutPrincipalMappingRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceQueryRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceStopDataSourceSyncJobRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceSubmitFeedbackRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceTagResourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUntagResourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateAccessControlConfigurationRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateDataSourceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateExperienceRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateFeaturedResultsSetRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateIndexRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsBlockListRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsConfigRouteHandler,
+  postXAmzTargetAWSKendraFrontendServiceUpdateThesaurusRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsKendraFrontendServiceAssociateEntitiesToExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceAssociatePersonasToEntitiesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceBatchDeleteDocumentHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceBatchDeleteFeaturedResultsSetHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceBatchGetDocumentStatusHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceBatchPutDocumentHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceClearQuerySuggestionsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateAccessControlConfigurationHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateDataSourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateFaqHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateFeaturedResultsSetHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateIndexHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateQuerySuggestionsBlockListHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceCreateThesaurusHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteAccessControlConfigurationHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteDataSourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteFaqHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteIndexHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeletePrincipalMappingHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteQuerySuggestionsBlockListHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDeleteThesaurusHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeAccessControlConfigurationHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeDataSourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeFaqHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeFeaturedResultsSetHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeIndexHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribePrincipalMappingHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeQuerySuggestionsBlockListHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeQuerySuggestionsConfigHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDescribeThesaurusHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDisassociateEntitiesFromExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceDisassociatePersonasFromEntitiesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceGetQuerySuggestionsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceGetSnapshotsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListAccessControlConfigurationsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListDataSourceSyncJobsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListDataSourcesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListEntityPersonasHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListExperienceEntitiesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListExperiencesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListFaqsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListFeaturedResultsSetsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListGroupsOlderThanOrderingIdHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListIndicesHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListQuerySuggestionsBlockListsHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceListThesauriHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServicePutPrincipalMappingHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceQueryHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceStartDataSourceSyncJobHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceStopDataSourceSyncJobHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceSubmitFeedbackHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceTagResourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUntagResourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateAccessControlConfigurationHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateDataSourceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateExperienceHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateFeaturedResultsSetHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateIndexHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateQuerySuggestionsBlockListHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateQuerySuggestionsConfigHandler)
-  .route('/', xAmzTargetAwsKendraFrontendServiceUpdateThesaurusHandler)
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceAssociateEntitiesToExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceAssociateEntitiesToExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceAssociatePersonasToEntitiesRoute,
+    postXAmzTargetAWSKendraFrontendServiceAssociatePersonasToEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute,
+    postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceBatchDeleteFeaturedResultsSetRoute,
+    postXAmzTargetAWSKendraFrontendServiceBatchDeleteFeaturedResultsSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute,
+    postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceBatchPutDocumentRoute,
+    postXAmzTargetAWSKendraFrontendServiceBatchPutDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceClearQuerySuggestionsRoute,
+    postXAmzTargetAWSKendraFrontendServiceClearQuerySuggestionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateAccessControlConfigurationRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateAccessControlConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateDataSourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateFaqRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateFaqRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateFeaturedResultsSetRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateFeaturedResultsSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateIndexRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateQuerySuggestionsBlockListRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateQuerySuggestionsBlockListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceCreateThesaurusRoute,
+    postXAmzTargetAWSKendraFrontendServiceCreateThesaurusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteAccessControlConfigurationRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteAccessControlConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteDataSourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteFaqRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteFaqRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteIndexRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeletePrincipalMappingRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeletePrincipalMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteQuerySuggestionsBlockListRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteQuerySuggestionsBlockListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDeleteThesaurusRoute,
+    postXAmzTargetAWSKendraFrontendServiceDeleteThesaurusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeAccessControlConfigurationRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeAccessControlConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeDataSourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeFaqRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeFaqRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeFeaturedResultsSetRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeFeaturedResultsSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeIndexRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribePrincipalMappingRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribePrincipalMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsBlockListRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsBlockListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsConfigRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeQuerySuggestionsConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDescribeThesaurusRoute,
+    postXAmzTargetAWSKendraFrontendServiceDescribeThesaurusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDisassociateEntitiesFromExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceDisassociateEntitiesFromExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceDisassociatePersonasFromEntitiesRoute,
+    postXAmzTargetAWSKendraFrontendServiceDisassociatePersonasFromEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceGetQuerySuggestionsRoute,
+    postXAmzTargetAWSKendraFrontendServiceGetQuerySuggestionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceGetSnapshotsRoute,
+    postXAmzTargetAWSKendraFrontendServiceGetSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListAccessControlConfigurationsRoute,
+    postXAmzTargetAWSKendraFrontendServiceListAccessControlConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListDataSourceSyncJobsRoute,
+    postXAmzTargetAWSKendraFrontendServiceListDataSourceSyncJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListDataSourcesRoute,
+    postXAmzTargetAWSKendraFrontendServiceListDataSourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListEntityPersonasRoute,
+    postXAmzTargetAWSKendraFrontendServiceListEntityPersonasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListExperienceEntitiesRoute,
+    postXAmzTargetAWSKendraFrontendServiceListExperienceEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListExperiencesRoute,
+    postXAmzTargetAWSKendraFrontendServiceListExperiencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListFaqsRoute,
+    postXAmzTargetAWSKendraFrontendServiceListFaqsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListFeaturedResultsSetsRoute,
+    postXAmzTargetAWSKendraFrontendServiceListFeaturedResultsSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListGroupsOlderThanOrderingIdRoute,
+    postXAmzTargetAWSKendraFrontendServiceListGroupsOlderThanOrderingIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListIndicesRoute,
+    postXAmzTargetAWSKendraFrontendServiceListIndicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRoute,
+    postXAmzTargetAWSKendraFrontendServiceListQuerySuggestionsBlockListsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListTagsForResourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceListThesauriRoute,
+    postXAmzTargetAWSKendraFrontendServiceListThesauriRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServicePutPrincipalMappingRoute,
+    postXAmzTargetAWSKendraFrontendServicePutPrincipalMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceQueryRoute,
+    postXAmzTargetAWSKendraFrontendServiceQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute,
+    postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceStopDataSourceSyncJobRoute,
+    postXAmzTargetAWSKendraFrontendServiceStopDataSourceSyncJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceSubmitFeedbackRoute,
+    postXAmzTargetAWSKendraFrontendServiceSubmitFeedbackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceTagResourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUntagResourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateAccessControlConfigurationRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateAccessControlConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateDataSourceRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateExperienceRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateExperienceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateFeaturedResultsSetRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateFeaturedResultsSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateIndexRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsBlockListRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsBlockListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsConfigRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateQuerySuggestionsConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSKendraFrontendServiceUpdateThesaurusRoute,
+    postXAmzTargetAWSKendraFrontendServiceUpdateThesaurusRouteHandler,
+  )
 
 export default app

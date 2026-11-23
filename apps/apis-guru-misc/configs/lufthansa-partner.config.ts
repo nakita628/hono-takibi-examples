@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/lufthansa.com/partner/1.0/openapi.yaml',
   output: './src/lufthansa-partner/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lufthansa-partner/types.ts' },
   client: { output: './src/lufthansa-partner/client.ts', baseUrl: '/' },
   rpc: { output: './src/lufthansa-partner/rpc.ts', parseResponse: true },

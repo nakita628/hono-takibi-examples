@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTemporaryPathCredentialsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTemporaryPathCredentialsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const temporaryPathCredentialsHandler = app.openapi(
-  postTemporaryPathCredentialsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postTemporaryPathCredentialsRouteHandler: RouteHandler<
+  typeof postTemporaryPathCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTimePeriodsRoute, getTimePeriodsTimePeriodGidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTimePeriodsRoute, getTimePeriodsTimePeriodGidRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimePeriodsRouteHandler: RouteHandler<typeof getTimePeriodsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const timePeriodsHandler = app
-  .openapi(getTimePeriodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimePeriodsTimePeriodGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTimePeriodsTimePeriodGidRouteHandler: RouteHandler<
+  typeof getTimePeriodsTimePeriodGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

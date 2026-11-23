@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMapsV0MapsMapNameRoute,
   getMapsV0MapsMapNameGlyphsFontStackFontUnicodeRangeRoute,
   getMapsV0MapsMapNameRoute,
@@ -11,33 +11,54 @@ import {
   postMapsV0MapsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMapsV0MapsRouteHandler: RouteHandler<typeof postMapsV0MapsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mapsHandler = app
-  .openapi(postMapsV0MapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMapsV0MapsMapNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsV0MapsMapNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMapsV0MapsMapNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsV0MapsMapNameGlyphsFontStackFontUnicodeRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsV0MapsMapNameSpritesFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsV0MapsMapNameStyleDescriptorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsV0MapsMapNameTilesZXYRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMapsV0ListMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMapsV0MapsMapNameRouteHandler: RouteHandler<
+  typeof deleteMapsV0MapsMapNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsV0MapsMapNameRouteHandler: RouteHandler<
+  typeof getMapsV0MapsMapNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMapsV0MapsMapNameRouteHandler: RouteHandler<
+  typeof patchMapsV0MapsMapNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsV0MapsMapNameGlyphsFontStackFontUnicodeRangeRouteHandler: RouteHandler<
+  typeof getMapsV0MapsMapNameGlyphsFontStackFontUnicodeRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsV0MapsMapNameSpritesFileNameRouteHandler: RouteHandler<
+  typeof getMapsV0MapsMapNameSpritesFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsV0MapsMapNameStyleDescriptorRouteHandler: RouteHandler<
+  typeof getMapsV0MapsMapNameStyleDescriptorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsV0MapsMapNameTilesZXYRouteHandler: RouteHandler<
+  typeof getMapsV0MapsMapNameTilesZXYRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMapsV0ListMapsRouteHandler: RouteHandler<typeof postMapsV0ListMapsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSitesSiteIdRoute,
   getSitesRoute,
   getSitesSiteIdAddressAddressTypeRoute,
@@ -10,30 +10,44 @@ import {
   putSitesSiteIdAddressRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSitesRouteHandler: RouteHandler<typeof postSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sitesHandler = app
-  .openapi(postSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdAddressAddressTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSitesSiteIdRackPhysicalPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSitesRouteHandler: RouteHandler<typeof getSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdRouteHandler: RouteHandler<typeof deleteSitesSiteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdRouteHandler: RouteHandler<typeof getSitesSiteIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSitesSiteIdRouteHandler: RouteHandler<typeof patchSitesSiteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdAddressAddressTypeRouteHandler: RouteHandler<
+  typeof getSitesSiteIdAddressAddressTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdAddressRouteHandler: RouteHandler<
+  typeof putSitesSiteIdAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSitesSiteIdRackPhysicalPropertiesRouteHandler: RouteHandler<
+  typeof patchSitesSiteIdRackPhysicalPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

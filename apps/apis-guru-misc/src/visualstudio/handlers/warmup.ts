@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWarmupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWarmupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const warmupHandler = app.openapi(getWarmupRoute, (c) => {
+export const getWarmupRouteHandler: RouteHandler<typeof getWarmupRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

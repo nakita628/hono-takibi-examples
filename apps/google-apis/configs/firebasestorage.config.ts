@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/firebasestorage/v1beta/openapi.yaml',
   output: './src/firebasestorage/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firebasestorage/types.ts' },
   client: { output: './src/firebasestorage/client.ts', baseUrl: '/' },
   rpc: { output: './src/firebasestorage/rpc.ts', parseResponse: true },

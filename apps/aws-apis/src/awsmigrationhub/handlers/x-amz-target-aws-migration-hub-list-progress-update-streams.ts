@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSMigrationHubListProgressUpdateStreamsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSMigrationHubListProgressUpdateStreamsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsMigrationHubListProgressUpdateStreamsHandler = app.openapi(
-  postXAmzTargetAWSMigrationHubListProgressUpdateStreamsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSMigrationHubListProgressUpdateStreamsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSMigrationHubListProgressUpdateStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

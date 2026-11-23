@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatasetsv2DatasetIdRoute,
   getDatasetsv2DatasetIdRoute,
   getDatasetsv2Route,
@@ -7,21 +7,28 @@ import {
   putDatasetsv2DatasetIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDatasetsv2RouteHandler: RouteHandler<typeof postDatasetsv2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const datasetsv2Handler = app
-  .openapi(postDatasetsv2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetsv2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatasetsv2DatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetsv2DatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatasetsv2DatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDatasetsv2RouteHandler: RouteHandler<typeof getDatasetsv2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatasetsv2DatasetIdRouteHandler: RouteHandler<
+  typeof deleteDatasetsv2DatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetsv2DatasetIdRouteHandler: RouteHandler<
+  typeof getDatasetsv2DatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatasetsv2DatasetIdRouteHandler: RouteHandler<
+  typeof putDatasetsv2DatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

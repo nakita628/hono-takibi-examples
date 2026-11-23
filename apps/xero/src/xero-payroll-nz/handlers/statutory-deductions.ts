@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStatutoryDeductionsIdRoute, getStatutoryDeductionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStatutoryDeductionsIdRoute, getStatutoryDeductionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatutoryDeductionsRouteHandler: RouteHandler<
+  typeof getStatutoryDeductionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statutoryDeductionsHandler = app
-  .openapi(getStatutoryDeductionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatutoryDeductionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatutoryDeductionsIdRouteHandler: RouteHandler<
+  typeof getStatutoryDeductionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

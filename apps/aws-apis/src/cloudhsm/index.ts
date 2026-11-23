@@ -1,49 +1,131 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCloudHsmFrontendServiceAddTagsToResourceHandler,
-  xAmzTargetCloudHsmFrontendServiceCreateHapgHandler,
-  xAmzTargetCloudHsmFrontendServiceCreateHsmHandler,
-  xAmzTargetCloudHsmFrontendServiceCreateLunaClientHandler,
-  xAmzTargetCloudHsmFrontendServiceDeleteHapgHandler,
-  xAmzTargetCloudHsmFrontendServiceDeleteHsmHandler,
-  xAmzTargetCloudHsmFrontendServiceDeleteLunaClientHandler,
-  xAmzTargetCloudHsmFrontendServiceDescribeHapgHandler,
-  xAmzTargetCloudHsmFrontendServiceDescribeHsmHandler,
-  xAmzTargetCloudHsmFrontendServiceDescribeLunaClientHandler,
-  xAmzTargetCloudHsmFrontendServiceGetConfigHandler,
-  xAmzTargetCloudHsmFrontendServiceListAvailableZonesHandler,
-  xAmzTargetCloudHsmFrontendServiceListHapgsHandler,
-  xAmzTargetCloudHsmFrontendServiceListHsmsHandler,
-  xAmzTargetCloudHsmFrontendServiceListLunaClientsHandler,
-  xAmzTargetCloudHsmFrontendServiceListTagsForResourceHandler,
-  xAmzTargetCloudHsmFrontendServiceModifyHapgHandler,
-  xAmzTargetCloudHsmFrontendServiceModifyHsmHandler,
-  xAmzTargetCloudHsmFrontendServiceModifyLunaClientHandler,
-  xAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceHandler,
+  postXAmzTargetCloudHsmFrontendServiceAddTagsToResourceRoute,
+  postXAmzTargetCloudHsmFrontendServiceCreateHapgRoute,
+  postXAmzTargetCloudHsmFrontendServiceCreateHsmRoute,
+  postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute,
+  postXAmzTargetCloudHsmFrontendServiceDeleteHapgRoute,
+  postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute,
+  postXAmzTargetCloudHsmFrontendServiceDeleteLunaClientRoute,
+  postXAmzTargetCloudHsmFrontendServiceDescribeHapgRoute,
+  postXAmzTargetCloudHsmFrontendServiceDescribeHsmRoute,
+  postXAmzTargetCloudHsmFrontendServiceDescribeLunaClientRoute,
+  postXAmzTargetCloudHsmFrontendServiceGetConfigRoute,
+  postXAmzTargetCloudHsmFrontendServiceListAvailableZonesRoute,
+  postXAmzTargetCloudHsmFrontendServiceListHapgsRoute,
+  postXAmzTargetCloudHsmFrontendServiceListHsmsRoute,
+  postXAmzTargetCloudHsmFrontendServiceListLunaClientsRoute,
+  postXAmzTargetCloudHsmFrontendServiceListTagsForResourceRoute,
+  postXAmzTargetCloudHsmFrontendServiceModifyHapgRoute,
+  postXAmzTargetCloudHsmFrontendServiceModifyHsmRoute,
+  postXAmzTargetCloudHsmFrontendServiceModifyLunaClientRoute,
+  postXAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetCloudHsmFrontendServiceAddTagsToResourceRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceCreateHapgRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceCreateHsmRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDeleteHapgRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDeleteHsmRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDeleteLunaClientRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDescribeHapgRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDescribeHsmRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceDescribeLunaClientRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceGetConfigRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceListAvailableZonesRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceListHapgsRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceListHsmsRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceListLunaClientsRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceListTagsForResourceRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceModifyHapgRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceModifyHsmRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceModifyLunaClientRouteHandler,
+  postXAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCloudHsmFrontendServiceAddTagsToResourceHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceCreateHapgHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceCreateHsmHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceCreateLunaClientHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDeleteHapgHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDeleteHsmHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDeleteLunaClientHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDescribeHapgHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDescribeHsmHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceDescribeLunaClientHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceGetConfigHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceListAvailableZonesHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceListHapgsHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceListHsmsHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceListLunaClientsHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceModifyHapgHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceModifyHsmHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceModifyLunaClientHandler)
-  .route('/', xAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceHandler)
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceAddTagsToResourceRoute,
+    postXAmzTargetCloudHsmFrontendServiceAddTagsToResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceCreateHapgRoute,
+    postXAmzTargetCloudHsmFrontendServiceCreateHapgRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceCreateHsmRoute,
+    postXAmzTargetCloudHsmFrontendServiceCreateHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRoute,
+    postXAmzTargetCloudHsmFrontendServiceCreateLunaClientRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDeleteHapgRoute,
+    postXAmzTargetCloudHsmFrontendServiceDeleteHapgRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDeleteHsmRoute,
+    postXAmzTargetCloudHsmFrontendServiceDeleteHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDeleteLunaClientRoute,
+    postXAmzTargetCloudHsmFrontendServiceDeleteLunaClientRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDescribeHapgRoute,
+    postXAmzTargetCloudHsmFrontendServiceDescribeHapgRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDescribeHsmRoute,
+    postXAmzTargetCloudHsmFrontendServiceDescribeHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceDescribeLunaClientRoute,
+    postXAmzTargetCloudHsmFrontendServiceDescribeLunaClientRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceGetConfigRoute,
+    postXAmzTargetCloudHsmFrontendServiceGetConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceListAvailableZonesRoute,
+    postXAmzTargetCloudHsmFrontendServiceListAvailableZonesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceListHapgsRoute,
+    postXAmzTargetCloudHsmFrontendServiceListHapgsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceListHsmsRoute,
+    postXAmzTargetCloudHsmFrontendServiceListHsmsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceListLunaClientsRoute,
+    postXAmzTargetCloudHsmFrontendServiceListLunaClientsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceListTagsForResourceRoute,
+    postXAmzTargetCloudHsmFrontendServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceModifyHapgRoute,
+    postXAmzTargetCloudHsmFrontendServiceModifyHapgRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceModifyHsmRoute,
+    postXAmzTargetCloudHsmFrontendServiceModifyHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceModifyLunaClientRoute,
+    postXAmzTargetCloudHsmFrontendServiceModifyLunaClientRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceRoute,
+    postXAmzTargetCloudHsmFrontendServiceRemoveTagsFromResourceRouteHandler,
+  )
 
 export default app

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEmojisRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEmojisRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const emojisHandler = app.openapi(getEmojisRoute, (c) => {
+export const getEmojisRouteHandler: RouteHandler<typeof getEmojisRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

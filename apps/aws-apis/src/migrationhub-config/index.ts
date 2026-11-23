@@ -1,15 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsMigrationHubMultiAccountServiceCreateHomeRegionControlHandler,
-  xAmzTargetAwsMigrationHubMultiAccountServiceDescribeHomeRegionControlsHandler,
-  xAmzTargetAwsMigrationHubMultiAccountServiceGetHomeRegionHandler,
+  postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute,
+  postXAmzTargetAWSMigrationHubMultiAccountServiceDescribeHomeRegionControlsRoute,
+  postXAmzTargetAWSMigrationHubMultiAccountServiceGetHomeRegionRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRouteHandler,
+  postXAmzTargetAWSMigrationHubMultiAccountServiceDescribeHomeRegionControlsRouteHandler,
+  postXAmzTargetAWSMigrationHubMultiAccountServiceGetHomeRegionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsMigrationHubMultiAccountServiceCreateHomeRegionControlHandler)
-  .route('/', xAmzTargetAwsMigrationHubMultiAccountServiceDescribeHomeRegionControlsHandler)
-  .route('/', xAmzTargetAwsMigrationHubMultiAccountServiceGetHomeRegionHandler)
+  .openapi(
+    postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute,
+    postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSMigrationHubMultiAccountServiceDescribeHomeRegionControlsRoute,
+    postXAmzTargetAWSMigrationHubMultiAccountServiceDescribeHomeRegionControlsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSMigrationHubMultiAccountServiceGetHomeRegionRoute,
+    postXAmzTargetAWSMigrationHubMultiAccountServiceGetHomeRegionRouteHandler,
+  )
 
 export default app

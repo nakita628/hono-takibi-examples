@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMessagesIDMetadataCollectionsRoute,
   getMessagesIDMetadataRoute,
   getMessagesIDRoute,
@@ -7,21 +7,30 @@ import {
   postMessagesMetadataFiltersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMessagesMetadataFiltersRouteHandler: RouteHandler<
+  typeof postMessagesMetadataFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const messagesHandler = app
-  .openapi(postMessagesMetadataFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesIDMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesIDMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesIDMetadataCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMessagesIDRouteHandler: RouteHandler<typeof getMessagesIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesIDMetadataRouteHandler: RouteHandler<
+  typeof getMessagesIDMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesIDMetadataRouteHandler: RouteHandler<
+  typeof postMessagesIDMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesIDMetadataCollectionsRouteHandler: RouteHandler<
+  typeof getMessagesIDMetadataCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

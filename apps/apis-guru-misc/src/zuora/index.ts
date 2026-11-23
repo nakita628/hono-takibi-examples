@@ -1,27 +1,1649 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  chargeMetricsHandler,
-  eventsHandler,
-  notificationsHandler,
-  oauthHandler,
-  objectsHandler,
-  queryHandler,
-  settingsHandler,
-  v1Handler,
-  workflowsHandler,
+  deleteEventsEventTriggersIdRoute,
+  deleteNotificationsEmailTemplatesIdRoute,
+  deleteNotificationsHistoryRoute,
+  deleteNotificationsNotificationDefinitionsIdRoute,
+  deleteObjectsDefinitionsDefaultObjectRoute,
+  deleteObjectsRecordsDefaultObjectIdRoute,
+  deleteQueryJobsJobIdRoute,
+  deleteV1AccountingCodesAcIdRoute,
+  deleteV1AccountingPeriodsApIdRoute,
+  deleteV1AttachmentsAttachmentIdRoute,
+  deleteV1CreditmemosCreditMemoIdRoute,
+  deleteV1DebitmemosDebitMemoIdRoute,
+  deleteV1DocumentPropertiesDocumentPropertiesIdRoute,
+  deleteV1EntitiesIdRoute,
+  deleteV1JournalEntriesJeNumberRoute,
+  deleteV1JournalRunsJrNumberRoute,
+  deleteV1ObjectAccountIdRoute,
+  deleteV1ObjectAmendmentIdRoute,
+  deleteV1ObjectBillRunIdRoute,
+  deleteV1ObjectContactIdRoute,
+  deleteV1ObjectFeatureIdRoute,
+  deleteV1ObjectInvoiceAdjustmentIdRoute,
+  deleteV1ObjectInvoiceIdRoute,
+  deleteV1ObjectInvoiceItemAdjustmentIdRoute,
+  deleteV1ObjectPaymentIdRoute,
+  deleteV1ObjectPaymentMethodIdRoute,
+  deleteV1ObjectProductFeatureIdRoute,
+  deleteV1ObjectProductIdRoute,
+  deleteV1ObjectProductRatePlanChargeIdRoute,
+  deleteV1ObjectProductRatePlanIdRoute,
+  deleteV1ObjectRefundIdRoute,
+  deleteV1ObjectSubscriptionIdRoute,
+  deleteV1ObjectTaxationItemIdRoute,
+  deleteV1ObjectUnitOfMeasureIdRoute,
+  deleteV1ObjectUsageIdRoute,
+  deleteV1OrdersOrderNumberRoute,
+  deleteV1PaymentMethodsPaymentMethodIdRoute,
+  deleteV1PaymentRunsPaymentRunIdRoute,
+  deleteV1PaymentsPaymentIdRoute,
+  deleteV1RefundsRefundIdRoute,
+  deleteV1RevenueSchedulesRsNumberRoute,
+  deleteV1SequenceSetsIdRoute,
+  deleteV1TaxationitemsIdRoute,
+  deleteWorkflowsWorkflowIdRoute,
+  getChargeMetricsDataChargeMetricsDiscountAllocationDetailRoute,
+  getChargeMetricsDataChargeMetricsRoute,
+  getEventsEventTriggersIdRoute,
+  getEventsEventTriggersRoute,
+  getNotificationsEmailTemplatesIdRoute,
+  getNotificationsEmailTemplatesRoute,
+  getNotificationsHistoryTasksIdRoute,
+  getNotificationsNotificationDefinitionsIdRoute,
+  getNotificationsNotificationDefinitionsRoute,
+  getObjectsDefinitionsDefaultObjectRoute,
+  getObjectsDefinitionsDefaultRoute,
+  getObjectsJobsIdErrorsRoute,
+  getObjectsJobsIdRoute,
+  getObjectsJobsRoute,
+  getObjectsRecordsDefaultObjectIdRoute,
+  getObjectsRecordsDefaultObjectRoute,
+  getQueryJobsJobIdRoute,
+  getQueryJobsRoute,
+  getSettingsListingRoute,
+  getV1AccountingCodesAcIdRoute,
+  getV1AccountingCodesRoute,
+  getV1AccountingPeriodsApIdRoute,
+  getV1AccountingPeriodsRoute,
+  getV1AccountsAccountKeyRoute,
+  getV1AccountsAccountKeySummaryRoute,
+  getV1AccountsBillingDocumentsFilesDeletionJobsJobIdRoute,
+  getV1AmendmentsAmendmentKeyRoute,
+  getV1AmendmentsSubscriptionsSubscriptionIdRoute,
+  getV1AsyncJobsJobIdRoute,
+  getV1AttachmentsAttachmentIdRoute,
+  getV1AttachmentsObjectTypeObjectKeyRoute,
+  getV1BillingDocumentsRoute,
+  getV1BillingPreviewRunsBillingPreviewRunIdRoute,
+  getV1BulkBulkKeyRoute,
+  getV1CatalogProductProductIdRoute,
+  getV1CatalogProductsRoute,
+  getV1ChargeRevenueSummariesCrsNumberRoute,
+  getV1ChargeRevenueSummariesSubscriptionChargesChargeKeyRoute,
+  getV1CreditmemosCreditMemoIdItemsCmitemidRoute,
+  getV1CreditmemosCreditMemoIdItemsCmitemidTaxationItemsRoute,
+  getV1CreditmemosCreditMemoIdItemsRoute,
+  getV1CreditmemosCreditMemoIdPartsPartidItempartsItempartidRoute,
+  getV1CreditmemosCreditMemoIdPartsPartidItempartsRoute,
+  getV1CreditmemosCreditMemoIdPartsPartidRoute,
+  getV1CreditmemosCreditMemoIdPartsRoute,
+  getV1CreditmemosCreditMemoIdRoute,
+  getV1CreditmemosRoute,
+  getV1CustomExchangeRatesCurrencyRoute,
+  getV1DebitmemosDebitMemoIdApplicationPartsRoute,
+  getV1DebitmemosDebitMemoIdItemsDmitemidRoute,
+  getV1DebitmemosDebitMemoIdItemsDmitemidTaxationItemsRoute,
+  getV1DebitmemosDebitMemoIdItemsRoute,
+  getV1DebitmemosDebitMemoIdRoute,
+  getV1DebitmemosRoute,
+  getV1DescribeObjectRoute,
+  getV1DocumentPropertiesDocumentTypeDocumentIdRoute,
+  getV1EntitiesIdRoute,
+  getV1EntitiesRoute,
+  getV1EntityConnectionsRoute,
+  getV1FilesFileIdRoute,
+  getV1HostedpagesRoute,
+  getV1InvoicesInvoiceIdApplicationPartsRoute,
+  getV1InvoicesInvoiceIdFilesRoute,
+  getV1InvoicesInvoiceIdItemsItemIdTaxationItemsRoute,
+  getV1InvoicesInvoiceIdItemsRoute,
+  getV1JournalEntriesJeNumberRoute,
+  getV1JournalEntriesJournalRunsJrNumberRoute,
+  getV1JournalRunsJrNumberRoute,
+  getV1NotificationHistoryCalloutRoute,
+  getV1NotificationHistoryEmailRoute,
+  getV1ObjectAccountIdRoute,
+  getV1ObjectAmendmentIdRoute,
+  getV1ObjectBillRunIdRoute,
+  getV1ObjectCommunicationProfileIdRoute,
+  getV1ObjectContactIdRoute,
+  getV1ObjectCreditBalanceAdjustmentIdRoute,
+  getV1ObjectExportIdRoute,
+  getV1ObjectFeatureIdRoute,
+  getV1ObjectImportIdRoute,
+  getV1ObjectInvoiceAdjustmentIdRoute,
+  getV1ObjectInvoiceIdRoute,
+  getV1ObjectInvoiceItemAdjustmentIdRoute,
+  getV1ObjectInvoiceItemIdRoute,
+  getV1ObjectInvoicePaymentIdRoute,
+  getV1ObjectInvoiceSplitIdRoute,
+  getV1ObjectInvoiceSplitItemIdRoute,
+  getV1ObjectPaymentIdRoute,
+  getV1ObjectPaymentMethodIdRoute,
+  getV1ObjectPaymentMethodSnapshotIdRoute,
+  getV1ObjectPaymentMethodTransactionLogIdRoute,
+  getV1ObjectPaymentTransactionLogIdRoute,
+  getV1ObjectProductFeatureIdRoute,
+  getV1ObjectProductIdRoute,
+  getV1ObjectProductRatePlanChargeIdRoute,
+  getV1ObjectProductRatePlanChargeTierIdRoute,
+  getV1ObjectProductRatePlanIdRoute,
+  getV1ObjectRatePlanChargeIdRoute,
+  getV1ObjectRatePlanChargeTierIdRoute,
+  getV1ObjectRatePlanIdRoute,
+  getV1ObjectRefundIdRoute,
+  getV1ObjectRefundInvoicePaymentIdRoute,
+  getV1ObjectRefundTransactionLogIdRoute,
+  getV1ObjectSubscriptionIdRoute,
+  getV1ObjectSubscriptionProductFeatureIdRoute,
+  getV1ObjectTaxationItemIdRoute,
+  getV1ObjectUnitOfMeasureIdRoute,
+  getV1ObjectUsageIdRoute,
+  getV1OrderLineItemsItemIdRoute,
+  getV1OrdersInvoiceOwnerAccountNumberRoute,
+  getV1OrdersOrderNumberEvergreenMetricsSubscriptionNumberRoute,
+  getV1OrdersOrderNumberRampMetricsRoute,
+  getV1OrdersOrderNumberRoute,
+  getV1OrdersRoute,
+  getV1OrdersSubscriptionOwnerAccountNumberRoute,
+  getV1OrdersSubscriptionSubscriptionNumberRoute,
+  getV1OrdersTermSubscriptionNumberRoute,
+  getV1PaymentgatewaysRoute,
+  getV1PaymentMethodsCreditCardsAccountsAccountKeyRoute,
+  getV1PaymentMethodsPaymentMethodIdProfilesRoute,
+  getV1PaymentMethodsPaymentMethodIdRoute,
+  getV1PaymentRunsPaymentRunIdDataRoute,
+  getV1PaymentRunsPaymentRunIdRoute,
+  getV1PaymentRunsPaymentRunIdSummaryRoute,
+  getV1PaymentRunsRoute,
+  getV1PaymentsPaymentIdPartsPartidItempartsItempartidRoute,
+  getV1PaymentsPaymentIdPartsPartidItempartsRoute,
+  getV1PaymentsPaymentIdPartsPartidRoute,
+  getV1PaymentsPaymentIdPartsRoute,
+  getV1PaymentsPaymentIdRoute,
+  getV1PaymentsRoute,
+  getV1RampsRampNumberRampMetricsRoute,
+  getV1RampsRampNumberRoute,
+  getV1RateplanProductIdProductRatePlanRoute,
+  getV1RefundsRefundIdPartsRefundpartidItempartsItempartidRoute,
+  getV1RefundsRefundIdPartsRefundpartidItempartsRoute,
+  getV1RefundsRefundIdPartsRefundpartidRoute,
+  getV1RefundsRefundIdPartsRoute,
+  getV1RefundsRefundIdRoute,
+  getV1RefundsRoute,
+  getV1RevenueEventsEventNumberRoute,
+  getV1RevenueEventsRevenueSchedulesRsNumberRoute,
+  getV1RevenueItemsChargeRevenueSummariesCrsNumberRoute,
+  getV1RevenueItemsRevenueEventsEventNumberRoute,
+  getV1RevenueItemsRevenueSchedulesRsNumberRoute,
+  getV1RevenueRecognitionRulesProductChargesChargeKeyRoute,
+  getV1RevenueRecognitionRulesSubscriptionChargesChargeKeyRoute,
+  getV1RevenueSchedulesCreditMemoItemsCmiIdRoute,
+  getV1RevenueSchedulesDebitMemoItemsDmiIdRoute,
+  getV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRoute,
+  getV1RevenueSchedulesInvoiceItemsInvoiceItemIdRoute,
+  getV1RevenueSchedulesProductChargesChargeKeyAccountKeyRoute,
+  getV1RevenueSchedulesRsNumberRoute,
+  getV1RevenueSchedulesSubscriptionChargesChargeKeyRoute,
+  getV1SequenceSetsIdRoute,
+  getV1SequenceSetsRoute,
+  getV1SettingsFinanceRevenueAutomationStartDateRoute,
+  getV1SubscriptionsAccountsAccountKeyRoute,
+  getV1SubscriptionsSubscriptionKeyRampMetricsRoute,
+  getV1SubscriptionsSubscriptionKeyRampsRoute,
+  getV1SubscriptionsSubscriptionKeyRoute,
+  getV1SubscriptionsSubscriptionKeyVersionsVersionRoute,
+  getV1TaxationitemsIdRoute,
+  getV1TransactionsInvoicesAccountsAccountKeyRoute,
+  getV1TransactionsPaymentsAccountsAccountKeyRoute,
+  getV1UsageAccountsAccountKeyRoute,
+  getV1UsersUsernameAccessibleEntitiesRoute,
+  getWorkflowsMetricsJsonRoute,
+  getWorkflowsRoute,
+  getWorkflowsTasksRoute,
+  getWorkflowsTasksTaskIdRoute,
+  getWorkflowsWorkflowIdExportRoute,
+  getWorkflowsWorkflowIdRoute,
+  patchObjectsRecordsDefaultObjectIdRoute,
+  patchWorkflowsWorkflowIdRoute,
+  postEventsEventTriggersRoute,
+  postNotificationsEmailTemplatesRoute,
+  postNotificationsNotificationDefinitionsRoute,
+  postOauthTokenRoute,
+  postObjectsBatchDefaultObjectRoute,
+  postObjectsDefinitionsDefaultRoute,
+  postObjectsJobsIdFilesRoute,
+  postObjectsJobsRoute,
+  postObjectsMigrationsRoute,
+  postObjectsRecordsDefaultObjectRoute,
+  postQueryJobsRoute,
+  postSettingsBatchRequestsRoute,
+  postV1AccountingCodesRoute,
+  postV1AccountingPeriodsRoute,
+  postV1AccountsBillingDocumentsFilesDeletionJobsRoute,
+  postV1AccountsIdBillingDocumentsGenerateRoute,
+  postV1AccountsRoute,
+  postV1ActionAmendRoute,
+  postV1ActionCreateRoute,
+  postV1ActionDeleteRoute,
+  postV1ActionExecuteRoute,
+  postV1ActionGenerateRoute,
+  postV1ActionQueryMoreRoute,
+  postV1ActionQueryRoute,
+  postV1ActionSubscribeRoute,
+  postV1ActionUpdateRoute,
+  postV1AsyncOrdersPreviewRoute,
+  postV1AsyncOrdersRoute,
+  postV1AttachmentsRoute,
+  postV1BillingPreviewRunsRoute,
+  postV1BillRunsBillRunIdEmailsRoute,
+  postV1BulkRoute,
+  postV1CatalogProductsProductIdShareRoute,
+  postV1ConnectionsRoute,
+  postV1CreditmemosCreditMemoIdEmailsRoute,
+  postV1CreditmemosCreditMemoIdFilesRoute,
+  postV1CreditmemosCreditMemoIdPdfsRoute,
+  postV1CreditmemosCreditmemoIdRefundsRoute,
+  postV1CreditmemosCreditMemoIdTaxationitemsRoute,
+  postV1CreditmemosRoute,
+  postV1DebitmemosDebitMemoIdCollectRoute,
+  postV1DebitmemosDebitMemoIdEmailsRoute,
+  postV1DebitmemosDebitMemoIdFilesRoute,
+  postV1DebitmemosDebitMemoIdPdfsRoute,
+  postV1DebitmemosDebitMemoIdTaxationitemsRoute,
+  postV1DebitmemosRoute,
+  postV1DocumentPropertiesRoute,
+  postV1EntitiesRoute,
+  postV1EntityConnectionsRoute,
+  postV1GatewaySettlementPaymentsPaymentIdChargebackRoute,
+  postV1GatewaySettlementPaymentsPaymentIdRejectRoute,
+  postV1GatewaySettlementPaymentsPaymentIdSettleRoute,
+  postV1HmacSignaturesRoute,
+  postV1InvoicesInvoiceIdCreditmemosRoute,
+  postV1InvoicesInvoiceIdDebitmemosRoute,
+  postV1InvoicesInvoiceIdEmailsRoute,
+  postV1InvoicesInvoiceIdFilesRoute,
+  postV1InvoicesRoute,
+  postV1JournalEntriesRoute,
+  postV1JournalRunsRoute,
+  postV1ObjectAccountRoute,
+  postV1ObjectBillRunRoute,
+  postV1ObjectContactRoute,
+  postV1ObjectCreditBalanceAdjustmentRoute,
+  postV1ObjectExportRoute,
+  postV1ObjectFeatureRoute,
+  postV1ObjectImportRoute,
+  postV1ObjectInvoiceAdjustmentRoute,
+  postV1ObjectInvoicePaymentRoute,
+  postV1ObjectPaymentMethodRoute,
+  postV1ObjectPaymentRoute,
+  postV1ObjectProductRatePlanChargeRoute,
+  postV1ObjectProductRatePlanRoute,
+  postV1ObjectProductRoute,
+  postV1ObjectRefundRoute,
+  postV1ObjectTaxationItemRoute,
+  postV1ObjectUnitOfMeasureRoute,
+  postV1ObjectUsageRoute,
+  postV1OperationsBillingPreviewRoute,
+  postV1OperationsInvoiceCollectRoute,
+  postV1OrderLineItemsBulkRoute,
+  postV1OrdersPreviewRoute,
+  postV1OrdersRoute,
+  postV1PaymentMethodsCreditCardsRoute,
+  postV1PaymentMethodsDecryptionRoute,
+  postV1PaymentMethodsPaymentMethodIdAuthorizeRoute,
+  postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberCancelRoute,
+  postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberExpireRoute,
+  postV1PaymentMethodsPaymentMethodIdProfilesRoute,
+  postV1PaymentMethodsPaymentMethodIdVoidAuthorizeRoute,
+  postV1PaymentMethodsRoute,
+  postV1PaymentRunsRoute,
+  postV1PaymentsPaymentIdRefundsRoute,
+  postV1PaymentsRoute,
+  postV1QuotesDocumentRoute,
+  postV1RefundsRefundIdReconcileRoute,
+  postV1RevenueSchedulesCreditMemoItemsCmiIdDistributeRevenueWithDateRangeRoute,
+  postV1RevenueSchedulesCreditMemoItemsCmiIdRoute,
+  postV1RevenueSchedulesDebitMemoItemsDmiIdDistributeRevenueWithDateRangeRoute,
+  postV1RevenueSchedulesDebitMemoItemsDmiIdRoute,
+  postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyDistributeRevenueWithDateRangeRoute,
+  postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRoute,
+  postV1RevenueSchedulesInvoiceItemsInvoiceItemIdDistributeRevenueWithDateRangeRoute,
+  postV1RevenueSchedulesInvoiceItemsInvoiceItemIdRoute,
+  postV1RevenueSchedulesSubscriptionChargesChargeKeyRoute,
+  postV1RsaSignaturesDecryptRoute,
+  postV1RsaSignaturesRoute,
+  postV1SequenceSetsRoute,
+  postV1SubscriptionsPreviewRoute,
+  postV1SubscriptionsRoute,
+  postV1UsageRoute,
+  postWorkflowsImportRoute,
+  postWorkflowsTasksTaskIdRerunRoute,
+  postWorkflowsWorkflowIdRunRoute,
+  putEventsEventTriggersIdRoute,
+  putNotificationsEmailTemplatesIdRoute,
+  putNotificationsNotificationDefinitionsIdRoute,
+  putObjectsRecordsDefaultObjectIdRoute,
+  putV1AccountingCodesAcIdActivateRoute,
+  putV1AccountingCodesAcIdDeactivateRoute,
+  putV1AccountingCodesAcIdRoute,
+  putV1AccountingPeriodsApIdCloseRoute,
+  putV1AccountingPeriodsApIdPendingCloseRoute,
+  putV1AccountingPeriodsApIdReopenRoute,
+  putV1AccountingPeriodsApIdRoute,
+  putV1AccountingPeriodsApIdRunTrialBalanceRoute,
+  putV1AccountsAccountKeyRoute,
+  putV1AttachmentsAttachmentIdRoute,
+  putV1BulkBulkKeyStopRoute,
+  putV1ContactsContactIdScrubRoute,
+  putV1CreditmemosCreditMemoIdApplyRoute,
+  putV1CreditmemosCreditMemoIdCancelRoute,
+  putV1CreditmemosCreditMemoIdPostRoute,
+  putV1CreditmemosCreditMemoIdRoute,
+  putV1CreditmemosCreditMemoIdUnapplyRoute,
+  putV1CreditmemosCreditMemoIdUnpostRoute,
+  putV1DebitmemosDebitMemoIdCancelRoute,
+  putV1DebitmemosDebitMemoIdPostRoute,
+  putV1DebitmemosDebitMemoIdRoute,
+  putV1DebitmemosDebitMemoIdUnpostRoute,
+  putV1DebitmemosRoute,
+  putV1DocumentPropertiesDocumentPropertiesIdRoute,
+  putV1EntitiesIdProvisionRoute,
+  putV1EntitiesIdRoute,
+  putV1EntityConnectionsConnectionIdAcceptRoute,
+  putV1EntityConnectionsConnectionIdDenyRoute,
+  putV1EntityConnectionsConnectionIdDisconnectRoute,
+  putV1InvoicesInvoiceIdReverseRoute,
+  putV1InvoicesInvoiceIdRoute,
+  putV1InvoicesInvoiceIdWriteOffRoute,
+  putV1InvoicesRoute,
+  putV1JournalEntriesJeNumberBasicInformationRoute,
+  putV1JournalEntriesJeNumberCancelRoute,
+  putV1JournalRunsJrNumberCancelRoute,
+  putV1ObjectAccountIdRoute,
+  putV1ObjectAmendmentIdRoute,
+  putV1ObjectBillRunIdRoute,
+  putV1ObjectContactIdRoute,
+  putV1ObjectCreditBalanceAdjustmentIdRoute,
+  putV1ObjectFeatureIdRoute,
+  putV1ObjectInvoiceAdjustmentIdRoute,
+  putV1ObjectInvoiceIdRoute,
+  putV1ObjectInvoicePaymentIdRoute,
+  putV1ObjectPaymentIdRoute,
+  putV1ObjectPaymentMethodIdRoute,
+  putV1ObjectProductIdRoute,
+  putV1ObjectProductRatePlanChargeIdRoute,
+  putV1ObjectProductRatePlanChargeTierIdRoute,
+  putV1ObjectProductRatePlanIdRoute,
+  putV1ObjectRatePlanChargeIdRoute,
+  putV1ObjectRefundIdRoute,
+  putV1ObjectSubscriptionIdRoute,
+  putV1ObjectTaxationItemIdRoute,
+  putV1ObjectUnitOfMeasureIdRoute,
+  putV1ObjectUsageIdRoute,
+  putV1OrderLineItemsItemIdRoute,
+  putV1OrdersOrderNumberCustomFieldsRoute,
+  putV1OrdersOrderNumberTriggerDatesRoute,
+  putV1PaymentMethodsCreditCardsPaymentMethodIdRoute,
+  putV1PaymentMethodsPaymentMethodIdRoute,
+  putV1PaymentMethodsPaymentMethodIdScrubRoute,
+  putV1PaymentMethodsPaymentMethodIdVerifyRoute,
+  putV1PaymentRunsPaymentRunIdRoute,
+  putV1PaymentsPaymentIdApplyRoute,
+  putV1PaymentsPaymentIdCancelRoute,
+  putV1PaymentsPaymentIdRoute,
+  putV1PaymentsPaymentIdTransferRoute,
+  putV1PaymentsPaymentIdUnapplyRoute,
+  putV1RefundsRefundIdCancelRoute,
+  putV1RefundsRefundIdRoute,
+  putV1RevenueItemsRevenueEventsEventNumberRoute,
+  putV1RevenueItemsRevenueSchedulesRsNumberRoute,
+  putV1RevenueSchedulesRsNumberBasicInformationRoute,
+  putV1RevenueSchedulesRsNumberDistributeRevenueAcrossAccountingPeriodsRoute,
+  putV1RevenueSchedulesRsNumberDistributeRevenueOnSpecificDateRoute,
+  putV1RevenueSchedulesRsNumberDistributeRevenueWithDateRangeRoute,
+  putV1RevproAccountingCodesRoute,
+  putV1SequenceSetsIdRoute,
+  putV1SubscriptionsSubscriptionKeyCancelRoute,
+  putV1SubscriptionsSubscriptionKeyRenewRoute,
+  putV1SubscriptionsSubscriptionKeyResumeRoute,
+  putV1SubscriptionsSubscriptionKeyRoute,
+  putV1SubscriptionsSubscriptionKeySuspendRoute,
+  putV1SubscriptionsSubscriptionNumberCustomFieldsRoute,
+  putV1SubscriptionsSubscriptionNumberVersionsVersionCustomFieldsRoute,
+  putV1TaxationitemsIdRoute,
+  putV1UsersUsernameAcceptAccessRoute,
+  putV1UsersUsernameDenyAccessRoute,
+  putV1UsersUsernameRequestAccessRoute,
+  putWorkflowsTasksBatchUpdateRoute,
+} from './routes'
+import {
+  deleteEventsEventTriggersIdRouteHandler,
+  deleteNotificationsEmailTemplatesIdRouteHandler,
+  deleteNotificationsHistoryRouteHandler,
+  deleteNotificationsNotificationDefinitionsIdRouteHandler,
+  deleteObjectsDefinitionsDefaultObjectRouteHandler,
+  deleteObjectsRecordsDefaultObjectIdRouteHandler,
+  deleteQueryJobsJobIdRouteHandler,
+  deleteV1AccountingCodesAcIdRouteHandler,
+  deleteV1AccountingPeriodsApIdRouteHandler,
+  deleteV1AttachmentsAttachmentIdRouteHandler,
+  deleteV1CreditmemosCreditMemoIdRouteHandler,
+  deleteV1DebitmemosDebitMemoIdRouteHandler,
+  deleteV1DocumentPropertiesDocumentPropertiesIdRouteHandler,
+  deleteV1EntitiesIdRouteHandler,
+  deleteV1JournalEntriesJeNumberRouteHandler,
+  deleteV1JournalRunsJrNumberRouteHandler,
+  deleteV1ObjectAccountIdRouteHandler,
+  deleteV1ObjectAmendmentIdRouteHandler,
+  deleteV1ObjectBillRunIdRouteHandler,
+  deleteV1ObjectContactIdRouteHandler,
+  deleteV1ObjectFeatureIdRouteHandler,
+  deleteV1ObjectInvoiceAdjustmentIdRouteHandler,
+  deleteV1ObjectInvoiceIdRouteHandler,
+  deleteV1ObjectInvoiceItemAdjustmentIdRouteHandler,
+  deleteV1ObjectPaymentIdRouteHandler,
+  deleteV1ObjectPaymentMethodIdRouteHandler,
+  deleteV1ObjectProductFeatureIdRouteHandler,
+  deleteV1ObjectProductIdRouteHandler,
+  deleteV1ObjectProductRatePlanChargeIdRouteHandler,
+  deleteV1ObjectProductRatePlanIdRouteHandler,
+  deleteV1ObjectRefundIdRouteHandler,
+  deleteV1ObjectSubscriptionIdRouteHandler,
+  deleteV1ObjectTaxationItemIdRouteHandler,
+  deleteV1ObjectUnitOfMeasureIdRouteHandler,
+  deleteV1ObjectUsageIdRouteHandler,
+  deleteV1OrdersOrderNumberRouteHandler,
+  deleteV1PaymentMethodsPaymentMethodIdRouteHandler,
+  deleteV1PaymentRunsPaymentRunIdRouteHandler,
+  deleteV1PaymentsPaymentIdRouteHandler,
+  deleteV1RefundsRefundIdRouteHandler,
+  deleteV1RevenueSchedulesRsNumberRouteHandler,
+  deleteV1SequenceSetsIdRouteHandler,
+  deleteV1TaxationitemsIdRouteHandler,
+  deleteWorkflowsWorkflowIdRouteHandler,
+  getChargeMetricsDataChargeMetricsDiscountAllocationDetailRouteHandler,
+  getChargeMetricsDataChargeMetricsRouteHandler,
+  getEventsEventTriggersIdRouteHandler,
+  getEventsEventTriggersRouteHandler,
+  getNotificationsEmailTemplatesIdRouteHandler,
+  getNotificationsEmailTemplatesRouteHandler,
+  getNotificationsHistoryTasksIdRouteHandler,
+  getNotificationsNotificationDefinitionsIdRouteHandler,
+  getNotificationsNotificationDefinitionsRouteHandler,
+  getObjectsDefinitionsDefaultObjectRouteHandler,
+  getObjectsDefinitionsDefaultRouteHandler,
+  getObjectsJobsIdErrorsRouteHandler,
+  getObjectsJobsIdRouteHandler,
+  getObjectsJobsRouteHandler,
+  getObjectsRecordsDefaultObjectIdRouteHandler,
+  getObjectsRecordsDefaultObjectRouteHandler,
+  getQueryJobsJobIdRouteHandler,
+  getQueryJobsRouteHandler,
+  getSettingsListingRouteHandler,
+  getV1AccountingCodesAcIdRouteHandler,
+  getV1AccountingCodesRouteHandler,
+  getV1AccountingPeriodsApIdRouteHandler,
+  getV1AccountingPeriodsRouteHandler,
+  getV1AccountsAccountKeyRouteHandler,
+  getV1AccountsAccountKeySummaryRouteHandler,
+  getV1AccountsBillingDocumentsFilesDeletionJobsJobIdRouteHandler,
+  getV1AmendmentsAmendmentKeyRouteHandler,
+  getV1AmendmentsSubscriptionsSubscriptionIdRouteHandler,
+  getV1AsyncJobsJobIdRouteHandler,
+  getV1AttachmentsAttachmentIdRouteHandler,
+  getV1AttachmentsObjectTypeObjectKeyRouteHandler,
+  getV1BillingDocumentsRouteHandler,
+  getV1BillingPreviewRunsBillingPreviewRunIdRouteHandler,
+  getV1BulkBulkKeyRouteHandler,
+  getV1CatalogProductProductIdRouteHandler,
+  getV1CatalogProductsRouteHandler,
+  getV1ChargeRevenueSummariesCrsNumberRouteHandler,
+  getV1ChargeRevenueSummariesSubscriptionChargesChargeKeyRouteHandler,
+  getV1CreditmemosCreditMemoIdItemsCmitemidRouteHandler,
+  getV1CreditmemosCreditMemoIdItemsCmitemidTaxationItemsRouteHandler,
+  getV1CreditmemosCreditMemoIdItemsRouteHandler,
+  getV1CreditmemosCreditMemoIdPartsPartidItempartsItempartidRouteHandler,
+  getV1CreditmemosCreditMemoIdPartsPartidItempartsRouteHandler,
+  getV1CreditmemosCreditMemoIdPartsPartidRouteHandler,
+  getV1CreditmemosCreditMemoIdPartsRouteHandler,
+  getV1CreditmemosCreditMemoIdRouteHandler,
+  getV1CreditmemosRouteHandler,
+  getV1CustomExchangeRatesCurrencyRouteHandler,
+  getV1DebitmemosDebitMemoIdApplicationPartsRouteHandler,
+  getV1DebitmemosDebitMemoIdItemsDmitemidRouteHandler,
+  getV1DebitmemosDebitMemoIdItemsDmitemidTaxationItemsRouteHandler,
+  getV1DebitmemosDebitMemoIdItemsRouteHandler,
+  getV1DebitmemosDebitMemoIdRouteHandler,
+  getV1DebitmemosRouteHandler,
+  getV1DescribeObjectRouteHandler,
+  getV1DocumentPropertiesDocumentTypeDocumentIdRouteHandler,
+  getV1EntitiesIdRouteHandler,
+  getV1EntitiesRouteHandler,
+  getV1EntityConnectionsRouteHandler,
+  getV1FilesFileIdRouteHandler,
+  getV1HostedpagesRouteHandler,
+  getV1InvoicesInvoiceIdApplicationPartsRouteHandler,
+  getV1InvoicesInvoiceIdFilesRouteHandler,
+  getV1InvoicesInvoiceIdItemsItemIdTaxationItemsRouteHandler,
+  getV1InvoicesInvoiceIdItemsRouteHandler,
+  getV1JournalEntriesJeNumberRouteHandler,
+  getV1JournalEntriesJournalRunsJrNumberRouteHandler,
+  getV1JournalRunsJrNumberRouteHandler,
+  getV1NotificationHistoryCalloutRouteHandler,
+  getV1NotificationHistoryEmailRouteHandler,
+  getV1ObjectAccountIdRouteHandler,
+  getV1ObjectAmendmentIdRouteHandler,
+  getV1ObjectBillRunIdRouteHandler,
+  getV1ObjectCommunicationProfileIdRouteHandler,
+  getV1ObjectContactIdRouteHandler,
+  getV1ObjectCreditBalanceAdjustmentIdRouteHandler,
+  getV1ObjectExportIdRouteHandler,
+  getV1ObjectFeatureIdRouteHandler,
+  getV1ObjectImportIdRouteHandler,
+  getV1ObjectInvoiceAdjustmentIdRouteHandler,
+  getV1ObjectInvoiceIdRouteHandler,
+  getV1ObjectInvoiceItemAdjustmentIdRouteHandler,
+  getV1ObjectInvoiceItemIdRouteHandler,
+  getV1ObjectInvoicePaymentIdRouteHandler,
+  getV1ObjectInvoiceSplitIdRouteHandler,
+  getV1ObjectInvoiceSplitItemIdRouteHandler,
+  getV1ObjectPaymentIdRouteHandler,
+  getV1ObjectPaymentMethodIdRouteHandler,
+  getV1ObjectPaymentMethodSnapshotIdRouteHandler,
+  getV1ObjectPaymentMethodTransactionLogIdRouteHandler,
+  getV1ObjectPaymentTransactionLogIdRouteHandler,
+  getV1ObjectProductFeatureIdRouteHandler,
+  getV1ObjectProductIdRouteHandler,
+  getV1ObjectProductRatePlanChargeIdRouteHandler,
+  getV1ObjectProductRatePlanChargeTierIdRouteHandler,
+  getV1ObjectProductRatePlanIdRouteHandler,
+  getV1ObjectRatePlanChargeIdRouteHandler,
+  getV1ObjectRatePlanChargeTierIdRouteHandler,
+  getV1ObjectRatePlanIdRouteHandler,
+  getV1ObjectRefundIdRouteHandler,
+  getV1ObjectRefundInvoicePaymentIdRouteHandler,
+  getV1ObjectRefundTransactionLogIdRouteHandler,
+  getV1ObjectSubscriptionIdRouteHandler,
+  getV1ObjectSubscriptionProductFeatureIdRouteHandler,
+  getV1ObjectTaxationItemIdRouteHandler,
+  getV1ObjectUnitOfMeasureIdRouteHandler,
+  getV1ObjectUsageIdRouteHandler,
+  getV1OrderLineItemsItemIdRouteHandler,
+  getV1OrdersInvoiceOwnerAccountNumberRouteHandler,
+  getV1OrdersOrderNumberEvergreenMetricsSubscriptionNumberRouteHandler,
+  getV1OrdersOrderNumberRampMetricsRouteHandler,
+  getV1OrdersOrderNumberRouteHandler,
+  getV1OrdersRouteHandler,
+  getV1OrdersSubscriptionOwnerAccountNumberRouteHandler,
+  getV1OrdersSubscriptionSubscriptionNumberRouteHandler,
+  getV1OrdersTermSubscriptionNumberRouteHandler,
+  getV1PaymentgatewaysRouteHandler,
+  getV1PaymentMethodsCreditCardsAccountsAccountKeyRouteHandler,
+  getV1PaymentMethodsPaymentMethodIdProfilesRouteHandler,
+  getV1PaymentMethodsPaymentMethodIdRouteHandler,
+  getV1PaymentRunsPaymentRunIdDataRouteHandler,
+  getV1PaymentRunsPaymentRunIdRouteHandler,
+  getV1PaymentRunsPaymentRunIdSummaryRouteHandler,
+  getV1PaymentRunsRouteHandler,
+  getV1PaymentsPaymentIdPartsPartidItempartsItempartidRouteHandler,
+  getV1PaymentsPaymentIdPartsPartidItempartsRouteHandler,
+  getV1PaymentsPaymentIdPartsPartidRouteHandler,
+  getV1PaymentsPaymentIdPartsRouteHandler,
+  getV1PaymentsPaymentIdRouteHandler,
+  getV1PaymentsRouteHandler,
+  getV1RampsRampNumberRampMetricsRouteHandler,
+  getV1RampsRampNumberRouteHandler,
+  getV1RateplanProductIdProductRatePlanRouteHandler,
+  getV1RefundsRefundIdPartsRefundpartidItempartsItempartidRouteHandler,
+  getV1RefundsRefundIdPartsRefundpartidItempartsRouteHandler,
+  getV1RefundsRefundIdPartsRefundpartidRouteHandler,
+  getV1RefundsRefundIdPartsRouteHandler,
+  getV1RefundsRefundIdRouteHandler,
+  getV1RefundsRouteHandler,
+  getV1RevenueEventsEventNumberRouteHandler,
+  getV1RevenueEventsRevenueSchedulesRsNumberRouteHandler,
+  getV1RevenueItemsChargeRevenueSummariesCrsNumberRouteHandler,
+  getV1RevenueItemsRevenueEventsEventNumberRouteHandler,
+  getV1RevenueItemsRevenueSchedulesRsNumberRouteHandler,
+  getV1RevenueRecognitionRulesProductChargesChargeKeyRouteHandler,
+  getV1RevenueRecognitionRulesSubscriptionChargesChargeKeyRouteHandler,
+  getV1RevenueSchedulesCreditMemoItemsCmiIdRouteHandler,
+  getV1RevenueSchedulesDebitMemoItemsDmiIdRouteHandler,
+  getV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRouteHandler,
+  getV1RevenueSchedulesInvoiceItemsInvoiceItemIdRouteHandler,
+  getV1RevenueSchedulesProductChargesChargeKeyAccountKeyRouteHandler,
+  getV1RevenueSchedulesRsNumberRouteHandler,
+  getV1RevenueSchedulesSubscriptionChargesChargeKeyRouteHandler,
+  getV1SequenceSetsIdRouteHandler,
+  getV1SequenceSetsRouteHandler,
+  getV1SettingsFinanceRevenueAutomationStartDateRouteHandler,
+  getV1SubscriptionsAccountsAccountKeyRouteHandler,
+  getV1SubscriptionsSubscriptionKeyRampMetricsRouteHandler,
+  getV1SubscriptionsSubscriptionKeyRampsRouteHandler,
+  getV1SubscriptionsSubscriptionKeyRouteHandler,
+  getV1SubscriptionsSubscriptionKeyVersionsVersionRouteHandler,
+  getV1TaxationitemsIdRouteHandler,
+  getV1TransactionsInvoicesAccountsAccountKeyRouteHandler,
+  getV1TransactionsPaymentsAccountsAccountKeyRouteHandler,
+  getV1UsageAccountsAccountKeyRouteHandler,
+  getV1UsersUsernameAccessibleEntitiesRouteHandler,
+  getWorkflowsMetricsJsonRouteHandler,
+  getWorkflowsRouteHandler,
+  getWorkflowsTasksRouteHandler,
+  getWorkflowsTasksTaskIdRouteHandler,
+  getWorkflowsWorkflowIdExportRouteHandler,
+  getWorkflowsWorkflowIdRouteHandler,
+  patchObjectsRecordsDefaultObjectIdRouteHandler,
+  patchWorkflowsWorkflowIdRouteHandler,
+  postEventsEventTriggersRouteHandler,
+  postNotificationsEmailTemplatesRouteHandler,
+  postNotificationsNotificationDefinitionsRouteHandler,
+  postOauthTokenRouteHandler,
+  postObjectsBatchDefaultObjectRouteHandler,
+  postObjectsDefinitionsDefaultRouteHandler,
+  postObjectsJobsIdFilesRouteHandler,
+  postObjectsJobsRouteHandler,
+  postObjectsMigrationsRouteHandler,
+  postObjectsRecordsDefaultObjectRouteHandler,
+  postQueryJobsRouteHandler,
+  postSettingsBatchRequestsRouteHandler,
+  postV1AccountingCodesRouteHandler,
+  postV1AccountingPeriodsRouteHandler,
+  postV1AccountsBillingDocumentsFilesDeletionJobsRouteHandler,
+  postV1AccountsIdBillingDocumentsGenerateRouteHandler,
+  postV1AccountsRouteHandler,
+  postV1ActionAmendRouteHandler,
+  postV1ActionCreateRouteHandler,
+  postV1ActionDeleteRouteHandler,
+  postV1ActionExecuteRouteHandler,
+  postV1ActionGenerateRouteHandler,
+  postV1ActionQueryMoreRouteHandler,
+  postV1ActionQueryRouteHandler,
+  postV1ActionSubscribeRouteHandler,
+  postV1ActionUpdateRouteHandler,
+  postV1AsyncOrdersPreviewRouteHandler,
+  postV1AsyncOrdersRouteHandler,
+  postV1AttachmentsRouteHandler,
+  postV1BillingPreviewRunsRouteHandler,
+  postV1BillRunsBillRunIdEmailsRouteHandler,
+  postV1BulkRouteHandler,
+  postV1CatalogProductsProductIdShareRouteHandler,
+  postV1ConnectionsRouteHandler,
+  postV1CreditmemosCreditMemoIdEmailsRouteHandler,
+  postV1CreditmemosCreditMemoIdFilesRouteHandler,
+  postV1CreditmemosCreditMemoIdPdfsRouteHandler,
+  postV1CreditmemosCreditmemoIdRefundsRouteHandler,
+  postV1CreditmemosCreditMemoIdTaxationitemsRouteHandler,
+  postV1CreditmemosRouteHandler,
+  postV1DebitmemosDebitMemoIdCollectRouteHandler,
+  postV1DebitmemosDebitMemoIdEmailsRouteHandler,
+  postV1DebitmemosDebitMemoIdFilesRouteHandler,
+  postV1DebitmemosDebitMemoIdPdfsRouteHandler,
+  postV1DebitmemosDebitMemoIdTaxationitemsRouteHandler,
+  postV1DebitmemosRouteHandler,
+  postV1DocumentPropertiesRouteHandler,
+  postV1EntitiesRouteHandler,
+  postV1EntityConnectionsRouteHandler,
+  postV1GatewaySettlementPaymentsPaymentIdChargebackRouteHandler,
+  postV1GatewaySettlementPaymentsPaymentIdRejectRouteHandler,
+  postV1GatewaySettlementPaymentsPaymentIdSettleRouteHandler,
+  postV1HmacSignaturesRouteHandler,
+  postV1InvoicesInvoiceIdCreditmemosRouteHandler,
+  postV1InvoicesInvoiceIdDebitmemosRouteHandler,
+  postV1InvoicesInvoiceIdEmailsRouteHandler,
+  postV1InvoicesInvoiceIdFilesRouteHandler,
+  postV1InvoicesRouteHandler,
+  postV1JournalEntriesRouteHandler,
+  postV1JournalRunsRouteHandler,
+  postV1ObjectAccountRouteHandler,
+  postV1ObjectBillRunRouteHandler,
+  postV1ObjectContactRouteHandler,
+  postV1ObjectCreditBalanceAdjustmentRouteHandler,
+  postV1ObjectExportRouteHandler,
+  postV1ObjectFeatureRouteHandler,
+  postV1ObjectImportRouteHandler,
+  postV1ObjectInvoiceAdjustmentRouteHandler,
+  postV1ObjectInvoicePaymentRouteHandler,
+  postV1ObjectPaymentMethodRouteHandler,
+  postV1ObjectPaymentRouteHandler,
+  postV1ObjectProductRatePlanChargeRouteHandler,
+  postV1ObjectProductRatePlanRouteHandler,
+  postV1ObjectProductRouteHandler,
+  postV1ObjectRefundRouteHandler,
+  postV1ObjectTaxationItemRouteHandler,
+  postV1ObjectUnitOfMeasureRouteHandler,
+  postV1ObjectUsageRouteHandler,
+  postV1OperationsBillingPreviewRouteHandler,
+  postV1OperationsInvoiceCollectRouteHandler,
+  postV1OrderLineItemsBulkRouteHandler,
+  postV1OrdersPreviewRouteHandler,
+  postV1OrdersRouteHandler,
+  postV1PaymentMethodsCreditCardsRouteHandler,
+  postV1PaymentMethodsDecryptionRouteHandler,
+  postV1PaymentMethodsPaymentMethodIdAuthorizeRouteHandler,
+  postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberCancelRouteHandler,
+  postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberExpireRouteHandler,
+  postV1PaymentMethodsPaymentMethodIdProfilesRouteHandler,
+  postV1PaymentMethodsPaymentMethodIdVoidAuthorizeRouteHandler,
+  postV1PaymentMethodsRouteHandler,
+  postV1PaymentRunsRouteHandler,
+  postV1PaymentsPaymentIdRefundsRouteHandler,
+  postV1PaymentsRouteHandler,
+  postV1QuotesDocumentRouteHandler,
+  postV1RefundsRefundIdReconcileRouteHandler,
+  postV1RevenueSchedulesCreditMemoItemsCmiIdDistributeRevenueWithDateRangeRouteHandler,
+  postV1RevenueSchedulesCreditMemoItemsCmiIdRouteHandler,
+  postV1RevenueSchedulesDebitMemoItemsDmiIdDistributeRevenueWithDateRangeRouteHandler,
+  postV1RevenueSchedulesDebitMemoItemsDmiIdRouteHandler,
+  postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyDistributeRevenueWithDateRangeRouteHandler,
+  postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRouteHandler,
+  postV1RevenueSchedulesInvoiceItemsInvoiceItemIdDistributeRevenueWithDateRangeRouteHandler,
+  postV1RevenueSchedulesInvoiceItemsInvoiceItemIdRouteHandler,
+  postV1RevenueSchedulesSubscriptionChargesChargeKeyRouteHandler,
+  postV1RsaSignaturesDecryptRouteHandler,
+  postV1RsaSignaturesRouteHandler,
+  postV1SequenceSetsRouteHandler,
+  postV1SubscriptionsPreviewRouteHandler,
+  postV1SubscriptionsRouteHandler,
+  postV1UsageRouteHandler,
+  postWorkflowsImportRouteHandler,
+  postWorkflowsTasksTaskIdRerunRouteHandler,
+  postWorkflowsWorkflowIdRunRouteHandler,
+  putEventsEventTriggersIdRouteHandler,
+  putNotificationsEmailTemplatesIdRouteHandler,
+  putNotificationsNotificationDefinitionsIdRouteHandler,
+  putObjectsRecordsDefaultObjectIdRouteHandler,
+  putV1AccountingCodesAcIdActivateRouteHandler,
+  putV1AccountingCodesAcIdDeactivateRouteHandler,
+  putV1AccountingCodesAcIdRouteHandler,
+  putV1AccountingPeriodsApIdCloseRouteHandler,
+  putV1AccountingPeriodsApIdPendingCloseRouteHandler,
+  putV1AccountingPeriodsApIdReopenRouteHandler,
+  putV1AccountingPeriodsApIdRouteHandler,
+  putV1AccountingPeriodsApIdRunTrialBalanceRouteHandler,
+  putV1AccountsAccountKeyRouteHandler,
+  putV1AttachmentsAttachmentIdRouteHandler,
+  putV1BulkBulkKeyStopRouteHandler,
+  putV1ContactsContactIdScrubRouteHandler,
+  putV1CreditmemosCreditMemoIdApplyRouteHandler,
+  putV1CreditmemosCreditMemoIdCancelRouteHandler,
+  putV1CreditmemosCreditMemoIdPostRouteHandler,
+  putV1CreditmemosCreditMemoIdRouteHandler,
+  putV1CreditmemosCreditMemoIdUnapplyRouteHandler,
+  putV1CreditmemosCreditMemoIdUnpostRouteHandler,
+  putV1DebitmemosDebitMemoIdCancelRouteHandler,
+  putV1DebitmemosDebitMemoIdPostRouteHandler,
+  putV1DebitmemosDebitMemoIdRouteHandler,
+  putV1DebitmemosDebitMemoIdUnpostRouteHandler,
+  putV1DebitmemosRouteHandler,
+  putV1DocumentPropertiesDocumentPropertiesIdRouteHandler,
+  putV1EntitiesIdProvisionRouteHandler,
+  putV1EntitiesIdRouteHandler,
+  putV1EntityConnectionsConnectionIdAcceptRouteHandler,
+  putV1EntityConnectionsConnectionIdDenyRouteHandler,
+  putV1EntityConnectionsConnectionIdDisconnectRouteHandler,
+  putV1InvoicesInvoiceIdReverseRouteHandler,
+  putV1InvoicesInvoiceIdRouteHandler,
+  putV1InvoicesInvoiceIdWriteOffRouteHandler,
+  putV1InvoicesRouteHandler,
+  putV1JournalEntriesJeNumberBasicInformationRouteHandler,
+  putV1JournalEntriesJeNumberCancelRouteHandler,
+  putV1JournalRunsJrNumberCancelRouteHandler,
+  putV1ObjectAccountIdRouteHandler,
+  putV1ObjectAmendmentIdRouteHandler,
+  putV1ObjectBillRunIdRouteHandler,
+  putV1ObjectContactIdRouteHandler,
+  putV1ObjectCreditBalanceAdjustmentIdRouteHandler,
+  putV1ObjectFeatureIdRouteHandler,
+  putV1ObjectInvoiceAdjustmentIdRouteHandler,
+  putV1ObjectInvoiceIdRouteHandler,
+  putV1ObjectInvoicePaymentIdRouteHandler,
+  putV1ObjectPaymentIdRouteHandler,
+  putV1ObjectPaymentMethodIdRouteHandler,
+  putV1ObjectProductIdRouteHandler,
+  putV1ObjectProductRatePlanChargeIdRouteHandler,
+  putV1ObjectProductRatePlanChargeTierIdRouteHandler,
+  putV1ObjectProductRatePlanIdRouteHandler,
+  putV1ObjectRatePlanChargeIdRouteHandler,
+  putV1ObjectRefundIdRouteHandler,
+  putV1ObjectSubscriptionIdRouteHandler,
+  putV1ObjectTaxationItemIdRouteHandler,
+  putV1ObjectUnitOfMeasureIdRouteHandler,
+  putV1ObjectUsageIdRouteHandler,
+  putV1OrderLineItemsItemIdRouteHandler,
+  putV1OrdersOrderNumberCustomFieldsRouteHandler,
+  putV1OrdersOrderNumberTriggerDatesRouteHandler,
+  putV1PaymentMethodsCreditCardsPaymentMethodIdRouteHandler,
+  putV1PaymentMethodsPaymentMethodIdRouteHandler,
+  putV1PaymentMethodsPaymentMethodIdScrubRouteHandler,
+  putV1PaymentMethodsPaymentMethodIdVerifyRouteHandler,
+  putV1PaymentRunsPaymentRunIdRouteHandler,
+  putV1PaymentsPaymentIdApplyRouteHandler,
+  putV1PaymentsPaymentIdCancelRouteHandler,
+  putV1PaymentsPaymentIdRouteHandler,
+  putV1PaymentsPaymentIdTransferRouteHandler,
+  putV1PaymentsPaymentIdUnapplyRouteHandler,
+  putV1RefundsRefundIdCancelRouteHandler,
+  putV1RefundsRefundIdRouteHandler,
+  putV1RevenueItemsRevenueEventsEventNumberRouteHandler,
+  putV1RevenueItemsRevenueSchedulesRsNumberRouteHandler,
+  putV1RevenueSchedulesRsNumberBasicInformationRouteHandler,
+  putV1RevenueSchedulesRsNumberDistributeRevenueAcrossAccountingPeriodsRouteHandler,
+  putV1RevenueSchedulesRsNumberDistributeRevenueOnSpecificDateRouteHandler,
+  putV1RevenueSchedulesRsNumberDistributeRevenueWithDateRangeRouteHandler,
+  putV1RevproAccountingCodesRouteHandler,
+  putV1SequenceSetsIdRouteHandler,
+  putV1SubscriptionsSubscriptionKeyCancelRouteHandler,
+  putV1SubscriptionsSubscriptionKeyRenewRouteHandler,
+  putV1SubscriptionsSubscriptionKeyResumeRouteHandler,
+  putV1SubscriptionsSubscriptionKeyRouteHandler,
+  putV1SubscriptionsSubscriptionKeySuspendRouteHandler,
+  putV1SubscriptionsSubscriptionNumberCustomFieldsRouteHandler,
+  putV1SubscriptionsSubscriptionNumberVersionsVersionCustomFieldsRouteHandler,
+  putV1TaxationitemsIdRouteHandler,
+  putV1UsersUsernameAcceptAccessRouteHandler,
+  putV1UsersUsernameDenyAccessRouteHandler,
+  putV1UsersUsernameRequestAccessRouteHandler,
+  putWorkflowsTasksBatchUpdateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', chargeMetricsHandler)
-  .route('/', eventsHandler)
-  .route('/', notificationsHandler)
-  .route('/', oauthHandler)
-  .route('/', objectsHandler)
-  .route('/', queryHandler)
-  .route('/', settingsHandler)
-  .route('/', v1Handler)
-  .route('/', workflowsHandler)
+  .openapi(getChargeMetricsDataChargeMetricsRoute, getChargeMetricsDataChargeMetricsRouteHandler)
+  .openapi(
+    getChargeMetricsDataChargeMetricsDiscountAllocationDetailRoute,
+    getChargeMetricsDataChargeMetricsDiscountAllocationDetailRouteHandler,
+  )
+  .openapi(getEventsEventTriggersRoute, getEventsEventTriggersRouteHandler)
+  .openapi(postEventsEventTriggersRoute, postEventsEventTriggersRouteHandler)
+  .openapi(deleteEventsEventTriggersIdRoute, deleteEventsEventTriggersIdRouteHandler)
+  .openapi(getEventsEventTriggersIdRoute, getEventsEventTriggersIdRouteHandler)
+  .openapi(putEventsEventTriggersIdRoute, putEventsEventTriggersIdRouteHandler)
+  .openapi(getNotificationsEmailTemplatesRoute, getNotificationsEmailTemplatesRouteHandler)
+  .openapi(postNotificationsEmailTemplatesRoute, postNotificationsEmailTemplatesRouteHandler)
+  .openapi(
+    deleteNotificationsEmailTemplatesIdRoute,
+    deleteNotificationsEmailTemplatesIdRouteHandler,
+  )
+  .openapi(getNotificationsEmailTemplatesIdRoute, getNotificationsEmailTemplatesIdRouteHandler)
+  .openapi(putNotificationsEmailTemplatesIdRoute, putNotificationsEmailTemplatesIdRouteHandler)
+  .openapi(deleteNotificationsHistoryRoute, deleteNotificationsHistoryRouteHandler)
+  .openapi(getNotificationsHistoryTasksIdRoute, getNotificationsHistoryTasksIdRouteHandler)
+  .openapi(
+    getNotificationsNotificationDefinitionsRoute,
+    getNotificationsNotificationDefinitionsRouteHandler,
+  )
+  .openapi(
+    postNotificationsNotificationDefinitionsRoute,
+    postNotificationsNotificationDefinitionsRouteHandler,
+  )
+  .openapi(
+    deleteNotificationsNotificationDefinitionsIdRoute,
+    deleteNotificationsNotificationDefinitionsIdRouteHandler,
+  )
+  .openapi(
+    getNotificationsNotificationDefinitionsIdRoute,
+    getNotificationsNotificationDefinitionsIdRouteHandler,
+  )
+  .openapi(
+    putNotificationsNotificationDefinitionsIdRoute,
+    putNotificationsNotificationDefinitionsIdRouteHandler,
+  )
+  .openapi(postOauthTokenRoute, postOauthTokenRouteHandler)
+  .openapi(postObjectsBatchDefaultObjectRoute, postObjectsBatchDefaultObjectRouteHandler)
+  .openapi(getObjectsDefinitionsDefaultRoute, getObjectsDefinitionsDefaultRouteHandler)
+  .openapi(postObjectsDefinitionsDefaultRoute, postObjectsDefinitionsDefaultRouteHandler)
+  .openapi(
+    deleteObjectsDefinitionsDefaultObjectRoute,
+    deleteObjectsDefinitionsDefaultObjectRouteHandler,
+  )
+  .openapi(getObjectsDefinitionsDefaultObjectRoute, getObjectsDefinitionsDefaultObjectRouteHandler)
+  .openapi(getObjectsJobsRoute, getObjectsJobsRouteHandler)
+  .openapi(postObjectsJobsRoute, postObjectsJobsRouteHandler)
+  .openapi(getObjectsJobsIdRoute, getObjectsJobsIdRouteHandler)
+  .openapi(getObjectsJobsIdErrorsRoute, getObjectsJobsIdErrorsRouteHandler)
+  .openapi(postObjectsJobsIdFilesRoute, postObjectsJobsIdFilesRouteHandler)
+  .openapi(postObjectsMigrationsRoute, postObjectsMigrationsRouteHandler)
+  .openapi(getObjectsRecordsDefaultObjectRoute, getObjectsRecordsDefaultObjectRouteHandler)
+  .openapi(postObjectsRecordsDefaultObjectRoute, postObjectsRecordsDefaultObjectRouteHandler)
+  .openapi(
+    deleteObjectsRecordsDefaultObjectIdRoute,
+    deleteObjectsRecordsDefaultObjectIdRouteHandler,
+  )
+  .openapi(getObjectsRecordsDefaultObjectIdRoute, getObjectsRecordsDefaultObjectIdRouteHandler)
+  .openapi(patchObjectsRecordsDefaultObjectIdRoute, patchObjectsRecordsDefaultObjectIdRouteHandler)
+  .openapi(putObjectsRecordsDefaultObjectIdRoute, putObjectsRecordsDefaultObjectIdRouteHandler)
+  .openapi(getQueryJobsRoute, getQueryJobsRouteHandler)
+  .openapi(postQueryJobsRoute, postQueryJobsRouteHandler)
+  .openapi(deleteQueryJobsJobIdRoute, deleteQueryJobsJobIdRouteHandler)
+  .openapi(getQueryJobsJobIdRoute, getQueryJobsJobIdRouteHandler)
+  .openapi(postSettingsBatchRequestsRoute, postSettingsBatchRequestsRouteHandler)
+  .openapi(getSettingsListingRoute, getSettingsListingRouteHandler)
+  .openapi(getV1AccountingCodesRoute, getV1AccountingCodesRouteHandler)
+  .openapi(postV1AccountingCodesRoute, postV1AccountingCodesRouteHandler)
+  .openapi(deleteV1AccountingCodesAcIdRoute, deleteV1AccountingCodesAcIdRouteHandler)
+  .openapi(getV1AccountingCodesAcIdRoute, getV1AccountingCodesAcIdRouteHandler)
+  .openapi(putV1AccountingCodesAcIdRoute, putV1AccountingCodesAcIdRouteHandler)
+  .openapi(putV1AccountingCodesAcIdActivateRoute, putV1AccountingCodesAcIdActivateRouteHandler)
+  .openapi(putV1AccountingCodesAcIdDeactivateRoute, putV1AccountingCodesAcIdDeactivateRouteHandler)
+  .openapi(getV1AccountingPeriodsRoute, getV1AccountingPeriodsRouteHandler)
+  .openapi(postV1AccountingPeriodsRoute, postV1AccountingPeriodsRouteHandler)
+  .openapi(deleteV1AccountingPeriodsApIdRoute, deleteV1AccountingPeriodsApIdRouteHandler)
+  .openapi(getV1AccountingPeriodsApIdRoute, getV1AccountingPeriodsApIdRouteHandler)
+  .openapi(putV1AccountingPeriodsApIdRoute, putV1AccountingPeriodsApIdRouteHandler)
+  .openapi(putV1AccountingPeriodsApIdCloseRoute, putV1AccountingPeriodsApIdCloseRouteHandler)
+  .openapi(
+    putV1AccountingPeriodsApIdPendingCloseRoute,
+    putV1AccountingPeriodsApIdPendingCloseRouteHandler,
+  )
+  .openapi(putV1AccountingPeriodsApIdReopenRoute, putV1AccountingPeriodsApIdReopenRouteHandler)
+  .openapi(
+    putV1AccountingPeriodsApIdRunTrialBalanceRoute,
+    putV1AccountingPeriodsApIdRunTrialBalanceRouteHandler,
+  )
+  .openapi(postV1AccountsRoute, postV1AccountsRouteHandler)
+  .openapi(
+    postV1AccountsBillingDocumentsFilesDeletionJobsRoute,
+    postV1AccountsBillingDocumentsFilesDeletionJobsRouteHandler,
+  )
+  .openapi(
+    getV1AccountsBillingDocumentsFilesDeletionJobsJobIdRoute,
+    getV1AccountsBillingDocumentsFilesDeletionJobsJobIdRouteHandler,
+  )
+  .openapi(getV1AccountsAccountKeyRoute, getV1AccountsAccountKeyRouteHandler)
+  .openapi(putV1AccountsAccountKeyRoute, putV1AccountsAccountKeyRouteHandler)
+  .openapi(getV1AccountsAccountKeySummaryRoute, getV1AccountsAccountKeySummaryRouteHandler)
+  .openapi(
+    postV1AccountsIdBillingDocumentsGenerateRoute,
+    postV1AccountsIdBillingDocumentsGenerateRouteHandler,
+  )
+  .openapi(postV1ActionAmendRoute, postV1ActionAmendRouteHandler)
+  .openapi(postV1ActionCreateRoute, postV1ActionCreateRouteHandler)
+  .openapi(postV1ActionDeleteRoute, postV1ActionDeleteRouteHandler)
+  .openapi(postV1ActionExecuteRoute, postV1ActionExecuteRouteHandler)
+  .openapi(postV1ActionGenerateRoute, postV1ActionGenerateRouteHandler)
+  .openapi(postV1ActionQueryRoute, postV1ActionQueryRouteHandler)
+  .openapi(postV1ActionQueryMoreRoute, postV1ActionQueryMoreRouteHandler)
+  .openapi(postV1ActionSubscribeRoute, postV1ActionSubscribeRouteHandler)
+  .openapi(postV1ActionUpdateRoute, postV1ActionUpdateRouteHandler)
+  .openapi(
+    getV1AmendmentsSubscriptionsSubscriptionIdRoute,
+    getV1AmendmentsSubscriptionsSubscriptionIdRouteHandler,
+  )
+  .openapi(getV1AmendmentsAmendmentKeyRoute, getV1AmendmentsAmendmentKeyRouteHandler)
+  .openapi(getV1AsyncJobsJobIdRoute, getV1AsyncJobsJobIdRouteHandler)
+  .openapi(postV1AsyncOrdersRoute, postV1AsyncOrdersRouteHandler)
+  .openapi(postV1AsyncOrdersPreviewRoute, postV1AsyncOrdersPreviewRouteHandler)
+  .openapi(postV1AttachmentsRoute, postV1AttachmentsRouteHandler)
+  .openapi(deleteV1AttachmentsAttachmentIdRoute, deleteV1AttachmentsAttachmentIdRouteHandler)
+  .openapi(getV1AttachmentsAttachmentIdRoute, getV1AttachmentsAttachmentIdRouteHandler)
+  .openapi(putV1AttachmentsAttachmentIdRoute, putV1AttachmentsAttachmentIdRouteHandler)
+  .openapi(
+    getV1AttachmentsObjectTypeObjectKeyRoute,
+    getV1AttachmentsObjectTypeObjectKeyRouteHandler,
+  )
+  .openapi(postV1BillRunsBillRunIdEmailsRoute, postV1BillRunsBillRunIdEmailsRouteHandler)
+  .openapi(getV1BillingDocumentsRoute, getV1BillingDocumentsRouteHandler)
+  .openapi(postV1BillingPreviewRunsRoute, postV1BillingPreviewRunsRouteHandler)
+  .openapi(
+    getV1BillingPreviewRunsBillingPreviewRunIdRoute,
+    getV1BillingPreviewRunsBillingPreviewRunIdRouteHandler,
+  )
+  .openapi(postV1BulkRoute, postV1BulkRouteHandler)
+  .openapi(getV1BulkBulkKeyRoute, getV1BulkBulkKeyRouteHandler)
+  .openapi(putV1BulkBulkKeyStopRoute, putV1BulkBulkKeyStopRouteHandler)
+  .openapi(getV1CatalogProductProductIdRoute, getV1CatalogProductProductIdRouteHandler)
+  .openapi(getV1CatalogProductsRoute, getV1CatalogProductsRouteHandler)
+  .openapi(
+    postV1CatalogProductsProductIdShareRoute,
+    postV1CatalogProductsProductIdShareRouteHandler,
+  )
+  .openapi(
+    getV1ChargeRevenueSummariesSubscriptionChargesChargeKeyRoute,
+    getV1ChargeRevenueSummariesSubscriptionChargesChargeKeyRouteHandler,
+  )
+  .openapi(
+    getV1ChargeRevenueSummariesCrsNumberRoute,
+    getV1ChargeRevenueSummariesCrsNumberRouteHandler,
+  )
+  .openapi(postV1ConnectionsRoute, postV1ConnectionsRouteHandler)
+  .openapi(putV1ContactsContactIdScrubRoute, putV1ContactsContactIdScrubRouteHandler)
+  .openapi(getV1CreditmemosRoute, getV1CreditmemosRouteHandler)
+  .openapi(postV1CreditmemosRoute, postV1CreditmemosRouteHandler)
+  .openapi(deleteV1CreditmemosCreditMemoIdRoute, deleteV1CreditmemosCreditMemoIdRouteHandler)
+  .openapi(getV1CreditmemosCreditMemoIdRoute, getV1CreditmemosCreditMemoIdRouteHandler)
+  .openapi(putV1CreditmemosCreditMemoIdRoute, putV1CreditmemosCreditMemoIdRouteHandler)
+  .openapi(putV1CreditmemosCreditMemoIdApplyRoute, putV1CreditmemosCreditMemoIdApplyRouteHandler)
+  .openapi(putV1CreditmemosCreditMemoIdCancelRoute, putV1CreditmemosCreditMemoIdCancelRouteHandler)
+  .openapi(
+    postV1CreditmemosCreditMemoIdEmailsRoute,
+    postV1CreditmemosCreditMemoIdEmailsRouteHandler,
+  )
+  .openapi(postV1CreditmemosCreditMemoIdFilesRoute, postV1CreditmemosCreditMemoIdFilesRouteHandler)
+  .openapi(getV1CreditmemosCreditMemoIdItemsRoute, getV1CreditmemosCreditMemoIdItemsRouteHandler)
+  .openapi(
+    getV1CreditmemosCreditMemoIdItemsCmitemidRoute,
+    getV1CreditmemosCreditMemoIdItemsCmitemidRouteHandler,
+  )
+  .openapi(
+    getV1CreditmemosCreditMemoIdItemsCmitemidTaxationItemsRoute,
+    getV1CreditmemosCreditMemoIdItemsCmitemidTaxationItemsRouteHandler,
+  )
+  .openapi(getV1CreditmemosCreditMemoIdPartsRoute, getV1CreditmemosCreditMemoIdPartsRouteHandler)
+  .openapi(
+    getV1CreditmemosCreditMemoIdPartsPartidRoute,
+    getV1CreditmemosCreditMemoIdPartsPartidRouteHandler,
+  )
+  .openapi(
+    getV1CreditmemosCreditMemoIdPartsPartidItempartsRoute,
+    getV1CreditmemosCreditMemoIdPartsPartidItempartsRouteHandler,
+  )
+  .openapi(
+    getV1CreditmemosCreditMemoIdPartsPartidItempartsItempartidRoute,
+    getV1CreditmemosCreditMemoIdPartsPartidItempartsItempartidRouteHandler,
+  )
+  .openapi(postV1CreditmemosCreditMemoIdPdfsRoute, postV1CreditmemosCreditMemoIdPdfsRouteHandler)
+  .openapi(putV1CreditmemosCreditMemoIdPostRoute, putV1CreditmemosCreditMemoIdPostRouteHandler)
+  .openapi(
+    postV1CreditmemosCreditMemoIdTaxationitemsRoute,
+    postV1CreditmemosCreditMemoIdTaxationitemsRouteHandler,
+  )
+  .openapi(
+    putV1CreditmemosCreditMemoIdUnapplyRoute,
+    putV1CreditmemosCreditMemoIdUnapplyRouteHandler,
+  )
+  .openapi(putV1CreditmemosCreditMemoIdUnpostRoute, putV1CreditmemosCreditMemoIdUnpostRouteHandler)
+  .openapi(
+    postV1CreditmemosCreditmemoIdRefundsRoute,
+    postV1CreditmemosCreditmemoIdRefundsRouteHandler,
+  )
+  .openapi(getV1CustomExchangeRatesCurrencyRoute, getV1CustomExchangeRatesCurrencyRouteHandler)
+  .openapi(getV1DebitmemosRoute, getV1DebitmemosRouteHandler)
+  .openapi(postV1DebitmemosRoute, postV1DebitmemosRouteHandler)
+  .openapi(putV1DebitmemosRoute, putV1DebitmemosRouteHandler)
+  .openapi(deleteV1DebitmemosDebitMemoIdRoute, deleteV1DebitmemosDebitMemoIdRouteHandler)
+  .openapi(getV1DebitmemosDebitMemoIdRoute, getV1DebitmemosDebitMemoIdRouteHandler)
+  .openapi(putV1DebitmemosDebitMemoIdRoute, putV1DebitmemosDebitMemoIdRouteHandler)
+  .openapi(
+    getV1DebitmemosDebitMemoIdApplicationPartsRoute,
+    getV1DebitmemosDebitMemoIdApplicationPartsRouteHandler,
+  )
+  .openapi(putV1DebitmemosDebitMemoIdCancelRoute, putV1DebitmemosDebitMemoIdCancelRouteHandler)
+  .openapi(postV1DebitmemosDebitMemoIdCollectRoute, postV1DebitmemosDebitMemoIdCollectRouteHandler)
+  .openapi(postV1DebitmemosDebitMemoIdEmailsRoute, postV1DebitmemosDebitMemoIdEmailsRouteHandler)
+  .openapi(postV1DebitmemosDebitMemoIdFilesRoute, postV1DebitmemosDebitMemoIdFilesRouteHandler)
+  .openapi(getV1DebitmemosDebitMemoIdItemsRoute, getV1DebitmemosDebitMemoIdItemsRouteHandler)
+  .openapi(
+    getV1DebitmemosDebitMemoIdItemsDmitemidRoute,
+    getV1DebitmemosDebitMemoIdItemsDmitemidRouteHandler,
+  )
+  .openapi(
+    getV1DebitmemosDebitMemoIdItemsDmitemidTaxationItemsRoute,
+    getV1DebitmemosDebitMemoIdItemsDmitemidTaxationItemsRouteHandler,
+  )
+  .openapi(postV1DebitmemosDebitMemoIdPdfsRoute, postV1DebitmemosDebitMemoIdPdfsRouteHandler)
+  .openapi(putV1DebitmemosDebitMemoIdPostRoute, putV1DebitmemosDebitMemoIdPostRouteHandler)
+  .openapi(
+    postV1DebitmemosDebitMemoIdTaxationitemsRoute,
+    postV1DebitmemosDebitMemoIdTaxationitemsRouteHandler,
+  )
+  .openapi(putV1DebitmemosDebitMemoIdUnpostRoute, putV1DebitmemosDebitMemoIdUnpostRouteHandler)
+  .openapi(getV1DescribeObjectRoute, getV1DescribeObjectRouteHandler)
+  .openapi(postV1DocumentPropertiesRoute, postV1DocumentPropertiesRouteHandler)
+  .openapi(
+    deleteV1DocumentPropertiesDocumentPropertiesIdRoute,
+    deleteV1DocumentPropertiesDocumentPropertiesIdRouteHandler,
+  )
+  .openapi(
+    putV1DocumentPropertiesDocumentPropertiesIdRoute,
+    putV1DocumentPropertiesDocumentPropertiesIdRouteHandler,
+  )
+  .openapi(
+    getV1DocumentPropertiesDocumentTypeDocumentIdRoute,
+    getV1DocumentPropertiesDocumentTypeDocumentIdRouteHandler,
+  )
+  .openapi(getV1EntitiesRoute, getV1EntitiesRouteHandler)
+  .openapi(postV1EntitiesRoute, postV1EntitiesRouteHandler)
+  .openapi(deleteV1EntitiesIdRoute, deleteV1EntitiesIdRouteHandler)
+  .openapi(getV1EntitiesIdRoute, getV1EntitiesIdRouteHandler)
+  .openapi(putV1EntitiesIdRoute, putV1EntitiesIdRouteHandler)
+  .openapi(putV1EntitiesIdProvisionRoute, putV1EntitiesIdProvisionRouteHandler)
+  .openapi(getV1EntityConnectionsRoute, getV1EntityConnectionsRouteHandler)
+  .openapi(postV1EntityConnectionsRoute, postV1EntityConnectionsRouteHandler)
+  .openapi(
+    putV1EntityConnectionsConnectionIdAcceptRoute,
+    putV1EntityConnectionsConnectionIdAcceptRouteHandler,
+  )
+  .openapi(
+    putV1EntityConnectionsConnectionIdDenyRoute,
+    putV1EntityConnectionsConnectionIdDenyRouteHandler,
+  )
+  .openapi(
+    putV1EntityConnectionsConnectionIdDisconnectRoute,
+    putV1EntityConnectionsConnectionIdDisconnectRouteHandler,
+  )
+  .openapi(getV1FilesFileIdRoute, getV1FilesFileIdRouteHandler)
+  .openapi(
+    postV1GatewaySettlementPaymentsPaymentIdChargebackRoute,
+    postV1GatewaySettlementPaymentsPaymentIdChargebackRouteHandler,
+  )
+  .openapi(
+    postV1GatewaySettlementPaymentsPaymentIdRejectRoute,
+    postV1GatewaySettlementPaymentsPaymentIdRejectRouteHandler,
+  )
+  .openapi(
+    postV1GatewaySettlementPaymentsPaymentIdSettleRoute,
+    postV1GatewaySettlementPaymentsPaymentIdSettleRouteHandler,
+  )
+  .openapi(postV1HmacSignaturesRoute, postV1HmacSignaturesRouteHandler)
+  .openapi(getV1HostedpagesRoute, getV1HostedpagesRouteHandler)
+  .openapi(postV1InvoicesRoute, postV1InvoicesRouteHandler)
+  .openapi(putV1InvoicesRoute, putV1InvoicesRouteHandler)
+  .openapi(putV1InvoicesInvoiceIdRoute, putV1InvoicesInvoiceIdRouteHandler)
+  .openapi(
+    getV1InvoicesInvoiceIdApplicationPartsRoute,
+    getV1InvoicesInvoiceIdApplicationPartsRouteHandler,
+  )
+  .openapi(postV1InvoicesInvoiceIdCreditmemosRoute, postV1InvoicesInvoiceIdCreditmemosRouteHandler)
+  .openapi(postV1InvoicesInvoiceIdDebitmemosRoute, postV1InvoicesInvoiceIdDebitmemosRouteHandler)
+  .openapi(postV1InvoicesInvoiceIdEmailsRoute, postV1InvoicesInvoiceIdEmailsRouteHandler)
+  .openapi(getV1InvoicesInvoiceIdFilesRoute, getV1InvoicesInvoiceIdFilesRouteHandler)
+  .openapi(postV1InvoicesInvoiceIdFilesRoute, postV1InvoicesInvoiceIdFilesRouteHandler)
+  .openapi(getV1InvoicesInvoiceIdItemsRoute, getV1InvoicesInvoiceIdItemsRouteHandler)
+  .openapi(
+    getV1InvoicesInvoiceIdItemsItemIdTaxationItemsRoute,
+    getV1InvoicesInvoiceIdItemsItemIdTaxationItemsRouteHandler,
+  )
+  .openapi(putV1InvoicesInvoiceIdReverseRoute, putV1InvoicesInvoiceIdReverseRouteHandler)
+  .openapi(putV1InvoicesInvoiceIdWriteOffRoute, putV1InvoicesInvoiceIdWriteOffRouteHandler)
+  .openapi(postV1JournalEntriesRoute, postV1JournalEntriesRouteHandler)
+  .openapi(
+    getV1JournalEntriesJournalRunsJrNumberRoute,
+    getV1JournalEntriesJournalRunsJrNumberRouteHandler,
+  )
+  .openapi(deleteV1JournalEntriesJeNumberRoute, deleteV1JournalEntriesJeNumberRouteHandler)
+  .openapi(getV1JournalEntriesJeNumberRoute, getV1JournalEntriesJeNumberRouteHandler)
+  .openapi(
+    putV1JournalEntriesJeNumberBasicInformationRoute,
+    putV1JournalEntriesJeNumberBasicInformationRouteHandler,
+  )
+  .openapi(putV1JournalEntriesJeNumberCancelRoute, putV1JournalEntriesJeNumberCancelRouteHandler)
+  .openapi(postV1JournalRunsRoute, postV1JournalRunsRouteHandler)
+  .openapi(deleteV1JournalRunsJrNumberRoute, deleteV1JournalRunsJrNumberRouteHandler)
+  .openapi(getV1JournalRunsJrNumberRoute, getV1JournalRunsJrNumberRouteHandler)
+  .openapi(putV1JournalRunsJrNumberCancelRoute, putV1JournalRunsJrNumberCancelRouteHandler)
+  .openapi(getV1NotificationHistoryCalloutRoute, getV1NotificationHistoryCalloutRouteHandler)
+  .openapi(getV1NotificationHistoryEmailRoute, getV1NotificationHistoryEmailRouteHandler)
+  .openapi(postV1ObjectAccountRoute, postV1ObjectAccountRouteHandler)
+  .openapi(deleteV1ObjectAccountIdRoute, deleteV1ObjectAccountIdRouteHandler)
+  .openapi(getV1ObjectAccountIdRoute, getV1ObjectAccountIdRouteHandler)
+  .openapi(putV1ObjectAccountIdRoute, putV1ObjectAccountIdRouteHandler)
+  .openapi(deleteV1ObjectAmendmentIdRoute, deleteV1ObjectAmendmentIdRouteHandler)
+  .openapi(getV1ObjectAmendmentIdRoute, getV1ObjectAmendmentIdRouteHandler)
+  .openapi(putV1ObjectAmendmentIdRoute, putV1ObjectAmendmentIdRouteHandler)
+  .openapi(postV1ObjectBillRunRoute, postV1ObjectBillRunRouteHandler)
+  .openapi(deleteV1ObjectBillRunIdRoute, deleteV1ObjectBillRunIdRouteHandler)
+  .openapi(getV1ObjectBillRunIdRoute, getV1ObjectBillRunIdRouteHandler)
+  .openapi(putV1ObjectBillRunIdRoute, putV1ObjectBillRunIdRouteHandler)
+  .openapi(getV1ObjectCommunicationProfileIdRoute, getV1ObjectCommunicationProfileIdRouteHandler)
+  .openapi(postV1ObjectContactRoute, postV1ObjectContactRouteHandler)
+  .openapi(deleteV1ObjectContactIdRoute, deleteV1ObjectContactIdRouteHandler)
+  .openapi(getV1ObjectContactIdRoute, getV1ObjectContactIdRouteHandler)
+  .openapi(putV1ObjectContactIdRoute, putV1ObjectContactIdRouteHandler)
+  .openapi(
+    postV1ObjectCreditBalanceAdjustmentRoute,
+    postV1ObjectCreditBalanceAdjustmentRouteHandler,
+  )
+  .openapi(
+    getV1ObjectCreditBalanceAdjustmentIdRoute,
+    getV1ObjectCreditBalanceAdjustmentIdRouteHandler,
+  )
+  .openapi(
+    putV1ObjectCreditBalanceAdjustmentIdRoute,
+    putV1ObjectCreditBalanceAdjustmentIdRouteHandler,
+  )
+  .openapi(postV1ObjectExportRoute, postV1ObjectExportRouteHandler)
+  .openapi(getV1ObjectExportIdRoute, getV1ObjectExportIdRouteHandler)
+  .openapi(postV1ObjectFeatureRoute, postV1ObjectFeatureRouteHandler)
+  .openapi(deleteV1ObjectFeatureIdRoute, deleteV1ObjectFeatureIdRouteHandler)
+  .openapi(getV1ObjectFeatureIdRoute, getV1ObjectFeatureIdRouteHandler)
+  .openapi(putV1ObjectFeatureIdRoute, putV1ObjectFeatureIdRouteHandler)
+  .openapi(postV1ObjectImportRoute, postV1ObjectImportRouteHandler)
+  .openapi(getV1ObjectImportIdRoute, getV1ObjectImportIdRouteHandler)
+  .openapi(postV1ObjectInvoiceAdjustmentRoute, postV1ObjectInvoiceAdjustmentRouteHandler)
+  .openapi(deleteV1ObjectInvoiceAdjustmentIdRoute, deleteV1ObjectInvoiceAdjustmentIdRouteHandler)
+  .openapi(getV1ObjectInvoiceAdjustmentIdRoute, getV1ObjectInvoiceAdjustmentIdRouteHandler)
+  .openapi(putV1ObjectInvoiceAdjustmentIdRoute, putV1ObjectInvoiceAdjustmentIdRouteHandler)
+  .openapi(
+    deleteV1ObjectInvoiceItemAdjustmentIdRoute,
+    deleteV1ObjectInvoiceItemAdjustmentIdRouteHandler,
+  )
+  .openapi(getV1ObjectInvoiceItemAdjustmentIdRoute, getV1ObjectInvoiceItemAdjustmentIdRouteHandler)
+  .openapi(getV1ObjectInvoiceItemIdRoute, getV1ObjectInvoiceItemIdRouteHandler)
+  .openapi(postV1ObjectInvoicePaymentRoute, postV1ObjectInvoicePaymentRouteHandler)
+  .openapi(getV1ObjectInvoicePaymentIdRoute, getV1ObjectInvoicePaymentIdRouteHandler)
+  .openapi(putV1ObjectInvoicePaymentIdRoute, putV1ObjectInvoicePaymentIdRouteHandler)
+  .openapi(getV1ObjectInvoiceSplitItemIdRoute, getV1ObjectInvoiceSplitItemIdRouteHandler)
+  .openapi(getV1ObjectInvoiceSplitIdRoute, getV1ObjectInvoiceSplitIdRouteHandler)
+  .openapi(deleteV1ObjectInvoiceIdRoute, deleteV1ObjectInvoiceIdRouteHandler)
+  .openapi(getV1ObjectInvoiceIdRoute, getV1ObjectInvoiceIdRouteHandler)
+  .openapi(putV1ObjectInvoiceIdRoute, putV1ObjectInvoiceIdRouteHandler)
+  .openapi(postV1ObjectPaymentRoute, postV1ObjectPaymentRouteHandler)
+  .openapi(postV1ObjectPaymentMethodRoute, postV1ObjectPaymentMethodRouteHandler)
+  .openapi(getV1ObjectPaymentMethodSnapshotIdRoute, getV1ObjectPaymentMethodSnapshotIdRouteHandler)
+  .openapi(
+    getV1ObjectPaymentMethodTransactionLogIdRoute,
+    getV1ObjectPaymentMethodTransactionLogIdRouteHandler,
+  )
+  .openapi(deleteV1ObjectPaymentMethodIdRoute, deleteV1ObjectPaymentMethodIdRouteHandler)
+  .openapi(getV1ObjectPaymentMethodIdRoute, getV1ObjectPaymentMethodIdRouteHandler)
+  .openapi(putV1ObjectPaymentMethodIdRoute, putV1ObjectPaymentMethodIdRouteHandler)
+  .openapi(getV1ObjectPaymentTransactionLogIdRoute, getV1ObjectPaymentTransactionLogIdRouteHandler)
+  .openapi(deleteV1ObjectPaymentIdRoute, deleteV1ObjectPaymentIdRouteHandler)
+  .openapi(getV1ObjectPaymentIdRoute, getV1ObjectPaymentIdRouteHandler)
+  .openapi(putV1ObjectPaymentIdRoute, putV1ObjectPaymentIdRouteHandler)
+  .openapi(postV1ObjectProductRoute, postV1ObjectProductRouteHandler)
+  .openapi(deleteV1ObjectProductFeatureIdRoute, deleteV1ObjectProductFeatureIdRouteHandler)
+  .openapi(getV1ObjectProductFeatureIdRoute, getV1ObjectProductFeatureIdRouteHandler)
+  .openapi(postV1ObjectProductRatePlanRoute, postV1ObjectProductRatePlanRouteHandler)
+  .openapi(postV1ObjectProductRatePlanChargeRoute, postV1ObjectProductRatePlanChargeRouteHandler)
+  .openapi(
+    getV1ObjectProductRatePlanChargeTierIdRoute,
+    getV1ObjectProductRatePlanChargeTierIdRouteHandler,
+  )
+  .openapi(
+    putV1ObjectProductRatePlanChargeTierIdRoute,
+    putV1ObjectProductRatePlanChargeTierIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ObjectProductRatePlanChargeIdRoute,
+    deleteV1ObjectProductRatePlanChargeIdRouteHandler,
+  )
+  .openapi(getV1ObjectProductRatePlanChargeIdRoute, getV1ObjectProductRatePlanChargeIdRouteHandler)
+  .openapi(putV1ObjectProductRatePlanChargeIdRoute, putV1ObjectProductRatePlanChargeIdRouteHandler)
+  .openapi(deleteV1ObjectProductRatePlanIdRoute, deleteV1ObjectProductRatePlanIdRouteHandler)
+  .openapi(getV1ObjectProductRatePlanIdRoute, getV1ObjectProductRatePlanIdRouteHandler)
+  .openapi(putV1ObjectProductRatePlanIdRoute, putV1ObjectProductRatePlanIdRouteHandler)
+  .openapi(deleteV1ObjectProductIdRoute, deleteV1ObjectProductIdRouteHandler)
+  .openapi(getV1ObjectProductIdRoute, getV1ObjectProductIdRouteHandler)
+  .openapi(putV1ObjectProductIdRoute, putV1ObjectProductIdRouteHandler)
+  .openapi(getV1ObjectRatePlanChargeTierIdRoute, getV1ObjectRatePlanChargeTierIdRouteHandler)
+  .openapi(getV1ObjectRatePlanChargeIdRoute, getV1ObjectRatePlanChargeIdRouteHandler)
+  .openapi(putV1ObjectRatePlanChargeIdRoute, putV1ObjectRatePlanChargeIdRouteHandler)
+  .openapi(getV1ObjectRatePlanIdRoute, getV1ObjectRatePlanIdRouteHandler)
+  .openapi(postV1ObjectRefundRoute, postV1ObjectRefundRouteHandler)
+  .openapi(getV1ObjectRefundInvoicePaymentIdRoute, getV1ObjectRefundInvoicePaymentIdRouteHandler)
+  .openapi(getV1ObjectRefundTransactionLogIdRoute, getV1ObjectRefundTransactionLogIdRouteHandler)
+  .openapi(deleteV1ObjectRefundIdRoute, deleteV1ObjectRefundIdRouteHandler)
+  .openapi(getV1ObjectRefundIdRoute, getV1ObjectRefundIdRouteHandler)
+  .openapi(putV1ObjectRefundIdRoute, putV1ObjectRefundIdRouteHandler)
+  .openapi(
+    getV1ObjectSubscriptionProductFeatureIdRoute,
+    getV1ObjectSubscriptionProductFeatureIdRouteHandler,
+  )
+  .openapi(deleteV1ObjectSubscriptionIdRoute, deleteV1ObjectSubscriptionIdRouteHandler)
+  .openapi(getV1ObjectSubscriptionIdRoute, getV1ObjectSubscriptionIdRouteHandler)
+  .openapi(putV1ObjectSubscriptionIdRoute, putV1ObjectSubscriptionIdRouteHandler)
+  .openapi(postV1ObjectTaxationItemRoute, postV1ObjectTaxationItemRouteHandler)
+  .openapi(deleteV1ObjectTaxationItemIdRoute, deleteV1ObjectTaxationItemIdRouteHandler)
+  .openapi(getV1ObjectTaxationItemIdRoute, getV1ObjectTaxationItemIdRouteHandler)
+  .openapi(putV1ObjectTaxationItemIdRoute, putV1ObjectTaxationItemIdRouteHandler)
+  .openapi(postV1ObjectUnitOfMeasureRoute, postV1ObjectUnitOfMeasureRouteHandler)
+  .openapi(deleteV1ObjectUnitOfMeasureIdRoute, deleteV1ObjectUnitOfMeasureIdRouteHandler)
+  .openapi(getV1ObjectUnitOfMeasureIdRoute, getV1ObjectUnitOfMeasureIdRouteHandler)
+  .openapi(putV1ObjectUnitOfMeasureIdRoute, putV1ObjectUnitOfMeasureIdRouteHandler)
+  .openapi(postV1ObjectUsageRoute, postV1ObjectUsageRouteHandler)
+  .openapi(deleteV1ObjectUsageIdRoute, deleteV1ObjectUsageIdRouteHandler)
+  .openapi(getV1ObjectUsageIdRoute, getV1ObjectUsageIdRouteHandler)
+  .openapi(putV1ObjectUsageIdRoute, putV1ObjectUsageIdRouteHandler)
+  .openapi(postV1OperationsBillingPreviewRoute, postV1OperationsBillingPreviewRouteHandler)
+  .openapi(postV1OperationsInvoiceCollectRoute, postV1OperationsInvoiceCollectRouteHandler)
+  .openapi(postV1OrderLineItemsBulkRoute, postV1OrderLineItemsBulkRouteHandler)
+  .openapi(getV1OrderLineItemsItemIdRoute, getV1OrderLineItemsItemIdRouteHandler)
+  .openapi(putV1OrderLineItemsItemIdRoute, putV1OrderLineItemsItemIdRouteHandler)
+  .openapi(getV1OrdersRoute, getV1OrdersRouteHandler)
+  .openapi(postV1OrdersRoute, postV1OrdersRouteHandler)
+  .openapi(
+    getV1OrdersInvoiceOwnerAccountNumberRoute,
+    getV1OrdersInvoiceOwnerAccountNumberRouteHandler,
+  )
+  .openapi(postV1OrdersPreviewRoute, postV1OrdersPreviewRouteHandler)
+  .openapi(
+    getV1OrdersSubscriptionSubscriptionNumberRoute,
+    getV1OrdersSubscriptionSubscriptionNumberRouteHandler,
+  )
+  .openapi(
+    getV1OrdersSubscriptionOwnerAccountNumberRoute,
+    getV1OrdersSubscriptionOwnerAccountNumberRouteHandler,
+  )
+  .openapi(getV1OrdersTermSubscriptionNumberRoute, getV1OrdersTermSubscriptionNumberRouteHandler)
+  .openapi(deleteV1OrdersOrderNumberRoute, deleteV1OrdersOrderNumberRouteHandler)
+  .openapi(getV1OrdersOrderNumberRoute, getV1OrdersOrderNumberRouteHandler)
+  .openapi(putV1OrdersOrderNumberCustomFieldsRoute, putV1OrdersOrderNumberCustomFieldsRouteHandler)
+  .openapi(
+    getV1OrdersOrderNumberEvergreenMetricsSubscriptionNumberRoute,
+    getV1OrdersOrderNumberEvergreenMetricsSubscriptionNumberRouteHandler,
+  )
+  .openapi(getV1OrdersOrderNumberRampMetricsRoute, getV1OrdersOrderNumberRampMetricsRouteHandler)
+  .openapi(putV1OrdersOrderNumberTriggerDatesRoute, putV1OrdersOrderNumberTriggerDatesRouteHandler)
+  .openapi(postV1PaymentMethodsRoute, postV1PaymentMethodsRouteHandler)
+  .openapi(postV1PaymentMethodsCreditCardsRoute, postV1PaymentMethodsCreditCardsRouteHandler)
+  .openapi(
+    getV1PaymentMethodsCreditCardsAccountsAccountKeyRoute,
+    getV1PaymentMethodsCreditCardsAccountsAccountKeyRouteHandler,
+  )
+  .openapi(
+    putV1PaymentMethodsCreditCardsPaymentMethodIdRoute,
+    putV1PaymentMethodsCreditCardsPaymentMethodIdRouteHandler,
+  )
+  .openapi(postV1PaymentMethodsDecryptionRoute, postV1PaymentMethodsDecryptionRouteHandler)
+  .openapi(
+    deleteV1PaymentMethodsPaymentMethodIdRoute,
+    deleteV1PaymentMethodsPaymentMethodIdRouteHandler,
+  )
+  .openapi(getV1PaymentMethodsPaymentMethodIdRoute, getV1PaymentMethodsPaymentMethodIdRouteHandler)
+  .openapi(putV1PaymentMethodsPaymentMethodIdRoute, putV1PaymentMethodsPaymentMethodIdRouteHandler)
+  .openapi(
+    postV1PaymentMethodsPaymentMethodIdAuthorizeRoute,
+    postV1PaymentMethodsPaymentMethodIdAuthorizeRouteHandler,
+  )
+  .openapi(
+    getV1PaymentMethodsPaymentMethodIdProfilesRoute,
+    getV1PaymentMethodsPaymentMethodIdProfilesRouteHandler,
+  )
+  .openapi(
+    postV1PaymentMethodsPaymentMethodIdProfilesRoute,
+    postV1PaymentMethodsPaymentMethodIdProfilesRouteHandler,
+  )
+  .openapi(
+    postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberCancelRoute,
+    postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberCancelRouteHandler,
+  )
+  .openapi(
+    postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberExpireRoute,
+    postV1PaymentMethodsPaymentMethodIdProfilesProfileNumberExpireRouteHandler,
+  )
+  .openapi(
+    putV1PaymentMethodsPaymentMethodIdScrubRoute,
+    putV1PaymentMethodsPaymentMethodIdScrubRouteHandler,
+  )
+  .openapi(
+    putV1PaymentMethodsPaymentMethodIdVerifyRoute,
+    putV1PaymentMethodsPaymentMethodIdVerifyRouteHandler,
+  )
+  .openapi(
+    postV1PaymentMethodsPaymentMethodIdVoidAuthorizeRoute,
+    postV1PaymentMethodsPaymentMethodIdVoidAuthorizeRouteHandler,
+  )
+  .openapi(getV1PaymentRunsRoute, getV1PaymentRunsRouteHandler)
+  .openapi(postV1PaymentRunsRoute, postV1PaymentRunsRouteHandler)
+  .openapi(deleteV1PaymentRunsPaymentRunIdRoute, deleteV1PaymentRunsPaymentRunIdRouteHandler)
+  .openapi(getV1PaymentRunsPaymentRunIdRoute, getV1PaymentRunsPaymentRunIdRouteHandler)
+  .openapi(putV1PaymentRunsPaymentRunIdRoute, putV1PaymentRunsPaymentRunIdRouteHandler)
+  .openapi(getV1PaymentRunsPaymentRunIdDataRoute, getV1PaymentRunsPaymentRunIdDataRouteHandler)
+  .openapi(
+    getV1PaymentRunsPaymentRunIdSummaryRoute,
+    getV1PaymentRunsPaymentRunIdSummaryRouteHandler,
+  )
+  .openapi(getV1PaymentgatewaysRoute, getV1PaymentgatewaysRouteHandler)
+  .openapi(getV1PaymentsRoute, getV1PaymentsRouteHandler)
+  .openapi(postV1PaymentsRoute, postV1PaymentsRouteHandler)
+  .openapi(deleteV1PaymentsPaymentIdRoute, deleteV1PaymentsPaymentIdRouteHandler)
+  .openapi(getV1PaymentsPaymentIdRoute, getV1PaymentsPaymentIdRouteHandler)
+  .openapi(putV1PaymentsPaymentIdRoute, putV1PaymentsPaymentIdRouteHandler)
+  .openapi(putV1PaymentsPaymentIdApplyRoute, putV1PaymentsPaymentIdApplyRouteHandler)
+  .openapi(putV1PaymentsPaymentIdCancelRoute, putV1PaymentsPaymentIdCancelRouteHandler)
+  .openapi(getV1PaymentsPaymentIdPartsRoute, getV1PaymentsPaymentIdPartsRouteHandler)
+  .openapi(getV1PaymentsPaymentIdPartsPartidRoute, getV1PaymentsPaymentIdPartsPartidRouteHandler)
+  .openapi(
+    getV1PaymentsPaymentIdPartsPartidItempartsRoute,
+    getV1PaymentsPaymentIdPartsPartidItempartsRouteHandler,
+  )
+  .openapi(
+    getV1PaymentsPaymentIdPartsPartidItempartsItempartidRoute,
+    getV1PaymentsPaymentIdPartsPartidItempartsItempartidRouteHandler,
+  )
+  .openapi(postV1PaymentsPaymentIdRefundsRoute, postV1PaymentsPaymentIdRefundsRouteHandler)
+  .openapi(putV1PaymentsPaymentIdTransferRoute, putV1PaymentsPaymentIdTransferRouteHandler)
+  .openapi(putV1PaymentsPaymentIdUnapplyRoute, putV1PaymentsPaymentIdUnapplyRouteHandler)
+  .openapi(postV1QuotesDocumentRoute, postV1QuotesDocumentRouteHandler)
+  .openapi(getV1RampsRampNumberRoute, getV1RampsRampNumberRouteHandler)
+  .openapi(getV1RampsRampNumberRampMetricsRoute, getV1RampsRampNumberRampMetricsRouteHandler)
+  .openapi(
+    getV1RateplanProductIdProductRatePlanRoute,
+    getV1RateplanProductIdProductRatePlanRouteHandler,
+  )
+  .openapi(getV1RefundsRoute, getV1RefundsRouteHandler)
+  .openapi(postV1RefundsRefundIdReconcileRoute, postV1RefundsRefundIdReconcileRouteHandler)
+  .openapi(deleteV1RefundsRefundIdRoute, deleteV1RefundsRefundIdRouteHandler)
+  .openapi(getV1RefundsRefundIdRoute, getV1RefundsRefundIdRouteHandler)
+  .openapi(putV1RefundsRefundIdRoute, putV1RefundsRefundIdRouteHandler)
+  .openapi(putV1RefundsRefundIdCancelRoute, putV1RefundsRefundIdCancelRouteHandler)
+  .openapi(getV1RefundsRefundIdPartsRoute, getV1RefundsRefundIdPartsRouteHandler)
+  .openapi(
+    getV1RefundsRefundIdPartsRefundpartidRoute,
+    getV1RefundsRefundIdPartsRefundpartidRouteHandler,
+  )
+  .openapi(
+    getV1RefundsRefundIdPartsRefundpartidItempartsRoute,
+    getV1RefundsRefundIdPartsRefundpartidItempartsRouteHandler,
+  )
+  .openapi(
+    getV1RefundsRefundIdPartsRefundpartidItempartsItempartidRoute,
+    getV1RefundsRefundIdPartsRefundpartidItempartsItempartidRouteHandler,
+  )
+  .openapi(
+    getV1RevenueEventsRevenueSchedulesRsNumberRoute,
+    getV1RevenueEventsRevenueSchedulesRsNumberRouteHandler,
+  )
+  .openapi(getV1RevenueEventsEventNumberRoute, getV1RevenueEventsEventNumberRouteHandler)
+  .openapi(
+    getV1RevenueItemsChargeRevenueSummariesCrsNumberRoute,
+    getV1RevenueItemsChargeRevenueSummariesCrsNumberRouteHandler,
+  )
+  .openapi(
+    getV1RevenueItemsRevenueEventsEventNumberRoute,
+    getV1RevenueItemsRevenueEventsEventNumberRouteHandler,
+  )
+  .openapi(
+    putV1RevenueItemsRevenueEventsEventNumberRoute,
+    putV1RevenueItemsRevenueEventsEventNumberRouteHandler,
+  )
+  .openapi(
+    getV1RevenueItemsRevenueSchedulesRsNumberRoute,
+    getV1RevenueItemsRevenueSchedulesRsNumberRouteHandler,
+  )
+  .openapi(
+    putV1RevenueItemsRevenueSchedulesRsNumberRoute,
+    putV1RevenueItemsRevenueSchedulesRsNumberRouteHandler,
+  )
+  .openapi(
+    getV1RevenueRecognitionRulesProductChargesChargeKeyRoute,
+    getV1RevenueRecognitionRulesProductChargesChargeKeyRouteHandler,
+  )
+  .openapi(
+    getV1RevenueRecognitionRulesSubscriptionChargesChargeKeyRoute,
+    getV1RevenueRecognitionRulesSubscriptionChargesChargeKeyRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesCreditMemoItemsCmiIdRoute,
+    getV1RevenueSchedulesCreditMemoItemsCmiIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesCreditMemoItemsCmiIdRoute,
+    postV1RevenueSchedulesCreditMemoItemsCmiIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesCreditMemoItemsCmiIdDistributeRevenueWithDateRangeRoute,
+    postV1RevenueSchedulesCreditMemoItemsCmiIdDistributeRevenueWithDateRangeRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesDebitMemoItemsDmiIdRoute,
+    getV1RevenueSchedulesDebitMemoItemsDmiIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesDebitMemoItemsDmiIdRoute,
+    postV1RevenueSchedulesDebitMemoItemsDmiIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesDebitMemoItemsDmiIdDistributeRevenueWithDateRangeRoute,
+    postV1RevenueSchedulesDebitMemoItemsDmiIdDistributeRevenueWithDateRangeRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRoute,
+    getV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRoute,
+    postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyDistributeRevenueWithDateRangeRoute,
+    postV1RevenueSchedulesInvoiceItemAdjustmentsInvoiceItemAdjKeyDistributeRevenueWithDateRangeRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesInvoiceItemsInvoiceItemIdRoute,
+    getV1RevenueSchedulesInvoiceItemsInvoiceItemIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesInvoiceItemsInvoiceItemIdRoute,
+    postV1RevenueSchedulesInvoiceItemsInvoiceItemIdRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesInvoiceItemsInvoiceItemIdDistributeRevenueWithDateRangeRoute,
+    postV1RevenueSchedulesInvoiceItemsInvoiceItemIdDistributeRevenueWithDateRangeRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesProductChargesChargeKeyAccountKeyRoute,
+    getV1RevenueSchedulesProductChargesChargeKeyAccountKeyRouteHandler,
+  )
+  .openapi(
+    getV1RevenueSchedulesSubscriptionChargesChargeKeyRoute,
+    getV1RevenueSchedulesSubscriptionChargesChargeKeyRouteHandler,
+  )
+  .openapi(
+    postV1RevenueSchedulesSubscriptionChargesChargeKeyRoute,
+    postV1RevenueSchedulesSubscriptionChargesChargeKeyRouteHandler,
+  )
+  .openapi(deleteV1RevenueSchedulesRsNumberRoute, deleteV1RevenueSchedulesRsNumberRouteHandler)
+  .openapi(getV1RevenueSchedulesRsNumberRoute, getV1RevenueSchedulesRsNumberRouteHandler)
+  .openapi(
+    putV1RevenueSchedulesRsNumberBasicInformationRoute,
+    putV1RevenueSchedulesRsNumberBasicInformationRouteHandler,
+  )
+  .openapi(
+    putV1RevenueSchedulesRsNumberDistributeRevenueAcrossAccountingPeriodsRoute,
+    putV1RevenueSchedulesRsNumberDistributeRevenueAcrossAccountingPeriodsRouteHandler,
+  )
+  .openapi(
+    putV1RevenueSchedulesRsNumberDistributeRevenueOnSpecificDateRoute,
+    putV1RevenueSchedulesRsNumberDistributeRevenueOnSpecificDateRouteHandler,
+  )
+  .openapi(
+    putV1RevenueSchedulesRsNumberDistributeRevenueWithDateRangeRoute,
+    putV1RevenueSchedulesRsNumberDistributeRevenueWithDateRangeRouteHandler,
+  )
+  .openapi(putV1RevproAccountingCodesRoute, putV1RevproAccountingCodesRouteHandler)
+  .openapi(postV1RsaSignaturesRoute, postV1RsaSignaturesRouteHandler)
+  .openapi(postV1RsaSignaturesDecryptRoute, postV1RsaSignaturesDecryptRouteHandler)
+  .openapi(getV1SequenceSetsRoute, getV1SequenceSetsRouteHandler)
+  .openapi(postV1SequenceSetsRoute, postV1SequenceSetsRouteHandler)
+  .openapi(deleteV1SequenceSetsIdRoute, deleteV1SequenceSetsIdRouteHandler)
+  .openapi(getV1SequenceSetsIdRoute, getV1SequenceSetsIdRouteHandler)
+  .openapi(putV1SequenceSetsIdRoute, putV1SequenceSetsIdRouteHandler)
+  .openapi(
+    getV1SettingsFinanceRevenueAutomationStartDateRoute,
+    getV1SettingsFinanceRevenueAutomationStartDateRouteHandler,
+  )
+  .openapi(postV1SubscriptionsRoute, postV1SubscriptionsRouteHandler)
+  .openapi(
+    getV1SubscriptionsAccountsAccountKeyRoute,
+    getV1SubscriptionsAccountsAccountKeyRouteHandler,
+  )
+  .openapi(postV1SubscriptionsPreviewRoute, postV1SubscriptionsPreviewRouteHandler)
+  .openapi(getV1SubscriptionsSubscriptionKeyRoute, getV1SubscriptionsSubscriptionKeyRouteHandler)
+  .openapi(putV1SubscriptionsSubscriptionKeyRoute, putV1SubscriptionsSubscriptionKeyRouteHandler)
+  .openapi(
+    putV1SubscriptionsSubscriptionKeyCancelRoute,
+    putV1SubscriptionsSubscriptionKeyCancelRouteHandler,
+  )
+  .openapi(
+    putV1SubscriptionsSubscriptionKeyRenewRoute,
+    putV1SubscriptionsSubscriptionKeyRenewRouteHandler,
+  )
+  .openapi(
+    putV1SubscriptionsSubscriptionKeyResumeRoute,
+    putV1SubscriptionsSubscriptionKeyResumeRouteHandler,
+  )
+  .openapi(
+    putV1SubscriptionsSubscriptionKeySuspendRoute,
+    putV1SubscriptionsSubscriptionKeySuspendRouteHandler,
+  )
+  .openapi(
+    getV1SubscriptionsSubscriptionKeyVersionsVersionRoute,
+    getV1SubscriptionsSubscriptionKeyVersionsVersionRouteHandler,
+  )
+  .openapi(
+    getV1SubscriptionsSubscriptionKeyRampMetricsRoute,
+    getV1SubscriptionsSubscriptionKeyRampMetricsRouteHandler,
+  )
+  .openapi(
+    getV1SubscriptionsSubscriptionKeyRampsRoute,
+    getV1SubscriptionsSubscriptionKeyRampsRouteHandler,
+  )
+  .openapi(
+    putV1SubscriptionsSubscriptionNumberCustomFieldsRoute,
+    putV1SubscriptionsSubscriptionNumberCustomFieldsRouteHandler,
+  )
+  .openapi(
+    putV1SubscriptionsSubscriptionNumberVersionsVersionCustomFieldsRoute,
+    putV1SubscriptionsSubscriptionNumberVersionsVersionCustomFieldsRouteHandler,
+  )
+  .openapi(deleteV1TaxationitemsIdRoute, deleteV1TaxationitemsIdRouteHandler)
+  .openapi(getV1TaxationitemsIdRoute, getV1TaxationitemsIdRouteHandler)
+  .openapi(putV1TaxationitemsIdRoute, putV1TaxationitemsIdRouteHandler)
+  .openapi(
+    getV1TransactionsInvoicesAccountsAccountKeyRoute,
+    getV1TransactionsInvoicesAccountsAccountKeyRouteHandler,
+  )
+  .openapi(
+    getV1TransactionsPaymentsAccountsAccountKeyRoute,
+    getV1TransactionsPaymentsAccountsAccountKeyRouteHandler,
+  )
+  .openapi(postV1UsageRoute, postV1UsageRouteHandler)
+  .openapi(getV1UsageAccountsAccountKeyRoute, getV1UsageAccountsAccountKeyRouteHandler)
+  .openapi(putV1UsersUsernameAcceptAccessRoute, putV1UsersUsernameAcceptAccessRouteHandler)
+  .openapi(
+    getV1UsersUsernameAccessibleEntitiesRoute,
+    getV1UsersUsernameAccessibleEntitiesRouteHandler,
+  )
+  .openapi(putV1UsersUsernameDenyAccessRoute, putV1UsersUsernameDenyAccessRouteHandler)
+  .openapi(putV1UsersUsernameRequestAccessRoute, putV1UsersUsernameRequestAccessRouteHandler)
+  .openapi(getWorkflowsRoute, getWorkflowsRouteHandler)
+  .openapi(postWorkflowsImportRoute, postWorkflowsImportRouteHandler)
+  .openapi(getWorkflowsMetricsJsonRoute, getWorkflowsMetricsJsonRouteHandler)
+  .openapi(getWorkflowsTasksRoute, getWorkflowsTasksRouteHandler)
+  .openapi(putWorkflowsTasksBatchUpdateRoute, putWorkflowsTasksBatchUpdateRouteHandler)
+  .openapi(getWorkflowsTasksTaskIdRoute, getWorkflowsTasksTaskIdRouteHandler)
+  .openapi(postWorkflowsTasksTaskIdRerunRoute, postWorkflowsTasksTaskIdRerunRouteHandler)
+  .openapi(deleteWorkflowsWorkflowIdRoute, deleteWorkflowsWorkflowIdRouteHandler)
+  .openapi(getWorkflowsWorkflowIdRoute, getWorkflowsWorkflowIdRouteHandler)
+  .openapi(patchWorkflowsWorkflowIdRoute, patchWorkflowsWorkflowIdRouteHandler)
+  .openapi(getWorkflowsWorkflowIdExportRoute, getWorkflowsWorkflowIdExportRouteHandler)
+  .openapi(postWorkflowsWorkflowIdRunRoute, postWorkflowsWorkflowIdRunRouteHandler)
 
 export default app

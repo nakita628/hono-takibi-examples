@@ -2333,10 +2333,10 @@ const LongSchema = z.int().openapi('Long')
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 type DocumentAttributeValueType = {
-  StringValue?: z.infer<typeof DocumentAttributeStringValueSchema> & unknown
-  StringListValue?: z.infer<typeof DocumentAttributeStringListValueSchema> & unknown
-  LongValue?: z.infer<typeof LongSchema> & unknown
-  DateValue?: z.infer<typeof TimestampSchema> & unknown
+  StringValue?: z.infer<typeof DocumentAttributeStringValueSchema>
+  StringListValue?: z.infer<typeof DocumentAttributeStringListValueSchema>
+  LongValue?: z.infer<typeof LongSchema>
+  DateValue?: z.infer<typeof TimestampSchema>
 }
 
 const DocumentAttributeValueSchema: z.ZodType<DocumentAttributeValueType> = z
@@ -2491,21 +2491,20 @@ const CustomDocumentEnrichmentConfigurationSchema = z
   .openapi('CustomDocumentEnrichmentConfiguration')
 
 type CreateDataSourceRequestType = {
-  Name: z.infer<typeof DataSourceNameSchema> & unknown
-  IndexId: z.infer<typeof IndexIdSchema> & unknown
-  Type: z.infer<typeof DataSourceTypeSchema> & unknown
-  Configuration?: z.infer<typeof DataSourceConfigurationSchema> & unknown
-  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Schedule?: z.infer<typeof ScanScheduleSchema> & unknown
-  RoleArn?: z.infer<typeof RoleArnSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  ClientToken?: z.infer<typeof ClientTokenNameSchema> & unknown
-  LanguageCode?: z.infer<typeof LanguageCodeSchema> & unknown
+  Name: z.infer<typeof DataSourceNameSchema>
+  IndexId: z.infer<typeof IndexIdSchema>
+  Type: z.infer<typeof DataSourceTypeSchema>
+  Configuration?: z.infer<typeof DataSourceConfigurationSchema>
+  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Schedule?: z.infer<typeof ScanScheduleSchema>
+  RoleArn?: z.infer<typeof RoleArnSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  ClientToken?: z.infer<typeof ClientTokenNameSchema>
+  LanguageCode?: z.infer<typeof LanguageCodeSchema>
   CustomDocumentEnrichmentConfiguration?: z.infer<
     typeof CustomDocumentEnrichmentConfigurationSchema
-  > &
-    unknown
+  >
 }
 
 const DataSourceIdSchema = z
@@ -2527,24 +2526,23 @@ const ErrorMessageSchema = z
   .openapi('ErrorMessage')
 
 type DescribeDataSourceResponseType = {
-  Id?: z.infer<typeof DataSourceIdSchema> & unknown
-  IndexId?: z.infer<typeof IndexIdSchema> & unknown
-  Name?: z.infer<typeof DataSourceNameSchema> & unknown
-  Type?: z.infer<typeof DataSourceTypeSchema> & unknown
-  Configuration?: z.infer<typeof DataSourceConfigurationSchema> & unknown
-  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampSchema> & unknown
-  UpdatedAt?: z.infer<typeof TimestampSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Status?: z.infer<typeof DataSourceStatusSchema> & unknown
-  Schedule?: z.infer<typeof ScanScheduleSchema> & unknown
-  RoleArn?: z.infer<typeof RoleArnSchema> & unknown
-  ErrorMessage?: z.infer<typeof ErrorMessageSchema> & unknown
-  LanguageCode?: z.infer<typeof LanguageCodeSchema> & unknown
+  Id?: z.infer<typeof DataSourceIdSchema>
+  IndexId?: z.infer<typeof IndexIdSchema>
+  Name?: z.infer<typeof DataSourceNameSchema>
+  Type?: z.infer<typeof DataSourceTypeSchema>
+  Configuration?: z.infer<typeof DataSourceConfigurationSchema>
+  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema>
+  CreatedAt?: z.infer<typeof TimestampSchema>
+  UpdatedAt?: z.infer<typeof TimestampSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Status?: z.infer<typeof DataSourceStatusSchema>
+  Schedule?: z.infer<typeof ScanScheduleSchema>
+  RoleArn?: z.infer<typeof RoleArnSchema>
+  ErrorMessage?: z.infer<typeof ErrorMessageSchema>
+  LanguageCode?: z.infer<typeof LanguageCodeSchema>
   CustomDocumentEnrichmentConfiguration?: z.infer<
     typeof CustomDocumentEnrichmentConfigurationSchema
-  > &
-    unknown
+  >
 }
 
 const QueryIdSchema = z
@@ -2641,8 +2639,8 @@ const AdditionalResultAttributeListSchema = z
 const DocumentIdSchema = z.string().min(1).max(2048).openapi('DocumentId')
 
 type DocumentAttributeType = {
-  Key: z.infer<typeof DocumentAttributeKeySchema> & unknown
-  Value: z.infer<typeof DocumentAttributeValueSchema> & unknown
+  Key: z.infer<typeof DocumentAttributeKeySchema>
+  Value: z.infer<typeof DocumentAttributeValueSchema>
 }
 
 const DocumentAttributeSchema: z.ZodType<DocumentAttributeType> = z
@@ -2911,29 +2909,28 @@ const FeaturedResultsItemListSchema: z.ZodType<FeaturedResultsItemListType> = z
   .openapi('FeaturedResultsItemList')
 
 type QueryResultType = {
-  QueryId?: z.infer<typeof QueryIdSchema> & unknown
-  ResultItems?: z.infer<typeof QueryResultItemListSchema> & unknown
-  FacetResults?: z.infer<typeof FacetResultListSchema> & unknown
-  TotalNumberOfResults?: z.infer<typeof IntegerSchema> & unknown
-  Warnings?: z.infer<typeof WarningListSchema> & unknown
-  SpellCorrectedQueries?: z.infer<typeof SpellCorrectedQueryListSchema> & unknown
-  FeaturedResultsItems?: z.infer<typeof FeaturedResultsItemListSchema> & unknown
+  QueryId?: z.infer<typeof QueryIdSchema>
+  ResultItems?: z.infer<typeof QueryResultItemListSchema>
+  FacetResults?: z.infer<typeof FacetResultListSchema>
+  TotalNumberOfResults?: z.infer<typeof IntegerSchema>
+  Warnings?: z.infer<typeof WarningListSchema>
+  SpellCorrectedQueries?: z.infer<typeof SpellCorrectedQueryListSchema>
+  FeaturedResultsItems?: z.infer<typeof FeaturedResultsItemListSchema>
 }
 
 type UpdateDataSourceRequestType = {
-  Id: z.infer<typeof DataSourceIdSchema> & unknown
-  Name?: z.infer<typeof DataSourceNameSchema> & unknown
-  IndexId: z.infer<typeof IndexIdSchema> & unknown
-  Configuration?: z.infer<typeof DataSourceConfigurationSchema> & unknown
-  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema> & unknown
-  Description?: z.infer<typeof DescriptionSchema> & unknown
-  Schedule?: z.infer<typeof ScanScheduleSchema> & unknown
-  RoleArn?: z.infer<typeof RoleArnSchema> & unknown
-  LanguageCode?: z.infer<typeof LanguageCodeSchema> & unknown
+  Id: z.infer<typeof DataSourceIdSchema>
+  Name?: z.infer<typeof DataSourceNameSchema>
+  IndexId: z.infer<typeof IndexIdSchema>
+  Configuration?: z.infer<typeof DataSourceConfigurationSchema>
+  VpcConfiguration?: z.infer<typeof DataSourceVpcConfigurationSchema>
+  Description?: z.infer<typeof DescriptionSchema>
+  Schedule?: z.infer<typeof ScanScheduleSchema>
+  RoleArn?: z.infer<typeof RoleArnSchema>
+  LanguageCode?: z.infer<typeof LanguageCodeSchema>
   CustomDocumentEnrichmentConfiguration?: z.infer<
     typeof CustomDocumentEnrichmentConfigurationSchema
-  > &
-    unknown
+  >
 }
 
 const AttributeFilterSchema: z.ZodType<AttributeFilterType> = z
@@ -2993,16 +2990,16 @@ const AttributeFilterListSchema: z.ZodType<AttributeFilterListType> = z
   .openapi('AttributeFilterList')
 
 type AttributeFilterType = {
-  AndAllFilters?: z.infer<typeof AttributeFilterListSchema> & unknown
-  OrAllFilters?: z.infer<typeof AttributeFilterListSchema> & unknown
-  NotFilter?: AttributeFilterType & unknown
-  EqualsTo?: z.infer<typeof DocumentAttributeSchema> & unknown
-  ContainsAll?: z.infer<typeof DocumentAttributeSchema> & unknown
-  ContainsAny?: z.infer<typeof DocumentAttributeSchema> & unknown
-  GreaterThan?: z.infer<typeof DocumentAttributeSchema> & unknown
-  GreaterThanOrEquals?: z.infer<typeof DocumentAttributeSchema> & unknown
-  LessThan?: z.infer<typeof DocumentAttributeSchema> & unknown
-  LessThanOrEquals?: z.infer<typeof DocumentAttributeSchema> & unknown
+  AndAllFilters?: z.infer<typeof AttributeFilterListSchema>
+  OrAllFilters?: z.infer<typeof AttributeFilterListSchema>
+  NotFilter?: AttributeFilterType
+  EqualsTo?: z.infer<typeof DocumentAttributeSchema>
+  ContainsAll?: z.infer<typeof DocumentAttributeSchema>
+  ContainsAny?: z.infer<typeof DocumentAttributeSchema>
+  GreaterThan?: z.infer<typeof DocumentAttributeSchema>
+  GreaterThanOrEquals?: z.infer<typeof DocumentAttributeSchema>
+  LessThan?: z.infer<typeof DocumentAttributeSchema>
+  LessThanOrEquals?: z.infer<typeof DocumentAttributeSchema>
 }
 
 const FacetResultSchema: z.ZodType<FacetResultType> = z
@@ -3033,9 +3030,9 @@ const FacetResultSchema: z.ZodType<FacetResultType> = z
 type FacetResultListType = z.infer<typeof FacetResultSchema>[]
 
 type DocumentAttributeValueCountPairType = {
-  DocumentAttributeValue?: z.infer<typeof DocumentAttributeValueSchema> & unknown
-  Count?: z.infer<typeof IntegerSchema> & unknown
-  FacetResults?: z.infer<typeof FacetResultListSchema> & unknown
+  DocumentAttributeValue?: z.infer<typeof DocumentAttributeValueSchema>
+  Count?: z.infer<typeof IntegerSchema>
+  FacetResults?: z.infer<typeof FacetResultListSchema>
 }
 
 const DocumentAttributeValueCountPairSchema: z.ZodType<DocumentAttributeValueCountPairType> = z
@@ -3108,9 +3105,9 @@ const TopDocumentAttributeValueCountPairsSizeSchema: z.ZodType<TopDocumentAttrib
   z.int().min(0).max(5000).openapi('TopDocumentAttributeValueCountPairsSize')
 
 type FacetType = {
-  DocumentAttributeKey?: z.infer<typeof DocumentAttributeKeySchema> & unknown
-  Facets?: z.infer<typeof FacetListSchema> & unknown
-  MaxResults?: z.infer<typeof TopDocumentAttributeValueCountPairsSizeSchema> & unknown
+  DocumentAttributeKey?: z.infer<typeof DocumentAttributeKeySchema>
+  Facets?: z.infer<typeof FacetListSchema>
+  MaxResults?: z.infer<typeof TopDocumentAttributeValueCountPairsSizeSchema>
 }
 
 const DocumentAttributeValueTypeSchema: z.ZodType<DocumentAttributeValueTypeType> = z
@@ -3123,10 +3120,9 @@ const DocumentAttributeValueCountPairListSchema: z.ZodType<DocumentAttributeValu
     .openapi('DocumentAttributeValueCountPairList')
 
 type FacetResultType = {
-  DocumentAttributeKey?: z.infer<typeof DocumentAttributeKeySchema> & unknown
-  DocumentAttributeValueType?: z.infer<typeof DocumentAttributeValueTypeSchema> & unknown
-  DocumentAttributeValueCountPairs?: z.infer<typeof DocumentAttributeValueCountPairListSchema> &
-    unknown
+  DocumentAttributeKey?: z.infer<typeof DocumentAttributeKeySchema>
+  DocumentAttributeValueType?: z.infer<typeof DocumentAttributeValueTypeSchema>
+  DocumentAttributeValueCountPairs?: z.infer<typeof DocumentAttributeValueCountPairListSchema>
 }
 
 const EntityIdSchema = z

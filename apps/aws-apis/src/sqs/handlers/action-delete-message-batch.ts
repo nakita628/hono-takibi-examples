@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionDeleteMessageBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionDeleteMessageBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionDeleteMessageBatchHandler = app.openapi(
-  postActionDeleteMessageBatchRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postActionDeleteMessageBatchRouteHandler: RouteHandler<
+  typeof postActionDeleteMessageBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

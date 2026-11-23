@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectorConnectorIdRoute,
   deleteConnectorSyncJobConnectorSyncJobIdRoute,
   getConnectorConnectorIdRoute,
@@ -32,96 +32,176 @@ import {
   putConnectorSyncJobConnectorSyncJobIdStatsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putConnectorConnectorIdCheckInRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdCheckInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectorHandler = app
-  .openapi(putConnectorConnectorIdCheckInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectorConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorSyncJobConnectorSyncJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorSyncJobConnectorSyncJobIdCheckInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorSyncJobConnectorSyncJobIdClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorSyncJobConnectorSyncJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectorSyncJobConnectorSyncJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorSyncJobConnectorSyncJobIdErrorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorSyncJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectorSyncJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorSyncJobConnectorSyncJobIdStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdFilteringActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdApiKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdErrorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdFilteringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdFilteringValidationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdIndexNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdNativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdPipelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdSchedulingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdServiceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectorConnectorIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConnectorConnectorIdRouteHandler: RouteHandler<
+  typeof getConnectorConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectorConnectorIdRouteHandler: RouteHandler<
+  typeof deleteConnectorConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorRouteHandler: RouteHandler<typeof getConnectorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorRouteHandler: RouteHandler<typeof putConnectorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectorRouteHandler: RouteHandler<typeof postConnectorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorSyncJobConnectorSyncJobIdCancelRouteHandler: RouteHandler<
+  typeof putConnectorSyncJobConnectorSyncJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorSyncJobConnectorSyncJobIdCheckInRouteHandler: RouteHandler<
+  typeof putConnectorSyncJobConnectorSyncJobIdCheckInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorSyncJobConnectorSyncJobIdClaimRouteHandler: RouteHandler<
+  typeof putConnectorSyncJobConnectorSyncJobIdClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorSyncJobConnectorSyncJobIdRouteHandler: RouteHandler<
+  typeof getConnectorSyncJobConnectorSyncJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectorSyncJobConnectorSyncJobIdRouteHandler: RouteHandler<
+  typeof deleteConnectorSyncJobConnectorSyncJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorSyncJobConnectorSyncJobIdErrorRouteHandler: RouteHandler<
+  typeof putConnectorSyncJobConnectorSyncJobIdErrorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorSyncJobRouteHandler: RouteHandler<
+  typeof getConnectorSyncJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectorSyncJobRouteHandler: RouteHandler<
+  typeof postConnectorSyncJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorSyncJobConnectorSyncJobIdStatsRouteHandler: RouteHandler<
+  typeof putConnectorSyncJobConnectorSyncJobIdStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdFilteringActivateRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdFilteringActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdApiKeyIdRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdConfigurationRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdErrorRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdErrorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdFeaturesRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdFilteringRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdFilteringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdFilteringValidationRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdFilteringValidationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdIndexNameRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdIndexNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdNameRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdNativeRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdNativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdPipelineRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdPipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdSchedulingRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdSchedulingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdServiceTypeRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdServiceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectorConnectorIdStatusRouteHandler: RouteHandler<
+  typeof putConnectorConnectorIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

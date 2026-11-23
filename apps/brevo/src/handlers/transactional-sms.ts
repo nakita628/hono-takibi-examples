@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTransactionalSMSStatisticsAggregatedReportRoute,
   getTransactionalSMSStatisticsEventsRoute,
   getTransactionalSMSStatisticsReportsRoute,
@@ -8,24 +8,38 @@ import {
   postTransactionalSMSSmsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTransactionalSMSSendRouteHandler: RouteHandler<
+  typeof postTransactionalSMSSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transactionalSmsHandler = app
-  .openapi(postTransactionalSMSSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionalSMSSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionalSMSStatisticsAggregatedReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionalSMSStatisticsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionalSMSStatisticsReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionalSMSTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTransactionalSMSSmsRouteHandler: RouteHandler<
+  typeof postTransactionalSMSSmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionalSMSStatisticsAggregatedReportRouteHandler: RouteHandler<
+  typeof getTransactionalSMSStatisticsAggregatedReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionalSMSStatisticsEventsRouteHandler: RouteHandler<
+  typeof getTransactionalSMSStatisticsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionalSMSStatisticsReportsRouteHandler: RouteHandler<
+  typeof getTransactionalSMSStatisticsReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionalSMSTemplatesRouteHandler: RouteHandler<
+  typeof getTransactionalSMSTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getArizePhoenixVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getArizePhoenixVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const arizePhoenixVersionHandler = app.openapi(getArizePhoenixVersionRoute, (c) => {
+export const getArizePhoenixVersionRouteHandler: RouteHandler<
+  typeof getArizePhoenixVersionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

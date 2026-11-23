@@ -200,7 +200,7 @@ Retrieve previously created data connections.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 |page|query|integer(int32)|true|Page number. [Read more](https://docs.codat.io/using-the-api/paging).|
 |pageSize|query|integer(int32)|false|Number of records to return in a page. [Read more](https://docs.codat.io/using-the-api/paging).|
 |query|query|string|false|Codat query string. [Read more](https://docs.codat.io/using-the-api/querying).|
@@ -280,7 +280,7 @@ Create a data connection for company.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 |body|body|string|false|none|
 
 > Example responses
@@ -346,8 +346,8 @@ Update a data connection
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
-|connectionId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
+|connectionId|path|[ConnectionId](#schemaconnectionid)|true|none|
 |body|body|[UpdateConnection](#schemaupdateconnection)|false|none|
 |» status|body|string \| null|false|The current authorization status of the data connection.|
 
@@ -405,7 +405,7 @@ Retrieve current config preferences.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 
 > Example responses
 
@@ -679,7 +679,7 @@ Make changes to configuration preferences.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 
 > Example responses
 
@@ -951,7 +951,7 @@ Check the sync history and sync status for a company.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 
 <h3 id="get-status-for-a-companys-syncs-responses">Responses</h3>
 
@@ -1283,9 +1283,9 @@ If there was no previously successful sync, the start date in the config is used
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 |body|body|[SyncToLatestArgs](#schemasynctolatestargs)|false|none|
-|» syncTo|body|string|false|The DateTime, upto which Sync will run up to starting from the previous successful sync|
+|» syncTo|body|[CompanyCreated](#schemacompanycreated)|false|The DateTime, upto which Sync will run up to starting from the previous successful sync|
 
 > Example responses
 
@@ -1368,10 +1368,10 @@ Run a Commerce sync from the specified start date to the specified finish date i
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|companyId|path|string(uuid)|true|none|
+|companyId|path|[CompanyId](#schemacompanyid)|true|none|
 |body|body|[DateRange](#schemadaterange)|false|none|
-|» finish|body|string|false|Finish date of the Sync.|
-|» start|body|string|false|Start date of the Sync.|
+|» finish|body|[CompanyCreated](#schemacompanycreated)|false|Finish date of the Sync.|
+|» start|body|[CompanyCreated](#schemacompanycreated)|false|Start date of the Sync.|
 
 > Example responses
 
@@ -1649,7 +1649,7 @@ auth_header
 |---|---|---|---|---|
 |button|object|false|none|Button branding references.|
 |logo|object|false|none|Logo branding references.|
-|sourceId|string(uuid)|false|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
+|sourceId|[BrandingSourceId](#schemabrandingsourceid)|false|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
 
 <h2 id="tocS_Companies">Companies</h2>
 <!-- backwards compatibility -->
@@ -1748,12 +1748,12 @@ A company in Codat represent a small or medium sized business, whose data you wi
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|created|string|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|created|[CompanyCreated](#schemacompanycreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |createdByUserName|string|false|none|none|
 |dataConnections|[[Connection](#schemaconnection)]|false|none|none|
 |description|string|false|none|Additional information about the company. This can be used to store foreign IDs, references, etc.|
-|id|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
-|lastSync|string|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|id|[CompanyId](#schemacompanyid)|true|none|Unique identifier for your SMB in Codat.|
+|lastSync|[CompanyCreated](#schemacompanycreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |name|string|true|none|The name of the company|
 |platform|string|false|none|**Deprecated.**|
 |redirect|string(uri)|true|none|The `redirect` [Link URL](https://docs.codat.io/auth-flow/authorize-hosted-link) enabling the customer to start their auth flow journey for the company.|
@@ -2075,17 +2075,17 @@ A connection represents the link between a `company` and a source of data.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |connectionInfo|object|false|none|none|
-|created|string|true|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|dataConnectionErrors|[object]|false|none|none|
-|id|string(uuid)|true|none|Unique identifier for a company's data connection.|
-|integrationId|string(uuid)|true|none|A Codat ID representing the integration.|
+|created|[CompanyCreated](#schemacompanycreated)|true|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|dataConnectionErrors|[[ConnectionDataConnectionError](#schemaconnectiondataconnectionerror)]|false|none|none|
+|id|[ConnectionId](#schemaconnectionid)|true|none|Unique identifier for a company's data connection.|
+|integrationId|[ConnectionIntegrationId](#schemaconnectionintegrationid)|true|none|A Codat ID representing the integration.|
 |integrationKey|string|true|none|A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.|
-|lastSync|string|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|lastSync|[CompanyCreated](#schemacompanycreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |linkUrl|string(uri)|true|none|none|
 |platformName|string|true|none|none|
-|sourceId|string(uuid)|true|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
-|sourceType|string|true|none|The type of platform of the connection.|
-|status|string|true|none|The current authorization status of the data connection.|
+|sourceId|[BrandingSourceId](#schemabrandingsourceid)|true|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
+|sourceType|[ConnectionSourceType](#schemaconnectionsourcetype)|true|none|The type of platform of the connection.|
+|status|[ConnectionDataConnectionStatus](#schemaconnectiondataconnectionstatus)|true|none|The current authorization status of the data connection.|
 
 #### Enumerated Values
 
@@ -2211,8 +2211,8 @@ A connection represents the link between a `company` and a source of data.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|finish|string|false|none|Finish date of the Sync.|
-|start|string|false|none|Start date of the Sync.|
+|finish|[CompanyCreated](#schemacompanycreated)|false|none|Finish date of the Sync.|
+|start|[CompanyCreated](#schemacompanycreated)|false|none|Start date of the Sync.|
 
 <h2 id="tocS_Fees">Fees</h2>
 <!-- backwards compatibility -->
@@ -2460,16 +2460,16 @@ An integration that Codat supports
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |dataProvidedBy|string|false|none|none|
-|datatypeFeatures|[object]|false|none|none|
+|datatypeFeatures|[[IntegrationDataTypeFeature](#schemaintegrationdatatypefeature)]|false|none|none|
 |enabled|boolean|true|none|Whether this integration is enabled for your customers to use|
-|integrationId|string(uuid)|false|none|A Codat ID representing the integration.|
+|integrationId|[ConnectionIntegrationId](#schemaconnectionintegrationid)|false|none|A Codat ID representing the integration.|
 |isBeta|boolean|false|none|none|
 |isOfflineConnector|boolean|false|none|none|
 |key|string|true|none|A unique 4-letter key to represent a platform in each integration. View [accounting](https://docs.codat.io/integrations/accounting/accounting-platform-keys), [banking](https://docs.codat.io/integrations/banking/banking-platform-keys), and [commerce](https://docs.codat.io/integrations/commerce/commerce-platform-keys) platform keys. |
 |logoUrl|string(uri)|true|none|none|
 |name|string|true|none|none|
-|sourceId|string(uuid)|false|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
-|sourceType|string|false|none|The type of platform of the connection.|
+|sourceId|[BrandingSourceId](#schemabrandingsourceid)|false|none|A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.|
+|sourceType|[ConnectionSourceType](#schemaconnectionsourcetype)|false|none|The type of platform of the connection.|
 
 #### Enumerated Values
 
@@ -3103,7 +3103,7 @@ An integration that Codat supports
 |syncExceptionMessage|string \| null|false|none|Exception message for the sync operation.|
 |syncStatus|string \| null|false|none|Status of the sync of the company data. This is linked to status code.|
 |syncStatusCode|integer(int32)|false|none|Numerical status code sync of the company data.|
-|syncUtc|string|false|none|UTC DateTime for the Sync.|
+|syncUtc|[CompanyCreated](#schemacompanycreated)|false|none|UTC DateTime for the Sync.|
 
 <h2 id="tocS_SyncToLatestArgs">SyncToLatestArgs</h2>
 <!-- backwards compatibility -->
@@ -3122,7 +3122,7 @@ An integration that Codat supports
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|syncTo|string|false|none|The DateTime, upto which Sync will run up to starting from the previous successful sync|
+|syncTo|[CompanyCreated](#schemacompanycreated)|false|none|The DateTime, upto which Sync will run up to starting from the previous successful sync|
 
 <h2 id="tocS_TaxRateAmount">TaxRateAmount</h2>
 <!-- backwards compatibility -->
@@ -3212,3 +3212,275 @@ An integration that Codat supports
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |visibleAccounts|[string]|false|none|Visible accounts on sync flow.|
+
+<h2 id="tocS_CompanyId">CompanyId</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanyid"></a>
+<a id="schema_CompanyId"></a>
+<a id="tocScompanyid"></a>
+<a id="tocscompanyid"></a>
+
+```json
+"8a210b68-6988-11ed-a1eb-0242ac120002"
+```
+
+Unique identifier for your SMB in Codat.
+
+<h2 id="tocS_ConnectionId">ConnectionId</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectionid"></a>
+<a id="schema_ConnectionId"></a>
+<a id="tocSconnectionid"></a>
+<a id="tocsconnectionid"></a>
+
+```json
+"2e9d2c44-f675-40ba-8049-353bfcb5e171"
+```
+
+Unique identifier for a company's data connection.
+
+<h2 id="tocS_CompanyCreated">CompanyCreated</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanycreated"></a>
+<a id="schema_CompanyCreated"></a>
+<a id="tocScompanycreated"></a>
+<a id="tocscompanycreated"></a>
+
+```json
+"2022-10-23T00:00:00Z"
+```
+
+In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:
+
+```
+2020-10-08T22:40:50Z
+2021-01-01T00:00:00
+```
+
+
+
+When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:
+
+- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`
+- Unqualified local time: `2021-11-15T01:00:00`
+- UTC time offsets: `2021-11-15T01:00:00-05:00`
+
+> Time zones
+> 
+> Not all dates from Codat will contain information about time zones.  
+> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.
+
+<h2 id="tocS_ConnectionDataConnectionError">ConnectionDataConnectionError</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectiondataconnectionerror"></a>
+<a id="schema_ConnectionDataConnectionError"></a>
+<a id="tocSconnectiondataconnectionerror"></a>
+<a id="tocsconnectiondataconnectionerror"></a>
+
+```json
+{
+  "errorMessage": "string",
+  "erroredOnUtc": "2022-10-23T00:00:00Z",
+  "statusCode": "string",
+  "statusText": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errorMessage|string|false|none|none|
+|erroredOnUtc|[CompanyCreated](#schemacompanycreated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|statusCode|string|false|none|none|
+|statusText|string|false|none|none|
+
+<h2 id="tocS_BrandingSourceId">BrandingSourceId</h2>
+<!-- backwards compatibility -->
+<a id="schemabrandingsourceid"></a>
+<a id="schema_BrandingSourceId"></a>
+<a id="tocSbrandingsourceid"></a>
+<a id="tocsbrandingsourceid"></a>
+
+```json
+"35b92968-9851-4095-ad60-395c95cbcba4"
+```
+
+A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.
+
+<h2 id="tocS_ConnectionDataConnectionStatus">ConnectionDataConnectionStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectiondataconnectionstatus"></a>
+<a id="schema_ConnectionDataConnectionStatus"></a>
+<a id="tocSconnectiondataconnectionstatus"></a>
+<a id="tocsconnectiondataconnectionstatus"></a>
+
+```json
+"PendingAuth"
+```
+
+The current authorization status of the data connection.
+
+<h2 id="tocS_IntegrationSupportedFeature">IntegrationSupportedFeature</h2>
+<!-- backwards compatibility -->
+<a id="schemaintegrationsupportedfeature"></a>
+<a id="schema_IntegrationSupportedFeature"></a>
+<a id="tocSintegrationsupportedfeature"></a>
+<a id="tocsintegrationsupportedfeature"></a>
+
+```json
+{
+  "featureState": "Release",
+  "featureType": "Get"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|featureState|[IntegrationFeatureState](#schemaintegrationfeaturestate)|true|none|none|
+|featureType|[IntegrationFeatureType](#schemaintegrationfeaturetype)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|featureState|Release|
+|featureState|Beta|
+|featureState|Deprecated|
+|featureState|NotSupported|
+|featureState|NotImplemented|
+|featureType|Get|
+|featureType|Post|
+|featureType|Categorization|
+|featureType|Delete|
+|featureType|Put|
+|featureType|GetAsPdf|
+|featureType|DownloadAttachment|
+|featureType|GetAttachment|
+|featureType|GetAttachments|
+|featureType|UploadAttachment|
+
+<h2 id="tocS_IntegrationFeatureState">IntegrationFeatureState</h2>
+<!-- backwards compatibility -->
+<a id="schemaintegrationfeaturestate"></a>
+<a id="schema_IntegrationFeatureState"></a>
+<a id="tocSintegrationfeaturestate"></a>
+<a id="tocsintegrationfeaturestate"></a>
+
+```json
+"Release"
+```
+
+<h2 id="tocS_IntegrationFeatureType">IntegrationFeatureType</h2>
+<!-- backwards compatibility -->
+<a id="schemaintegrationfeaturetype"></a>
+<a id="schema_IntegrationFeatureType"></a>
+<a id="tocSintegrationfeaturetype"></a>
+<a id="tocsintegrationfeaturetype"></a>
+
+```json
+"Get"
+```
+
+<h2 id="tocS_IntegrationDataTypeFeature">IntegrationDataTypeFeature</h2>
+<!-- backwards compatibility -->
+<a id="schemaintegrationdatatypefeature"></a>
+<a id="schema_IntegrationDataTypeFeature"></a>
+<a id="tocSintegrationdatatypefeature"></a>
+<a id="tocsintegrationdatatypefeature"></a>
+
+```json
+{
+  "datatype": "invoices",
+  "supportedFeatures": [
+    {
+      "featureState": "Release",
+      "featureType": "Get"
+    }
+  ]
+}
+```
+
+Describes support for a given datatype and associated operations
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataType|string|false|none|Available Data types|
+|supportedFeatures|[[IntegrationSupportedFeature](#schemaintegrationsupportedfeature)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|dataType|accountTransactions|
+|dataType|balanceSheet|
+|dataType|bankAccounts|
+|dataType|bankTransactions|
+|dataType|billCreditNotes|
+|dataType|billPayments|
+|dataType|bills|
+|dataType|cashFlowStatement|
+|dataType|chartOfAccounts|
+|dataType|company|
+|dataType|creditNotes|
+|dataType|customers|
+|dataType|directCosts|
+|dataType|directIncomes|
+|dataType|invoices|
+|dataType|items|
+|dataType|journalEntries|
+|dataType|journals|
+|dataType|paymentMethods|
+|dataType|payments|
+|dataType|profitAndLoss|
+|dataType|purchaseOrders|
+|dataType|salesOrders|
+|dataType|suppliers|
+|dataType|taxRates|
+|dataType|trackingCategories|
+|dataType|transfers|
+|dataType|banking-accountBalances|
+|dataType|banking-accounts|
+|dataType|banking-transactionCategories|
+|dataType|banking-transactions|
+|dataType|commerce-companyInfo|
+|dataType|commerce-customers|
+|dataType|commerce-disputes|
+|dataType|commerce-locations|
+|dataType|commerce-orders|
+|dataType|commerce-paymentMethods|
+|dataType|commerce-payments|
+|dataType|commerce-productCategories|
+|dataType|commerce-products|
+|dataType|commerce-taxComponents|
+|dataType|commerce-transactions|
+
+<h2 id="tocS_ConnectionIntegrationId">ConnectionIntegrationId</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectionintegrationid"></a>
+<a id="schema_ConnectionIntegrationId"></a>
+<a id="tocSconnectionintegrationid"></a>
+<a id="tocsconnectionintegrationid"></a>
+
+```json
+"fd321cb6-7963-4506-b873-e99593a45e30"
+```
+
+A Codat ID representing the integration.
+
+<h2 id="tocS_ConnectionSourceType">ConnectionSourceType</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectionsourcetype"></a>
+<a id="schema_ConnectionSourceType"></a>
+<a id="tocSconnectionsourcetype"></a>
+<a id="tocsconnectionsourcetype"></a>
+
+```json
+"Accounting"
+```
+
+The type of platform of the connection.

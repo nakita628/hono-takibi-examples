@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMagiclinkRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMagiclinkRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const magiclinkHandler = app.openapi(postMagiclinkRoute, (c) => {
+export const postMagiclinkRouteHandler: RouteHandler<typeof postMagiclinkRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

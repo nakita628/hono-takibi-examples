@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNewApikeyRoute, getNewGroupRoute, getNewServiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNewApikeyRoute, getNewGroupRoute, getNewServiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNewApikeyRouteHandler: RouteHandler<typeof getNewApikeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const newHandler = app
-  .openapi(getNewApikeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNewGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNewServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNewGroupRouteHandler: RouteHandler<typeof getNewGroupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNewServiceRouteHandler: RouteHandler<typeof getNewServiceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

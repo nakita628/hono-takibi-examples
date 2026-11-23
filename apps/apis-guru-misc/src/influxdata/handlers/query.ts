@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuerySuggestionsNameRoute,
   getQuerySuggestionsRoute,
   postQueryAnalyzeRoute,
@@ -7,21 +7,28 @@ import {
   postQueryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQueryRouteHandler: RouteHandler<typeof postQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queryHandler = app
-  .openapi(postQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryAnalyzeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryAstRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuerySuggestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuerySuggestionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQueryAnalyzeRouteHandler: RouteHandler<typeof postQueryAnalyzeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueryAstRouteHandler: RouteHandler<typeof postQueryAstRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuerySuggestionsRouteHandler: RouteHandler<
+  typeof getQuerySuggestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuerySuggestionsNameRouteHandler: RouteHandler<
+  typeof getQuerySuggestionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAssociationBetweenSubjectObjectRoute,
   getAssociationFindSubjectCategoryObjectCategoryRoute,
   getAssociationFindSubjectCategoryRoute,
@@ -9,27 +9,44 @@ import {
   getAssociationTypeAssociationTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAssociationBetweenSubjectObjectRouteHandler: RouteHandler<
+  typeof getAssociationBetweenSubjectObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const associationHandler = app
-  .openapi(getAssociationBetweenSubjectObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationFindSubjectCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationFindSubjectCategoryObjectCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationFromSubjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationToObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationTypeAssociationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAssociationFindSubjectCategoryRouteHandler: RouteHandler<
+  typeof getAssociationFindSubjectCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationFindSubjectCategoryObjectCategoryRouteHandler: RouteHandler<
+  typeof getAssociationFindSubjectCategoryObjectCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationFromSubjectRouteHandler: RouteHandler<
+  typeof getAssociationFromSubjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationToObjectRouteHandler: RouteHandler<
+  typeof getAssociationToObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationTypeAssociationTypeRouteHandler: RouteHandler<
+  typeof getAssociationTypeAssociationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssociationIdRouteHandler: RouteHandler<typeof getAssociationIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

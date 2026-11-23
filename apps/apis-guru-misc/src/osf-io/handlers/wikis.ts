@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWikisWikiIdContentIndexRoute, getWikisWikiIdIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWikisWikiIdContentIndexRoute, getWikisWikiIdIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWikisWikiIdIndexRouteHandler: RouteHandler<
+  typeof getWikisWikiIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wikisHandler = app
-  .openapi(getWikisWikiIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWikisWikiIdContentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWikisWikiIdContentIndexRouteHandler: RouteHandler<
+  typeof getWikisWikiIdContentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

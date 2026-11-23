@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDigitalWalletTokensDigitalWalletTokenIdRoute,
   getDigitalWalletTokensRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDigitalWalletTokensRouteHandler: RouteHandler<
+  typeof getDigitalWalletTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const digitalWalletTokensHandler = app
-  .openapi(getDigitalWalletTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDigitalWalletTokensDigitalWalletTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDigitalWalletTokensDigitalWalletTokenIdRouteHandler: RouteHandler<
+  typeof getDigitalWalletTokensDigitalWalletTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

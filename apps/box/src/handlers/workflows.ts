@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWorkflowsRoute, postWorkflowsWorkflowIdStartRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWorkflowsRoute, postWorkflowsWorkflowIdStartRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkflowsRouteHandler: RouteHandler<typeof getWorkflowsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workflowsHandler = app
-  .openapi(getWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkflowsWorkflowIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWorkflowsWorkflowIdStartRouteHandler: RouteHandler<
+  typeof postWorkflowsWorkflowIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

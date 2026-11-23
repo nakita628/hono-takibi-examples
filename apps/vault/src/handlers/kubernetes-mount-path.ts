@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKubernetesMountPathConfigRoute,
   deleteKubernetesMountPathRolesNameRoute,
   getKubernetesMountPathCheckRoute,
@@ -11,33 +11,56 @@ import {
   postKubernetesMountPathRolesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKubernetesMountPathCheckRouteHandler: RouteHandler<
+  typeof getKubernetesMountPathCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const kubernetesMountPathHandler = app
-  .openapi(getKubernetesMountPathCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKubernetesMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKubernetesMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKubernetesMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKubernetesMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKubernetesMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKubernetesMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKubernetesMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKubernetesMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getKubernetesMountPathConfigRouteHandler: RouteHandler<
+  typeof getKubernetesMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKubernetesMountPathConfigRouteHandler: RouteHandler<
+  typeof postKubernetesMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKubernetesMountPathConfigRouteHandler: RouteHandler<
+  typeof deleteKubernetesMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKubernetesMountPathCredsNameRouteHandler: RouteHandler<
+  typeof postKubernetesMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKubernetesMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getKubernetesMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKubernetesMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getKubernetesMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKubernetesMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postKubernetesMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKubernetesMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deleteKubernetesMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

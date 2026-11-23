@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBroadcastBroadcastTournamentIdPlayersPlayerIdRoute,
   getBroadcastBroadcastTournamentIdPlayersRoute,
   getBroadcastBroadcastTournamentIdTeamsStandingsRoute,
@@ -9,27 +9,44 @@ import {
   postBroadcastRoundBroadcastRoundIdEditRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBroadcastNewRouteHandler: RouteHandler<typeof postBroadcastNewRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const broadcastHandler = app
-  .openapi(postBroadcastNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastBroadcastTournamentIdPlayersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastBroadcastTournamentIdPlayersPlayerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastBroadcastTournamentIdTeamsStandingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastBroadcastTournamentIdEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastBroadcastTournamentIdNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastRoundBroadcastRoundIdEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBroadcastBroadcastTournamentIdPlayersRouteHandler: RouteHandler<
+  typeof getBroadcastBroadcastTournamentIdPlayersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBroadcastBroadcastTournamentIdPlayersPlayerIdRouteHandler: RouteHandler<
+  typeof getBroadcastBroadcastTournamentIdPlayersPlayerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBroadcastBroadcastTournamentIdTeamsStandingsRouteHandler: RouteHandler<
+  typeof getBroadcastBroadcastTournamentIdTeamsStandingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastBroadcastTournamentIdEditRouteHandler: RouteHandler<
+  typeof postBroadcastBroadcastTournamentIdEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastBroadcastTournamentIdNewRouteHandler: RouteHandler<
+  typeof postBroadcastBroadcastTournamentIdNewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastRoundBroadcastRoundIdEditRouteHandler: RouteHandler<
+  typeof postBroadcastRoundBroadcastRoundIdEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

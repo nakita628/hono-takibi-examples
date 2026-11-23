@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-enums.yaml',
   output: './src/3-0-schema-enums/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-schema-enums/types.ts' },
   client: { output: './src/3-0-schema-enums/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-schema-enums/rpc.ts', parseResponse: true },

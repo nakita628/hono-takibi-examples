@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSimCardsIdRoute,
   deleteSimCardsSimCardIdNetworkPreferencesRoute,
   deleteSimCardsSimCardIdPublicIpRoute,
@@ -17,51 +17,86 @@ import {
   putSimCardsSimCardIdNetworkPreferencesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimCardsRouteHandler: RouteHandler<typeof getSimCardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const simCardsHandler = app
-  .openapi(getSimCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardsActionsValidateRegistrationCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSimCardsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSimCardsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardsIdActionsDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardsIdActionsEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardsIdActionsSetStandbyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSimCardsSimCardIdNetworkPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardsSimCardIdNetworkPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSimCardsSimCardIdNetworkPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSimCardsSimCardIdPublicIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardsSimCardIdPublicIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardsSimCardIdPublicIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardsSimCardIdWirelessConnectivityLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSimCardsActionsValidateRegistrationCodesRouteHandler: RouteHandler<
+  typeof postSimCardsActionsValidateRegistrationCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSimCardsIdRouteHandler: RouteHandler<typeof deleteSimCardsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardsIdRouteHandler: RouteHandler<typeof getSimCardsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSimCardsIdRouteHandler: RouteHandler<typeof patchSimCardsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardsIdActionsDisableRouteHandler: RouteHandler<
+  typeof postSimCardsIdActionsDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardsIdActionsEnableRouteHandler: RouteHandler<
+  typeof postSimCardsIdActionsEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardsIdActionsSetStandbyRouteHandler: RouteHandler<
+  typeof postSimCardsIdActionsSetStandbyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSimCardsSimCardIdNetworkPreferencesRouteHandler: RouteHandler<
+  typeof deleteSimCardsSimCardIdNetworkPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardsSimCardIdNetworkPreferencesRouteHandler: RouteHandler<
+  typeof getSimCardsSimCardIdNetworkPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSimCardsSimCardIdNetworkPreferencesRouteHandler: RouteHandler<
+  typeof putSimCardsSimCardIdNetworkPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSimCardsSimCardIdPublicIpRouteHandler: RouteHandler<
+  typeof deleteSimCardsSimCardIdPublicIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardsSimCardIdPublicIpRouteHandler: RouteHandler<
+  typeof getSimCardsSimCardIdPublicIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardsSimCardIdPublicIpRouteHandler: RouteHandler<
+  typeof postSimCardsSimCardIdPublicIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardsSimCardIdWirelessConnectivityLogsRouteHandler: RouteHandler<
+  typeof getSimCardsSimCardIdWirelessConnectivityLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

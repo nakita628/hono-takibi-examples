@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEphemeridesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEphemeridesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ephemeridesHandler = app.openapi(postEphemeridesRoute, (c) => {
+export const postEphemeridesRouteHandler: RouteHandler<typeof postEphemeridesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

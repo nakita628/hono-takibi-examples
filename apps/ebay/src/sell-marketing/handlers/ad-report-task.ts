@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdReportTaskReportTaskIdRoute,
   getAdReportTaskReportTaskIdRoute,
   getAdReportTaskRoute,
   postAdReportTaskRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdReportTaskRouteHandler: RouteHandler<typeof getAdReportTaskRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adReportTaskHandler = app
-  .openapi(getAdReportTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdReportTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdReportTaskReportTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdReportTaskReportTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdReportTaskRouteHandler: RouteHandler<typeof postAdReportTaskRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdReportTaskReportTaskIdRouteHandler: RouteHandler<
+  typeof deleteAdReportTaskReportTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdReportTaskReportTaskIdRouteHandler: RouteHandler<
+  typeof getAdReportTaskReportTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

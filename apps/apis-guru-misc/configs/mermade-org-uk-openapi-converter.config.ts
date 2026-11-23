@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mermade.org.uk/openapi-converter/1.0.0/openapi.yaml',
   output: './src/mermade-org-uk-openapi-converter/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mermade-org-uk-openapi-converter/types.ts' },
   client: { output: './src/mermade-org-uk-openapi-converter/client.ts', baseUrl: '/' },
   rpc: { output: './src/mermade-org-uk-openapi-converter/rpc.ts', parseResponse: true },

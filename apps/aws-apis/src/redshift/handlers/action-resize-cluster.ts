@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionResizeClusterRoute, postActionResizeClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionResizeClusterRoute, postActionResizeClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionResizeClusterRouteHandler: RouteHandler<
+  typeof getActionResizeClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionResizeClusterHandler = app
-  .openapi(getActionResizeClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionResizeClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionResizeClusterRouteHandler: RouteHandler<
+  typeof postActionResizeClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

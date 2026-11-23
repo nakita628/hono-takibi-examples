@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBng2latlongEastingNorthingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBng2latlongEastingNorthingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bng2latlongHandler = app.openapi(getBng2latlongEastingNorthingRoute, (c) => {
+export const getBng2latlongEastingNorthingRouteHandler: RouteHandler<
+  typeof getBng2latlongEastingNorthingRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

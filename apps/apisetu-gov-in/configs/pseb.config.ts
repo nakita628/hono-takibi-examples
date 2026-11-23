@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/pseb/3.0.0/openapi.yaml',
   output: './src/pseb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pseb/types.ts' },
   client: { output: './src/pseb/client.ts', baseUrl: '/' },
   rpc: { output: './src/pseb/rpc.ts', parseResponse: true },

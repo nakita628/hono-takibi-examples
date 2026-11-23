@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendPollRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendPollRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendPollHandler = app.openapi(postSendPollRoute, (c) => {
+export const postSendPollRouteHandler: RouteHandler<typeof postSendPollRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMetafieldsIdIndexRoute,
   getMetafieldsIdIndexRoute,
   getMetafieldsIndexRoute,
@@ -8,24 +8,38 @@ import {
   putMetafieldsIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetafieldsIndexRouteHandler: RouteHandler<typeof getMetafieldsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const metafieldsHandler = app
-  .openapi(getMetafieldsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetafieldsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMetafieldsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetafieldsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMetafieldsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMetafieldsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetafieldsIndexRouteHandler: RouteHandler<
+  typeof postMetafieldsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMetafieldsIdIndexRouteHandler: RouteHandler<
+  typeof deleteMetafieldsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetafieldsIdIndexRouteHandler: RouteHandler<
+  typeof getMetafieldsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMetafieldsIdIndexRouteHandler: RouteHandler<
+  typeof patchMetafieldsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMetafieldsIdIndexRouteHandler: RouteHandler<
+  typeof putMetafieldsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

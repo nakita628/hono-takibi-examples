@@ -423,7 +423,7 @@ export const postAuthOauthTokenRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success: Everything worked as expected.', content: {} },
+    200: { description: 'Success: Everything worked as expected.' },
     400: { description: 'Bad Request: The request was unacceptable due to wrong parameter(s).' },
     401: { description: 'Unauthorized: Invalid access_token used.' },
     402: { description: 'Request Failed.' },

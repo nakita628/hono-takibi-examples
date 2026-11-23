@@ -3050,24 +3050,24 @@ export function createOauthRights<
 }
 
 export function getOpenapiType2QueryKey(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
 ) {
-  return ['openapi.:type', '/openapi.:type', args] as const
+  return ['openapi.{type}', '/openapi.{type}', args] as const
 }
 
 export function getOpenapiType2QueryOptions<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: InferRequestType<(typeof client)['openapi.{type}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
       >
     >,
     TError,
@@ -3077,7 +3077,7 @@ export function getOpenapiType2QueryOptions<
     queryKey: getOpenapiType2QueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['openapi.:type'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['openapi.{type}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -3085,17 +3085,17 @@ export function getOpenapiType2QueryOptions<
 
 export function createOpenapiType2<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['openapi.:type']['$get']>,
+  args: () => InferRequestType<(typeof client)['openapi.{type}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
           >
         >,
         TError,
@@ -13989,29 +13989,29 @@ export function createProductsInstances<
 }
 
 export function getProductsInstancesTypeVersionQueryKey(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
 ) {
-  return ['products', '/products/instances/:type-:version', args] as const
+  return ['products', '/products/instances/:type-{version}', args] as const
 }
 
 export function getProductsInstancesTypeVersionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+        Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+          Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
         >
       >
     >,
@@ -14022,7 +14022,7 @@ export function getProductsInstancesTypeVersionQueryOptions<
     queryKey: getProductsInstancesTypeVersionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.products.instances[':type-:version'].$get(args, {
+        client.products.instances[':type-{version}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -14035,20 +14035,20 @@ export function createProductsInstancesTypeVersion<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+        Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>,
+  args: () => InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+              Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
             >
           >
         >,

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV1WebfontsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV1WebfontsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1Handler = app.openapi(getV1WebfontsRoute, (c) => {
+export const getV1WebfontsRouteHandler: RouteHandler<typeof getV1WebfontsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

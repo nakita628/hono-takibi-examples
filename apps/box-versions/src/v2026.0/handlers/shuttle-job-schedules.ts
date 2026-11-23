@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShuttleJobSchedulesShuttleJobScheduleIdRoute,
   getShuttleJobSchedulesRoute,
   getShuttleJobSchedulesShuttleJobScheduleIdRoute,
@@ -7,21 +7,32 @@ import {
   putShuttleJobSchedulesShuttleJobScheduleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShuttleJobSchedulesRouteHandler: RouteHandler<
+  typeof getShuttleJobSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shuttleJobSchedulesHandler = app
-  .openapi(getShuttleJobSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleJobSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShuttleJobSchedulesShuttleJobScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putShuttleJobSchedulesShuttleJobScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShuttleJobSchedulesShuttleJobScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postShuttleJobSchedulesRouteHandler: RouteHandler<
+  typeof postShuttleJobSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShuttleJobSchedulesShuttleJobScheduleIdRouteHandler: RouteHandler<
+  typeof getShuttleJobSchedulesShuttleJobScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putShuttleJobSchedulesShuttleJobScheduleIdRouteHandler: RouteHandler<
+  typeof putShuttleJobSchedulesShuttleJobScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShuttleJobSchedulesShuttleJobScheduleIdRouteHandler: RouteHandler<
+  typeof deleteShuttleJobSchedulesShuttleJobScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

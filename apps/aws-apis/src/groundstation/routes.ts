@@ -319,7 +319,7 @@ const SourceSchema = z
 
 type DataflowDetailType = {
   destination?: z.infer<typeof DestinationSchema>
-  errorMessage?: z.infer<typeof StringSchema> & unknown
+  errorMessage?: z.infer<typeof StringSchema>
   source?: z.infer<typeof SourceSchema>
 }
 
@@ -364,20 +364,20 @@ const SatelliteArnSchema = z.string().openapi('SatelliteArn')
 const TagsMapSchema = z.record(z.string(), StringSchema).openapi('TagsMap')
 
 type DescribeContactResponseType = {
-  contactId?: z.infer<typeof UuidSchema> & unknown
-  contactStatus?: z.infer<typeof ContactStatusSchema> & unknown
-  dataflowList?: z.infer<typeof DataflowListSchema> & unknown
-  endTime?: z.infer<typeof TimestampSchema> & unknown
-  errorMessage?: z.infer<typeof StringSchema> & unknown
-  groundStation?: z.infer<typeof StringSchema> & unknown
-  maximumElevation?: z.infer<typeof ElevationSchema> & unknown
-  missionProfileArn?: z.infer<typeof MissionProfileArnSchema> & unknown
-  postPassEndTime?: z.infer<typeof TimestampSchema> & unknown
-  prePassStartTime?: z.infer<typeof TimestampSchema> & unknown
-  region?: z.infer<typeof StringSchema> & unknown
-  satelliteArn?: z.infer<typeof SatelliteArnSchema> & unknown
-  startTime?: z.infer<typeof TimestampSchema> & unknown
-  tags?: z.infer<typeof TagsMapSchema> & unknown
+  contactId?: z.infer<typeof UuidSchema>
+  contactStatus?: z.infer<typeof ContactStatusSchema>
+  dataflowList?: z.infer<typeof DataflowListSchema>
+  endTime?: z.infer<typeof TimestampSchema>
+  errorMessage?: z.infer<typeof StringSchema>
+  groundStation?: z.infer<typeof StringSchema>
+  maximumElevation?: z.infer<typeof ElevationSchema>
+  missionProfileArn?: z.infer<typeof MissionProfileArnSchema>
+  postPassEndTime?: z.infer<typeof TimestampSchema>
+  prePassStartTime?: z.infer<typeof TimestampSchema>
+  region?: z.infer<typeof StringSchema>
+  satelliteArn?: z.infer<typeof SatelliteArnSchema>
+  startTime?: z.infer<typeof TimestampSchema>
+  tags?: z.infer<typeof TagsMapSchema>
 }
 
 const ContactIdResponseSchema = z

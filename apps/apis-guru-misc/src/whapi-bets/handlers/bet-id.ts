@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putBetIdCashinRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putBetIdCashinRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const betIdHandler = app.openapi(putBetIdCashinRoute, (c) => {
+export const putBetIdCashinRouteHandler: RouteHandler<typeof putBetIdCashinRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

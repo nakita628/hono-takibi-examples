@@ -25,27 +25,27 @@ export function getSitesKey() {
 }
 
 export function getAddressesOutputFormatQueryKey(
-  args: InferRequestType<(typeof client)['addresses.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['addresses.{outputFormat}']['$get']>,
 ) {
-  return ['addresses.:outputFormat', '/addresses.:outputFormat', args] as const
+  return ['addresses.{outputFormat}', '/addresses.{outputFormat}', args] as const
 }
 
 export function getAddressesOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['addresses.:outputFormat']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['addresses.{outputFormat}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['addresses.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['addresses.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['addresses.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client)['addresses.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -56,7 +56,7 @@ export function getAddressesOutputFormatQueryOptions<
     queryKey: getAddressesOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['addresses.:outputFormat'].$get(args, {
+        client['addresses.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -68,12 +68,12 @@ export function getAddressesOutputFormatQueryOptions<
 export function createAddressesOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['addresses.:outputFormat']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['addresses.{outputFormat}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['addresses.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client)['addresses.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -81,7 +81,7 @@ export function createAddressesOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['addresses.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['addresses.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -106,29 +106,29 @@ export function createAddressesOutputFormat<
 }
 
 export function getIntersectionsNearOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.intersections)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['near.{outputFormat}']['$get']>,
 ) {
-  return ['intersections', '/intersections/near.:outputFormat', args] as const
+  return ['intersections', '/intersections/near.{outputFormat}', args] as const
 }
 
 export function getIntersectionsNearOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['near.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['near.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.intersections)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['near.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.intersections)['near.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.intersections)['near.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -139,7 +139,7 @@ export function getIntersectionsNearOutputFormatQueryOptions<
     queryKey: getIntersectionsNearOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.intersections['near.:outputFormat'].$get(args, {
+        client.intersections['near.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -152,13 +152,13 @@ export function createIntersectionsNearOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['near.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['near.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.intersections)['near.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.intersections)['near.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -166,7 +166,7 @@ export function createIntersectionsNearOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.intersections)['near.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.intersections)['near.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -191,29 +191,29 @@ export function createIntersectionsNearOutputFormat<
 }
 
 export function getIntersectionsNearestOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.intersections)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>,
 ) {
-  return ['intersections', '/intersections/nearest.:outputFormat', args] as const
+  return ['intersections', '/intersections/nearest.{outputFormat}', args] as const
 }
 
 export function getIntersectionsNearestOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.intersections)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.intersections)['nearest.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -224,7 +224,7 @@ export function getIntersectionsNearestOutputFormatQueryOptions<
     queryKey: getIntersectionsNearestOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.intersections['nearest.:outputFormat'].$get(args, {
+        client.intersections['nearest.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -237,13 +237,13 @@ export function createIntersectionsNearestOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.intersections)['nearest.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -251,7 +251,7 @@ export function createIntersectionsNearestOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.intersections)['nearest.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.intersections)['nearest.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -276,29 +276,29 @@ export function createIntersectionsNearestOutputFormat<
 }
 
 export function getIntersectionsWithinOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.intersections)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['within.{outputFormat}']['$get']>,
 ) {
-  return ['intersections', '/intersections/within.:outputFormat', args] as const
+  return ['intersections', '/intersections/within.{outputFormat}', args] as const
 }
 
 export function getIntersectionsWithinOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.intersections)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)['within.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.intersections)['within.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.intersections)['within.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -309,7 +309,7 @@ export function getIntersectionsWithinOutputFormatQueryOptions<
     queryKey: getIntersectionsWithinOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.intersections['within.:outputFormat'].$get(args, {
+        client.intersections['within.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -322,13 +322,13 @@ export function createIntersectionsWithinOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.intersections)['within.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.intersections)['within.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -336,7 +336,7 @@ export function createIntersectionsWithinOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.intersections)['within.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.intersections)['within.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -361,22 +361,22 @@ export function createIntersectionsWithinOutputFormat<
 }
 
 export function getIntersectionsIntersectionIDOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)[':intersectionID.{outputFormat}']['$get']>,
 ) {
-  return ['intersections', '/intersections/:intersectionID.:outputFormat', args] as const
+  return ['intersections', '/intersections/:intersectionID.{outputFormat}', args] as const
 }
 
 export function getIntersectionsIntersectionIDOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)[':intersectionID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.intersections)[':intersectionID.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
@@ -384,7 +384,7 @@ export function getIntersectionsIntersectionIDOutputFormatQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>
+            ReturnType<(typeof client.intersections)[':intersectionID.{outputFormat}']['$get']>
           >
         >
       >
@@ -396,7 +396,7 @@ export function getIntersectionsIntersectionIDOutputFormatQueryOptions<
     queryKey: getIntersectionsIntersectionIDOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.intersections[':intersectionID.:outputFormat'].$get(args, {
+        client.intersections[':intersectionID.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -409,14 +409,14 @@ export function createIntersectionsIntersectionIDOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.intersections)[':intersectionID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.intersections)[':intersectionID.:outputFormat']['$get']
+    (typeof client.intersections)[':intersectionID.{outputFormat}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -426,7 +426,9 @@ export function createIntersectionsIntersectionIDOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.intersections)[':intersectionID.:outputFormat']['$get']>
+                  ReturnType<
+                    (typeof client.intersections)[':intersectionID.{outputFormat}']['$get']
+                  >
                 >
               >
             >
@@ -455,29 +457,29 @@ export function createIntersectionsIntersectionIDOutputFormat<
 }
 
 export function getOccupantsAddressesOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.occupants)['addresses.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>,
 ) {
-  return ['occupants', '/occupants/addresses.:outputFormat', args] as const
+  return ['occupants', '/occupants/addresses.{outputFormat}', args] as const
 }
 
 export function getOccupantsAddressesOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['addresses.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.occupants)['addresses.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.occupants)['addresses.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -488,7 +490,7 @@ export function getOccupantsAddressesOutputFormatQueryOptions<
     queryKey: getOccupantsAddressesOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.occupants['addresses.:outputFormat'].$get(args, {
+        client.occupants['addresses.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -501,13 +503,13 @@ export function createOccupantsAddressesOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['addresses.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.occupants)['addresses.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -515,7 +517,7 @@ export function createOccupantsAddressesOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.occupants)['addresses.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.occupants)['addresses.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -540,29 +542,29 @@ export function createOccupantsAddressesOutputFormat<
 }
 
 export function getOccupantsNearOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.occupants)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['near.{outputFormat}']['$get']>,
 ) {
-  return ['occupants', '/occupants/near.:outputFormat', args] as const
+  return ['occupants', '/occupants/near.{outputFormat}', args] as const
 }
 
 export function getOccupantsNearOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['near.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['near.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.occupants)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['near.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.occupants)['near.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.occupants)['near.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -573,7 +575,7 @@ export function getOccupantsNearOutputFormatQueryOptions<
     queryKey: getOccupantsNearOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.occupants['near.:outputFormat'].$get(args, {
+        client.occupants['near.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -586,13 +588,13 @@ export function createOccupantsNearOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['near.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['near.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.occupants)['near.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.occupants)['near.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -600,7 +602,7 @@ export function createOccupantsNearOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.occupants)['near.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.occupants)['near.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -625,29 +627,29 @@ export function createOccupantsNearOutputFormat<
 }
 
 export function getOccupantsNearestOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.occupants)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>,
 ) {
-  return ['occupants', '/occupants/nearest.:outputFormat', args] as const
+  return ['occupants', '/occupants/nearest.{outputFormat}', args] as const
 }
 
 export function getOccupantsNearestOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.occupants)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.occupants)['nearest.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -658,7 +660,7 @@ export function getOccupantsNearestOutputFormatQueryOptions<
     queryKey: getOccupantsNearestOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.occupants['nearest.:outputFormat'].$get(args, {
+        client.occupants['nearest.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -671,13 +673,13 @@ export function createOccupantsNearestOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.occupants)['nearest.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -685,7 +687,7 @@ export function createOccupantsNearestOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.occupants)['nearest.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.occupants)['nearest.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -710,29 +712,29 @@ export function createOccupantsNearestOutputFormat<
 }
 
 export function getOccupantsWithinOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.occupants)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['within.{outputFormat}']['$get']>,
 ) {
-  return ['occupants', '/occupants/within.:outputFormat', args] as const
+  return ['occupants', '/occupants/within.{outputFormat}', args] as const
 }
 
 export function getOccupantsWithinOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.occupants)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)['within.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.occupants)['within.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.occupants)['within.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -743,7 +745,7 @@ export function getOccupantsWithinOutputFormatQueryOptions<
     queryKey: getOccupantsWithinOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.occupants['within.:outputFormat'].$get(args, {
+        client.occupants['within.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -756,13 +758,13 @@ export function createOccupantsWithinOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.occupants)['within.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.occupants)['within.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -770,7 +772,7 @@ export function createOccupantsWithinOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.occupants)['within.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.occupants)['within.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -795,29 +797,29 @@ export function createOccupantsWithinOutputFormat<
 }
 
 export function getOccupantsOccupantIDOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>,
 ) {
-  return ['occupants', '/occupants/:occupantID.:outputFormat', args] as const
+  return ['occupants', '/occupants/:occupantID.{outputFormat}', args] as const
 }
 
 export function getOccupantsOccupantIDOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -828,7 +830,7 @@ export function getOccupantsOccupantIDOutputFormatQueryOptions<
     queryKey: getOccupantsOccupantIDOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.occupants[':occupantID.:outputFormat'].$get(args, {
+        client.occupants[':occupantID.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -841,13 +843,13 @@ export function createOccupantsOccupantIDOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -855,7 +857,7 @@ export function createOccupantsOccupantIDOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.occupants)[':occupantID.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.occupants)[':occupantID.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -880,29 +882,29 @@ export function createOccupantsOccupantIDOutputFormat<
 }
 
 export function getParcelsPidsSiteIDOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>,
 ) {
-  return ['parcels', '/parcels/pids/:siteID.:outputFormat', args] as const
+  return ['parcels', '/parcels/pids/:siteID.{outputFormat}', args] as const
 }
 
 export function getParcelsPidsSiteIDOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -913,7 +915,7 @@ export function getParcelsPidsSiteIDOutputFormatQueryOptions<
     queryKey: getParcelsPidsSiteIDOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.parcels.pids[':siteID.:outputFormat'].$get(args, {
+        client.parcels.pids[':siteID.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -926,13 +928,13 @@ export function createParcelsPidsSiteIDOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -940,7 +942,7 @@ export function createParcelsPidsSiteIDOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.parcels.pids)[':siteID.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -965,27 +967,29 @@ export function createParcelsPidsSiteIDOutputFormat<
 }
 
 export function getSitesNearOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.sites)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['near.{outputFormat}']['$get']>,
 ) {
-  return ['sites', '/sites/near.:outputFormat', args] as const
+  return ['sites', '/sites/near.{outputFormat}', args] as const
 }
 
 export function getSitesNearOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.sites)['near.:outputFormat']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.sites)['near.{outputFormat}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sites)['near.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['near.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sites)['near.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.sites)['near.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -996,7 +1000,7 @@ export function getSitesNearOutputFormatQueryOptions<
     queryKey: getSitesNearOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sites['near.:outputFormat'].$get(args, {
+        client.sites['near.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1008,12 +1012,14 @@ export function getSitesNearOutputFormatQueryOptions<
 export function createSitesNearOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.sites)['near.:outputFormat']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.sites)['near.{outputFormat}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sites)['near.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.sites)['near.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -1021,7 +1027,7 @@ export function createSitesNearOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.sites)['near.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.sites)['near.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1046,29 +1052,29 @@ export function createSitesNearOutputFormat<
 }
 
 export function getSitesNearestOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.sites)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['nearest.{outputFormat}']['$get']>,
 ) {
-  return ['sites', '/sites/nearest.:outputFormat', args] as const
+  return ['sites', '/sites/nearest.{outputFormat}', args] as const
 }
 
 export function getSitesNearestOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sites)['nearest.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['nearest.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sites)['nearest.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.sites)['nearest.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1079,7 +1085,7 @@ export function getSitesNearestOutputFormatQueryOptions<
     queryKey: getSitesNearestOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sites['nearest.:outputFormat'].$get(args, {
+        client.sites['nearest.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1092,13 +1098,13 @@ export function createSitesNearestOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)['nearest.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)['nearest.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sites)['nearest.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.sites)['nearest.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -1106,7 +1112,7 @@ export function createSitesNearestOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.sites)['nearest.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.sites)['nearest.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1131,29 +1137,29 @@ export function createSitesNearestOutputFormat<
 }
 
 export function getSitesWithinOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.sites)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['within.{outputFormat}']['$get']>,
 ) {
-  return ['sites', '/sites/within.:outputFormat', args] as const
+  return ['sites', '/sites/within.{outputFormat}', args] as const
 }
 
 export function getSitesWithinOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sites)['within.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)['within.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sites)['within.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.sites)['within.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1164,7 +1170,7 @@ export function getSitesWithinOutputFormatQueryOptions<
     queryKey: getSitesWithinOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sites['within.:outputFormat'].$get(args, {
+        client.sites['within.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1177,13 +1183,13 @@ export function createSitesWithinOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)['within.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)['within.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sites)['within.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.sites)['within.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -1191,7 +1197,7 @@ export function createSitesWithinOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.sites)['within.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.sites)['within.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1216,29 +1222,29 @@ export function createSitesWithinOutputFormat<
 }
 
 export function getSitesSiteIDOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.sites)[':siteID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>,
 ) {
-  return ['sites', '/sites/:siteID.:outputFormat', args] as const
+  return ['sites', '/sites/:siteID.{outputFormat}', args] as const
 }
 
 export function getSitesSiteIDOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)[':siteID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sites)[':siteID.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sites)[':siteID.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1249,7 +1255,7 @@ export function getSitesSiteIDOutputFormatQueryOptions<
     queryKey: getSitesSiteIDOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sites[':siteID.:outputFormat'].$get(args, {
+        client.sites[':siteID.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1262,13 +1268,13 @@ export function createSitesSiteIDOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)[':siteID.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sites)[':siteID.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -1276,7 +1282,7 @@ export function createSitesSiteIDOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.sites)[':siteID.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.sites)[':siteID.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1301,29 +1307,29 @@ export function createSitesSiteIDOutputFormat<
 }
 
 export function getSitesSiteIDSubsitesOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>,
 ) {
-  return ['sites', '/sites/:siteID/subsites.:outputFormat', args] as const
+  return ['sites', '/sites/:siteID/subsites.{outputFormat}', args] as const
 }
 
 export function getSitesSiteIDSubsitesOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1334,7 +1340,7 @@ export function getSitesSiteIDSubsitesOutputFormatQueryOptions<
     queryKey: getSitesSiteIDSubsitesOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sites[':siteID']['subsites.:outputFormat'].$get(args, {
+        client.sites[':siteID']['subsites.{outputFormat}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1347,13 +1353,13 @@ export function createSitesSiteIDSubsitesOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>,
+  args: () => InferRequestType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -1362,7 +1368,7 @@ export function createSitesSiteIDSubsitesOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.sites)[':siteID']['subsites.:outputFormat']['$get']>
+                  ReturnType<(typeof client.sites)[':siteID']['subsites.{outputFormat}']['$get']>
                 >
               >
             >

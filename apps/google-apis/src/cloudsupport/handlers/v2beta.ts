@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2betaCaseClassificationsSearchRoute,
   getV2betaCasesSearchRoute,
   getV2betaNameDownloadRoute,
@@ -15,45 +15,76 @@ import {
   postV2betaParentCommentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2betaCaseClassificationsSearchRouteHandler: RouteHandler<
+  typeof getV2betaCaseClassificationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2betaHandler = app
-  .openapi(getV2betaCaseClassificationsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaCasesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2betaNameCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaNameDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2betaNameEscalateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaParentAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2betaParentAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaParentCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2betaParentCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2betaParentCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2betaParentCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2betaCasesSearchRouteHandler: RouteHandler<
+  typeof getV2betaCasesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2betaNameRouteHandler: RouteHandler<typeof getV2betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2betaNameRouteHandler: RouteHandler<typeof patchV2betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2betaNameCloseRouteHandler: RouteHandler<
+  typeof postV2betaNameCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2betaNameDownloadRouteHandler: RouteHandler<
+  typeof getV2betaNameDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2betaNameEscalateRouteHandler: RouteHandler<
+  typeof postV2betaNameEscalateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2betaParentAttachmentsRouteHandler: RouteHandler<
+  typeof getV2betaParentAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2betaParentAttachmentsRouteHandler: RouteHandler<
+  typeof postV2betaParentAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2betaParentCasesRouteHandler: RouteHandler<
+  typeof getV2betaParentCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2betaParentCasesRouteHandler: RouteHandler<
+  typeof postV2betaParentCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2betaParentCommentsRouteHandler: RouteHandler<
+  typeof getV2betaParentCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2betaParentCommentsRouteHandler: RouteHandler<
+  typeof postV2betaParentCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

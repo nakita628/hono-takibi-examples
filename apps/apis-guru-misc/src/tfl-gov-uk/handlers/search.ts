@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchBusSchedulesRoute,
   getSearchMetaCategoriesRoute,
   getSearchMetaSearchProvidersRoute,
@@ -7,21 +7,30 @@ import {
   getSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchRouteHandler: RouteHandler<typeof getSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchBusSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchMetaCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchMetaSearchProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchMetaSortsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchBusSchedulesRouteHandler: RouteHandler<
+  typeof getSearchBusSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchMetaCategoriesRouteHandler: RouteHandler<
+  typeof getSearchMetaCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchMetaSearchProvidersRouteHandler: RouteHandler<
+  typeof getSearchMetaSearchProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchMetaSortsRouteHandler: RouteHandler<typeof getSearchMetaSortsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

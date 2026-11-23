@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDelayDelayRoute,
   getDelayDelayRoute,
   patchDelayDelayRoute,
@@ -8,24 +8,28 @@ import {
   traceDelayDelayRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDelayDelayRouteHandler: RouteHandler<typeof deleteDelayDelayRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const delayHandler = app
-  .openapi(deleteDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(traceDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDelayDelayRouteHandler: RouteHandler<typeof getDelayDelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDelayDelayRouteHandler: RouteHandler<typeof patchDelayDelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDelayDelayRouteHandler: RouteHandler<typeof postDelayDelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDelayDelayRouteHandler: RouteHandler<typeof putDelayDelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const traceDelayDelayRouteHandler: RouteHandler<typeof traceDelayDelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

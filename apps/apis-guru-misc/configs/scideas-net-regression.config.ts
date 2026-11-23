@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/scideas.net/regression/1.0/openapi.yaml',
   output: './src/scideas-net-regression/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/scideas-net-regression/types.ts' },
   client: { output: './src/scideas-net-regression/client.ts', baseUrl: '/' },
   rpc: { output: './src/scideas-net-regression/rpc.ts', parseResponse: true },

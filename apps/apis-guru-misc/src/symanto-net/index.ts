@@ -1,23 +1,32 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  communicationHandler,
-  ekmanEmotionHandler,
-  emotionHandler,
-  languageDetectionHandler,
-  personalityHandler,
-  sentimentHandler,
-  topicSentimentHandler,
+  postCommunicationRoute,
+  postEkmanEmotionRoute,
+  postEmotionRoute,
+  postLanguageDetectionRoute,
+  postPersonalityRoute,
+  postSentimentRoute,
+  postTopicSentimentRoute,
+} from './routes'
+import {
+  postCommunicationRouteHandler,
+  postEkmanEmotionRouteHandler,
+  postEmotionRouteHandler,
+  postLanguageDetectionRouteHandler,
+  postPersonalityRouteHandler,
+  postSentimentRouteHandler,
+  postTopicSentimentRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', communicationHandler)
-  .route('/', ekmanEmotionHandler)
-  .route('/', emotionHandler)
-  .route('/', languageDetectionHandler)
-  .route('/', personalityHandler)
-  .route('/', sentimentHandler)
-  .route('/', topicSentimentHandler)
+  .openapi(postCommunicationRoute, postCommunicationRouteHandler)
+  .openapi(postEkmanEmotionRoute, postEkmanEmotionRouteHandler)
+  .openapi(postEmotionRoute, postEmotionRouteHandler)
+  .openapi(postLanguageDetectionRoute, postLanguageDetectionRouteHandler)
+  .openapi(postPersonalityRoute, postPersonalityRouteHandler)
+  .openapi(postSentimentRoute, postSentimentRouteHandler)
+  .openapi(postTopicSentimentRoute, postTopicSentimentRouteHandler)
 
 export default app

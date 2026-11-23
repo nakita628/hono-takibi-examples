@@ -10,18 +10,18 @@ export function getVVersionKey() {
 }
 
 export function getGetVVersionAreasKey(
-  args: InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
 ) {
-  return ['v:version', '/v:version/areas', args] as const
+  return ['v{version}', '/v{version}/areas', args] as const
 }
 
 export function useGetVVersionAreas<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
         >
       >,
       TError
@@ -38,25 +38,25 @@ export function useGetVVersionAreas<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].areas.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].areas.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionAreas<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['areas']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
         >
       >,
       TError
@@ -73,32 +73,32 @@ export function useImmutableGetVVersionAreas<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['areas']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['areas']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].areas.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].areas.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionAreasAreaIdsKey(
-  args: InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
 ) {
-  return ['v:version', '/v:version/areas/:area_Ids', args] as const
+  return ['v{version}', '/v{version}/areas/:area_Ids', args] as const
 }
 
 export function useGetVVersionAreasAreaIds<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
           >
         >
       >,
@@ -121,27 +121,27 @@ export function useGetVVersionAreasAreaIds<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].areas[':area_Ids'].$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].areas[':area_Ids'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionAreasAreaIds<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
           >
         >
       >,
@@ -164,33 +164,33 @@ export function useImmutableGetVVersionAreasAreaIds<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['areas'][':area_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['areas'][':area_Ids']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].areas[':area_Ids'].$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].areas[':area_Ids'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionQualityDailyKey(
-  args: InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
 ) {
-  return ['v:version', '/v:version/quality/daily', args] as const
+  return ['v{version}', '/v{version}/quality/daily', args] as const
 }
 
 export function useGetVVersionQualityDaily<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
           >
         >
       >,
@@ -213,27 +213,27 @@ export function useGetVVersionQualityDaily<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].quality.daily.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].quality.daily.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionQualityDaily<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['quality']['daily']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['daily']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
           >
         >
       >,
@@ -256,33 +256,33 @@ export function useImmutableGetVVersionQualityDaily<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['daily']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['daily']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].quality.daily.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].quality.daily.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionQualityOverallKey(
-  args: InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
 ) {
-  return ['v:version', '/v:version/quality/overall', args] as const
+  return ['v{version}', '/v{version}/quality/overall', args] as const
 }
 
 export function useGetVVersionQualityOverall<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
           >
         >
       >,
@@ -305,27 +305,27 @@ export function useGetVVersionQualityOverall<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].quality.overall.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].quality.overall.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionQualityOverall<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['quality']['overall']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['quality']['overall']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
           >
         >
       >,
@@ -348,33 +348,33 @@ export function useImmutableGetVVersionQualityOverall<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['quality']['overall']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['quality']['overall']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].quality.overall.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].quality.overall.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionReportsReportTypeKey(
-  args: InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
 ) {
-  return ['v:version', '/v:version/reports/:report_type', args] as const
+  return ['v{version}', '/v{version}/reports/:report_type', args] as const
 }
 
 export function useGetVVersionReportsReportType<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
           >
         >
       >,
@@ -397,7 +397,7 @@ export function useGetVVersionReportsReportType<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
           >
         >
       >,
@@ -405,20 +405,20 @@ export function useGetVVersionReportsReportType<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['v:version'].reports[':report_type'].$get(args, clientOptions)),
+        parseResponse(client['v{version}'].reports[':report_type'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionReportsReportType<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['reports'][':report_type']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['reports'][':report_type']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
           >
         >
       >,
@@ -441,7 +441,7 @@ export function useImmutableGetVVersionReportsReportType<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['reports'][':report_type']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['reports'][':report_type']['$get']>>
           >
         >
       >,
@@ -449,7 +449,7 @@ export function useImmutableGetVVersionReportsReportType<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['v:version'].reports[':report_type'].$get(args, clientOptions)),
+        parseResponse(client['v{version}'].reports[':report_type'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -457,15 +457,15 @@ export function useImmutableGetVVersionReportsReportType<TError = unknown>(
 
 export function getGetVVersionReportsStartDateToEndDateReportTypeKey(
   args: InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
 ) {
-  return ['v:version', '/v:version/reports/:start_date/to/:end_date/:report_type', args] as const
+  return ['v{version}', '/v{version}/reports/:start_date/to/:end_date/:report_type', args] as const
 }
 
 export function useGetVVersionReportsStartDateToEndDateReportType<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -474,7 +474,7 @@ export function useGetVVersionReportsStartDateToEndDateReportType<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+                (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
               >
             >
           >
@@ -501,7 +501,7 @@ export function useGetVVersionReportsStartDateToEndDateReportType<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+                (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
               >
             >
           >
@@ -512,7 +512,7 @@ export function useGetVVersionReportsStartDateToEndDateReportType<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client['v:version'].reports[':start_date'].to[':end_date'][':report_type'].$get(
+          client['v{version}'].reports[':start_date'].to[':end_date'][':report_type'].$get(
             args,
             clientOptions,
           ),
@@ -524,7 +524,7 @@ export function useGetVVersionReportsStartDateToEndDateReportType<TError = unkno
 
 export function useImmutableGetVVersionReportsStartDateToEndDateReportType<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+    (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -533,7 +533,7 @@ export function useImmutableGetVVersionReportsStartDateToEndDateReportType<TErro
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+                (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
               >
             >
           >
@@ -560,7 +560,7 @@ export function useImmutableGetVVersionReportsStartDateToEndDateReportType<TErro
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)['v:version']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
+                (typeof client)['v{version}']['reports'][':start_date']['to'][':end_date'][':report_type']['$get']
               >
             >
           >
@@ -571,7 +571,7 @@ export function useImmutableGetVVersionReportsStartDateToEndDateReportType<TErro
       swrKey,
       async () =>
         parseResponse(
-          client['v:version'].reports[':start_date'].to[':end_date'][':report_type'].$get(
+          client['v{version}'].reports[':start_date'].to[':end_date'][':report_type'].$get(
             args,
             clientOptions,
           ),
@@ -582,18 +582,18 @@ export function useImmutableGetVVersionReportsStartDateToEndDateReportType<TErro
 }
 
 export function getGetVVersionSitesKey(
-  args: InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
 ) {
-  return ['v:version', '/v:version/sites', args] as const
+  return ['v{version}', '/v{version}/sites', args] as const
 }
 
 export function useGetVVersionSites<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
         >
       >,
       TError
@@ -610,25 +610,25 @@ export function useGetVVersionSites<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sites.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sites.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionSites<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sites']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
         >
       >,
       TError
@@ -645,32 +645,32 @@ export function useImmutableGetVVersionSites<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v:version']['sites']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v{version}']['sites']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sites.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sites.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionSitesSiteIdsKey(
-  args: InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
 ) {
-  return ['v:version', '/v:version/sites/:site_Ids', args] as const
+  return ['v{version}', '/v{version}/sites/:site_Ids', args] as const
 }
 
 export function useGetVVersionSitesSiteIds<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
           >
         >
       >,
@@ -693,27 +693,27 @@ export function useGetVVersionSitesSiteIds<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sites[':site_Ids'].$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sites[':site_Ids'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionSitesSiteIds<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
           >
         >
       >,
@@ -736,33 +736,33 @@ export function useImmutableGetVVersionSitesSiteIds<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sites'][':site_Ids']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sites'][':site_Ids']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sites[':site_Ids'].$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sites[':site_Ids'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetVVersionSitetypesKey(
-  args: InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
 ) {
-  return ['v:version', '/v:version/sitetypes', args] as const
+  return ['v{version}', '/v{version}/sitetypes', args] as const
 }
 
 export function useGetVVersionSitetypes<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
           >
         >
       >,
@@ -785,27 +785,27 @@ export function useGetVVersionSitetypes<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sitetypes.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sitetypes.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetVVersionSitetypes<TError = unknown>(
-  args: InferRequestType<(typeof client)['v:version']['sitetypes']['$get']>,
+  args: InferRequestType<(typeof client)['v{version}']['sitetypes']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
           >
         >
       >,
@@ -828,14 +828,14 @@ export function useImmutableGetVVersionSitetypes<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['v:version']['sitetypes']['$get']>>
+            Awaited<ReturnType<(typeof client)['v{version}']['sitetypes']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v:version'].sitetypes.$get(args, clientOptions)),
+      async () => parseResponse(client['v{version}'].sitetypes.$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -843,15 +843,15 @@ export function useImmutableGetVVersionSitetypes<TError = unknown>(
 
 export function getGetVVersionSitetypesSiteTypeIdSitesKey(
   args: InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
 ) {
-  return ['v:version', '/v:version/sitetypes/:siteType_Id/sites', args] as const
+  return ['v{version}', '/v{version}/sitetypes/:siteType_Id/sites', args] as const
 }
 
 export function useGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -859,7 +859,9 @@ export function useGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+              ReturnType<
+                (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
+              >
             >
           >
         >
@@ -884,7 +886,9 @@ export function useGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+              ReturnType<
+                (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
+              >
             >
           >
         >
@@ -894,7 +898,7 @@ export function useGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client['v:version'].sitetypes[':siteType_Id'].sites.$get(args, clientOptions),
+          client['v{version}'].sitetypes[':siteType_Id'].sites.$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -903,7 +907,7 @@ export function useGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
 
 export function useImmutableGetVVersionSitetypesSiteTypeIdSites<TError = unknown>(
   args: InferRequestType<
-    (typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']
+    (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -911,7 +915,9 @@ export function useImmutableGetVVersionSitetypesSiteTypeIdSites<TError = unknown
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+              ReturnType<
+                (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
+              >
             >
           >
         >
@@ -936,7 +942,9 @@ export function useImmutableGetVVersionSitetypesSiteTypeIdSites<TError = unknown
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client)['v:version']['sitetypes'][':siteType_Id']['sites']['$get']>
+              ReturnType<
+                (typeof client)['v{version}']['sitetypes'][':siteType_Id']['sites']['$get']
+              >
             >
           >
         >
@@ -946,7 +954,7 @@ export function useImmutableGetVVersionSitetypesSiteTypeIdSites<TError = unknown
       swrKey,
       async () =>
         parseResponse(
-          client['v:version'].sitetypes[':siteType_Id'].sites.$get(args, clientOptions),
+          client['v{version}'].sitetypes[':siteType_Id'].sites.$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

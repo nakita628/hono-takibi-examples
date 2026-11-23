@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteUserFavoriteItemsItemIdRoute, postUserFavoriteItemsItemIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteUserFavoriteItemsItemIdRoute,
+  postUserFavoriteItemsItemIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postUserFavoriteItemsItemIdRouteHandler: RouteHandler<
+  typeof postUserFavoriteItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userFavoriteItemsHandler = app
-  .openapi(postUserFavoriteItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserFavoriteItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteUserFavoriteItemsItemIdRouteHandler: RouteHandler<
+  typeof deleteUserFavoriteItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

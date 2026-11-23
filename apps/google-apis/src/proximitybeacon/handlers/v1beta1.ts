@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta1AttachmentNameRoute,
   deleteV1beta1BeaconNameRoute,
   getV1beta1BeaconNameAttachmentsRoute,
@@ -19,57 +19,104 @@ import {
   putV1beta1NamespaceNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1beta1BeaconinfoGetforobservedRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconinfoGetforobservedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(postV1beta1BeaconinfoGetforobservedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1BeaconsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconsRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1EidparamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1AttachmentNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1BeaconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1BeaconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1BeaconNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1BeaconNameAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconNameAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconNameAttachmentsBatchDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1BeaconNameDiagnosticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconNameActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconNameDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1BeaconNameDecommissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1NamespaceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1beta1BeaconsRouteHandler: RouteHandler<typeof getV1beta1BeaconsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconsRegisterRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconsRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1EidparamsRouteHandler: RouteHandler<
+  typeof getV1beta1EidparamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NamespacesRouteHandler: RouteHandler<
+  typeof getV1beta1NamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1AttachmentNameRouteHandler: RouteHandler<
+  typeof deleteV1beta1AttachmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1BeaconNameRouteHandler: RouteHandler<
+  typeof deleteV1beta1BeaconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1BeaconNameRouteHandler: RouteHandler<
+  typeof getV1beta1BeaconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1BeaconNameRouteHandler: RouteHandler<
+  typeof putV1beta1BeaconNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1BeaconNameAttachmentsRouteHandler: RouteHandler<
+  typeof getV1beta1BeaconNameAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconNameAttachmentsRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconNameAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconNameAttachmentsBatchDeleteRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconNameAttachmentsBatchDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1BeaconNameDiagnosticsRouteHandler: RouteHandler<
+  typeof getV1beta1BeaconNameDiagnosticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconNameActivateRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconNameActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconNameDeactivateRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconNameDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1BeaconNameDecommissionRouteHandler: RouteHandler<
+  typeof postV1beta1BeaconNameDecommissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1NamespaceNameRouteHandler: RouteHandler<
+  typeof putV1beta1NamespaceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

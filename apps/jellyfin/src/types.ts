@@ -3162,6 +3162,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                minDate?: string | undefined
+                maxDate?: string | undefined
+                hasUserId?: boolean | undefined
+                name?: string | undefined
+                overview?: string | undefined
+                shortOverview?: string | undefined
+                type?: string | undefined
+                itemId?: string | undefined
+                username?: string | undefined
+                severity?: {} | undefined
+                sortBy?: ActivityLogSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Auth/Keys': {
@@ -3171,10 +3194,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: AuthenticationInfoQueryResult; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | { input: { query: { app: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { query: { app: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { query: { app: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { query: { app: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Auth/Keys/:key': {
@@ -3182,6 +3207,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Artists': {
@@ -3391,6 +3417,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                minCommunityRating?: number | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                filters?: ItemFilter[] | undefined
+                isFavorite?: boolean | undefined
+                mediaTypes?: MediaType[] | undefined
+                genres?: string[] | undefined
+                genreIds?: string[] | undefined
+                officialRatings?: string[] | undefined
+                tags?: string[] | undefined
+                years?: number[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                person?: string | undefined
+                personIds?: string[] | undefined
+                personTypes?: string[] | undefined
+                studios?: string[] | undefined
+                studioIds?: string[] | undefined
+                userId?: string | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+                enableImages?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Artists/:name': {
@@ -3424,6 +3491,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { name: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -3634,238 +3707,509 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                minCommunityRating?: number | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                filters?: ItemFilter[] | undefined
+                isFavorite?: boolean | undefined
+                mediaTypes?: MediaType[] | undefined
+                genres?: string[] | undefined
+                genreIds?: string[] | undefined
+                officialRatings?: string[] | undefined
+                tags?: string[] | undefined
+                years?: number[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                person?: string | undefined
+                personIds?: string[] | undefined
+                personTypes?: string[] | undefined
+                studios?: string[] | undefined
+                studioIds?: string[] | undefined
+                userId?: string | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+                enableImages?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Audio/:itemId/stream': {
-      $get: {
-        input: { param: { itemId: string } } & {
-          query: {
-            container?: string | undefined
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+      $get:
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
-      $head: {
-        input: { param: { itemId: string } } & {
-          query: {
-            container?: string | undefined
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
-    '/Audio/:itemId/stream.:container': {
-      $get: {
-        input: { param: { itemId: string; container: string } } & {
-          query: {
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+    '/Audio/:itemId/stream.{container}': {
+      $get:
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
-      $head: {
-        input: { param: { itemId: string; container: string } } & {
-          query: {
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Backup': {
@@ -3877,6 +4221,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Backup/Create': {
@@ -3972,6 +4317,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 403
           }
+        | {
+            input: {
+              json: {
+                Metadata?: boolean | undefined
+                Trickplay?: boolean | undefined
+                Subtitles?: boolean | undefined
+                Database?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Backup/Manifest': {
@@ -4032,6 +4390,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { query: { path: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Backup/Restore': {
@@ -4084,6 +4443,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { json: { ArchiveFileName: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Branding/Configuration': {
@@ -4091,6 +4456,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: BrandingOptionsDto; outputFormat: 'json'; status: 200 }
         | { input: {}; output: BrandingOptionsDto; outputFormat: 'text'; status: 200 }
         | { input: {}; output: BrandingOptionsDto; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Branding/Css': {
@@ -4100,6 +4466,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Branding/Css.css': {
@@ -4109,6 +4476,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Channels': {
@@ -4188,6 +4556,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                supportsLatestItems?: boolean | undefined
+                supportsMediaDeletion?: boolean | undefined
+                isFavorite?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Channels/:channelId/Features': {
@@ -4212,6 +4595,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | { input: { param: { channelId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { channelId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { channelId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Channels/:channelId/Items': {
@@ -4301,6 +4685,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { channelId: string } } & {
+              query: {
+                folderId?: string | undefined
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                sortOrder?: SortOrder[] | undefined
+                filters?: ItemFilter[] | undefined
+                sortBy?: ItemSortBy[] | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Channels/Features': {
@@ -4310,6 +4711,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ChannelFeatures[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Channels/Items/Latest': {
@@ -4389,6 +4791,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                filters?: ItemFilter[] | undefined
+                fields?: ItemFields[] | undefined
+                channelIds?: string[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/ClientLog/Document': {
@@ -4418,6 +4835,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { json: File }; output: ProblemDetails; outputFormat: 'json'; status: 413 }
         | { input: { json: File }; output: ProblemDetails; outputFormat: 'text'; status: 413 }
         | { input: { json: File }; output: ProblemDetails; outputFormat: 'text'; status: 413 }
+        | { input: { json: File }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Collections': {
@@ -4487,6 +4905,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                name?: string | undefined
+                ids?: string[] | undefined
+                parentId?: string | undefined
+                isLocked?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Collections/:collectionId/Items': {
@@ -4509,6 +4940,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { collectionId: string } } & { query: { ids: string[] } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { collectionId: string } } & { query: { ids: string[] } }
@@ -4528,6 +4965,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { collectionId: string } } & { query: { ids: string[] } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/System/Configuration': {
@@ -4537,6 +4980,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ServerConfiguration; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: {
@@ -4777,6 +5221,86 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                LogFileRetentionDays?: number | undefined
+                IsStartupWizardCompleted?: boolean | undefined
+                CachePath?: (string | null) | undefined
+                PreviousVersion?: (string | null) | undefined
+                PreviousVersionStr?: (string | null) | undefined
+                EnableMetrics?: boolean | undefined
+                EnableNormalizedItemByNameIds?: boolean | undefined
+                IsPortAuthorized?: boolean | undefined
+                QuickConnectAvailable?: boolean | undefined
+                EnableCaseSensitiveItemIds?: boolean | undefined
+                DisableLiveTvChannelUserDataName?: boolean | undefined
+                MetadataPath?: string | undefined
+                PreferredMetadataLanguage?: string | undefined
+                MetadataCountryCode?: string | undefined
+                SortReplaceCharacters?: string[] | undefined
+                SortRemoveCharacters?: string[] | undefined
+                SortRemoveWords?: string[] | undefined
+                MinResumePct?: number | undefined
+                MaxResumePct?: number | undefined
+                MinResumeDurationSeconds?: number | undefined
+                MinAudiobookResume?: number | undefined
+                MaxAudiobookResume?: number | undefined
+                InactiveSessionThreshold?: number | undefined
+                LibraryMonitorDelay?: number | undefined
+                LibraryUpdateDuration?: number | undefined
+                CacheSize?: number | undefined
+                ImageSavingConvention?: {} | undefined
+                MetadataOptions?: MetadataOptions[] | undefined
+                SkipDeserializationForBasicTypes?: boolean | undefined
+                ServerName?: string | undefined
+                UICulture?: string | undefined
+                SaveMetadataHidden?: boolean | undefined
+                ContentTypes?: NameValuePair[] | undefined
+                RemoteClientBitrateLimit?: number | undefined
+                EnableFolderView?: boolean | undefined
+                EnableGroupingMoviesIntoCollections?: boolean | undefined
+                EnableGroupingShowsIntoCollections?: boolean | undefined
+                DisplaySpecialsWithinSeasons?: boolean | undefined
+                CodecsUsed?: string[] | undefined
+                PluginRepositories?: RepositoryInfo[] | undefined
+                EnableExternalContentInSuggestions?: boolean | undefined
+                ImageExtractionTimeoutMs?: number | undefined
+                PathSubstitutions?: PathSubstitution[] | undefined
+                EnableSlowResponseWarning?: boolean | undefined
+                SlowResponseThresholdMs?: bigint | undefined
+                CorsHosts?: string[] | undefined
+                ActivityLogRetentionDays?: (number | null) | undefined
+                LibraryScanFanoutConcurrency?: number | undefined
+                LibraryMetadataRefreshConcurrency?: number | undefined
+                AllowClientLogUpload?: boolean | undefined
+                DummyChapterDuration?: number | undefined
+                ChapterImageResolution?: {} | undefined
+                ParallelImageEncodingLimit?: number | undefined
+                CastReceiverApplications?: CastReceiverApplication[] | undefined
+                TrickplayOptions?:
+                  | {
+                      EnableHwAcceleration?: boolean | undefined
+                      EnableHwEncoding?: boolean | undefined
+                      EnableKeyFrameOnlyExtraction?: boolean | undefined
+                      ScanBehavior?: {} | undefined
+                      ProcessPriority?: {} | undefined
+                      Interval?: number | undefined
+                      WidthResolutions?: number[] | undefined
+                      TileWidth?: number | undefined
+                      TileHeight?: number | undefined
+                      Qscale?: number | undefined
+                      JpegQuality?: number | undefined
+                      ProcessThreads?: number | undefined
+                    }
+                  | undefined
+                EnableLegacyAuthorization?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -4785,6 +5309,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { key: string } }; output: File; outputFormat: 'json'; status: 200 }
         | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: { param: { key: string } } & { json: { [x: string]: unknown } }
@@ -4803,6 +5328,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { key: string } } & { json: { [x: string]: unknown } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -4844,6 +5375,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                LoginDisclaimer?: (string | null) | undefined
+                CustomCss?: (string | null) | undefined
+                SplashscreenEnabled?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/System/Configuration/MetadataOptions/Default': {
@@ -4853,6 +5396,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: MetadataOptions; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/web/ConfigurationPage': {
@@ -4886,6 +5430,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { query: { name?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -4939,6 +5489,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { query: { enableInMainMenu?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Devices': {
@@ -4972,6 +5528,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $delete:
         | {
@@ -5009,6 +5571,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { id?: string[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -5052,6 +5620,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Devices/Options': {
@@ -5094,6 +5663,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: { query: { id: string } } & {
@@ -5130,6 +5700,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { id: string } } & {
+              json: {
+                Id?: number | undefined
+                DeviceId?: (string | null) | undefined
+                CustomName?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -5175,6 +5757,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { displayPreferencesId: string } } & {
+              query: { userId?: string | undefined; client: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: { param: { displayPreferencesId: string } } & {
@@ -5251,6 +5841,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { displayPreferencesId: string } } & {
+              query: { userId?: string | undefined; client: string }
+            } & {
+              json: {
+                Id?: (string | null) | undefined
+                ViewType?: (string | null) | undefined
+                SortBy?: (string | null) | undefined
+                IndexBy?: (string | null) | undefined
+                RememberIndexing?: boolean | undefined
+                PrimaryImageHeight?: number | undefined
+                PrimaryImageWidth?: number | undefined
+                CustomPrefs?: { [x: string]: string | null } | undefined
+                ScrollDirection?: {} | undefined
+                ShowBackdrop?: boolean | undefined
+                RememberSorting?: boolean | undefined
+                SortOrder?: {} | undefined
+                ShowSidebar?: boolean | undefined
+                Client?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Environment/DefaultDirectoryBrowser': {
@@ -5260,6 +5875,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: DefaultDirectoryBrowserInfoDto; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Environment/DirectoryContents': {
@@ -5324,6 +5940,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                path: string
+                includeFiles?: boolean | undefined
+                includeDirectories?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Environment/Drives': {
@@ -5333,6 +5961,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: FileSystemEntryInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Environment/ParentPath': {
@@ -5342,6 +5971,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { query: { path: string } }; output: string; outputFormat: 'text'; status: 200 }
         | { input: { query: { path: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { query: { path: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { query: { path: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Environment/ValidatePath': {
@@ -5418,6 +6048,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              json: {
+                ValidateWritable?: boolean | undefined
+                Path?: (string | null) | undefined
+                IsFile?: (boolean | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/Filters': {
@@ -5486,6 +6128,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                parentId?: string | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                mediaTypes?: MediaType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -5585,6 +6240,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                parentId?: string | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                isAiring?: boolean | undefined
+                isMovie?: boolean | undefined
+                isSports?: boolean | undefined
+                isKids?: boolean | undefined
+                isNews?: boolean | undefined
+                isSeries?: boolean | undefined
+                recursive?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -5725,6 +6399,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                isFavorite?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                userId?: string | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+                enableImages?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Genres/:genreName': {
@@ -5758,6 +6459,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { genreName: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -5855,6 +6562,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {}; imageIndex: number } } & {
@@ -5948,15 +6678,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Branding/Splashscreen': {
-      $get: {
-        input: { query: { tag?: string | undefined; format?: {} | undefined } }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { tag?: string | undefined; format?: {} | undefined } }
+            output: File
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { query: { tag?: string | undefined; format?: {} | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 400 }
@@ -5966,10 +6726,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $delete:
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Genres/:name/Images/:imageType': {
@@ -6070,6 +6832,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {} } } & {
@@ -6166,6 +6952,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -6263,6 +7073,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {}; imageIndex: number } } & {
@@ -6356,6 +7189,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/Images': {
@@ -6398,6 +7254,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/Images/:imageType': {
@@ -6450,6 +7307,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; imageType: {} } } & {
+              query: { imageIndex?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: { param: { itemId: string; imageType: {} } }
@@ -6504,6 +7369,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; imageType: {} } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $get:
         | {
@@ -6602,6 +7473,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; imageType: {} } } & {
+              query: {
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { itemId: string; imageType: {} } } & {
@@ -6698,6 +7593,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; imageType: {} } } & {
+              query: {
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -6739,6 +7658,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; imageType: {}; imageIndex: number } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: { param: { itemId: string; imageType: {}; imageIndex: number } }
@@ -6793,6 +7718,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; imageType: {}; imageIndex: number } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $get:
         | {
@@ -6887,6 +7818,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { itemId: string; imageType: {}; imageIndex: number } } & {
@@ -6979,6 +7933,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -7100,6 +8077,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              param: {
+                itemId: string
+                imageType: {}
+                maxWidth: number
+                maxHeight: number
+                tag: string
+                format: {}
+                percentPlayed: number
+                unplayedCount: number
+                imageIndex: number
+              }
+            } & {
+              query: {
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: {
@@ -7217,6 +8223,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              param: {
+                itemId: string
+                imageType: {}
+                maxWidth: number
+                maxHeight: number
+                tag: string
+                format: {}
+                percentPlayed: number
+                unplayedCount: number
+                imageIndex: number
+              }
+            } & {
+              query: {
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/Images/:imageType/:imageIndex/Index': {
@@ -7268,6 +8303,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; imageType: {}; imageIndex: number } } & {
+              query: { newIndex: number }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -7369,6 +8412,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {} } } & {
@@ -7465,6 +8532,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -7562,6 +8653,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {}; imageIndex: number } } & {
@@ -7654,6 +8768,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -7755,6 +8892,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {} } } & {
@@ -7851,6 +9012,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -7948,6 +9133,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {}; imageIndex: number } } & {
@@ -8040,6 +9248,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -8141,6 +9372,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {} } } & {
@@ -8237,6 +9492,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string; imageType: {} } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+                imageIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -8334,6 +9613,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { name: string; imageType: {}; imageIndex: number } } & {
@@ -8427,6 +9729,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string; imageType: {}; imageIndex: number } } & {
+              query: {
+                tag?: string | undefined
+                format?: {} | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                percentPlayed?: number | undefined
+                unplayedCount?: number | undefined
+                width?: number | undefined
+                height?: number | undefined
+                quality?: number | undefined
+                fillWidth?: number | undefined
+                fillHeight?: number | undefined
+                blur?: number | undefined
+                backgroundColor?: string | undefined
+                foregroundLayer?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/UserImage': {
@@ -8497,6 +9822,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { query: { userId?: string | undefined } }
@@ -8527,6 +9858,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 403
+          }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $get:
         | {
@@ -8613,6 +9950,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: {
@@ -8697,6 +10046,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                tag?: string | undefined
+                format?: {} | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -8830,6 +10191,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Artists/:itemId/InstantMix': {
@@ -8961,6 +10338,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -9094,6 +10487,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/MusicGenres/:name/InstantMix': {
@@ -9177,6 +10586,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { name: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -9318,6 +10743,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              query: {
+                id: string
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Playlists/:itemId/InstantMix': {
@@ -9449,6 +10891,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -9582,6 +11040,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/ExternalIdInfos': {
@@ -9624,6 +11098,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/RemoteSearch/Apply/:itemId': {
@@ -9765,6 +11240,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: { replaceAllImages?: boolean | undefined }
+            } & {
+              json: {
+                Name?: (string | null) | undefined
+                ProviderIds?: { [x: string]: string } | undefined
+                ProductionYear?: (number | null) | undefined
+                IndexNumber?: (number | null) | undefined
+                IndexNumberEnd?: (number | null) | undefined
+                ParentIndexNumber?: (number | null) | undefined
+                PremiereDate?: (string | null) | undefined
+                ImageUrl?: (string | null) | undefined
+                SearchProviderName?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                AlbumArtist?: {} | undefined
+                Artists?: RemoteSearchResult[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -9910,6 +11408,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                      SeriesName?: (string | null) | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/RemoteSearch/BoxSet': {
@@ -10049,6 +11575,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/RemoteSearch/Movie': {
@@ -10187,6 +11740,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -10342,6 +11922,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                      AlbumArtists?: string[] | undefined
+                      ArtistProviderIds?: { [x: string]: string } | undefined
+                      SongInfos?: SongInfo[] | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/RemoteSearch/MusicArtist': {
@@ -10485,6 +12095,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                      SongInfos?: SongInfo[] | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -10630,6 +12268,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                      Artists?: (string[] | null) | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/RemoteSearch/Person': {
@@ -10768,6 +12434,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -10908,6 +12601,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/RemoteSearch/Trailer': {
@@ -11047,6 +12767,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                SearchInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      Path?: (string | null) | undefined
+                      MetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      Year?: (number | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      PremiereDate?: (string | null) | undefined
+                      IsAutomated?: boolean | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SearchProviderName?: (string | null) | undefined
+                IncludeDisabledProviders?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/Refresh': {
@@ -11134,6 +12881,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                metadataRefreshMode?: {} | undefined
+                imageRefreshMode?: {} | undefined
+                replaceAllMetadata?: boolean | undefined
+                replaceAllImages?: boolean | undefined
+                regenerateTrickplay?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -11624,6 +13385,103 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                maxOfficialRating?: string | undefined
+                hasThemeSong?: boolean | undefined
+                hasThemeVideo?: boolean | undefined
+                hasSubtitles?: boolean | undefined
+                hasSpecialFeature?: boolean | undefined
+                hasTrailer?: boolean | undefined
+                adjacentTo?: string | undefined
+                indexNumber?: number | undefined
+                parentIndexNumber?: number | undefined
+                hasParentalRating?: boolean | undefined
+                isHd?: boolean | undefined
+                is4K?: boolean | undefined
+                locationTypes?: LocationType[] | undefined
+                excludeLocationTypes?: LocationType[] | undefined
+                isMissing?: boolean | undefined
+                isUnaired?: boolean | undefined
+                minCommunityRating?: number | undefined
+                minCriticRating?: number | undefined
+                minPremiereDate?: string | undefined
+                minDateLastSaved?: string | undefined
+                minDateLastSavedForUser?: string | undefined
+                maxPremiereDate?: string | undefined
+                hasOverview?: boolean | undefined
+                hasImdbId?: boolean | undefined
+                hasTmdbId?: boolean | undefined
+                hasTvdbId?: boolean | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                excludeItemIds?: string[] | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                recursive?: boolean | undefined
+                searchTerm?: string | undefined
+                sortOrder?: SortOrder[] | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                filters?: ItemFilter[] | undefined
+                isFavorite?: boolean | undefined
+                mediaTypes?: MediaType[] | undefined
+                imageTypes?: ImageType[] | undefined
+                sortBy?: ItemSortBy[] | undefined
+                isPlayed?: boolean | undefined
+                genres?: string[] | undefined
+                officialRatings?: string[] | undefined
+                tags?: string[] | undefined
+                years?: number[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                person?: string | undefined
+                personIds?: string[] | undefined
+                personTypes?: string[] | undefined
+                studios?: string[] | undefined
+                artists?: string[] | undefined
+                excludeArtistIds?: string[] | undefined
+                artistIds?: string[] | undefined
+                albumArtistIds?: string[] | undefined
+                contributingArtistIds?: string[] | undefined
+                albums?: string[] | undefined
+                albumIds?: string[] | undefined
+                ids?: string[] | undefined
+                videoTypes?: VideoType[] | undefined
+                minOfficialRating?: string | undefined
+                isLocked?: boolean | undefined
+                isPlaceHolder?: boolean | undefined
+                hasOfficialRating?: boolean | undefined
+                collapseBoxSetItems?: boolean | undefined
+                minWidth?: number | undefined
+                minHeight?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                is3D?: boolean | undefined
+                seriesStatus?: SeriesStatus[] | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                studioIds?: string[] | undefined
+                genreIds?: string[] | undefined
+                audioLanguages?: string[] | undefined
+                subtitleLanguages?: string[] | undefined
+                enableTotalRecordCount?: boolean | undefined
+                enableImages?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { query: { ids?: string[] | undefined } }
@@ -11672,6 +13530,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { query: { ids?: string[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -11724,6 +13588,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $post:
         | {
@@ -11886,6 +13756,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } } & {
+              json: {
+                Rating?: (number | null) | undefined
+                PlayedPercentage?: (number | null) | undefined
+                UnplayedItemCount?: (number | null) | undefined
+                PlaybackPositionTicks?: (bigint | null) | undefined
+                PlayCount?: (number | null) | undefined
+                IsFavorite?: (boolean | null) | undefined
+                Likes?: (boolean | null) | undefined
+                LastPlayedDate?: (string | null) | undefined
+                Played?: (boolean | null) | undefined
+                Key?: (string | null) | undefined
+                ItemId?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/UserItems/Resume': {
@@ -12009,6 +13899,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                mediaTypes?: MediaType[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                enableTotalRecordCount?: boolean | undefined
+                enableImages?: boolean | undefined
+                excludeActiveSessions?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13190,6 +15104,202 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              json: {
+                Name?: (string | null) | undefined
+                OriginalTitle?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                Id?: string | undefined
+                Etag?: (string | null) | undefined
+                SourceType?: (string | null) | undefined
+                PlaylistItemId?: (string | null) | undefined
+                DateCreated?: (string | null) | undefined
+                DateLastMediaAdded?: (string | null) | undefined
+                ExtraType?: {} | undefined
+                AirsBeforeSeasonNumber?: (number | null) | undefined
+                AirsAfterSeasonNumber?: (number | null) | undefined
+                AirsBeforeEpisodeNumber?: (number | null) | undefined
+                CanDelete?: (boolean | null) | undefined
+                CanDownload?: (boolean | null) | undefined
+                HasLyrics?: (boolean | null) | undefined
+                HasSubtitles?: (boolean | null) | undefined
+                PreferredMetadataLanguage?: (string | null) | undefined
+                PreferredMetadataCountryCode?: (string | null) | undefined
+                Container?: (string | null) | undefined
+                SortName?: (string | null) | undefined
+                ForcedSortName?: (string | null) | undefined
+                Video3DFormat?: {} | undefined
+                PremiereDate?: (string | null) | undefined
+                ExternalUrls?: (ExternalUrl[] | null) | undefined
+                MediaSources?: (MediaSourceInfo[] | null) | undefined
+                CriticRating?: (number | null) | undefined
+                ProductionLocations?: (string[] | null) | undefined
+                Path?: (string | null) | undefined
+                EnableMediaSourceDisplay?: (boolean | null) | undefined
+                OfficialRating?: (string | null) | undefined
+                CustomRating?: (string | null) | undefined
+                ChannelId?: (string | null) | undefined
+                ChannelName?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                Taglines?: (string[] | null) | undefined
+                Genres?: (string[] | null) | undefined
+                CommunityRating?: (number | null) | undefined
+                CumulativeRunTimeTicks?: (bigint | null) | undefined
+                RunTimeTicks?: (bigint | null) | undefined
+                PlayAccess?: {} | undefined
+                AspectRatio?: (string | null) | undefined
+                ProductionYear?: (number | null) | undefined
+                IsPlaceHolder?: (boolean | null) | undefined
+                Number?: (string | null) | undefined
+                ChannelNumber?: (string | null) | undefined
+                IndexNumber?: (number | null) | undefined
+                IndexNumberEnd?: (number | null) | undefined
+                ParentIndexNumber?: (number | null) | undefined
+                RemoteTrailers?: (MediaUrl[] | null) | undefined
+                ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                IsHD?: (boolean | null) | undefined
+                IsFolder?: (boolean | null) | undefined
+                ParentId?: (string | null) | undefined
+                Type?: {} | undefined
+                People?: (BaseItemPerson[] | null) | undefined
+                Studios?: (NameGuidPair[] | null) | undefined
+                GenreItems?: (NameGuidPair[] | null) | undefined
+                ParentLogoItemId?: (string | null) | undefined
+                ParentBackdropItemId?: (string | null) | undefined
+                ParentBackdropImageTags?: (string[] | null) | undefined
+                LocalTrailerCount?: (number | null) | undefined
+                UserData?:
+                  | {
+                      Rating?: (number | null) | undefined
+                      PlayedPercentage?: (number | null) | undefined
+                      UnplayedItemCount?: (number | null) | undefined
+                      PlaybackPositionTicks?: bigint | undefined
+                      PlayCount?: number | undefined
+                      IsFavorite?: boolean | undefined
+                      Likes?: (boolean | null) | undefined
+                      LastPlayedDate?: (string | null) | undefined
+                      Played?: boolean | undefined
+                      Key: string
+                      ItemId?: string | undefined
+                    }
+                  | undefined
+                RecursiveItemCount?: (number | null) | undefined
+                ChildCount?: (number | null) | undefined
+                SeriesName?: (string | null) | undefined
+                SeriesId?: (string | null) | undefined
+                SeasonId?: (string | null) | undefined
+                SpecialFeatureCount?: (number | null) | undefined
+                DisplayPreferencesId?: (string | null) | undefined
+                Status?: (string | null) | undefined
+                AirTime?: (string | null) | undefined
+                AirDays?: (DayOfWeek[] | null) | undefined
+                Tags?: (string[] | null) | undefined
+                PrimaryImageAspectRatio?: (number | null) | undefined
+                Artists?: (string[] | null) | undefined
+                ArtistItems?: (NameGuidPair[] | null) | undefined
+                Album?: (string | null) | undefined
+                CollectionType?: {} | undefined
+                DisplayOrder?: (string | null) | undefined
+                AlbumId?: (string | null) | undefined
+                AlbumPrimaryImageTag?: (string | null) | undefined
+                SeriesPrimaryImageTag?: (string | null) | undefined
+                AlbumArtist?: (string | null) | undefined
+                AlbumArtists?: (NameGuidPair[] | null) | undefined
+                SeasonName?: (string | null) | undefined
+                MediaStreams?: (MediaStream[] | null) | undefined
+                VideoType?: {} | undefined
+                PartCount?: (number | null) | undefined
+                MediaSourceCount?: (number | null) | undefined
+                ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                BackdropImageTags?: (string[] | null) | undefined
+                ScreenshotImageTags?: (string[] | null) | undefined
+                ParentLogoImageTag?: (string | null) | undefined
+                ParentArtItemId?: (string | null) | undefined
+                ParentArtImageTag?: (string | null) | undefined
+                SeriesThumbImageTag?: (string | null) | undefined
+                ImageBlurHashes?:
+                  | ({
+                      Primary?: { [x: string]: string | null } | undefined
+                      Art?: { [x: string]: string | null } | undefined
+                      Backdrop?: { [x: string]: string | null } | undefined
+                      Banner?: { [x: string]: string | null } | undefined
+                      Logo?: { [x: string]: string | null } | undefined
+                      Thumb?: { [x: string]: string | null } | undefined
+                      Disc?: { [x: string]: string | null } | undefined
+                      Box?: { [x: string]: string | null } | undefined
+                      Screenshot?: { [x: string]: string | null } | undefined
+                      Menu?: { [x: string]: string | null } | undefined
+                      Chapter?: { [x: string]: string | null } | undefined
+                      BoxRear?: { [x: string]: string | null } | undefined
+                      Profile?: { [x: string]: string | null } | undefined
+                    } | null)
+                  | undefined
+                SeriesStudio?: (string | null) | undefined
+                ParentThumbItemId?: (string | null) | undefined
+                ParentThumbImageTag?: (string | null) | undefined
+                ParentPrimaryImageItemId?: (string | null) | undefined
+                ParentPrimaryImageTag?: (string | null) | undefined
+                Chapters?: (ChapterInfo[] | null) | undefined
+                Trickplay?:
+                  | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                  | undefined
+                LocationType?: {} | undefined
+                IsoType?: {} | undefined
+                MediaType?: {} | undefined
+                EndDate?: (string | null) | undefined
+                LockedFields?: (MetadataField[] | null) | undefined
+                TrailerCount?: (number | null) | undefined
+                MovieCount?: (number | null) | undefined
+                SeriesCount?: (number | null) | undefined
+                ProgramCount?: (number | null) | undefined
+                EpisodeCount?: (number | null) | undefined
+                SongCount?: (number | null) | undefined
+                AlbumCount?: (number | null) | undefined
+                ArtistCount?: (number | null) | undefined
+                MusicVideoCount?: (number | null) | undefined
+                LockData?: (boolean | null) | undefined
+                Width?: (number | null) | undefined
+                Height?: (number | null) | undefined
+                CameraMake?: (string | null) | undefined
+                CameraModel?: (string | null) | undefined
+                Software?: (string | null) | undefined
+                ExposureTime?: (number | null) | undefined
+                FocalLength?: (number | null) | undefined
+                ImageOrientation?: {} | undefined
+                Aperture?: (number | null) | undefined
+                ShutterSpeed?: (number | null) | undefined
+                Latitude?: (number | null) | undefined
+                Longitude?: (number | null) | undefined
+                Altitude?: (number | null) | undefined
+                IsoSpeedRating?: (number | null) | undefined
+                SeriesTimerId?: (string | null) | undefined
+                ProgramId?: (string | null) | undefined
+                ChannelPrimaryImageTag?: (string | null) | undefined
+                StartDate?: (string | null) | undefined
+                CompletionPercentage?: (number | null) | undefined
+                IsRepeat?: (boolean | null) | undefined
+                EpisodeTitle?: (string | null) | undefined
+                ChannelType?: {} | undefined
+                Audio?: {} | undefined
+                IsMovie?: (boolean | null) | undefined
+                IsSports?: (boolean | null) | undefined
+                IsSeries?: (boolean | null) | undefined
+                IsLive?: (boolean | null) | undefined
+                IsNews?: (boolean | null) | undefined
+                IsKids?: (boolean | null) | undefined
+                IsPremiere?: (boolean | null) | undefined
+                TimerId?: (string | null) | undefined
+                NormalizationGain?: (number | null) | undefined
+                AlbumNormalizationGain?: (number | null) | undefined
+                CurrentProgram?: {} | undefined
+                OriginalLanguage?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 204 }
         | {
@@ -13229,6 +15339,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
       $get:
         | {
             input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
@@ -13259,6 +15370,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13299,6 +15416,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { contentType?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13342,6 +15465,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Albums/:itemId/Similar': {
@@ -13410,6 +15534,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13480,6 +15617,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/Ancestors': {
@@ -13531,6 +15681,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13640,6 +15796,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/Download': {
@@ -13666,6 +15835,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/File': {
@@ -13692,6 +15862,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/Similar': {
@@ -13760,6 +15931,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13842,6 +16026,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                inheritFromParent?: boolean | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -13951,6 +16148,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                inheritFromParent?: boolean | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/ThemeVideos': {
@@ -14059,6 +16269,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                inheritFromParent?: boolean | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/Counts': {
@@ -14092,6 +16315,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { userId?: string | undefined; isFavorite?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -14137,6 +16366,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: { libraryContentType?: {} | undefined; isNewLibrary?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/Media/Updated': {
@@ -14158,6 +16395,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { Updates?: MediaUpdateInfoPathDto[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -14193,6 +16436,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { isHidden?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/Movies/Added': {
@@ -14214,6 +16463,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { tmdbId?: string | undefined; imdbId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -14237,6 +16492,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { tmdbId?: string | undefined; imdbId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/PhysicalPaths': {
@@ -14246,6 +16507,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: string[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Library/Refresh': {
@@ -14253,6 +16515,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Library/Series/Added': {
@@ -14275,6 +16538,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { tvdbId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/Series/Updated': {
@@ -14296,6 +16565,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { tvdbId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -14366,6 +16641,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Shows/:itemId/Similar': {
@@ -14434,6 +16722,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -14504,6 +16805,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                excludeArtistIds?: string[] | undefined
+                userId?: string | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/VirtualFolders': {
@@ -14513,6 +16827,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: VirtualFolderInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: {
@@ -14700,6 +17015,68 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                name?: string | undefined
+                collectionType?: {} | undefined
+                paths?: string[] | undefined
+                refreshLibrary?: boolean | undefined
+              }
+            } & {
+              json: {
+                LibraryOptions?:
+                  | {
+                      Enabled?: boolean | undefined
+                      EnablePhotos?: boolean | undefined
+                      EnableRealtimeMonitor?: boolean | undefined
+                      EnableLUFSScan?: boolean | undefined
+                      EnableChapterImageExtraction?: boolean | undefined
+                      ExtractChapterImagesDuringLibraryScan?: boolean | undefined
+                      EnableTrickplayImageExtraction?: boolean | undefined
+                      ExtractTrickplayImagesDuringLibraryScan?: boolean | undefined
+                      PathInfos?: MediaPathInfo[] | undefined
+                      SaveLocalMetadata?: boolean | undefined
+                      EnableInternetProviders?: boolean | undefined
+                      EnableAutomaticSeriesGrouping?: boolean | undefined
+                      EnableEmbeddedTitles?: boolean | undefined
+                      EnableEmbeddedExtrasTitles?: boolean | undefined
+                      EnableEmbeddedEpisodeInfos?: boolean | undefined
+                      AutomaticRefreshIntervalDays?: number | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      SeasonZeroDisplayName?: string | undefined
+                      MetadataSavers?: (string[] | null) | undefined
+                      DisabledLocalMetadataReaders?: string[] | undefined
+                      LocalMetadataReaderOrder?: (string[] | null) | undefined
+                      DisabledSubtitleFetchers?: string[] | undefined
+                      SubtitleFetcherOrder?: string[] | undefined
+                      DisabledMediaSegmentProviders?: string[] | undefined
+                      MediaSegmentProviderOrder?: string[] | undefined
+                      SkipSubtitlesIfEmbeddedSubtitlesPresent?: boolean | undefined
+                      SkipSubtitlesIfAudioTrackMatches?: boolean | undefined
+                      SubtitleDownloadLanguages?: (string[] | null) | undefined
+                      RequirePerfectSubtitleMatch?: boolean | undefined
+                      SaveSubtitlesWithMedia?: boolean | undefined
+                      SaveLyricsWithMedia?: boolean | undefined
+                      SaveTrickplayWithMedia?: boolean | undefined
+                      DisabledLyricFetchers?: string[] | undefined
+                      LyricFetcherOrder?: string[] | undefined
+                      PreferNonstandardArtistsTag?: boolean | undefined
+                      UseCustomTagDelimiters?: boolean | undefined
+                      CustomTagDelimiters?: string[] | undefined
+                      DelimiterWhitelist?: string[] | undefined
+                      AutomaticallyAddToCollection?: boolean | undefined
+                      AllowEmbeddedSubtitles?: {} | undefined
+                      TypeOptions?: TypeOptions[] | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { query: { name?: string | undefined; refreshLibrary?: boolean | undefined } }
@@ -14724,6 +17101,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 404
+          }
+        | {
+            input: { query: { name?: string | undefined; refreshLibrary?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -15065,6 +17448,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: {
+              json: {
+                Id?: string | undefined
+                LibraryOptions?:
+                  | {
+                      Enabled?: boolean | undefined
+                      EnablePhotos?: boolean | undefined
+                      EnableRealtimeMonitor?: boolean | undefined
+                      EnableLUFSScan?: boolean | undefined
+                      EnableChapterImageExtraction?: boolean | undefined
+                      ExtractChapterImagesDuringLibraryScan?: boolean | undefined
+                      EnableTrickplayImageExtraction?: boolean | undefined
+                      ExtractTrickplayImagesDuringLibraryScan?: boolean | undefined
+                      PathInfos?: MediaPathInfo[] | undefined
+                      SaveLocalMetadata?: boolean | undefined
+                      EnableInternetProviders?: boolean | undefined
+                      EnableAutomaticSeriesGrouping?: boolean | undefined
+                      EnableEmbeddedTitles?: boolean | undefined
+                      EnableEmbeddedExtrasTitles?: boolean | undefined
+                      EnableEmbeddedEpisodeInfos?: boolean | undefined
+                      AutomaticRefreshIntervalDays?: number | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      MetadataCountryCode?: (string | null) | undefined
+                      SeasonZeroDisplayName?: string | undefined
+                      MetadataSavers?: (string[] | null) | undefined
+                      DisabledLocalMetadataReaders?: string[] | undefined
+                      LocalMetadataReaderOrder?: (string[] | null) | undefined
+                      DisabledSubtitleFetchers?: string[] | undefined
+                      SubtitleFetcherOrder?: string[] | undefined
+                      DisabledMediaSegmentProviders?: string[] | undefined
+                      MediaSegmentProviderOrder?: string[] | undefined
+                      SkipSubtitlesIfEmbeddedSubtitlesPresent?: boolean | undefined
+                      SkipSubtitlesIfAudioTrackMatches?: boolean | undefined
+                      SubtitleDownloadLanguages?: (string[] | null) | undefined
+                      RequirePerfectSubtitleMatch?: boolean | undefined
+                      SaveSubtitlesWithMedia?: boolean | undefined
+                      SaveLyricsWithMedia?: boolean | undefined
+                      SaveTrickplayWithMedia?: boolean | undefined
+                      DisabledLyricFetchers?: string[] | undefined
+                      LyricFetcherOrder?: string[] | undefined
+                      PreferNonstandardArtistsTag?: boolean | undefined
+                      UseCustomTagDelimiters?: boolean | undefined
+                      CustomTagDelimiters?: string[] | undefined
+                      DelimiterWhitelist?: string[] | undefined
+                      AutomaticallyAddToCollection?: boolean | undefined
+                      AllowEmbeddedSubtitles?: {} | undefined
+                      TypeOptions?: TypeOptions[] | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/VirtualFolders/Name': {
@@ -15213,6 +17652,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 409
           }
+        | {
+            input: {
+              query: {
+                name?: string | undefined
+                newName?: string | undefined
+                refreshLibrary?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/VirtualFolders/Paths': {
@@ -15253,6 +17704,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { refreshLibrary?: boolean | undefined } } & {
+              json: {
+                Name: string
+                Path?: (string | null) | undefined
+                PathInfo?: { Path?: string | undefined } | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: {
@@ -15290,6 +17753,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                name?: string | undefined
+                path?: string | undefined
+                refreshLibrary?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Library/VirtualFolders/Paths/Update': {
@@ -15311,6 +17786,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { Name: string; PathInfo: { Path?: string | undefined } } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -15345,6 +17826,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { providerId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -15389,6 +17876,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: { ProviderId: string; TunerChannelId: string; ProviderChannelId: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -15544,6 +18039,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                type?: {} | undefined
+                userId?: string | undefined
+                startIndex?: number | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                limit?: number | undefined
+                isFavorite?: boolean | undefined
+                isLiked?: boolean | undefined
+                isDisliked?: boolean | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                fields?: ItemFields[] | undefined
+                enableUserData?: boolean | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: {} | undefined
+                enableFavoriteSorting?: boolean | undefined
+                addCurrentProgram?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/Channels/:channelId': {
@@ -15596,6 +18121,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { channelId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/GuideInfo': {
@@ -15605,6 +18136,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: GuideInfo; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/Info': {
@@ -15614,6 +18146,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: LiveTvInfo; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/ListingProviders': {
@@ -15783,6 +18316,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                pw?: string | undefined
+                validateListings?: boolean | undefined
+                validateLogin?: boolean | undefined
+              }
+            } & {
+              json: {
+                Id?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                Username?: (string | null) | undefined
+                Password?: (string | null) | undefined
+                ListingsId?: (string | null) | undefined
+                ZipCode?: (string | null) | undefined
+                Country?: (string | null) | undefined
+                Path?: (string | null) | undefined
+                EnabledTuners?: (string[] | null) | undefined
+                EnableAllTuners?: boolean | undefined
+                NewsCategories?: (string[] | null) | undefined
+                SportsCategories?: (string[] | null) | undefined
+                KidsCategories?: (string[] | null) | undefined
+                MovieCategories?: (string[] | null) | undefined
+                ChannelMappings?: (NameValuePair[] | null) | undefined
+                MoviePrefix?: (string | null) | undefined
+                PreferredLanguage?: (string | null) | undefined
+                UserAgent?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { query: { id?: string | undefined } }
@@ -15802,6 +18368,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { id?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/ListingProviders/Default': {
@@ -15811,6 +18383,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ListingsProviderInfo; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/ListingProviders/Lineups': {
@@ -15880,6 +18453,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                id?: string | undefined
+                type?: string | undefined
+                location?: string | undefined
+                country?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/ListingProviders/SchedulesDirect/Countries': {
@@ -15887,6 +18473,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: File; outputFormat: 'json'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/LiveRecordings/:recordingId/stream': {
@@ -15915,9 +18502,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { recordingId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
-    '/LiveTv/LiveStreamFiles/:streamId/stream.:container': {
+    '/LiveTv/LiveStreamFiles/:streamId/stream.{container}': {
       $get:
         | {
             input: { param: { streamId: string; container: string } }
@@ -15942,6 +18535,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { streamId: string; container: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -16127,6 +18726,42 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                channelIds?: string[] | undefined
+                userId?: string | undefined
+                minStartDate?: string | undefined
+                hasAired?: boolean | undefined
+                isAiring?: boolean | undefined
+                maxStartDate?: string | undefined
+                minEndDate?: string | undefined
+                maxEndDate?: string | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                sortBy?: ItemSortBy[] | undefined
+                sortOrder?: SortOrder[] | undefined
+                genres?: string[] | undefined
+                genreIds?: string[] | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+                seriesTimerId?: string | undefined
+                librarySeriesId?: string | undefined
+                fields?: ItemFields[] | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: {
@@ -16308,6 +18943,42 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                ChannelIds?: (string[] | null) | undefined
+                UserId?: (string | null) | undefined
+                MinStartDate?: (string | null) | undefined
+                HasAired?: (boolean | null) | undefined
+                IsAiring?: (boolean | null) | undefined
+                MaxStartDate?: (string | null) | undefined
+                MinEndDate?: (string | null) | undefined
+                MaxEndDate?: (string | null) | undefined
+                IsMovie?: (boolean | null) | undefined
+                IsSeries?: (boolean | null) | undefined
+                IsNews?: (boolean | null) | undefined
+                IsKids?: (boolean | null) | undefined
+                IsSports?: (boolean | null) | undefined
+                StartIndex?: (number | null) | undefined
+                Limit?: (number | null) | undefined
+                SortBy?: (ItemSortBy[] | null) | undefined
+                SortOrder?: (SortOrder[] | null) | undefined
+                Genres?: (string[] | null) | undefined
+                GenreIds?: (string[] | null) | undefined
+                EnableImages?: (boolean | null) | undefined
+                EnableTotalRecordCount?: boolean | undefined
+                ImageTypeLimit?: (number | null) | undefined
+                EnableImageTypes?: (ImageType[] | null) | undefined
+                EnableUserData?: (boolean | null) | undefined
+                SeriesTimerId?: (string | null) | undefined
+                LibrarySeriesId?: (string | null) | undefined
+                Fields?: (ItemFields[] | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/Programs/:programId': {
@@ -16359,6 +19030,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { programId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -16493,6 +19170,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                isAiring?: boolean | undefined
+                hasAired?: boolean | undefined
+                isSeries?: boolean | undefined
+                isMovie?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                genreIds?: string[] | undefined
+                fields?: ItemFields[] | undefined
+                enableUserData?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -16638,6 +19341,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                channelId?: string | undefined
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                status?: {} | undefined
+                isInProgress?: boolean | undefined
+                seriesTimerId?: string | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                fields?: ItemFields[] | undefined
+                enableUserData?: boolean | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                isNews?: boolean | undefined
+                isLibraryItem?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/Recordings/:recordingId': {
@@ -16690,6 +19421,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { recordingId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { recordingId: string } }
@@ -16727,6 +19464,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { recordingId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/Recordings/Folders': {
@@ -16761,6 +19504,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/SeriesTimers': {
@@ -16794,6 +19543,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { sortBy?: string | undefined; sortOrder?: {} | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $post:
         | {
@@ -16927,6 +19682,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                Id?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                ExternalId?: (string | null) | undefined
+                ChannelId?: string | undefined
+                ExternalChannelId?: (string | null) | undefined
+                ChannelName?: (string | null) | undefined
+                ChannelPrimaryImageTag?: (string | null) | undefined
+                ProgramId?: (string | null) | undefined
+                ExternalProgramId?: (string | null) | undefined
+                Name?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                StartDate?: string | undefined
+                EndDate?: string | undefined
+                ServiceName?: (string | null) | undefined
+                Priority?: number | undefined
+                PrePaddingSeconds?: number | undefined
+                PostPaddingSeconds?: number | undefined
+                IsPrePaddingRequired?: boolean | undefined
+                ParentBackdropItemId?: (string | null) | undefined
+                ParentBackdropImageTags?: (string[] | null) | undefined
+                IsPostPaddingRequired?: boolean | undefined
+                KeepUntil?: {} | undefined
+                RecordAnyTime?: boolean | undefined
+                SkipEpisodesInLibrary?: boolean | undefined
+                RecordAnyChannel?: boolean | undefined
+                KeepUpTo?: number | undefined
+                RecordNewOnly?: boolean | undefined
+                Days?: (DayOfWeek[] | null) | undefined
+                DayPattern?: {} | undefined
+                ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                ParentThumbItemId?: (string | null) | undefined
+                ParentThumbImageTag?: (string | null) | undefined
+                ParentPrimaryImageItemId?: (string | null) | undefined
+                ParentPrimaryImageTag?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -16970,10 +19769,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 503 }
       $delete:
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: { param: { timerId: string } } & {
@@ -17106,6 +19907,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { timerId: string } } & {
+              json: {
+                Id?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                ExternalId?: (string | null) | undefined
+                ChannelId?: string | undefined
+                ExternalChannelId?: (string | null) | undefined
+                ChannelName?: (string | null) | undefined
+                ChannelPrimaryImageTag?: (string | null) | undefined
+                ProgramId?: (string | null) | undefined
+                ExternalProgramId?: (string | null) | undefined
+                Name?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                StartDate?: string | undefined
+                EndDate?: string | undefined
+                ServiceName?: (string | null) | undefined
+                Priority?: number | undefined
+                PrePaddingSeconds?: number | undefined
+                PostPaddingSeconds?: number | undefined
+                IsPrePaddingRequired?: boolean | undefined
+                ParentBackdropItemId?: (string | null) | undefined
+                ParentBackdropImageTags?: (string[] | null) | undefined
+                IsPostPaddingRequired?: boolean | undefined
+                KeepUntil?: {} | undefined
+                RecordAnyTime?: boolean | undefined
+                SkipEpisodesInLibrary?: boolean | undefined
+                RecordAnyChannel?: boolean | undefined
+                KeepUpTo?: number | undefined
+                RecordNewOnly?: boolean | undefined
+                Days?: (DayOfWeek[] | null) | undefined
+                DayPattern?: {} | undefined
+                ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                ParentThumbItemId?: (string | null) | undefined
+                ParentThumbImageTag?: (string | null) | undefined
+                ParentPrimaryImageItemId?: (string | null) | undefined
+                ParentPrimaryImageTag?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -17176,6 +20021,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                channelId?: string | undefined
+                seriesTimerId?: string | undefined
+                isActive?: boolean | undefined
+                isScheduled?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: {
@@ -17857,6 +20715,233 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: {
+                Id?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                ExternalId?: (string | null) | undefined
+                ChannelId?: string | undefined
+                ExternalChannelId?: (string | null) | undefined
+                ChannelName?: (string | null) | undefined
+                ChannelPrimaryImageTag?: (string | null) | undefined
+                ProgramId?: (string | null) | undefined
+                ExternalProgramId?: (string | null) | undefined
+                Name?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                StartDate?: string | undefined
+                EndDate?: string | undefined
+                ServiceName?: (string | null) | undefined
+                Priority?: number | undefined
+                PrePaddingSeconds?: number | undefined
+                PostPaddingSeconds?: number | undefined
+                IsPrePaddingRequired?: boolean | undefined
+                ParentBackdropItemId?: (string | null) | undefined
+                ParentBackdropImageTags?: (string[] | null) | undefined
+                IsPostPaddingRequired?: boolean | undefined
+                KeepUntil?: {} | undefined
+                Status?: {} | undefined
+                SeriesTimerId?: (string | null) | undefined
+                ExternalSeriesTimerId?: (string | null) | undefined
+                RunTimeTicks?: (bigint | null) | undefined
+                ProgramInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      ServerId?: (string | null) | undefined
+                      Id?: string | undefined
+                      Etag?: (string | null) | undefined
+                      SourceType?: (string | null) | undefined
+                      PlaylistItemId?: (string | null) | undefined
+                      DateCreated?: (string | null) | undefined
+                      DateLastMediaAdded?: (string | null) | undefined
+                      ExtraType?: {} | undefined
+                      AirsBeforeSeasonNumber?: (number | null) | undefined
+                      AirsAfterSeasonNumber?: (number | null) | undefined
+                      AirsBeforeEpisodeNumber?: (number | null) | undefined
+                      CanDelete?: (boolean | null) | undefined
+                      CanDownload?: (boolean | null) | undefined
+                      HasLyrics?: (boolean | null) | undefined
+                      HasSubtitles?: (boolean | null) | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      PreferredMetadataCountryCode?: (string | null) | undefined
+                      Container?: (string | null) | undefined
+                      SortName?: (string | null) | undefined
+                      ForcedSortName?: (string | null) | undefined
+                      Video3DFormat?: {} | undefined
+                      PremiereDate?: (string | null) | undefined
+                      ExternalUrls?: (ExternalUrl[] | null) | undefined
+                      MediaSources?: (MediaSourceInfo[] | null) | undefined
+                      CriticRating?: (number | null) | undefined
+                      ProductionLocations?: (string[] | null) | undefined
+                      Path?: (string | null) | undefined
+                      EnableMediaSourceDisplay?: (boolean | null) | undefined
+                      OfficialRating?: (string | null) | undefined
+                      CustomRating?: (string | null) | undefined
+                      ChannelId?: (string | null) | undefined
+                      ChannelName?: (string | null) | undefined
+                      Overview?: (string | null) | undefined
+                      Taglines?: (string[] | null) | undefined
+                      Genres?: (string[] | null) | undefined
+                      CommunityRating?: (number | null) | undefined
+                      CumulativeRunTimeTicks?: (bigint | null) | undefined
+                      RunTimeTicks?: (bigint | null) | undefined
+                      PlayAccess?: {} | undefined
+                      AspectRatio?: (string | null) | undefined
+                      ProductionYear?: (number | null) | undefined
+                      IsPlaceHolder?: (boolean | null) | undefined
+                      Number?: (string | null) | undefined
+                      ChannelNumber?: (string | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      IndexNumberEnd?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      RemoteTrailers?: (MediaUrl[] | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      IsHD?: (boolean | null) | undefined
+                      IsFolder?: (boolean | null) | undefined
+                      ParentId?: (string | null) | undefined
+                      Type?: {} | undefined
+                      People?: (BaseItemPerson[] | null) | undefined
+                      Studios?: (NameGuidPair[] | null) | undefined
+                      GenreItems?: (NameGuidPair[] | null) | undefined
+                      ParentLogoItemId?: (string | null) | undefined
+                      ParentBackdropItemId?: (string | null) | undefined
+                      ParentBackdropImageTags?: (string[] | null) | undefined
+                      LocalTrailerCount?: (number | null) | undefined
+                      UserData?:
+                        | {
+                            Rating?: (number | null) | undefined
+                            PlayedPercentage?: (number | null) | undefined
+                            UnplayedItemCount?: (number | null) | undefined
+                            PlaybackPositionTicks?: bigint | undefined
+                            PlayCount?: number | undefined
+                            IsFavorite?: boolean | undefined
+                            Likes?: (boolean | null) | undefined
+                            LastPlayedDate?: (string | null) | undefined
+                            Played?: boolean | undefined
+                            Key: string
+                            ItemId?: string | undefined
+                          }
+                        | undefined
+                      RecursiveItemCount?: (number | null) | undefined
+                      ChildCount?: (number | null) | undefined
+                      SeriesName?: (string | null) | undefined
+                      SeriesId?: (string | null) | undefined
+                      SeasonId?: (string | null) | undefined
+                      SpecialFeatureCount?: (number | null) | undefined
+                      DisplayPreferencesId?: (string | null) | undefined
+                      Status?: (string | null) | undefined
+                      AirTime?: (string | null) | undefined
+                      AirDays?: (DayOfWeek[] | null) | undefined
+                      Tags?: (string[] | null) | undefined
+                      PrimaryImageAspectRatio?: (number | null) | undefined
+                      Artists?: (string[] | null) | undefined
+                      ArtistItems?: (NameGuidPair[] | null) | undefined
+                      Album?: (string | null) | undefined
+                      CollectionType?: {} | undefined
+                      DisplayOrder?: (string | null) | undefined
+                      AlbumId?: (string | null) | undefined
+                      AlbumPrimaryImageTag?: (string | null) | undefined
+                      SeriesPrimaryImageTag?: (string | null) | undefined
+                      AlbumArtist?: (string | null) | undefined
+                      AlbumArtists?: (NameGuidPair[] | null) | undefined
+                      SeasonName?: (string | null) | undefined
+                      MediaStreams?: (MediaStream[] | null) | undefined
+                      VideoType?: {} | undefined
+                      PartCount?: (number | null) | undefined
+                      MediaSourceCount?: (number | null) | undefined
+                      ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                      BackdropImageTags?: (string[] | null) | undefined
+                      ScreenshotImageTags?: (string[] | null) | undefined
+                      ParentLogoImageTag?: (string | null) | undefined
+                      ParentArtItemId?: (string | null) | undefined
+                      ParentArtImageTag?: (string | null) | undefined
+                      SeriesThumbImageTag?: (string | null) | undefined
+                      ImageBlurHashes?:
+                        | ({
+                            Primary?: { [x: string]: string | null } | undefined
+                            Art?: { [x: string]: string | null } | undefined
+                            Backdrop?: { [x: string]: string | null } | undefined
+                            Banner?: { [x: string]: string | null } | undefined
+                            Logo?: { [x: string]: string | null } | undefined
+                            Thumb?: { [x: string]: string | null } | undefined
+                            Disc?: { [x: string]: string | null } | undefined
+                            Box?: { [x: string]: string | null } | undefined
+                            Screenshot?: { [x: string]: string | null } | undefined
+                            Menu?: { [x: string]: string | null } | undefined
+                            Chapter?: { [x: string]: string | null } | undefined
+                            BoxRear?: { [x: string]: string | null } | undefined
+                            Profile?: { [x: string]: string | null } | undefined
+                          } | null)
+                        | undefined
+                      SeriesStudio?: (string | null) | undefined
+                      ParentThumbItemId?: (string | null) | undefined
+                      ParentThumbImageTag?: (string | null) | undefined
+                      ParentPrimaryImageItemId?: (string | null) | undefined
+                      ParentPrimaryImageTag?: (string | null) | undefined
+                      Chapters?: (ChapterInfo[] | null) | undefined
+                      Trickplay?:
+                        | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                        | undefined
+                      LocationType?: {} | undefined
+                      IsoType?: {} | undefined
+                      MediaType?: {} | undefined
+                      EndDate?: (string | null) | undefined
+                      LockedFields?: (MetadataField[] | null) | undefined
+                      TrailerCount?: (number | null) | undefined
+                      MovieCount?: (number | null) | undefined
+                      SeriesCount?: (number | null) | undefined
+                      ProgramCount?: (number | null) | undefined
+                      EpisodeCount?: (number | null) | undefined
+                      SongCount?: (number | null) | undefined
+                      AlbumCount?: (number | null) | undefined
+                      ArtistCount?: (number | null) | undefined
+                      MusicVideoCount?: (number | null) | undefined
+                      LockData?: (boolean | null) | undefined
+                      Width?: (number | null) | undefined
+                      Height?: (number | null) | undefined
+                      CameraMake?: (string | null) | undefined
+                      CameraModel?: (string | null) | undefined
+                      Software?: (string | null) | undefined
+                      ExposureTime?: (number | null) | undefined
+                      FocalLength?: (number | null) | undefined
+                      ImageOrientation?: {} | undefined
+                      Aperture?: (number | null) | undefined
+                      ShutterSpeed?: (number | null) | undefined
+                      Latitude?: (number | null) | undefined
+                      Longitude?: (number | null) | undefined
+                      Altitude?: (number | null) | undefined
+                      IsoSpeedRating?: (number | null) | undefined
+                      SeriesTimerId?: (string | null) | undefined
+                      ProgramId?: (string | null) | undefined
+                      ChannelPrimaryImageTag?: (string | null) | undefined
+                      StartDate?: (string | null) | undefined
+                      CompletionPercentage?: (number | null) | undefined
+                      IsRepeat?: (boolean | null) | undefined
+                      EpisodeTitle?: (string | null) | undefined
+                      ChannelType?: {} | undefined
+                      Audio?: {} | undefined
+                      IsMovie?: (boolean | null) | undefined
+                      IsSports?: (boolean | null) | undefined
+                      IsSeries?: (boolean | null) | undefined
+                      IsLive?: (boolean | null) | undefined
+                      IsNews?: (boolean | null) | undefined
+                      IsKids?: (boolean | null) | undefined
+                      IsPremiere?: (boolean | null) | undefined
+                      TimerId?: (string | null) | undefined
+                      NormalizationGain?: (number | null) | undefined
+                      AlbumNormalizationGain?: (number | null) | undefined
+                      CurrentProgram?: {} | undefined
+                      OriginalLanguage?: (string | null) | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -17882,10 +20967,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 503 }
       $delete:
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { timerId: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: { param: { timerId: string } } & {
@@ -18567,6 +21654,233 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { timerId: string } } & {
+              json: {
+                Id?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                ExternalId?: (string | null) | undefined
+                ChannelId?: string | undefined
+                ExternalChannelId?: (string | null) | undefined
+                ChannelName?: (string | null) | undefined
+                ChannelPrimaryImageTag?: (string | null) | undefined
+                ProgramId?: (string | null) | undefined
+                ExternalProgramId?: (string | null) | undefined
+                Name?: (string | null) | undefined
+                Overview?: (string | null) | undefined
+                StartDate?: string | undefined
+                EndDate?: string | undefined
+                ServiceName?: (string | null) | undefined
+                Priority?: number | undefined
+                PrePaddingSeconds?: number | undefined
+                PostPaddingSeconds?: number | undefined
+                IsPrePaddingRequired?: boolean | undefined
+                ParentBackdropItemId?: (string | null) | undefined
+                ParentBackdropImageTags?: (string[] | null) | undefined
+                IsPostPaddingRequired?: boolean | undefined
+                KeepUntil?: {} | undefined
+                Status?: {} | undefined
+                SeriesTimerId?: (string | null) | undefined
+                ExternalSeriesTimerId?: (string | null) | undefined
+                RunTimeTicks?: (bigint | null) | undefined
+                ProgramInfo?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      ServerId?: (string | null) | undefined
+                      Id?: string | undefined
+                      Etag?: (string | null) | undefined
+                      SourceType?: (string | null) | undefined
+                      PlaylistItemId?: (string | null) | undefined
+                      DateCreated?: (string | null) | undefined
+                      DateLastMediaAdded?: (string | null) | undefined
+                      ExtraType?: {} | undefined
+                      AirsBeforeSeasonNumber?: (number | null) | undefined
+                      AirsAfterSeasonNumber?: (number | null) | undefined
+                      AirsBeforeEpisodeNumber?: (number | null) | undefined
+                      CanDelete?: (boolean | null) | undefined
+                      CanDownload?: (boolean | null) | undefined
+                      HasLyrics?: (boolean | null) | undefined
+                      HasSubtitles?: (boolean | null) | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      PreferredMetadataCountryCode?: (string | null) | undefined
+                      Container?: (string | null) | undefined
+                      SortName?: (string | null) | undefined
+                      ForcedSortName?: (string | null) | undefined
+                      Video3DFormat?: {} | undefined
+                      PremiereDate?: (string | null) | undefined
+                      ExternalUrls?: (ExternalUrl[] | null) | undefined
+                      MediaSources?: (MediaSourceInfo[] | null) | undefined
+                      CriticRating?: (number | null) | undefined
+                      ProductionLocations?: (string[] | null) | undefined
+                      Path?: (string | null) | undefined
+                      EnableMediaSourceDisplay?: (boolean | null) | undefined
+                      OfficialRating?: (string | null) | undefined
+                      CustomRating?: (string | null) | undefined
+                      ChannelId?: (string | null) | undefined
+                      ChannelName?: (string | null) | undefined
+                      Overview?: (string | null) | undefined
+                      Taglines?: (string[] | null) | undefined
+                      Genres?: (string[] | null) | undefined
+                      CommunityRating?: (number | null) | undefined
+                      CumulativeRunTimeTicks?: (bigint | null) | undefined
+                      RunTimeTicks?: (bigint | null) | undefined
+                      PlayAccess?: {} | undefined
+                      AspectRatio?: (string | null) | undefined
+                      ProductionYear?: (number | null) | undefined
+                      IsPlaceHolder?: (boolean | null) | undefined
+                      Number?: (string | null) | undefined
+                      ChannelNumber?: (string | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      IndexNumberEnd?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      RemoteTrailers?: (MediaUrl[] | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      IsHD?: (boolean | null) | undefined
+                      IsFolder?: (boolean | null) | undefined
+                      ParentId?: (string | null) | undefined
+                      Type?: {} | undefined
+                      People?: (BaseItemPerson[] | null) | undefined
+                      Studios?: (NameGuidPair[] | null) | undefined
+                      GenreItems?: (NameGuidPair[] | null) | undefined
+                      ParentLogoItemId?: (string | null) | undefined
+                      ParentBackdropItemId?: (string | null) | undefined
+                      ParentBackdropImageTags?: (string[] | null) | undefined
+                      LocalTrailerCount?: (number | null) | undefined
+                      UserData?:
+                        | {
+                            Rating?: (number | null) | undefined
+                            PlayedPercentage?: (number | null) | undefined
+                            UnplayedItemCount?: (number | null) | undefined
+                            PlaybackPositionTicks?: bigint | undefined
+                            PlayCount?: number | undefined
+                            IsFavorite?: boolean | undefined
+                            Likes?: (boolean | null) | undefined
+                            LastPlayedDate?: (string | null) | undefined
+                            Played?: boolean | undefined
+                            Key: string
+                            ItemId?: string | undefined
+                          }
+                        | undefined
+                      RecursiveItemCount?: (number | null) | undefined
+                      ChildCount?: (number | null) | undefined
+                      SeriesName?: (string | null) | undefined
+                      SeriesId?: (string | null) | undefined
+                      SeasonId?: (string | null) | undefined
+                      SpecialFeatureCount?: (number | null) | undefined
+                      DisplayPreferencesId?: (string | null) | undefined
+                      Status?: (string | null) | undefined
+                      AirTime?: (string | null) | undefined
+                      AirDays?: (DayOfWeek[] | null) | undefined
+                      Tags?: (string[] | null) | undefined
+                      PrimaryImageAspectRatio?: (number | null) | undefined
+                      Artists?: (string[] | null) | undefined
+                      ArtistItems?: (NameGuidPair[] | null) | undefined
+                      Album?: (string | null) | undefined
+                      CollectionType?: {} | undefined
+                      DisplayOrder?: (string | null) | undefined
+                      AlbumId?: (string | null) | undefined
+                      AlbumPrimaryImageTag?: (string | null) | undefined
+                      SeriesPrimaryImageTag?: (string | null) | undefined
+                      AlbumArtist?: (string | null) | undefined
+                      AlbumArtists?: (NameGuidPair[] | null) | undefined
+                      SeasonName?: (string | null) | undefined
+                      MediaStreams?: (MediaStream[] | null) | undefined
+                      VideoType?: {} | undefined
+                      PartCount?: (number | null) | undefined
+                      MediaSourceCount?: (number | null) | undefined
+                      ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                      BackdropImageTags?: (string[] | null) | undefined
+                      ScreenshotImageTags?: (string[] | null) | undefined
+                      ParentLogoImageTag?: (string | null) | undefined
+                      ParentArtItemId?: (string | null) | undefined
+                      ParentArtImageTag?: (string | null) | undefined
+                      SeriesThumbImageTag?: (string | null) | undefined
+                      ImageBlurHashes?:
+                        | ({
+                            Primary?: { [x: string]: string | null } | undefined
+                            Art?: { [x: string]: string | null } | undefined
+                            Backdrop?: { [x: string]: string | null } | undefined
+                            Banner?: { [x: string]: string | null } | undefined
+                            Logo?: { [x: string]: string | null } | undefined
+                            Thumb?: { [x: string]: string | null } | undefined
+                            Disc?: { [x: string]: string | null } | undefined
+                            Box?: { [x: string]: string | null } | undefined
+                            Screenshot?: { [x: string]: string | null } | undefined
+                            Menu?: { [x: string]: string | null } | undefined
+                            Chapter?: { [x: string]: string | null } | undefined
+                            BoxRear?: { [x: string]: string | null } | undefined
+                            Profile?: { [x: string]: string | null } | undefined
+                          } | null)
+                        | undefined
+                      SeriesStudio?: (string | null) | undefined
+                      ParentThumbItemId?: (string | null) | undefined
+                      ParentThumbImageTag?: (string | null) | undefined
+                      ParentPrimaryImageItemId?: (string | null) | undefined
+                      ParentPrimaryImageTag?: (string | null) | undefined
+                      Chapters?: (ChapterInfo[] | null) | undefined
+                      Trickplay?:
+                        | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                        | undefined
+                      LocationType?: {} | undefined
+                      IsoType?: {} | undefined
+                      MediaType?: {} | undefined
+                      EndDate?: (string | null) | undefined
+                      LockedFields?: (MetadataField[] | null) | undefined
+                      TrailerCount?: (number | null) | undefined
+                      MovieCount?: (number | null) | undefined
+                      SeriesCount?: (number | null) | undefined
+                      ProgramCount?: (number | null) | undefined
+                      EpisodeCount?: (number | null) | undefined
+                      SongCount?: (number | null) | undefined
+                      AlbumCount?: (number | null) | undefined
+                      ArtistCount?: (number | null) | undefined
+                      MusicVideoCount?: (number | null) | undefined
+                      LockData?: (boolean | null) | undefined
+                      Width?: (number | null) | undefined
+                      Height?: (number | null) | undefined
+                      CameraMake?: (string | null) | undefined
+                      CameraModel?: (string | null) | undefined
+                      Software?: (string | null) | undefined
+                      ExposureTime?: (number | null) | undefined
+                      FocalLength?: (number | null) | undefined
+                      ImageOrientation?: {} | undefined
+                      Aperture?: (number | null) | undefined
+                      ShutterSpeed?: (number | null) | undefined
+                      Latitude?: (number | null) | undefined
+                      Longitude?: (number | null) | undefined
+                      Altitude?: (number | null) | undefined
+                      IsoSpeedRating?: (number | null) | undefined
+                      SeriesTimerId?: (string | null) | undefined
+                      ProgramId?: (string | null) | undefined
+                      ChannelPrimaryImageTag?: (string | null) | undefined
+                      StartDate?: (string | null) | undefined
+                      CompletionPercentage?: (number | null) | undefined
+                      IsRepeat?: (boolean | null) | undefined
+                      EpisodeTitle?: (string | null) | undefined
+                      ChannelType?: {} | undefined
+                      Audio?: {} | undefined
+                      IsMovie?: (boolean | null) | undefined
+                      IsSports?: (boolean | null) | undefined
+                      IsSeries?: (boolean | null) | undefined
+                      IsLive?: (boolean | null) | undefined
+                      IsNews?: (boolean | null) | undefined
+                      IsKids?: (boolean | null) | undefined
+                      IsPremiere?: (boolean | null) | undefined
+                      TimerId?: (string | null) | undefined
+                      NormalizationGain?: (number | null) | undefined
+                      AlbumNormalizationGain?: (number | null) | undefined
+                      CurrentProgram?: {} | undefined
+                      OriginalLanguage?: (string | null) | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -18601,6 +21915,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { programId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -18731,6 +22051,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                Id?: (string | null) | undefined
+                Url?: (string | null) | undefined
+                Type?: (string | null) | undefined
+                DeviceId?: (string | null) | undefined
+                FriendlyName?: (string | null) | undefined
+                ImportFavoritesOnly?: boolean | undefined
+                AllowHWTranscoding?: boolean | undefined
+                AllowFmp4TranscodingContainer?: boolean | undefined
+                AllowStreamSharing?: boolean | undefined
+                FallbackMaxStreamingBitrate?: number | undefined
+                EnableStreamLooping?: boolean | undefined
+                Source?: (string | null) | undefined
+                TunerCount?: number | undefined
+                UserAgent?: (string | null) | undefined
+                IgnoreDts?: boolean | undefined
+                ReadAtNativeFramerate?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { query: { id?: string | undefined } }
@@ -18750,6 +22095,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { id?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/LiveTv/TunerHosts/Types': {
@@ -18759,6 +22110,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: NameIdPair[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/Tuners/:tunerId/Reset': {
@@ -18766,6 +22118,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { tunerId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { tunerId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { tunerId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { tunerId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/LiveTv/Tuners/Discover': {
@@ -18799,6 +22152,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { newDevicesOnly?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -18834,6 +22193,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { newDevicesOnly?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Localization/Countries': {
@@ -18843,6 +22208,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: CountryInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Localization/Cultures': {
@@ -18852,6 +22218,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: CultureDto[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Localization/Options': {
@@ -18861,6 +22228,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: LocalizationOption[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Localization/ParentalRatings': {
@@ -18870,6 +22238,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ParentalRating[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Audio/:itemId/Lyrics': {
@@ -18912,6 +22281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: { param: { itemId: string } } & { query: { fileName: string } } & { json: File }
@@ -18979,6 +22349,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & { query: { fileName: string } } & { json: File }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 401 }
@@ -19001,6 +22377,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Audio/:itemId/RemoteSearch/Lyrics': {
@@ -19043,6 +22420,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Audio/:itemId/RemoteSearch/Lyrics/:lyricId': {
@@ -19095,6 +22473,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; lyricId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Providers/Lyrics/:lyricId': {
@@ -19137,6 +22521,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { lyricId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/PlaybackInfo': {
@@ -19189,6 +22574,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $post:
         | {
             input: { param: { itemId: string } } & {
@@ -19637,6 +23028,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                userId?: string | undefined
+                maxStreamingBitrate?: number | undefined
+                startTimeTicks?: bigint | undefined
+                audioStreamIndex?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                maxAudioChannels?: number | undefined
+                mediaSourceId?: string | undefined
+                liveStreamId?: string | undefined
+                autoOpenLiveStream?: boolean | undefined
+                enableDirectPlay?: boolean | undefined
+                enableDirectStream?: boolean | undefined
+                enableTranscoding?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+              }
+            } & {
+              json: {
+                UserId?: (string | null) | undefined
+                MaxStreamingBitrate?: (number | null) | undefined
+                StartTimeTicks?: (bigint | null) | undefined
+                AudioStreamIndex?: (number | null) | undefined
+                SubtitleStreamIndex?: (number | null) | undefined
+                MaxAudioChannels?: (number | null) | undefined
+                MediaSourceId?: (string | null) | undefined
+                LiveStreamId?: (string | null) | undefined
+                DeviceProfile?:
+                  | {
+                      Name?: (string | null) | undefined
+                      Id?: (string | null) | undefined
+                      MaxStreamingBitrate?: (number | null) | undefined
+                      MaxStaticBitrate?: (number | null) | undefined
+                      MusicStreamingTranscodingBitrate?: (number | null) | undefined
+                      MaxStaticMusicBitrate?: (number | null) | undefined
+                      DirectPlayProfiles?: DirectPlayProfile[] | undefined
+                      TranscodingProfiles?: TranscodingProfile[] | undefined
+                      ContainerProfiles?: ContainerProfile[] | undefined
+                      CodecProfiles?: CodecProfile[] | undefined
+                      SubtitleProfiles?: SubtitleProfile[] | undefined
+                    }
+                  | undefined
+                EnableDirectPlay?: (boolean | null) | undefined
+                EnableDirectStream?: (boolean | null) | undefined
+                EnableTranscoding?: (boolean | null) | undefined
+                AllowVideoStreamCopy?: (boolean | null) | undefined
+                AllowAudioStreamCopy?: (boolean | null) | undefined
+                AutoOpenLiveStream?: (boolean | null) | undefined
+                AlwaysBurnInSubtitleWhenTranscoding?: (boolean | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -19659,6 +23106,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { liveStreamId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -19924,6 +23377,58 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                openToken?: string | undefined
+                userId?: string | undefined
+                playSessionId?: string | undefined
+                maxStreamingBitrate?: number | undefined
+                startTimeTicks?: bigint | undefined
+                audioStreamIndex?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                maxAudioChannels?: number | undefined
+                itemId?: string | undefined
+                enableDirectPlay?: boolean | undefined
+                enableDirectStream?: boolean | undefined
+                alwaysBurnInSubtitleWhenTranscoding?: boolean | undefined
+              }
+            } & {
+              json: {
+                OpenToken?: (string | null) | undefined
+                UserId?: (string | null) | undefined
+                PlaySessionId?: (string | null) | undefined
+                MaxStreamingBitrate?: (number | null) | undefined
+                StartTimeTicks?: (bigint | null) | undefined
+                AudioStreamIndex?: (number | null) | undefined
+                SubtitleStreamIndex?: (number | null) | undefined
+                MaxAudioChannels?: (number | null) | undefined
+                ItemId?: (string | null) | undefined
+                EnableDirectPlay?: (boolean | null) | undefined
+                EnableDirectStream?: (boolean | null) | undefined
+                AlwaysBurnInSubtitleWhenTranscoding?: (boolean | null) | undefined
+                DeviceProfile?:
+                  | {
+                      Name?: (string | null) | undefined
+                      Id?: (string | null) | undefined
+                      MaxStreamingBitrate?: (number | null) | undefined
+                      MaxStaticBitrate?: (number | null) | undefined
+                      MusicStreamingTranscodingBitrate?: (number | null) | undefined
+                      MaxStaticMusicBitrate?: (number | null) | undefined
+                      DirectPlayProfiles?: DirectPlayProfile[] | undefined
+                      TranscodingProfiles?: TranscodingProfile[] | undefined
+                      ContainerProfiles?: ContainerProfile[] | undefined
+                      CodecProfiles?: CodecProfile[] | undefined
+                      SubtitleProfiles?: SubtitleProfile[] | undefined
+                    }
+                  | undefined
+                DirectPlayProtocols?: MediaProtocol[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Playback/BitrateTest': {
@@ -19945,6 +23450,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -20013,6 +23524,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: { includeSegmentTypes?: MediaSegmentType[] | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -20088,6 +23607,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                categoryLimit?: number | undefined
+                itemLimit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/MusicGenres/:genreName': {
@@ -20122,6 +23655,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { genreName: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Packages': {
@@ -20131,6 +23670,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: PackageInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Packages/:name': {
@@ -20164,6 +23704,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { name: string } } & { query: { assemblyGuid?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -20241,6 +23787,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { name: string } } & {
+              query: {
+                assemblyGuid?: string | undefined
+                version?: string | undefined
+                repositoryUrl?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Packages/Installing/:packageId': {
@@ -20248,6 +23806,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { packageId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { packageId: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { packageId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { packageId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Repositories': {
@@ -20257,10 +23816,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: RepositoryInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | { input: { json: RepositoryInfo[] }; output: {}; outputFormat: string; status: 204 }
         | { input: { json: RepositoryInfo[] }; output: {}; outputFormat: string; status: 401 }
         | { input: { json: RepositoryInfo[] }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: RepositoryInfo[] }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Persons': {
@@ -20400,6 +23961,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                nameStartsWithOrGreater?: string | undefined
+                fields?: ItemFields[] | undefined
+                filters?: ItemFilter[] | undefined
+                isFavorite?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                excludePersonTypes?: string[] | undefined
+                personTypes?: string[] | undefined
+                parentId?: string | undefined
+                appearsInItemId?: string | undefined
+                userId?: string | undefined
+                enableImages?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Persons/:name': {
@@ -20451,6 +24039,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { name: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -20566,6 +24160,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                name?: string | undefined
+                ids?: string[] | undefined
+                userId?: string | undefined
+                mediaType?: {} | undefined
+              }
+            } & {
+              json: {
+                Name: string
+                Ids?: string[] | undefined
+                UserId?: (string | null) | undefined
+                MediaType?: {} | undefined
+                Users?: PlaylistUserPermissions[] | undefined
+                IsPublic?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Playlists/:playlistId': {
@@ -20674,6 +24290,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { playlistId: string } } & {
+              json: {
+                Name?: (string | null) | undefined
+                Ids?: (string[] | null) | undefined
+                Users?: (PlaylistUserPermissions[] | null) | undefined
+                IsPublic?: (boolean | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $get:
         | {
             input: { param: { playlistId: string } }
@@ -20722,6 +24351,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { playlistId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -20823,6 +24458,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { playlistId: string } } & {
+              query: {
+                ids?: string[] | undefined
+                position?: number | undefined
+                userId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { playlistId: string } } & {
@@ -20887,6 +24534,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { playlistId: string } } & {
+              query: { entryIds?: string[] | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $get:
         | {
@@ -21059,6 +24714,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { playlistId: string } } & {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                enableImages?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Playlists/:playlistId/Items/:itemId/Move/:newIndex': {
@@ -21110,6 +24782,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { playlistId: string; itemId: string; newIndex: number } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -21175,6 +24853,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { playlistId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Playlists/:playlistId/Users/:userId': {
@@ -21238,6 +24922,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { playlistId: string; userId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $post:
         | {
@@ -21304,6 +24994,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { playlistId: string; userId: string } } & {
+              json: { CanEdit?: (boolean | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { playlistId: string; userId: string } }
@@ -21352,6 +25050,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { playlistId: string; userId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -22017,6 +25721,226 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                CanSeek?: boolean | undefined
+                Item?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      ServerId?: (string | null) | undefined
+                      Id?: string | undefined
+                      Etag?: (string | null) | undefined
+                      SourceType?: (string | null) | undefined
+                      PlaylistItemId?: (string | null) | undefined
+                      DateCreated?: (string | null) | undefined
+                      DateLastMediaAdded?: (string | null) | undefined
+                      ExtraType?: {} | undefined
+                      AirsBeforeSeasonNumber?: (number | null) | undefined
+                      AirsAfterSeasonNumber?: (number | null) | undefined
+                      AirsBeforeEpisodeNumber?: (number | null) | undefined
+                      CanDelete?: (boolean | null) | undefined
+                      CanDownload?: (boolean | null) | undefined
+                      HasLyrics?: (boolean | null) | undefined
+                      HasSubtitles?: (boolean | null) | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      PreferredMetadataCountryCode?: (string | null) | undefined
+                      Container?: (string | null) | undefined
+                      SortName?: (string | null) | undefined
+                      ForcedSortName?: (string | null) | undefined
+                      Video3DFormat?: {} | undefined
+                      PremiereDate?: (string | null) | undefined
+                      ExternalUrls?: (ExternalUrl[] | null) | undefined
+                      MediaSources?: (MediaSourceInfo[] | null) | undefined
+                      CriticRating?: (number | null) | undefined
+                      ProductionLocations?: (string[] | null) | undefined
+                      Path?: (string | null) | undefined
+                      EnableMediaSourceDisplay?: (boolean | null) | undefined
+                      OfficialRating?: (string | null) | undefined
+                      CustomRating?: (string | null) | undefined
+                      ChannelId?: (string | null) | undefined
+                      ChannelName?: (string | null) | undefined
+                      Overview?: (string | null) | undefined
+                      Taglines?: (string[] | null) | undefined
+                      Genres?: (string[] | null) | undefined
+                      CommunityRating?: (number | null) | undefined
+                      CumulativeRunTimeTicks?: (bigint | null) | undefined
+                      RunTimeTicks?: (bigint | null) | undefined
+                      PlayAccess?: {} | undefined
+                      AspectRatio?: (string | null) | undefined
+                      ProductionYear?: (number | null) | undefined
+                      IsPlaceHolder?: (boolean | null) | undefined
+                      Number?: (string | null) | undefined
+                      ChannelNumber?: (string | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      IndexNumberEnd?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      RemoteTrailers?: (MediaUrl[] | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      IsHD?: (boolean | null) | undefined
+                      IsFolder?: (boolean | null) | undefined
+                      ParentId?: (string | null) | undefined
+                      Type?: {} | undefined
+                      People?: (BaseItemPerson[] | null) | undefined
+                      Studios?: (NameGuidPair[] | null) | undefined
+                      GenreItems?: (NameGuidPair[] | null) | undefined
+                      ParentLogoItemId?: (string | null) | undefined
+                      ParentBackdropItemId?: (string | null) | undefined
+                      ParentBackdropImageTags?: (string[] | null) | undefined
+                      LocalTrailerCount?: (number | null) | undefined
+                      UserData?:
+                        | {
+                            Rating?: (number | null) | undefined
+                            PlayedPercentage?: (number | null) | undefined
+                            UnplayedItemCount?: (number | null) | undefined
+                            PlaybackPositionTicks?: bigint | undefined
+                            PlayCount?: number | undefined
+                            IsFavorite?: boolean | undefined
+                            Likes?: (boolean | null) | undefined
+                            LastPlayedDate?: (string | null) | undefined
+                            Played?: boolean | undefined
+                            Key: string
+                            ItemId?: string | undefined
+                          }
+                        | undefined
+                      RecursiveItemCount?: (number | null) | undefined
+                      ChildCount?: (number | null) | undefined
+                      SeriesName?: (string | null) | undefined
+                      SeriesId?: (string | null) | undefined
+                      SeasonId?: (string | null) | undefined
+                      SpecialFeatureCount?: (number | null) | undefined
+                      DisplayPreferencesId?: (string | null) | undefined
+                      Status?: (string | null) | undefined
+                      AirTime?: (string | null) | undefined
+                      AirDays?: (DayOfWeek[] | null) | undefined
+                      Tags?: (string[] | null) | undefined
+                      PrimaryImageAspectRatio?: (number | null) | undefined
+                      Artists?: (string[] | null) | undefined
+                      ArtistItems?: (NameGuidPair[] | null) | undefined
+                      Album?: (string | null) | undefined
+                      CollectionType?: {} | undefined
+                      DisplayOrder?: (string | null) | undefined
+                      AlbumId?: (string | null) | undefined
+                      AlbumPrimaryImageTag?: (string | null) | undefined
+                      SeriesPrimaryImageTag?: (string | null) | undefined
+                      AlbumArtist?: (string | null) | undefined
+                      AlbumArtists?: (NameGuidPair[] | null) | undefined
+                      SeasonName?: (string | null) | undefined
+                      MediaStreams?: (MediaStream[] | null) | undefined
+                      VideoType?: {} | undefined
+                      PartCount?: (number | null) | undefined
+                      MediaSourceCount?: (number | null) | undefined
+                      ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                      BackdropImageTags?: (string[] | null) | undefined
+                      ScreenshotImageTags?: (string[] | null) | undefined
+                      ParentLogoImageTag?: (string | null) | undefined
+                      ParentArtItemId?: (string | null) | undefined
+                      ParentArtImageTag?: (string | null) | undefined
+                      SeriesThumbImageTag?: (string | null) | undefined
+                      ImageBlurHashes?:
+                        | ({
+                            Primary?: { [x: string]: string | null } | undefined
+                            Art?: { [x: string]: string | null } | undefined
+                            Backdrop?: { [x: string]: string | null } | undefined
+                            Banner?: { [x: string]: string | null } | undefined
+                            Logo?: { [x: string]: string | null } | undefined
+                            Thumb?: { [x: string]: string | null } | undefined
+                            Disc?: { [x: string]: string | null } | undefined
+                            Box?: { [x: string]: string | null } | undefined
+                            Screenshot?: { [x: string]: string | null } | undefined
+                            Menu?: { [x: string]: string | null } | undefined
+                            Chapter?: { [x: string]: string | null } | undefined
+                            BoxRear?: { [x: string]: string | null } | undefined
+                            Profile?: { [x: string]: string | null } | undefined
+                          } | null)
+                        | undefined
+                      SeriesStudio?: (string | null) | undefined
+                      ParentThumbItemId?: (string | null) | undefined
+                      ParentThumbImageTag?: (string | null) | undefined
+                      ParentPrimaryImageItemId?: (string | null) | undefined
+                      ParentPrimaryImageTag?: (string | null) | undefined
+                      Chapters?: (ChapterInfo[] | null) | undefined
+                      Trickplay?:
+                        | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                        | undefined
+                      LocationType?: {} | undefined
+                      IsoType?: {} | undefined
+                      MediaType?: {} | undefined
+                      EndDate?: (string | null) | undefined
+                      LockedFields?: (MetadataField[] | null) | undefined
+                      TrailerCount?: (number | null) | undefined
+                      MovieCount?: (number | null) | undefined
+                      SeriesCount?: (number | null) | undefined
+                      ProgramCount?: (number | null) | undefined
+                      EpisodeCount?: (number | null) | undefined
+                      SongCount?: (number | null) | undefined
+                      AlbumCount?: (number | null) | undefined
+                      ArtistCount?: (number | null) | undefined
+                      MusicVideoCount?: (number | null) | undefined
+                      LockData?: (boolean | null) | undefined
+                      Width?: (number | null) | undefined
+                      Height?: (number | null) | undefined
+                      CameraMake?: (string | null) | undefined
+                      CameraModel?: (string | null) | undefined
+                      Software?: (string | null) | undefined
+                      ExposureTime?: (number | null) | undefined
+                      FocalLength?: (number | null) | undefined
+                      ImageOrientation?: {} | undefined
+                      Aperture?: (number | null) | undefined
+                      ShutterSpeed?: (number | null) | undefined
+                      Latitude?: (number | null) | undefined
+                      Longitude?: (number | null) | undefined
+                      Altitude?: (number | null) | undefined
+                      IsoSpeedRating?: (number | null) | undefined
+                      SeriesTimerId?: (string | null) | undefined
+                      ProgramId?: (string | null) | undefined
+                      ChannelPrimaryImageTag?: (string | null) | undefined
+                      StartDate?: (string | null) | undefined
+                      CompletionPercentage?: (number | null) | undefined
+                      IsRepeat?: (boolean | null) | undefined
+                      EpisodeTitle?: (string | null) | undefined
+                      ChannelType?: {} | undefined
+                      Audio?: {} | undefined
+                      IsMovie?: (boolean | null) | undefined
+                      IsSports?: (boolean | null) | undefined
+                      IsSeries?: (boolean | null) | undefined
+                      IsLive?: (boolean | null) | undefined
+                      IsNews?: (boolean | null) | undefined
+                      IsKids?: (boolean | null) | undefined
+                      IsPremiere?: (boolean | null) | undefined
+                      TimerId?: (string | null) | undefined
+                      NormalizationGain?: (number | null) | undefined
+                      AlbumNormalizationGain?: (number | null) | undefined
+                      CurrentProgram?: {} | undefined
+                      OriginalLanguage?: (string | null) | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SessionId?: (string | null) | undefined
+                MediaSourceId?: (string | null) | undefined
+                AudioStreamIndex?: (number | null) | undefined
+                SubtitleStreamIndex?: (number | null) | undefined
+                IsPaused?: boolean | undefined
+                IsMuted?: boolean | undefined
+                PositionTicks?: (bigint | null) | undefined
+                PlaybackStartTimeTicks?: (bigint | null) | undefined
+                VolumeLevel?: (number | null) | undefined
+                Brightness?: (number | null) | undefined
+                AspectRatio?: (string | null) | undefined
+                PlayMethod?: {} | undefined
+                LiveStreamId?: (string | null) | undefined
+                PlaySessionId?: (string | null) | undefined
+                RepeatMode?: {} | undefined
+                PlaybackOrder?: {} | undefined
+                NowPlayingQueue?: (QueueItem[] | null) | undefined
+                PlaylistItemId?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/Playing/Ping': {
@@ -22038,6 +25962,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { playSessionId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -22703,6 +26633,226 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                CanSeek?: boolean | undefined
+                Item?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      ServerId?: (string | null) | undefined
+                      Id?: string | undefined
+                      Etag?: (string | null) | undefined
+                      SourceType?: (string | null) | undefined
+                      PlaylistItemId?: (string | null) | undefined
+                      DateCreated?: (string | null) | undefined
+                      DateLastMediaAdded?: (string | null) | undefined
+                      ExtraType?: {} | undefined
+                      AirsBeforeSeasonNumber?: (number | null) | undefined
+                      AirsAfterSeasonNumber?: (number | null) | undefined
+                      AirsBeforeEpisodeNumber?: (number | null) | undefined
+                      CanDelete?: (boolean | null) | undefined
+                      CanDownload?: (boolean | null) | undefined
+                      HasLyrics?: (boolean | null) | undefined
+                      HasSubtitles?: (boolean | null) | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      PreferredMetadataCountryCode?: (string | null) | undefined
+                      Container?: (string | null) | undefined
+                      SortName?: (string | null) | undefined
+                      ForcedSortName?: (string | null) | undefined
+                      Video3DFormat?: {} | undefined
+                      PremiereDate?: (string | null) | undefined
+                      ExternalUrls?: (ExternalUrl[] | null) | undefined
+                      MediaSources?: (MediaSourceInfo[] | null) | undefined
+                      CriticRating?: (number | null) | undefined
+                      ProductionLocations?: (string[] | null) | undefined
+                      Path?: (string | null) | undefined
+                      EnableMediaSourceDisplay?: (boolean | null) | undefined
+                      OfficialRating?: (string | null) | undefined
+                      CustomRating?: (string | null) | undefined
+                      ChannelId?: (string | null) | undefined
+                      ChannelName?: (string | null) | undefined
+                      Overview?: (string | null) | undefined
+                      Taglines?: (string[] | null) | undefined
+                      Genres?: (string[] | null) | undefined
+                      CommunityRating?: (number | null) | undefined
+                      CumulativeRunTimeTicks?: (bigint | null) | undefined
+                      RunTimeTicks?: (bigint | null) | undefined
+                      PlayAccess?: {} | undefined
+                      AspectRatio?: (string | null) | undefined
+                      ProductionYear?: (number | null) | undefined
+                      IsPlaceHolder?: (boolean | null) | undefined
+                      Number?: (string | null) | undefined
+                      ChannelNumber?: (string | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      IndexNumberEnd?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      RemoteTrailers?: (MediaUrl[] | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      IsHD?: (boolean | null) | undefined
+                      IsFolder?: (boolean | null) | undefined
+                      ParentId?: (string | null) | undefined
+                      Type?: {} | undefined
+                      People?: (BaseItemPerson[] | null) | undefined
+                      Studios?: (NameGuidPair[] | null) | undefined
+                      GenreItems?: (NameGuidPair[] | null) | undefined
+                      ParentLogoItemId?: (string | null) | undefined
+                      ParentBackdropItemId?: (string | null) | undefined
+                      ParentBackdropImageTags?: (string[] | null) | undefined
+                      LocalTrailerCount?: (number | null) | undefined
+                      UserData?:
+                        | {
+                            Rating?: (number | null) | undefined
+                            PlayedPercentage?: (number | null) | undefined
+                            UnplayedItemCount?: (number | null) | undefined
+                            PlaybackPositionTicks?: bigint | undefined
+                            PlayCount?: number | undefined
+                            IsFavorite?: boolean | undefined
+                            Likes?: (boolean | null) | undefined
+                            LastPlayedDate?: (string | null) | undefined
+                            Played?: boolean | undefined
+                            Key: string
+                            ItemId?: string | undefined
+                          }
+                        | undefined
+                      RecursiveItemCount?: (number | null) | undefined
+                      ChildCount?: (number | null) | undefined
+                      SeriesName?: (string | null) | undefined
+                      SeriesId?: (string | null) | undefined
+                      SeasonId?: (string | null) | undefined
+                      SpecialFeatureCount?: (number | null) | undefined
+                      DisplayPreferencesId?: (string | null) | undefined
+                      Status?: (string | null) | undefined
+                      AirTime?: (string | null) | undefined
+                      AirDays?: (DayOfWeek[] | null) | undefined
+                      Tags?: (string[] | null) | undefined
+                      PrimaryImageAspectRatio?: (number | null) | undefined
+                      Artists?: (string[] | null) | undefined
+                      ArtistItems?: (NameGuidPair[] | null) | undefined
+                      Album?: (string | null) | undefined
+                      CollectionType?: {} | undefined
+                      DisplayOrder?: (string | null) | undefined
+                      AlbumId?: (string | null) | undefined
+                      AlbumPrimaryImageTag?: (string | null) | undefined
+                      SeriesPrimaryImageTag?: (string | null) | undefined
+                      AlbumArtist?: (string | null) | undefined
+                      AlbumArtists?: (NameGuidPair[] | null) | undefined
+                      SeasonName?: (string | null) | undefined
+                      MediaStreams?: (MediaStream[] | null) | undefined
+                      VideoType?: {} | undefined
+                      PartCount?: (number | null) | undefined
+                      MediaSourceCount?: (number | null) | undefined
+                      ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                      BackdropImageTags?: (string[] | null) | undefined
+                      ScreenshotImageTags?: (string[] | null) | undefined
+                      ParentLogoImageTag?: (string | null) | undefined
+                      ParentArtItemId?: (string | null) | undefined
+                      ParentArtImageTag?: (string | null) | undefined
+                      SeriesThumbImageTag?: (string | null) | undefined
+                      ImageBlurHashes?:
+                        | ({
+                            Primary?: { [x: string]: string | null } | undefined
+                            Art?: { [x: string]: string | null } | undefined
+                            Backdrop?: { [x: string]: string | null } | undefined
+                            Banner?: { [x: string]: string | null } | undefined
+                            Logo?: { [x: string]: string | null } | undefined
+                            Thumb?: { [x: string]: string | null } | undefined
+                            Disc?: { [x: string]: string | null } | undefined
+                            Box?: { [x: string]: string | null } | undefined
+                            Screenshot?: { [x: string]: string | null } | undefined
+                            Menu?: { [x: string]: string | null } | undefined
+                            Chapter?: { [x: string]: string | null } | undefined
+                            BoxRear?: { [x: string]: string | null } | undefined
+                            Profile?: { [x: string]: string | null } | undefined
+                          } | null)
+                        | undefined
+                      SeriesStudio?: (string | null) | undefined
+                      ParentThumbItemId?: (string | null) | undefined
+                      ParentThumbImageTag?: (string | null) | undefined
+                      ParentPrimaryImageItemId?: (string | null) | undefined
+                      ParentPrimaryImageTag?: (string | null) | undefined
+                      Chapters?: (ChapterInfo[] | null) | undefined
+                      Trickplay?:
+                        | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                        | undefined
+                      LocationType?: {} | undefined
+                      IsoType?: {} | undefined
+                      MediaType?: {} | undefined
+                      EndDate?: (string | null) | undefined
+                      LockedFields?: (MetadataField[] | null) | undefined
+                      TrailerCount?: (number | null) | undefined
+                      MovieCount?: (number | null) | undefined
+                      SeriesCount?: (number | null) | undefined
+                      ProgramCount?: (number | null) | undefined
+                      EpisodeCount?: (number | null) | undefined
+                      SongCount?: (number | null) | undefined
+                      AlbumCount?: (number | null) | undefined
+                      ArtistCount?: (number | null) | undefined
+                      MusicVideoCount?: (number | null) | undefined
+                      LockData?: (boolean | null) | undefined
+                      Width?: (number | null) | undefined
+                      Height?: (number | null) | undefined
+                      CameraMake?: (string | null) | undefined
+                      CameraModel?: (string | null) | undefined
+                      Software?: (string | null) | undefined
+                      ExposureTime?: (number | null) | undefined
+                      FocalLength?: (number | null) | undefined
+                      ImageOrientation?: {} | undefined
+                      Aperture?: (number | null) | undefined
+                      ShutterSpeed?: (number | null) | undefined
+                      Latitude?: (number | null) | undefined
+                      Longitude?: (number | null) | undefined
+                      Altitude?: (number | null) | undefined
+                      IsoSpeedRating?: (number | null) | undefined
+                      SeriesTimerId?: (string | null) | undefined
+                      ProgramId?: (string | null) | undefined
+                      ChannelPrimaryImageTag?: (string | null) | undefined
+                      StartDate?: (string | null) | undefined
+                      CompletionPercentage?: (number | null) | undefined
+                      IsRepeat?: (boolean | null) | undefined
+                      EpisodeTitle?: (string | null) | undefined
+                      ChannelType?: {} | undefined
+                      Audio?: {} | undefined
+                      IsMovie?: (boolean | null) | undefined
+                      IsSports?: (boolean | null) | undefined
+                      IsSeries?: (boolean | null) | undefined
+                      IsLive?: (boolean | null) | undefined
+                      IsNews?: (boolean | null) | undefined
+                      IsKids?: (boolean | null) | undefined
+                      IsPremiere?: (boolean | null) | undefined
+                      TimerId?: (string | null) | undefined
+                      NormalizationGain?: (number | null) | undefined
+                      AlbumNormalizationGain?: (number | null) | undefined
+                      CurrentProgram?: {} | undefined
+                      OriginalLanguage?: (string | null) | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SessionId?: (string | null) | undefined
+                MediaSourceId?: (string | null) | undefined
+                AudioStreamIndex?: (number | null) | undefined
+                SubtitleStreamIndex?: (number | null) | undefined
+                IsPaused?: boolean | undefined
+                IsMuted?: boolean | undefined
+                PositionTicks?: (bigint | null) | undefined
+                PlaybackStartTimeTicks?: (bigint | null) | undefined
+                VolumeLevel?: (number | null) | undefined
+                Brightness?: (number | null) | undefined
+                AspectRatio?: (string | null) | undefined
+                PlayMethod?: {} | undefined
+                LiveStreamId?: (string | null) | undefined
+                PlaySessionId?: (string | null) | undefined
+                RepeatMode?: {} | undefined
+                PlaybackOrder?: {} | undefined
+                NowPlayingQueue?: (QueueItem[] | null) | undefined
+                PlaylistItemId?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/Playing/Stopped': {
@@ -23337,6 +27487,216 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                Item?:
+                  | {
+                      Name?: (string | null) | undefined
+                      OriginalTitle?: (string | null) | undefined
+                      ServerId?: (string | null) | undefined
+                      Id?: string | undefined
+                      Etag?: (string | null) | undefined
+                      SourceType?: (string | null) | undefined
+                      PlaylistItemId?: (string | null) | undefined
+                      DateCreated?: (string | null) | undefined
+                      DateLastMediaAdded?: (string | null) | undefined
+                      ExtraType?: {} | undefined
+                      AirsBeforeSeasonNumber?: (number | null) | undefined
+                      AirsAfterSeasonNumber?: (number | null) | undefined
+                      AirsBeforeEpisodeNumber?: (number | null) | undefined
+                      CanDelete?: (boolean | null) | undefined
+                      CanDownload?: (boolean | null) | undefined
+                      HasLyrics?: (boolean | null) | undefined
+                      HasSubtitles?: (boolean | null) | undefined
+                      PreferredMetadataLanguage?: (string | null) | undefined
+                      PreferredMetadataCountryCode?: (string | null) | undefined
+                      Container?: (string | null) | undefined
+                      SortName?: (string | null) | undefined
+                      ForcedSortName?: (string | null) | undefined
+                      Video3DFormat?: {} | undefined
+                      PremiereDate?: (string | null) | undefined
+                      ExternalUrls?: (ExternalUrl[] | null) | undefined
+                      MediaSources?: (MediaSourceInfo[] | null) | undefined
+                      CriticRating?: (number | null) | undefined
+                      ProductionLocations?: (string[] | null) | undefined
+                      Path?: (string | null) | undefined
+                      EnableMediaSourceDisplay?: (boolean | null) | undefined
+                      OfficialRating?: (string | null) | undefined
+                      CustomRating?: (string | null) | undefined
+                      ChannelId?: (string | null) | undefined
+                      ChannelName?: (string | null) | undefined
+                      Overview?: (string | null) | undefined
+                      Taglines?: (string[] | null) | undefined
+                      Genres?: (string[] | null) | undefined
+                      CommunityRating?: (number | null) | undefined
+                      CumulativeRunTimeTicks?: (bigint | null) | undefined
+                      RunTimeTicks?: (bigint | null) | undefined
+                      PlayAccess?: {} | undefined
+                      AspectRatio?: (string | null) | undefined
+                      ProductionYear?: (number | null) | undefined
+                      IsPlaceHolder?: (boolean | null) | undefined
+                      Number?: (string | null) | undefined
+                      ChannelNumber?: (string | null) | undefined
+                      IndexNumber?: (number | null) | undefined
+                      IndexNumberEnd?: (number | null) | undefined
+                      ParentIndexNumber?: (number | null) | undefined
+                      RemoteTrailers?: (MediaUrl[] | null) | undefined
+                      ProviderIds?: ({ [x: string]: string | null } | null) | undefined
+                      IsHD?: (boolean | null) | undefined
+                      IsFolder?: (boolean | null) | undefined
+                      ParentId?: (string | null) | undefined
+                      Type?: {} | undefined
+                      People?: (BaseItemPerson[] | null) | undefined
+                      Studios?: (NameGuidPair[] | null) | undefined
+                      GenreItems?: (NameGuidPair[] | null) | undefined
+                      ParentLogoItemId?: (string | null) | undefined
+                      ParentBackdropItemId?: (string | null) | undefined
+                      ParentBackdropImageTags?: (string[] | null) | undefined
+                      LocalTrailerCount?: (number | null) | undefined
+                      UserData?:
+                        | {
+                            Rating?: (number | null) | undefined
+                            PlayedPercentage?: (number | null) | undefined
+                            UnplayedItemCount?: (number | null) | undefined
+                            PlaybackPositionTicks?: bigint | undefined
+                            PlayCount?: number | undefined
+                            IsFavorite?: boolean | undefined
+                            Likes?: (boolean | null) | undefined
+                            LastPlayedDate?: (string | null) | undefined
+                            Played?: boolean | undefined
+                            Key: string
+                            ItemId?: string | undefined
+                          }
+                        | undefined
+                      RecursiveItemCount?: (number | null) | undefined
+                      ChildCount?: (number | null) | undefined
+                      SeriesName?: (string | null) | undefined
+                      SeriesId?: (string | null) | undefined
+                      SeasonId?: (string | null) | undefined
+                      SpecialFeatureCount?: (number | null) | undefined
+                      DisplayPreferencesId?: (string | null) | undefined
+                      Status?: (string | null) | undefined
+                      AirTime?: (string | null) | undefined
+                      AirDays?: (DayOfWeek[] | null) | undefined
+                      Tags?: (string[] | null) | undefined
+                      PrimaryImageAspectRatio?: (number | null) | undefined
+                      Artists?: (string[] | null) | undefined
+                      ArtistItems?: (NameGuidPair[] | null) | undefined
+                      Album?: (string | null) | undefined
+                      CollectionType?: {} | undefined
+                      DisplayOrder?: (string | null) | undefined
+                      AlbumId?: (string | null) | undefined
+                      AlbumPrimaryImageTag?: (string | null) | undefined
+                      SeriesPrimaryImageTag?: (string | null) | undefined
+                      AlbumArtist?: (string | null) | undefined
+                      AlbumArtists?: (NameGuidPair[] | null) | undefined
+                      SeasonName?: (string | null) | undefined
+                      MediaStreams?: (MediaStream[] | null) | undefined
+                      VideoType?: {} | undefined
+                      PartCount?: (number | null) | undefined
+                      MediaSourceCount?: (number | null) | undefined
+                      ImageTags?: ({ [x: string]: string | null } | null) | undefined
+                      BackdropImageTags?: (string[] | null) | undefined
+                      ScreenshotImageTags?: (string[] | null) | undefined
+                      ParentLogoImageTag?: (string | null) | undefined
+                      ParentArtItemId?: (string | null) | undefined
+                      ParentArtImageTag?: (string | null) | undefined
+                      SeriesThumbImageTag?: (string | null) | undefined
+                      ImageBlurHashes?:
+                        | ({
+                            Primary?: { [x: string]: string | null } | undefined
+                            Art?: { [x: string]: string | null } | undefined
+                            Backdrop?: { [x: string]: string | null } | undefined
+                            Banner?: { [x: string]: string | null } | undefined
+                            Logo?: { [x: string]: string | null } | undefined
+                            Thumb?: { [x: string]: string | null } | undefined
+                            Disc?: { [x: string]: string | null } | undefined
+                            Box?: { [x: string]: string | null } | undefined
+                            Screenshot?: { [x: string]: string | null } | undefined
+                            Menu?: { [x: string]: string | null } | undefined
+                            Chapter?: { [x: string]: string | null } | undefined
+                            BoxRear?: { [x: string]: string | null } | undefined
+                            Profile?: { [x: string]: string | null } | undefined
+                          } | null)
+                        | undefined
+                      SeriesStudio?: (string | null) | undefined
+                      ParentThumbItemId?: (string | null) | undefined
+                      ParentThumbImageTag?: (string | null) | undefined
+                      ParentPrimaryImageItemId?: (string | null) | undefined
+                      ParentPrimaryImageTag?: (string | null) | undefined
+                      Chapters?: (ChapterInfo[] | null) | undefined
+                      Trickplay?:
+                        | ({ [x: string]: { [x: string]: TrickplayInfoDto } | null } | null)
+                        | undefined
+                      LocationType?: {} | undefined
+                      IsoType?: {} | undefined
+                      MediaType?: {} | undefined
+                      EndDate?: (string | null) | undefined
+                      LockedFields?: (MetadataField[] | null) | undefined
+                      TrailerCount?: (number | null) | undefined
+                      MovieCount?: (number | null) | undefined
+                      SeriesCount?: (number | null) | undefined
+                      ProgramCount?: (number | null) | undefined
+                      EpisodeCount?: (number | null) | undefined
+                      SongCount?: (number | null) | undefined
+                      AlbumCount?: (number | null) | undefined
+                      ArtistCount?: (number | null) | undefined
+                      MusicVideoCount?: (number | null) | undefined
+                      LockData?: (boolean | null) | undefined
+                      Width?: (number | null) | undefined
+                      Height?: (number | null) | undefined
+                      CameraMake?: (string | null) | undefined
+                      CameraModel?: (string | null) | undefined
+                      Software?: (string | null) | undefined
+                      ExposureTime?: (number | null) | undefined
+                      FocalLength?: (number | null) | undefined
+                      ImageOrientation?: {} | undefined
+                      Aperture?: (number | null) | undefined
+                      ShutterSpeed?: (number | null) | undefined
+                      Latitude?: (number | null) | undefined
+                      Longitude?: (number | null) | undefined
+                      Altitude?: (number | null) | undefined
+                      IsoSpeedRating?: (number | null) | undefined
+                      SeriesTimerId?: (string | null) | undefined
+                      ProgramId?: (string | null) | undefined
+                      ChannelPrimaryImageTag?: (string | null) | undefined
+                      StartDate?: (string | null) | undefined
+                      CompletionPercentage?: (number | null) | undefined
+                      IsRepeat?: (boolean | null) | undefined
+                      EpisodeTitle?: (string | null) | undefined
+                      ChannelType?: {} | undefined
+                      Audio?: {} | undefined
+                      IsMovie?: (boolean | null) | undefined
+                      IsSports?: (boolean | null) | undefined
+                      IsSeries?: (boolean | null) | undefined
+                      IsLive?: (boolean | null) | undefined
+                      IsNews?: (boolean | null) | undefined
+                      IsKids?: (boolean | null) | undefined
+                      IsPremiere?: (boolean | null) | undefined
+                      TimerId?: (string | null) | undefined
+                      NormalizationGain?: (number | null) | undefined
+                      AlbumNormalizationGain?: (number | null) | undefined
+                      CurrentProgram?: {} | undefined
+                      OriginalLanguage?: (string | null) | undefined
+                    }
+                  | undefined
+                ItemId?: string | undefined
+                SessionId?: (string | null) | undefined
+                MediaSourceId?: (string | null) | undefined
+                PositionTicks?: (bigint | null) | undefined
+                LiveStreamId?: (string | null) | undefined
+                PlaySessionId?: (string | null) | undefined
+                Failed?: boolean | undefined
+                NextMediaType?: (string | null) | undefined
+                PlaylistItemId?: (string | null) | undefined
+                NowPlayingQueue?: (QueueItem[] | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/UserPlayedItems/:itemId': {
@@ -23405,6 +27765,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: { userId?: string | undefined; datePlayed?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
@@ -23454,6 +27822,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Plugins': {
@@ -23463,6 +27837,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: PluginInfo[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Plugins/:pluginId': {
@@ -23488,6 +27863,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Plugins/:pluginId/:version': {
@@ -23527,6 +27903,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { pluginId: string; version: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -23568,6 +27950,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { pluginId: string; version: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Plugins/:pluginId/:version/Enable': {
@@ -23608,6 +27996,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { pluginId: string; version: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Plugins/:pluginId/:version/Image': {
@@ -23647,6 +28041,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { pluginId: string; version: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -23690,6 +28090,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 503 }
       $post:
         | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 401 }
@@ -23712,6 +28113,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Plugins/:pluginId/Manifest': {
@@ -23737,6 +28139,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { pluginId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/QuickConnect/Authorize': {
@@ -23783,6 +28186,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 403
           }
+        | {
+            input: { query: { code: string; userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/QuickConnect/Connect': {
@@ -23823,6 +28232,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { query: { secret: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/QuickConnect/Enabled': {
@@ -23830,6 +28240,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: boolean; outputFormat: 'json'; status: 200 }
         | { input: {}; output: boolean; outputFormat: 'text'; status: 200 }
         | { input: {}; output: boolean; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/QuickConnect/Initiate': {
@@ -23840,6 +28251,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 401 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 401 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/RemoteImages': {
@@ -23956,6 +28368,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                type?: {} | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                providerName?: string | undefined
+                includeAllLanguages?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/RemoteImages/Download': {
@@ -24008,6 +28434,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: { type: {}; imageUrl?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/RemoteImages/Providers': {
@@ -24050,6 +28484,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/ScheduledTasks': {
@@ -24083,6 +28518,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { isHidden?: boolean | undefined; isEnabled?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24126,6 +28567,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { taskId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/ScheduledTasks/:taskId/Triggers': {
@@ -24166,6 +28608,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { taskId: string } } & { json: TaskTriggerInfo[] }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/ScheduledTasks/Running/:taskId': {
@@ -24191,6 +28639,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { taskId: string } }; output: {}; outputFormat: string; status: 503 }
       $delete:
         | { input: { param: { taskId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { taskId: string } }; output: {}; outputFormat: string; status: 401 }
@@ -24213,6 +28662,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { taskId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Search/Hints': {
@@ -24352,6 +28802,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                userId?: string | undefined
+                searchTerm: string
+                includeItemTypes?: BaseItemKind[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                mediaTypes?: MediaType[] | undefined
+                parentId?: string | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                includePeople?: boolean | undefined
+                includeMedia?: boolean | undefined
+                includeGenres?: boolean | undefined
+                includeStudios?: boolean | undefined
+                includeArtists?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Auth/PasswordResetProviders': {
@@ -24361,6 +28838,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: NameIdPair[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Auth/Providers': {
@@ -24370,6 +28848,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: NameIdPair[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Sessions': {
@@ -24434,6 +28913,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                controllableByUserId?: string | undefined
+                deviceId?: string | undefined
+                activeWithinSeconds?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/:sessionId/Command': {
@@ -24474,6 +28965,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { sessionId: string } } & {
+              json: {
+                Name?: {} | undefined
+                ControllingUserId?: string | undefined
+                Arguments?: { [x: string]: string } | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/:sessionId/Command/:command': {
@@ -24495,6 +28998,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { sessionId: string; command: {} } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24535,6 +29044,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { sessionId: string } } & {
+              json: {
+                Header?: (string | null) | undefined
+                Text: string
+                TimeoutMs?: (bigint | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24588,6 +29109,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { sessionId: string } } & {
+              query: {
+                playCommand: {}
+                itemIds: string[]
+                startPositionTicks?: bigint | undefined
+                mediaSourceId?: string | undefined
+                audioStreamIndex?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                startIndex?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/:sessionId/Playing/:command': {
@@ -24625,6 +29162,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { sessionId: string; command: {} } } & {
+              query: {
+                seekPositionTicks?: bigint | undefined
+                controllingUserId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/:sessionId/System/:command': {
@@ -24646,6 +29194,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { sessionId: string; command: {} } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24669,6 +29223,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { sessionId: string; userId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { sessionId: string; userId: string } }
@@ -24687,6 +29247,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { sessionId: string; userId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24715,6 +29281,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { sessionId: string } } & {
+              query: { itemType: {}; itemId: string; itemName: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24761,6 +29335,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                id?: string | undefined
+                playableMediaTypes?: MediaType[] | undefined
+                supportedCommands?: GeneralCommandType[] | undefined
+                supportsMediaControl?: boolean | undefined
+                supportsPersistentIdentifier?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -24856,6 +29444,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { id?: string | undefined } } & {
+              json: {
+                PlayableMediaTypes?: MediaType[] | undefined
+                SupportedCommands?: GeneralCommandType[] | undefined
+                SupportsMediaControl?: boolean | undefined
+                SupportsPersistentIdentifier?: boolean | undefined
+                DeviceProfile?:
+                  | {
+                      Name?: (string | null) | undefined
+                      Id?: (string | null) | undefined
+                      MaxStreamingBitrate?: (number | null) | undefined
+                      MaxStaticBitrate?: (number | null) | undefined
+                      MusicStreamingTranscodingBitrate?: (number | null) | undefined
+                      MaxStaticMusicBitrate?: (number | null) | undefined
+                      DirectPlayProfiles?: DirectPlayProfile[] | undefined
+                      TranscodingProfiles?: TranscodingProfile[] | undefined
+                      ContainerProfiles?: ContainerProfile[] | undefined
+                      CodecProfiles?: CodecProfile[] | undefined
+                      SubtitleProfiles?: SubtitleProfile[] | undefined
+                    }
+                  | undefined
+                AppStoreUrl?: (string | null) | undefined
+                IconUrl?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Sessions/Logout': {
@@ -24863,6 +29481,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Sessions/Viewing': {
@@ -24885,6 +29504,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { query: { sessionId?: string | undefined; itemId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Startup/Complete': {
@@ -24892,6 +29517,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Startup/Configuration': {
@@ -24901,6 +29527,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: StartupConfigurationDto; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: {
@@ -24941,6 +29568,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                ServerName?: (string | null) | undefined
+                UICulture?: (string | null) | undefined
+                MetadataCountryCode?: (string | null) | undefined
+                PreferredMetadataLanguage?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Startup/FirstUser': {
@@ -24950,6 +29590,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: StartupUserDto; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Startup/RemoteAccess': {
@@ -24972,6 +29613,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { EnableRemoteAccess: boolean } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Startup/User': {
@@ -24981,6 +29628,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: StartupUserDto; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | {
             input: {
@@ -25005,6 +29653,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              json: { Name?: (string | null) | undefined; Password?: (string | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25140,6 +29796,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                searchTerm?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                isFavorite?: boolean | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                userId?: string | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                enableImages?: boolean | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Studios/:name': {
@@ -25174,6 +29856,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { name: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/FallbackFont/Fonts': {
@@ -25183,6 +29871,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: FontFile[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/FallbackFont/Fonts/:name': {
@@ -25190,6 +29879,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { name: string } }; output: File; outputFormat: 'text'; status: 200 }
         | { input: { param: { name: string } }; output: {}; outputFormat: string; status: 401 }
         | { input: { param: { name: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { name: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/RemoteSearch/Subtitles/:language': {
@@ -25258,6 +29948,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; language: string } } & {
+              query: { isPerfectMatch?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/RemoteSearch/Subtitles/:subtitleId': {
@@ -25298,6 +29996,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; subtitleId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Providers/Subtitles/Subtitles/:subtitleId': {
@@ -25319,6 +30023,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { subtitleId: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25371,6 +30081,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; index: number; mediaSourceId: string } } & {
+              query: { segmentLength: number }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25460,6 +30178,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              json: {
+                Language: string
+                Format: string
+                IsForced: boolean
+                IsHearingImpaired: boolean
+                Data: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/:itemId/Subtitles/:index': {
@@ -25500,61 +30232,118 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; index: number } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
-    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/:routeStartPositionTicks/Stream.:routeFormat': {
-      $get: {
-        input: {
-          param: {
-            routeItemId: string
-            routeMediaSourceId: string
-            routeIndex: number
-            routeStartPositionTicks: bigint
-            routeFormat: string
+    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/:routeStartPositionTicks/Stream.{routeFormat}': {
+      $get:
+        | {
+            input: {
+              param: {
+                routeItemId: string
+                routeMediaSourceId: string
+                routeIndex: number
+                routeStartPositionTicks: bigint
+                routeFormat: string
+              }
+            } & {
+              query: {
+                itemId?: string | undefined
+                mediaSourceId?: string | undefined
+                index?: number | undefined
+                startPositionTicks?: bigint | undefined
+                format?: string | undefined
+                endPositionTicks?: bigint | undefined
+                copyTimestamps?: boolean | undefined
+                addVttTimeMap?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        } & {
-          query: {
-            itemId?: string | undefined
-            mediaSourceId?: string | undefined
-            index?: number | undefined
-            startPositionTicks?: bigint | undefined
-            format?: string | undefined
-            endPositionTicks?: bigint | undefined
-            copyTimestamps?: boolean | undefined
-            addVttTimeMap?: boolean | undefined
+        | {
+            input: {
+              param: {
+                routeItemId: string
+                routeMediaSourceId: string
+                routeIndex: number
+                routeStartPositionTicks: bigint
+                routeFormat: string
+              }
+            } & {
+              query: {
+                itemId?: string | undefined
+                mediaSourceId?: string | undefined
+                index?: number | undefined
+                startPositionTicks?: bigint | undefined
+                format?: string | undefined
+                endPositionTicks?: bigint | undefined
+                copyTimestamps?: boolean | undefined
+                addVttTimeMap?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
     }
   } & {
-    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/Stream.:routeFormat': {
-      $get: {
-        input: {
-          param: {
-            routeItemId: string
-            routeMediaSourceId: string
-            routeIndex: number
-            routeFormat: string
+    '/Videos/:routeItemId/:routeMediaSourceId/Subtitles/:routeIndex/Stream.{routeFormat}': {
+      $get:
+        | {
+            input: {
+              param: {
+                routeItemId: string
+                routeMediaSourceId: string
+                routeIndex: number
+                routeFormat: string
+              }
+            } & {
+              query: {
+                itemId?: string | undefined
+                mediaSourceId?: string | undefined
+                index?: number | undefined
+                format?: string | undefined
+                endPositionTicks?: bigint | undefined
+                copyTimestamps?: boolean | undefined
+                addVttTimeMap?: boolean | undefined
+                startPositionTicks?: bigint | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        } & {
-          query: {
-            itemId?: string | undefined
-            mediaSourceId?: string | undefined
-            index?: number | undefined
-            format?: string | undefined
-            endPositionTicks?: bigint | undefined
-            copyTimestamps?: boolean | undefined
-            addVttTimeMap?: boolean | undefined
-            startPositionTicks?: bigint | undefined
+        | {
+            input: {
+              param: {
+                routeItemId: string
+                routeMediaSourceId: string
+                routeIndex: number
+                routeFormat: string
+              }
+            } & {
+              query: {
+                itemId?: string | undefined
+                mediaSourceId?: string | undefined
+                index?: number | undefined
+                format?: string | undefined
+                endPositionTicks?: bigint | undefined
+                copyTimestamps?: boolean | undefined
+                addVttTimeMap?: boolean | undefined
+                startPositionTicks?: bigint | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
     }
   } & {
     '/Items/Suggestions': {
@@ -25634,6 +30423,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                mediaType?: MediaType[] | undefined
+                type?: BaseItemKind[] | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                enableTotalRecordCount?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/:id': {
@@ -25676,6 +30480,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/SyncPlay/Buffering': {
@@ -25719,6 +30524,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                When?: string | undefined
+                PositionTicks?: bigint | undefined
+                IsPlaying?: boolean | undefined
+                PlaylistItemId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Join': {
@@ -25741,6 +30559,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { GroupId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Leave': {
@@ -25748,6 +30572,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/SyncPlay/List': {
@@ -25757,6 +30582,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: GroupInfoDto[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/SyncPlay/MovePlaylistItem': {
@@ -25778,6 +30604,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { PlaylistItemId?: string | undefined; NewIndex?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25819,6 +30651,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { GroupName?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/NextItem': {
@@ -25841,6 +30679,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { PlaylistItemId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Pause': {
@@ -25848,6 +30692,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/SyncPlay/Ping': {
@@ -25869,6 +30714,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { Ping?: bigint | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25892,6 +30743,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { PlaylistItemId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Queue': {
@@ -25913,6 +30770,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { ItemIds?: string[] | undefined; Mode?: {} | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -25957,6 +30820,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                When?: string | undefined
+                PositionTicks?: bigint | undefined
+                IsPlaying?: boolean | undefined
+                PlaylistItemId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/RemoveFromPlaylist': {
@@ -25997,6 +30873,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                PlaylistItemIds?: string[] | undefined
+                ClearPlaylist?: boolean | undefined
+                ClearPlayingItem?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Seek': {
@@ -26019,6 +30907,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { PositionTicks?: bigint | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/SetIgnoreWait': {
@@ -26040,6 +30934,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { IgnoreWait?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -26081,6 +30981,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              json: {
+                PlayingQueue?: string[] | undefined
+                PlayingItemPosition?: number | undefined
+                StartPositionTicks?: bigint | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/SetPlaylistItem': {
@@ -26102,6 +31014,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { PlaylistItemId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -26125,6 +31043,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { Mode?: {} | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/SetShuffleMode': {
@@ -26147,6 +31071,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { json: { Mode?: {} | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/SyncPlay/Stop': {
@@ -26154,6 +31084,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/SyncPlay/Unpause': {
@@ -26161,6 +31092,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 204 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Endpoint': {
@@ -26172,6 +31104,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Info': {
@@ -26183,6 +31116,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Info/Public': {
@@ -26190,6 +31124,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: PublicSystemInfo; outputFormat: 'json'; status: 200 }
         | { input: {}; output: PublicSystemInfo; outputFormat: 'text'; status: 200 }
         | { input: {}; output: PublicSystemInfo; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Info/Storage': {
@@ -26201,6 +31136,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Logs': {
@@ -26212,6 +31148,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Logs/Log': {
@@ -26254,6 +31191,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { query: { name: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Ping': {
@@ -26261,10 +31199,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: string; outputFormat: 'json'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
       $post:
         | { input: {}; output: string; outputFormat: 'json'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
         | { input: {}; output: string; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Restart': {
@@ -26274,6 +31214,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/System/Shutdown': {
@@ -26283,6 +31224,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'json'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/GetUtcTime': {
@@ -26290,6 +31232,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: UtcTimeResponse; outputFormat: 'json'; status: 200 }
         | { input: {}; output: UtcTimeResponse; outputFormat: 'text'; status: 200 }
         | { input: {}; output: UtcTimeResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Trailers': {
@@ -26769,6 +31712,101 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                maxOfficialRating?: string | undefined
+                hasThemeSong?: boolean | undefined
+                hasThemeVideo?: boolean | undefined
+                hasSubtitles?: boolean | undefined
+                hasSpecialFeature?: boolean | undefined
+                hasTrailer?: boolean | undefined
+                adjacentTo?: string | undefined
+                parentIndexNumber?: number | undefined
+                hasParentalRating?: boolean | undefined
+                isHd?: boolean | undefined
+                is4K?: boolean | undefined
+                locationTypes?: LocationType[] | undefined
+                excludeLocationTypes?: LocationType[] | undefined
+                isMissing?: boolean | undefined
+                isUnaired?: boolean | undefined
+                minCommunityRating?: number | undefined
+                minCriticRating?: number | undefined
+                minPremiereDate?: string | undefined
+                minDateLastSaved?: string | undefined
+                minDateLastSavedForUser?: string | undefined
+                maxPremiereDate?: string | undefined
+                hasOverview?: boolean | undefined
+                hasImdbId?: boolean | undefined
+                hasTmdbId?: boolean | undefined
+                hasTvdbId?: boolean | undefined
+                isMovie?: boolean | undefined
+                isSeries?: boolean | undefined
+                isNews?: boolean | undefined
+                isKids?: boolean | undefined
+                isSports?: boolean | undefined
+                excludeItemIds?: string[] | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                recursive?: boolean | undefined
+                searchTerm?: string | undefined
+                sortOrder?: SortOrder[] | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                filters?: ItemFilter[] | undefined
+                isFavorite?: boolean | undefined
+                mediaTypes?: MediaType[] | undefined
+                imageTypes?: ImageType[] | undefined
+                sortBy?: ItemSortBy[] | undefined
+                isPlayed?: boolean | undefined
+                genres?: string[] | undefined
+                officialRatings?: string[] | undefined
+                tags?: string[] | undefined
+                years?: number[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                person?: string | undefined
+                personIds?: string[] | undefined
+                personTypes?: string[] | undefined
+                studios?: string[] | undefined
+                artists?: string[] | undefined
+                excludeArtistIds?: string[] | undefined
+                artistIds?: string[] | undefined
+                albumArtistIds?: string[] | undefined
+                contributingArtistIds?: string[] | undefined
+                albums?: string[] | undefined
+                albumIds?: string[] | undefined
+                ids?: string[] | undefined
+                videoTypes?: VideoType[] | undefined
+                minOfficialRating?: string | undefined
+                isLocked?: boolean | undefined
+                isPlaceHolder?: boolean | undefined
+                hasOfficialRating?: boolean | undefined
+                collapseBoxSetItems?: boolean | undefined
+                minWidth?: number | undefined
+                minHeight?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                is3D?: boolean | undefined
+                seriesStatus?: SeriesStatus[] | undefined
+                nameStartsWithOrGreater?: string | undefined
+                nameStartsWith?: string | undefined
+                nameLessThan?: string | undefined
+                studioIds?: string[] | undefined
+                genreIds?: string[] | undefined
+                audioLanguages?: string[] | undefined
+                subtitleLanguages?: string[] | undefined
+                enableTotalRecordCount?: boolean | undefined
+                enableImages?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/:itemId/Trickplay/:width/:index.jpg': {
@@ -26821,6 +31859,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string; width: number; index: number } } & {
+              query: { mediaSourceId?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/:itemId/Trickplay/:width/tiles.m3u8': {
@@ -26872,6 +31918,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { itemId: string; width: number } } & {
+              query: { mediaSourceId?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -27061,6 +32115,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { seriesId: string } } & {
+              query: {
+                userId?: string | undefined
+                fields?: ItemFields[] | undefined
+                season?: number | undefined
+                seasonId?: string | undefined
+                isMissing?: boolean | undefined
+                adjacentTo?: string | undefined
+                startItemId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+                sortBy?: {} | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Shows/:seriesId/Seasons': {
@@ -27209,6 +32286,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { seriesId: string } } & {
+              query: {
+                userId?: string | undefined
+                fields?: ItemFields[] | undefined
+                isSpecialSeason?: boolean | undefined
+                isMissing?: boolean | undefined
+                adjacentTo?: string | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Shows/NextUp': {
@@ -27328,6 +32423,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                seriesId?: string | undefined
+                parentId?: string | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+                nextUpDateCutoff?: string | undefined
+                enableTotalRecordCount?: boolean | undefined
+                enableResumable?: boolean | undefined
+                enableRewatching?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Shows/Upcoming': {
@@ -27421,6 +32539,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                startIndex?: number | undefined
+                limit?: number | undefined
+                fields?: ItemFields[] | undefined
+                parentId?: string | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -27608,6 +32744,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string[] | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                userId?: string | undefined
+                audioCodec?: string | undefined
+                maxAudioChannels?: number | undefined
+                transcodingAudioChannels?: number | undefined
+                maxStreamingBitrate?: number | undefined
+                audioBitRate?: number | undefined
+                startTimeTicks?: bigint | undefined
+                transcodingContainer?: string | undefined
+                transcodingProtocol?: {} | undefined
+                maxAudioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                enableRemoteMedia?: boolean | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+                enableRedirection?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $head:
         | {
             input: { param: { itemId: string } } & {
@@ -27791,6 +32953,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string[] | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                userId?: string | undefined
+                audioCodec?: string | undefined
+                maxAudioChannels?: number | undefined
+                transcodingAudioChannels?: number | undefined
+                maxStreamingBitrate?: number | undefined
+                audioBitRate?: number | undefined
+                startTimeTicks?: bigint | undefined
+                transcodingContainer?: string | undefined
+                transcodingProtocol?: {} | undefined
+                maxAudioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                enableRemoteMedia?: boolean | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+                enableRedirection?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users': {
@@ -27824,6 +33012,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { isHidden?: boolean | undefined; isDisabled?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $post:
         | {
@@ -28538,6 +33732,95 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 403
           }
+        | {
+            input: { query: { userId?: string | undefined } } & {
+              json: {
+                Name?: (string | null) | undefined
+                ServerId?: (string | null) | undefined
+                ServerName?: (string | null) | undefined
+                Id?: string | undefined
+                PrimaryImageTag?: (string | null) | undefined
+                HasPassword?: (boolean | null) | undefined
+                HasConfiguredPassword?: (boolean | null) | undefined
+                HasConfiguredEasyPassword?: (boolean | null) | undefined
+                EnableAutoLogin?: (boolean | null) | undefined
+                LastLoginDate?: (string | null) | undefined
+                LastActivityDate?: (string | null) | undefined
+                Configuration?:
+                  | {
+                      AudioLanguagePreference?: (string | null) | undefined
+                      PlayDefaultAudioTrack?: boolean | undefined
+                      SubtitleLanguagePreference?: (string | null) | undefined
+                      DisplayMissingEpisodes?: boolean | undefined
+                      GroupedFolders?: string[] | undefined
+                      SubtitleMode?: {} | undefined
+                      DisplayCollectionsView?: boolean | undefined
+                      EnableLocalPassword?: boolean | undefined
+                      OrderedViews?: string[] | undefined
+                      LatestItemsExcludes?: string[] | undefined
+                      MyMediaExcludes?: string[] | undefined
+                      HidePlayedInLatest?: boolean | undefined
+                      RememberAudioSelections?: boolean | undefined
+                      RememberSubtitleSelections?: boolean | undefined
+                      EnableNextEpisodeAutoPlay?: boolean | undefined
+                      CastReceiverId?: (string | null) | undefined
+                    }
+                  | undefined
+                Policy?:
+                  | {
+                      IsAdministrator?: boolean | undefined
+                      IsHidden?: boolean | undefined
+                      EnableCollectionManagement?: boolean | undefined
+                      EnableSubtitleManagement?: boolean | undefined
+                      EnableLyricManagement?: boolean | undefined
+                      IsDisabled?: boolean | undefined
+                      MaxParentalRating?: (number | null) | undefined
+                      MaxParentalSubRating?: (number | null) | undefined
+                      BlockedTags?: (string[] | null) | undefined
+                      AllowedTags?: (string[] | null) | undefined
+                      EnableUserPreferenceAccess?: boolean | undefined
+                      AccessSchedules?: (AccessSchedule[] | null) | undefined
+                      BlockUnratedItems?: (UnratedItem[] | null) | undefined
+                      EnableRemoteControlOfOtherUsers?: boolean | undefined
+                      EnableSharedDeviceControl?: boolean | undefined
+                      EnableRemoteAccess?: boolean | undefined
+                      EnableLiveTvManagement?: boolean | undefined
+                      EnableLiveTvAccess?: boolean | undefined
+                      EnableMediaPlayback?: boolean | undefined
+                      EnableAudioPlaybackTranscoding?: boolean | undefined
+                      EnableVideoPlaybackTranscoding?: boolean | undefined
+                      EnablePlaybackRemuxing?: boolean | undefined
+                      ForceRemoteSourceTranscoding?: boolean | undefined
+                      EnableContentDeletion?: boolean | undefined
+                      EnableContentDeletionFromFolders?: (string[] | null) | undefined
+                      EnableContentDownloading?: boolean | undefined
+                      EnableSyncTranscoding?: boolean | undefined
+                      EnableMediaConversion?: boolean | undefined
+                      EnabledDevices?: (string[] | null) | undefined
+                      EnableAllDevices?: boolean | undefined
+                      EnabledChannels?: (string[] | null) | undefined
+                      EnableAllChannels?: boolean | undefined
+                      EnabledFolders?: (string[] | null) | undefined
+                      EnableAllFolders?: boolean | undefined
+                      InvalidLoginAttemptCount?: number | undefined
+                      LoginAttemptsBeforeLockout?: number | undefined
+                      MaxActiveSessions?: number | undefined
+                      EnablePublicSharing?: boolean | undefined
+                      BlockedMediaFolders?: (string[] | null) | undefined
+                      BlockedChannels?: (string[] | null) | undefined
+                      RemoteClientBitrateLimit?: number | undefined
+                      AuthenticationProviderId: string
+                      PasswordResetProviderId: string
+                      SyncPlayAccess?: {} | undefined
+                    }
+                  | undefined
+                PrimaryImageAspectRatio?: (number | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users/:userId': {
@@ -28580,6 +33863,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 503 }
       $delete:
         | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 401 }
@@ -28602,6 +33886,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Users/:userId/Policy': {
@@ -29030,6 +34315,59 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 403
           }
+        | {
+            input: { param: { userId: string } } & {
+              json: {
+                IsAdministrator?: boolean | undefined
+                IsHidden?: boolean | undefined
+                EnableCollectionManagement?: boolean | undefined
+                EnableSubtitleManagement?: boolean | undefined
+                EnableLyricManagement?: boolean | undefined
+                IsDisabled?: boolean | undefined
+                MaxParentalRating?: (number | null) | undefined
+                MaxParentalSubRating?: (number | null) | undefined
+                BlockedTags?: (string[] | null) | undefined
+                AllowedTags?: (string[] | null) | undefined
+                EnableUserPreferenceAccess?: boolean | undefined
+                AccessSchedules?: (AccessSchedule[] | null) | undefined
+                BlockUnratedItems?: (UnratedItem[] | null) | undefined
+                EnableRemoteControlOfOtherUsers?: boolean | undefined
+                EnableSharedDeviceControl?: boolean | undefined
+                EnableRemoteAccess?: boolean | undefined
+                EnableLiveTvManagement?: boolean | undefined
+                EnableLiveTvAccess?: boolean | undefined
+                EnableMediaPlayback?: boolean | undefined
+                EnableAudioPlaybackTranscoding?: boolean | undefined
+                EnableVideoPlaybackTranscoding?: boolean | undefined
+                EnablePlaybackRemuxing?: boolean | undefined
+                ForceRemoteSourceTranscoding?: boolean | undefined
+                EnableContentDeletion?: boolean | undefined
+                EnableContentDeletionFromFolders?: (string[] | null) | undefined
+                EnableContentDownloading?: boolean | undefined
+                EnableSyncTranscoding?: boolean | undefined
+                EnableMediaConversion?: boolean | undefined
+                EnabledDevices?: (string[] | null) | undefined
+                EnableAllDevices?: boolean | undefined
+                EnabledChannels?: (string[] | null) | undefined
+                EnableAllChannels?: boolean | undefined
+                EnabledFolders?: (string[] | null) | undefined
+                EnableAllFolders?: boolean | undefined
+                InvalidLoginAttemptCount?: number | undefined
+                LoginAttemptsBeforeLockout?: number | undefined
+                MaxActiveSessions?: number | undefined
+                EnablePublicSharing?: boolean | undefined
+                BlockedMediaFolders?: (string[] | null) | undefined
+                BlockedChannels?: (string[] | null) | undefined
+                RemoteClientBitrateLimit?: number | undefined
+                AuthenticationProviderId: string
+                PasswordResetProviderId: string
+                SyncPlayAccess?: {} | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users/AuthenticateByName': {
@@ -29058,6 +34396,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
+        | {
+            input: {
+              json: { Username?: (string | null) | undefined; Pw?: (string | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users/AuthenticateWithQuickConnect': {
@@ -29081,6 +34427,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { json: { Secret: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: { Secret: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Users/Configuration': {
@@ -29210,6 +34557,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 403
           }
+        | {
+            input: { query: { userId?: string | undefined } } & {
+              json: {
+                AudioLanguagePreference?: (string | null) | undefined
+                PlayDefaultAudioTrack?: boolean | undefined
+                SubtitleLanguagePreference?: (string | null) | undefined
+                DisplayMissingEpisodes?: boolean | undefined
+                GroupedFolders?: string[] | undefined
+                SubtitleMode?: {} | undefined
+                DisplayCollectionsView?: boolean | undefined
+                EnableLocalPassword?: boolean | undefined
+                OrderedViews?: string[] | undefined
+                LatestItemsExcludes?: string[] | undefined
+                MyMediaExcludes?: string[] | undefined
+                HidePlayedInLatest?: boolean | undefined
+                RememberAudioSelections?: boolean | undefined
+                RememberSubtitleSelections?: boolean | undefined
+                EnableNextEpisodeAutoPlay?: boolean | undefined
+                CastReceiverId?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users/ForgotPassword': {
@@ -29231,6 +34603,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ForgotPasswordResult
             outputFormat: 'text'
             status: 200
+          }
+        | {
+            input: { json: { EnteredUsername: string } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29254,6 +34632,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
+        | { input: { json: { Pin: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Users/Me': {
@@ -29266,6 +34645,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetails; outputFormat: 'text'; status: 400 }
         | { input: {}; output: {}; outputFormat: string; status: 401 }
         | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Users/New': {
@@ -29299,6 +34679,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { json: { Name: string; Password?: (string | null) | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29408,6 +34794,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { query: { userId?: string | undefined } } & {
+              json: {
+                CurrentPassword?: (string | null) | undefined
+                CurrentPw?: (string | null) | undefined
+                NewPw?: (string | null) | undefined
+                ResetPassword?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Users/Public': {
@@ -29415,6 +34814,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: UserDto[]; outputFormat: 'json'; status: 200 }
         | { input: {}; output: UserDto[]; outputFormat: 'text'; status: 200 }
         | { input: {}; output: UserDto[]; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Items/:itemId/Intros': {
@@ -29448,6 +34848,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29483,6 +34889,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/:itemId/SpecialFeatures': {
@@ -29516,6 +34928,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29621,6 +35039,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                isPlayed?: boolean | undefined
+                enableImages?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                enableUserData?: boolean | undefined
+                limit?: number | undefined
+                groupItems?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Items/Root': {
@@ -29654,6 +35092,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29689,6 +35133,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
       $delete:
         | {
             input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
@@ -29719,6 +35169,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29753,6 +35209,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
       $post:
         | {
@@ -29794,6 +35256,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: { userId?: string | undefined; likes?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29864,6 +35334,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                userId?: string | undefined
+                includeExternalContent?: boolean | undefined
+                presetViews?: CollectionType[] | undefined
+                includeHidden?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/UserViews/GroupingOptions': {
@@ -29916,6 +35399,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | {
+            input: { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/:videoId/:mediaSourceId/Attachments/:index': {
@@ -29943,6 +35432,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { videoId: string; mediaSourceId: string; index: number } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   } & {
@@ -29978,6 +35473,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { itemId: string } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/:itemId/AlternateSources': {
@@ -30003,246 +35504,485 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 404
           }
+        | { input: { param: { itemId: string } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Videos/:itemId/stream': {
-      $get: {
-        input: { param: { itemId: string } } & {
-          query: {
-            container?: string | undefined
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            maxWidth?: number | undefined
-            maxHeight?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+      $get:
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
-      $head: {
-        input: { param: { itemId: string } } & {
-          query: {
-            container?: string | undefined
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            maxWidth?: number | undefined
-            maxHeight?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { itemId: string } } & {
+              query: {
+                container?: string | undefined
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
-    '/Videos/:itemId/stream.:container': {
-      $get: {
-        input: { param: { itemId: string; container: string } } & {
-          query: {
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            maxWidth?: number | undefined
-            maxHeight?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+    '/Videos/:itemId/stream.{container}': {
+      $get:
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
-      $head: {
-        input: { param: { itemId: string; container: string } } & {
-          query: {
-            static?: boolean | undefined
-            params?: string | undefined
-            tag?: string | undefined
-            deviceProfileId?: string | undefined
-            playSessionId?: string | undefined
-            segmentContainer?: string | undefined
-            segmentLength?: number | undefined
-            minSegments?: number | undefined
-            mediaSourceId?: string | undefined
-            deviceId?: string | undefined
-            audioCodec?: string | undefined
-            enableAutoStreamCopy?: boolean | undefined
-            allowVideoStreamCopy?: boolean | undefined
-            allowAudioStreamCopy?: boolean | undefined
-            audioSampleRate?: number | undefined
-            maxAudioBitDepth?: number | undefined
-            audioBitRate?: number | undefined
-            audioChannels?: number | undefined
-            maxAudioChannels?: number | undefined
-            profile?: string | undefined
-            level?: string | undefined
-            framerate?: number | undefined
-            maxFramerate?: number | undefined
-            copyTimestamps?: boolean | undefined
-            startTimeTicks?: bigint | undefined
-            width?: number | undefined
-            height?: number | undefined
-            maxWidth?: number | undefined
-            maxHeight?: number | undefined
-            videoBitRate?: number | undefined
-            subtitleStreamIndex?: number | undefined
-            subtitleMethod?: {} | undefined
-            maxRefFrames?: number | undefined
-            maxVideoBitDepth?: number | undefined
-            requireAvc?: boolean | undefined
-            deInterlace?: boolean | undefined
-            requireNonAnamorphic?: boolean | undefined
-            transcodingMaxAudioChannels?: number | undefined
-            cpuCoreLimit?: number | undefined
-            liveStreamId?: string | undefined
-            enableMpegtsM2TsMode?: boolean | undefined
-            videoCodec?: string | undefined
-            subtitleCodec?: string | undefined
-            transcodeReasons?: string | undefined
-            audioStreamIndex?: number | undefined
-            videoStreamIndex?: number | undefined
-            context?: {} | undefined
-            streamOptions?: { [x: string]: string | null } | undefined
-            enableAudioVbrEncoding?: boolean | undefined
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
           }
-        }
-        output: File
-        outputFormat: 'text'
-        status: 200
-      }
+      $head:
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: File
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { itemId: string; container: string } } & {
+              query: {
+                static?: boolean | undefined
+                params?: string | undefined
+                tag?: string | undefined
+                deviceProfileId?: string | undefined
+                playSessionId?: string | undefined
+                segmentContainer?: string | undefined
+                segmentLength?: number | undefined
+                minSegments?: number | undefined
+                mediaSourceId?: string | undefined
+                deviceId?: string | undefined
+                audioCodec?: string | undefined
+                enableAutoStreamCopy?: boolean | undefined
+                allowVideoStreamCopy?: boolean | undefined
+                allowAudioStreamCopy?: boolean | undefined
+                audioSampleRate?: number | undefined
+                maxAudioBitDepth?: number | undefined
+                audioBitRate?: number | undefined
+                audioChannels?: number | undefined
+                maxAudioChannels?: number | undefined
+                profile?: string | undefined
+                level?: string | undefined
+                framerate?: number | undefined
+                maxFramerate?: number | undefined
+                copyTimestamps?: boolean | undefined
+                startTimeTicks?: bigint | undefined
+                width?: number | undefined
+                height?: number | undefined
+                maxWidth?: number | undefined
+                maxHeight?: number | undefined
+                videoBitRate?: number | undefined
+                subtitleStreamIndex?: number | undefined
+                subtitleMethod?: {} | undefined
+                maxRefFrames?: number | undefined
+                maxVideoBitDepth?: number | undefined
+                requireAvc?: boolean | undefined
+                deInterlace?: boolean | undefined
+                requireNonAnamorphic?: boolean | undefined
+                transcodingMaxAudioChannels?: number | undefined
+                cpuCoreLimit?: number | undefined
+                liveStreamId?: string | undefined
+                enableMpegtsM2TsMode?: boolean | undefined
+                videoCodec?: string | undefined
+                subtitleCodec?: string | undefined
+                transcodeReasons?: string | undefined
+                audioStreamIndex?: number | undefined
+                videoStreamIndex?: number | undefined
+                context?: {} | undefined
+                streamOptions?: { [x: string]: string | null } | undefined
+                enableAudioVbrEncoding?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Videos/MergeVersions': {
@@ -30268,6 +36008,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | { input: { query: { ids: string[] } }; output: {}; outputFormat: string; status: 401 }
         | { input: { query: { ids: string[] } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { query: { ids: string[] } }; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/Years': {
@@ -30392,6 +36133,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: {
+              query: {
+                startIndex?: number | undefined
+                limit?: number | undefined
+                sortOrder?: SortOrder[] | undefined
+                parentId?: string | undefined
+                fields?: ItemFields[] | undefined
+                excludeItemTypes?: BaseItemKind[] | undefined
+                includeItemTypes?: BaseItemKind[] | undefined
+                mediaTypes?: MediaType[] | undefined
+                sortBy?: ItemSortBy[] | undefined
+                enableUserData?: boolean | undefined
+                imageTypeLimit?: number | undefined
+                enableImageTypes?: ImageType[] | undefined
+                userId?: string | undefined
+                recursive?: boolean | undefined
+                enableImages?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 503
+          }
     }
   } & {
     '/Years/:year': {
@@ -30443,6 +36208,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ProblemDetails
             outputFormat: 'text'
             status: 404
+          }
+        | {
+            input: { param: { year: number } } & { query: { userId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 503
           }
     }
   },

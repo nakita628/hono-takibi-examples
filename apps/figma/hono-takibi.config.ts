@@ -4,7 +4,7 @@ export default defineConfig({
   // Figma REST API: https://github.com/figma/rest-api-spec
   input: 'https://raw.githubusercontent.com/figma/rest-api-spec/main/openapi/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

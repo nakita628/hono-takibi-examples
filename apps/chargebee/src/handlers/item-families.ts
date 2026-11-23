@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getItemFamiliesItemFamilyIdRoute,
   getItemFamiliesRoute,
   postItemFamiliesItemFamilyIdDeleteRoute,
@@ -7,21 +7,30 @@ import {
   postItemFamiliesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postItemFamiliesItemFamilyIdDeleteRouteHandler: RouteHandler<
+  typeof postItemFamiliesItemFamilyIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const itemFamiliesHandler = app
-  .openapi(postItemFamiliesItemFamilyIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemFamiliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemFamiliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemFamiliesItemFamilyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemFamiliesItemFamilyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getItemFamiliesRouteHandler: RouteHandler<typeof getItemFamiliesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemFamiliesRouteHandler: RouteHandler<typeof postItemFamiliesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemFamiliesItemFamilyIdRouteHandler: RouteHandler<
+  typeof getItemFamiliesItemFamilyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemFamiliesItemFamilyIdRouteHandler: RouteHandler<
+  typeof postItemFamiliesItemFamilyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

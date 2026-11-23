@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { magneticFieldHandler } from './handlers'
+import { getMagneticFieldRoute } from './routes'
+import { getMagneticFieldRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', magneticFieldHandler)
+export const api = app.openapi(getMagneticFieldRoute, getMagneticFieldRouteHandler)
 
 export default app

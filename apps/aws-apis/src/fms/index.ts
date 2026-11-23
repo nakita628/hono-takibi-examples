@@ -1,93 +1,263 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsfms20180101AssociateAdminAccountHandler,
-  xAmzTargetAwsfms20180101AssociateThirdPartyFirewallHandler,
-  xAmzTargetAwsfms20180101BatchAssociateResourceHandler,
-  xAmzTargetAwsfms20180101BatchDisassociateResourceHandler,
-  xAmzTargetAwsfms20180101DeleteAppsListHandler,
-  xAmzTargetAwsfms20180101DeleteNotificationChannelHandler,
-  xAmzTargetAwsfms20180101DeletePolicyHandler,
-  xAmzTargetAwsfms20180101DeleteProtocolsListHandler,
-  xAmzTargetAwsfms20180101DeleteResourceSetHandler,
-  xAmzTargetAwsfms20180101DisassociateAdminAccountHandler,
-  xAmzTargetAwsfms20180101DisassociateThirdPartyFirewallHandler,
-  xAmzTargetAwsfms20180101GetAdminAccountHandler,
-  xAmzTargetAwsfms20180101GetAdminScopeHandler,
-  xAmzTargetAwsfms20180101GetAppsListHandler,
-  xAmzTargetAwsfms20180101GetComplianceDetailHandler,
-  xAmzTargetAwsfms20180101GetNotificationChannelHandler,
-  xAmzTargetAwsfms20180101GetPolicyHandler,
-  xAmzTargetAwsfms20180101GetProtectionStatusHandler,
-  xAmzTargetAwsfms20180101GetProtocolsListHandler,
-  xAmzTargetAwsfms20180101GetResourceSetHandler,
-  xAmzTargetAwsfms20180101GetThirdPartyFirewallAssociationStatusHandler,
-  xAmzTargetAwsfms20180101GetViolationDetailsHandler,
-  xAmzTargetAwsfms20180101ListAdminAccountsForOrganizationHandler,
-  xAmzTargetAwsfms20180101ListAdminsManagingAccountHandler,
-  xAmzTargetAwsfms20180101ListAppsListsHandler,
-  xAmzTargetAwsfms20180101ListComplianceStatusHandler,
-  xAmzTargetAwsfms20180101ListDiscoveredResourcesHandler,
-  xAmzTargetAwsfms20180101ListMemberAccountsHandler,
-  xAmzTargetAwsfms20180101ListPoliciesHandler,
-  xAmzTargetAwsfms20180101ListProtocolsListsHandler,
-  xAmzTargetAwsfms20180101ListResourceSetResourcesHandler,
-  xAmzTargetAwsfms20180101ListResourceSetsHandler,
-  xAmzTargetAwsfms20180101ListTagsForResourceHandler,
-  xAmzTargetAwsfms20180101ListThirdPartyFirewallFirewallPoliciesHandler,
-  xAmzTargetAwsfms20180101PutAdminAccountHandler,
-  xAmzTargetAwsfms20180101PutAppsListHandler,
-  xAmzTargetAwsfms20180101PutNotificationChannelHandler,
-  xAmzTargetAwsfms20180101PutPolicyHandler,
-  xAmzTargetAwsfms20180101PutProtocolsListHandler,
-  xAmzTargetAwsfms20180101PutResourceSetHandler,
-  xAmzTargetAwsfms20180101TagResourceHandler,
-  xAmzTargetAwsfms20180101UntagResourceHandler,
+  postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute,
+  postXAmzTargetAWSFMS20180101AssociateThirdPartyFirewallRoute,
+  postXAmzTargetAWSFMS20180101BatchAssociateResourceRoute,
+  postXAmzTargetAWSFMS20180101BatchDisassociateResourceRoute,
+  postXAmzTargetAWSFMS20180101DeleteAppsListRoute,
+  postXAmzTargetAWSFMS20180101DeleteNotificationChannelRoute,
+  postXAmzTargetAWSFMS20180101DeletePolicyRoute,
+  postXAmzTargetAWSFMS20180101DeleteProtocolsListRoute,
+  postXAmzTargetAWSFMS20180101DeleteResourceSetRoute,
+  postXAmzTargetAWSFMS20180101DisassociateAdminAccountRoute,
+  postXAmzTargetAWSFMS20180101DisassociateThirdPartyFirewallRoute,
+  postXAmzTargetAWSFMS20180101GetAdminAccountRoute,
+  postXAmzTargetAWSFMS20180101GetAdminScopeRoute,
+  postXAmzTargetAWSFMS20180101GetAppsListRoute,
+  postXAmzTargetAWSFMS20180101GetComplianceDetailRoute,
+  postXAmzTargetAWSFMS20180101GetNotificationChannelRoute,
+  postXAmzTargetAWSFMS20180101GetPolicyRoute,
+  postXAmzTargetAWSFMS20180101GetProtectionStatusRoute,
+  postXAmzTargetAWSFMS20180101GetProtocolsListRoute,
+  postXAmzTargetAWSFMS20180101GetResourceSetRoute,
+  postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute,
+  postXAmzTargetAWSFMS20180101GetViolationDetailsRoute,
+  postXAmzTargetAWSFMS20180101ListAdminAccountsForOrganizationRoute,
+  postXAmzTargetAWSFMS20180101ListAdminsManagingAccountRoute,
+  postXAmzTargetAWSFMS20180101ListAppsListsRoute,
+  postXAmzTargetAWSFMS20180101ListComplianceStatusRoute,
+  postXAmzTargetAWSFMS20180101ListDiscoveredResourcesRoute,
+  postXAmzTargetAWSFMS20180101ListMemberAccountsRoute,
+  postXAmzTargetAWSFMS20180101ListPoliciesRoute,
+  postXAmzTargetAWSFMS20180101ListProtocolsListsRoute,
+  postXAmzTargetAWSFMS20180101ListResourceSetResourcesRoute,
+  postXAmzTargetAWSFMS20180101ListResourceSetsRoute,
+  postXAmzTargetAWSFMS20180101ListTagsForResourceRoute,
+  postXAmzTargetAWSFMS20180101ListThirdPartyFirewallFirewallPoliciesRoute,
+  postXAmzTargetAWSFMS20180101PutAdminAccountRoute,
+  postXAmzTargetAWSFMS20180101PutAppsListRoute,
+  postXAmzTargetAWSFMS20180101PutNotificationChannelRoute,
+  postXAmzTargetAWSFMS20180101PutPolicyRoute,
+  postXAmzTargetAWSFMS20180101PutProtocolsListRoute,
+  postXAmzTargetAWSFMS20180101PutResourceSetRoute,
+  postXAmzTargetAWSFMS20180101TagResourceRoute,
+  postXAmzTargetAWSFMS20180101UntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSFMS20180101AssociateAdminAccountRouteHandler,
+  postXAmzTargetAWSFMS20180101AssociateThirdPartyFirewallRouteHandler,
+  postXAmzTargetAWSFMS20180101BatchAssociateResourceRouteHandler,
+  postXAmzTargetAWSFMS20180101BatchDisassociateResourceRouteHandler,
+  postXAmzTargetAWSFMS20180101DeleteAppsListRouteHandler,
+  postXAmzTargetAWSFMS20180101DeleteNotificationChannelRouteHandler,
+  postXAmzTargetAWSFMS20180101DeletePolicyRouteHandler,
+  postXAmzTargetAWSFMS20180101DeleteProtocolsListRouteHandler,
+  postXAmzTargetAWSFMS20180101DeleteResourceSetRouteHandler,
+  postXAmzTargetAWSFMS20180101DisassociateAdminAccountRouteHandler,
+  postXAmzTargetAWSFMS20180101DisassociateThirdPartyFirewallRouteHandler,
+  postXAmzTargetAWSFMS20180101GetAdminAccountRouteHandler,
+  postXAmzTargetAWSFMS20180101GetAdminScopeRouteHandler,
+  postXAmzTargetAWSFMS20180101GetAppsListRouteHandler,
+  postXAmzTargetAWSFMS20180101GetComplianceDetailRouteHandler,
+  postXAmzTargetAWSFMS20180101GetNotificationChannelRouteHandler,
+  postXAmzTargetAWSFMS20180101GetPolicyRouteHandler,
+  postXAmzTargetAWSFMS20180101GetProtectionStatusRouteHandler,
+  postXAmzTargetAWSFMS20180101GetProtocolsListRouteHandler,
+  postXAmzTargetAWSFMS20180101GetResourceSetRouteHandler,
+  postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRouteHandler,
+  postXAmzTargetAWSFMS20180101GetViolationDetailsRouteHandler,
+  postXAmzTargetAWSFMS20180101ListAdminAccountsForOrganizationRouteHandler,
+  postXAmzTargetAWSFMS20180101ListAdminsManagingAccountRouteHandler,
+  postXAmzTargetAWSFMS20180101ListAppsListsRouteHandler,
+  postXAmzTargetAWSFMS20180101ListComplianceStatusRouteHandler,
+  postXAmzTargetAWSFMS20180101ListDiscoveredResourcesRouteHandler,
+  postXAmzTargetAWSFMS20180101ListMemberAccountsRouteHandler,
+  postXAmzTargetAWSFMS20180101ListPoliciesRouteHandler,
+  postXAmzTargetAWSFMS20180101ListProtocolsListsRouteHandler,
+  postXAmzTargetAWSFMS20180101ListResourceSetResourcesRouteHandler,
+  postXAmzTargetAWSFMS20180101ListResourceSetsRouteHandler,
+  postXAmzTargetAWSFMS20180101ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSFMS20180101ListThirdPartyFirewallFirewallPoliciesRouteHandler,
+  postXAmzTargetAWSFMS20180101PutAdminAccountRouteHandler,
+  postXAmzTargetAWSFMS20180101PutAppsListRouteHandler,
+  postXAmzTargetAWSFMS20180101PutNotificationChannelRouteHandler,
+  postXAmzTargetAWSFMS20180101PutPolicyRouteHandler,
+  postXAmzTargetAWSFMS20180101PutProtocolsListRouteHandler,
+  postXAmzTargetAWSFMS20180101PutResourceSetRouteHandler,
+  postXAmzTargetAWSFMS20180101TagResourceRouteHandler,
+  postXAmzTargetAWSFMS20180101UntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsfms20180101AssociateAdminAccountHandler)
-  .route('/', xAmzTargetAwsfms20180101AssociateThirdPartyFirewallHandler)
-  .route('/', xAmzTargetAwsfms20180101BatchAssociateResourceHandler)
-  .route('/', xAmzTargetAwsfms20180101BatchDisassociateResourceHandler)
-  .route('/', xAmzTargetAwsfms20180101DeleteAppsListHandler)
-  .route('/', xAmzTargetAwsfms20180101DeleteNotificationChannelHandler)
-  .route('/', xAmzTargetAwsfms20180101DeletePolicyHandler)
-  .route('/', xAmzTargetAwsfms20180101DeleteProtocolsListHandler)
-  .route('/', xAmzTargetAwsfms20180101DeleteResourceSetHandler)
-  .route('/', xAmzTargetAwsfms20180101DisassociateAdminAccountHandler)
-  .route('/', xAmzTargetAwsfms20180101DisassociateThirdPartyFirewallHandler)
-  .route('/', xAmzTargetAwsfms20180101GetAdminAccountHandler)
-  .route('/', xAmzTargetAwsfms20180101GetAdminScopeHandler)
-  .route('/', xAmzTargetAwsfms20180101GetAppsListHandler)
-  .route('/', xAmzTargetAwsfms20180101GetComplianceDetailHandler)
-  .route('/', xAmzTargetAwsfms20180101GetNotificationChannelHandler)
-  .route('/', xAmzTargetAwsfms20180101GetPolicyHandler)
-  .route('/', xAmzTargetAwsfms20180101GetProtectionStatusHandler)
-  .route('/', xAmzTargetAwsfms20180101GetProtocolsListHandler)
-  .route('/', xAmzTargetAwsfms20180101GetResourceSetHandler)
-  .route('/', xAmzTargetAwsfms20180101GetThirdPartyFirewallAssociationStatusHandler)
-  .route('/', xAmzTargetAwsfms20180101GetViolationDetailsHandler)
-  .route('/', xAmzTargetAwsfms20180101ListAdminAccountsForOrganizationHandler)
-  .route('/', xAmzTargetAwsfms20180101ListAdminsManagingAccountHandler)
-  .route('/', xAmzTargetAwsfms20180101ListAppsListsHandler)
-  .route('/', xAmzTargetAwsfms20180101ListComplianceStatusHandler)
-  .route('/', xAmzTargetAwsfms20180101ListDiscoveredResourcesHandler)
-  .route('/', xAmzTargetAwsfms20180101ListMemberAccountsHandler)
-  .route('/', xAmzTargetAwsfms20180101ListPoliciesHandler)
-  .route('/', xAmzTargetAwsfms20180101ListProtocolsListsHandler)
-  .route('/', xAmzTargetAwsfms20180101ListResourceSetResourcesHandler)
-  .route('/', xAmzTargetAwsfms20180101ListResourceSetsHandler)
-  .route('/', xAmzTargetAwsfms20180101ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsfms20180101ListThirdPartyFirewallFirewallPoliciesHandler)
-  .route('/', xAmzTargetAwsfms20180101PutAdminAccountHandler)
-  .route('/', xAmzTargetAwsfms20180101PutAppsListHandler)
-  .route('/', xAmzTargetAwsfms20180101PutNotificationChannelHandler)
-  .route('/', xAmzTargetAwsfms20180101PutPolicyHandler)
-  .route('/', xAmzTargetAwsfms20180101PutProtocolsListHandler)
-  .route('/', xAmzTargetAwsfms20180101PutResourceSetHandler)
-  .route('/', xAmzTargetAwsfms20180101TagResourceHandler)
-  .route('/', xAmzTargetAwsfms20180101UntagResourceHandler)
+  .openapi(
+    postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute,
+    postXAmzTargetAWSFMS20180101AssociateAdminAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101AssociateThirdPartyFirewallRoute,
+    postXAmzTargetAWSFMS20180101AssociateThirdPartyFirewallRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101BatchAssociateResourceRoute,
+    postXAmzTargetAWSFMS20180101BatchAssociateResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101BatchDisassociateResourceRoute,
+    postXAmzTargetAWSFMS20180101BatchDisassociateResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DeleteAppsListRoute,
+    postXAmzTargetAWSFMS20180101DeleteAppsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DeleteNotificationChannelRoute,
+    postXAmzTargetAWSFMS20180101DeleteNotificationChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DeletePolicyRoute,
+    postXAmzTargetAWSFMS20180101DeletePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DeleteProtocolsListRoute,
+    postXAmzTargetAWSFMS20180101DeleteProtocolsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DeleteResourceSetRoute,
+    postXAmzTargetAWSFMS20180101DeleteResourceSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DisassociateAdminAccountRoute,
+    postXAmzTargetAWSFMS20180101DisassociateAdminAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101DisassociateThirdPartyFirewallRoute,
+    postXAmzTargetAWSFMS20180101DisassociateThirdPartyFirewallRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetAdminAccountRoute,
+    postXAmzTargetAWSFMS20180101GetAdminAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetAdminScopeRoute,
+    postXAmzTargetAWSFMS20180101GetAdminScopeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetAppsListRoute,
+    postXAmzTargetAWSFMS20180101GetAppsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetComplianceDetailRoute,
+    postXAmzTargetAWSFMS20180101GetComplianceDetailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetNotificationChannelRoute,
+    postXAmzTargetAWSFMS20180101GetNotificationChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetPolicyRoute,
+    postXAmzTargetAWSFMS20180101GetPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetProtectionStatusRoute,
+    postXAmzTargetAWSFMS20180101GetProtectionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetProtocolsListRoute,
+    postXAmzTargetAWSFMS20180101GetProtocolsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetResourceSetRoute,
+    postXAmzTargetAWSFMS20180101GetResourceSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute,
+    postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101GetViolationDetailsRoute,
+    postXAmzTargetAWSFMS20180101GetViolationDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListAdminAccountsForOrganizationRoute,
+    postXAmzTargetAWSFMS20180101ListAdminAccountsForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListAdminsManagingAccountRoute,
+    postXAmzTargetAWSFMS20180101ListAdminsManagingAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListAppsListsRoute,
+    postXAmzTargetAWSFMS20180101ListAppsListsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListComplianceStatusRoute,
+    postXAmzTargetAWSFMS20180101ListComplianceStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListDiscoveredResourcesRoute,
+    postXAmzTargetAWSFMS20180101ListDiscoveredResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListMemberAccountsRoute,
+    postXAmzTargetAWSFMS20180101ListMemberAccountsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListPoliciesRoute,
+    postXAmzTargetAWSFMS20180101ListPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListProtocolsListsRoute,
+    postXAmzTargetAWSFMS20180101ListProtocolsListsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListResourceSetResourcesRoute,
+    postXAmzTargetAWSFMS20180101ListResourceSetResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListResourceSetsRoute,
+    postXAmzTargetAWSFMS20180101ListResourceSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListTagsForResourceRoute,
+    postXAmzTargetAWSFMS20180101ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101ListThirdPartyFirewallFirewallPoliciesRoute,
+    postXAmzTargetAWSFMS20180101ListThirdPartyFirewallFirewallPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutAdminAccountRoute,
+    postXAmzTargetAWSFMS20180101PutAdminAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutAppsListRoute,
+    postXAmzTargetAWSFMS20180101PutAppsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutNotificationChannelRoute,
+    postXAmzTargetAWSFMS20180101PutNotificationChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutPolicyRoute,
+    postXAmzTargetAWSFMS20180101PutPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutProtocolsListRoute,
+    postXAmzTargetAWSFMS20180101PutProtocolsListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101PutResourceSetRoute,
+    postXAmzTargetAWSFMS20180101PutResourceSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101TagResourceRoute,
+    postXAmzTargetAWSFMS20180101TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSFMS20180101UntagResourceRoute,
+    postXAmzTargetAWSFMS20180101UntagResourceRouteHandler,
+  )
 
 export default app

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHyperparameterRoute, postHyperparameterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHyperparameterRoute, postHyperparameterRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHyperparameterRouteHandler: RouteHandler<typeof getHyperparameterRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const hyperparameterHandler = app
-  .openapi(getHyperparameterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHyperparameterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHyperparameterRouteHandler: RouteHandler<typeof postHyperparameterRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

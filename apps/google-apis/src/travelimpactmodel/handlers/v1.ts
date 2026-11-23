@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1FlightsComputeFlightEmissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1FlightsComputeFlightEmissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1Handler = app.openapi(postV1FlightsComputeFlightEmissionsRoute, (c) => {
+export const postV1FlightsComputeFlightEmissionsRouteHandler: RouteHandler<
+  typeof postV1FlightsComputeFlightEmissionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

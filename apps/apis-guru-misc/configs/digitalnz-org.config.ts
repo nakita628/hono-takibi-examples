@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/digitalnz.org/3/openapi.yaml',
   output: './src/digitalnz-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/digitalnz-org/types.ts' },
   client: { output: './src/digitalnz-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/digitalnz-org/rpc.ts', parseResponse: true },

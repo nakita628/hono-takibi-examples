@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRequestSubjectErasureRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRequestSubjectErasureRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const requestSubjectErasureHandler = app.openapi(postRequestSubjectErasureRoute, (c) => {
+export const postRequestSubjectErasureRouteHandler: RouteHandler<
+  typeof postRequestSubjectErasureRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

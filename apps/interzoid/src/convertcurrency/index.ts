@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { convertcurrencyHandler } from './handlers'
+import { getConvertcurrencyRoute } from './routes'
+import { getConvertcurrencyRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', convertcurrencyHandler)
+export const api = app.openapi(getConvertcurrencyRoute, getConvertcurrencyRouteHandler)
 
 export default app

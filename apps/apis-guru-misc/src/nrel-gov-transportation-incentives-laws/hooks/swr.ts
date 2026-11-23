@@ -14,18 +14,18 @@ export function getV1OutputFormatKey() {
 }
 
 export function getGetV1OutputFormatKey(
-  args: InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
 ) {
-  return ['v1.:output_format', '/v1.:output_format', args] as const
+  return ['v1.{output_format}', '/v1.{output_format}', args] as const
 }
 
 export function useGetV1OutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
         >
       >,
       TError
@@ -42,25 +42,25 @@ export function useGetV1OutputFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v1.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client['v1.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV1OutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
         >
       >,
       TError
@@ -77,32 +77,32 @@ export function useImmutableGetV1OutputFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['v1.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client['v1.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetV1CategoryListOutputFormatKey(
-  args: InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/category-list.:output_format', args] as const
+  return ['v1', '/v1/category-list.{output_format}', args] as const
 }
 
 export function useGetV1CategoryListOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
           >
         >
       >,
@@ -125,7 +125,7 @@ export function useGetV1CategoryListOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
           >
         >
       >,
@@ -133,20 +133,20 @@ export function useGetV1CategoryListOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.v1['category-list.:output_format'].$get(args, clientOptions)),
+        parseResponse(client.v1['category-list.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV1CategoryListOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
           >
         >
       >,
@@ -169,7 +169,7 @@ export function useImmutableGetV1CategoryListOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
           >
         >
       >,
@@ -177,26 +177,26 @@ export function useImmutableGetV1CategoryListOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.v1['category-list.:output_format'].$get(args, clientOptions)),
+        parseResponse(client.v1['category-list.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetV1PocsOutputFormatKey(
-  args: InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/pocs.:output_format', args] as const
+  return ['v1', '/v1/pocs.{output_format}', args] as const
 }
 
 export function useGetV1PocsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
           >
         >
       >,
@@ -219,27 +219,27 @@ export function useGetV1PocsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.v1['pocs.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client.v1['pocs.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV1PocsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
           >
         >
       >,
@@ -262,33 +262,33 @@ export function useImmutableGetV1PocsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.v1['pocs.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client.v1['pocs.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetV1IdOutputFormatKey(
-  args: InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/:id.:output_format', args] as const
+  return ['v1', '/v1/:id.{output_format}', args] as const
 }
 
 export function useGetV1IdOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>
           >
         >
       >,
@@ -311,27 +311,27 @@ export function useGetV1IdOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.v1[':id.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client.v1[':id.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetV1IdOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>
           >
         >
       >,
@@ -354,14 +354,14 @@ export function useImmutableGetV1IdOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>
+            Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.v1[':id.:output_format'].$get(args, clientOptions)),
+      async () => parseResponse(client.v1[':id.{output_format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

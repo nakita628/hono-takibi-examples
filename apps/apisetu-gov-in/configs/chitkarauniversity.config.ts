@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/chitkarauniversity/3.0.0/openapi.yaml',
   output: './src/chitkarauniversity/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chitkarauniversity/types.ts' },
   client: { output: './src/chitkarauniversity/client.ts', baseUrl: '/' },
   rpc: { output: './src/chitkarauniversity/rpc.ts', parseResponse: true },

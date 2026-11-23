@@ -598,16 +598,16 @@ export function useImmutableGetEntriesSourceLangWordIdAntonyms<TError = unknown>
 
 export function getGetEntriesSourceLangWordIdRegionsRegionKey(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['entries', '/entries/:source_lang/:word_id/regions=:region', keyArgs] as const
+  return ['entries', '/entries/:source_lang/:word_id/regions={region}', keyArgs] as const
 }
 
 export function useGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -616,7 +616,7 @@ export function useGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
               >
             >
           >
@@ -643,7 +643,7 @@ export function useGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
               >
             >
           >
@@ -654,7 +654,7 @@ export function useGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.entries[':source_lang'][':word_id']['regions=:region'].$get(args, clientOptions),
+          client.entries[':source_lang'][':word_id']['regions={region}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -663,7 +663,7 @@ export function useGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
 
 export function useImmutableGetEntriesSourceLangWordIdRegionsRegion<TError = unknown>(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -672,7 +672,7 @@ export function useImmutableGetEntriesSourceLangWordIdRegionsRegion<TError = unk
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
               >
             >
           >
@@ -699,7 +699,7 @@ export function useImmutableGetEntriesSourceLangWordIdRegionsRegion<TError = unk
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
               >
             >
           >
@@ -710,7 +710,7 @@ export function useImmutableGetEntriesSourceLangWordIdRegionsRegion<TError = unk
       swrKey,
       async () =>
         parseResponse(
-          client.entries[':source_lang'][':word_id']['regions=:region'].$get(args, clientOptions),
+          client.entries[':source_lang'][':word_id']['regions={region}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1054,13 +1054,13 @@ export function useImmutableGetEntriesSourceLangWordIdFilters<TError = unknown>(
 
 export function getGetEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageKey(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'entries',
-    '/entries/:source_translation_language/:word_id/translations=:target_translation_language',
+    '/entries/:source_translation_language/:word_id/translations={target_translation_language}',
     keyArgs,
   ] as const
 }
@@ -1069,7 +1069,7 @@ export function useGetEntriesSourceTranslationLanguageWordIdTranslationsTargetTr
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1078,7 +1078,7 @@ export function useGetEntriesSourceTranslationLanguageWordIdTranslationsTargetTr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
               >
             >
           >
@@ -1105,7 +1105,7 @@ export function useGetEntriesSourceTranslationLanguageWordIdTranslationsTargetTr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
               >
             >
           >
@@ -1117,7 +1117,7 @@ export function useGetEntriesSourceTranslationLanguageWordIdTranslationsTargetTr
       async () =>
         parseResponse(
           client.entries[':source_translation_language'][':word_id'][
-            'translations=:target_translation_language'
+            'translations={target_translation_language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -1129,7 +1129,7 @@ export function useImmutableGetEntriesSourceTranslationLanguageWordIdTranslation
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1138,7 +1138,7 @@ export function useImmutableGetEntriesSourceTranslationLanguageWordIdTranslation
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
               >
             >
           >
@@ -1165,7 +1165,7 @@ export function useImmutableGetEntriesSourceTranslationLanguageWordIdTranslation
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
               >
             >
           >
@@ -1177,7 +1177,7 @@ export function useImmutableGetEntriesSourceTranslationLanguageWordIdTranslation
       async () =>
         parseResponse(
           client.entries[':source_translation_language'][':word_id'][
-            'translations=:target_translation_language'
+            'translations={target_translation_language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -2095,20 +2095,20 @@ export function useImmutableGetSearchSourceLang<TError = unknown>(
 
 export function getGetSearchSourceSearchLanguageTranslationsTargetSearchLanguageKey(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'search',
-    '/search/:source_search_language/translations=:target_search_language',
+    '/search/:source_search_language/translations={target_search_language}',
     keyArgs,
   ] as const
 }
 
 export function useGetSearchSourceSearchLanguageTranslationsTargetSearchLanguage<TError = unknown>(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -2117,7 +2117,7 @@ export function useGetSearchSourceSearchLanguageTranslationsTargetSearchLanguage
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
               >
             >
           >
@@ -2144,7 +2144,7 @@ export function useGetSearchSourceSearchLanguageTranslationsTargetSearchLanguage
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
               >
             >
           >
@@ -2155,7 +2155,7 @@ export function useGetSearchSourceSearchLanguageTranslationsTargetSearchLanguage
       swrKey,
       async () =>
         parseResponse(
-          client.search[':source_search_language']['translations=:target_search_language'].$get(
+          client.search[':source_search_language']['translations={target_search_language}'].$get(
             args,
             clientOptions,
           ),
@@ -2169,7 +2169,7 @@ export function useImmutableGetSearchSourceSearchLanguageTranslationsTargetSearc
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -2178,7 +2178,7 @@ export function useImmutableGetSearchSourceSearchLanguageTranslationsTargetSearc
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
               >
             >
           >
@@ -2205,7 +2205,7 @@ export function useImmutableGetSearchSourceSearchLanguageTranslationsTargetSearc
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
               >
             >
           >
@@ -2216,7 +2216,7 @@ export function useImmutableGetSearchSourceSearchLanguageTranslationsTargetSearc
       swrKey,
       async () =>
         parseResponse(
-          client.search[':source_search_language']['translations=:target_search_language'].$get(
+          client.search[':source_search_language']['translations={target_search_language}'].$get(
             args,
             clientOptions,
           ),

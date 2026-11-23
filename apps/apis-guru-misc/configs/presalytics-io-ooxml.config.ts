@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/presalytics.io/ooxml/0.1.0/openapi.yaml',
   output: './src/presalytics-io-ooxml/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/presalytics-io-ooxml/types.ts' },
   client: { output: './src/presalytics-io-ooxml/client.ts', baseUrl: '/' },
   rpc: { output: './src/presalytics-io-ooxml/rpc.ts', parseResponse: true },

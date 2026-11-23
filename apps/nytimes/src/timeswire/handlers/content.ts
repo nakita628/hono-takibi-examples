@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getContentSourceSectionJsonRoute,
   getContentSourceSectionTimePeriodJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getContentSourceSectionJsonRouteHandler: RouteHandler<
+  typeof getContentSourceSectionJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contentHandler = app
-  .openapi(getContentSourceSectionJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContentSourceSectionTimePeriodJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getContentSourceSectionTimePeriodJsonRouteHandler: RouteHandler<
+  typeof getContentSourceSectionTimePeriodJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

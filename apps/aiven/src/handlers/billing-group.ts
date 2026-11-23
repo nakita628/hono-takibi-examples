@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBillingGroupBillingGroupIdRoute,
   getBillingGroupBillingGroupIdCreditsRoute,
   getBillingGroupBillingGroupIdEventsRoute,
@@ -18,54 +18,96 @@ import {
   putBillingGroupBillingGroupIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBillingGroupRouteHandler: RouteHandler<typeof postBillingGroupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const billingGroupHandler = app
-  .openapi(postBillingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupBillingGroupIdCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBillingGroupBillingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBillingGroupBillingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdInvoiceInvoiceNumberCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdInvoiceInvoiceNumberDownloadCookieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdInvoiceInvoiceNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdInvoiceInvoiceNumberLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupBillingGroupIdProjectAssignProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupBillingGroupIdProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupBillingGroupIdProjectsAssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBillingGroupRouteHandler: RouteHandler<typeof getBillingGroupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingGroupBillingGroupIdCreditsRouteHandler: RouteHandler<
+  typeof postBillingGroupBillingGroupIdCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdCreditsRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBillingGroupBillingGroupIdRouteHandler: RouteHandler<
+  typeof deleteBillingGroupBillingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBillingGroupBillingGroupIdRouteHandler: RouteHandler<
+  typeof putBillingGroupBillingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdEventsRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdInvoiceInvoiceNumberCsvRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdInvoiceInvoiceNumberCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdInvoiceInvoiceNumberDownloadCookieRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdInvoiceInvoiceNumberDownloadCookieRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdInvoiceInvoiceNumberRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdInvoiceInvoiceNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdInvoiceInvoiceNumberLinesRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdInvoiceInvoiceNumberLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdInvoiceRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingGroupBillingGroupIdProjectAssignProjectRouteHandler: RouteHandler<
+  typeof postBillingGroupBillingGroupIdProjectAssignProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupBillingGroupIdProjectsRouteHandler: RouteHandler<
+  typeof getBillingGroupBillingGroupIdProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingGroupBillingGroupIdProjectsAssignRouteHandler: RouteHandler<
+  typeof postBillingGroupBillingGroupIdProjectsAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

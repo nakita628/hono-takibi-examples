@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhooksIdRoute,
   getWebhooksIdFieldRoute,
   getWebhooksIdRoute,
@@ -7,21 +7,28 @@ import {
   putWebhooksIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWebhooksIndexRouteHandler: RouteHandler<typeof postWebhooksIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksHandler = app
-  .openapi(postWebhooksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebhooksIdRouteHandler: RouteHandler<typeof getWebhooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebhooksIdRouteHandler: RouteHandler<typeof putWebhooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksIdRouteHandler: RouteHandler<typeof deleteWebhooksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksIdFieldRouteHandler: RouteHandler<typeof getWebhooksIdFieldRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

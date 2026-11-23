@@ -3,10 +3,10 @@ import { parseResponse } from 'hono/client'
 import { client } from './client'
 
 export async function getListsFormat(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['lists.:format'].$get(args, options))
+  return await parseResponse(client['lists.{format}'].$get(args, options))
 }
 
 export async function getListsBestSellersHistoryJson(
@@ -17,17 +17,17 @@ export async function getListsBestSellersHistoryJson(
 }
 
 export async function getListsNamesFormat(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.lists['names.:format'].$get(args, options))
+  return await parseResponse(client.lists['names.{format}'].$get(args, options))
 }
 
 export async function getListsOverviewFormat(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.lists['overview.:format'].$get(args, options))
+  return await parseResponse(client.lists['overview.{format}'].$get(args, options))
 }
 
 export async function getListsDateListJson(
@@ -38,8 +38,8 @@ export async function getListsDateListJson(
 }
 
 export async function getReviewsFormat(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['reviews.:format'].$get(args, options))
+  return await parseResponse(client['reviews.{format}'].$get(args, options))
 }

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProxyRoute,
   getProxyRoute,
   optionsProxyRoute,
@@ -8,24 +8,26 @@ import {
   putProxyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteProxyRouteHandler: RouteHandler<typeof deleteProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const proxyHandler = app
-  .openapi(deleteProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProxyRouteHandler: RouteHandler<typeof getProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsProxyRouteHandler: RouteHandler<typeof optionsProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProxyRouteHandler: RouteHandler<typeof patchProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProxyRouteHandler: RouteHandler<typeof postProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProxyRouteHandler: RouteHandler<typeof putProxyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

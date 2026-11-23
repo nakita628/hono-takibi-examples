@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBookSeriesRoute, getBookSeriesSearchRoute, postBookSeriesSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getBookSeriesRoute,
+  getBookSeriesSearchRoute,
+  postBookSeriesSearchRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getBookSeriesRouteHandler: RouteHandler<typeof getBookSeriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bookSeriesHandler = app
-  .openapi(getBookSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBookSeriesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBookSeriesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBookSeriesSearchRouteHandler: RouteHandler<
+  typeof getBookSeriesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBookSeriesSearchRouteHandler: RouteHandler<
+  typeof postBookSeriesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

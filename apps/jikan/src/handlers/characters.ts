@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCharactersIdAnimeRoute,
   getCharactersIdFullRoute,
   getCharactersIdMangaRoute,
@@ -9,27 +9,40 @@ import {
   getCharactersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCharactersIdFullRouteHandler: RouteHandler<
+  typeof getCharactersIdFullRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const charactersHandler = app
-  .openapi(getCharactersIdFullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersIdAnimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersIdMangaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersIdVoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersIdPicturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCharactersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCharactersIdRouteHandler: RouteHandler<typeof getCharactersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCharactersIdAnimeRouteHandler: RouteHandler<
+  typeof getCharactersIdAnimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCharactersIdMangaRouteHandler: RouteHandler<
+  typeof getCharactersIdMangaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCharactersIdVoicesRouteHandler: RouteHandler<
+  typeof getCharactersIdVoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCharactersIdPicturesRouteHandler: RouteHandler<
+  typeof getCharactersIdPicturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCharactersRouteHandler: RouteHandler<typeof getCharactersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,198 +1,42 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type BrandingType = {
-  button?: { default?: unknown; hover?: unknown }
-  logo?: { full?: { image?: { alt?: string; src?: string } }; square?: unknown }
-  sourceId?: string
-}
-
-const ConnectionSchema: z.ZodType<ConnectionType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalProperties: z.never().exactOptional(),
-        connectionInfo: z.record(z.string(), z.string()).exactOptional(),
-        created: z.lazy(() => CompanySchema),
-        dataConnectionErrors: z
-          .array(
-            z
-              .object({
-                errorMessage: z.string().exactOptional(),
-                erroredOnUtc: z.lazy(() => CompanySchema).exactOptional(),
-                statusCode: z.string().exactOptional(),
-                statusText: z.string().exactOptional(),
-              })
-              .openapi({ title: 'Data connection error', required: [] }),
-          )
-          .exactOptional(),
-        id: z
-          .uuid()
-          .openapi({
-            description: "Unique identifier for a company's data connection.",
-            examples: ['2e9d2c44-f675-40ba-8049-353bfcb5e171'],
-          }),
-        integrationId: z
-          .uuid()
-          .openapi({
-            description: 'A Codat ID representing the integration.',
-            examples: ['fd321cb6-7963-4506-b873-e99593a45e30'],
-          }),
-        integrationKey: z
-          .string()
-          .openapi({
-            description:
-              "A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.",
-          }),
-        lastSync: z.lazy(() => CompanySchema).exactOptional(),
-        linkUrl: z
-          .url()
-          .openapi({
-            examples: [
-              'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/2e2eb431-c1fa-4dc9-93fa-d29781c12bcd/start',
-            ],
-          }),
-        platformName: z.string(),
-        sourceId: z.lazy(() => BrandingSchema),
-        sourceType: z
-          .enum(['Accounting', 'Banking', 'Commerce', 'Other', 'Unknown'])
-          .openapi({
-            description: 'The type of platform of the connection.',
-            examples: ['Accounting'],
-            title: 'Source Type',
-            'x-internal': true,
-          }),
-        status: z
-          .enum(['PendingAuth', 'Linked', 'Unlinked', 'Deauthorized'])
-          .openapi({
-            description: 'The current authorization status of the data connection.',
-            title: 'Data connection status',
-          }),
-      })
+const AccountOptionSchema = z
+  .strictObject({
+    classification: z
+      .string()
+      .nullable()
+      .exactOptional()
       .openapi({
-        description: 'A connection represents the link between a `company` and a source of data.',
-        examples: [
-          {
-            created: '2022-10-27T09:53:29Z',
-            id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
-            integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
-            integrationKey: 'dfxm',
-            lastSync: '2022-10-27T10:22:43.6464237Z',
-            linkUrl:
-              'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
-            platformName: 'Basiq',
-            sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
-            sourceType: 'Banking',
-            status: 'Linked',
-          },
-        ],
-        required: [
-          'id',
-          'integrationId',
-          'integrationKey',
-          'sourceId',
-          'platformName',
-          'linkUrl',
-          'status',
-          'created',
-          'sourceType',
-        ],
-        title: 'Connection',
+        description: 'Classification of the type of G/L account.',
+        examples: ['Bank Nominal'],
       }),
-  )
-  .openapi('Connection')
-
-type CompanyType = {
-  created?: string
-  createdByUserName?: string
-  dataConnections?: z.infer<typeof ConnectionSchema>[]
-  description?: string
-  id: string
-  lastSync?: CompanyType
-  name: string
-  platform?: string
-  redirect: string
-}
-
-const CompanySchema: z.ZodType<CompanyType> = z
-  .lazy(() =>
-    z
-      .object({
-        created: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
-            examples: ['2022-10-23T00:00:00Z'],
-            title: 'Date time',
-          }),
-        createdByUserName: z.string().exactOptional(),
-        dataConnections: z.array(ConnectionSchema).exactOptional(),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Additional information about the company. This can be used to store foreign IDs, references, etc.',
-          }),
-        id: z
-          .uuid()
-          .openapi({
-            description: 'Unique identifier for your SMB in Codat.',
-            examples: ['8a210b68-6988-11ed-a1eb-0242ac120002'],
-          }),
-        lastSync: z.lazy(() => CompanySchema).exactOptional(),
-        name: z
-          .string()
-          .openapi({ description: 'The name of the company', examples: ['Codat Ltd.'] }),
-        platform: z
-          .string()
-          .exactOptional()
-          .openapi({ deprecated: true, examples: ['Xero'] }),
-        redirect: z
-          .url()
-          .openapi({
-            description:
-              'The `redirect` [Link URL](https://docs.codat.io/auth-flow/authorize-hosted-link) enabling the customer to start their auth flow journey for the company.',
-            examples: ['https://link.codat.io/company/27628208-459c-46a2-a705-5641ce25f739'],
-          }),
-      })
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier for the account, unique for the company.' }),
+    name: z.string().nullable().exactOptional().openapi({ description: 'Name of the account.' }),
+    nominalCode: z
+      .string()
+      .nullable()
+      .exactOptional()
       .openapi({
         description:
-          'A company in Codat represent a small or medium sized business, whose data you wish to share',
-        examples: [
-          {
-            created: '2022-01-01T12:00:00.000Z',
-            createdByUserName: 'string',
-            dataConnections: [
-              {
-                created: '2022-10-27T09:53:29Z',
-                id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
-                integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
-                integrationKey: 'dfxm',
-                lastSync: '2022-10-27T10:22:43.6464237Z',
-                linkUrl:
-                  'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
-                platformName: 'Basiq',
-                sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
-                sourceType: 'Banking',
-                status: 'Linked',
-              },
-            ],
-            id: '0498e921-9b53-4396-a412-4f2f5983b0a2',
-            lastSync: '2022-01-01T12:00:00.000Z',
-            name: 'string',
-            platform: 'string',
-            redirect: 'https://link.codat.io/company/27628208-459c-46a2-a705-5641ce25f739',
-          },
-        ],
-        required: ['id', 'name', 'redirect'],
-        title: 'Company',
+          "Reference given to each nominal account for a business. It ensures money is allocated to the correct account. This code isn't a unique identifier in the Codat system.",
       }),
-  )
-  .openapi('Company')
+  })
+  .openapi({ title: 'Account option', 'x-internal': true, required: [] })
+  .openapi('AccountOption')
 
-const BrandingSchema: z.ZodType<BrandingType> = z
+const BrandingSourceIdSchema = z
+  .uuid()
+  .openapi({
+    description:
+      'A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.',
+    examples: ['35b92968-9851-4095-ad60-395c95cbcba4'],
+  })
+  .openapi('BrandingSourceId')
+
+const BrandingSchema = z
   .object({
     button: z
       .object({ default: z.any().exactOptional(), hover: z.any().exactOptional() })
@@ -219,14 +63,7 @@ const BrandingSchema: z.ZodType<BrandingType> = z
       })
       .exactOptional()
       .openapi({ description: 'Logo branding references.', 'x-internal': true, required: [] }),
-    sourceId: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.',
-        examples: ['35b92968-9851-4095-ad60-395c95cbcba4'],
-      }),
+    sourceId: BrandingSourceIdSchema.exactOptional(),
   })
   .openapi({
     examples: [
@@ -267,53 +104,187 @@ const BrandingSchema: z.ZodType<BrandingType> = z
   })
   .openapi('Branding')
 
-type ConnectionType = {
-  additionalProperties?: unknown
-  connectionInfo?: { [key: string]: string }
-  created: z.infer<typeof CompanySchema>
-  dataConnectionErrors?: {
-    errorMessage?: string
-    erroredOnUtc?: z.infer<typeof CompanySchema>
-    statusCode?: string
-    statusText?: string
-  }[]
-  id: string
-  integrationId: string
-  integrationKey: string
-  lastSync?: z.infer<typeof CompanySchema>
-  linkUrl: string
-  platformName: string
-  sourceId: z.infer<typeof BrandingSchema>
-  sourceType: 'Accounting' | 'Banking' | 'Commerce' | 'Other' | 'Unknown'
-  status: 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
-}
+const CompanyCreatedSchema = z
+  .string()
+  .openapi({
+    description:
+      'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
+    examples: ['2022-10-23T00:00:00Z'],
+    title: 'Date time',
+  })
+  .openapi('CompanyCreated')
 
-const AccountOptionSchema = z
-  .strictObject({
-    classification: z
+const ConnectionDataConnectionErrorSchema = z
+  .object({
+    errorMessage: z.string().exactOptional(),
+    erroredOnUtc: CompanyCreatedSchema.exactOptional(),
+    statusCode: z.string().exactOptional(),
+    statusText: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Data connection error', required: [] })
+  .openapi('ConnectionDataConnectionError')
+
+const ConnectionIdSchema = z
+  .uuid()
+  .openapi({
+    description: "Unique identifier for a company's data connection.",
+    examples: ['2e9d2c44-f675-40ba-8049-353bfcb5e171'],
+  })
+  .openapi('ConnectionId')
+
+const ConnectionIntegrationIdSchema = z
+  .uuid()
+  .openapi({
+    description: 'A Codat ID representing the integration.',
+    examples: ['fd321cb6-7963-4506-b873-e99593a45e30'],
+  })
+  .openapi('ConnectionIntegrationId')
+
+const ConnectionSourceTypeSchema = z
+  .enum(['Accounting', 'Banking', 'Commerce', 'Other', 'Unknown'])
+  .openapi({
+    description: 'The type of platform of the connection.',
+    examples: ['Accounting'],
+    title: 'Source Type',
+    'x-internal': true,
+  })
+  .openapi('ConnectionSourceType')
+
+const ConnectionDataConnectionStatusSchema = z
+  .enum(['PendingAuth', 'Linked', 'Unlinked', 'Deauthorized'])
+  .openapi({
+    description: 'The current authorization status of the data connection.',
+    title: 'Data connection status',
+  })
+  .openapi('ConnectionDataConnectionStatus')
+
+const ConnectionSchema = z
+  .object({
+    additionalProperties: z.never().exactOptional(),
+    connectionInfo: z.record(z.string(), z.string()).exactOptional(),
+    created: CompanyCreatedSchema,
+    dataConnectionErrors: z.array(ConnectionDataConnectionErrorSchema).exactOptional(),
+    id: ConnectionIdSchema,
+    integrationId: ConnectionIntegrationIdSchema,
+    integrationKey: z
       .string()
-      .nullable()
-      .exactOptional()
       .openapi({
-        description: 'Classification of the type of G/L account.',
-        examples: ['Bank Nominal'],
+        description:
+          "A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.",
       }),
-    id: z
+    lastSync: CompanyCreatedSchema.exactOptional(),
+    linkUrl: z
+      .url()
+      .openapi({
+        examples: [
+          'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/2e2eb431-c1fa-4dc9-93fa-d29781c12bcd/start',
+        ],
+      }),
+    platformName: z.string(),
+    sourceId: BrandingSourceIdSchema,
+    sourceType: ConnectionSourceTypeSchema,
+    status: ConnectionDataConnectionStatusSchema,
+  })
+  .openapi({
+    description: 'A connection represents the link between a `company` and a source of data.',
+    examples: [
+      {
+        created: '2022-10-27T09:53:29Z',
+        id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
+        integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
+        integrationKey: 'dfxm',
+        lastSync: '2022-10-27T10:22:43.6464237Z',
+        linkUrl:
+          'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
+        platformName: 'Basiq',
+        sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
+        sourceType: 'Banking',
+        status: 'Linked',
+      },
+    ],
+    required: [
+      'id',
+      'integrationId',
+      'integrationKey',
+      'sourceId',
+      'platformName',
+      'linkUrl',
+      'status',
+      'created',
+      'sourceType',
+    ],
+    title: 'Connection',
+  })
+  .openapi('Connection')
+
+const CompanyIdSchema = z
+  .uuid()
+  .openapi({
+    description: 'Unique identifier for your SMB in Codat.',
+    examples: ['8a210b68-6988-11ed-a1eb-0242ac120002'],
+  })
+  .openapi('CompanyId')
+
+const CompanySchema = z
+  .object({
+    created: CompanyCreatedSchema.exactOptional(),
+    createdByUserName: z.string().exactOptional(),
+    dataConnections: z.array(ConnectionSchema).exactOptional(),
+    description: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'Identifier for the account, unique for the company.' }),
-    name: z.string().nullable().exactOptional().openapi({ description: 'Name of the account.' }),
-    nominalCode: z
-      .string()
-      .nullable()
       .exactOptional()
       .openapi({
         description:
-          "Reference given to each nominal account for a business. It ensures money is allocated to the correct account. This code isn't a unique identifier in the Codat system.",
+          'Additional information about the company. This can be used to store foreign IDs, references, etc.',
+      }),
+    id: CompanyIdSchema,
+    lastSync: CompanyCreatedSchema.exactOptional(),
+    name: z.string().openapi({ description: 'The name of the company', examples: ['Codat Ltd.'] }),
+    platform: z
+      .string()
+      .exactOptional()
+      .openapi({ deprecated: true, examples: ['Xero'] }),
+    redirect: z
+      .url()
+      .openapi({
+        description:
+          'The `redirect` [Link URL](https://docs.codat.io/auth-flow/authorize-hosted-link) enabling the customer to start their auth flow journey for the company.',
+        examples: ['https://link.codat.io/company/27628208-459c-46a2-a705-5641ce25f739'],
       }),
   })
-  .openapi({ title: 'Account option', 'x-internal': true, required: [] })
-  .openapi('AccountOption')
+  .openapi({
+    description:
+      'A company in Codat represent a small or medium sized business, whose data you wish to share',
+    examples: [
+      {
+        created: '2022-01-01T12:00:00.000Z',
+        createdByUserName: 'string',
+        dataConnections: [
+          {
+            created: '2022-10-27T09:53:29Z',
+            id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
+            integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
+            integrationKey: 'dfxm',
+            lastSync: '2022-10-27T10:22:43.6464237Z',
+            linkUrl:
+              'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
+            platformName: 'Basiq',
+            sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
+            sourceType: 'Banking',
+            status: 'Linked',
+          },
+        ],
+        id: '0498e921-9b53-4396-a412-4f2f5983b0a2',
+        lastSync: '2022-01-01T12:00:00.000Z',
+        name: 'string',
+        platform: 'string',
+        redirect: 'https://link.codat.io/company/27628208-459c-46a2-a705-5641ce25f739',
+      },
+    ],
+    required: ['id', 'name', 'redirect'],
+    title: 'Company',
+  })
+  .openapi('Company')
 
 const HalRefSchema = z
   .object({ href: z.string().exactOptional() })
@@ -690,117 +661,115 @@ const CreateCompanySchema = z
 
 const DateRangeSchema = z
   .strictObject({
-    finish: z
-      .lazy(() => CompanySchema)
-      .exactOptional()
-      .openapi({ description: 'Finish date of the Sync.' }),
-    start: z
-      .lazy(() => CompanySchema)
-      .exactOptional()
-      .openapi({ description: 'Start date of the Sync.' }),
+    finish: CompanyCreatedSchema.exactOptional().openapi({
+      description: 'Finish date of the Sync.',
+    }),
+    start: CompanyCreatedSchema.exactOptional().openapi({ description: 'Start date of the Sync.' }),
   })
   .openapi({ title: 'Data range', 'x-internal': true, required: [] })
   .openapi('DateRange')
 
+const IntegrationFeatureStateSchema = z
+  .enum(['Release', 'Beta', 'Deprecated', 'NotSupported', 'NotImplemented'])
+  .openapi({ example: 'Release', title: 'Feature state' })
+  .openapi('IntegrationFeatureState')
+
+const IntegrationFeatureTypeSchema = z
+  .enum([
+    'Get',
+    'Post',
+    'Categorization',
+    'Delete',
+    'Put',
+    'GetAsPdf',
+    'DownloadAttachment',
+    'GetAttachment',
+    'GetAttachments',
+    'UploadAttachment',
+  ])
+  .openapi({ example: 'Get', 'x-internal': true })
+  .openapi('IntegrationFeatureType')
+
+const IntegrationSupportedFeatureSchema = z
+  .object({
+    featureState: IntegrationFeatureStateSchema,
+    featureType: IntegrationFeatureTypeSchema,
+  })
+  .openapi({ required: ['featureType', 'featureState'], 'x-internal': true })
+  .openapi('IntegrationSupportedFeature')
+
+const IntegrationDataTypeFeatureSchema = z
+  .object({
+    dataType: z
+      .enum([
+        'accountTransactions',
+        'balanceSheet',
+        'bankAccounts',
+        'bankTransactions',
+        'billCreditNotes',
+        'billPayments',
+        'bills',
+        'cashFlowStatement',
+        'chartOfAccounts',
+        'company',
+        'creditNotes',
+        'customers',
+        'directCosts',
+        'directIncomes',
+        'invoices',
+        'items',
+        'journalEntries',
+        'journals',
+        'paymentMethods',
+        'payments',
+        'profitAndLoss',
+        'purchaseOrders',
+        'salesOrders',
+        'suppliers',
+        'taxRates',
+        'trackingCategories',
+        'transfers',
+        'banking-accountBalances',
+        'banking-accounts',
+        'banking-transactionCategories',
+        'banking-transactions',
+        'commerce-companyInfo',
+        'commerce-customers',
+        'commerce-disputes',
+        'commerce-locations',
+        'commerce-orders',
+        'commerce-paymentMethods',
+        'commerce-payments',
+        'commerce-productCategories',
+        'commerce-products',
+        'commerce-taxComponents',
+        'commerce-transactions',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Available Data types', example: 'invoices', 'x-internal': true }),
+    supportedFeatures: z.array(IntegrationSupportedFeatureSchema),
+  })
+  .openapi({
+    description: 'Describes support for a given datatype and associated operations',
+    examples: [
+      {
+        datatype: 'invoices',
+        supportedFeatures: [{ featureState: 'Release', featureType: 'Get' }],
+      },
+    ],
+    required: ['datatype', 'supportedFeatures'],
+    title: 'Data type feature',
+  })
+  .openapi('IntegrationDataTypeFeature')
+
 const IntegrationSchema = z
   .object({
     dataProvidedBy: z.string().exactOptional(),
-    datatypeFeatures: z
-      .array(
-        z
-          .object({
-            dataType: z
-              .enum([
-                'accountTransactions',
-                'balanceSheet',
-                'bankAccounts',
-                'bankTransactions',
-                'billCreditNotes',
-                'billPayments',
-                'bills',
-                'cashFlowStatement',
-                'chartOfAccounts',
-                'company',
-                'creditNotes',
-                'customers',
-                'directCosts',
-                'directIncomes',
-                'invoices',
-                'items',
-                'journalEntries',
-                'journals',
-                'paymentMethods',
-                'payments',
-                'profitAndLoss',
-                'purchaseOrders',
-                'salesOrders',
-                'suppliers',
-                'taxRates',
-                'trackingCategories',
-                'transfers',
-                'banking-accountBalances',
-                'banking-accounts',
-                'banking-transactionCategories',
-                'banking-transactions',
-                'commerce-companyInfo',
-                'commerce-customers',
-                'commerce-disputes',
-                'commerce-locations',
-                'commerce-orders',
-                'commerce-paymentMethods',
-                'commerce-payments',
-                'commerce-productCategories',
-                'commerce-products',
-                'commerce-taxComponents',
-                'commerce-transactions',
-              ])
-              .exactOptional()
-              .openapi({
-                description: 'Available Data types',
-                example: 'invoices',
-                'x-internal': true,
-              }),
-            supportedFeatures: z.array(
-              z
-                .object({
-                  featureState: z
-                    .enum(['Release', 'Beta', 'Deprecated', 'NotSupported', 'NotImplemented'])
-                    .openapi({ example: 'Release', title: 'Feature state' }),
-                  featureType: z
-                    .enum([
-                      'Get',
-                      'Post',
-                      'Categorization',
-                      'Delete',
-                      'Put',
-                      'GetAsPdf',
-                      'DownloadAttachment',
-                      'GetAttachment',
-                      'GetAttachments',
-                      'UploadAttachment',
-                    ])
-                    .openapi({ example: 'Get', 'x-internal': true }),
-                })
-                .openapi({ required: ['featureType', 'featureState'], 'x-internal': true }),
-            ),
-          })
-          .openapi({
-            description: 'Describes support for a given datatype and associated operations',
-            examples: [
-              {
-                datatype: 'invoices',
-                supportedFeatures: [{ featureState: 'Release', featureType: 'Get' }],
-              },
-            ],
-            required: ['datatype', 'supportedFeatures'],
-            title: 'Data type feature',
-          }),
-      )
-      .exactOptional(),
+    datatypeFeatures: z.array(IntegrationDataTypeFeatureSchema).exactOptional(),
     enabled: z
       .boolean()
       .openapi({ description: 'Whether this integration is enabled for your customers to use' }),
-    integrationId: z.lazy(() => ConnectionSchema).exactOptional(),
+    integrationId: ConnectionIntegrationIdSchema.exactOptional(),
     isBeta: z.boolean().exactOptional(),
     isOfflineConnector: z.boolean().exactOptional(),
     key: z
@@ -814,8 +783,8 @@ const IntegrationSchema = z
       }),
     logoUrl: z.url(),
     name: z.string().openapi({ examples: ['Xero'] }),
-    sourceId: z.lazy(() => BrandingSchema).exactOptional(),
-    sourceType: z.lazy(() => ConnectionSchema).exactOptional(),
+    sourceId: BrandingSourceIdSchema.exactOptional(),
+    sourceType: ConnectionSourceTypeSchema.exactOptional(),
   })
   .openapi({
     description: 'An integration that Codat supports',
@@ -945,9 +914,7 @@ const SyncSummarySchema = z
         description: 'Numerical status code sync of the company data.',
         examples: [4000],
       }),
-    syncUtc: z
-      .lazy(() => CompanySchema)
-      .nullable()
+    syncUtc: CompanyCreatedSchema.nullable()
       .exactOptional()
       .openapi({ description: 'UTC DateTime for the Sync.' }),
   })
@@ -956,9 +923,7 @@ const SyncSummarySchema = z
 
 const SyncToLatestArgsSchema = z
   .object({
-    syncTo: z
-      .lazy(() => CompanySchema)
-      .nullable()
+    syncTo: CompanyCreatedSchema.nullable()
       .exactOptional()
       .openapi({
         description:
@@ -1050,16 +1015,14 @@ export const postCompaniesCompanyIdSyncCommerceLatestRoute = createRoute({
   operationId: 'request-sync',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
     body: { description: '', content: { 'application/json': { schema: SyncToLatestArgsSchema } } },
   },
@@ -1077,16 +1040,14 @@ export const getConfigCompaniesCompanyIdSyncCommerceRoute = createRoute({
   operationId: 'get-configuration',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
   },
   responses: {
@@ -1106,16 +1067,14 @@ export const postConfigCompaniesCompanyIdSyncCommerceRoute = createRoute({
   operationId: 'set-configuration',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
   },
   responses: {
@@ -1432,16 +1391,14 @@ export const getMetaCompaniesCompanyIdConnectionsRoute = createRoute({
   operationId: 'list-connections',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
     query: z.object({
       page: z
@@ -1542,16 +1499,14 @@ export const postMetaCompaniesCompanyIdConnectionsRoute = createRoute({
   operationId: 'create-connection',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
     body: { content: { 'application/json': { schema: z.string() } } },
   },
@@ -1569,26 +1524,22 @@ export const patchMetaCompaniesCompanyIdConnectionsConnectionIdRoute = createRou
   operationId: 'update-connection',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
-      connectionId: z
-        .lazy(() => ConnectionSchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'connectionId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Connection/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
+      connectionId: ConnectionIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'connectionId',
+          required: true,
+          schema: { $ref: '#/components/schemas/ConnectionId' },
+        },
+      }),
     }),
     body: { content: { 'application/json': { schema: UpdateConnectionSchema } } },
   },
@@ -1607,16 +1558,14 @@ export const postMetaCompaniesCompanyIdSyncCommerceHistoricRoute = createRoute({
   operationId: 'request-sync-for-date-range',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
     body: { description: '', content: { 'application/json': { schema: DateRangeSchema } } },
   },
@@ -1634,16 +1583,14 @@ export const getMetaCompaniesCompanyIdSyncCommerceStatusRoute = createRoute({
   operationId: 'get-sync-status',
   request: {
     params: z.object({
-      companyId: z
-        .lazy(() => CompanySchema)
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'companyId',
-            required: true,
-            schema: { $ref: '#/components/schemas/Company/properties/id' },
-          },
-        }),
+      companyId: CompanyIdSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'companyId',
+          required: true,
+          schema: { $ref: '#/components/schemas/CompanyId' },
+        },
+      }),
     }),
   },
   responses: { 200: { description: 'Success' } },

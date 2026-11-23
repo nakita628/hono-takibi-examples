@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPlusModelsRoute, postPlusValidateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPlusModelsRoute, postPlusValidateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlusModelsRouteHandler: RouteHandler<typeof getPlusModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const plusHandler = app
-  .openapi(getPlusModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlusValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPlusValidateRouteHandler: RouteHandler<typeof postPlusValidateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

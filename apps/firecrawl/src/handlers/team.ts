@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTeamActivityRoute,
   getTeamCreditUsageHistoricalRoute,
   getTeamCreditUsageRoute,
@@ -10,30 +10,48 @@ import {
   putTeamThreatProtectionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamCreditUsageRouteHandler: RouteHandler<typeof getTeamCreditUsageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const teamHandler = app
-  .openapi(getTeamCreditUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamCreditUsageHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTokenUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTokenUsageHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamQueueStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamThreatProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTeamThreatProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamCreditUsageHistoricalRouteHandler: RouteHandler<
+  typeof getTeamCreditUsageHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTokenUsageRouteHandler: RouteHandler<typeof getTeamTokenUsageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTokenUsageHistoricalRouteHandler: RouteHandler<
+  typeof getTeamTokenUsageHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamQueueStatusRouteHandler: RouteHandler<typeof getTeamQueueStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamActivityRouteHandler: RouteHandler<typeof getTeamActivityRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamThreatProtectionRouteHandler: RouteHandler<
+  typeof getTeamThreatProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTeamThreatProtectionRouteHandler: RouteHandler<
+  typeof putTeamThreatProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

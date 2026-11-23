@@ -5,7 +5,7 @@ export default defineConfig({
   // the Elixir SDK is generated from.
   input: 'https://raw.githubusercontent.com/firecrawl/firecrawl/main/apps/elixir-sdk/openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

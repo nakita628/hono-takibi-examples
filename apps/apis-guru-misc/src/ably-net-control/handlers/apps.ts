@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppsAppIdNamespacesNamespaceIdRoute,
   deleteAppsAppIdQueuesQueueIdRoute,
   deleteAppsAppIdRulesRuleIdRoute,
@@ -21,63 +21,112 @@ import {
   postAppsIdPkcs12Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppsAppIdKeysRouteHandler: RouteHandler<typeof getAppsAppIdKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const appsHandler = app
-  .openapi(getAppsAppIdKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsAppIdKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdKeysKeyIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppIdNamespacesNamespaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsAppIdNamespacesNamespaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppIdQueuesQueueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsAppIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsIdPkcs12Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAppsAppIdKeysRouteHandler: RouteHandler<typeof postAppsAppIdKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsAppIdKeysKeyIdRouteHandler: RouteHandler<
+  typeof patchAppsAppIdKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdKeysKeyIdRevokeRouteHandler: RouteHandler<
+  typeof postAppsAppIdKeysKeyIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdNamespacesRouteHandler: RouteHandler<
+  typeof getAppsAppIdNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdNamespacesRouteHandler: RouteHandler<
+  typeof postAppsAppIdNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppIdNamespacesNamespaceIdRouteHandler: RouteHandler<
+  typeof deleteAppsAppIdNamespacesNamespaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsAppIdNamespacesNamespaceIdRouteHandler: RouteHandler<
+  typeof patchAppsAppIdNamespacesNamespaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdQueuesRouteHandler: RouteHandler<typeof getAppsAppIdQueuesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdQueuesRouteHandler: RouteHandler<
+  typeof postAppsAppIdQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppIdQueuesQueueIdRouteHandler: RouteHandler<
+  typeof deleteAppsAppIdQueuesQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdRulesRouteHandler: RouteHandler<typeof getAppsAppIdRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdRulesRouteHandler: RouteHandler<typeof postAppsAppIdRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteAppsAppIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof getAppsAppIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsAppIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof patchAppsAppIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsIdRouteHandler: RouteHandler<typeof deleteAppsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsIdRouteHandler: RouteHandler<typeof patchAppsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsIdPkcs12RouteHandler: RouteHandler<typeof postAppsIdPkcs12Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

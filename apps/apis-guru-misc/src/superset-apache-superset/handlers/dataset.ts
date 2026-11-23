@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatasetIndexRoute,
   deleteDatasetPkColumnColumnIdRoute,
   deleteDatasetPkMetricMetricIdRoute,
@@ -17,51 +17,82 @@ import {
   putDatasetPkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDatasetIndexRouteHandler: RouteHandler<typeof deleteDatasetIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const datasetHandler = app
-  .openapi(deleteDatasetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatasetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetDistinctColumnNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetExportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatasetImportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetRelatedColumnNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatasetPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatasetPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatasetPkColumnColumnIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatasetPkMetricMetricIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatasetPkRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasetPkRelatedObjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDatasetIndexRouteHandler: RouteHandler<typeof getDatasetIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatasetIndexRouteHandler: RouteHandler<typeof postDatasetIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetInfoRouteHandler: RouteHandler<typeof getDatasetInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetDistinctColumnNameRouteHandler: RouteHandler<
+  typeof getDatasetDistinctColumnNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetExportIndexRouteHandler: RouteHandler<
+  typeof getDatasetExportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatasetImportIndexRouteHandler: RouteHandler<
+  typeof postDatasetImportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetRelatedColumnNameRouteHandler: RouteHandler<
+  typeof getDatasetRelatedColumnNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatasetPkRouteHandler: RouteHandler<typeof deleteDatasetPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetPkRouteHandler: RouteHandler<typeof getDatasetPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatasetPkRouteHandler: RouteHandler<typeof putDatasetPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatasetPkColumnColumnIdRouteHandler: RouteHandler<
+  typeof deleteDatasetPkColumnColumnIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatasetPkMetricMetricIdRouteHandler: RouteHandler<
+  typeof deleteDatasetPkMetricMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatasetPkRefreshRouteHandler: RouteHandler<
+  typeof putDatasetPkRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasetPkRelatedObjectsRouteHandler: RouteHandler<
+  typeof getDatasetPkRelatedObjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

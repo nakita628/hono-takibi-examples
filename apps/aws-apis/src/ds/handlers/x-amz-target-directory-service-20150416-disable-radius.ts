@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDirectoryService20150416DisableRadiusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDirectoryService20150416DisableRadiusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDirectoryService20150416DisableRadiusHandler = app.openapi(
-  postXAmzTargetDirectoryService20150416DisableRadiusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDirectoryService20150416DisableRadiusRouteHandler: RouteHandler<
+  typeof postXAmzTargetDirectoryService20150416DisableRadiusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAiContentImportSourcesSourceIdRoute,
   deleteAiExternalPagesExternalPageIdTagsIdRoute,
   deleteAiExternalPagesPageIdRoute,
@@ -14,42 +14,74 @@ import {
   putAiExternalPagesPageIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAiContentImportSourcesRouteHandler: RouteHandler<
+  typeof getAiContentImportSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aiHandler = app
-  .openapi(getAiContentImportSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAiContentImportSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiContentImportSourcesSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiContentImportSourcesSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAiContentImportSourcesSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiExternalPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAiExternalPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiExternalPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiExternalPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAiExternalPagesPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAiExternalPagesExternalPageIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiExternalPagesExternalPageIdTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAiContentImportSourcesRouteHandler: RouteHandler<
+  typeof postAiContentImportSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiContentImportSourcesSourceIdRouteHandler: RouteHandler<
+  typeof deleteAiContentImportSourcesSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiContentImportSourcesSourceIdRouteHandler: RouteHandler<
+  typeof getAiContentImportSourcesSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAiContentImportSourcesSourceIdRouteHandler: RouteHandler<
+  typeof putAiContentImportSourcesSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiExternalPagesRouteHandler: RouteHandler<typeof getAiExternalPagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAiExternalPagesRouteHandler: RouteHandler<
+  typeof postAiExternalPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiExternalPagesPageIdRouteHandler: RouteHandler<
+  typeof deleteAiExternalPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiExternalPagesPageIdRouteHandler: RouteHandler<
+  typeof getAiExternalPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAiExternalPagesPageIdRouteHandler: RouteHandler<
+  typeof putAiExternalPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAiExternalPagesExternalPageIdTagsRouteHandler: RouteHandler<
+  typeof postAiExternalPagesExternalPageIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiExternalPagesExternalPageIdTagsIdRouteHandler: RouteHandler<
+  typeof deleteAiExternalPagesExternalPageIdTagsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

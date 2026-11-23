@@ -14,8 +14,8 @@ export async function getQuery(
 }
 
 export async function getQueryExtension(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client['query.:extension'].$get(args, options))
+  return await parseResponse(client['query.{extension}'].$get(args, options))
 }

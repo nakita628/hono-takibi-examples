@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/androiddeviceprovisioning/v1/openapi.yaml',
   output: './src/androiddeviceprovisioning/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/androiddeviceprovisioning/types.ts' },
   client: { output: './src/androiddeviceprovisioning/client.ts', baseUrl: '/' },
   rpc: { output: './src/androiddeviceprovisioning/rpc.ts', parseResponse: true },

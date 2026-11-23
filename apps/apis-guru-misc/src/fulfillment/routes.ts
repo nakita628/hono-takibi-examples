@@ -1987,7 +1987,7 @@ export const postOrdersRoute = createRoute({
         },
       },
     },
-    401: { description: 'You do not have permission to create orders', content: {} },
+    401: { description: 'You do not have permission to create orders' },
     403: {
       description: 'Forbidden',
       content: {
@@ -2703,7 +2703,7 @@ export const getOrdersIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Order not found', content: {} },
+    404: { description: 'Order not found' },
   },
   security: [{ fdcAuth: ['oms'] }],
 })
@@ -2998,7 +2998,7 @@ export const deleteOrdersIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Order not found', content: {} },
+    404: { description: 'Order not found' },
     405: {
       description: 'Could not cancel your order, perhaps it already shipped',
       content: {
@@ -3320,7 +3320,7 @@ export const putOrdersIdShipRoute = createRoute({
         },
       },
     },
-    404: { description: 'Order not found', content: {} },
+    404: { description: 'Order not found' },
   },
   security: [{ fdcAuth: ['oms'] }],
 })
@@ -3631,7 +3631,7 @@ export const putOrdersIdStatusRoute = createRoute({
         },
       },
     },
-    404: { description: 'Order not found', content: {} },
+    404: { description: 'Order not found' },
   },
   security: [{ fdcAuth: ['oms'] }],
 })

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/pinpoint/2016-12-01/openapi.yaml',
   output: './src/pinpoint/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pinpoint/types.ts' },
   client: { output: './src/pinpoint/client.ts', baseUrl: '/' },
   rpc: { output: './src/pinpoint/rpc.ts', parseResponse: true },

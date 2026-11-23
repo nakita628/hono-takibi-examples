@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasClickhouseNameRoute,
   deleteDbaasClickhouseServiceNameRoleRoleUuidRoute,
   deleteDbaasClickhouseServiceNameUserUserUuidRoute,
@@ -15,45 +15,80 @@ import {
   putDbaasClickhouseServiceNameUserUsernamePasswordResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDbaasClickhouseNameRouteHandler: RouteHandler<
+  typeof deleteDbaasClickhouseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasClickhouseHandler = app
-  .openapi(deleteDbaasClickhouseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasClickhouseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasClickhouseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasClickhouseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasClickhouseServiceNameRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasClickhouseServiceNameRoleRoleUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasClickhouseServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasClickhouseServiceNameAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasClickhouseServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasClickhouseServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasClickhouseServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasClickhouseServiceNameUserUserUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasClickhouseNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDbaasClickhouseNameRouteHandler: RouteHandler<
+  typeof getDbaasClickhouseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasClickhouseNameRouteHandler: RouteHandler<
+  typeof postDbaasClickhouseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasClickhouseNameRouteHandler: RouteHandler<
+  typeof putDbaasClickhouseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasClickhouseServiceNameRoleRouteHandler: RouteHandler<
+  typeof getDbaasClickhouseServiceNameRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasClickhouseServiceNameRoleRoleUuidRouteHandler: RouteHandler<
+  typeof deleteDbaasClickhouseServiceNameRoleRoleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasClickhouseServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasClickhouseServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasClickhouseServiceNameAclConfigRouteHandler: RouteHandler<
+  typeof getDbaasClickhouseServiceNameAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasClickhouseServiceNameUserRouteHandler: RouteHandler<
+  typeof getDbaasClickhouseServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasClickhouseServiceNameUserRouteHandler: RouteHandler<
+  typeof postDbaasClickhouseServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasClickhouseServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasClickhouseServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasClickhouseServiceNameUserUserUuidRouteHandler: RouteHandler<
+  typeof deleteDbaasClickhouseServiceNameUserUserUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasClickhouseNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasClickhouseNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

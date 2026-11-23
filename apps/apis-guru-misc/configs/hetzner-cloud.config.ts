@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/hetzner.cloud/1.0.0/openapi.yaml',
   output: './src/hetzner-cloud/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/hetzner-cloud/types.ts' },
   client: { output: './src/hetzner-cloud/client.ts', baseUrl: '/' },
   rpc: { output: './src/hetzner-cloud/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceCreateKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceCreateKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceCreateKeyHandler = app.openapi(
-  postXAmzTargetTrentServiceCreateKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceCreateKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceCreateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

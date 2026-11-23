@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteResponsesResponseIdBetaTrueRoute,
   deleteResponsesResponseIdRoute,
   getResponsesResponseIdBetaTrueRoute,
@@ -15,45 +15,78 @@ import {
   postResponsesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postResponsesRouteHandler: RouteHandler<typeof postResponsesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const responsesHandler = app
-  .openapi(postResponsesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResponsesResponseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteResponsesResponseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesResponseIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResponsesResponseIdInputItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesInputTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesCompactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResponsesResponseIdBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteResponsesResponseIdBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesResponseIdCancelBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesCompactBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResponsesResponseIdInputItemsBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponsesInputTokensBetaTrueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getResponsesResponseIdRouteHandler: RouteHandler<
+  typeof getResponsesResponseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteResponsesResponseIdRouteHandler: RouteHandler<
+  typeof deleteResponsesResponseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesResponseIdCancelRouteHandler: RouteHandler<
+  typeof postResponsesResponseIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResponsesResponseIdInputItemsRouteHandler: RouteHandler<
+  typeof getResponsesResponseIdInputItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesInputTokensRouteHandler: RouteHandler<
+  typeof postResponsesInputTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesCompactRouteHandler: RouteHandler<
+  typeof postResponsesCompactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResponsesResponseIdBetaTrueRouteHandler: RouteHandler<
+  typeof getResponsesResponseIdBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteResponsesResponseIdBetaTrueRouteHandler: RouteHandler<
+  typeof deleteResponsesResponseIdBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesResponseIdCancelBetaTrueRouteHandler: RouteHandler<
+  typeof postResponsesResponseIdCancelBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesCompactBetaTrueRouteHandler: RouteHandler<
+  typeof postResponsesCompactBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResponsesResponseIdInputItemsBetaTrueRouteHandler: RouteHandler<
+  typeof getResponsesResponseIdInputItemsBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResponsesInputTokensBetaTrueRouteHandler: RouteHandler<
+  typeof postResponsesInputTokensBetaTrueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/zenoti.com/1.0.0/openapi.yaml',
   output: './src/zenoti/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/zenoti/types.ts' },
   client: { output: './src/zenoti/client.ts', baseUrl: '/' },
   rpc: { output: './src/zenoti/rpc.ts', parseResponse: true },

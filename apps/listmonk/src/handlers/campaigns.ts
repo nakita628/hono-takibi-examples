@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCampaignsIdRoute,
   getCampaignsAnalyticsTypeRoute,
   getCampaignsIdPreviewRoute,
@@ -16,48 +16,78 @@ import {
   putCampaignsIdStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCampaignsRouteHandler: RouteHandler<typeof getCampaignsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const campaignsHandler = app
-  .openapi(getCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCampaignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCampaignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCampaignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCampaignsRunningStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCampaignsAnalyticsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCampaignsIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCampaignsIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCampaignsIdTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCampaignsIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCampaignsIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCampaignsIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCampaignsIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCampaignsRouteHandler: RouteHandler<typeof postCampaignsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCampaignsIdRouteHandler: RouteHandler<typeof getCampaignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCampaignsIdRouteHandler: RouteHandler<typeof putCampaignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCampaignsIdRouteHandler: RouteHandler<typeof deleteCampaignsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCampaignsRunningStatsRouteHandler: RouteHandler<
+  typeof getCampaignsRunningStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCampaignsAnalyticsTypeRouteHandler: RouteHandler<
+  typeof getCampaignsAnalyticsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCampaignsIdPreviewRouteHandler: RouteHandler<
+  typeof getCampaignsIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCampaignsIdPreviewRouteHandler: RouteHandler<
+  typeof postCampaignsIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCampaignsIdTextRouteHandler: RouteHandler<
+  typeof postCampaignsIdTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCampaignsIdStatusRouteHandler: RouteHandler<
+  typeof putCampaignsIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCampaignsIdArchiveRouteHandler: RouteHandler<
+  typeof putCampaignsIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCampaignsIdContentRouteHandler: RouteHandler<
+  typeof postCampaignsIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCampaignsIdTestRouteHandler: RouteHandler<
+  typeof postCampaignsIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

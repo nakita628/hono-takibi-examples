@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2NameRoute,
   getV2NameGetEffectivePolicyRoute,
   getV2NameRoute,
@@ -11,33 +11,50 @@ import {
   postV2ParentPoliciesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV2NameRouteHandler: RouteHandler<typeof deleteV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(deleteV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameGetEffectivePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentConstraintsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentCustomConstraintsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentCustomConstraintsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2NameRouteHandler: RouteHandler<typeof getV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2NameRouteHandler: RouteHandler<typeof patchV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameGetEffectivePolicyRouteHandler: RouteHandler<
+  typeof getV2NameGetEffectivePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentConstraintsRouteHandler: RouteHandler<
+  typeof getV2ParentConstraintsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentCustomConstraintsRouteHandler: RouteHandler<
+  typeof getV2ParentCustomConstraintsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentCustomConstraintsRouteHandler: RouteHandler<
+  typeof postV2ParentCustomConstraintsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentPoliciesRouteHandler: RouteHandler<
+  typeof getV2ParentPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentPoliciesRouteHandler: RouteHandler<
+  typeof postV2ParentPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

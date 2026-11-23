@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute,
   deleteUserIdDataSourcesDataSourceIdRoute,
   deleteUserIdSessionsSessionIdRoute,
@@ -15,45 +15,80 @@ import {
   putUserIdSessionsSessionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserIdDataSourcesRouteHandler: RouteHandler<
+  typeof getUserIdDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userIdHandler = app
-  .openapi(getUserIdDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserIdDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserIdDataSourcesDataSourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIdDataSourcesDataSourceIdDataPointChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserIdDatasetAggregateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIdSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserIdSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserIdSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUserIdDataSourcesRouteHandler: RouteHandler<
+  typeof postUserIdDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof deleteUserIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof getUserIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserIdDataSourcesDataSourceIdRouteHandler: RouteHandler<
+  typeof putUserIdDataSourcesDataSourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserIdDataSourcesDataSourceIdDataPointChangesRouteHandler: RouteHandler<
+  typeof getUserIdDataSourcesDataSourceIdDataPointChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserIdDataSourcesDataSourceIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserIdDataSourcesDataSourceIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUserIdDataSourcesDataSourceIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof patchUserIdDataSourcesDataSourceIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserIdDatasetAggregateRouteHandler: RouteHandler<
+  typeof postUserIdDatasetAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserIdSessionsRouteHandler: RouteHandler<typeof getUserIdSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof deleteUserIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof putUserIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

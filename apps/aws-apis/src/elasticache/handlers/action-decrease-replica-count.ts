@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDecreaseReplicaCountRoute, postActionDecreaseReplicaCountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDecreaseReplicaCountRoute,
+  postActionDecreaseReplicaCountRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDecreaseReplicaCountRouteHandler: RouteHandler<
+  typeof getActionDecreaseReplicaCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDecreaseReplicaCountHandler = app
-  .openapi(getActionDecreaseReplicaCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDecreaseReplicaCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDecreaseReplicaCountRouteHandler: RouteHandler<
+  typeof postActionDecreaseReplicaCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

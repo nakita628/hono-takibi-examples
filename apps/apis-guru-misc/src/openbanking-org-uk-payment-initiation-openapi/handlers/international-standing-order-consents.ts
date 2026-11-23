@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInternationalStandingOrderConsentsConsentIdRoute,
   postInternationalStandingOrderConsentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInternationalStandingOrderConsentsRouteHandler: RouteHandler<
+  typeof postInternationalStandingOrderConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const internationalStandingOrderConsentsHandler = app
-  .openapi(postInternationalStandingOrderConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternationalStandingOrderConsentsConsentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInternationalStandingOrderConsentsConsentIdRouteHandler: RouteHandler<
+  typeof getInternationalStandingOrderConsentsConsentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

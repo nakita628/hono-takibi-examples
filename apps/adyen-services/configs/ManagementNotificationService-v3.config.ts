@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ManagementNotificationService-v3.json',
   output: './src/ManagementNotificationService-v3/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ManagementNotificationService-v3/types.ts' },
   client: { output: './src/ManagementNotificationService-v3/client.ts', baseUrl: '/' },
   rpc: { output: './src/ManagementNotificationService-v3/rpc.ts', parseResponse: true },

@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestHandler =
-  app.openapi(postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRouteHandler: RouteHandler<
+  typeof postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectGlobalAddressesAddressRoute,
   deleteProjectsProjectGlobalBackendBucketsBackendBucketRoute,
   deleteProjectsProjectGlobalBackendServicesBackendServiceRoute,
@@ -739,2418 +739,4424 @@ import {
   putProjectsProjectZonesZoneInstancesInstanceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsProjectRouteHandler: RouteHandler<typeof getProjectsProjectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedAcceleratorTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedBackendServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedCommitmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedDiskTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInstanceGroupManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInstanceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInstanceTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInstantSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedInterconnectAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedMachineTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNetworkAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNetworkEdgeSecurityServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNodeTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedNodeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedPacketMirroringsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedPublicDelegatedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedRoutersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedSecurityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedServiceAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedSslPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedSubnetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedSubnetworksListUsableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetHttpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetHttpsProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetTcpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedTargetVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedUrlMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectAggregatedVpnTunnelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectDisableXpnHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectDisableXpnResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectEnableXpnHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectEnableXpnResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGetXpnHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGetXpnResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalAddressesAddressMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalAddressesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalBackendBucketsBackendBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendBucketsBackendBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalBackendBucketsBackendBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalBackendBucketsBackendBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsBackendBucketAddSignedUrlKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsBackendBucketDeleteSignedUrlKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsBackendBucketSetEdgeSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendBucketsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendBucketsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendServicesListUsableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesBackendServiceAddSignedUrlKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesBackendServiceDeleteSignedUrlKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesBackendServiceGetHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectGlobalBackendServicesBackendServiceSetEdgeSecurityPolicyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectGlobalBackendServicesBackendServiceSetSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalBackendServicesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalBackendServicesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalExternalVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalExternalVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalExternalVpnGatewaysResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalExternalVpnGatewaysResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyCloneRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyPatchRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallPoliciesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallPoliciesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalFirewallsFirewallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalFirewallsFirewallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalFirewallsFirewallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalFirewallsFirewallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalForwardingRulesForwardingRuleSetTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalForwardingRulesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHttpHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalHttpHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHttpsHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalHttpsHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalImagesFamilyFamilyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalImagesImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalImagesImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalImagesImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalImagesImageDeprecateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalImagesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalImagesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalImagesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalImagesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInstanceTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalInstanceTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalInstanceTemplatesInstanceTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInstanceTemplatesInstanceTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInstanceTemplatesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalInstanceTemplatesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalInstanceTemplatesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectLocationsInterconnectLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectRemoteLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getProjectsProjectGlobalInterconnectRemoteLocationsInterconnectRemoteLocationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectGlobalInterconnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalInterconnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalInterconnectsInterconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectsInterconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalInterconnectsInterconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectsInterconnectGetDiagnosticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalInterconnectsInterconnectGetMacsecConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalInterconnectsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalLicenseCodesLicenseCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalLicenseCodesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalLicensesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalLicensesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalLicensesLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalLicensesLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalLicensesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalLicensesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalLicensesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalMachineImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalMachineImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalMachineImagesMachineImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalMachineImagesMachineImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalMachineImagesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalMachineImagesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalMachineImagesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectGlobalNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalNetworksNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalNetworksNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalNetworksNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalNetworksNetworkAddPeeringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalNetworksNetworkGetEffectiveFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalNetworksNetworkListPeeringRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalNetworksNetworkRemovePeeringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalNetworksNetworkSwitchToCustomModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalNetworksNetworkUpdatePeeringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalOperationsOperationWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalPublicAdvertisedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalPublicAdvertisedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixAnnounceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixWithdrawRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectGlobalPublicDelegatedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalPublicDelegatedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalRoutesRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalRoutesRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSecurityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSecurityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSecurityPoliciesListPreconfiguredExpressionSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSecurityPoliciesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSecurityPoliciesSecurityPolicyAddRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSecurityPoliciesSecurityPolicyGetRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSecurityPoliciesSecurityPolicyPatchRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSecurityPoliciesSecurityPolicyRemoveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSnapshotSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalSnapshotSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSnapshotsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSnapshotsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSnapshotsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSnapshotsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalSnapshotsSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSnapshotsSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalSslCertificatesSslCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSslCertificatesSslCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSslPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalSslPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSslPoliciesListAvailableFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetGrpcProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetGrpcProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetHttpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetHttpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetHttpsProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetHttpsProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetCertificateMapRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetQuicOverrideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetSslProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalTargetSslProxiesTargetSslProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetSslProxiesTargetSslProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetCertificateMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetProxyHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetTcpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetTcpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetProxyHeaderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalUrlMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalUrlMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectGlobalUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectGlobalUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectGlobalUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectGlobalUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalUrlMapsUrlMapInvalidateCacheRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectGlobalUrlMapsUrlMapValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectListXpnHostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectMoveDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectMoveInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionAddressesAddressMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionAddressesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectRegionsRegionAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionAutoscalersAutoscalerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionAutoscalersAutoscalerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionBackendServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionBackendServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionBackendServicesListUsableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectRegionsRegionBackendServicesBackendServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionBackendServicesBackendServiceGetHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionBackendServicesBackendServiceSetSecurityPolicyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionBackendServicesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionBackendServicesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionBackendServicesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionCommitmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionCommitmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionCommitmentsCommitmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionCommitmentsCommitmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionDiskTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionDiskTypesDiskTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksBulkInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksStopGroupAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskAddResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskCreateSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskRemoveResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskStartAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksDiskStopAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionDisksResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionDisksResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionFirewallPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionFirewallPoliciesGetEffectiveFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddAssociationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyCloneRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetAssociationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyPatchRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveAssociationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionFirewallPoliciesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionFirewallPoliciesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionForwardingRulesForwardingRuleSetTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionForwardingRulesResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionHealthCheckServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionHealthCheckServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionHealthChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectRegionsRegionHealthChecksHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstanceGroupManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstanceGroupManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerAbandonInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerCreateInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeleteInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListErrorsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListManagedInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRecreateInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerResizeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionInstanceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstanceGroupsInstanceGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupListInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupSetNamedPortsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstanceTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstanceTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstancesBulkInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstantSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstantSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInstantSnapshotsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstantSnapshotsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstantSnapshotsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInstantSnapshotsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionInterconnectAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionInterconnectAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectRegionsRegionInterconnectAttachmentsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNetworkAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNetworkAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNetworkAttachmentsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNetworkAttachmentsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionNetworkAttachmentsResourceTestIamPermissionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectRegionsRegionNetworkEdgeSecurityServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionNodeTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNodeTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNodeTemplatesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNodeTemplatesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNodeTemplatesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionNotificationEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionNotificationEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionOperationsOperationWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionPacketMirroringsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionPacketMirroringsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionPacketMirroringsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionPublicDelegatedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionPublicDelegatedPrefixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixAnnounceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixWithdrawRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionResourcePoliciesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionResourcePoliciesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionResourcePoliciesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoutersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionRoutersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionRoutersRouterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoutersRouterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionRoutersRouterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectRegionsRegionRoutersRouterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoutersRouterGetNatIpInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoutersRouterGetNatMappingInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionRoutersRouterGetRouterStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionRoutersRouterPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSecurityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSecurityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyAddRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyGetRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyPatchRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRemoveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionServiceAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionServiceAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionServiceAttachmentsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionServiceAttachmentsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionServiceAttachmentsResourceTestIamPermissionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionSslCertificatesSslCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSslCertificatesSslCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSslPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSslPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSslPoliciesListAvailableFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSubnetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSubnetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSubnetworksResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSubnetworksResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSubnetworksResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionSubnetworksSubnetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionSubnetworksSubnetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionSubnetworksSubnetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionSubnetworksSubnetworkExpandIpCidrRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionSubnetworksSubnetworkSetPrivateIpGoogleAccessRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionTargetHttpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetHttpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxySetUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetHttpsProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetHttpsProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetUrlMapRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectRegionsRegionTargetPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionTargetPoolsTargetPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetPoolsTargetPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolGetHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveHealthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetTcpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetTcpProxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionTargetVpnGatewaysResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionUrlMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionUrlMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectRegionsRegionUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectRegionsRegionUrlMapsUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionUrlMapsUrlMapValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionVpnGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionVpnGatewaysResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionVpnGatewaysResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayGetStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionVpnTunnelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionVpnTunnelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectRegionsRegionVpnTunnelsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectRegionsRegionZonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectSetCloudArmorTierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectSetCommonInstanceMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectSetDefaultNetworkTierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectSetUsageExportBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectTargetHttpProxiesTargetHttpProxySetUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetUrlMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneAcceleratorTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneAcceleratorTypesAcceleratorTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectZonesZoneAutoscalersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneAutoscalersAutoscalerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneAutoscalersAutoscalerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneDiskTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneDiskTypesDiskTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksBulkInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksStopGroupAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneDisksDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskAddResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskCreateSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskRemoveResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskStartAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksDiskStopAsyncReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneDisksResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneDisksResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneImageFamilyViewsFamilyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstanceGroupManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupManagersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerAbandonInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerCreateInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeleteInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListErrorsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListManagedInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRecreateInstancesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerResizeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectZonesZoneInstanceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneInstanceGroupsInstanceGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstanceGroupsInstanceGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupsInstanceGroupAddInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupsInstanceGroupListInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupsInstanceGroupRemoveInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstanceGroupsInstanceGroupSetNamedPortsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesBulkInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectZonesZoneInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceAddAccessConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceAddResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceAttachDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceDeleteAccessConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceDetachDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceGetEffectiveFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceGetGuestAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceGetShieldedInstanceIdentityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstancePerformMaintenanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceReferrersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceRemoveResourcePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceScreenshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSendDiagnosticInterruptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesInstanceSerialPortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetDiskAutoDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetMachineResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetMachineTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetMinCpuPlatformRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetSchedulingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchProjectsProjectZonesZoneInstancesInstanceSetShieldedInstanceIntegrityPolicyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSetTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSimulateMaintenanceEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceStartWithEncryptionKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesInstanceUpdateAccessConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneInstancesInstanceUpdateDisplayDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneInstancesInstanceUpdateNetworkInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneInstancesInstanceUpdateShieldedInstanceConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstancesResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesResourceSetDeletionProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstancesResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstantSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstantSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneInstantSnapshotsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstantSnapshotsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstantSnapshotsResourceSetLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneInstantSnapshotsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneMachineTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneMachineTypesMachineTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNetworkEndpointGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postProjectsProjectZonesZoneNetworkEndpointGroupsResourceTestIamPermissionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getProjectsProjectZonesZoneNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneNodeGroupsNodeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNodeGroupsNodeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneNodeGroupsNodeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsNodeGroupAddNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsNodeGroupDeleteNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsNodeGroupListNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsNodeGroupSetNodeTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsNodeGroupSimulateMaintenanceEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNodeGroupsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneNodeGroupsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNodeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneNodeTypesNodeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneOperationsOperationWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneReservationsReservationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneReservationsReservationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectZonesZoneReservationsReservationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneReservationsReservationResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneReservationsResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneReservationsResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneReservationsResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneTargetInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneTargetInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectZonesZoneTargetInstancesTargetInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectZonesZoneTargetInstancesTargetInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectZonesZoneTargetInstancesTargetInstanceSetSecurityPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProjectsProjectAggregatedAcceleratorTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedAcceleratorTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedAddressesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedAutoscalersRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedBackendServicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedBackendServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedCommitmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedCommitmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedDiskTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedDiskTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedDisksRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedForwardingRulesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedHealthChecksRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInstanceGroupManagersRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInstanceGroupManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInstanceGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInstanceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInstanceTemplatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInstanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInstancesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInstantSnapshotsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInstantSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedInterconnectAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedInterconnectAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedMachineTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedMachineTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNetworkAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNetworkAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNetworkEdgeSecurityServicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNetworkEdgeSecurityServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNodeGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNodeTemplatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNodeTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedNodeTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedNodeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedOperationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedPacketMirroringsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedPacketMirroringsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedPublicDelegatedPrefixesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedPublicDelegatedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedReservationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedResourcePoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedRoutersRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedRoutersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedSecurityPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedSecurityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedServiceAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedServiceAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedSslCertificatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedSslPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedSslPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedSubnetworksRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedSubnetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedSubnetworksListUsableRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedSubnetworksListUsableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetHttpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetHttpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetHttpsProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetHttpsProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetInstancesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetPoolsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetTcpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetTcpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedTargetVpnGatewaysRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedTargetVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedUrlMapsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedUrlMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedVpnGatewaysRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectAggregatedVpnTunnelsRouteHandler: RouteHandler<
+  typeof getProjectsProjectAggregatedVpnTunnelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectDisableXpnHostRouteHandler: RouteHandler<
+  typeof postProjectsProjectDisableXpnHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectDisableXpnResourceRouteHandler: RouteHandler<
+  typeof postProjectsProjectDisableXpnResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectEnableXpnHostRouteHandler: RouteHandler<
+  typeof postProjectsProjectEnableXpnHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectEnableXpnResourceRouteHandler: RouteHandler<
+  typeof postProjectsProjectEnableXpnResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGetXpnHostRouteHandler: RouteHandler<
+  typeof getProjectsProjectGetXpnHostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGetXpnResourcesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGetXpnResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalAddressesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalAddressesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalAddressesAddressRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalAddressesAddressRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalAddressesAddressMoveRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalAddressesAddressMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalAddressesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalAddressesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendBucketsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendBucketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalBackendBucketsBackendBucketRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalBackendBucketsBackendBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendBucketsBackendBucketRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendBucketsBackendBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalBackendBucketsBackendBucketRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalBackendBucketsBackendBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalBackendBucketsBackendBucketRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalBackendBucketsBackendBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsBackendBucketAddSignedUrlKeyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsBackendBucketAddSignedUrlKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsBackendBucketDeleteSignedUrlKeyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsBackendBucketDeleteSignedUrlKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsBackendBucketSetEdgeSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsBackendBucketSetEdgeSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendBucketsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendBucketsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendBucketsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendBucketsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendServicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendServicesListUsableRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendServicesListUsableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesBackendServiceAddSignedUrlKeyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesBackendServiceAddSignedUrlKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesBackendServiceDeleteSignedUrlKeyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesBackendServiceDeleteSignedUrlKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesBackendServiceGetHealthRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesBackendServiceGetHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesBackendServiceSetEdgeSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesBackendServiceSetEdgeSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesBackendServiceSetSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesBackendServiceSetSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalBackendServicesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalBackendServicesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalBackendServicesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalBackendServicesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalExternalVpnGatewaysRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalExternalVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalExternalVpnGatewaysRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalExternalVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalExternalVpnGatewaysExternalVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalExternalVpnGatewaysResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalExternalVpnGatewaysResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalExternalVpnGatewaysResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalExternalVpnGatewaysResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddAssociationRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyAddRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyCloneRulesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyCloneRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetAssociationRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallPoliciesFirewallPolicyGetRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyPatchRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyPatchRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveAssociationRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesFirewallPolicyRemoveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallPoliciesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallPoliciesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallPoliciesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallPoliciesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalFirewallsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalFirewallsFirewallRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalFirewallsFirewallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalFirewallsFirewallRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalFirewallsFirewallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalFirewallsFirewallRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalFirewallsFirewallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalFirewallsFirewallRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalFirewallsFirewallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalForwardingRulesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalForwardingRulesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalForwardingRulesForwardingRuleSetTargetRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalForwardingRulesForwardingRuleSetTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalForwardingRulesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalForwardingRulesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHealthChecksRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalHealthChecksRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHttpHealthChecksRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHttpHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalHttpHealthChecksRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalHttpHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalHttpHealthChecksHttpHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHttpsHealthChecksRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHttpsHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalHttpsHealthChecksRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalHttpsHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalHttpsHealthChecksHttpsHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalImagesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalImagesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalImagesFamilyFamilyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalImagesFamilyFamilyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalImagesImageRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalImagesImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalImagesImageRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalImagesImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalImagesImageRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalImagesImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalImagesImageDeprecateRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalImagesImageDeprecateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalImagesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalImagesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalImagesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalImagesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalImagesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalImagesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalImagesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalImagesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInstanceTemplatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInstanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalInstanceTemplatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalInstanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalInstanceTemplatesInstanceTemplateRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalInstanceTemplatesInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInstanceTemplatesInstanceTemplateRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInstanceTemplatesInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInstanceTemplatesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInstanceTemplatesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalInstanceTemplatesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalInstanceTemplatesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalInstanceTemplatesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalInstanceTemplatesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectLocationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectLocationsInterconnectLocationRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectLocationsInterconnectLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectRemoteLocationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectRemoteLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectRemoteLocationsInterconnectRemoteLocationRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectRemoteLocationsInterconnectRemoteLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalInterconnectsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalInterconnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalInterconnectsInterconnectRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalInterconnectsInterconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectsInterconnectRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectsInterconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalInterconnectsInterconnectRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalInterconnectsInterconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectsInterconnectGetDiagnosticsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectsInterconnectGetDiagnosticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalInterconnectsInterconnectGetMacsecConfigRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalInterconnectsInterconnectGetMacsecConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalInterconnectsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalInterconnectsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalLicenseCodesLicenseCodeRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalLicenseCodesLicenseCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalLicenseCodesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalLicenseCodesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalLicensesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalLicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalLicensesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalLicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalLicensesLicenseRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalLicensesLicenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalLicensesLicenseRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalLicensesLicenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalLicensesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalLicensesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalLicensesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalLicensesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalLicensesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalLicensesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalMachineImagesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalMachineImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalMachineImagesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalMachineImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalMachineImagesMachineImageRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalMachineImagesMachineImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalMachineImagesMachineImageRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalMachineImagesMachineImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalMachineImagesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalMachineImagesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalMachineImagesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalMachineImagesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalMachineImagesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalMachineImagesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworksRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworksRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalNetworksNetworkRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalNetworksNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworksNetworkRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworksNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalNetworksNetworkRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalNetworksNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworksNetworkAddPeeringRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworksNetworkAddPeeringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworksNetworkGetEffectiveFirewallsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworksNetworkGetEffectiveFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalNetworksNetworkListPeeringRoutesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalNetworksNetworkListPeeringRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworksNetworkRemovePeeringRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworksNetworkRemovePeeringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalNetworksNetworkSwitchToCustomModeRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalNetworksNetworkSwitchToCustomModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalNetworksNetworkUpdatePeeringRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalNetworksNetworkUpdatePeeringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalOperationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalOperationsOperationRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalOperationsOperationRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalOperationsOperationWaitRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalOperationsOperationWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalPublicAdvertisedPrefixesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalPublicAdvertisedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalPublicAdvertisedPrefixesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalPublicAdvertisedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixAnnounceRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixAnnounceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixWithdrawRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalPublicAdvertisedPrefixesPublicAdvertisedPrefixWithdrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalPublicDelegatedPrefixesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalPublicDelegatedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalPublicDelegatedPrefixesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalPublicDelegatedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalRoutesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalRoutesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalRoutesRouteRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalRoutesRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalRoutesRouteRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalRoutesRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSecurityPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSecurityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSecurityPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSecurityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSecurityPoliciesListPreconfiguredExpressionSetsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSecurityPoliciesListPreconfiguredExpressionSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSecurityPoliciesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSecurityPoliciesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSecurityPoliciesSecurityPolicyAddRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSecurityPoliciesSecurityPolicyAddRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSecurityPoliciesSecurityPolicyGetRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSecurityPoliciesSecurityPolicyGetRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSecurityPoliciesSecurityPolicyPatchRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSecurityPoliciesSecurityPolicyPatchRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSecurityPoliciesSecurityPolicyRemoveRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSecurityPoliciesSecurityPolicyRemoveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSnapshotSettingsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSnapshotSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalSnapshotSettingsRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalSnapshotSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSnapshotsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSnapshotsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSnapshotsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSnapshotsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSnapshotsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSnapshotsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSnapshotsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSnapshotsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSnapshotsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSnapshotsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalSnapshotsSnapshotRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalSnapshotsSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSnapshotsSnapshotRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSnapshotsSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSslCertificatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSslCertificatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalSslCertificatesSslCertificateRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalSslCertificatesSslCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSslCertificatesSslCertificateRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSslCertificatesSslCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSslPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSslPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalSslPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalSslPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSslPoliciesListAvailableFeaturesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSslPoliciesListAvailableFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetGrpcProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetGrpcProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetGrpcProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetGrpcProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalTargetGrpcProxiesTargetGrpcProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetHttpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetHttpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetHttpProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetHttpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalTargetHttpProxiesTargetHttpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetHttpsProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetHttpsProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetHttpsProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetHttpsProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetCertificateMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetCertificateMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetQuicOverrideRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetQuicOverrideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetSslPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetHttpsProxiesTargetHttpsProxySetSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetSslProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetSslProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalTargetSslProxiesTargetSslProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalTargetSslProxiesTargetSslProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetSslProxiesTargetSslProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetSslProxiesTargetSslProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetBackendServiceRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetCertificateMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetCertificateMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetProxyHeaderRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetProxyHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslCertificatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetSslProxiesTargetSslProxySetSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetTcpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetTcpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetTcpProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetTcpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalTargetTcpProxiesTargetTcpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetBackendServiceRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetProxyHeaderRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalTargetTcpProxiesTargetTcpProxySetProxyHeaderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalUrlMapsRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalUrlMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalUrlMapsRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalUrlMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectGlobalUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectGlobalUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectGlobalUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof getProjectsProjectGlobalUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectGlobalUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof patchProjectsProjectGlobalUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectGlobalUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof putProjectsProjectGlobalUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalUrlMapsUrlMapInvalidateCacheRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalUrlMapsUrlMapInvalidateCacheRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectGlobalUrlMapsUrlMapValidateRouteHandler: RouteHandler<
+  typeof postProjectsProjectGlobalUrlMapsUrlMapValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectListXpnHostsRouteHandler: RouteHandler<
+  typeof postProjectsProjectListXpnHostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectMoveDiskRouteHandler: RouteHandler<
+  typeof postProjectsProjectMoveDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectMoveInstanceRouteHandler: RouteHandler<
+  typeof postProjectsProjectMoveInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionAddressesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionAddressesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionAddressesAddressRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionAddressesAddressRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionAddressesAddressMoveRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionAddressesAddressMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionAddressesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionAddressesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionAutoscalersRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionAutoscalersRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionAutoscalersRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectRegionsRegionAutoscalersRouteHandler: RouteHandler<
+  typeof putProjectsProjectRegionsRegionAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionAutoscalersAutoscalerRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionAutoscalersAutoscalerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionAutoscalersAutoscalerRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionAutoscalersAutoscalerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionBackendServicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionBackendServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionBackendServicesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionBackendServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionBackendServicesListUsableRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionBackendServicesListUsableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectRegionsRegionBackendServicesBackendServiceRouteHandler: RouteHandler<
+  typeof putProjectsProjectRegionsRegionBackendServicesBackendServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionBackendServicesBackendServiceGetHealthRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionBackendServicesBackendServiceGetHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionBackendServicesBackendServiceSetSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionBackendServicesBackendServiceSetSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionBackendServicesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionBackendServicesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionBackendServicesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionBackendServicesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionBackendServicesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionBackendServicesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionCommitmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionCommitmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionCommitmentsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionCommitmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionCommitmentsCommitmentRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionCommitmentsCommitmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionCommitmentsCommitmentRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionCommitmentsCommitmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionDiskTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionDiskTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionDiskTypesDiskTypeRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionDiskTypesDiskTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionDisksRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksBulkInsertRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksBulkInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksStopGroupAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksStopGroupAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionDisksDiskRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionDisksDiskRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionDisksDiskRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskAddResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskAddResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskCreateSnapshotRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskCreateSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskRemoveResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskRemoveResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskResizeRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskStartAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskStartAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksDiskStopAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksDiskStopAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionDisksResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionDisksResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionDisksResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionDisksResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesGetEffectiveFirewallsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesGetEffectiveFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddAssociationRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyAddRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyCloneRulesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyCloneRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetAssociationRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyGetRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyPatchRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyPatchRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveAssociationRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesFirewallPolicyRemoveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionFirewallPoliciesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionFirewallPoliciesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionFirewallPoliciesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionFirewallPoliciesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionForwardingRulesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionForwardingRulesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionForwardingRulesForwardingRuleRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionForwardingRulesForwardingRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionForwardingRulesForwardingRuleSetTargetRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionForwardingRulesForwardingRuleSetTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionForwardingRulesResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionForwardingRulesResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionHealthCheckServicesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionHealthCheckServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionHealthCheckServicesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionHealthCheckServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionHealthCheckServicesHealthCheckServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionHealthChecksRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionHealthChecksRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionHealthChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectRegionsRegionHealthChecksHealthCheckRouteHandler: RouteHandler<
+  typeof putProjectsProjectRegionsRegionHealthChecksHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceGroupManagersRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceGroupManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerAbandonInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerAbandonInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerCreateInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerCreateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeleteInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeleteInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListErrorsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListManagedInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListManagedInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRecreateInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerRecreateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerResizeRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceGroupsInstanceGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceGroupsInstanceGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupListInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupListInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupSetNamedPortsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceGroupsInstanceGroupSetNamedPortsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceTemplatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstanceTemplatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstanceTemplatesInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstancesBulkInsertRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstancesBulkInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstantSnapshotsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstantSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstantSnapshotsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstantSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstantSnapshotsInstantSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInstantSnapshotsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInstantSnapshotsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstantSnapshotsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstantSnapshotsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstantSnapshotsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstantSnapshotsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInstantSnapshotsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInstantSnapshotsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInterconnectAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInterconnectAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInterconnectAttachmentsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInterconnectAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionInterconnectAttachmentsInterconnectAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionInterconnectAttachmentsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionInterconnectAttachmentsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkAttachmentsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionNetworkAttachmentsNetworkAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkAttachmentsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkAttachmentsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkAttachmentsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkAttachmentsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkAttachmentsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkAttachmentsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkEdgeSecurityServicesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkEdgeSecurityServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionNetworkEdgeSecurityServicesNetworkEdgeSecurityServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNodeTemplatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNodeTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNodeTemplatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNodeTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNodeTemplatesNodeTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNodeTemplatesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNodeTemplatesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNodeTemplatesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNodeTemplatesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNodeTemplatesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNodeTemplatesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNotificationEndpointsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNotificationEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionNotificationEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionNotificationEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionNotificationEndpointsNotificationEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionOperationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionOperationsOperationRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionOperationsOperationRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionOperationsOperationWaitRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionOperationsOperationWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionPacketMirroringsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionPacketMirroringsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionPacketMirroringsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionPacketMirroringsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionPacketMirroringsPacketMirroringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionPacketMirroringsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionPacketMirroringsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionPublicDelegatedPrefixesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionPublicDelegatedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionPublicDelegatedPrefixesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionPublicDelegatedPrefixesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixAnnounceRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixAnnounceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixWithdrawRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionPublicDelegatedPrefixesPublicDelegatedPrefixWithdrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionResourcePoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionResourcePoliciesResourcePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionResourcePoliciesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionResourcePoliciesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionResourcePoliciesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionResourcePoliciesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionResourcePoliciesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionResourcePoliciesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRoutersRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoutersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionRoutersRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionRoutersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionRoutersRouterRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionRoutersRouterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRoutersRouterRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoutersRouterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionRoutersRouterRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionRoutersRouterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectRegionsRegionRoutersRouterRouteHandler: RouteHandler<
+  typeof putProjectsProjectRegionsRegionRoutersRouterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRoutersRouterGetNatIpInfoRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoutersRouterGetNatIpInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRoutersRouterGetNatMappingInfoRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoutersRouterGetNatMappingInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionRoutersRouterGetRouterStatusRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionRoutersRouterGetRouterStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionRoutersRouterPreviewRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionRoutersRouterPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSecurityPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSecurityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSecurityPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSecurityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyAddRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyAddRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyGetRuleRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyGetRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyPatchRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyPatchRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRemoveRuleRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSecurityPoliciesSecurityPolicyRemoveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionServiceAttachmentsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionServiceAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionServiceAttachmentsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionServiceAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionServiceAttachmentsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionServiceAttachmentsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionServiceAttachmentsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionServiceAttachmentsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionServiceAttachmentsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionServiceAttachmentsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionServiceAttachmentsServiceAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSslCertificatesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSslCertificatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionSslCertificatesSslCertificateRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionSslCertificatesSslCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSslCertificatesSslCertificateRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSslCertificatesSslCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSslPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSslPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSslPoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSslPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSslPoliciesListAvailableFeaturesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSslPoliciesListAvailableFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionSslPoliciesSslPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionSslPoliciesSslPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSubnetworksRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSubnetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSubnetworksRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSubnetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSubnetworksResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSubnetworksResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSubnetworksResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSubnetworksResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSubnetworksResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSubnetworksResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionSubnetworksSubnetworkRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionSubnetworksSubnetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionSubnetworksSubnetworkRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionSubnetworksSubnetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionSubnetworksSubnetworkRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionSubnetworksSubnetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSubnetworksSubnetworkExpandIpCidrRangeRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSubnetworksSubnetworkExpandIpCidrRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionSubnetworksSubnetworkSetPrivateIpGoogleAccessRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionSubnetworksSubnetworkSetPrivateIpGoogleAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetHttpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetHttpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetHttpProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetHttpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxySetUrlMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetHttpProxiesTargetHttpProxySetUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetHttpsProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetHttpsProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetHttpsProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetHttpsProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetUrlMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetHttpsProxiesTargetHttpsProxySetUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetPoolsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionTargetPoolsTargetPoolRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionTargetPoolsTargetPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetPoolsTargetPoolRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetPoolsTargetPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddHealthCheckRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddInstanceRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolAddInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolGetHealthRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolGetHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveHealthCheckRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveHealthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveInstanceRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolRemoveInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetBackupRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetPoolsTargetPoolSetSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetTcpProxiesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetTcpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetTcpProxiesRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetTcpProxiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetTcpProxiesTargetTcpProxyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetVpnGatewaysRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetVpnGatewaysRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionTargetVpnGatewaysResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionTargetVpnGatewaysResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionTargetVpnGatewaysTargetVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionUrlMapsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionUrlMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionUrlMapsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionUrlMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectRegionsRegionUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof patchProjectsProjectRegionsRegionUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectRegionsRegionUrlMapsUrlMapRouteHandler: RouteHandler<
+  typeof putProjectsProjectRegionsRegionUrlMapsUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionUrlMapsUrlMapValidateRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionUrlMapsUrlMapValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionVpnGatewaysRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionVpnGatewaysRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionVpnGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionVpnGatewaysResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionVpnGatewaysResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionVpnGatewaysResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionVpnGatewaysResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayGetStatusRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionVpnGatewaysVpnGatewayGetStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionVpnTunnelsRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionVpnTunnelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionVpnTunnelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionVpnTunnelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectRegionsRegionVpnTunnelsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectRegionsRegionVpnTunnelsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionVpnTunnelsVpnTunnelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectRegionsRegionZonesRouteHandler: RouteHandler<
+  typeof getProjectsProjectRegionsRegionZonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectSetCloudArmorTierRouteHandler: RouteHandler<
+  typeof postProjectsProjectSetCloudArmorTierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectSetCommonInstanceMetadataRouteHandler: RouteHandler<
+  typeof postProjectsProjectSetCommonInstanceMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectSetDefaultNetworkTierRouteHandler: RouteHandler<
+  typeof postProjectsProjectSetDefaultNetworkTierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectSetUsageExportBucketRouteHandler: RouteHandler<
+  typeof postProjectsProjectSetUsageExportBucketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectTargetHttpProxiesTargetHttpProxySetUrlMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectTargetHttpProxiesTargetHttpProxySetUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRouteHandler: RouteHandler<
+  typeof postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetUrlMapRouteHandler: RouteHandler<
+  typeof postProjectsProjectTargetHttpsProxiesTargetHttpsProxySetUrlMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneAcceleratorTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneAcceleratorTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneAcceleratorTypesAcceleratorTypeRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneAcceleratorTypesAcceleratorTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneAutoscalersRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneAutoscalersRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneAutoscalersRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectZonesZoneAutoscalersRouteHandler: RouteHandler<
+  typeof putProjectsProjectZonesZoneAutoscalersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneAutoscalersAutoscalerRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneAutoscalersAutoscalerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneAutoscalersAutoscalerRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneAutoscalersAutoscalerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneDiskTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneDiskTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneDiskTypesDiskTypeRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneDiskTypesDiskTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneDisksRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksBulkInsertRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksBulkInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksStopGroupAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksStopGroupAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneDisksDiskRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneDisksDiskRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneDisksDiskRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneDisksDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskAddResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskAddResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskCreateSnapshotRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskCreateSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskRemoveResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskRemoveResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskResizeRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskStartAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskStartAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksDiskStopAsyncReplicationRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksDiskStopAsyncReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneDisksResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneDisksResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneDisksResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneDisksResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneImageFamilyViewsFamilyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneImageFamilyViewsFamilyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstanceGroupManagersRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstanceGroupManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerAbandonInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerAbandonInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerApplyUpdatesToInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerCreateInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerCreateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeleteInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeleteInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerDeletePerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListErrorsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListManagedInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListManagedInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerListPerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerPatchPerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRecreateInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerRecreateInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerResizeRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetInstanceTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerSetTargetPoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupManagersInstanceGroupManagerUpdatePerInstanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstanceGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstanceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneInstanceGroupsInstanceGroupRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneInstanceGroupsInstanceGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstanceGroupsInstanceGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstanceGroupsInstanceGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupsInstanceGroupAddInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupsInstanceGroupAddInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupsInstanceGroupListInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupsInstanceGroupListInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupsInstanceGroupRemoveInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupsInstanceGroupRemoveInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstanceGroupsInstanceGroupSetNamedPortsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstanceGroupsInstanceGroupSetNamedPortsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesBulkInsertRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesBulkInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneInstancesInstanceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectZonesZoneInstancesInstanceRouteHandler: RouteHandler<
+  typeof putProjectsProjectZonesZoneInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceAddAccessConfigRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceAddAccessConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceAddResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceAddResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceAttachDiskRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceAttachDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceDeleteAccessConfigRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceDeleteAccessConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceDetachDiskRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceDetachDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceGetEffectiveFirewallsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceGetEffectiveFirewallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceGetGuestAttributesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceGetGuestAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceGetShieldedInstanceIdentityRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceGetShieldedInstanceIdentityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstancePerformMaintenanceRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstancePerformMaintenanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceReferrersRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceReferrersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceRemoveResourcePoliciesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceRemoveResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceResetRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceResumeRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceScreenshotRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceScreenshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSendDiagnosticInterruptRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSendDiagnosticInterruptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesInstanceSerialPortRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesInstanceSerialPortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetDiskAutoDeleteRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetDiskAutoDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetMachineResourcesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetMachineResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetMachineTypeRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetMachineTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetMetadataRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetMinCpuPlatformRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetMinCpuPlatformRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetNameRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetSchedulingRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetSchedulingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetServiceAccountRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneInstancesInstanceSetShieldedInstanceIntegrityPolicyRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneInstancesInstanceSetShieldedInstanceIntegrityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSetTagsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSetTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSimulateMaintenanceEventRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSimulateMaintenanceEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceStartRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceStartWithEncryptionKeyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceStartWithEncryptionKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceStopRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceSuspendRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesInstanceUpdateAccessConfigRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesInstanceUpdateAccessConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneInstancesInstanceUpdateDisplayDeviceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneInstancesInstanceUpdateDisplayDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneInstancesInstanceUpdateNetworkInterfaceRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneInstancesInstanceUpdateNetworkInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneInstancesInstanceUpdateShieldedInstanceConfigRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneInstancesInstanceUpdateShieldedInstanceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstancesResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstancesResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesResourceSetDeletionProtectionRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesResourceSetDeletionProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstancesResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstancesResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstantSnapshotsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstantSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstantSnapshotsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstantSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstantSnapshotsInstantSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneInstantSnapshotsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneInstantSnapshotsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstantSnapshotsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstantSnapshotsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstantSnapshotsResourceSetLabelsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstantSnapshotsResourceSetLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneInstantSnapshotsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneInstantSnapshotsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneMachineTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneMachineTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneMachineTypesMachineTypeRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneMachineTypesMachineTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNetworkEndpointGroupsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNetworkEndpointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupAttachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupDetachNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNetworkEndpointGroupsNetworkEndpointGroupListNetworkEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNetworkEndpointGroupsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNetworkEndpointGroupsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNodeGroupsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneNodeGroupsNodeGroupRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneNodeGroupsNodeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNodeGroupsNodeGroupRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNodeGroupsNodeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneNodeGroupsNodeGroupRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneNodeGroupsNodeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsNodeGroupAddNodesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsNodeGroupAddNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsNodeGroupDeleteNodesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsNodeGroupDeleteNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsNodeGroupListNodesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsNodeGroupListNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsNodeGroupSetNodeTemplateRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsNodeGroupSetNodeTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsNodeGroupSimulateMaintenanceEventRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsNodeGroupSimulateMaintenanceEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNodeGroupsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNodeGroupsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneNodeGroupsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneNodeGroupsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNodeTypesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNodeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneNodeTypesNodeTypeRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneNodeTypesNodeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneOperationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneOperationsOperationRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneOperationsOperationRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneOperationsOperationWaitRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneOperationsOperationWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneReservationsRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneReservationsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneReservationsReservationRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneReservationsReservationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneReservationsReservationRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneReservationsReservationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectZonesZoneReservationsReservationRouteHandler: RouteHandler<
+  typeof patchProjectsProjectZonesZoneReservationsReservationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneReservationsReservationResizeRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneReservationsReservationResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneReservationsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneReservationsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneReservationsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneReservationsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneReservationsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneReservationsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneTargetInstancesRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneTargetInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneTargetInstancesRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneTargetInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectZonesZoneTargetInstancesTargetInstanceRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectZonesZoneTargetInstancesTargetInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectZonesZoneTargetInstancesTargetInstanceRouteHandler: RouteHandler<
+  typeof getProjectsProjectZonesZoneTargetInstancesTargetInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectZonesZoneTargetInstancesTargetInstanceSetSecurityPolicyRouteHandler: RouteHandler<
+  typeof postProjectsProjectZonesZoneTargetInstancesTargetInstanceSetSecurityPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

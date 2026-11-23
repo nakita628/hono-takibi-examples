@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/digitallocker.gov.in/authpartner/1.0.0/openapi.yaml',
   output: './src/digitallocker-gov-in-authpartner/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/digitallocker-gov-in-authpartner/types.ts' },
   client: { output: './src/digitallocker-gov-in-authpartner/client.ts', baseUrl: '/' },
   rpc: { output: './src/digitallocker-gov-in-authpartner/rpc.ts', parseResponse: true },

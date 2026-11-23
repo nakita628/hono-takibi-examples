@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute,
   deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRoute,
   getIdentitypoolsIdentityPoolIdConfigurationRoute,
@@ -19,66 +19,104 @@ import {
   postIdentitypoolsIdentityPoolIdIdentityIdentityIdDeviceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIdentitypoolsIdentityPoolIdBulkpublishRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdBulkpublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const identitypoolsHandler = app
-  .openapi(postIdentitypoolsIdentityPoolIdBulkpublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIdentitypoolsIdentityPoolIdGetBulkPublishDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIdentitypoolsIdentityPoolIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIdentitypoolsIdentityPoolIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIdentitypoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRecordsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postIdentitypoolsIdentityPoolIdIdentityIdentityIdDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRouteHandler: RouteHandler<
+  typeof deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdGetBulkPublishDetailsRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdGetBulkPublishDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdEventsRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdEventsRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdConfigurationRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdConfigurationRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsRouteHandler: RouteHandler<typeof getIdentitypoolsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRecordsRouteHandler: RouteHandler<
+  typeof getIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdIdentityIdentityIdDeviceRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdIdentityIdentityIdDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRouteHandler: RouteHandler<
+  typeof postIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRouteHandler: RouteHandler<
+  typeof deleteIdentitypoolsIdentityPoolIdIdentitiesIdentityIdDatasetsDatasetNameSubscriptionsDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

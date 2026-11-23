@@ -358,9 +358,9 @@ const ScalingInstructionSchema = z
 const ScalingInstructionsSchema = z.array(ScalingInstructionSchema).openapi('ScalingInstructions')
 
 type CreateScalingPlanRequestType = {
-  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema> & unknown
-  ApplicationSource: z.infer<typeof ApplicationSourceSchema> & unknown
-  ScalingInstructions: z.infer<typeof ScalingInstructionsSchema> & unknown
+  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema>
+  ApplicationSource: z.infer<typeof ApplicationSourceSchema>
+  ScalingInstructions: z.infer<typeof ScalingInstructionsSchema>
 }
 
 const ScalingPlanVersionSchema = z.int().openapi('ScalingPlanVersion')
@@ -444,8 +444,8 @@ const ScalingPlanResourcesSchema: z.ZodType<ScalingPlanResourcesType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type DescribeScalingPlanResourcesResponseType = {
-  ScalingPlanResources?: z.infer<typeof ScalingPlanResourcesSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  ScalingPlanResources?: z.infer<typeof ScalingPlanResourcesSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const ScalingPlanStatusCodeSchema = z
@@ -464,14 +464,14 @@ const ScalingPlanStatusCodeSchema = z
 const TimestampTypeSchema = z.iso.datetime({ offset: true }).openapi('TimestampType')
 
 type ScalingPlanType = {
-  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema> & unknown
-  ScalingPlanVersion: z.infer<typeof ScalingPlanVersionSchema> & unknown
-  ApplicationSource: z.infer<typeof ApplicationSourceSchema> & unknown
-  ScalingInstructions: z.infer<typeof ScalingInstructionsSchema> & unknown
-  StatusCode: z.infer<typeof ScalingPlanStatusCodeSchema> & unknown
-  StatusMessage?: z.infer<typeof XmlStringSchema> & unknown
-  StatusStartTime?: z.infer<typeof TimestampTypeSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampTypeSchema> & unknown
+  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema>
+  ScalingPlanVersion: z.infer<typeof ScalingPlanVersionSchema>
+  ApplicationSource: z.infer<typeof ApplicationSourceSchema>
+  ScalingInstructions: z.infer<typeof ScalingInstructionsSchema>
+  StatusCode: z.infer<typeof ScalingPlanStatusCodeSchema>
+  StatusMessage?: z.infer<typeof XmlStringSchema>
+  StatusStartTime?: z.infer<typeof TimestampTypeSchema>
+  CreationTime?: z.infer<typeof TimestampTypeSchema>
 }
 
 const ScalingPlanSchema: z.ZodType<ScalingPlanType> = z
@@ -522,15 +522,15 @@ const ScalingPlansSchema: z.ZodType<ScalingPlansType> = z
   .openapi('ScalingPlans')
 
 type DescribeScalingPlansResponseType = {
-  ScalingPlans?: z.infer<typeof ScalingPlansSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  ScalingPlans?: z.infer<typeof ScalingPlansSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type UpdateScalingPlanRequestType = {
-  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema> & unknown
-  ScalingPlanVersion: z.infer<typeof ScalingPlanVersionSchema> & unknown
-  ApplicationSource?: z.infer<typeof ApplicationSourceSchema> & unknown
-  ScalingInstructions?: z.infer<typeof ScalingInstructionsSchema> & unknown
+  ScalingPlanName: z.infer<typeof ScalingPlanNameSchema>
+  ScalingPlanVersion: z.infer<typeof ScalingPlanVersionSchema>
+  ApplicationSource?: z.infer<typeof ApplicationSourceSchema>
+  ScalingInstructions?: z.infer<typeof ScalingInstructionsSchema>
 }
 
 const CreateScalingPlanResponseSchema = z

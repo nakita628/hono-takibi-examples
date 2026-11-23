@@ -10882,19 +10882,19 @@ export function useDeleteApiV1VideosIdWebtorrent<TError = unknown>(options?: {
 }
 
 export function getGetFeedsSubscriptionsFormatKey(
-  args: InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>,
 ) {
-  return ['feeds', '/feeds/subscriptions.:format', args] as const
+  return ['feeds', '/feeds/subscriptions.{format}', args] as const
 }
 
 export function useGetFeedsSubscriptionsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
           >
         >
       >,
@@ -10917,27 +10917,27 @@ export function useGetFeedsSubscriptionsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['subscriptions.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['subscriptions.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFeedsSubscriptionsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
           >
         >
       >,
@@ -10960,33 +10960,33 @@ export function useImmutableGetFeedsSubscriptionsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['subscriptions.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['subscriptions.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['subscriptions.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['subscriptions.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetFeedsVideoCommentsFormatKey(
-  args: InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>,
 ) {
-  return ['feeds', '/feeds/video-comments.:format', args] as const
+  return ['feeds', '/feeds/video-comments.{format}', args] as const
 }
 
 export function useGetFeedsVideoCommentsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
           >
         >
       >,
@@ -11009,27 +11009,27 @@ export function useGetFeedsVideoCommentsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['video-comments.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['video-comments.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFeedsVideoCommentsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
           >
         >
       >,
@@ -11052,32 +11052,34 @@ export function useImmutableGetFeedsVideoCommentsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.feeds)['video-comments.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.feeds)['video-comments.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['video-comments.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['video-comments.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetFeedsVideosFormatKey(
-  args: InferRequestType<(typeof client.feeds)['videos.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>,
 ) {
-  return ['feeds', '/feeds/videos.:format', args] as const
+  return ['feeds', '/feeds/videos.{format}', args] as const
 }
 
 export function useGetFeedsVideosFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['videos.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
+          >
         >
       >,
       TError
@@ -11098,25 +11100,29 @@ export function useGetFeedsVideosFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
+          >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['videos.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['videos.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFeedsVideosFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.feeds)['videos.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
+          >
         >
       >,
       TError
@@ -11137,13 +11143,15 @@ export function useImmutableGetFeedsVideosFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.feeds)['videos.:format']['$get']>>>
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.feeds)['videos.{format}']['$get']>>
+          >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.feeds['videos.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.feeds['videos.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

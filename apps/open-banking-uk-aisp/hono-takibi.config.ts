@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/OpenBankingUK/read-write-api-specs/blob/484a1795680d9852600247878b9fd2bfe584c0aa/dist/openapi/account-info-openapi.yaml
   input: 'https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist/openapi/account-info-openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

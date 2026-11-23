@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCallsBigbluebuttonCreateRoute,
   postCallsConstructorgroupsCreateRoute,
   postCallsGoogleMeetCreateRoute,
@@ -7,21 +7,32 @@ import {
   postCallsWebexCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCallsBigbluebuttonCreateRouteHandler: RouteHandler<
+  typeof getCallsBigbluebuttonCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const callsHandler = app
-  .openapi(getCallsBigbluebuttonCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsNextcloudTalkCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsWebexCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsGoogleMeetCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsConstructorgroupsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCallsNextcloudTalkCreateRouteHandler: RouteHandler<
+  typeof postCallsNextcloudTalkCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsWebexCreateRouteHandler: RouteHandler<
+  typeof postCallsWebexCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsGoogleMeetCreateRouteHandler: RouteHandler<
+  typeof postCallsGoogleMeetCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsConstructorgroupsCreateRouteHandler: RouteHandler<
+  typeof postCallsConstructorgroupsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

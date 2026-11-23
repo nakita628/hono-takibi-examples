@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/jobposting/1.0.0/openapi.yaml',
   output: './src/jobposting/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/jobposting/types.ts' },
   client: { output: './src/jobposting/client.ts', baseUrl: '/' },
   rpc: { output: './src/jobposting/rpc.ts', parseResponse: true },

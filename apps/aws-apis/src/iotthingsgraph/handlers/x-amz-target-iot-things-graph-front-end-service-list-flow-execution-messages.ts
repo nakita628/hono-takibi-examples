@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesHandler = app.openapi(
-  postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRouteHandler: RouteHandler<
+  typeof postXAmzTargetIotThingsGraphFrontEndServiceListFlowExecutionMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

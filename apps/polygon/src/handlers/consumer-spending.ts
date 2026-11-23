@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getConsumerSpendingEuV1MerchantAggregatesRoute,
   getConsumerSpendingEuV1MerchantHierarchyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConsumerSpendingEuV1MerchantAggregatesRouteHandler: RouteHandler<
+  typeof getConsumerSpendingEuV1MerchantAggregatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const consumerSpendingHandler = app
-  .openapi(getConsumerSpendingEuV1MerchantAggregatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerSpendingEuV1MerchantHierarchyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConsumerSpendingEuV1MerchantHierarchyRouteHandler: RouteHandler<
+  typeof getConsumerSpendingEuV1MerchantHierarchyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteLFTagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteLFTagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteLfTagHandler = app.openapi(postDeleteLFTagRoute, (c) => {
+export const postDeleteLFTagRouteHandler: RouteHandler<typeof postDeleteLFTagRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

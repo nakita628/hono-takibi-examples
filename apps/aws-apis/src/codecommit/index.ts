@@ -1,166 +1,473 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryHandler,
-  xAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesHandler,
-  xAmzTargetCodeCommit20150413BatchDescribeMergeConflictsHandler,
-  xAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesHandler,
-  xAmzTargetCodeCommit20150413BatchGetCommitsHandler,
-  xAmzTargetCodeCommit20150413BatchGetRepositoriesHandler,
-  xAmzTargetCodeCommit20150413CreateApprovalRuleTemplateHandler,
-  xAmzTargetCodeCommit20150413CreateBranchHandler,
-  xAmzTargetCodeCommit20150413CreateCommitHandler,
-  xAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleHandler,
-  xAmzTargetCodeCommit20150413CreatePullRequestHandler,
-  xAmzTargetCodeCommit20150413CreateRepositoryHandler,
-  xAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitHandler,
-  xAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateHandler,
-  xAmzTargetCodeCommit20150413DeleteBranchHandler,
-  xAmzTargetCodeCommit20150413DeleteCommentContentHandler,
-  xAmzTargetCodeCommit20150413DeleteFileHandler,
-  xAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleHandler,
-  xAmzTargetCodeCommit20150413DeleteRepositoryHandler,
-  xAmzTargetCodeCommit20150413DescribeMergeConflictsHandler,
-  xAmzTargetCodeCommit20150413DescribePullRequestEventsHandler,
-  xAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryHandler,
-  xAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesHandler,
-  xAmzTargetCodeCommit20150413GetApprovalRuleTemplateHandler,
-  xAmzTargetCodeCommit20150413GetBlobHandler,
-  xAmzTargetCodeCommit20150413GetBranchHandler,
-  xAmzTargetCodeCommit20150413GetCommentHandler,
-  xAmzTargetCodeCommit20150413GetCommentReactionsHandler,
-  xAmzTargetCodeCommit20150413GetCommentsForComparedCommitHandler,
-  xAmzTargetCodeCommit20150413GetCommentsForPullRequestHandler,
-  xAmzTargetCodeCommit20150413GetCommitHandler,
-  xAmzTargetCodeCommit20150413GetDifferencesHandler,
-  xAmzTargetCodeCommit20150413GetFileHandler,
-  xAmzTargetCodeCommit20150413GetFolderHandler,
-  xAmzTargetCodeCommit20150413GetMergeCommitHandler,
-  xAmzTargetCodeCommit20150413GetMergeConflictsHandler,
-  xAmzTargetCodeCommit20150413GetMergeOptionsHandler,
-  xAmzTargetCodeCommit20150413GetPullRequestApprovalStatesHandler,
-  xAmzTargetCodeCommit20150413GetPullRequestHandler,
-  xAmzTargetCodeCommit20150413GetPullRequestOverrideStateHandler,
-  xAmzTargetCodeCommit20150413GetRepositoryHandler,
-  xAmzTargetCodeCommit20150413GetRepositoryTriggersHandler,
-  xAmzTargetCodeCommit20150413ListApprovalRuleTemplatesHandler,
-  xAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryHandler,
-  xAmzTargetCodeCommit20150413ListBranchesHandler,
-  xAmzTargetCodeCommit20150413ListPullRequestsHandler,
-  xAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateHandler,
-  xAmzTargetCodeCommit20150413ListRepositoriesHandler,
-  xAmzTargetCodeCommit20150413ListTagsForResourceHandler,
-  xAmzTargetCodeCommit20150413MergeBranchesByFastForwardHandler,
-  xAmzTargetCodeCommit20150413MergeBranchesBySquashHandler,
-  xAmzTargetCodeCommit20150413MergeBranchesByThreeWayHandler,
-  xAmzTargetCodeCommit20150413MergePullRequestByFastForwardHandler,
-  xAmzTargetCodeCommit20150413MergePullRequestBySquashHandler,
-  xAmzTargetCodeCommit20150413MergePullRequestByThreeWayHandler,
-  xAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesHandler,
-  xAmzTargetCodeCommit20150413PostCommentForComparedCommitHandler,
-  xAmzTargetCodeCommit20150413PostCommentForPullRequestHandler,
-  xAmzTargetCodeCommit20150413PostCommentReplyHandler,
-  xAmzTargetCodeCommit20150413PutCommentReactionHandler,
-  xAmzTargetCodeCommit20150413PutFileHandler,
-  xAmzTargetCodeCommit20150413PutRepositoryTriggersHandler,
-  xAmzTargetCodeCommit20150413TagResourceHandler,
-  xAmzTargetCodeCommit20150413TestRepositoryTriggersHandler,
-  xAmzTargetCodeCommit20150413UntagResourceHandler,
-  xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentHandler,
-  xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionHandler,
-  xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameHandler,
-  xAmzTargetCodeCommit20150413UpdateCommentHandler,
-  xAmzTargetCodeCommit20150413UpdateDefaultBranchHandler,
-  xAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentHandler,
-  xAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateHandler,
-  xAmzTargetCodeCommit20150413UpdatePullRequestDescriptionHandler,
-  xAmzTargetCodeCommit20150413UpdatePullRequestStatusHandler,
-  xAmzTargetCodeCommit20150413UpdatePullRequestTitleHandler,
-  xAmzTargetCodeCommit20150413UpdateRepositoryDescriptionHandler,
-  xAmzTargetCodeCommit20150413UpdateRepositoryNameHandler,
+  postXAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryRoute,
+  postXAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesRoute,
+  postXAmzTargetCodeCommit20150413BatchDescribeMergeConflictsRoute,
+  postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute,
+  postXAmzTargetCodeCommit20150413BatchGetCommitsRoute,
+  postXAmzTargetCodeCommit20150413BatchGetRepositoriesRoute,
+  postXAmzTargetCodeCommit20150413CreateApprovalRuleTemplateRoute,
+  postXAmzTargetCodeCommit20150413CreateBranchRoute,
+  postXAmzTargetCodeCommit20150413CreateCommitRoute,
+  postXAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleRoute,
+  postXAmzTargetCodeCommit20150413CreatePullRequestRoute,
+  postXAmzTargetCodeCommit20150413CreateRepositoryRoute,
+  postXAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitRoute,
+  postXAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateRoute,
+  postXAmzTargetCodeCommit20150413DeleteBranchRoute,
+  postXAmzTargetCodeCommit20150413DeleteCommentContentRoute,
+  postXAmzTargetCodeCommit20150413DeleteFileRoute,
+  postXAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleRoute,
+  postXAmzTargetCodeCommit20150413DeleteRepositoryRoute,
+  postXAmzTargetCodeCommit20150413DescribeMergeConflictsRoute,
+  postXAmzTargetCodeCommit20150413DescribePullRequestEventsRoute,
+  postXAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryRoute,
+  postXAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesRoute,
+  postXAmzTargetCodeCommit20150413GetApprovalRuleTemplateRoute,
+  postXAmzTargetCodeCommit20150413GetBlobRoute,
+  postXAmzTargetCodeCommit20150413GetBranchRoute,
+  postXAmzTargetCodeCommit20150413GetCommentReactionsRoute,
+  postXAmzTargetCodeCommit20150413GetCommentRoute,
+  postXAmzTargetCodeCommit20150413GetCommentsForComparedCommitRoute,
+  postXAmzTargetCodeCommit20150413GetCommentsForPullRequestRoute,
+  postXAmzTargetCodeCommit20150413GetCommitRoute,
+  postXAmzTargetCodeCommit20150413GetDifferencesRoute,
+  postXAmzTargetCodeCommit20150413GetFileRoute,
+  postXAmzTargetCodeCommit20150413GetFolderRoute,
+  postXAmzTargetCodeCommit20150413GetMergeCommitRoute,
+  postXAmzTargetCodeCommit20150413GetMergeConflictsRoute,
+  postXAmzTargetCodeCommit20150413GetMergeOptionsRoute,
+  postXAmzTargetCodeCommit20150413GetPullRequestApprovalStatesRoute,
+  postXAmzTargetCodeCommit20150413GetPullRequestOverrideStateRoute,
+  postXAmzTargetCodeCommit20150413GetPullRequestRoute,
+  postXAmzTargetCodeCommit20150413GetRepositoryRoute,
+  postXAmzTargetCodeCommit20150413GetRepositoryTriggersRoute,
+  postXAmzTargetCodeCommit20150413ListApprovalRuleTemplatesRoute,
+  postXAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryRoute,
+  postXAmzTargetCodeCommit20150413ListBranchesRoute,
+  postXAmzTargetCodeCommit20150413ListPullRequestsRoute,
+  postXAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateRoute,
+  postXAmzTargetCodeCommit20150413ListRepositoriesRoute,
+  postXAmzTargetCodeCommit20150413ListTagsForResourceRoute,
+  postXAmzTargetCodeCommit20150413MergeBranchesByFastForwardRoute,
+  postXAmzTargetCodeCommit20150413MergeBranchesBySquashRoute,
+  postXAmzTargetCodeCommit20150413MergeBranchesByThreeWayRoute,
+  postXAmzTargetCodeCommit20150413MergePullRequestByFastForwardRoute,
+  postXAmzTargetCodeCommit20150413MergePullRequestBySquashRoute,
+  postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute,
+  postXAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesRoute,
+  postXAmzTargetCodeCommit20150413PostCommentForComparedCommitRoute,
+  postXAmzTargetCodeCommit20150413PostCommentForPullRequestRoute,
+  postXAmzTargetCodeCommit20150413PostCommentReplyRoute,
+  postXAmzTargetCodeCommit20150413PutCommentReactionRoute,
+  postXAmzTargetCodeCommit20150413PutFileRoute,
+  postXAmzTargetCodeCommit20150413PutRepositoryTriggersRoute,
+  postXAmzTargetCodeCommit20150413TagResourceRoute,
+  postXAmzTargetCodeCommit20150413TestRepositoryTriggersRoute,
+  postXAmzTargetCodeCommit20150413UntagResourceRoute,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentRoute,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionRoute,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameRoute,
+  postXAmzTargetCodeCommit20150413UpdateCommentRoute,
+  postXAmzTargetCodeCommit20150413UpdateDefaultBranchRoute,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateRoute,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestDescriptionRoute,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestStatusRoute,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestTitleRoute,
+  postXAmzTargetCodeCommit20150413UpdateRepositoryDescriptionRoute,
+  postXAmzTargetCodeCommit20150413UpdateRepositoryNameRoute,
+} from './routes'
+import {
+  postXAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesRouteHandler,
+  postXAmzTargetCodeCommit20150413BatchDescribeMergeConflictsRouteHandler,
+  postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRouteHandler,
+  postXAmzTargetCodeCommit20150413BatchGetCommitsRouteHandler,
+  postXAmzTargetCodeCommit20150413BatchGetRepositoriesRouteHandler,
+  postXAmzTargetCodeCommit20150413CreateApprovalRuleTemplateRouteHandler,
+  postXAmzTargetCodeCommit20150413CreateBranchRouteHandler,
+  postXAmzTargetCodeCommit20150413CreateCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleRouteHandler,
+  postXAmzTargetCodeCommit20150413CreatePullRequestRouteHandler,
+  postXAmzTargetCodeCommit20150413CreateRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateRouteHandler,
+  postXAmzTargetCodeCommit20150413DeleteBranchRouteHandler,
+  postXAmzTargetCodeCommit20150413DeleteCommentContentRouteHandler,
+  postXAmzTargetCodeCommit20150413DeleteFileRouteHandler,
+  postXAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleRouteHandler,
+  postXAmzTargetCodeCommit20150413DeleteRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413DescribeMergeConflictsRouteHandler,
+  postXAmzTargetCodeCommit20150413DescribePullRequestEventsRouteHandler,
+  postXAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesRouteHandler,
+  postXAmzTargetCodeCommit20150413GetApprovalRuleTemplateRouteHandler,
+  postXAmzTargetCodeCommit20150413GetBlobRouteHandler,
+  postXAmzTargetCodeCommit20150413GetBranchRouteHandler,
+  postXAmzTargetCodeCommit20150413GetCommentReactionsRouteHandler,
+  postXAmzTargetCodeCommit20150413GetCommentRouteHandler,
+  postXAmzTargetCodeCommit20150413GetCommentsForComparedCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413GetCommentsForPullRequestRouteHandler,
+  postXAmzTargetCodeCommit20150413GetCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413GetDifferencesRouteHandler,
+  postXAmzTargetCodeCommit20150413GetFileRouteHandler,
+  postXAmzTargetCodeCommit20150413GetFolderRouteHandler,
+  postXAmzTargetCodeCommit20150413GetMergeCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413GetMergeConflictsRouteHandler,
+  postXAmzTargetCodeCommit20150413GetMergeOptionsRouteHandler,
+  postXAmzTargetCodeCommit20150413GetPullRequestApprovalStatesRouteHandler,
+  postXAmzTargetCodeCommit20150413GetPullRequestOverrideStateRouteHandler,
+  postXAmzTargetCodeCommit20150413GetPullRequestRouteHandler,
+  postXAmzTargetCodeCommit20150413GetRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413GetRepositoryTriggersRouteHandler,
+  postXAmzTargetCodeCommit20150413ListApprovalRuleTemplatesRouteHandler,
+  postXAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryRouteHandler,
+  postXAmzTargetCodeCommit20150413ListBranchesRouteHandler,
+  postXAmzTargetCodeCommit20150413ListPullRequestsRouteHandler,
+  postXAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateRouteHandler,
+  postXAmzTargetCodeCommit20150413ListRepositoriesRouteHandler,
+  postXAmzTargetCodeCommit20150413ListTagsForResourceRouteHandler,
+  postXAmzTargetCodeCommit20150413MergeBranchesByFastForwardRouteHandler,
+  postXAmzTargetCodeCommit20150413MergeBranchesBySquashRouteHandler,
+  postXAmzTargetCodeCommit20150413MergeBranchesByThreeWayRouteHandler,
+  postXAmzTargetCodeCommit20150413MergePullRequestByFastForwardRouteHandler,
+  postXAmzTargetCodeCommit20150413MergePullRequestBySquashRouteHandler,
+  postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRouteHandler,
+  postXAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesRouteHandler,
+  postXAmzTargetCodeCommit20150413PostCommentForComparedCommitRouteHandler,
+  postXAmzTargetCodeCommit20150413PostCommentForPullRequestRouteHandler,
+  postXAmzTargetCodeCommit20150413PostCommentReplyRouteHandler,
+  postXAmzTargetCodeCommit20150413PutCommentReactionRouteHandler,
+  postXAmzTargetCodeCommit20150413PutFileRouteHandler,
+  postXAmzTargetCodeCommit20150413PutRepositoryTriggersRouteHandler,
+  postXAmzTargetCodeCommit20150413TagResourceRouteHandler,
+  postXAmzTargetCodeCommit20150413TestRepositoryTriggersRouteHandler,
+  postXAmzTargetCodeCommit20150413UntagResourceRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateCommentRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateDefaultBranchRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestDescriptionRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestStatusRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdatePullRequestTitleRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateRepositoryDescriptionRouteHandler,
+  postXAmzTargetCodeCommit20150413UpdateRepositoryNameRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesHandler)
-  .route('/', xAmzTargetCodeCommit20150413BatchDescribeMergeConflictsHandler)
-  .route(
-    '/',
-    xAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesHandler,
+  .openapi(
+    postXAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryRoute,
+    postXAmzTargetCodeCommit20150413AssociateApprovalRuleTemplateWithRepositoryRouteHandler,
   )
-  .route('/', xAmzTargetCodeCommit20150413BatchGetCommitsHandler)
-  .route('/', xAmzTargetCodeCommit20150413BatchGetRepositoriesHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreateApprovalRuleTemplateHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreateBranchHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreateCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreatePullRequestHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreateRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeleteBranchHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeleteCommentContentHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeleteFileHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleHandler)
-  .route('/', xAmzTargetCodeCommit20150413DeleteRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413DescribeMergeConflictsHandler)
-  .route('/', xAmzTargetCodeCommit20150413DescribePullRequestEventsHandler)
-  .route('/', xAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetApprovalRuleTemplateHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetBlobHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetBranchHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetCommentHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetCommentReactionsHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetCommentsForComparedCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetCommentsForPullRequestHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetDifferencesHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetFileHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetFolderHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetMergeCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetMergeConflictsHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetMergeOptionsHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetPullRequestHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetPullRequestApprovalStatesHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetPullRequestOverrideStateHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413GetRepositoryTriggersHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListApprovalRuleTemplatesHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListBranchesHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListPullRequestsHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListRepositoriesHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateHandler)
-  .route('/', xAmzTargetCodeCommit20150413ListTagsForResourceHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergeBranchesByFastForwardHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergeBranchesBySquashHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergeBranchesByThreeWayHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergePullRequestByFastForwardHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergePullRequestBySquashHandler)
-  .route('/', xAmzTargetCodeCommit20150413MergePullRequestByThreeWayHandler)
-  .route('/', xAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesHandler)
-  .route('/', xAmzTargetCodeCommit20150413PostCommentForComparedCommitHandler)
-  .route('/', xAmzTargetCodeCommit20150413PostCommentForPullRequestHandler)
-  .route('/', xAmzTargetCodeCommit20150413PostCommentReplyHandler)
-  .route('/', xAmzTargetCodeCommit20150413PutCommentReactionHandler)
-  .route('/', xAmzTargetCodeCommit20150413PutFileHandler)
-  .route('/', xAmzTargetCodeCommit20150413PutRepositoryTriggersHandler)
-  .route('/', xAmzTargetCodeCommit20150413TagResourceHandler)
-  .route('/', xAmzTargetCodeCommit20150413TestRepositoryTriggersHandler)
-  .route('/', xAmzTargetCodeCommit20150413UntagResourceHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateCommentHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateDefaultBranchHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdatePullRequestDescriptionHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdatePullRequestStatusHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdatePullRequestTitleHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateRepositoryDescriptionHandler)
-  .route('/', xAmzTargetCodeCommit20150413UpdateRepositoryNameHandler)
+  .openapi(
+    postXAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesRoute,
+    postXAmzTargetCodeCommit20150413BatchAssociateApprovalRuleTemplateWithRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413BatchDescribeMergeConflictsRoute,
+    postXAmzTargetCodeCommit20150413BatchDescribeMergeConflictsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute,
+    postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413BatchGetCommitsRoute,
+    postXAmzTargetCodeCommit20150413BatchGetCommitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413BatchGetRepositoriesRoute,
+    postXAmzTargetCodeCommit20150413BatchGetRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreateApprovalRuleTemplateRoute,
+    postXAmzTargetCodeCommit20150413CreateApprovalRuleTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreateBranchRoute,
+    postXAmzTargetCodeCommit20150413CreateBranchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreateCommitRoute,
+    postXAmzTargetCodeCommit20150413CreateCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreatePullRequestRoute,
+    postXAmzTargetCodeCommit20150413CreatePullRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleRoute,
+    postXAmzTargetCodeCommit20150413CreatePullRequestApprovalRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreateRepositoryRoute,
+    postXAmzTargetCodeCommit20150413CreateRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitRoute,
+    postXAmzTargetCodeCommit20150413CreateUnreferencedMergeCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateRoute,
+    postXAmzTargetCodeCommit20150413DeleteApprovalRuleTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeleteBranchRoute,
+    postXAmzTargetCodeCommit20150413DeleteBranchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeleteCommentContentRoute,
+    postXAmzTargetCodeCommit20150413DeleteCommentContentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeleteFileRoute,
+    postXAmzTargetCodeCommit20150413DeleteFileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleRoute,
+    postXAmzTargetCodeCommit20150413DeletePullRequestApprovalRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DeleteRepositoryRoute,
+    postXAmzTargetCodeCommit20150413DeleteRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DescribeMergeConflictsRoute,
+    postXAmzTargetCodeCommit20150413DescribeMergeConflictsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DescribePullRequestEventsRoute,
+    postXAmzTargetCodeCommit20150413DescribePullRequestEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryRoute,
+    postXAmzTargetCodeCommit20150413DisassociateApprovalRuleTemplateFromRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesRoute,
+    postXAmzTargetCodeCommit20150413EvaluatePullRequestApprovalRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetApprovalRuleTemplateRoute,
+    postXAmzTargetCodeCommit20150413GetApprovalRuleTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetBlobRoute,
+    postXAmzTargetCodeCommit20150413GetBlobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetBranchRoute,
+    postXAmzTargetCodeCommit20150413GetBranchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetCommentRoute,
+    postXAmzTargetCodeCommit20150413GetCommentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetCommentReactionsRoute,
+    postXAmzTargetCodeCommit20150413GetCommentReactionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetCommentsForComparedCommitRoute,
+    postXAmzTargetCodeCommit20150413GetCommentsForComparedCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetCommentsForPullRequestRoute,
+    postXAmzTargetCodeCommit20150413GetCommentsForPullRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetCommitRoute,
+    postXAmzTargetCodeCommit20150413GetCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetDifferencesRoute,
+    postXAmzTargetCodeCommit20150413GetDifferencesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetFileRoute,
+    postXAmzTargetCodeCommit20150413GetFileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetFolderRoute,
+    postXAmzTargetCodeCommit20150413GetFolderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetMergeCommitRoute,
+    postXAmzTargetCodeCommit20150413GetMergeCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetMergeConflictsRoute,
+    postXAmzTargetCodeCommit20150413GetMergeConflictsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetMergeOptionsRoute,
+    postXAmzTargetCodeCommit20150413GetMergeOptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetPullRequestRoute,
+    postXAmzTargetCodeCommit20150413GetPullRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetPullRequestApprovalStatesRoute,
+    postXAmzTargetCodeCommit20150413GetPullRequestApprovalStatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetPullRequestOverrideStateRoute,
+    postXAmzTargetCodeCommit20150413GetPullRequestOverrideStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetRepositoryRoute,
+    postXAmzTargetCodeCommit20150413GetRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413GetRepositoryTriggersRoute,
+    postXAmzTargetCodeCommit20150413GetRepositoryTriggersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListApprovalRuleTemplatesRoute,
+    postXAmzTargetCodeCommit20150413ListApprovalRuleTemplatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryRoute,
+    postXAmzTargetCodeCommit20150413ListAssociatedApprovalRuleTemplatesForRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListBranchesRoute,
+    postXAmzTargetCodeCommit20150413ListBranchesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListPullRequestsRoute,
+    postXAmzTargetCodeCommit20150413ListPullRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListRepositoriesRoute,
+    postXAmzTargetCodeCommit20150413ListRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateRoute,
+    postXAmzTargetCodeCommit20150413ListRepositoriesForApprovalRuleTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413ListTagsForResourceRoute,
+    postXAmzTargetCodeCommit20150413ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergeBranchesByFastForwardRoute,
+    postXAmzTargetCodeCommit20150413MergeBranchesByFastForwardRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergeBranchesBySquashRoute,
+    postXAmzTargetCodeCommit20150413MergeBranchesBySquashRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergeBranchesByThreeWayRoute,
+    postXAmzTargetCodeCommit20150413MergeBranchesByThreeWayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergePullRequestByFastForwardRoute,
+    postXAmzTargetCodeCommit20150413MergePullRequestByFastForwardRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergePullRequestBySquashRoute,
+    postXAmzTargetCodeCommit20150413MergePullRequestBySquashRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRoute,
+    postXAmzTargetCodeCommit20150413MergePullRequestByThreeWayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesRoute,
+    postXAmzTargetCodeCommit20150413OverridePullRequestApprovalRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PostCommentForComparedCommitRoute,
+    postXAmzTargetCodeCommit20150413PostCommentForComparedCommitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PostCommentForPullRequestRoute,
+    postXAmzTargetCodeCommit20150413PostCommentForPullRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PostCommentReplyRoute,
+    postXAmzTargetCodeCommit20150413PostCommentReplyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PutCommentReactionRoute,
+    postXAmzTargetCodeCommit20150413PutCommentReactionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PutFileRoute,
+    postXAmzTargetCodeCommit20150413PutFileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413PutRepositoryTriggersRoute,
+    postXAmzTargetCodeCommit20150413PutRepositoryTriggersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413TagResourceRoute,
+    postXAmzTargetCodeCommit20150413TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413TestRepositoryTriggersRoute,
+    postXAmzTargetCodeCommit20150413TestRepositoryTriggersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UntagResourceRoute,
+    postXAmzTargetCodeCommit20150413UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentRoute,
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateContentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionRoute,
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateDescriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameRoute,
+    postXAmzTargetCodeCommit20150413UpdateApprovalRuleTemplateNameRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateCommentRoute,
+    postXAmzTargetCodeCommit20150413UpdateCommentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateDefaultBranchRoute,
+    postXAmzTargetCodeCommit20150413UpdateDefaultBranchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute,
+    postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateRoute,
+    postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdatePullRequestDescriptionRoute,
+    postXAmzTargetCodeCommit20150413UpdatePullRequestDescriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdatePullRequestStatusRoute,
+    postXAmzTargetCodeCommit20150413UpdatePullRequestStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdatePullRequestTitleRoute,
+    postXAmzTargetCodeCommit20150413UpdatePullRequestTitleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateRepositoryDescriptionRoute,
+    postXAmzTargetCodeCommit20150413UpdateRepositoryDescriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeCommit20150413UpdateRepositoryNameRoute,
+    postXAmzTargetCodeCommit20150413UpdateRepositoryNameRouteHandler,
+  )
 
 export default app

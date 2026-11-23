@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPromotionalCreditsAccountCreditIdRoute,
   getPromotionalCreditsRoute,
   postPromotionalCreditsAddRoute,
@@ -7,21 +7,32 @@ import {
   postPromotionalCreditsSetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPromotionalCreditsAccountCreditIdRouteHandler: RouteHandler<
+  typeof getPromotionalCreditsAccountCreditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const promotionalCreditsHandler = app
-  .openapi(getPromotionalCreditsAccountCreditIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPromotionalCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPromotionalCreditsDeductRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPromotionalCreditsSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPromotionalCreditsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPromotionalCreditsRouteHandler: RouteHandler<
+  typeof getPromotionalCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPromotionalCreditsDeductRouteHandler: RouteHandler<
+  typeof postPromotionalCreditsDeductRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPromotionalCreditsSetRouteHandler: RouteHandler<
+  typeof postPromotionalCreditsSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPromotionalCreditsAddRouteHandler: RouteHandler<
+  typeof postPromotionalCreditsAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

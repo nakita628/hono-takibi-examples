@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/elastic-inference/2017-07-25/openapi.yaml',
   output: './src/elastic-inference/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elastic-inference/types.ts' },
   client: { output: './src/elastic-inference/client.ts', baseUrl: '/' },
   rpc: { output: './src/elastic-inference/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAquiferCodesDemandIndexRoute,
   getAquiferCodesMaterialsIndexRoute,
   getAquiferCodesProductivityIndexRoute,
@@ -9,27 +9,44 @@ import {
   getAquiferCodesWaterUseIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAquiferCodesDemandIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesDemandIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aquiferCodesHandler = app
-  .openapi(getAquiferCodesDemandIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesMaterialsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesProductivityIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesQualityConcernsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesSubtypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesVulnerabilityIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAquiferCodesWaterUseIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAquiferCodesMaterialsIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesMaterialsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAquiferCodesProductivityIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesProductivityIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAquiferCodesQualityConcernsIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesQualityConcernsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAquiferCodesSubtypesIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesSubtypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAquiferCodesVulnerabilityIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesVulnerabilityIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAquiferCodesWaterUseIndexRouteHandler: RouteHandler<
+  typeof getAquiferCodesWaterUseIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

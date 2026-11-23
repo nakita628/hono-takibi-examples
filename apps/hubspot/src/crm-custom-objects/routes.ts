@@ -1889,7 +1889,7 @@ export const postCrmObjects202609ObjectTypeBatchArchiveRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.orders.read'] },
     { oauth2: ['crm.objects.appointments.sensitive.read.v2'] },
@@ -3695,7 +3695,7 @@ export const deleteCrmObjects202609ObjectTypeObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.orders.read'] },
     { oauth2: ['crm.objects.appointments.sensitive.read.v2'] },
@@ -4422,7 +4422,7 @@ export const deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToO
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [
       { oauth2: ['crm.objects.orders.read'] },
       { oauth2: ['crm.objects.appointments.sensitive.read.v2'] },

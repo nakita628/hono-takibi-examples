@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/firehose/2015-08-04/openapi.yaml',
   output: './src/firehose/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firehose/types.ts' },
   client: { output: './src/firehose/client.ts', baseUrl: '/' },
   rpc: { output: './src/firehose/rpc.ts', parseResponse: true },

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postStopPollRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postStopPollRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stopPollHandler = app.openapi(postStopPollRoute, (c) => {
+export const postStopPollRouteHandler: RouteHandler<typeof postStopPollRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

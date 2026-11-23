@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/taxrates.io/1.0.0/openapi.yaml',
   output: './src/taxrates-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/taxrates-io/types.ts' },
   client: { output: './src/taxrates-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/taxrates-io/rpc.ts', parseResponse: true },

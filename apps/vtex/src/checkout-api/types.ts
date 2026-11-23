@@ -29,23 +29,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/api/checkout/pub/gatewayCallback/:orderGroup': {
-      $post: {
-        input: { param: { orderGroup: string } } & {
-          header: { 'Content-Type': string; Accept: string; Cookie: string }
-        }
-        output: {
-          error?:
-            | {
-                code?: string | undefined
-                exception?: (string | null) | undefined
-                message?: string | undefined
-              }
-            | undefined
-          operationId?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 500
-      }
+      $post:
+        | {
+            input: { param: { orderGroup: string } } & {
+              header: { 'Content-Type': string; Accept: string; Cookie: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { orderGroup: string } } & {
+              header: { 'Content-Type': string; Accept: string; Cookie: string }
+            }
+            output: {
+              error?:
+                | {
+                    code?: string | undefined
+                    exception?: (string | null) | undefined
+                    message?: string | undefined
+                  }
+                | undefined
+              operationId?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 500
+          }
     }
   } & {
     '/api/checkout/pub/orderForm': {

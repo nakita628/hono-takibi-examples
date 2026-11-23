@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1JobsJobIdRoute,
   getV1JobsJobIdReportsReportIdRoute,
   getV1JobsJobIdReportsRoute,
@@ -10,30 +10,44 @@ import {
   postV1JobsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1JobsRouteHandler: RouteHandler<typeof getV1JobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1JobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1JobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1JobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1JobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1JobsJobIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1JobsJobIdReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MediaResourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReportTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1JobsRouteHandler: RouteHandler<typeof postV1JobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1JobsJobIdRouteHandler: RouteHandler<typeof deleteV1JobsJobIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1JobsJobIdRouteHandler: RouteHandler<typeof getV1JobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1JobsJobIdReportsRouteHandler: RouteHandler<
+  typeof getV1JobsJobIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1JobsJobIdReportsReportIdRouteHandler: RouteHandler<
+  typeof getV1JobsJobIdReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MediaResourceNameRouteHandler: RouteHandler<
+  typeof getV1MediaResourceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReportTypesRouteHandler: RouteHandler<typeof getV1ReportTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

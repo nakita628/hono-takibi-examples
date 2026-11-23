@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBotsBotIdApiKeyRoute, postBotsBotIdApiKeyRegenerateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBotsBotIdApiKeyRoute, postBotsBotIdApiKeyRegenerateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBotsBotIdApiKeyRouteHandler: RouteHandler<typeof getBotsBotIdApiKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const botsHandler = app
-  .openapi(getBotsBotIdApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotsBotIdApiKeyRegenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBotsBotIdApiKeyRegenerateRouteHandler: RouteHandler<
+  typeof postBotsBotIdApiKeyRegenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

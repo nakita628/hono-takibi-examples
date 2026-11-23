@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVendorAppsAddonIdLogscollectorRoute,
   getVendorAppsAddonIdRoute,
   getVendorAppsRoute,
@@ -9,27 +9,42 @@ import {
   putVendorAppsAddonIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVendorAddonsRouteHandler: RouteHandler<typeof postVendorAddonsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const vendorHandler = app
-  .openapi(postVendorAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVendorAppsAddonIdLogscollectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVendorAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVendorAppsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVendorAppsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVendorAppsAddonIdConsumptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVendorAppsAddonIdMigrationCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVendorAppsAddonIdLogscollectorRouteHandler: RouteHandler<
+  typeof getVendorAppsAddonIdLogscollectorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVendorAppsRouteHandler: RouteHandler<typeof getVendorAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVendorAppsAddonIdRouteHandler: RouteHandler<
+  typeof getVendorAppsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVendorAppsAddonIdRouteHandler: RouteHandler<
+  typeof putVendorAppsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVendorAppsAddonIdConsumptionsRouteHandler: RouteHandler<
+  typeof postVendorAppsAddonIdConsumptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVendorAppsAddonIdMigrationCallbackRouteHandler: RouteHandler<
+  typeof putVendorAppsAddonIdMigrationCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

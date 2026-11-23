@@ -19,26 +19,26 @@ export function getV1OutputFormatKey() {
 }
 
 export function getV1OutputFormatQueryKey(
-  args: InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
 ) {
-  return ['v1.:output_format', '/v1.:output_format', args] as const
+  return ['v1.{output_format}', '/v1.{output_format}', args] as const
 }
 
 export function getV1OutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
       >
     >,
     TError,
@@ -48,7 +48,7 @@ export function getV1OutputFormatQueryOptions<
     queryKey: getV1OutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['v1.:output_format'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['v1.{output_format}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -57,18 +57,18 @@ export function getV1OutputFormatQueryOptions<
 export function injectV1OutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['v1.:output_format']['$get']>,
+  args: () => InferRequestType<(typeof client)['v1.{output_format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.:output_format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['v1.{output_format}']['$get']>>>
           >
         >,
         TError,
@@ -88,29 +88,29 @@ export function injectV1OutputFormat<
 }
 
 export function getV1CategoryListOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/category-list.:output_format', args] as const
+  return ['v1', '/v1/category-list.{output_format}', args] as const
 }
 
 export function getV1CategoryListOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+        Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+          Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
         >
       >
     >,
@@ -121,7 +121,7 @@ export function getV1CategoryListOutputFormatQueryOptions<
     queryKey: getV1CategoryListOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.v1['category-list.:output_format'].$get(args, {
+        client.v1['category-list.{output_format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -134,20 +134,20 @@ export function injectV1CategoryListOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+        Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.v1)['category-list.:output_format']['$get']>,
+  args: () => InferRequestType<(typeof client.v1)['category-list.{output_format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.v1)['category-list.:output_format']['$get']>>
+              Awaited<ReturnType<(typeof client.v1)['category-list.{output_format}']['$get']>>
             >
           >
         >,
@@ -171,26 +171,28 @@ export function injectV1CategoryListOutputFormat<
 }
 
 export function getV1PocsOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/pocs.:output_format', args] as const
+  return ['v1', '/v1/pocs.{output_format}', args] as const
 }
 
 export function getV1PocsOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>>
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
+        >
       >
     >,
     TError,
@@ -200,7 +202,7 @@ export function getV1PocsOutputFormatQueryOptions<
     queryKey: getV1PocsOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.v1['pocs.:output_format'].$get(args, {
+        client.v1['pocs.{output_format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -212,19 +214,19 @@ export function getV1PocsOutputFormatQueryOptions<
 export function injectV1PocsOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.v1)['pocs.:output_format']['$get']>,
+  args: () => InferRequestType<(typeof client.v1)['pocs.{output_format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.v1)['pocs.:output_format']['$get']>>
+              Awaited<ReturnType<(typeof client.v1)['pocs.{output_format}']['$get']>>
             >
           >
         >,
@@ -245,26 +247,26 @@ export function injectV1PocsOutputFormat<
 }
 
 export function getV1IdOutputFormatQueryKey(
-  args: InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
 ) {
-  return ['v1', '/v1/:id.:output_format', args] as const
+  return ['v1', '/v1/:id.{output_format}', args] as const
 }
 
 export function getV1IdOutputFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>>
       >
     >,
     TError,
@@ -274,7 +276,7 @@ export function getV1IdOutputFormatQueryOptions<
     queryKey: getV1IdOutputFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.v1[':id.:output_format'].$get(args, {
+        client.v1[':id.{output_format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -286,19 +288,19 @@ export function getV1IdOutputFormatQueryOptions<
 export function injectV1IdOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.v1)[':id.:output_format']['$get']>,
+  args: () => InferRequestType<(typeof client.v1)[':id.{output_format}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.v1)[':id.:output_format']['$get']>>
+              Awaited<ReturnType<(typeof client.v1)[':id.{output_format}']['$get']>>
             >
           >
         >,

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMandatesMandateIdRoute, postMandatesRevokeMandateIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMandatesMandateIdRoute, postMandatesRevokeMandateIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMandatesMandateIdRouteHandler: RouteHandler<
+  typeof getMandatesMandateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mandatesHandler = app
-  .openapi(getMandatesMandateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMandatesRevokeMandateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMandatesRevokeMandateIdRouteHandler: RouteHandler<
+  typeof postMandatesRevokeMandateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

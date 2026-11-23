@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAccountsAuthinfoRoute, postAccountsBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAccountsAuthinfoRoute, postAccountsBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsAuthinfoRouteHandler: RouteHandler<
+  typeof getAccountsAuthinfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsAuthinfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountsBatchRouteHandler: RouteHandler<typeof postAccountsBatchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

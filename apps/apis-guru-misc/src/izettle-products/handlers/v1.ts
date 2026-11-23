@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1TaxesTaxRateUuidRoute,
   getV1TaxesCountRoute,
   getV1TaxesRoute,
@@ -10,30 +10,44 @@ import {
   putV1TaxesTaxRateUuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1TaxesRouteHandler: RouteHandler<typeof getV1TaxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1TaxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TaxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TaxesCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TaxesSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1TaxesSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TaxesTaxRateUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TaxesTaxRateUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1TaxesTaxRateUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1TaxesRouteHandler: RouteHandler<typeof postV1TaxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TaxesCountRouteHandler: RouteHandler<typeof getV1TaxesCountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TaxesSettingsRouteHandler: RouteHandler<typeof getV1TaxesSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1TaxesSettingsRouteHandler: RouteHandler<typeof putV1TaxesSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TaxesTaxRateUuidRouteHandler: RouteHandler<
+  typeof deleteV1TaxesTaxRateUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TaxesTaxRateUuidRouteHandler: RouteHandler<
+  typeof getV1TaxesTaxRateUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1TaxesTaxRateUuidRouteHandler: RouteHandler<
+  typeof putV1TaxesTaxRateUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

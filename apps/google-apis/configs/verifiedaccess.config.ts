@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/verifiedaccess/v2/openapi.yaml',
   output: './src/verifiedaccess/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/verifiedaccess/types.ts' },
   client: { output: './src/verifiedaccess/client.ts', baseUrl: '/' },
   rpc: { output: './src/verifiedaccess/rpc.ts', parseResponse: true },

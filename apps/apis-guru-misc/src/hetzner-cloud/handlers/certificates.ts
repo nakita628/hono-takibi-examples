@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCertificatesIdRoute,
   getCertificatesIdActionsActionIdRoute,
   getCertificatesIdActionsRoute,
@@ -10,30 +10,48 @@ import {
   putCertificatesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCertificatesRouteHandler: RouteHandler<typeof getCertificatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const certificatesHandler = app
-  .openapi(getCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCertificatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCertificatesIdActionsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesIdActionsActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCertificatesRouteHandler: RouteHandler<typeof postCertificatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCertificatesIdRouteHandler: RouteHandler<
+  typeof deleteCertificatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesIdRouteHandler: RouteHandler<typeof getCertificatesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCertificatesIdRouteHandler: RouteHandler<typeof putCertificatesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesIdActionsRouteHandler: RouteHandler<
+  typeof getCertificatesIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCertificatesIdActionsRetryRouteHandler: RouteHandler<
+  typeof postCertificatesIdActionsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesIdActionsActionIdRouteHandler: RouteHandler<
+  typeof getCertificatesIdActionsActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

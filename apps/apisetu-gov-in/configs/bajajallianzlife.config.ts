@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/bajajallianzlife/3.0.0/openapi.yaml',
   output: './src/bajajallianzlife/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bajajallianzlife/types.ts' },
   client: { output: './src/bajajallianzlife/client.ts', baseUrl: '/' },
   rpc: { output: './src/bajajallianzlife/rpc.ts', parseResponse: true },

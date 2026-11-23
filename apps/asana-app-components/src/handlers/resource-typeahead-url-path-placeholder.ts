@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getResourceTypeaheadUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getResourceTypeaheadUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const resourceTypeaheadUrlPathPlaceholderHandler = app.openapi(
-  getResourceTypeaheadUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getResourceTypeaheadUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof getResourceTypeaheadUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

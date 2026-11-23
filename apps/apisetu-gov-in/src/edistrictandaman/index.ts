@@ -1,33 +1,47 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  brlcsHandler,
-  dpcerHandler,
-  fmcerHandler,
-  incerHandler,
-  lccepHandler,
-  ndcerHandler,
-  obcerHandler,
-  rmcerHandler,
-  rscerHandler,
-  rucerHandler,
-  sicrdHandler,
-  vlcerHandler,
+  postBrlcsCertificateRoute,
+  postDpcerCertificateRoute,
+  postFmcerCertificateRoute,
+  postIncerCertificateRoute,
+  postLccepCertificateRoute,
+  postNdcerCertificateRoute,
+  postObcerCertificateRoute,
+  postRmcerCertificateRoute,
+  postRscerCertificateRoute,
+  postRucerCertificateRoute,
+  postSicrdCertificateRoute,
+  postVlcerCertificateRoute,
+} from './routes'
+import {
+  postBrlcsCertificateRouteHandler,
+  postDpcerCertificateRouteHandler,
+  postFmcerCertificateRouteHandler,
+  postIncerCertificateRouteHandler,
+  postLccepCertificateRouteHandler,
+  postNdcerCertificateRouteHandler,
+  postObcerCertificateRouteHandler,
+  postRmcerCertificateRouteHandler,
+  postRscerCertificateRouteHandler,
+  postRucerCertificateRouteHandler,
+  postSicrdCertificateRouteHandler,
+  postVlcerCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', brlcsHandler)
-  .route('/', dpcerHandler)
-  .route('/', fmcerHandler)
-  .route('/', incerHandler)
-  .route('/', lccepHandler)
-  .route('/', ndcerHandler)
-  .route('/', obcerHandler)
-  .route('/', rmcerHandler)
-  .route('/', rscerHandler)
-  .route('/', rucerHandler)
-  .route('/', sicrdHandler)
-  .route('/', vlcerHandler)
+  .openapi(postBrlcsCertificateRoute, postBrlcsCertificateRouteHandler)
+  .openapi(postDpcerCertificateRoute, postDpcerCertificateRouteHandler)
+  .openapi(postFmcerCertificateRoute, postFmcerCertificateRouteHandler)
+  .openapi(postIncerCertificateRoute, postIncerCertificateRouteHandler)
+  .openapi(postLccepCertificateRoute, postLccepCertificateRouteHandler)
+  .openapi(postNdcerCertificateRoute, postNdcerCertificateRouteHandler)
+  .openapi(postObcerCertificateRoute, postObcerCertificateRouteHandler)
+  .openapi(postRmcerCertificateRoute, postRmcerCertificateRouteHandler)
+  .openapi(postRscerCertificateRoute, postRscerCertificateRouteHandler)
+  .openapi(postRucerCertificateRoute, postRucerCertificateRouteHandler)
+  .openapi(postSicrdCertificateRoute, postSicrdCertificateRouteHandler)
+  .openapi(postVlcerCertificateRoute, postVlcerCertificateRouteHandler)
 
 export default app

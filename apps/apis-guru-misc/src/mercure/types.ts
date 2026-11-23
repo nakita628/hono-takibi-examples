@@ -26,6 +26,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { topic: string[]; 'Last-Event-ID'?: string | undefined } } & {
+              header: { 'Last-Event-ID'?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
             status: 400
           }
         | {
@@ -37,6 +45,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
       $post:
+        | {
+            input: {
+              json: {
+                data: string
+                id?: string | undefined
+                private?: boolean | undefined
+                retry?: number | undefined
+                topic: string[]
+                type?: string | undefined
+              }
+            } & {
+              form: {
+                data: string
+                id?: string | undefined
+                private?: boolean | undefined
+                retry?: number | undefined
+                topic: string[]
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {

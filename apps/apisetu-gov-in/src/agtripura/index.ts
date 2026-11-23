@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { pecerHandler, prfndHandler } from './handlers'
+import { postPecerCertificateRoute, postPrfndCertificateRoute } from './routes'
+import { postPecerCertificateRouteHandler, postPrfndCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', pecerHandler).route('/', prfndHandler)
+export const api = app
+  .openapi(postPecerCertificateRoute, postPecerCertificateRouteHandler)
+  .openapi(postPrfndCertificateRoute, postPrfndCertificateRouteHandler)
 
 export default app

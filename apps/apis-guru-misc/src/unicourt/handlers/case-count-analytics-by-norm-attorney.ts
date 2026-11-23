@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCaseCountAnalyticsByNormAttorneyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCaseCountAnalyticsByNormAttorneyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const caseCountAnalyticsByNormAttorneyHandler = app.openapi(
-  getCaseCountAnalyticsByNormAttorneyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getCaseCountAnalyticsByNormAttorneyRouteHandler: RouteHandler<
+  typeof getCaseCountAnalyticsByNormAttorneyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

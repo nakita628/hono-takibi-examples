@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionStartMessageMoveTaskRoute, postActionStartMessageMoveTaskRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionStartMessageMoveTaskRoute,
+  postActionStartMessageMoveTaskRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionStartMessageMoveTaskRouteHandler: RouteHandler<
+  typeof getActionStartMessageMoveTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionStartMessageMoveTaskHandler = app
-  .openapi(getActionStartMessageMoveTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionStartMessageMoveTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionStartMessageMoveTaskRouteHandler: RouteHandler<
+  typeof postActionStartMessageMoveTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

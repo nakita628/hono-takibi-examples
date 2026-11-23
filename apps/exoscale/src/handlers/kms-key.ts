@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getKmsKeyIdListKeyRotationsRoute,
   getKmsKeyIdRoute,
   getKmsKeyRoute,
@@ -18,54 +18,92 @@ import {
   postKmsKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postKmsKeyIdDisableKeyRotationRouteHandler: RouteHandler<
+  typeof postKmsKeyIdDisableKeyRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const kmsKeyHandler = app
-  .openapi(postKmsKeyIdDisableKeyRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKmsKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKmsKeyIdListKeyRotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdEnableKeyRotationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdDecryptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdEncryptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKmsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdScheduleDeletionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdReEncryptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdReplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdCancelDeletionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKmsKeyIdGenerateDataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getKmsKeyIdRouteHandler: RouteHandler<typeof getKmsKeyIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdEnableRouteHandler: RouteHandler<typeof postKmsKeyIdEnableRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKmsKeyIdListKeyRotationsRouteHandler: RouteHandler<
+  typeof getKmsKeyIdListKeyRotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdEnableKeyRotationRouteHandler: RouteHandler<
+  typeof postKmsKeyIdEnableKeyRotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdRotateRouteHandler: RouteHandler<typeof postKmsKeyIdRotateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdDecryptRouteHandler: RouteHandler<
+  typeof postKmsKeyIdDecryptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdDisableRouteHandler: RouteHandler<
+  typeof postKmsKeyIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdEncryptRouteHandler: RouteHandler<
+  typeof postKmsKeyIdEncryptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyRouteHandler: RouteHandler<typeof postKmsKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKmsKeyRouteHandler: RouteHandler<typeof getKmsKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdScheduleDeletionRouteHandler: RouteHandler<
+  typeof postKmsKeyIdScheduleDeletionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdReEncryptRouteHandler: RouteHandler<
+  typeof postKmsKeyIdReEncryptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdReplicateRouteHandler: RouteHandler<
+  typeof postKmsKeyIdReplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdCancelDeletionRouteHandler: RouteHandler<
+  typeof postKmsKeyIdCancelDeletionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKmsKeyIdGenerateDataKeyRouteHandler: RouteHandler<
+  typeof postKmsKeyIdGenerateDataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

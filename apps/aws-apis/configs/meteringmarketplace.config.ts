@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/meteringmarketplace/2016-01-14/openapi.yaml',
   output: './src/meteringmarketplace/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/meteringmarketplace/types.ts' },
   client: { output: './src/meteringmarketplace/client.ts', baseUrl: '/' },
   rpc: { output: './src/meteringmarketplace/rpc.ts', parseResponse: true },

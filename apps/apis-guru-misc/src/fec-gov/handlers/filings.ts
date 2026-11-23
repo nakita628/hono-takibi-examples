@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFilingsIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFilingsIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const filingsHandler = app.openapi(getFilingsIndexRoute, (c) => {
+export const getFilingsIndexRouteHandler: RouteHandler<typeof getFilingsIndexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

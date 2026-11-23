@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSubscribeAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSubscribeAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const subscribeAddressHandler = app.openapi(postSubscribeAddressRoute, (c) => {
+export const postSubscribeAddressRouteHandler: RouteHandler<
+  typeof postSubscribeAddressRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

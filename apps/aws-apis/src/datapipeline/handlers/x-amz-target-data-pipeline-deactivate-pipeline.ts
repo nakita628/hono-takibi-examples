@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDataPipelineDeactivatePipelineRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDataPipelineDeactivatePipelineRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDataPipelineDeactivatePipelineHandler = app.openapi(
-  postXAmzTargetDataPipelineDeactivatePipelineRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDataPipelineDeactivatePipelineRouteHandler: RouteHandler<
+  typeof postXAmzTargetDataPipelineDeactivatePipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

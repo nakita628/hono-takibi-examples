@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/marketplacecommerceanalytics/2015-07-01/openapi.yaml',
   output: './src/marketplacecommerceanalytics/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/marketplacecommerceanalytics/types.ts' },
   client: { output: './src/marketplacecommerceanalytics/client.ts', baseUrl: '/' },
   rpc: { output: './src/marketplacecommerceanalytics/rpc.ts', parseResponse: true },

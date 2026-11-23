@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppsAppNameMachinesMachineIdLeaseRoute,
   deleteAppsAppNameMachinesMachineIdMetadataKeyRoute,
   deleteAppsAppNameMachinesMachineIdRoute,
@@ -36,108 +36,200 @@ import {
   putAppsAppNameVolumesVolumeIdExtendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppsRouteHandler: RouteHandler<typeof getAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appsHandler = app
-  .openapi(getAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppNameMachinesMachineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdCordonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdExecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppNameMachinesMachineIdLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppNameMachinesMachineIdMetadataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdMetadataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdPsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdSignalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameMachinesMachineIdUncordonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameMachinesMachineIdWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppNameVolumesVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameVolumesVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameVolumesVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppsAppNameVolumesVolumeIdExtendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppNameVolumesVolumeIdSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppNameVolumesVolumeIdSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAppsRouteHandler: RouteHandler<typeof postAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppNameRouteHandler: RouteHandler<typeof deleteAppsAppNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameRouteHandler: RouteHandler<typeof getAppsAppNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppNameMachinesMachineIdRouteHandler: RouteHandler<
+  typeof deleteAppsAppNameMachinesMachineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdCordonRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdCordonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdEventsRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdExecRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdExecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppNameMachinesMachineIdLeaseRouteHandler: RouteHandler<
+  typeof deleteAppsAppNameMachinesMachineIdLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdLeaseRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdLeaseRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdMetadataRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppNameMachinesMachineIdMetadataKeyRouteHandler: RouteHandler<
+  typeof deleteAppsAppNameMachinesMachineIdMetadataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdMetadataKeyRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdMetadataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdPsRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdPsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdRestartRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdSignalRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdSignalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdStartRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdStopRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameMachinesMachineIdUncordonRouteHandler: RouteHandler<
+  typeof postAppsAppNameMachinesMachineIdUncordonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdVersionsRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameMachinesMachineIdWaitRouteHandler: RouteHandler<
+  typeof getAppsAppNameMachinesMachineIdWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameVolumesRouteHandler: RouteHandler<
+  typeof getAppsAppNameVolumesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameVolumesRouteHandler: RouteHandler<
+  typeof postAppsAppNameVolumesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppNameVolumesVolumeIdRouteHandler: RouteHandler<
+  typeof deleteAppsAppNameVolumesVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameVolumesVolumeIdRouteHandler: RouteHandler<
+  typeof getAppsAppNameVolumesVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameVolumesVolumeIdRouteHandler: RouteHandler<
+  typeof postAppsAppNameVolumesVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppsAppNameVolumesVolumeIdExtendRouteHandler: RouteHandler<
+  typeof putAppsAppNameVolumesVolumeIdExtendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppNameVolumesVolumeIdSnapshotsRouteHandler: RouteHandler<
+  typeof getAppsAppNameVolumesVolumeIdSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppNameVolumesVolumeIdSnapshotsRouteHandler: RouteHandler<
+  typeof postAppsAppNameVolumesVolumeIdSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

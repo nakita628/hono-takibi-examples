@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuickConnectConnectRoute,
   getQuickConnectInitiateRoute,
   getQuickConnectStatusRoute,
@@ -9,27 +9,44 @@ import {
   postQuickConnectDeauthorizeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQuickConnectActivateRouteHandler: RouteHandler<
+  typeof postQuickConnectActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quickConnectHandler = app
-  .openapi(postQuickConnectActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuickConnectAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuickConnectAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuickConnectConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuickConnectDeauthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuickConnectInitiateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuickConnectStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQuickConnectAuthorizeRouteHandler: RouteHandler<
+  typeof postQuickConnectAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuickConnectAvailableRouteHandler: RouteHandler<
+  typeof postQuickConnectAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuickConnectConnectRouteHandler: RouteHandler<
+  typeof getQuickConnectConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuickConnectDeauthorizeRouteHandler: RouteHandler<
+  typeof postQuickConnectDeauthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuickConnectInitiateRouteHandler: RouteHandler<
+  typeof getQuickConnectInitiateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuickConnectStatusRouteHandler: RouteHandler<
+  typeof getQuickConnectStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

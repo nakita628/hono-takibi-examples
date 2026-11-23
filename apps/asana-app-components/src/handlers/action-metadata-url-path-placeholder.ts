@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionMetadataUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionMetadataUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionMetadataUrlPathPlaceholderHandler = app.openapi(
-  getActionMetadataUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getActionMetadataUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof getActionMetadataUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

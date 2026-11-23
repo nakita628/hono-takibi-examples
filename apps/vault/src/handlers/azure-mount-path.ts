@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAzureMountPathConfigRoute,
   deleteAzureMountPathRolesNameRoute,
   getAzureMountPathConfigRoute,
@@ -11,33 +11,56 @@ import {
   postAzureMountPathRotateRootRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAzureMountPathConfigRouteHandler: RouteHandler<
+  typeof getAzureMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const azureMountPathHandler = app
-  .openapi(getAzureMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAzureMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAzureMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAzureMountPathCredsRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAzureMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAzureMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAzureMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAzureMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAzureMountPathRotateRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAzureMountPathConfigRouteHandler: RouteHandler<
+  typeof postAzureMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAzureMountPathConfigRouteHandler: RouteHandler<
+  typeof deleteAzureMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAzureMountPathCredsRoleRouteHandler: RouteHandler<
+  typeof getAzureMountPathCredsRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAzureMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getAzureMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAzureMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getAzureMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAzureMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postAzureMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAzureMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deleteAzureMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAzureMountPathRotateRootRouteHandler: RouteHandler<
+  typeof postAzureMountPathRotateRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

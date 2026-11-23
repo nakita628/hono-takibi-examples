@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSignTemplatesRoute, getSignTemplatesTemplateIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSignTemplatesRoute, getSignTemplatesTemplateIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSignTemplatesRouteHandler: RouteHandler<typeof getSignTemplatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const signTemplatesHandler = app
-  .openapi(getSignTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSignTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSignTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getSignTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

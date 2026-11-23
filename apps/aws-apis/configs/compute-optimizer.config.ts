@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/compute-optimizer/2019-11-01/openapi.yaml',
   output: './src/compute-optimizer/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/compute-optimizer/types.ts' },
   client: { output: './src/compute-optimizer/client.ts', baseUrl: '/' },
   rpc: { output: './src/compute-optimizer/rpc.ts', parseResponse: true },

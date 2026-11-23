@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postWalletCreateRoute,
   postWalletGetRoute,
   postWalletListRoute,
@@ -8,24 +8,34 @@ import {
   postWalletTransactionListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWalletCreateRouteHandler: RouteHandler<typeof postWalletCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const walletHandler = app
-  .openapi(postWalletCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletTransactionExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletTransactionGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletTransactionListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWalletGetRouteHandler: RouteHandler<typeof postWalletGetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWalletListRouteHandler: RouteHandler<typeof postWalletListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWalletTransactionExecuteRouteHandler: RouteHandler<
+  typeof postWalletTransactionExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWalletTransactionGetRouteHandler: RouteHandler<
+  typeof postWalletTransactionGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWalletTransactionListRouteHandler: RouteHandler<
+  typeof postWalletTransactionListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

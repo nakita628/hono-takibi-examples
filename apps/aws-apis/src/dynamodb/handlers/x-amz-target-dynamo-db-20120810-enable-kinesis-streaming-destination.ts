@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810EnableKinesisStreamingDestinationHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810EnableKinesisStreamingDestinationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

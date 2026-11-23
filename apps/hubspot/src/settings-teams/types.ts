@@ -90,12 +90,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { teamId: string } }; output: Error; outputFormat: 'text'; status: 200 }
-      $delete: {
-        input: { param: { teamId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { teamId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { teamId: string } }; output: Error; outputFormat: 'text'; status: 200 }
       $patch:
         | {
             input: { param: { teamId: string } } & { json: TeamUpdateRequest }
@@ -161,14 +158,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/settings/teams/2026-09/:teamId/members/:userId': {
-      $delete: {
-        input: { param: { teamId: string; userId: string } } & {
-          query: { type?: 'DEFAULT' | 'EXTRA' | undefined }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { teamId: string; userId: string } } & {
+              query: { type?: 'DEFAULT' | 'EXTRA' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { teamId: string; userId: string } } & {
+              query: { type?: 'DEFAULT' | 'EXTRA' | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

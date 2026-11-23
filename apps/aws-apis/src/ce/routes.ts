@@ -81,9 +81,9 @@ const MatchOptionSchema = z
 const MatchOptionsSchema = z.array(MatchOptionSchema).openapi('MatchOptions')
 
 type TagValuesType = {
-  Key?: z.infer<typeof TagKeySchema> & unknown
-  Values?: z.infer<typeof ValuesSchema> & unknown
-  MatchOptions?: z.infer<typeof MatchOptionsSchema> & unknown
+  Key?: z.infer<typeof TagKeySchema>
+  Values?: z.infer<typeof ValuesSchema>
+  MatchOptions?: z.infer<typeof MatchOptionsSchema>
 }
 
 const TagValuesSchema: z.ZodType<TagValuesType> = z
@@ -449,11 +449,11 @@ const RightsizingRecommendationConfigurationSchema = z
   .openapi('RightsizingRecommendationConfiguration')
 
 type GetRightsizingRecommendationResponseType = {
-  Metadata?: z.infer<typeof RightsizingRecommendationMetadataSchema> & unknown
-  Summary?: z.infer<typeof RightsizingRecommendationSummarySchema> & unknown
-  RightsizingRecommendations?: z.infer<typeof RightsizingRecommendationListSchema> & unknown
-  NextPageToken?: z.infer<typeof NextPageTokenSchema> & unknown
-  Configuration?: z.infer<typeof RightsizingRecommendationConfigurationSchema> & unknown
+  Metadata?: z.infer<typeof RightsizingRecommendationMetadataSchema>
+  Summary?: z.infer<typeof RightsizingRecommendationSummarySchema>
+  RightsizingRecommendations?: z.infer<typeof RightsizingRecommendationListSchema>
+  NextPageToken?: z.infer<typeof NextPageTokenSchema>
+  Configuration?: z.infer<typeof RightsizingRecommendationConfigurationSchema>
 }
 
 const ExpressionsSchema: z.ZodType<ExpressionsType> = z
@@ -500,9 +500,9 @@ const DimensionSchema = z
   .openapi('Dimension')
 
 type DimensionValuesType = {
-  Key?: z.infer<typeof DimensionSchema> & unknown
-  Values?: z.infer<typeof ValuesSchema> & unknown
-  MatchOptions?: z.infer<typeof MatchOptionsSchema> & unknown
+  Key?: z.infer<typeof DimensionSchema>
+  Values?: z.infer<typeof ValuesSchema>
+  MatchOptions?: z.infer<typeof MatchOptionsSchema>
 }
 
 const DimensionValuesSchema: z.ZodType<DimensionValuesType> = z
@@ -539,8 +539,8 @@ const CostCategoryNameSchema = z
 
 type CostCategoryValuesType = {
   Key?: z.infer<typeof CostCategoryNameSchema>
-  Values?: z.infer<typeof ValuesSchema> & unknown
-  MatchOptions?: z.infer<typeof MatchOptionsSchema> & unknown
+  Values?: z.infer<typeof ValuesSchema>
+  MatchOptions?: z.infer<typeof MatchOptionsSchema>
 }
 
 const CostCategoryValuesSchema: z.ZodType<CostCategoryValuesType> = z
@@ -562,12 +562,12 @@ const CostCategoryValuesSchema: z.ZodType<CostCategoryValuesType> = z
   .openapi('CostCategoryValues')
 
 type ExpressionType = {
-  Or?: z.infer<typeof ExpressionsSchema> & unknown
-  And?: z.infer<typeof ExpressionsSchema> & unknown
-  Not?: ExpressionType & unknown
-  Dimensions?: z.infer<typeof DimensionValuesSchema> & unknown
-  Tags?: z.infer<typeof TagValuesSchema> & unknown
-  CostCategories?: z.infer<typeof CostCategoryValuesSchema> & unknown
+  Or?: z.infer<typeof ExpressionsSchema>
+  And?: z.infer<typeof ExpressionsSchema>
+  Not?: ExpressionType
+  Dimensions?: z.infer<typeof DimensionValuesSchema>
+  Tags?: z.infer<typeof TagValuesSchema>
+  CostCategories?: z.infer<typeof CostCategoryValuesSchema>
 }
 
 const ExpressionSchema: z.ZodType<ExpressionType> = z

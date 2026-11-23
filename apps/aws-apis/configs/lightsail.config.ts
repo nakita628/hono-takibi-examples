@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/lightsail/2016-11-28/openapi.yaml',
   output: './src/lightsail/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lightsail/types.ts' },
   client: { output: './src/lightsail/client.ts', baseUrl: '/' },
   rpc: { output: './src/lightsail/rpc.ts', parseResponse: true },

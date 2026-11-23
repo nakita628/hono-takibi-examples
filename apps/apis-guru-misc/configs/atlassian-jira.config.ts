@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/atlassian.com/jira/1001.0.0-SNAPSHOT/openapi.yaml',
   output: './src/atlassian-jira/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/atlassian-jira/types.ts' },
   client: { output: './src/atlassian-jira/client.ts', baseUrl: '/' },
   rpc: { output: './src/atlassian-jira/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/calorieninjas.com/1.0.0/openapi.yaml',
   output: './src/calorieninjas/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/calorieninjas/types.ts' },
   client: { output: './src/calorieninjas/client.ts', baseUrl: '/' },
   rpc: { output: './src/calorieninjas/rpc.ts', parseResponse: true },

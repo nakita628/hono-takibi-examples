@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFinalizeCutoverRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFinalizeCutoverRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const finalizeCutoverHandler = app.openapi(postFinalizeCutoverRoute, (c) => {
+export const postFinalizeCutoverRouteHandler: RouteHandler<
+  typeof postFinalizeCutoverRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

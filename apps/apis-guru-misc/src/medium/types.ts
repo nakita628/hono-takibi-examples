@@ -211,7 +211,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/search/articles?query=:query': {
+    '/search/articles?query={query}': {
       $get: {
         input: { param: { query: string } } & { query: { query: string } }
         output: { articles?: string[] | undefined; search_query?: string | undefined }
@@ -220,7 +220,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/search/lists?query=:query': {
+    '/search/lists?query={query}': {
       $get: {
         input: { param: { query: string } } & { query: { query: string } }
         output: { lists?: string[] | undefined; search_query?: string | undefined }
@@ -229,7 +229,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/search/publications?query=:query': {
+    '/search/publications?query={query}': {
       $get: {
         input: { param: { query: string } } & { query: { query: string } }
         output: { publications?: string[] | undefined; search_query?: string | undefined }
@@ -238,7 +238,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/search/tags?query=:query': {
+    '/search/tags?query={query}': {
       $get: {
         input: { param: { query: string } } & { query: { query: string } }
         output: { search_query?: string | undefined; tags?: string[] | undefined }
@@ -247,7 +247,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/search/users?query=:query': {
+    '/search/users?query={query}': {
       $get: {
         input: { param: { query: string } } & { query: { query: string } }
         output: { search_query?: string | undefined; users?: string[] | undefined }

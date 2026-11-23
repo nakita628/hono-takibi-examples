@@ -131,35 +131,75 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 204
       }
-      $post: {
-        input: {
-          header: { 'trakt-api-version'?: string | undefined; 'trakt-api-key'?: string | undefined }
-        } & {
-          json: {
-            app_date?: string | undefined
-            app_version?: string | undefined
-            message?: string | undefined
-            movie?:
-              | {
-                  ids?:
-                    | {
-                        imdb?: string | undefined
-                        slug?: string | undefined
-                        tmdb?: number | undefined
-                        trakt?: number | undefined
-                      }
-                    | undefined
-                  title?: string | undefined
-                  year?: number | undefined
-                }
-              | undefined
-            sharing?: { tumblr?: boolean | undefined; twitter?: boolean | undefined } | undefined
+      $post:
+        | {
+            input: {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            } & {
+              json: {
+                app_date?: string | undefined
+                app_version?: string | undefined
+                message?: string | undefined
+                movie?:
+                  | {
+                      ids?:
+                        | {
+                            imdb?: string | undefined
+                            slug?: string | undefined
+                            tmdb?: number | undefined
+                            trakt?: number | undefined
+                          }
+                        | undefined
+                      title?: string | undefined
+                      year?: number | undefined
+                    }
+                  | undefined
+                sharing?:
+                  | { tumblr?: boolean | undefined; twitter?: boolean | undefined }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 201
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            } & {
+              json: {
+                app_date?: string | undefined
+                app_version?: string | undefined
+                message?: string | undefined
+                movie?:
+                  | {
+                      ids?:
+                        | {
+                            imdb?: string | undefined
+                            slug?: string | undefined
+                            tmdb?: number | undefined
+                            trakt?: number | undefined
+                          }
+                        | undefined
+                      title?: string | undefined
+                      year?: number | undefined
+                    }
+                  | undefined
+                sharing?:
+                  | { tumblr?: boolean | undefined; twitter?: boolean | undefined }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/comments': {
@@ -195,7 +235,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -330,7 +370,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         } & { json: { comment?: string | undefined; spoiler?: boolean | undefined } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -755,20 +795,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/oauth/token': {
-      $post: {
-        input: {
-          json: {
-            client_id?: string | undefined
-            client_secret?: string | undefined
-            grant_type?: string | undefined
-            redirect_uri?: string | undefined
-            refresh_token?: string | undefined
+      $post:
+        | {
+            input: {
+              json: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                grant_type?: string | undefined
+                redirect_uri?: string | undefined
+                refresh_token?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              json: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                grant_type?: string | undefined
+                redirect_uri?: string | undefined
+                refresh_token?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/people/updates/id/:start_date': {
@@ -924,7 +979,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -955,39 +1010,74 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
     '/scrobble/stop': {
-      $post: {
-        input: {
-          header: { 'trakt-api-version'?: string | undefined; 'trakt-api-key'?: string | undefined }
-        } & {
-          json: {
-            app_date?: string | undefined
-            app_version?: string | undefined
-            movie?:
-              | {
-                  ids?:
-                    | {
-                        imdb?: string | undefined
-                        slug?: string | undefined
-                        tmdb?: number | undefined
-                        trakt?: number | undefined
-                      }
-                    | undefined
-                  title?: string | undefined
-                  year?: number | undefined
-                }
-              | undefined
-            progress?: number | undefined
+      $post:
+        | {
+            input: {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            } & {
+              json: {
+                app_date?: string | undefined
+                app_version?: string | undefined
+                movie?:
+                  | {
+                      ids?:
+                        | {
+                            imdb?: string | undefined
+                            slug?: string | undefined
+                            tmdb?: number | undefined
+                            trakt?: number | undefined
+                          }
+                        | undefined
+                      title?: string | undefined
+                      year?: number | undefined
+                    }
+                  | undefined
+                progress?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 201
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            } & {
+              json: {
+                app_date?: string | undefined
+                app_version?: string | undefined
+                movie?:
+                  | {
+                      ids?:
+                        | {
+                            imdb?: string | undefined
+                            slug?: string | undefined
+                            tmdb?: number | undefined
+                            trakt?: number | undefined
+                          }
+                        | undefined
+                      title?: string | undefined
+                      year?: number | undefined
+                    }
+                  | undefined
+                progress?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/search/:id_type/:id': {
@@ -1653,7 +1743,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -1797,7 +1887,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -1981,7 +2071,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -2101,7 +2191,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -2242,7 +2332,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 420
+        status: 201
       }
     }
   } & {
@@ -2395,7 +2485,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -2566,7 +2656,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {
@@ -2652,7 +2742,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 420
+        status: 201
       }
     }
   } & {
@@ -2785,7 +2875,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 420
+        status: 201
       }
     }
   } & {
@@ -2963,14 +3053,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/users/:id/watching': {
-      $get: {
-        input: { param: { id: string } } & {
-          header: { 'trakt-api-version'?: string | undefined; 'trakt-api-key'?: string | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              header: {
+                'trakt-api-version'?: string | undefined
+                'trakt-api-key'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
     }
   } & {
     '/users/:id/watchlist/:type/:sort': {

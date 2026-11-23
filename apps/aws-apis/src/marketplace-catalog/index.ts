@@ -1,33 +1,56 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  cancelChangeSetCatalogChangeSetIdHandler,
-  deleteResourcePolicyResourceArnHandler,
-  describeChangeSetCatalogChangeSetIdHandler,
-  describeEntityCatalogEntityIdHandler,
-  getResourcePolicyResourceArnHandler,
-  listChangeSetsHandler,
-  listEntitiesHandler,
-  listTagsForResourceHandler,
-  putResourcePolicyHandler,
-  startChangeSetHandler,
-  tagResourceHandler,
-  untagResourceHandler,
+  deleteDeleteResourcePolicyResourceArnRoute,
+  getDescribeChangeSetCatalogChangeSetIdRoute,
+  getDescribeEntityCatalogEntityIdRoute,
+  getGetResourcePolicyResourceArnRoute,
+  patchCancelChangeSetCatalogChangeSetIdRoute,
+  postListChangeSetsRoute,
+  postListEntitiesRoute,
+  postListTagsForResourceRoute,
+  postPutResourcePolicyRoute,
+  postStartChangeSetRoute,
+  postTagResourceRoute,
+  postUntagResourceRoute,
+} from './routes'
+import {
+  deleteDeleteResourcePolicyResourceArnRouteHandler,
+  getDescribeChangeSetCatalogChangeSetIdRouteHandler,
+  getDescribeEntityCatalogEntityIdRouteHandler,
+  getGetResourcePolicyResourceArnRouteHandler,
+  patchCancelChangeSetCatalogChangeSetIdRouteHandler,
+  postListChangeSetsRouteHandler,
+  postListEntitiesRouteHandler,
+  postListTagsForResourceRouteHandler,
+  postPutResourcePolicyRouteHandler,
+  postStartChangeSetRouteHandler,
+  postTagResourceRouteHandler,
+  postUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', cancelChangeSetCatalogChangeSetIdHandler)
-  .route('/', deleteResourcePolicyResourceArnHandler)
-  .route('/', describeChangeSetCatalogChangeSetIdHandler)
-  .route('/', describeEntityCatalogEntityIdHandler)
-  .route('/', getResourcePolicyResourceArnHandler)
-  .route('/', listChangeSetsHandler)
-  .route('/', listEntitiesHandler)
-  .route('/', listTagsForResourceHandler)
-  .route('/', putResourcePolicyHandler)
-  .route('/', startChangeSetHandler)
-  .route('/', tagResourceHandler)
-  .route('/', untagResourceHandler)
+  .openapi(
+    patchCancelChangeSetCatalogChangeSetIdRoute,
+    patchCancelChangeSetCatalogChangeSetIdRouteHandler,
+  )
+  .openapi(
+    deleteDeleteResourcePolicyResourceArnRoute,
+    deleteDeleteResourcePolicyResourceArnRouteHandler,
+  )
+  .openapi(
+    getDescribeChangeSetCatalogChangeSetIdRoute,
+    getDescribeChangeSetCatalogChangeSetIdRouteHandler,
+  )
+  .openapi(getDescribeEntityCatalogEntityIdRoute, getDescribeEntityCatalogEntityIdRouteHandler)
+  .openapi(getGetResourcePolicyResourceArnRoute, getGetResourcePolicyResourceArnRouteHandler)
+  .openapi(postListChangeSetsRoute, postListChangeSetsRouteHandler)
+  .openapi(postListEntitiesRoute, postListEntitiesRouteHandler)
+  .openapi(postListTagsForResourceRoute, postListTagsForResourceRouteHandler)
+  .openapi(postPutResourcePolicyRoute, postPutResourcePolicyRouteHandler)
+  .openapi(postStartChangeSetRoute, postStartChangeSetRouteHandler)
+  .openapi(postTagResourceRoute, postTagResourceRouteHandler)
+  .openapi(postUntagResourceRoute, postUntagResourceRouteHandler)
 
 export default app

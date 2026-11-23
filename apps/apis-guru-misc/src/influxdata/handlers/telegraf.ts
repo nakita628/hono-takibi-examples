@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTelegrafPluginsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTelegrafPluginsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const telegrafHandler = app.openapi(getTelegrafPluginsRoute, (c) => {
+export const getTelegrafPluginsRouteHandler: RouteHandler<typeof getTelegrafPluginsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postIdentityVerifyIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postIdentityVerifyIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const identityHandler = app.openapi(postIdentityVerifyIdRoute, (c) => {
+export const postIdentityVerifyIdRouteHandler: RouteHandler<
+  typeof postIdentityVerifyIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

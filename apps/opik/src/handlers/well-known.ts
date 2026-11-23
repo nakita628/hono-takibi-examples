@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWellKnownOauthAuthorizationServerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWellKnownOauthAuthorizationServerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const wellKnownHandler = app.openapi(getWellKnownOauthAuthorizationServerRoute, (c) => {
+export const getWellKnownOauthAuthorizationServerRouteHandler: RouteHandler<
+  typeof getWellKnownOauthAuthorizationServerRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

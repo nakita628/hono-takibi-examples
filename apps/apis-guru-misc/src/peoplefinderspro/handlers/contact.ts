@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postContactEnrichRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postContactEnrichRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const contactHandler = app.openapi(postContactEnrichRoute, (c) => {
+export const postContactEnrichRouteHandler: RouteHandler<typeof postContactEnrichRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

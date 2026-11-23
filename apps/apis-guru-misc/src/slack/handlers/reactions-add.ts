@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postReactionsAddRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postReactionsAddRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const reactionsAddHandler = app.openapi(postReactionsAddRoute, (c) => {
+export const postReactionsAddRouteHandler: RouteHandler<typeof postReactionsAddRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

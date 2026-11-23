@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDocumentsDraftsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDocumentsDraftsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const documentsDraftsHandler = app.openapi(postDocumentsDraftsRoute, (c) => {
+export const postDocumentsDraftsRouteHandler: RouteHandler<
+  typeof postDocumentsDraftsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

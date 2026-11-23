@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1alpha1NameRoute,
   getV1alpha1NameLocationsRoute,
   getV1alpha1NameOperationsRoute,
@@ -33,99 +33,186 @@ import {
   postV1alpha1ParentUtilizationReportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1alpha1DatacenterConnectorUpgradeApplianceRouteHandler: RouteHandler<
+  typeof postV1alpha1DatacenterConnectorUpgradeApplianceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1alpha1Handler = app
-  .openapi(postV1alpha1DatacenterConnectorUpgradeApplianceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1GroupAddGroupMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1GroupRemoveGroupMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1MigratingVmFinalizeMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1MigratingVmPauseMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1MigratingVmResumeMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1MigratingVmStartMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1alpha1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1NameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentCloneJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentCloneJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentCutoverJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentCutoverJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentDatacenterConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentDatacenterConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentMigratingVmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentMigratingVmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentReplicationCyclesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentTargetProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentTargetProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1ParentUtilizationReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1alpha1ParentUtilizationReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1alpha1SourceFetchInventoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1alpha1GroupAddGroupMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1GroupAddGroupMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1GroupRemoveGroupMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1GroupRemoveGroupMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1MigratingVmFinalizeMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1MigratingVmFinalizeMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1MigratingVmPauseMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1MigratingVmPauseMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1MigratingVmResumeMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1MigratingVmResumeMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1MigratingVmStartMigrationRouteHandler: RouteHandler<
+  typeof postV1alpha1MigratingVmStartMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1alpha1NameRouteHandler: RouteHandler<typeof deleteV1alpha1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1NameRouteHandler: RouteHandler<typeof getV1alpha1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1alpha1NameRouteHandler: RouteHandler<typeof patchV1alpha1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1NameLocationsRouteHandler: RouteHandler<
+  typeof getV1alpha1NameLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1NameOperationsRouteHandler: RouteHandler<
+  typeof getV1alpha1NameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1NameCancelRouteHandler: RouteHandler<
+  typeof postV1alpha1NameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentCloneJobsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentCloneJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentCloneJobsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentCloneJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentCutoverJobsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentCutoverJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentCutoverJobsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentCutoverJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentDatacenterConnectorsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentDatacenterConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentDatacenterConnectorsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentDatacenterConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentGroupsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentGroupsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentMigratingVmsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentMigratingVmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentMigratingVmsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentMigratingVmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentReplicationCyclesRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentReplicationCyclesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentSourcesRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentSourcesRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentTargetProjectsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentTargetProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentTargetProjectsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentTargetProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1ParentUtilizationReportsRouteHandler: RouteHandler<
+  typeof getV1alpha1ParentUtilizationReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1alpha1ParentUtilizationReportsRouteHandler: RouteHandler<
+  typeof postV1alpha1ParentUtilizationReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1alpha1SourceFetchInventoryRouteHandler: RouteHandler<
+  typeof getV1alpha1SourceFetchInventoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

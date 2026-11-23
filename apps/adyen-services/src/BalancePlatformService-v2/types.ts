@@ -4171,6 +4171,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { balanceAccountId: string; topUpId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { balanceAccountId: string; topUpId: string } }
             output: DefaultErrorResponseEntity
             outputFormat: 'json'
             status: 400
@@ -4716,6 +4722,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { balancePlatformId: string; webhookId: string; settingId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { balancePlatformId: string; webhookId: string; settingId: string } }
             output: DefaultErrorResponseEntity

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStochrsiRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStochrsiRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stochrsiHandler = app.openapi(getStochrsiRoute, (c) => {
+export const getStochrsiRouteHandler: RouteHandler<typeof getStochrsiRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

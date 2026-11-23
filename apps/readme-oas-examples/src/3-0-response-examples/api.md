@@ -112,10 +112,7 @@ Showcase of responses with an `examples` property present.
 
 ```json
 {
-  "user": {
-    "email": "test@example.com",
-    "name": "Test user name"
-  }
+  "$ref": "#/components/schemas/UserResponseExample"
 }
 ```
 
@@ -143,9 +140,17 @@ This operation does not require authentication
 
 ```json
 {
-  "user": {
-    "email": "test@example.com",
-    "name": "Test user name"
-  }
+  "$ref": "#/components/schemas/UserResponseExample"
 }
+```
+
+<h2 id="tocS_UserResponseExample">UserResponseExample</h2>
+<!-- backwards compatibility -->
+<a id="schemauserresponseexample"></a>
+<a id="schema_UserResponseExample"></a>
+<a id="tocSuserresponseexample"></a>
+<a id="tocsuserresponseexample"></a>
+
+```json
+null
 ```

@@ -14722,7 +14722,6 @@ export const deleteBalanceAccountsBalanceAccountIdRecurringTopUpsTopUpIdRoute = 
     204: {
       description:
         'No Content - the request has been successfully processed, but there is no additional content.',
-      content: {},
     },
     400: {
       description: 'Bad Request - a problem reading or understanding the request.',
@@ -16289,7 +16288,6 @@ export const deleteBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSet
       204: {
         description:
           'No Content - the request has been successfully processed, but there is no additional content.',
-        content: {},
       },
       400: {
         description: 'Bad Request - a problem reading or understanding the request.',

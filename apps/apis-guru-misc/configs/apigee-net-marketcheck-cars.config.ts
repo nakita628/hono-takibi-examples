@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apigee.net/marketcheck-cars/2.01/openapi.yaml',
   output: './src/apigee-net-marketcheck-cars/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apigee-net-marketcheck-cars/types.ts' },
   client: { output: './src/apigee-net-marketcheck-cars/client.ts', baseUrl: '/' },
   rpc: { output: './src/apigee-net-marketcheck-cars/rpc.ts', parseResponse: true },

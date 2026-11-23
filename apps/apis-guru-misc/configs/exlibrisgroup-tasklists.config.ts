@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/exlibrisgroup.com/tasklists/1.0/openapi.yaml',
   output: './src/exlibrisgroup-tasklists/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/exlibrisgroup-tasklists/types.ts' },
   client: { output: './src/exlibrisgroup-tasklists/client.ts', baseUrl: '/' },
   rpc: { output: './src/exlibrisgroup-tasklists/rpc.ts', parseResponse: true },

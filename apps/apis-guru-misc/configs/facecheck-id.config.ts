@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/facecheck.id/v1.02/openapi.yaml',
   output: './src/facecheck-id/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/facecheck-id/types.ts' },
   client: { output: './src/facecheck-id/client.ts', baseUrl: '/' },
   rpc: { output: './src/facecheck-id/rpc.ts', parseResponse: true },

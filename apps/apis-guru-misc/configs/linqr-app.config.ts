@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/linqr.app/2.0/openapi.yaml',
   output: './src/linqr-app/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/linqr-app/types.ts' },
   client: { output: './src/linqr-app/client.ts', baseUrl: '/' },
   rpc: { output: './src/linqr-app/rpc.ts', parseResponse: true },

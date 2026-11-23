@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBulkMd5Route, postBulkSha1Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBulkMd5Route, postBulkSha1Route } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBulkMd5RouteHandler: RouteHandler<typeof postBulkMd5Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bulkHandler = app
-  .openapi(postBulkMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkSha1Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBulkSha1RouteHandler: RouteHandler<typeof postBulkSha1Route> = async (c) => {
+  throw new Error('Not implemented')
+}

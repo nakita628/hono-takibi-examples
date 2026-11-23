@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2AuthRulesAuthRuleTokenRoute,
   getV2AuthRulesAuthRuleTokenBacktestsAuthRuleBacktestTokenRoute,
   getV2AuthRulesAuthRuleTokenBacktestsRoute,
@@ -19,57 +19,98 @@ import {
   postV2AuthRulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2AuthRulesRouteHandler: RouteHandler<typeof postV2AuthRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2AuthRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AuthRulesAuthRuleTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AuthRulesAuthRuleTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AuthRulesAuthRuleTokenEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AuthRulesAuthRuleTokenDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AuthRulesAuthRuleTokenPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenBacktestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AuthRulesAuthRuleTokenBacktestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesAuthRuleTokenBacktestsAuthRuleBacktestTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthRulesResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DisputesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DisputesDisputeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2AuthRulesRouteHandler: RouteHandler<typeof getV2AuthRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AuthRulesAuthRuleTokenRouteHandler: RouteHandler<
+  typeof patchV2AuthRulesAuthRuleTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AuthRulesAuthRuleTokenRouteHandler: RouteHandler<
+  typeof deleteV2AuthRulesAuthRuleTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AuthRulesAuthRuleTokenEntitiesRouteHandler: RouteHandler<
+  typeof patchV2AuthRulesAuthRuleTokenEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AuthRulesAuthRuleTokenDraftRouteHandler: RouteHandler<
+  typeof postV2AuthRulesAuthRuleTokenDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenFeaturesRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AuthRulesAuthRuleTokenPromoteRouteHandler: RouteHandler<
+  typeof postV2AuthRulesAuthRuleTokenPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenVersionsRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenReportRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenBacktestsRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenBacktestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AuthRulesAuthRuleTokenBacktestsRouteHandler: RouteHandler<
+  typeof postV2AuthRulesAuthRuleTokenBacktestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesAuthRuleTokenBacktestsAuthRuleBacktestTokenRouteHandler: RouteHandler<
+  typeof getV2AuthRulesAuthRuleTokenBacktestsAuthRuleBacktestTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthRulesResultsRouteHandler: RouteHandler<
+  typeof getV2AuthRulesResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DisputesRouteHandler: RouteHandler<typeof getV2DisputesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DisputesDisputeTokenRouteHandler: RouteHandler<
+  typeof getV2DisputesDisputeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

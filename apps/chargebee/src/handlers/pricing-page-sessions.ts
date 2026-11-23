@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postPricingPageSessionsCreateForExistingSubscriptionRoute,
   postPricingPageSessionsCreateForNewSubscriptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPricingPageSessionsCreateForExistingSubscriptionRouteHandler: RouteHandler<
+  typeof postPricingPageSessionsCreateForExistingSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pricingPageSessionsHandler = app
-  .openapi(postPricingPageSessionsCreateForExistingSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPricingPageSessionsCreateForNewSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPricingPageSessionsCreateForNewSubscriptionRouteHandler: RouteHandler<
+  typeof postPricingPageSessionsCreateForNewSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPoolsExtendedRoute,
   getPoolsPoolIdBlocksRoute,
   getPoolsPoolIdDelegatorsRoute,
@@ -14,42 +14,68 @@ import {
   getPoolsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPoolsRouteHandler: RouteHandler<typeof getPoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const poolsHandler = app
-  .openapi(getPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsExtendedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsRetiredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsRetiringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdRelaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdDelegatorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPoolsPoolIdVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPoolsExtendedRouteHandler: RouteHandler<typeof getPoolsExtendedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsRetiredRouteHandler: RouteHandler<typeof getPoolsRetiredRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsRetiringRouteHandler: RouteHandler<typeof getPoolsRetiringRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdRouteHandler: RouteHandler<typeof getPoolsPoolIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdHistoryRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdMetadataRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdRelaysRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdRelaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdDelegatorsRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdDelegatorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdBlocksRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdUpdatesRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPoolsPoolIdVotesRouteHandler: RouteHandler<
+  typeof getPoolsPoolIdVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

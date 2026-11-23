@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChartRoute, postChartRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChartRoute, postChartRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChartRouteHandler: RouteHandler<typeof getChartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chartHandler = app
-  .openapi(getChartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChartRouteHandler: RouteHandler<typeof postChartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

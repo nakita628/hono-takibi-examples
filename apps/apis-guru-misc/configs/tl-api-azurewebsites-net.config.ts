@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/tl-api.azurewebsites.net/2020-08-10_6-22/openapi.yaml',
   output: './src/tl-api-azurewebsites-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tl-api-azurewebsites-net/types.ts' },
   client: { output: './src/tl-api-azurewebsites-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/tl-api-azurewebsites-net/rpc.ts', parseResponse: true },

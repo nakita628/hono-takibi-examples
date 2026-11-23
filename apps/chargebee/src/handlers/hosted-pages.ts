@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHostedPagesHostedPageIdRoute,
   getHostedPagesRoute,
   postHostedPagesAcceptQuoteRoute,
@@ -18,54 +18,96 @@ import {
   postHostedPagesViewVoucherRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postHostedPagesCheckoutOneTimeForItemsRouteHandler: RouteHandler<
+  typeof postHostedPagesCheckoutOneTimeForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hostedPagesHandler = app
-  .openapi(postHostedPagesCheckoutOneTimeForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesExtendSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesCheckoutGiftForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHostedPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesViewVoucherRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesCollectNowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesAcceptQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesCheckoutNewForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesClaimGiftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesCheckoutExistingForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesPreCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesHostedPageIdAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesRetrieveAgreementPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHostedPagesHostedPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHostedPagesManagePaymentSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHostedPagesExtendSubscriptionRouteHandler: RouteHandler<
+  typeof postHostedPagesExtendSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesEventsRouteHandler: RouteHandler<
+  typeof postHostedPagesEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesCheckoutGiftForItemsRouteHandler: RouteHandler<
+  typeof postHostedPagesCheckoutGiftForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHostedPagesRouteHandler: RouteHandler<typeof getHostedPagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesViewVoucherRouteHandler: RouteHandler<
+  typeof postHostedPagesViewVoucherRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesCollectNowRouteHandler: RouteHandler<
+  typeof postHostedPagesCollectNowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesAcceptQuoteRouteHandler: RouteHandler<
+  typeof postHostedPagesAcceptQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesCheckoutNewForItemsRouteHandler: RouteHandler<
+  typeof postHostedPagesCheckoutNewForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesClaimGiftRouteHandler: RouteHandler<
+  typeof postHostedPagesClaimGiftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesCheckoutExistingForItemsRouteHandler: RouteHandler<
+  typeof postHostedPagesCheckoutExistingForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesPreCancelRouteHandler: RouteHandler<
+  typeof postHostedPagesPreCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesHostedPageIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postHostedPagesHostedPageIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesRetrieveAgreementPdfRouteHandler: RouteHandler<
+  typeof postHostedPagesRetrieveAgreementPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHostedPagesHostedPageIdRouteHandler: RouteHandler<
+  typeof getHostedPagesHostedPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHostedPagesManagePaymentSourcesRouteHandler: RouteHandler<
+  typeof postHostedPagesManagePaymentSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

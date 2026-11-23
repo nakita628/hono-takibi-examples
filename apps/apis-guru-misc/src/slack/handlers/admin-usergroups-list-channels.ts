@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminUsergroupsListChannelsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminUsergroupsListChannelsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminUsergroupsListChannelsHandler = app.openapi(
-  getAdminUsergroupsListChannelsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAdminUsergroupsListChannelsRouteHandler: RouteHandler<
+  typeof getAdminUsergroupsListChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

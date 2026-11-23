@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGroupsPidEpisodesRoute, getGroupsPopularEpisodesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGroupsPidEpisodesRoute, getGroupsPopularEpisodesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGroupsPopularEpisodesRouteHandler: RouteHandler<
+  typeof getGroupsPopularEpisodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const groupsHandler = app
-  .openapi(getGroupsPopularEpisodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupsPidEpisodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGroupsPidEpisodesRouteHandler: RouteHandler<
+  typeof getGroupsPidEpisodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

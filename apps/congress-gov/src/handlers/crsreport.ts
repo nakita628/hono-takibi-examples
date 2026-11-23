@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCrsreportReportNumberRoute, getCrsreportRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCrsreportReportNumberRoute, getCrsreportRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrsreportRouteHandler: RouteHandler<typeof getCrsreportRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crsreportHandler = app
-  .openapi(getCrsreportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrsreportReportNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCrsreportReportNumberRouteHandler: RouteHandler<
+  typeof getCrsreportReportNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

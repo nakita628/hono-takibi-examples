@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueStartDataQualityRuleRecommendationRunHandler = app.openapi(
-  postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

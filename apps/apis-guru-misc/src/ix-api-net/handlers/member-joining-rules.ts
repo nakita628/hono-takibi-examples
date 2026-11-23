@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMemberJoiningRulesIdRoute,
   getMemberJoiningRulesIdRoute,
   getMemberJoiningRulesRoute,
@@ -8,24 +8,38 @@ import {
   putMemberJoiningRulesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMemberJoiningRulesRouteHandler: RouteHandler<
+  typeof getMemberJoiningRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const memberJoiningRulesHandler = app
-  .openapi(getMemberJoiningRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMemberJoiningRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMemberJoiningRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMemberJoiningRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMemberJoiningRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMemberJoiningRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMemberJoiningRulesRouteHandler: RouteHandler<
+  typeof postMemberJoiningRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMemberJoiningRulesIdRouteHandler: RouteHandler<
+  typeof deleteMemberJoiningRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMemberJoiningRulesIdRouteHandler: RouteHandler<
+  typeof getMemberJoiningRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMemberJoiningRulesIdRouteHandler: RouteHandler<
+  typeof patchMemberJoiningRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMemberJoiningRulesIdRouteHandler: RouteHandler<
+  typeof putMemberJoiningRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

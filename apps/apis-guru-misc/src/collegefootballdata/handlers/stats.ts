@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStatsCategoriesRoute,
   getStatsGameAdvancedRoute,
   getStatsPlayerSeasonRoute,
@@ -7,21 +7,30 @@ import {
   getStatsSeasonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatsCategoriesRouteHandler: RouteHandler<typeof getStatsCategoriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const statsHandler = app
-  .openapi(getStatsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsGameAdvancedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsPlayerSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsSeasonAdvancedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatsGameAdvancedRouteHandler: RouteHandler<
+  typeof getStatsGameAdvancedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatsPlayerSeasonRouteHandler: RouteHandler<
+  typeof getStatsPlayerSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatsSeasonRouteHandler: RouteHandler<typeof getStatsSeasonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatsSeasonAdvancedRouteHandler: RouteHandler<
+  typeof getStatsSeasonAdvancedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSkuBindingPvtSkusellerAdminRoute,
   getSkuBindingPvtSkusellerListBysellerIdSellerIdRoute,
   getSkuBindingPvtSkusellerPagedSelleridSellerIdRoute,
@@ -13,39 +13,68 @@ import {
   putSkuBindingPvtSkusellerSellerIdSellerSkuIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSkuBindingPvtSkusellerActivateSellerIdSkuSellerIdRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerActivateSellerIdSkuSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const skuBindingHandler = app
-  .openapi(postSkuBindingPvtSkusellerActivateSellerIdSkuSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSkuBindingPvtSkusellerAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSkuBindingPvtSkusellerChangenotificationSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSkuBindingPvtSkusellerChangenotificationSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSkuBindingPvtSkusellerInactivateSellerIdSkuSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSkuBindingPvtSkusellerInsertionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSkuBindingPvtSkusellerListBysellerIdSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSkuBindingPvtSkusellerPagedSelleridSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSkuBindingPvtSkusellerRemoveSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSkuBindingPvtSkusellerSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSkuBindingPvtSkusellerSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSkuBindingPvtSkusellerAdminRouteHandler: RouteHandler<
+  typeof getSkuBindingPvtSkusellerAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSkuBindingPvtSkusellerChangenotificationSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerChangenotificationSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSkuBindingPvtSkusellerChangenotificationSkuIdRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerChangenotificationSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSkuBindingPvtSkusellerInactivateSellerIdSkuSellerIdRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerInactivateSellerIdSkuSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSkuBindingPvtSkusellerInsertionRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerInsertionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSkuBindingPvtSkusellerListBysellerIdSellerIdRouteHandler: RouteHandler<
+  typeof getSkuBindingPvtSkusellerListBysellerIdSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSkuBindingPvtSkusellerPagedSelleridSellerIdRouteHandler: RouteHandler<
+  typeof getSkuBindingPvtSkusellerPagedSelleridSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSkuBindingPvtSkusellerRemoveSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof postSkuBindingPvtSkusellerRemoveSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSkuBindingPvtSkusellerSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof getSkuBindingPvtSkusellerSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSkuBindingPvtSkusellerSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof putSkuBindingPvtSkusellerSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteCronJobsCronJobIdRunsRoute, postCronJobsCronJobIdRunsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteCronJobsCronJobIdRunsRoute, postCronJobsCronJobIdRunsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCronJobsCronJobIdRunsRouteHandler: RouteHandler<
+  typeof postCronJobsCronJobIdRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cronJobsHandler = app
-  .openapi(postCronJobsCronJobIdRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCronJobsCronJobIdRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCronJobsCronJobIdRunsRouteHandler: RouteHandler<
+  typeof deleteCronJobsCronJobIdRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

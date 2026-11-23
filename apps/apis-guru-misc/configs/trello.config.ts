@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/trello.com/1.0/openapi.yaml',
   output: './src/trello/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/trello/types.ts' },
   client: { output: './src/trello/client.ts', baseUrl: '/' },
   rpc: { output: './src/trello/rpc.ts', parseResponse: true },

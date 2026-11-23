@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTeamMembershipsRoute, getTeamMembershipsTeamMembershipGidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTeamMembershipsRoute, getTeamMembershipsTeamMembershipGidRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamMembershipsTeamMembershipGidRouteHandler: RouteHandler<
+  typeof getTeamMembershipsTeamMembershipGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamMembershipsHandler = app
-  .openapi(getTeamMembershipsTeamMembershipGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamMembershipsRouteHandler: RouteHandler<typeof getTeamMembershipsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

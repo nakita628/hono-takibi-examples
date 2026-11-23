@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSubscribersIdBouncesRoute,
   deleteSubscribersIdRoute,
   deleteSubscribersRoute,
@@ -19,57 +19,100 @@ import {
   putSubscribersQueryListsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSubscribersRouteHandler: RouteHandler<typeof getSubscribersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const subscribersHandler = app
-  .openapi(getSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscribersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscribersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersIdBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscribersIdExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscribersIdBouncesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubscribersIdBouncesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscribersIdOptinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscribersQueryDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersQueryBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubscribersQueryListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSubscribersRouteHandler: RouteHandler<typeof postSubscribersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscribersRouteHandler: RouteHandler<typeof deleteSubscribersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscribersIdRouteHandler: RouteHandler<typeof getSubscribersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersIdRouteHandler: RouteHandler<typeof putSubscribersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscribersIdRouteHandler: RouteHandler<
+  typeof deleteSubscribersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersListsRouteHandler: RouteHandler<
+  typeof putSubscribersListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersListsIdRouteHandler: RouteHandler<
+  typeof putSubscribersListsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersBlocklistRouteHandler: RouteHandler<
+  typeof putSubscribersBlocklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersIdBlocklistRouteHandler: RouteHandler<
+  typeof putSubscribersIdBlocklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscribersIdExportRouteHandler: RouteHandler<
+  typeof getSubscribersIdExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscribersIdBouncesRouteHandler: RouteHandler<
+  typeof getSubscribersIdBouncesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubscribersIdBouncesRouteHandler: RouteHandler<
+  typeof deleteSubscribersIdBouncesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscribersIdOptinRouteHandler: RouteHandler<
+  typeof postSubscribersIdOptinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscribersQueryDeleteRouteHandler: RouteHandler<
+  typeof postSubscribersQueryDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersQueryBlocklistRouteHandler: RouteHandler<
+  typeof putSubscribersQueryBlocklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubscribersQueryListsRouteHandler: RouteHandler<
+  typeof putSubscribersQueryListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

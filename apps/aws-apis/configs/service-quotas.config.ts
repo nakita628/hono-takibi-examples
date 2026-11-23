@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/service-quotas/2019-06-24/openapi.yaml',
   output: './src/service-quotas/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/service-quotas/types.ts' },
   client: { output: './src/service-quotas/client.ts', baseUrl: '/' },
   rpc: { output: './src/service-quotas/rpc.ts', parseResponse: true },

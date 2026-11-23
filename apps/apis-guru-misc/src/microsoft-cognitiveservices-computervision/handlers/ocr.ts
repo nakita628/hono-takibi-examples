@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOcrRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOcrRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ocrHandler = app.openapi(postOcrRoute, (c) => {
+export const postOcrRouteHandler: RouteHandler<typeof postOcrRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

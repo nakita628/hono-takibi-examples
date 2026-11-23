@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAnonymousDevicesRoute, getAnonymousSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAnonymousDevicesRoute, getAnonymousSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnonymousDevicesRouteHandler: RouteHandler<
+  typeof getAnonymousDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anonymousHandler = app
-  .openapi(getAnonymousDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnonymousSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnonymousSearchRouteHandler: RouteHandler<typeof getAnonymousSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

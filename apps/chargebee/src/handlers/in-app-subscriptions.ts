@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRoute,
   postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRoute,
   postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRoute,
   postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRouteHandler: RouteHandler<
+  typeof postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const inAppSubscriptionsHandler = app
-  .openapi(postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRouteHandler: RouteHandler<
+  typeof postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRouteHandler: RouteHandler<
+  typeof postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRouteHandler: RouteHandler<
+  typeof postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

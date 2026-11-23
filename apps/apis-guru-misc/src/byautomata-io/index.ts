@@ -1,17 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  contentproSearchHandler,
-  contentproSimilarTextHandler,
-  searchHandler,
-  similarHandler,
+  getContentproSearchRoute,
+  getSearchRoute,
+  getSimilarRoute,
+  postContentproSimilarTextRoute,
+} from './routes'
+import {
+  getContentproSearchRouteHandler,
+  getSearchRouteHandler,
+  getSimilarRouteHandler,
+  postContentproSimilarTextRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', contentproSearchHandler)
-  .route('/', contentproSimilarTextHandler)
-  .route('/', searchHandler)
-  .route('/', similarHandler)
+  .openapi(getContentproSearchRoute, getContentproSearchRouteHandler)
+  .openapi(postContentproSimilarTextRoute, postContentproSimilarTextRouteHandler)
+  .openapi(getSearchRoute, getSearchRouteHandler)
+  .openapi(getSimilarRoute, getSimilarRouteHandler)
 
 export default app

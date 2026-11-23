@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCollectionsCollectionIdArticlesRoute,
   getCollectionsCollectionIdRoute,
   getCollectionsCollectionIdVersionsRoute,
@@ -8,24 +8,36 @@ import {
   postCollectionsSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCollectionsRouteHandler: RouteHandler<typeof getCollectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const collectionsHandler = app
-  .openapi(getCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionIdVersionsVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCollectionsSearchRouteHandler: RouteHandler<
+  typeof postCollectionsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdArticlesRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdArticlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdVersionsRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionIdVersionsVersionIdRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionIdVersionsVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

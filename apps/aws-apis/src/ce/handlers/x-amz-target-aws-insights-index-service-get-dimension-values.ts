@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsInsightsIndexServiceGetDimensionValuesHandler = app.openapi(
-  postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

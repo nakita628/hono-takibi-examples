@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20190729GetWebACLRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20190729GetWebACLRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20190729GetWebAclHandler = app.openapi(
-  postXAmzTargetAWSWAF20190729GetWebACLRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20190729GetWebACLRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20190729GetWebACLRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

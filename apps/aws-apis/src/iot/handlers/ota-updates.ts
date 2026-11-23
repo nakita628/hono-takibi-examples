@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOtaUpdatesOtaUpdateIdRoute,
   getOtaUpdatesOtaUpdateIdRoute,
   getOtaUpdatesRoute,
   postOtaUpdatesOtaUpdateIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOtaUpdatesOtaUpdateIdRouteHandler: RouteHandler<
+  typeof postOtaUpdatesOtaUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const otaUpdatesHandler = app
-  .openapi(postOtaUpdatesOtaUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOtaUpdatesOtaUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOtaUpdatesOtaUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOtaUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteOtaUpdatesOtaUpdateIdRouteHandler: RouteHandler<
+  typeof deleteOtaUpdatesOtaUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOtaUpdatesOtaUpdateIdRouteHandler: RouteHandler<
+  typeof getOtaUpdatesOtaUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOtaUpdatesRouteHandler: RouteHandler<typeof getOtaUpdatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

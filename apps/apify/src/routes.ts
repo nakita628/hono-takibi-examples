@@ -216641,7 +216641,6 @@ export const headV2DatasetsDatasetIdItemsRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: {},
       headers: z.object({
         'X-Apify-Pagination-Offset': z
           .string()

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAnythingAnythingRoute,
   deleteAnythingRoute,
   getAnythingAnythingRoute,
@@ -14,42 +14,62 @@ import {
   traceAnythingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAnythingRouteHandler: RouteHandler<typeof deleteAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(deleteAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(traceAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(traceAnythingAnythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnythingRouteHandler: RouteHandler<typeof getAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAnythingRouteHandler: RouteHandler<typeof patchAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingRouteHandler: RouteHandler<typeof postAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingRouteHandler: RouteHandler<typeof putAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const traceAnythingRouteHandler: RouteHandler<typeof traceAnythingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnythingAnythingRouteHandler: RouteHandler<
+  typeof deleteAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingAnythingRouteHandler: RouteHandler<
+  typeof getAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAnythingAnythingRouteHandler: RouteHandler<
+  typeof patchAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingAnythingRouteHandler: RouteHandler<
+  typeof postAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingAnythingRouteHandler: RouteHandler<
+  typeof putAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const traceAnythingAnythingRouteHandler: RouteHandler<
+  typeof traceAnythingAnythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

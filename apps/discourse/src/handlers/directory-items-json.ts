@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDirectoryItemsJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDirectoryItemsJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const directoryItemsJsonHandler = app.openapi(getDirectoryItemsJsonRoute, (c) => {
+export const getDirectoryItemsJsonRouteHandler: RouteHandler<
+  typeof getDirectoryItemsJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

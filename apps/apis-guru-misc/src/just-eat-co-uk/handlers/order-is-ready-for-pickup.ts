@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putOrderIsReadyForPickupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putOrderIsReadyForPickupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const orderIsReadyForPickupHandler = app.openapi(putOrderIsReadyForPickupRoute, (c) => {
+export const putOrderIsReadyForPickupRouteHandler: RouteHandler<
+  typeof putOrderIsReadyForPickupRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

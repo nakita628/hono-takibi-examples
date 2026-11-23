@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPercentBRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPercentBRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const percentBHandler = app.openapi(getPercentBRoute, (c) => {
+export const getPercentBRouteHandler: RouteHandler<typeof getPercentBRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

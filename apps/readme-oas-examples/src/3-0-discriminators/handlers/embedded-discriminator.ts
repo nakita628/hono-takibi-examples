@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchEmbeddedDiscriminatorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchEmbeddedDiscriminatorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const embeddedDiscriminatorHandler = app.openapi(patchEmbeddedDiscriminatorRoute, (c) => {
+export const patchEmbeddedDiscriminatorRouteHandler: RouteHandler<
+  typeof patchEmbeddedDiscriminatorRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

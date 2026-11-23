@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/zoom.us/2.0.0/openapi.yaml',
   output: './src/zoom-us/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/zoom-us/types.ts' },
   client: { output: './src/zoom-us/client.ts', baseUrl: '/' },
   rpc: { output: './src/zoom-us/rpc.ts', parseResponse: true },

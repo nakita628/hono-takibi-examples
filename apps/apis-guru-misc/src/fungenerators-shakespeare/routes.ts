@@ -35,10 +35,7 @@ export const getShakespeareGenerateInsultRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -83,10 +80,7 @@ export const getShakespeareGenerateLoremIpsumRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -131,10 +125,7 @@ export const getShakespeareGenerateNameRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -143,10 +134,7 @@ export const getShakespeareQuoteRoute = createRoute({
   path: '/shakespeare/quote',
   tags: ['Works'],
   description: 'Get a random Shakespeare quote.',
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -170,9 +158,6 @@ export const getShakespeareTranslateRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConsentEventsGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConsentEventsGetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const consentHandler = app.openapi(postConsentEventsGetRoute, (c) => {
+export const postConsentEventsGetRouteHandler: RouteHandler<
+  typeof postConsentEventsGetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

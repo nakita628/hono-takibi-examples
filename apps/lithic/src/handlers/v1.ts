@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1AccountHoldersAccountHolderTokenEntitiesEntityTokenRoute,
   deleteV1DisputesDisputeTokenEvidencesEvidenceTokenRoute,
   deleteV1DisputesDisputeTokenRoute,
@@ -217,675 +217,1264 @@ import {
   putV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1AccountHoldersRouteHandler: RouteHandler<
+  typeof getV1AccountHoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1AccountHoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AccountHoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountHoldersAccountHolderTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1AccountHoldersAccountHolderTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountHoldersAccountHolderTokenDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AccountHoldersAccountHolderTokenDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountHoldersAccountHolderTokenDocumentsDocumentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AccountHoldersAccountHolderTokenEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1AccountHoldersAccountHolderTokenEntitiesEntityTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountsAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1AccountsAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountsAccountTokenSpendLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenSignalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountsAccountTokenSignalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AuthStreamSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AuthStreamSecretRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardProgramsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardProgramsCardProgramTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsSearchByPanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CardsCardTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenFinancialTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenFinancialTransactionsFinancialTransactionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenProvisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenWebProvisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenReissueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenRenewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenReassignAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenConvertPhysicalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardsCardTokenSpendLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenEmbedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardAuthorizationsEventTokenChallengeResponseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardBulkOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardBulkOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CardBulkOrdersBulkOrderTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CardBulkOrdersBulkOrderTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DigitalCardArtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DigitalCardArtDigitalCardArtTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DisputesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DisputesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DisputesDisputeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DisputesDisputeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1DisputesDisputeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DisputesDisputeTokenEvidencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DisputesDisputeTokenEvidencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DisputesDisputeTokenEvidencesEvidenceTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DisputesDisputeTokenEvidencesEvidenceTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmbedCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EmbedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FraudTransactionsTransactionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FraudTransactionsTransactionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionsTransactionTokenEnhancedCommercialDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransactionsTransactionTokenExpireAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransactionsTransactionTokenRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionsEventsEventTokenEnhancedCommercialDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EventSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1EventSubscriptionsEventSubscriptionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventSubscriptionsEventSubscriptionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1EventSubscriptionsEventSubscriptionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventSubscriptionsEventSubscriptionTokenAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EventSubscriptionsEventSubscriptionTokenRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EventSubscriptionsEventSubscriptionTokenReplayMissingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventSubscriptionsEventSubscriptionTokenSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EventSubscriptionsEventSubscriptionTokenSecretRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventsEventTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventsEventTokenAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1EventsEventTokenEventSubscriptionsEventSubscriptionTokenResendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1BlockchainRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BlockchainRecipientsBlockchainRecipientTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ExternalBankAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ExternalBankAccountsExternalBankAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ExternalBankAccountsExternalBankAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenMicroDepositsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenRetryMicroDepositsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenRetryPrenoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenSetVerificationMethodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalBankAccountsExternalBankAccountTokenUnpauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CreditProductsCreditProductTokenExtendedCreditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CreditProductsCreditProductTokenPrimeRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CreditProductsCreditProductTokenPrimeRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FinancialAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1FinancialAccountsFinancialAccountTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenOpenToBuyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenCreditConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1FinancialAccountsFinancialAccountTokenCreditConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsFinancialTransactionTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1FinancialAccountsFinancialAccountTokenRegisterAccountNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FinancialAccountsFinancialAccountTokenHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1HoldsHoldTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1HoldsHoldTokenVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenLineItemsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1FinancialAccountsFinancialAccountTokenLoanTapesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenLoanTapesLoanTapeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenLoanTapeConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FinancialAccountsFinancialAccountTokenInstallmentPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsStatementTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1FinancialAccountsFinancialAccountTokenUpdateStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AccountActivityTransactionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PaymentsStablecoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentsPaymentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PaymentsPaymentTokenRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PaymentsPaymentTokenReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReportsSettlementDetailsReportDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReportsSettlementSummaryReportDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReportsSettlementNetworkTotalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReportsSettlementNetworkTotalsTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ResponderEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ResponderEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResponderEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IpRangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateAuthorizationAdviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateClearingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateCreditAuthorizationAdviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateEventSubscriptionsEventSubscriptionTokenSendExampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulatePaymentsReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulatePaymentsReleaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulatePaymentsReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulatePaymentsPaymentTokenActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateReturnReversalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateTokenizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateAccountHoldersEnrollmentReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SimulateAccountHoldersEnrollmentDocumentReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1StatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ThreeDsAuthenticationSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ThreeDsDecisioningSimulateEnterOtpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ThreeDsAuthenticationThreeDsAuthenticationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ThreeDsDecisioningSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ThreeDsDecisioningSecretRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ThreeDsDecisioningChallengeResponseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TokenizationDecisioningSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationDecisioningSecretRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CardsCardTokenTokenizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenSelectTfaMethodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenSubmitTfaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenPaymentCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TokenizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TokenizationsTokenizationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenUnpauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenResendActivationCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TokenizationsTokenizationTokenUpdateDigitalCardArtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionsTransactionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1TransactionMonitoringCasesCaseTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransactionMonitoringCasesCaseTokenCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransactionMonitoringCasesCaseTokenFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringCasesCaseTokenFilesFileTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TransactionMonitoringCasesCaseTokenFilesFileTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransactionMonitoringQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransactionMonitoringQueuesQueueTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1TransactionMonitoringQueuesQueueTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TransactionMonitoringQueuesQueueTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TransferLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BookTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1BookTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BookTransfersBookTransferTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1BookTransfersBookTransferTokenRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1BookTransfersBookTransferTokenReverseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ExternalPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ExternalPaymentsExternalPaymentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalPaymentsExternalPaymentTokenSettleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalPaymentsExternalPaymentTokenReleaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalPaymentsExternalPaymentTokenCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ExternalPaymentsExternalPaymentTokenReverseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ManagementOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ManagementOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ManagementOperationsManagementOperationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ManagementOperationsManagementOperationTokenReverseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NetworkProgramsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NetworkProgramsNetworkProgramTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FundingEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FundingEventsFundingEventTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FundingEventsFundingEventTokenDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1AccountHoldersRouteHandler: RouteHandler<
+  typeof postV1AccountHoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountHoldersAccountHolderTokenRouteHandler: RouteHandler<
+  typeof getV1AccountHoldersAccountHolderTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1AccountHoldersAccountHolderTokenRouteHandler: RouteHandler<
+  typeof patchV1AccountHoldersAccountHolderTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountHoldersAccountHolderTokenDocumentsRouteHandler: RouteHandler<
+  typeof getV1AccountHoldersAccountHolderTokenDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AccountHoldersAccountHolderTokenDocumentsRouteHandler: RouteHandler<
+  typeof postV1AccountHoldersAccountHolderTokenDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountHoldersAccountHolderTokenDocumentsDocumentTokenRouteHandler: RouteHandler<
+  typeof getV1AccountHoldersAccountHolderTokenDocumentsDocumentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AccountHoldersAccountHolderTokenEntitiesRouteHandler: RouteHandler<
+  typeof postV1AccountHoldersAccountHolderTokenEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1AccountHoldersAccountHolderTokenEntitiesEntityTokenRouteHandler: RouteHandler<
+  typeof deleteV1AccountHoldersAccountHolderTokenEntitiesEntityTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountsRouteHandler: RouteHandler<typeof getV1AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountsAccountTokenRouteHandler: RouteHandler<
+  typeof getV1AccountsAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1AccountsAccountTokenRouteHandler: RouteHandler<
+  typeof patchV1AccountsAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountsAccountTokenSpendLimitsRouteHandler: RouteHandler<
+  typeof getV1AccountsAccountTokenSpendLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenSignalsRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenSignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountsAccountTokenSignalsRouteHandler: RouteHandler<
+  typeof getV1AccountsAccountTokenSignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AuthStreamSecretRouteHandler: RouteHandler<
+  typeof getV1AuthStreamSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AuthStreamSecretRotateRouteHandler: RouteHandler<
+  typeof postV1AuthStreamSecretRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1BalancesRouteHandler: RouteHandler<typeof getV1BalancesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardProgramsRouteHandler: RouteHandler<typeof getV1CardProgramsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardProgramsCardProgramTokenRouteHandler: RouteHandler<
+  typeof getV1CardProgramsCardProgramTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsRouteHandler: RouteHandler<typeof getV1CardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsRouteHandler: RouteHandler<typeof postV1CardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsSearchByPanRouteHandler: RouteHandler<
+  typeof postV1CardsSearchByPanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CardsCardTokenRouteHandler: RouteHandler<
+  typeof patchV1CardsCardTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenBalancesRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenFinancialTransactionsRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenFinancialTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenFinancialTransactionsFinancialTransactionTokenRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenFinancialTransactionsFinancialTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenProvisionRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenProvisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenWebProvisionRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenWebProvisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenReissueRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenReissueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenRenewRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenRenewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenReassignAccountRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenReassignAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenConvertPhysicalRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenConvertPhysicalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardsCardTokenSpendLimitsRouteHandler: RouteHandler<
+  typeof getV1CardsCardTokenSpendLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenEmbedRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenEmbedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardAuthorizationsEventTokenChallengeResponseRouteHandler: RouteHandler<
+  typeof postV1CardAuthorizationsEventTokenChallengeResponseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardBulkOrdersRouteHandler: RouteHandler<
+  typeof getV1CardBulkOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardBulkOrdersRouteHandler: RouteHandler<
+  typeof postV1CardBulkOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CardBulkOrdersBulkOrderTokenRouteHandler: RouteHandler<
+  typeof getV1CardBulkOrdersBulkOrderTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CardBulkOrdersBulkOrderTokenRouteHandler: RouteHandler<
+  typeof patchV1CardBulkOrdersBulkOrderTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DigitalCardArtRouteHandler: RouteHandler<
+  typeof getV1DigitalCardArtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DigitalCardArtDigitalCardArtTokenRouteHandler: RouteHandler<
+  typeof getV1DigitalCardArtDigitalCardArtTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DisputesRouteHandler: RouteHandler<typeof getV1DisputesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DisputesRouteHandler: RouteHandler<typeof postV1DisputesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1DisputesDisputeTokenRouteHandler: RouteHandler<
+  typeof deleteV1DisputesDisputeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DisputesDisputeTokenRouteHandler: RouteHandler<
+  typeof getV1DisputesDisputeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1DisputesDisputeTokenRouteHandler: RouteHandler<
+  typeof patchV1DisputesDisputeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DisputesDisputeTokenEvidencesRouteHandler: RouteHandler<
+  typeof getV1DisputesDisputeTokenEvidencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DisputesDisputeTokenEvidencesRouteHandler: RouteHandler<
+  typeof postV1DisputesDisputeTokenEvidencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1DisputesDisputeTokenEvidencesEvidenceTokenRouteHandler: RouteHandler<
+  typeof deleteV1DisputesDisputeTokenEvidencesEvidenceTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DisputesDisputeTokenEvidencesEvidenceTokenRouteHandler: RouteHandler<
+  typeof getV1DisputesDisputeTokenEvidencesEvidenceTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmbedCardRouteHandler: RouteHandler<typeof getV1EmbedCardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EmbedRouteHandler: RouteHandler<typeof getV1EmbedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FraudTransactionsTransactionTokenRouteHandler: RouteHandler<
+  typeof getV1FraudTransactionsTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FraudTransactionsTransactionTokenRouteHandler: RouteHandler<
+  typeof postV1FraudTransactionsTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionsTransactionTokenEnhancedCommercialDataRouteHandler: RouteHandler<
+  typeof getV1TransactionsTransactionTokenEnhancedCommercialDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransactionsTransactionTokenExpireAuthorizationRouteHandler: RouteHandler<
+  typeof postV1TransactionsTransactionTokenExpireAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransactionsTransactionTokenRouteRouteHandler: RouteHandler<
+  typeof postV1TransactionsTransactionTokenRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionsEventsEventTokenEnhancedCommercialDataRouteHandler: RouteHandler<
+  typeof getV1TransactionsEventsEventTokenEnhancedCommercialDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventSubscriptionsRouteHandler: RouteHandler<
+  typeof getV1EventSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EventSubscriptionsRouteHandler: RouteHandler<
+  typeof postV1EventSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1EventSubscriptionsEventSubscriptionTokenRouteHandler: RouteHandler<
+  typeof deleteV1EventSubscriptionsEventSubscriptionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventSubscriptionsEventSubscriptionTokenRouteHandler: RouteHandler<
+  typeof getV1EventSubscriptionsEventSubscriptionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1EventSubscriptionsEventSubscriptionTokenRouteHandler: RouteHandler<
+  typeof patchV1EventSubscriptionsEventSubscriptionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventSubscriptionsEventSubscriptionTokenAttemptsRouteHandler: RouteHandler<
+  typeof getV1EventSubscriptionsEventSubscriptionTokenAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EventSubscriptionsEventSubscriptionTokenRecoverRouteHandler: RouteHandler<
+  typeof postV1EventSubscriptionsEventSubscriptionTokenRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EventSubscriptionsEventSubscriptionTokenReplayMissingRouteHandler: RouteHandler<
+  typeof postV1EventSubscriptionsEventSubscriptionTokenReplayMissingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventSubscriptionsEventSubscriptionTokenSecretRouteHandler: RouteHandler<
+  typeof getV1EventSubscriptionsEventSubscriptionTokenSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EventSubscriptionsEventSubscriptionTokenSecretRotateRouteHandler: RouteHandler<
+  typeof postV1EventSubscriptionsEventSubscriptionTokenSecretRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventsRouteHandler: RouteHandler<typeof getV1EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventsEventTokenRouteHandler: RouteHandler<
+  typeof getV1EventsEventTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventsEventTokenAttemptsRouteHandler: RouteHandler<
+  typeof getV1EventsEventTokenAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1EventsEventTokenEventSubscriptionsEventSubscriptionTokenResendRouteHandler: RouteHandler<
+  typeof postV1EventsEventTokenEventSubscriptionsEventSubscriptionTokenResendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1BlockchainRecipientsRouteHandler: RouteHandler<
+  typeof postV1BlockchainRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1BlockchainRecipientsBlockchainRecipientTokenRouteHandler: RouteHandler<
+  typeof getV1BlockchainRecipientsBlockchainRecipientTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ExternalBankAccountsRouteHandler: RouteHandler<
+  typeof getV1ExternalBankAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ExternalBankAccountsExternalBankAccountTokenRouteHandler: RouteHandler<
+  typeof getV1ExternalBankAccountsExternalBankAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ExternalBankAccountsExternalBankAccountTokenRouteHandler: RouteHandler<
+  typeof patchV1ExternalBankAccountsExternalBankAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenMicroDepositsRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenMicroDepositsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenPauseRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenRetryMicroDepositsRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenRetryMicroDepositsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenRetryPrenoteRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenRetryPrenoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenSetVerificationMethodRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenSetVerificationMethodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalBankAccountsExternalBankAccountTokenUnpauseRouteHandler: RouteHandler<
+  typeof postV1ExternalBankAccountsExternalBankAccountTokenUnpauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CreditProductsCreditProductTokenExtendedCreditRouteHandler: RouteHandler<
+  typeof getV1CreditProductsCreditProductTokenExtendedCreditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CreditProductsCreditProductTokenPrimeRatesRouteHandler: RouteHandler<
+  typeof getV1CreditProductsCreditProductTokenPrimeRatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CreditProductsCreditProductTokenPrimeRatesRouteHandler: RouteHandler<
+  typeof postV1CreditProductsCreditProductTokenPrimeRatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FinancialAccountsRouteHandler: RouteHandler<
+  typeof postV1FinancialAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1FinancialAccountsFinancialAccountTokenRouteHandler: RouteHandler<
+  typeof patchV1FinancialAccountsFinancialAccountTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenBalancesRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenOpenToBuyRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenOpenToBuyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenCreditConfigurationRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenCreditConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1FinancialAccountsFinancialAccountTokenCreditConfigurationRouteHandler: RouteHandler<
+  typeof patchV1FinancialAccountsFinancialAccountTokenCreditConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsFinancialTransactionTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenFinancialTransactionsFinancialTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FinancialAccountsFinancialAccountTokenRegisterAccountNumberRouteHandler: RouteHandler<
+  typeof postV1FinancialAccountsFinancialAccountTokenRegisterAccountNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenHoldsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FinancialAccountsFinancialAccountTokenHoldsRouteHandler: RouteHandler<
+  typeof postV1FinancialAccountsFinancialAccountTokenHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1HoldsHoldTokenRouteHandler: RouteHandler<
+  typeof getV1HoldsHoldTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1HoldsHoldTokenVoidRouteHandler: RouteHandler<
+  typeof postV1HoldsHoldTokenVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenStatementsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenLineItemsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenStatementsStatementTokenLineItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenLoanTapesRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenLoanTapesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenLoanTapesLoanTapeTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenLoanTapesLoanTapeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenLoanTapeConfigurationRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenLoanTapeConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInstallmentPlansRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInstallmentPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsStatementTokenRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInstallmentPlansInstallmentPlanTokenStatementsStatementTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRouteHandler: RouteHandler<
+  typeof postV1FinancialAccountsFinancialAccountTokenInterestTierScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRouteHandler: RouteHandler<
+  typeof getV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRouteHandler: RouteHandler<
+  typeof putV1FinancialAccountsFinancialAccountTokenInterestTierScheduleEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FinancialAccountsFinancialAccountTokenUpdateStatusRouteHandler: RouteHandler<
+  typeof postV1FinancialAccountsFinancialAccountTokenUpdateStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountActivityRouteHandler: RouteHandler<
+  typeof getV1AccountActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AccountActivityTransactionTokenRouteHandler: RouteHandler<
+  typeof getV1AccountActivityTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentsRouteHandler: RouteHandler<typeof getV1PaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PaymentsRouteHandler: RouteHandler<typeof postV1PaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PaymentsStablecoinRouteHandler: RouteHandler<
+  typeof postV1PaymentsStablecoinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentsPaymentTokenRouteHandler: RouteHandler<
+  typeof getV1PaymentsPaymentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PaymentsPaymentTokenRetryRouteHandler: RouteHandler<
+  typeof postV1PaymentsPaymentTokenRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PaymentsPaymentTokenReturnRouteHandler: RouteHandler<
+  typeof postV1PaymentsPaymentTokenReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReportsSettlementDetailsReportDateRouteHandler: RouteHandler<
+  typeof getV1ReportsSettlementDetailsReportDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReportsSettlementSummaryReportDateRouteHandler: RouteHandler<
+  typeof getV1ReportsSettlementSummaryReportDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReportsSettlementNetworkTotalsRouteHandler: RouteHandler<
+  typeof getV1ReportsSettlementNetworkTotalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReportsSettlementNetworkTotalsTokenRouteHandler: RouteHandler<
+  typeof getV1ReportsSettlementNetworkTotalsTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ResponderEndpointsRouteHandler: RouteHandler<
+  typeof deleteV1ResponderEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ResponderEndpointsRouteHandler: RouteHandler<
+  typeof getV1ResponderEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResponderEndpointsRouteHandler: RouteHandler<
+  typeof postV1ResponderEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IpRangesRouteHandler: RouteHandler<typeof getV1IpRangesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateAuthorizationAdviceRouteHandler: RouteHandler<
+  typeof postV1SimulateAuthorizationAdviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateAuthorizeRouteHandler: RouteHandler<
+  typeof postV1SimulateAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateClearingRouteHandler: RouteHandler<
+  typeof postV1SimulateClearingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateCreditAuthorizationAdviceRouteHandler: RouteHandler<
+  typeof postV1SimulateCreditAuthorizationAdviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateEventSubscriptionsEventSubscriptionTokenSendExampleRouteHandler: RouteHandler<
+  typeof postV1SimulateEventSubscriptionsEventSubscriptionTokenSendExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulatePaymentsReceiptRouteHandler: RouteHandler<
+  typeof postV1SimulatePaymentsReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulatePaymentsReleaseRouteHandler: RouteHandler<
+  typeof postV1SimulatePaymentsReleaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulatePaymentsReturnRouteHandler: RouteHandler<
+  typeof postV1SimulatePaymentsReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulatePaymentsPaymentTokenActionRouteHandler: RouteHandler<
+  typeof postV1SimulatePaymentsPaymentTokenActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateReturnRouteHandler: RouteHandler<
+  typeof postV1SimulateReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateReturnReversalRouteHandler: RouteHandler<
+  typeof postV1SimulateReturnReversalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateTokenizationsRouteHandler: RouteHandler<
+  typeof postV1SimulateTokenizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateVoidRouteHandler: RouteHandler<typeof postV1SimulateVoidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateAccountHoldersEnrollmentReviewRouteHandler: RouteHandler<
+  typeof postV1SimulateAccountHoldersEnrollmentReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SimulateAccountHoldersEnrollmentDocumentReviewRouteHandler: RouteHandler<
+  typeof postV1SimulateAccountHoldersEnrollmentDocumentReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1StatusRouteHandler: RouteHandler<typeof getV1StatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ThreeDsAuthenticationSimulateRouteHandler: RouteHandler<
+  typeof postV1ThreeDsAuthenticationSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ThreeDsDecisioningSimulateEnterOtpRouteHandler: RouteHandler<
+  typeof postV1ThreeDsDecisioningSimulateEnterOtpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ThreeDsAuthenticationThreeDsAuthenticationTokenRouteHandler: RouteHandler<
+  typeof getV1ThreeDsAuthenticationThreeDsAuthenticationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ThreeDsDecisioningSecretRouteHandler: RouteHandler<
+  typeof getV1ThreeDsDecisioningSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ThreeDsDecisioningSecretRotateRouteHandler: RouteHandler<
+  typeof postV1ThreeDsDecisioningSecretRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ThreeDsDecisioningChallengeResponseRouteHandler: RouteHandler<
+  typeof postV1ThreeDsDecisioningChallengeResponseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TokenizationDecisioningSecretRouteHandler: RouteHandler<
+  typeof getV1TokenizationDecisioningSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationDecisioningSecretRotateRouteHandler: RouteHandler<
+  typeof postV1TokenizationDecisioningSecretRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CardsCardTokenTokenizationsRouteHandler: RouteHandler<
+  typeof postV1CardsCardTokenTokenizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenSelectTfaMethodRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenSelectTfaMethodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenSubmitTfaRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenSubmitTfaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenPaymentCredentialsRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenPaymentCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TokenizationsRouteHandler: RouteHandler<typeof getV1TokenizationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TokenizationsTokenizationTokenRouteHandler: RouteHandler<
+  typeof getV1TokenizationsTokenizationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenPauseRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenUnpauseRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenUnpauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenDeactivateRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenActivateRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenResendActivationCodeRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenResendActivationCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TokenizationsTokenizationTokenUpdateDigitalCardArtRouteHandler: RouteHandler<
+  typeof postV1TokenizationsTokenizationTokenUpdateDigitalCardArtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionsRouteHandler: RouteHandler<typeof getV1TransactionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionsTransactionTokenRouteHandler: RouteHandler<
+  typeof getV1TransactionsTransactionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1TransactionMonitoringCasesCaseTokenRouteHandler: RouteHandler<
+  typeof patchV1TransactionMonitoringCasesCaseTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenActivityRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenTransactionsRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenCardsRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransactionMonitoringCasesCaseTokenCommentsRouteHandler: RouteHandler<
+  typeof postV1TransactionMonitoringCasesCaseTokenCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRouteHandler: RouteHandler<
+  typeof patchV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRouteHandler: RouteHandler<
+  typeof deleteV1TransactionMonitoringCasesCaseTokenCommentsCommentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransactionMonitoringCasesCaseTokenFilesRouteHandler: RouteHandler<
+  typeof postV1TransactionMonitoringCasesCaseTokenFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenFilesRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringCasesCaseTokenFilesFileTokenRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringCasesCaseTokenFilesFileTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TransactionMonitoringCasesCaseTokenFilesFileTokenRouteHandler: RouteHandler<
+  typeof deleteV1TransactionMonitoringCasesCaseTokenFilesFileTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransactionMonitoringQueuesRouteHandler: RouteHandler<
+  typeof postV1TransactionMonitoringQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringQueuesRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransactionMonitoringQueuesQueueTokenRouteHandler: RouteHandler<
+  typeof getV1TransactionMonitoringQueuesQueueTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1TransactionMonitoringQueuesQueueTokenRouteHandler: RouteHandler<
+  typeof patchV1TransactionMonitoringQueuesQueueTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TransactionMonitoringQueuesQueueTokenRouteHandler: RouteHandler<
+  typeof deleteV1TransactionMonitoringQueuesQueueTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TransferRouteHandler: RouteHandler<typeof postV1TransferRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TransferLimitsRouteHandler: RouteHandler<
+  typeof getV1TransferLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1BookTransfersRouteHandler: RouteHandler<typeof getV1BookTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1BookTransfersRouteHandler: RouteHandler<
+  typeof postV1BookTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1BookTransfersBookTransferTokenRouteHandler: RouteHandler<
+  typeof getV1BookTransfersBookTransferTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1BookTransfersBookTransferTokenRetryRouteHandler: RouteHandler<
+  typeof postV1BookTransfersBookTransferTokenRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1BookTransfersBookTransferTokenReverseRouteHandler: RouteHandler<
+  typeof postV1BookTransfersBookTransferTokenReverseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ExternalPaymentsRouteHandler: RouteHandler<
+  typeof getV1ExternalPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalPaymentsRouteHandler: RouteHandler<
+  typeof postV1ExternalPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ExternalPaymentsExternalPaymentTokenRouteHandler: RouteHandler<
+  typeof getV1ExternalPaymentsExternalPaymentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalPaymentsExternalPaymentTokenSettleRouteHandler: RouteHandler<
+  typeof postV1ExternalPaymentsExternalPaymentTokenSettleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalPaymentsExternalPaymentTokenReleaseRouteHandler: RouteHandler<
+  typeof postV1ExternalPaymentsExternalPaymentTokenReleaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalPaymentsExternalPaymentTokenCancelRouteHandler: RouteHandler<
+  typeof postV1ExternalPaymentsExternalPaymentTokenCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ExternalPaymentsExternalPaymentTokenReverseRouteHandler: RouteHandler<
+  typeof postV1ExternalPaymentsExternalPaymentTokenReverseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ManagementOperationsRouteHandler: RouteHandler<
+  typeof getV1ManagementOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ManagementOperationsRouteHandler: RouteHandler<
+  typeof postV1ManagementOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ManagementOperationsManagementOperationTokenRouteHandler: RouteHandler<
+  typeof getV1ManagementOperationsManagementOperationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ManagementOperationsManagementOperationTokenReverseRouteHandler: RouteHandler<
+  typeof postV1ManagementOperationsManagementOperationTokenReverseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NetworkProgramsRouteHandler: RouteHandler<
+  typeof getV1NetworkProgramsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NetworkProgramsNetworkProgramTokenRouteHandler: RouteHandler<
+  typeof getV1NetworkProgramsNetworkProgramTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FundingEventsRouteHandler: RouteHandler<typeof getV1FundingEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FundingEventsFundingEventTokenRouteHandler: RouteHandler<
+  typeof getV1FundingEventsFundingEventTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FundingEventsFundingEventTokenDetailsRouteHandler: RouteHandler<
+  typeof getV1FundingEventsFundingEventTokenDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

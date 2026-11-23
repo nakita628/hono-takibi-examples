@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2LanguageDatasetsDatasetIdRoute,
   deleteV2LanguageModelsModelIdRoute,
   deleteV2Oauth2TokensTokenRoute,
@@ -47,141 +47,268 @@ import {
   putV2VisionDatasetsDatasetIdUploadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2ApiusageRouteHandler: RouteHandler<typeof getV2ApiusageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2ApiusageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageDatasetsUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageDatasetsUploadSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2LanguageDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageDatasetsDatasetIdExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageDatasetsDatasetIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2LanguageDatasetsDatasetIdUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageDeletionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageIntentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2LanguageModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageModelsModelIdLcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageRetrainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageSentimentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2LanguageTrainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LanguageTrainModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2Oauth2TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2Oauth2TokensTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2VisionBulkfeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionDatasetsUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionDatasetsUploadSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2VisionDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionDatasetsDatasetIdExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionDatasetsDatasetIdExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionDatasetsDatasetIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2VisionDatasetsDatasetIdUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionDeletionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionDetectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2VisionModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionModelsModelIdLcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionOcrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionPredictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionRetrainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VisionTrainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VisionTrainModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2LanguageDatasetsRouteHandler: RouteHandler<
+  typeof getV2LanguageDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageDatasetsUploadRouteHandler: RouteHandler<
+  typeof postV2LanguageDatasetsUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageDatasetsUploadSyncRouteHandler: RouteHandler<
+  typeof postV2LanguageDatasetsUploadSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2LanguageDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteV2LanguageDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getV2LanguageDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageDatasetsDatasetIdExamplesRouteHandler: RouteHandler<
+  typeof getV2LanguageDatasetsDatasetIdExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageDatasetsDatasetIdModelsRouteHandler: RouteHandler<
+  typeof getV2LanguageDatasetsDatasetIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2LanguageDatasetsDatasetIdUploadRouteHandler: RouteHandler<
+  typeof putV2LanguageDatasetsDatasetIdUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageDeletionIdRouteHandler: RouteHandler<
+  typeof getV2LanguageDeletionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageExamplesRouteHandler: RouteHandler<
+  typeof getV2LanguageExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageFeedbackRouteHandler: RouteHandler<
+  typeof postV2LanguageFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageIntentRouteHandler: RouteHandler<
+  typeof postV2LanguageIntentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2LanguageModelsModelIdRouteHandler: RouteHandler<
+  typeof deleteV2LanguageModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageModelsModelIdRouteHandler: RouteHandler<
+  typeof getV2LanguageModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageModelsModelIdLcRouteHandler: RouteHandler<
+  typeof getV2LanguageModelsModelIdLcRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageRetrainRouteHandler: RouteHandler<
+  typeof postV2LanguageRetrainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageSentimentRouteHandler: RouteHandler<
+  typeof postV2LanguageSentimentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2LanguageTrainRouteHandler: RouteHandler<
+  typeof postV2LanguageTrainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LanguageTrainModelIdRouteHandler: RouteHandler<
+  typeof getV2LanguageTrainModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2Oauth2TokenRouteHandler: RouteHandler<typeof postV2Oauth2TokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2Oauth2TokensTokenRouteHandler: RouteHandler<
+  typeof deleteV2Oauth2TokensTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2VisionBulkfeedbackRouteHandler: RouteHandler<
+  typeof putV2VisionBulkfeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionDatasetsRouteHandler: RouteHandler<
+  typeof getV2VisionDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionDatasetsRouteHandler: RouteHandler<
+  typeof postV2VisionDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionDatasetsUploadRouteHandler: RouteHandler<
+  typeof postV2VisionDatasetsUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionDatasetsUploadSyncRouteHandler: RouteHandler<
+  typeof postV2VisionDatasetsUploadSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2VisionDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteV2VisionDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getV2VisionDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionDatasetsDatasetIdExamplesRouteHandler: RouteHandler<
+  typeof getV2VisionDatasetsDatasetIdExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionDatasetsDatasetIdExamplesRouteHandler: RouteHandler<
+  typeof postV2VisionDatasetsDatasetIdExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionDatasetsDatasetIdModelsRouteHandler: RouteHandler<
+  typeof getV2VisionDatasetsDatasetIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2VisionDatasetsDatasetIdUploadRouteHandler: RouteHandler<
+  typeof putV2VisionDatasetsDatasetIdUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionDeletionIdRouteHandler: RouteHandler<
+  typeof getV2VisionDeletionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionDetectRouteHandler: RouteHandler<typeof postV2VisionDetectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionExamplesRouteHandler: RouteHandler<
+  typeof getV2VisionExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionFeedbackRouteHandler: RouteHandler<
+  typeof postV2VisionFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2VisionModelsModelIdRouteHandler: RouteHandler<
+  typeof deleteV2VisionModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionModelsModelIdRouteHandler: RouteHandler<
+  typeof getV2VisionModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionModelsModelIdLcRouteHandler: RouteHandler<
+  typeof getV2VisionModelsModelIdLcRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionOcrRouteHandler: RouteHandler<typeof postV2VisionOcrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionPredictRouteHandler: RouteHandler<
+  typeof postV2VisionPredictRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionRetrainRouteHandler: RouteHandler<
+  typeof postV2VisionRetrainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VisionTrainRouteHandler: RouteHandler<typeof postV2VisionTrainRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VisionTrainModelIdRouteHandler: RouteHandler<
+  typeof getV2VisionTrainModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

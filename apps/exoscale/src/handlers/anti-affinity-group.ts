@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAntiAffinityGroupIdRoute,
   getAntiAffinityGroupIdRoute,
   getAntiAffinityGroupRoute,
   postAntiAffinityGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAntiAffinityGroupRouteHandler: RouteHandler<
+  typeof getAntiAffinityGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const antiAffinityGroupHandler = app
-  .openapi(getAntiAffinityGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAntiAffinityGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAntiAffinityGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAntiAffinityGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAntiAffinityGroupRouteHandler: RouteHandler<
+  typeof postAntiAffinityGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAntiAffinityGroupIdRouteHandler: RouteHandler<
+  typeof getAntiAffinityGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAntiAffinityGroupIdRouteHandler: RouteHandler<
+  typeof deleteAntiAffinityGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

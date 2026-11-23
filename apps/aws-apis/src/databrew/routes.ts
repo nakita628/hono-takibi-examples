@@ -473,30 +473,30 @@ const JobSampleSchema = z
   .openapi('JobSample')
 
 type DescribeJobResponseType = {
-  CreateDate?: z.infer<typeof DateSchema> & unknown
-  CreatedBy?: z.infer<typeof CreatedBySchema> & unknown
-  DatasetName?: z.infer<typeof DatasetNameSchema> & unknown
-  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
-  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
-  Name: z.infer<typeof JobNameSchema> & unknown
-  Type?: z.infer<typeof JobTypeSchema> & unknown
-  LastModifiedBy?: z.infer<typeof LastModifiedBySchema> & unknown
-  LastModifiedDate?: z.infer<typeof DateSchema> & unknown
-  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
-  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
-  Outputs?: z.infer<typeof OutputListSchema> & unknown
-  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema> & unknown
-  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema> & unknown
-  ProjectName?: z.infer<typeof ProjectNameSchema> & unknown
-  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema> & unknown
-  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
+  CreateDate?: z.infer<typeof DateSchema>
+  CreatedBy?: z.infer<typeof CreatedBySchema>
+  DatasetName?: z.infer<typeof DatasetNameSchema>
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema>
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema>
+  Name: z.infer<typeof JobNameSchema>
+  Type?: z.infer<typeof JobTypeSchema>
+  LastModifiedBy?: z.infer<typeof LastModifiedBySchema>
+  LastModifiedDate?: z.infer<typeof DateSchema>
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema>
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
+  Outputs?: z.infer<typeof OutputListSchema>
+  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema>
+  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema>
+  ProjectName?: z.infer<typeof ProjectNameSchema>
+  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema>
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema>
   RecipeReference?: z.infer<typeof RecipeReferenceSchema>
-  ResourceArn?: z.infer<typeof ArnSchema> & unknown
-  RoleArn?: z.infer<typeof ArnSchema> & unknown
-  Tags?: z.infer<typeof TagMapSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+  ResourceArn?: z.infer<typeof ArnSchema>
+  RoleArn?: z.infer<typeof ArnSchema>
+  Tags?: z.infer<typeof TagMapSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  JobSample?: z.infer<typeof JobSampleSchema>
 }
 
 const AttemptSchema = z.int().openapi('Attempt')
@@ -516,25 +516,25 @@ const LogGroupNameSchema = z.string().min(1).max(512).openapi('LogGroupName')
 const StartedBySchema = z.string().openapi('StartedBy')
 
 type DescribeJobRunResponseType = {
-  Attempt?: z.infer<typeof AttemptSchema> & unknown
-  CompletedOn?: z.infer<typeof DateSchema> & unknown
-  DatasetName?: z.infer<typeof DatasetNameSchema> & unknown
-  ErrorMessage?: z.infer<typeof JobRunErrorMessageSchema> & unknown
-  ExecutionTime?: z.infer<typeof ExecutionTimeSchema> & unknown
-  JobName: z.infer<typeof JobNameSchema> & unknown
-  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema> & unknown
-  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
-  RunId?: z.infer<typeof JobRunIdSchema> & unknown
-  State?: z.infer<typeof JobRunStateSchema> & unknown
-  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
-  LogGroupName?: z.infer<typeof LogGroupNameSchema> & unknown
-  Outputs?: z.infer<typeof OutputListSchema> & unknown
-  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema> & unknown
-  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema> & unknown
+  Attempt?: z.infer<typeof AttemptSchema>
+  CompletedOn?: z.infer<typeof DateSchema>
+  DatasetName?: z.infer<typeof DatasetNameSchema>
+  ErrorMessage?: z.infer<typeof JobRunErrorMessageSchema>
+  ExecutionTime?: z.infer<typeof ExecutionTimeSchema>
+  JobName: z.infer<typeof JobNameSchema>
+  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema>
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema>
+  RunId?: z.infer<typeof JobRunIdSchema>
+  State?: z.infer<typeof JobRunStateSchema>
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema>
+  LogGroupName?: z.infer<typeof LogGroupNameSchema>
+  Outputs?: z.infer<typeof OutputListSchema>
+  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema>
+  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema>
   RecipeReference?: z.infer<typeof RecipeReferenceSchema>
-  StartedBy?: z.infer<typeof StartedBySchema> & unknown
-  StartedOn?: z.infer<typeof DateSchema> & unknown
-  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+  StartedBy?: z.infer<typeof StartedBySchema>
+  StartedOn?: z.infer<typeof DateSchema>
+  JobSample?: z.infer<typeof JobSampleSchema>
 }
 
 const AccountIdSchema = z.string().max(255).openapi('AccountId')
@@ -922,39 +922,39 @@ const DatasetListSchema = z.array(DatasetSchema).openapi('DatasetList')
 const NextTokenSchema = z.string().min(1).max(2000).openapi('NextToken')
 
 type ListDatasetsResponseType = {
-  Datasets: z.infer<typeof DatasetListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Datasets: z.infer<typeof DatasetListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type CreateProfileJobRequestType = {
-  DatasetName: z.infer<typeof DatasetNameSchema> & unknown
-  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
-  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
-  Name: z.infer<typeof JobNameSchema> & unknown
-  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
-  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
+  DatasetName: z.infer<typeof DatasetNameSchema>
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema>
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema>
+  Name: z.infer<typeof JobNameSchema>
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema>
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
   OutputLocation: z.infer<typeof S3LocationSchema>
-  Configuration?: z.infer<typeof ProfileConfigurationSchema> & unknown
-  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
-  RoleArn: z.infer<typeof ArnSchema> & unknown
-  Tags?: z.infer<typeof TagMapSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+  Configuration?: z.infer<typeof ProfileConfigurationSchema>
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema>
+  RoleArn: z.infer<typeof ArnSchema>
+  Tags?: z.infer<typeof TagMapSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  JobSample?: z.infer<typeof JobSampleSchema>
 }
 
 type UpdateProfileJobRequestType = {
-  Configuration?: z.infer<typeof ProfileConfigurationSchema> & unknown
-  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
-  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
-  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
-  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
+  Configuration?: z.infer<typeof ProfileConfigurationSchema>
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema>
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema>
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema>
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
   OutputLocation: z.infer<typeof S3LocationSchema>
-  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
-  RoleArn: z.infer<typeof ArnSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema>
+  RoleArn: z.infer<typeof ArnSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  JobSample?: z.infer<typeof JobSampleSchema>
 }
 
 const ErrorCodeSchema = z

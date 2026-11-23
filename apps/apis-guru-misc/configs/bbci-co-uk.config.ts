@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bbci.co.uk/1.0/openapi.yaml',
   output: './src/bbci-co-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bbci-co-uk/types.ts' },
   client: { output: './src/bbci-co-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/bbci-co-uk/rpc.ts', parseResponse: true },

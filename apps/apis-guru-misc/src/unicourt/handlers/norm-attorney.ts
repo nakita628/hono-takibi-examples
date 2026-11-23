@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNormAttorneyNormAttorneyIdAssociatedNormJudgesRoute,
   getNormAttorneyNormAttorneyIdAssociatedNormLawFirmsRoute,
   getNormAttorneyNormAttorneyIdAssociatedNormPartiesRoute,
@@ -7,21 +7,32 @@ import {
   getNormAttorneyNormAttorneyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNormAttorneyNormAttorneyIdRouteHandler: RouteHandler<
+  typeof getNormAttorneyNormAttorneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const normAttorneyHandler = app
-  .openapi(getNormAttorneyNormAttorneyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNormAttorneyNormAttorneyIdAssociatedNormJudgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNormAttorneyNormAttorneyIdAssociatedNormLawFirmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNormAttorneyNormAttorneyIdAssociatedNormPartiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNormAttorneyNormAttorneyIdCaseCountAnalyticsByOpposingNormAttorneyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNormAttorneyNormAttorneyIdAssociatedNormJudgesRouteHandler: RouteHandler<
+  typeof getNormAttorneyNormAttorneyIdAssociatedNormJudgesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNormAttorneyNormAttorneyIdAssociatedNormLawFirmsRouteHandler: RouteHandler<
+  typeof getNormAttorneyNormAttorneyIdAssociatedNormLawFirmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNormAttorneyNormAttorneyIdAssociatedNormPartiesRouteHandler: RouteHandler<
+  typeof getNormAttorneyNormAttorneyIdAssociatedNormPartiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNormAttorneyNormAttorneyIdCaseCountAnalyticsByOpposingNormAttorneyRouteHandler: RouteHandler<
+  typeof getNormAttorneyNormAttorneyIdCaseCountAnalyticsByOpposingNormAttorneyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

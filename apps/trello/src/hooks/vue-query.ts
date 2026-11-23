@@ -10653,7 +10653,7 @@ export function useEnterprisesIdTransferrableBulkIdOrganizations<
 }
 
 export function getPutEnterprisesIdEnterpriseJoinRequestBulkMutationKey() {
-  return ['enterprises', '/enterprises/$:id/enterpriseJoinRequest/bulk', 'PUT'] as const
+  return ['enterprises', '/enterprises/${id}/enterpriseJoinRequest/bulk', 'PUT'] as const
 }
 
 export function getPutEnterprisesIdEnterpriseJoinRequestBulkMutationOptions<
@@ -10665,23 +10665,25 @@ export function getPutEnterprisesIdEnterpriseJoinRequestBulkMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']>
+            ReturnType<
+              (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
+            >
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']>,
+    InferRequestType<(typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']>,
     TOnMutateResult
   >({
     mutationKey: getPutEnterprisesIdEnterpriseJoinRequestBulkMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']
+        (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
       >,
     ) {
       return parseResponse(
-        client.enterprises['$:id'].enterpriseJoinRequest.bulk.$put(args, options),
+        client.enterprises['${id}'].enterpriseJoinRequest.bulk.$put(args, options),
       )
     },
   })
@@ -10700,7 +10702,7 @@ export function usePutEnterprisesIdEnterpriseJoinRequestBulk<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']
+                    (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
                   >
                 >
               >
@@ -10708,7 +10710,7 @@ export function usePutEnterprisesIdEnterpriseJoinRequestBulk<
           >,
           TError,
           InferRequestType<
-            (typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']
+            (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
           >,
           TOnMutateResult
         >,

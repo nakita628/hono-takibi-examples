@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOidcAuthProvidersIdRoute, getOidcAuthProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOidcAuthProvidersIdRoute, getOidcAuthProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOidcAuthProvidersRouteHandler: RouteHandler<
+  typeof getOidcAuthProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oidcAuthProvidersHandler = app
-  .openapi(getOidcAuthProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOidcAuthProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOidcAuthProvidersIdRouteHandler: RouteHandler<
+  typeof getOidcAuthProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

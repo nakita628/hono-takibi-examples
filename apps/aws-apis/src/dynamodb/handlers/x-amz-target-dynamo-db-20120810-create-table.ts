@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810CreateTableRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810CreateTableRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810CreateTableHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810CreateTableRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810CreateTableRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810CreateTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

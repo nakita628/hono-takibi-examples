@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAutocompletesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAutocompletesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const autocompletesHandler = app.openapi(getAutocompletesRoute, (c) => {
+export const getAutocompletesRouteHandler: RouteHandler<typeof getAutocompletesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

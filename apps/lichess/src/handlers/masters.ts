@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMastersPgnGameIdRoute, getMastersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMastersPgnGameIdRoute, getMastersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMastersRouteHandler: RouteHandler<typeof getMastersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mastersHandler = app
-  .openapi(getMastersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMastersPgnGameIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMastersPgnGameIdRouteHandler: RouteHandler<
+  typeof getMastersPgnGameIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

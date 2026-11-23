@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/squareup.com/2.0/openapi.yaml',
   output: './src/squareup/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/squareup/types.ts' },
   client: { output: './src/squareup/client.ts', baseUrl: '/' },
   rpc: { output: './src/squareup/rpc.ts', parseResponse: true },

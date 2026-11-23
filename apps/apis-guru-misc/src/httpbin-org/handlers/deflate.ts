@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDeflateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDeflateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deflateHandler = app.openapi(getDeflateRoute, (c) => {
+export const getDeflateRouteHandler: RouteHandler<typeof getDeflateRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

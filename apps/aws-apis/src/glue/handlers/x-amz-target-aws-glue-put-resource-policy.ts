@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGluePutResourcePolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGluePutResourcePolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGluePutResourcePolicyHandler = app.openapi(
-  postXAmzTargetAWSGluePutResourcePolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGluePutResourcePolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGluePutResourcePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

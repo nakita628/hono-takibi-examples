@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/aiimsrishikesh/3.0.0/openapi.yaml',
   output: './src/aiimsrishikesh/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/aiimsrishikesh/types.ts' },
   client: { output: './src/aiimsrishikesh/client.ts', baseUrl: '/' },
   rpc: { output: './src/aiimsrishikesh/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteImportsImagesOperationIdRoute,
   getImportsImagesOperationIdDockerfileRoute,
   getImportsImagesOperationIdImageConfigRoute,
@@ -16,48 +16,86 @@ import {
   postImportsImagesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getImportsImagesRouteHandler: RouteHandler<typeof getImportsImagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const importsHandler = app
-  .openapi(getImportsImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteImportsImagesOperationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdDockerfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesOperationIdDockerfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdImageConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesOperationIdImageConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesOperationIdManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdPackagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesOperationIdPackagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getImportsImagesOperationIdParentManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postImportsImagesOperationIdParentManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postImportsImagesRouteHandler: RouteHandler<typeof postImportsImagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteImportsImagesOperationIdRouteHandler: RouteHandler<
+  typeof deleteImportsImagesOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdDockerfileRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdDockerfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImportsImagesOperationIdDockerfileRouteHandler: RouteHandler<
+  typeof postImportsImagesOperationIdDockerfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdImageConfigRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdImageConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImportsImagesOperationIdImageConfigRouteHandler: RouteHandler<
+  typeof postImportsImagesOperationIdImageConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdManifestRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImportsImagesOperationIdManifestRouteHandler: RouteHandler<
+  typeof postImportsImagesOperationIdManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdPackagesRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdPackagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImportsImagesOperationIdPackagesRouteHandler: RouteHandler<
+  typeof postImportsImagesOperationIdPackagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getImportsImagesOperationIdParentManifestRouteHandler: RouteHandler<
+  typeof getImportsImagesOperationIdParentManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postImportsImagesOperationIdParentManifestRouteHandler: RouteHandler<
+  typeof postImportsImagesOperationIdParentManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

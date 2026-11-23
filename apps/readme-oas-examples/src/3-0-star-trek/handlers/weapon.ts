@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWeaponRoute, getWeaponSearchRoute, postWeaponSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWeaponRoute, getWeaponSearchRoute, postWeaponSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWeaponRouteHandler: RouteHandler<typeof getWeaponRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const weaponHandler = app
-  .openapi(getWeaponRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWeaponSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWeaponSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWeaponSearchRouteHandler: RouteHandler<typeof getWeaponSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWeaponSearchRouteHandler: RouteHandler<typeof postWeaponSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

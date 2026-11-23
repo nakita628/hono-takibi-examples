@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apptigent.com/2021.1.01/openapi.yaml',
   output: './src/apptigent/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apptigent/types.ts' },
   client: { output: './src/apptigent/client.ts', baseUrl: '/' },
   rpc: { output: './src/apptigent/rpc.ts', parseResponse: true },

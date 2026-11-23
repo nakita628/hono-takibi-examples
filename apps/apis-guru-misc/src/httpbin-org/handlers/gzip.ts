@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGzipRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGzipRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const gzipHandler = app.openapi(getGzipRoute, (c) => {
+export const getGzipRouteHandler: RouteHandler<typeof getGzipRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

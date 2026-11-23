@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/books_api/3.0.0/openapi.yaml',
   output: './src/books-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/books-api/types.ts' },
   client: { output: './src/books-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/books-api/rpc.ts', parseResponse: true },

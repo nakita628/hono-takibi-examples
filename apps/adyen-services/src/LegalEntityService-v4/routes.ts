@@ -7162,7 +7162,6 @@ export const postLegalEntitiesIdRequestPeriodicReviewRoute = createRoute({
     204: {
       description:
         'No Content - the request has been successfully processed, but there is no additional content.',
-      content: {},
     },
   },
 })

@@ -469,7 +469,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/geomarks/:geomarkId.:fileFormatExtension': {
+    '/geomarks/:geomarkId.{fileFormatExtension}': {
       $get:
         | {
             input: {
@@ -548,111 +548,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/geomarks/:geomarkId/boundingBox.:fileFormatExtension': {
-      $get:
-        | {
-            input: {
-              param: {
-                geomarkId: string
-                fileFormatExtension:
-                  | 'json'
-                  | 'xml'
-                  | 'kml'
-                  | 'kmz'
-                  | 'shp'
-                  | 'shpz'
-                  | 'geojson'
-                  | 'gml'
-                  | 'gpkg'
-                  | 'wkt'
-              }
-            } & {
-              query: {
-                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: {
-              param: {
-                geomarkId: string
-                fileFormatExtension:
-                  | 'json'
-                  | 'xml'
-                  | 'kml'
-                  | 'kmz'
-                  | 'shp'
-                  | 'shpz'
-                  | 'geojson'
-                  | 'gml'
-                  | 'gpkg'
-                  | 'wkt'
-              }
-            } & {
-              query: {
-                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 400
-          }
-        | {
-            input: {
-              param: {
-                geomarkId: string
-                fileFormatExtension:
-                  | 'json'
-                  | 'xml'
-                  | 'kml'
-                  | 'kmz'
-                  | 'shp'
-                  | 'shpz'
-                  | 'geojson'
-                  | 'gml'
-                  | 'gpkg'
-                  | 'wkt'
-              }
-            } & {
-              query: {
-                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 404
-          }
-        | {
-            input: {
-              param: {
-                geomarkId: string
-                fileFormatExtension:
-                  | 'json'
-                  | 'xml'
-                  | 'kml'
-                  | 'kmz'
-                  | 'shp'
-                  | 'shpz'
-                  | 'geojson'
-                  | 'gml'
-                  | 'gpkg'
-                  | 'wkt'
-              }
-            } & {
-              query: {
-                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 500
-          }
-    }
-  } & {
-    '/geomarks/:geomarkId/feature.:fileFormatExtension': {
+    '/geomarks/:geomarkId/boundingBox.{fileFormatExtension}': {
       $get:
         | {
             input: {
@@ -756,7 +652,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/geomarks/:geomarkId/parts.:fileFormatExtension': {
+    '/geomarks/:geomarkId/feature.{fileFormatExtension}': {
       $get:
         | {
             input: {
@@ -860,7 +756,111 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/geomarks/:geomarkId/point.:fileFormatExtension': {
+    '/geomarks/:geomarkId/parts.{fileFormatExtension}': {
+      $get:
+        | {
+            input: {
+              param: {
+                geomarkId: string
+                fileFormatExtension:
+                  | 'json'
+                  | 'xml'
+                  | 'kml'
+                  | 'kmz'
+                  | 'shp'
+                  | 'shpz'
+                  | 'geojson'
+                  | 'gml'
+                  | 'gpkg'
+                  | 'wkt'
+              }
+            } & {
+              query: {
+                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: {
+                geomarkId: string
+                fileFormatExtension:
+                  | 'json'
+                  | 'xml'
+                  | 'kml'
+                  | 'kmz'
+                  | 'shp'
+                  | 'shpz'
+                  | 'geojson'
+                  | 'gml'
+                  | 'gpkg'
+                  | 'wkt'
+              }
+            } & {
+              query: {
+                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              param: {
+                geomarkId: string
+                fileFormatExtension:
+                  | 'json'
+                  | 'xml'
+                  | 'kml'
+                  | 'kmz'
+                  | 'shp'
+                  | 'shpz'
+                  | 'geojson'
+                  | 'gml'
+                  | 'gpkg'
+                  | 'wkt'
+              }
+            } & {
+              query: {
+                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              param: {
+                geomarkId: string
+                fileFormatExtension:
+                  | 'json'
+                  | 'xml'
+                  | 'kml'
+                  | 'kmz'
+                  | 'shp'
+                  | 'shpz'
+                  | 'geojson'
+                  | 'gml'
+                  | 'gpkg'
+                  | 'wkt'
+              }
+            } & {
+              query: {
+                srid?: 4326 | 3005 | 3857 | 26907 | 26908 | 26909 | 26910 | 26911 | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+    }
+  } & {
+    '/geomarks/:geomarkId/point.{fileFormatExtension}': {
       $get:
         | {
             input: {

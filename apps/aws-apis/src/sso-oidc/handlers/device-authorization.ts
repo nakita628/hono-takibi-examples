@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeviceAuthorizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeviceAuthorizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deviceAuthorizationHandler = app.openapi(postDeviceAuthorizationRoute, (c) => {
+export const postDeviceAuthorizationRouteHandler: RouteHandler<
+  typeof postDeviceAuthorizationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

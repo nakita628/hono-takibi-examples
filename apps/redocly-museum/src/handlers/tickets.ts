@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTicketsTicketIdQrRoute, postTicketsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTicketsTicketIdQrRoute, postTicketsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTicketsRouteHandler: RouteHandler<typeof postTicketsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ticketsHandler = app
-  .openapi(postTicketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTicketsTicketIdQrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTicketsTicketIdQrRouteHandler: RouteHandler<
+  typeof getTicketsTicketIdQrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

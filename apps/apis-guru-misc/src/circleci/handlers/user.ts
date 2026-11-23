@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUserHerokuKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUserHerokuKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userHandler = app.openapi(postUserHerokuKeyRoute, (c) => {
+export const postUserHerokuKeyRouteHandler: RouteHandler<typeof postUserHerokuKeyRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

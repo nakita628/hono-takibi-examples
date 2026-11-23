@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBgpSessionsIdRoute, getBgpSessionsIdRoute, putBgpSessionsIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteBgpSessionsIdRoute,
+  getBgpSessionsIdRoute,
+  putBgpSessionsIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBgpSessionsIdRouteHandler: RouteHandler<
+  typeof deleteBgpSessionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bgpHandler = app
-  .openapi(deleteBgpSessionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBgpSessionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBgpSessionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBgpSessionsIdRouteHandler: RouteHandler<typeof getBgpSessionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putBgpSessionsIdRouteHandler: RouteHandler<typeof putBgpSessionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

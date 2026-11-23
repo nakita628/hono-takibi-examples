@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDataAssessAccountsCategoriesRoute,
   getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityDetailsRoute,
   getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityStatusRoute,
@@ -25,102 +25,140 @@ import {
   postDataCompaniesCompanyIdAssessExcelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataAssessAccountsCategoriesRouteHandler: RouteHandler<
+  typeof getDataAssessAccountsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataHandler = app
-  .openapi(getDataAssessAccountsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegritySummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdAssessExcelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataCompaniesCompanyIdAssessExcelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdAssessExcelDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataCompaniesCompanyIdAssessExcelDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountingMetricsMarketingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsCustomerRetentionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsLifetimeValueRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsOrdersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRefundsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRevenueRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedBalanceSheetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedProfitAndLossRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDataCompaniesCompanyIdConnectionsConnectionIdAssessFinancialMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsMrrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsProcessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityDetailsRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityStatusRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegrityStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegritySummariesRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdAssessDataTypesDataTypeDataIntegritySummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdAssessExcelRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdAssessExcelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataCompaniesCompanyIdAssessExcelRouteHandler: RouteHandler<
+  typeof postDataCompaniesCompanyIdAssessExcelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdAssessExcelDownloadRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdAssessExcelDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataCompaniesCompanyIdAssessExcelDownloadRouteHandler: RouteHandler<
+  typeof postDataCompaniesCompanyIdAssessExcelDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountingMetricsMarketingRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountingMetricsMarketingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRouteHandler: RouteHandler<
+  typeof patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRouteHandler: RouteHandler<
+  typeof patchDataCompaniesCompanyIdConnectionsConnectionIdAssessAccountsAccountIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsCustomerRetentionRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsCustomerRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsLifetimeValueRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsLifetimeValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsOrdersRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRefundsRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRevenueRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessCommerceMetricsRevenueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedBalanceSheetRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedBalanceSheetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedProfitAndLossRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessEnhancedProfitAndLossRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessFinancialMetricsRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessFinancialMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsMrrRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsMrrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsProcessRouteHandler: RouteHandler<
+  typeof getDataCompaniesCompanyIdConnectionsConnectionIdAssessSubscriptionsProcessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

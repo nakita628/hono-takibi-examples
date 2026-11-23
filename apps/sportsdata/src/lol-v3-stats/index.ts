@@ -1,8 +1,80 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { formatHandler } from './handlers'
+import {
+  getFormatActiveMembershipsRoute,
+  getFormatAreasRoute,
+  getFormatBoxScoreGameidRoute,
+  getFormatBoxScoresDateRoute,
+  getFormatChampionsRoute,
+  getFormatCompetitionDetailsCompetitionidRoute,
+  getFormatCompetitionsRoute,
+  getFormatGamesByDateDateRoute,
+  getFormatHistoricalMembershipsByTeamTeamidRoute,
+  getFormatHistoricalMembershipsRoute,
+  getFormatItemsRoute,
+  getFormatMembershipsByTeamTeamidRoute,
+  getFormatPlayerPlayeridRoute,
+  getFormatPlayersByTeamTeamidRoute,
+  getFormatPlayersRoute,
+  getFormatScheduleRoundidRoute,
+  getFormatSeasonTeamsSeasonidRoute,
+  getFormatSpellsRoute,
+  getFormatStandingsRoundidRoute,
+  getFormatTeamsRoute,
+  getFormatVenuesRoute,
+} from './routes'
+import {
+  getFormatActiveMembershipsRouteHandler,
+  getFormatAreasRouteHandler,
+  getFormatBoxScoreGameidRouteHandler,
+  getFormatBoxScoresDateRouteHandler,
+  getFormatChampionsRouteHandler,
+  getFormatCompetitionDetailsCompetitionidRouteHandler,
+  getFormatCompetitionsRouteHandler,
+  getFormatGamesByDateDateRouteHandler,
+  getFormatHistoricalMembershipsByTeamTeamidRouteHandler,
+  getFormatHistoricalMembershipsRouteHandler,
+  getFormatItemsRouteHandler,
+  getFormatMembershipsByTeamTeamidRouteHandler,
+  getFormatPlayerPlayeridRouteHandler,
+  getFormatPlayersByTeamTeamidRouteHandler,
+  getFormatPlayersRouteHandler,
+  getFormatScheduleRoundidRouteHandler,
+  getFormatSeasonTeamsSeasonidRouteHandler,
+  getFormatSpellsRouteHandler,
+  getFormatStandingsRoundidRouteHandler,
+  getFormatTeamsRouteHandler,
+  getFormatVenuesRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', formatHandler)
+export const api = app
+  .openapi(getFormatActiveMembershipsRoute, getFormatActiveMembershipsRouteHandler)
+  .openapi(getFormatAreasRoute, getFormatAreasRouteHandler)
+  .openapi(getFormatBoxScoreGameidRoute, getFormatBoxScoreGameidRouteHandler)
+  .openapi(getFormatBoxScoresDateRoute, getFormatBoxScoresDateRouteHandler)
+  .openapi(getFormatChampionsRoute, getFormatChampionsRouteHandler)
+  .openapi(
+    getFormatCompetitionDetailsCompetitionidRoute,
+    getFormatCompetitionDetailsCompetitionidRouteHandler,
+  )
+  .openapi(getFormatCompetitionsRoute, getFormatCompetitionsRouteHandler)
+  .openapi(getFormatGamesByDateDateRoute, getFormatGamesByDateDateRouteHandler)
+  .openapi(getFormatHistoricalMembershipsRoute, getFormatHistoricalMembershipsRouteHandler)
+  .openapi(
+    getFormatHistoricalMembershipsByTeamTeamidRoute,
+    getFormatHistoricalMembershipsByTeamTeamidRouteHandler,
+  )
+  .openapi(getFormatItemsRoute, getFormatItemsRouteHandler)
+  .openapi(getFormatMembershipsByTeamTeamidRoute, getFormatMembershipsByTeamTeamidRouteHandler)
+  .openapi(getFormatPlayerPlayeridRoute, getFormatPlayerPlayeridRouteHandler)
+  .openapi(getFormatPlayersRoute, getFormatPlayersRouteHandler)
+  .openapi(getFormatPlayersByTeamTeamidRoute, getFormatPlayersByTeamTeamidRouteHandler)
+  .openapi(getFormatScheduleRoundidRoute, getFormatScheduleRoundidRouteHandler)
+  .openapi(getFormatSeasonTeamsSeasonidRoute, getFormatSeasonTeamsSeasonidRouteHandler)
+  .openapi(getFormatSpellsRoute, getFormatSpellsRouteHandler)
+  .openapi(getFormatStandingsRoundidRoute, getFormatStandingsRoundidRouteHandler)
+  .openapi(getFormatTeamsRoute, getFormatTeamsRouteHandler)
+  .openapi(getFormatVenuesRoute, getFormatVenuesRouteHandler)
 
 export default app

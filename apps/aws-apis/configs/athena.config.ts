@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/athena/2017-05-18/openapi.yaml',
   output: './src/athena/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/athena/types.ts' },
   client: { output: './src/athena/client.ts', baseUrl: '/' },
   rpc: { output: './src/athena/rpc.ts', parseResponse: true },

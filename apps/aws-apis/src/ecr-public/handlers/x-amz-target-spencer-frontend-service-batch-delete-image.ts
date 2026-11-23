@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServiceBatchDeleteImageHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServiceBatchDeleteImageRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

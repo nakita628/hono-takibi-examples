@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGluePutSchemaVersionMetadataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGluePutSchemaVersionMetadataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGluePutSchemaVersionMetadataHandler = app.openapi(
-  postXAmzTargetAWSGluePutSchemaVersionMetadataRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGluePutSchemaVersionMetadataRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGluePutSchemaVersionMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

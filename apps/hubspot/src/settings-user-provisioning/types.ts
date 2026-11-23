@@ -161,14 +161,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { userId: string } } & {
-          query: { idProperty?: 'EMAIL' | 'USER_ID' | undefined }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { userId: string } } & {
+              query: { idProperty?: 'EMAIL' | 'USER_ID' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { userId: string } } & {
+              query: { idProperty?: 'EMAIL' | 'USER_ID' | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

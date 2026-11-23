@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEarliestTimestampRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEarliestTimestampRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const earliestTimestampHandler = app.openapi(getEarliestTimestampRoute, (c) => {
+export const getEarliestTimestampRouteHandler: RouteHandler<
+  typeof getEarliestTimestampRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRetainedMessageRoute, getRetainedMessageTopicRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRetainedMessageRoute, getRetainedMessageTopicRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRetainedMessageTopicRouteHandler: RouteHandler<
+  typeof getRetainedMessageTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const retainedMessageHandler = app
-  .openapi(getRetainedMessageTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetainedMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRetainedMessageRouteHandler: RouteHandler<typeof getRetainedMessageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

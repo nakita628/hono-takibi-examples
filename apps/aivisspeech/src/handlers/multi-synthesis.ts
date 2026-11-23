@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMultiSynthesisRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMultiSynthesisRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const multiSynthesisHandler = app.openapi(postMultiSynthesisRoute, (c) => {
+export const postMultiSynthesisRouteHandler: RouteHandler<typeof postMultiSynthesisRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

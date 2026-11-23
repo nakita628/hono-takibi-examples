@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBulkUpdateNegativeKeywordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBulkUpdateNegativeKeywordRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bulkUpdateNegativeKeywordHandler = app.openapi(
-  postBulkUpdateNegativeKeywordRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postBulkUpdateNegativeKeywordRouteHandler: RouteHandler<
+  typeof postBulkUpdateNegativeKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

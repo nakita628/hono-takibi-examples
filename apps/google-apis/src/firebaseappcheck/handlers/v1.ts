@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1NameRoute,
   getV1ParentAppsDashAppAttestConfigBatchGetRoute,
@@ -26,78 +26,140 @@ import {
   postV1ParentServicesBatchUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1AppExchangeAppAttestAssertionRouteHandler: RouteHandler<
+  typeof postV1AppExchangeAppAttestAssertionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1AppExchangeAppAttestAssertionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeAppAttestAttestationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeCustomTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeDebugTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeDeviceCheckTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangePlayIntegrityTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeRecaptchaEnterpriseTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeRecaptchaV3TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppExchangeSafetyNetTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppGenerateAppAttestChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AppGeneratePlayIntegrityChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashAppAttestConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashDeviceCheckConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashPlayIntegrityConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashRecaptchaEnterpriseConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashRecaptchaV3ConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAppsDashSafetyNetConfigBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentDebugTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDebugTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentServicesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1AppExchangeAppAttestAttestationRouteHandler: RouteHandler<
+  typeof postV1AppExchangeAppAttestAttestationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeCustomTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeCustomTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeDebugTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeDebugTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeDeviceCheckTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeDeviceCheckTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangePlayIntegrityTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangePlayIntegrityTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeRecaptchaEnterpriseTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeRecaptchaEnterpriseTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeRecaptchaV3TokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeRecaptchaV3TokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppExchangeSafetyNetTokenRouteHandler: RouteHandler<
+  typeof postV1AppExchangeSafetyNetTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppGenerateAppAttestChallengeRouteHandler: RouteHandler<
+  typeof postV1AppGenerateAppAttestChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AppGeneratePlayIntegrityChallengeRouteHandler: RouteHandler<
+  typeof postV1AppGeneratePlayIntegrityChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashAppAttestConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashAppAttestConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashDeviceCheckConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashDeviceCheckConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashPlayIntegrityConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashPlayIntegrityConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashRecaptchaEnterpriseConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashRecaptchaEnterpriseConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashRecaptchaV3ConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashRecaptchaV3ConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAppsDashSafetyNetConfigBatchGetRouteHandler: RouteHandler<
+  typeof getV1ParentAppsDashSafetyNetConfigBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentDebugTokensRouteHandler: RouteHandler<
+  typeof getV1ParentDebugTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDebugTokensRouteHandler: RouteHandler<
+  typeof postV1ParentDebugTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentServicesRouteHandler: RouteHandler<
+  typeof getV1ParentServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentServicesBatchUpdateRouteHandler: RouteHandler<
+  typeof postV1ParentServicesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

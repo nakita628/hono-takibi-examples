@@ -706,7 +706,7 @@ const LifecyclePolicySchema = z
   })
   .openapi('LifecyclePolicy')
 
-type GetLifecyclePolicyResponseType = { Policy?: z.infer<typeof LifecyclePolicySchema> & unknown }
+type GetLifecyclePolicyResponseType = { Policy?: z.infer<typeof LifecyclePolicySchema> }
 
 const CreateLifecyclePolicyResponseSchema = z
   .object({

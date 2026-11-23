@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/climate.com/4.0.11/openapi.yaml',
   output: './src/climate/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/climate/types.ts' },
   client: { output: './src/climate/client.ts', baseUrl: '/' },
   rpc: { output: './src/climate/rpc.ts', parseResponse: true },

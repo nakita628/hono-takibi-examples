@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNamespaceRepoResolveRevPathRoute,
   getNamespaceRepoUserAccessReportRoute,
   postNamespaceRepoAskAccessRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNamespaceRepoResolveRevPathRouteHandler: RouteHandler<
+  typeof getNamespaceRepoResolveRevPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const namespaceHandler = app
-  .openapi(getNamespaceRepoResolveRevPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNamespaceRepoAskAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamespaceRepoUserAccessReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNamespaceRepoAskAccessRouteHandler: RouteHandler<
+  typeof postNamespaceRepoAskAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamespaceRepoUserAccessReportRouteHandler: RouteHandler<
+  typeof getNamespaceRepoUserAccessReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectIdHmacKeysAccessIdRoute,
   getProjectsProjectIdHmacKeysAccessIdRoute,
   getProjectsProjectIdHmacKeysRoute,
@@ -8,24 +8,38 @@ import {
   putProjectsProjectIdHmacKeysAccessIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsProjectIdHmacKeysRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdHmacKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsProjectIdHmacKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdHmacKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdHmacKeysAccessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdHmacKeysAccessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectIdHmacKeysAccessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectsProjectIdHmacKeysRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdHmacKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdHmacKeysAccessIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdHmacKeysAccessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdHmacKeysAccessIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdHmacKeysAccessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectIdHmacKeysAccessIdRouteHandler: RouteHandler<
+  typeof putProjectsProjectIdHmacKeysAccessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdServiceAccountRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWebhooksJsonPublicKeyRoute, getWebhooksPublicKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWebhooksJsonPublicKeyRoute, getWebhooksPublicKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebhooksPublicKeyRouteHandler: RouteHandler<
+  typeof getWebhooksPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksHandler = app
-  .openapi(getWebhooksPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJsonPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebhooksJsonPublicKeyRouteHandler: RouteHandler<
+  typeof getWebhooksJsonPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

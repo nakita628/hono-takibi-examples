@@ -1,8 +1,74 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { crmHandler } from './handlers'
+import {
+  deleteCrmObjects20260903DealIdRoute,
+  deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
+  getCrmObjects20260903DealIdAssociationsToObjectTypeRoute,
+  getCrmObjects20260903DealIdRoute,
+  getCrmObjects20260903Route,
+  patchCrmObjects20260903DealIdRoute,
+  postCrmObjects20260903BatchArchiveRoute,
+  postCrmObjects20260903BatchCreateRoute,
+  postCrmObjects20260903BatchReadRoute,
+  postCrmObjects20260903BatchUpdateRoute,
+  postCrmObjects20260903BatchUpsertRoute,
+  postCrmObjects20260903GdprDeleteRoute,
+  postCrmObjects20260903MergeRoute,
+  postCrmObjects20260903Route,
+  postCrmObjects20260903SearchRoute,
+  putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
+  putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
+} from './routes'
+import {
+  deleteCrmObjects20260903DealIdRouteHandler,
+  deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler,
+  getCrmObjects20260903DealIdAssociationsToObjectTypeRouteHandler,
+  getCrmObjects20260903DealIdRouteHandler,
+  getCrmObjects20260903RouteHandler,
+  patchCrmObjects20260903DealIdRouteHandler,
+  postCrmObjects20260903BatchArchiveRouteHandler,
+  postCrmObjects20260903BatchCreateRouteHandler,
+  postCrmObjects20260903BatchReadRouteHandler,
+  postCrmObjects20260903BatchUpdateRouteHandler,
+  postCrmObjects20260903BatchUpsertRouteHandler,
+  postCrmObjects20260903GdprDeleteRouteHandler,
+  postCrmObjects20260903MergeRouteHandler,
+  postCrmObjects20260903RouteHandler,
+  postCrmObjects20260903SearchRouteHandler,
+  putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRouteHandler,
+  putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', crmHandler)
+export const api = app
+  .openapi(getCrmObjects20260903Route, getCrmObjects20260903RouteHandler)
+  .openapi(postCrmObjects20260903Route, postCrmObjects20260903RouteHandler)
+  .openapi(postCrmObjects20260903BatchArchiveRoute, postCrmObjects20260903BatchArchiveRouteHandler)
+  .openapi(postCrmObjects20260903BatchCreateRoute, postCrmObjects20260903BatchCreateRouteHandler)
+  .openapi(postCrmObjects20260903BatchReadRoute, postCrmObjects20260903BatchReadRouteHandler)
+  .openapi(postCrmObjects20260903BatchUpdateRoute, postCrmObjects20260903BatchUpdateRouteHandler)
+  .openapi(postCrmObjects20260903BatchUpsertRoute, postCrmObjects20260903BatchUpsertRouteHandler)
+  .openapi(postCrmObjects20260903GdprDeleteRoute, postCrmObjects20260903GdprDeleteRouteHandler)
+  .openapi(postCrmObjects20260903MergeRoute, postCrmObjects20260903MergeRouteHandler)
+  .openapi(postCrmObjects20260903SearchRoute, postCrmObjects20260903SearchRouteHandler)
+  .openapi(getCrmObjects20260903DealIdRoute, getCrmObjects20260903DealIdRouteHandler)
+  .openapi(deleteCrmObjects20260903DealIdRoute, deleteCrmObjects20260903DealIdRouteHandler)
+  .openapi(patchCrmObjects20260903DealIdRoute, patchCrmObjects20260903DealIdRouteHandler)
+  .openapi(
+    getCrmObjects20260903DealIdAssociationsToObjectTypeRoute,
+    getCrmObjects20260903DealIdAssociationsToObjectTypeRouteHandler,
+  )
+  .openapi(
+    putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
+    putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRouteHandler,
+  )
+  .openapi(
+    putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
+    putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler,
+  )
+  .openapi(
+    deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
+    deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler,
+  )
 
 export default app

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCouponsCouponIdRoute,
   getCouponsRoute,
   postCouponsCopyRoute,
@@ -9,27 +9,40 @@ import {
   postCouponsCreateForItemsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCouponsRouteHandler: RouteHandler<typeof getCouponsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const couponsHandler = app
-  .openapi(getCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponsCouponIdUpdateForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponsCouponIdUnarchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponsCouponIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponsCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCouponsCouponIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponsCreateForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCouponsCouponIdUpdateForItemsRouteHandler: RouteHandler<
+  typeof postCouponsCouponIdUpdateForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponsCouponIdUnarchiveRouteHandler: RouteHandler<
+  typeof postCouponsCouponIdUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponsCouponIdDeleteRouteHandler: RouteHandler<
+  typeof postCouponsCouponIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponsCopyRouteHandler: RouteHandler<typeof postCouponsCopyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCouponsCouponIdRouteHandler: RouteHandler<typeof getCouponsCouponIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponsCreateForItemsRouteHandler: RouteHandler<
+  typeof postCouponsCreateForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

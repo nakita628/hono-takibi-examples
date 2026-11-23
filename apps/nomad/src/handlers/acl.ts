@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAclPolicyPolicyNameRoute,
   deleteAclTokenTokenAccessorRoute,
   getAclPoliciesRoute,
@@ -14,42 +14,68 @@ import {
   postAclTokenTokenAccessorRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAclBootstrapRouteHandler: RouteHandler<typeof postAclBootstrapRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const aclHandler = app
-  .openapi(postAclBootstrapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAclPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAclPolicyPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAclPolicyPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAclPolicyPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAclTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAclTokenTokenAccessorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAclTokenTokenAccessorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAclTokenTokenAccessorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAclTokenOnetimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAclTokenOnetimeExchangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAclTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAclPoliciesRouteHandler: RouteHandler<typeof getAclPoliciesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAclPolicyPolicyNameRouteHandler: RouteHandler<
+  typeof deleteAclPolicyPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAclPolicyPolicyNameRouteHandler: RouteHandler<
+  typeof getAclPolicyPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAclPolicyPolicyNameRouteHandler: RouteHandler<
+  typeof postAclPolicyPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAclTokenRouteHandler: RouteHandler<typeof getAclTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAclTokenTokenAccessorRouteHandler: RouteHandler<
+  typeof deleteAclTokenTokenAccessorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAclTokenTokenAccessorRouteHandler: RouteHandler<
+  typeof getAclTokenTokenAccessorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAclTokenTokenAccessorRouteHandler: RouteHandler<
+  typeof postAclTokenTokenAccessorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAclTokenOnetimeRouteHandler: RouteHandler<
+  typeof postAclTokenOnetimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAclTokenOnetimeExchangeRouteHandler: RouteHandler<
+  typeof postAclTokenOnetimeExchangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAclTokensRouteHandler: RouteHandler<typeof getAclTokensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

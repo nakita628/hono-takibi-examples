@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCustomMetricsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCustomMetricsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const customMetricsHandler = app.openapi(getCustomMetricsRoute, (c) => {
+export const getCustomMetricsRouteHandler: RouteHandler<typeof getCustomMetricsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

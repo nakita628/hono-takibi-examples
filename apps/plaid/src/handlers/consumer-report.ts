@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConsumerReportPdfGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConsumerReportPdfGetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const consumerReportHandler = app.openapi(postConsumerReportPdfGetRoute, (c) => {
+export const postConsumerReportPdfGetRouteHandler: RouteHandler<
+  typeof postConsumerReportPdfGetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

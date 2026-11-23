@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSwbExternalServiceListCustomerManagedPolicyReferencesInPermissionSetHandler =
-  app.openapi(
-    postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

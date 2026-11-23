@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchMappingOfSchemaNamesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchMappingOfSchemaNamesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mappingOfSchemaNamesHandler = app.openapi(patchMappingOfSchemaNamesRoute, (c) => {
+export const patchMappingOfSchemaNamesRouteHandler: RouteHandler<
+  typeof patchMappingOfSchemaNamesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

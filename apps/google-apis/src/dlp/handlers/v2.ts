@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2NameRoute,
   getV2InfoTypesRoute,
   getV2NameRoute,
@@ -25,75 +25,132 @@ import {
   postV2ParentStoredInfoTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2InfoTypesRouteHandler: RouteHandler<typeof getV2InfoTypesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2InfoTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameFinishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameHybridInspectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentContentDeidentifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentContentInspectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentContentReidentifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentDeidentifyTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentDeidentifyTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentDlpJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentDlpJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentImageRedactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentInfoTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentInspectTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentInspectTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentJobTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentJobTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentStoredInfoTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentStoredInfoTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV2NameRouteHandler: RouteHandler<typeof deleteV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameRouteHandler: RouteHandler<typeof getV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2NameRouteHandler: RouteHandler<typeof patchV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameActivateRouteHandler: RouteHandler<typeof postV2NameActivateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameCancelRouteHandler: RouteHandler<typeof postV2NameCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameFinishRouteHandler: RouteHandler<typeof postV2NameFinishRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameHybridInspectRouteHandler: RouteHandler<
+  typeof postV2NameHybridInspectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentContentDeidentifyRouteHandler: RouteHandler<
+  typeof postV2ParentContentDeidentifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentContentInspectRouteHandler: RouteHandler<
+  typeof postV2ParentContentInspectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentContentReidentifyRouteHandler: RouteHandler<
+  typeof postV2ParentContentReidentifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentDeidentifyTemplatesRouteHandler: RouteHandler<
+  typeof getV2ParentDeidentifyTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentDeidentifyTemplatesRouteHandler: RouteHandler<
+  typeof postV2ParentDeidentifyTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentDlpJobsRouteHandler: RouteHandler<typeof getV2ParentDlpJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentDlpJobsRouteHandler: RouteHandler<
+  typeof postV2ParentDlpJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentImageRedactRouteHandler: RouteHandler<
+  typeof postV2ParentImageRedactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentInfoTypesRouteHandler: RouteHandler<
+  typeof getV2ParentInfoTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentInspectTemplatesRouteHandler: RouteHandler<
+  typeof getV2ParentInspectTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentInspectTemplatesRouteHandler: RouteHandler<
+  typeof postV2ParentInspectTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentJobTriggersRouteHandler: RouteHandler<
+  typeof getV2ParentJobTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentJobTriggersRouteHandler: RouteHandler<
+  typeof postV2ParentJobTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentStoredInfoTypesRouteHandler: RouteHandler<
+  typeof getV2ParentStoredInfoTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentStoredInfoTypesRouteHandler: RouteHandler<
+  typeof postV2ParentStoredInfoTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

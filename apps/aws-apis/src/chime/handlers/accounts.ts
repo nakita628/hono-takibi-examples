@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsAccountIdBotsBotIdEventsConfigurationRoute,
   deleteAccountsAccountIdRoomsRoomIdMembershipsMemberIdRoute,
   deleteAccountsAccountIdRoomsRoomIdRoute,
@@ -47,144 +47,268 @@ import {
   putAccountsAccountIdUsersUserIdSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountsAccountIdUsersUserIdOperationAssociatePhoneNumberRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersUserIdOperationAssociatePhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(postAccountsAccountIdUsersUserIdOperationAssociatePhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdOperationAssociateSigninDelegateGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoomsRoomIdMembershipsOperationBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersOperationSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersOperationUnsuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdBotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdBotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoomsRoomIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoomsRoomIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersOperationCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIdBotsBotIdEventsConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdBotsBotIdEventsConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIdBotsBotIdEventsConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIdRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIdRoomsRoomIdMembershipsMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdRoomsRoomIdMembershipsMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersUserIdOperationDisassociatePhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdOperationDisassociateSigninDelegateGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdBotsBotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdBotsBotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIdRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdUsersUserIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIdUsersUserIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersOperationAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersUserIdOperationLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAccountsAccountIdConversationsConversationIdMessagesMessageIdOperationRedactRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAccountsAccountIdRoomsRoomIdMessagesMessageIdOperationRedactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdBotsBotIdOperationRegenerateSecurityTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIdUsersUserIdOperationResetPersonalPinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountsAccountIdOperationAssociateSigninDelegateGroupsRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdOperationAssociateSigninDelegateGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRoomIdMembershipsOperationBatchCreateRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoomIdMembershipsOperationBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersOperationSuspendRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersOperationSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersOperationUnsuspendRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersOperationUnsuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsRouteHandler: RouteHandler<typeof postAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdBotsRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdBotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdBotsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdBotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRoomsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRoomIdMembershipsRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoomIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRoomsRoomIdMembershipsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoomsRoomIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersOperationCreateRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersOperationCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIdBotsBotIdEventsConfigurationRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIdBotsBotIdEventsConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdBotsBotIdEventsConfigurationRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdBotsBotIdEventsConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIdBotsBotIdEventsConfigurationRouteHandler: RouteHandler<
+  typeof putAccountsAccountIdBotsBotIdEventsConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIdRoomsRoomIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIdRoomsRoomIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRoomsRoomIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoomsRoomIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRoomIdRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoomIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIdRoomsRoomIdMembershipsMemberIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIdRoomsRoomIdMembershipsMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRoomIdMembershipsMemberIdRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoomIdMembershipsMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersUserIdOperationDisassociatePhoneNumberRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersUserIdOperationDisassociatePhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdOperationDisassociateSigninDelegateGroupsRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdOperationDisassociateSigninDelegateGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof putAccountsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdBotsBotIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdBotsBotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdBotsBotIdRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdBotsBotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRetentionSettingsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIdRetentionSettingsRouteHandler: RouteHandler<
+  typeof putAccountsAccountIdRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersUserIdRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdUsersUserIdSettingsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdUsersUserIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIdUsersUserIdSettingsRouteHandler: RouteHandler<
+  typeof putAccountsAccountIdUsersUserIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersOperationAddRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersOperationAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersUserIdOperationLogoutRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersUserIdOperationLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdConversationsConversationIdMessagesMessageIdOperationRedactRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdConversationsConversationIdMessagesMessageIdOperationRedactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdRoomsRoomIdMessagesMessageIdOperationRedactRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdRoomsRoomIdMessagesMessageIdOperationRedactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdBotsBotIdOperationRegenerateSecurityTokenRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdBotsBotIdOperationRegenerateSecurityTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIdUsersUserIdOperationResetPersonalPinRouteHandler: RouteHandler<
+  typeof postAccountsAccountIdUsersUserIdOperationResetPersonalPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

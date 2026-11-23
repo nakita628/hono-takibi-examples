@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChannelsScopeAppInstanceUserMembershipsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChannelsScopeAppInstanceUserMembershipsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const channelsScopeAppInstanceUserMembershipsHandler = app.openapi(
-  getChannelsScopeAppInstanceUserMembershipsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getChannelsScopeAppInstanceUserMembershipsRouteHandler: RouteHandler<
+  typeof getChannelsScopeAppInstanceUserMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

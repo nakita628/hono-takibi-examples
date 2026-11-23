@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/json2video.com/2.0.0/openapi.yaml',
   output: './src/json2video/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/json2video/types.ts' },
   client: { output: './src/json2video/client.ts', baseUrl: '/' },
   rpc: { output: './src/json2video/rpc.ts', parseResponse: true },

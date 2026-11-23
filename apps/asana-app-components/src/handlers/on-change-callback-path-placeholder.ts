@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOnChangeCallbackPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOnChangeCallbackPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const onChangeCallbackPathPlaceholderHandler = app.openapi(
-  postOnChangeCallbackPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postOnChangeCallbackPathPlaceholderRouteHandler: RouteHandler<
+  typeof postOnChangeCallbackPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { xAmzTargetQldbSessionSendCommandHandler } from './handlers'
+import { postXAmzTargetQLDBSessionSendCommandRoute } from './routes'
+import { postXAmzTargetQLDBSessionSendCommandRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', xAmzTargetQldbSessionSendCommandHandler)
+export const api = app.openapi(
+  postXAmzTargetQLDBSessionSendCommandRoute,
+  postXAmzTargetQLDBSessionSendCommandRouteHandler,
+)
 
 export default app

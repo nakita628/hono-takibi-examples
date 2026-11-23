@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSigningKeyGpgRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSigningKeyGpgRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const signingKeyGpgHandler = app.openapi(getSigningKeyGpgRoute, (c) => {
+export const getSigningKeyGpgRouteHandler: RouteHandler<typeof getSigningKeyGpgRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

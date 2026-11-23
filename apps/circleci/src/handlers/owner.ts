@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOwnerOwnerIDContextContextDecisionDecisionIDPolicyBundleRoute,
   getOwnerOwnerIDContextContextDecisionDecisionIDRoute,
   getOwnerOwnerIDContextContextDecisionRoute,
@@ -11,33 +11,56 @@ import {
   postOwnerOwnerIDContextContextPolicyBundleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOwnerOwnerIDContextContextDecisionRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextDecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ownerHandler = app
-  .openapi(getOwnerOwnerIDContextContextDecisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOwnerOwnerIDContextContextDecisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnerOwnerIDContextContextDecisionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOwnerOwnerIDContextContextDecisionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnerOwnerIDContextContextDecisionDecisionIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnerOwnerIDContextContextDecisionDecisionIDPolicyBundleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnerOwnerIDContextContextPolicyBundleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOwnerOwnerIDContextContextPolicyBundleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnerOwnerIDContextContextPolicyBundlePolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOwnerOwnerIDContextContextDecisionRouteHandler: RouteHandler<
+  typeof postOwnerOwnerIDContextContextDecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnerOwnerIDContextContextDecisionSettingsRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextDecisionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOwnerOwnerIDContextContextDecisionSettingsRouteHandler: RouteHandler<
+  typeof patchOwnerOwnerIDContextContextDecisionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnerOwnerIDContextContextDecisionDecisionIDRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextDecisionDecisionIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnerOwnerIDContextContextDecisionDecisionIDPolicyBundleRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextDecisionDecisionIDPolicyBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnerOwnerIDContextContextPolicyBundleRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextPolicyBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOwnerOwnerIDContextContextPolicyBundleRouteHandler: RouteHandler<
+  typeof postOwnerOwnerIDContextContextPolicyBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnerOwnerIDContextContextPolicyBundlePolicyNameRouteHandler: RouteHandler<
+  typeof getOwnerOwnerIDContextContextPolicyBundlePolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

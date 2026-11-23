@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTagresourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTagresourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const tagresourceHandler = app.openapi(postTagresourceRoute, (c) => {
+export const postTagresourceRouteHandler: RouteHandler<typeof postTagresourceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

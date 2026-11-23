@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEntityTypeIdTagsRoute, postEntityTypeIdChangeTagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEntityTypeIdTagsRoute, postEntityTypeIdChangeTagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEntityTypeIdChangeTagsRouteHandler: RouteHandler<
+  typeof postEntityTypeIdChangeTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const entityTypeHandler = app
-  .openapi(postEntityTypeIdChangeTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntityTypeIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEntityTypeIdTagsRouteHandler: RouteHandler<
+  typeof getEntityTypeIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

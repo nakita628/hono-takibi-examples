@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAppsUEmbedTokenByCustomPathCustomPathRoute,
   getAppsUGuestEntryByCustomPathCustomPathRoute,
   getAppsUPublicAppByCustomPathCustomPathRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppsUGuestEntryByCustomPathCustomPathRouteHandler: RouteHandler<
+  typeof getAppsUGuestEntryByCustomPathCustomPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appsUHandler = app
-  .openapi(getAppsUGuestEntryByCustomPathCustomPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsUPublicAppByCustomPathCustomPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsUEmbedTokenByCustomPathCustomPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAppsUPublicAppByCustomPathCustomPathRouteHandler: RouteHandler<
+  typeof getAppsUPublicAppByCustomPathCustomPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsUEmbedTokenByCustomPathCustomPathRouteHandler: RouteHandler<
+  typeof getAppsUEmbedTokenByCustomPathCustomPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

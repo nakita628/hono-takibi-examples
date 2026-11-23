@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPollsRoute, patchPollsRoute, postPollsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPollsRoute, patchPollsRoute, postPollsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPollsRouteHandler: RouteHandler<typeof getPollsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pollsHandler = app
-  .openapi(getPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPollsRouteHandler: RouteHandler<typeof postPollsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPollsRouteHandler: RouteHandler<typeof patchPollsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

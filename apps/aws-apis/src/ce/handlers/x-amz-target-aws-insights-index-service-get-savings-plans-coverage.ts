@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsInsightsIndexServiceGetSavingsPlansCoverageHandler = app.openapi(
-  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

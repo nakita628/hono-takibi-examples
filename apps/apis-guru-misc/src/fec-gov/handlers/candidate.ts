@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCandidateCandidateIdCommitteesHistoryCycleIndexRoute,
   getCandidateCandidateIdCommitteesHistoryIndexRoute,
   getCandidateCandidateIdCommitteesIndexRoute,
@@ -10,30 +10,50 @@ import {
   getCandidateCandidateIdTotalsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCandidateCandidateIdIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const candidateHandler = app
-  .openapi(getCandidateCandidateIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdCommitteesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdCommitteesHistoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdCommitteesHistoryCycleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdFilingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdHistoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdHistoryCycleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCandidateCandidateIdTotalsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCandidateCandidateIdCommitteesIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdCommitteesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdCommitteesHistoryIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdCommitteesHistoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdCommitteesHistoryCycleIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdCommitteesHistoryCycleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdFilingsIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdFilingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdHistoryIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdHistoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdHistoryCycleIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdHistoryCycleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCandidateCandidateIdTotalsIndexRouteHandler: RouteHandler<
+  typeof getCandidateCandidateIdTotalsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEePlansIdRoute,
   getEePlansRoute,
   getEeTokenCreateRoute,
@@ -9,27 +9,32 @@ import {
   putEePinRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEeMsisdnRouteHandler: RouteHandler<typeof postEeMsisdnRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eeHandler = app
-  .openapi(postEeMsisdnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEeOffersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEePinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEePinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEePlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEePlansIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEeTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEeOffersRouteHandler: RouteHandler<typeof postEeOffersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEePinRouteHandler: RouteHandler<typeof postEePinRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEePinRouteHandler: RouteHandler<typeof putEePinRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEePlansRouteHandler: RouteHandler<typeof getEePlansRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEePlansIdRouteHandler: RouteHandler<typeof getEePlansIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEeTokenCreateRouteHandler: RouteHandler<typeof getEeTokenCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

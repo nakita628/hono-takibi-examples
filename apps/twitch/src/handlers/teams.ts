@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTeamsChannelRoute, getTeamsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTeamsChannelRoute, getTeamsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamsChannelRouteHandler: RouteHandler<typeof getTeamsChannelRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamsHandler = app
-  .openapi(getTeamsChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamsRouteHandler: RouteHandler<typeof getTeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

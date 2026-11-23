@@ -1,8 +1,119 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { conversationsHandler } from './handlers'
+import {
+  deleteConversationsConversations202609ThreadsThreadIdAssigneeRoute,
+  deleteConversationsConversations202609ThreadsThreadIdRoute,
+  getConversationsConversations202609ActorsActorIdRoute,
+  getConversationsConversations202609ChannelAccountsChannelAccountIdRoute,
+  getConversationsConversations202609ChannelAccountsRoute,
+  getConversationsConversations202609ChannelsChannelIdRoute,
+  getConversationsConversations202609ChannelsRoute,
+  getConversationsConversations202609InboxesInboxIdRoute,
+  getConversationsConversations202609InboxesRoute,
+  getConversationsConversations202609ThreadsRoute,
+  getConversationsConversations202609ThreadsThreadIdMessagesMessageIdOriginalContentRoute,
+  getConversationsConversations202609ThreadsThreadIdMessagesMessageIdRoute,
+  getConversationsConversations202609ThreadsThreadIdMessagesRoute,
+  getConversationsConversations202609ThreadsThreadIdRoute,
+  patchConversationsConversations202609ThreadsThreadIdRoute,
+  postConversationsConversations202609ActorsBatchReadRoute,
+  postConversationsConversations202609ThreadsThreadIdMessagesRoute,
+  putConversationsConversations202609ThreadsThreadIdAssigneeRoute,
+} from './routes'
+import {
+  deleteConversationsConversations202609ThreadsThreadIdAssigneeRouteHandler,
+  deleteConversationsConversations202609ThreadsThreadIdRouteHandler,
+  getConversationsConversations202609ActorsActorIdRouteHandler,
+  getConversationsConversations202609ChannelAccountsChannelAccountIdRouteHandler,
+  getConversationsConversations202609ChannelAccountsRouteHandler,
+  getConversationsConversations202609ChannelsChannelIdRouteHandler,
+  getConversationsConversations202609ChannelsRouteHandler,
+  getConversationsConversations202609InboxesInboxIdRouteHandler,
+  getConversationsConversations202609InboxesRouteHandler,
+  getConversationsConversations202609ThreadsRouteHandler,
+  getConversationsConversations202609ThreadsThreadIdMessagesMessageIdOriginalContentRouteHandler,
+  getConversationsConversations202609ThreadsThreadIdMessagesMessageIdRouteHandler,
+  getConversationsConversations202609ThreadsThreadIdMessagesRouteHandler,
+  getConversationsConversations202609ThreadsThreadIdRouteHandler,
+  patchConversationsConversations202609ThreadsThreadIdRouteHandler,
+  postConversationsConversations202609ActorsBatchReadRouteHandler,
+  postConversationsConversations202609ThreadsThreadIdMessagesRouteHandler,
+  putConversationsConversations202609ThreadsThreadIdAssigneeRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', conversationsHandler)
+export const api = app
+  .openapi(
+    postConversationsConversations202609ActorsBatchReadRoute,
+    postConversationsConversations202609ActorsBatchReadRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ActorsActorIdRoute,
+    getConversationsConversations202609ActorsActorIdRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ChannelAccountsRoute,
+    getConversationsConversations202609ChannelAccountsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ChannelAccountsChannelAccountIdRoute,
+    getConversationsConversations202609ChannelAccountsChannelAccountIdRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ChannelsRoute,
+    getConversationsConversations202609ChannelsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ChannelsChannelIdRoute,
+    getConversationsConversations202609ChannelsChannelIdRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609InboxesRoute,
+    getConversationsConversations202609InboxesRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609InboxesInboxIdRoute,
+    getConversationsConversations202609InboxesInboxIdRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ThreadsRoute,
+    getConversationsConversations202609ThreadsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ThreadsThreadIdRoute,
+    getConversationsConversations202609ThreadsThreadIdRouteHandler,
+  )
+  .openapi(
+    deleteConversationsConversations202609ThreadsThreadIdRoute,
+    deleteConversationsConversations202609ThreadsThreadIdRouteHandler,
+  )
+  .openapi(
+    patchConversationsConversations202609ThreadsThreadIdRoute,
+    patchConversationsConversations202609ThreadsThreadIdRouteHandler,
+  )
+  .openapi(
+    putConversationsConversations202609ThreadsThreadIdAssigneeRoute,
+    putConversationsConversations202609ThreadsThreadIdAssigneeRouteHandler,
+  )
+  .openapi(
+    deleteConversationsConversations202609ThreadsThreadIdAssigneeRoute,
+    deleteConversationsConversations202609ThreadsThreadIdAssigneeRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ThreadsThreadIdMessagesRoute,
+    getConversationsConversations202609ThreadsThreadIdMessagesRouteHandler,
+  )
+  .openapi(
+    postConversationsConversations202609ThreadsThreadIdMessagesRoute,
+    postConversationsConversations202609ThreadsThreadIdMessagesRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ThreadsThreadIdMessagesMessageIdRoute,
+    getConversationsConversations202609ThreadsThreadIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(
+    getConversationsConversations202609ThreadsThreadIdMessagesMessageIdOriginalContentRoute,
+    getConversationsConversations202609ThreadsThreadIdMessagesMessageIdOriginalContentRouteHandler,
+  )
 
 export default app

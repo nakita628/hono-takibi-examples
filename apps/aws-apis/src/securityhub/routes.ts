@@ -577,12 +577,12 @@ const CustomDataIdentifiersResultSchema = z
   .openapi('CustomDataIdentifiersResult')
 
 type ClassificationResultType = {
-  MimeType?: z.infer<typeof NonEmptyStringSchema> & unknown
-  SizeClassified?: z.infer<typeof LongSchema> & unknown
-  AdditionalOccurrences?: z.infer<typeof BooleanSchema> & unknown
-  Status?: z.infer<typeof ClassificationStatusSchema> & unknown
-  SensitiveData?: z.infer<typeof SensitiveDataResultListSchema> & unknown
-  CustomDataIdentifiers?: z.infer<typeof CustomDataIdentifiersResultSchema> & unknown
+  MimeType?: z.infer<typeof NonEmptyStringSchema>
+  SizeClassified?: z.infer<typeof LongSchema>
+  AdditionalOccurrences?: z.infer<typeof BooleanSchema>
+  Status?: z.infer<typeof ClassificationStatusSchema>
+  SensitiveData?: z.infer<typeof SensitiveDataResultListSchema>
+  CustomDataIdentifiers?: z.infer<typeof CustomDataIdentifiersResultSchema>
 }
 
 const ClassificationResultSchema: z.ZodType<ClassificationResultType> = z
@@ -616,8 +616,8 @@ const ClassificationResultSchema: z.ZodType<ClassificationResultType> = z
   .openapi('ClassificationResult')
 
 type DataClassificationDetailsType = {
-  DetailedResultsLocation?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Result?: z.infer<typeof ClassificationResultSchema> & unknown
+  DetailedResultsLocation?: z.infer<typeof NonEmptyStringSchema>
+  Result?: z.infer<typeof ClassificationResultSchema>
 }
 
 const DataClassificationDetailsSchema: z.ZodType<DataClassificationDetailsType> = z
@@ -2710,7 +2710,7 @@ const AwsS3BucketBucketLifecycleConfigurationRulesListSchema = z
   .openapi('AwsS3BucketBucketLifecycleConfigurationRulesList')
 
 type AwsS3BucketBucketLifecycleConfigurationDetailsType = {
-  Rules?: z.infer<typeof AwsS3BucketBucketLifecycleConfigurationRulesListSchema> & unknown
+  Rules?: z.infer<typeof AwsS3BucketBucketLifecycleConfigurationRulesListSchema>
 }
 
 const AwsS3BucketBucketLifecycleConfigurationDetailsSchema: z.ZodType<AwsS3BucketBucketLifecycleConfigurationDetailsType> =
@@ -3001,28 +3001,23 @@ const AwsS3BucketObjectLockConfigurationSchema = z
   .openapi('AwsS3BucketObjectLockConfiguration')
 
 type AwsS3BucketDetailsType = {
-  OwnerId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  OwnerName?: z.infer<typeof NonEmptyStringSchema> & unknown
-  OwnerAccountId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  CreatedAt?: z.infer<typeof NonEmptyStringSchema> & unknown
+  OwnerId?: z.infer<typeof NonEmptyStringSchema>
+  OwnerName?: z.infer<typeof NonEmptyStringSchema>
+  OwnerAccountId?: z.infer<typeof NonEmptyStringSchema>
+  CreatedAt?: z.infer<typeof NonEmptyStringSchema>
   ServerSideEncryptionConfiguration?: z.infer<
     typeof AwsS3BucketServerSideEncryptionConfigurationSchema
-  > &
-    unknown
+  >
   BucketLifecycleConfiguration?: z.infer<
     typeof AwsS3BucketBucketLifecycleConfigurationDetailsSchema
-  > &
-    unknown
-  PublicAccessBlockConfiguration?: z.infer<typeof AwsS3AccountPublicAccessBlockDetailsSchema> &
-    unknown
-  AccessControlList?: z.infer<typeof NonEmptyStringSchema> & unknown
-  BucketLoggingConfiguration?: z.infer<typeof AwsS3BucketLoggingConfigurationSchema> & unknown
-  BucketWebsiteConfiguration?: z.infer<typeof AwsS3BucketWebsiteConfigurationSchema> & unknown
-  BucketNotificationConfiguration?: z.infer<typeof AwsS3BucketNotificationConfigurationSchema> &
-    unknown
-  BucketVersioningConfiguration?: z.infer<typeof AwsS3BucketBucketVersioningConfigurationSchema> &
-    unknown
-  ObjectLockConfiguration?: z.infer<typeof AwsS3BucketObjectLockConfigurationSchema> & unknown
+  >
+  PublicAccessBlockConfiguration?: z.infer<typeof AwsS3AccountPublicAccessBlockDetailsSchema>
+  AccessControlList?: z.infer<typeof NonEmptyStringSchema>
+  BucketLoggingConfiguration?: z.infer<typeof AwsS3BucketLoggingConfigurationSchema>
+  BucketWebsiteConfiguration?: z.infer<typeof AwsS3BucketWebsiteConfigurationSchema>
+  BucketNotificationConfiguration?: z.infer<typeof AwsS3BucketNotificationConfigurationSchema>
+  BucketVersioningConfiguration?: z.infer<typeof AwsS3BucketBucketVersioningConfigurationSchema>
+  ObjectLockConfiguration?: z.infer<typeof AwsS3BucketObjectLockConfigurationSchema>
 }
 
 const AwsS3BucketDetailsSchema: z.ZodType<AwsS3BucketDetailsType> = z
@@ -9120,11 +9115,11 @@ const FirewallPolicyDetailsSchema = z
   .openapi('FirewallPolicyDetails')
 
 type AwsNetworkFirewallFirewallPolicyDetailsType = {
-  FirewallPolicy?: z.infer<typeof FirewallPolicyDetailsSchema> & unknown
-  FirewallPolicyArn?: z.infer<typeof NonEmptyStringSchema> & unknown
-  FirewallPolicyId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  FirewallPolicyName?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Description?: z.infer<typeof NonEmptyStringSchema> & unknown
+  FirewallPolicy?: z.infer<typeof FirewallPolicyDetailsSchema>
+  FirewallPolicyArn?: z.infer<typeof NonEmptyStringSchema>
+  FirewallPolicyId?: z.infer<typeof NonEmptyStringSchema>
+  FirewallPolicyName?: z.infer<typeof NonEmptyStringSchema>
+  Description?: z.infer<typeof NonEmptyStringSchema>
 }
 
 const AwsNetworkFirewallFirewallPolicyDetailsSchema: z.ZodType<AwsNetworkFirewallFirewallPolicyDetailsType> =
@@ -9500,8 +9495,8 @@ const RuleGroupSourceStatelessRulesListSchema = z
   .openapi('RuleGroupSourceStatelessRulesList')
 
 type RuleGroupSourceStatelessRulesAndCustomActionsDetailsType = {
-  CustomActions?: z.infer<typeof RuleGroupSourceCustomActionsListSchema> & unknown
-  StatelessRules?: z.infer<typeof RuleGroupSourceStatelessRulesListSchema> & unknown
+  CustomActions?: z.infer<typeof RuleGroupSourceCustomActionsListSchema>
+  StatelessRules?: z.infer<typeof RuleGroupSourceStatelessRulesListSchema>
 }
 
 const RuleGroupSourceStatelessRulesAndCustomActionsDetailsSchema: z.ZodType<RuleGroupSourceStatelessRulesAndCustomActionsDetailsType> =
@@ -9521,13 +9516,12 @@ const RuleGroupSourceStatelessRulesAndCustomActionsDetailsSchema: z.ZodType<Rule
     .openapi('RuleGroupSourceStatelessRulesAndCustomActionsDetails')
 
 type RuleGroupSourceType = {
-  RulesSourceList?: z.infer<typeof RuleGroupSourceListDetailsSchema> & unknown
-  RulesString?: z.infer<typeof NonEmptyStringSchema> & unknown
-  StatefulRules?: z.infer<typeof RuleGroupSourceStatefulRulesListSchema> & unknown
+  RulesSourceList?: z.infer<typeof RuleGroupSourceListDetailsSchema>
+  RulesString?: z.infer<typeof NonEmptyStringSchema>
+  StatefulRules?: z.infer<typeof RuleGroupSourceStatefulRulesListSchema>
   StatelessRulesAndCustomActions?: z.infer<
     typeof RuleGroupSourceStatelessRulesAndCustomActionsDetailsSchema
-  > &
-    unknown
+  >
 }
 
 const RuleGroupSourceSchema: z.ZodType<RuleGroupSourceType> = z
@@ -9552,8 +9546,8 @@ const RuleGroupSourceSchema: z.ZodType<RuleGroupSourceType> = z
   .openapi('RuleGroupSource')
 
 type RuleGroupDetailsType = {
-  RuleVariables?: z.infer<typeof RuleGroupVariablesSchema> & unknown
-  RulesSource?: z.infer<typeof RuleGroupSourceSchema> & unknown
+  RuleVariables?: z.infer<typeof RuleGroupVariablesSchema>
+  RulesSource?: z.infer<typeof RuleGroupSourceSchema>
 }
 
 const RuleGroupDetailsSchema: z.ZodType<RuleGroupDetailsType> = z
@@ -9570,13 +9564,13 @@ const RuleGroupDetailsSchema: z.ZodType<RuleGroupDetailsType> = z
   .openapi('RuleGroupDetails')
 
 type AwsNetworkFirewallRuleGroupDetailsType = {
-  Capacity?: z.infer<typeof IntegerSchema> & unknown
-  Description?: z.infer<typeof NonEmptyStringSchema> & unknown
-  RuleGroup?: z.infer<typeof RuleGroupDetailsSchema> & unknown
-  RuleGroupArn?: z.infer<typeof NonEmptyStringSchema> & unknown
-  RuleGroupId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  RuleGroupName?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Type?: z.infer<typeof NonEmptyStringSchema> & unknown
+  Capacity?: z.infer<typeof IntegerSchema>
+  Description?: z.infer<typeof NonEmptyStringSchema>
+  RuleGroup?: z.infer<typeof RuleGroupDetailsSchema>
+  RuleGroupArn?: z.infer<typeof NonEmptyStringSchema>
+  RuleGroupId?: z.infer<typeof NonEmptyStringSchema>
+  RuleGroupName?: z.infer<typeof NonEmptyStringSchema>
+  Type?: z.infer<typeof NonEmptyStringSchema>
 }
 
 const AwsNetworkFirewallRuleGroupDetailsSchema: z.ZodType<AwsNetworkFirewallRuleGroupDetailsType> =
@@ -12107,16 +12101,16 @@ const AwsWafv2RulesDetailsSchema = z
 const AwsWafv2RulesListSchema = z.array(AwsWafv2RulesDetailsSchema).openapi('AwsWafv2RulesList')
 
 type AwsWafv2WebAclDetailsType = {
-  Name?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Arn?: z.infer<typeof NonEmptyStringSchema> & unknown
-  ManagedbyFirewallManager?: z.infer<typeof BooleanSchema> & unknown
-  Id?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Capacity?: z.infer<typeof LongSchema> & unknown
-  CaptchaConfig?: z.infer<typeof AwsWafv2WebAclCaptchaConfigDetailsSchema> & unknown
-  DefaultAction?: z.infer<typeof AwsWafv2WebAclActionDetailsSchema> & unknown
-  Description?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Rules?: z.infer<typeof AwsWafv2RulesListSchema> & unknown
-  VisibilityConfig?: z.infer<typeof AwsWafv2VisibilityConfigDetailsSchema> & unknown
+  Name?: z.infer<typeof NonEmptyStringSchema>
+  Arn?: z.infer<typeof NonEmptyStringSchema>
+  ManagedbyFirewallManager?: z.infer<typeof BooleanSchema>
+  Id?: z.infer<typeof NonEmptyStringSchema>
+  Capacity?: z.infer<typeof LongSchema>
+  CaptchaConfig?: z.infer<typeof AwsWafv2WebAclCaptchaConfigDetailsSchema>
+  DefaultAction?: z.infer<typeof AwsWafv2WebAclActionDetailsSchema>
+  Description?: z.infer<typeof NonEmptyStringSchema>
+  Rules?: z.infer<typeof AwsWafv2RulesListSchema>
+  VisibilityConfig?: z.infer<typeof AwsWafv2VisibilityConfigDetailsSchema>
 }
 
 const AwsWafv2WebAclDetailsSchema: z.ZodType<AwsWafv2WebAclDetailsType> = z
@@ -12160,14 +12154,14 @@ const AwsWafv2WebAclDetailsSchema: z.ZodType<AwsWafv2WebAclDetailsType> = z
   .openapi('AwsWafv2WebAclDetails')
 
 type AwsWafv2RuleGroupDetailsType = {
-  Capacity?: z.infer<typeof LongSchema> & unknown
-  Description?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Id?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Name?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Arn?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Rules?: z.infer<typeof AwsWafv2RulesListSchema> & unknown
-  Scope?: z.infer<typeof NonEmptyStringSchema> & unknown
-  VisibilityConfig?: z.infer<typeof AwsWafv2VisibilityConfigDetailsSchema> & unknown
+  Capacity?: z.infer<typeof LongSchema>
+  Description?: z.infer<typeof NonEmptyStringSchema>
+  Id?: z.infer<typeof NonEmptyStringSchema>
+  Name?: z.infer<typeof NonEmptyStringSchema>
+  Arn?: z.infer<typeof NonEmptyStringSchema>
+  Rules?: z.infer<typeof AwsWafv2RulesListSchema>
+  Scope?: z.infer<typeof NonEmptyStringSchema>
+  VisibilityConfig?: z.infer<typeof AwsWafv2VisibilityConfigDetailsSchema>
 }
 
 const AwsWafv2RuleGroupDetailsSchema: z.ZodType<AwsWafv2RuleGroupDetailsType> = z
@@ -12350,98 +12344,90 @@ const AwsEc2RouteTableDetailsSchema = z
   .openapi('AwsEc2RouteTableDetails')
 
 type ResourceDetailsType = {
-  AwsAutoScalingAutoScalingGroup?: z.infer<typeof AwsAutoScalingAutoScalingGroupDetailsSchema> &
-    unknown
-  AwsCodeBuildProject?: z.infer<typeof AwsCodeBuildProjectDetailsSchema> & unknown
-  AwsCloudFrontDistribution?: z.infer<typeof AwsCloudFrontDistributionDetailsSchema> & unknown
-  AwsEc2Instance?: z.infer<typeof AwsEc2InstanceDetailsSchema> & unknown
-  AwsEc2NetworkInterface?: z.infer<typeof AwsEc2NetworkInterfaceDetailsSchema> & unknown
-  AwsEc2SecurityGroup?: z.infer<typeof AwsEc2SecurityGroupDetailsSchema> & unknown
-  AwsEc2Volume?: z.infer<typeof AwsEc2VolumeDetailsSchema> & unknown
-  AwsEc2Vpc?: z.infer<typeof AwsEc2VpcDetailsSchema> & unknown
-  AwsEc2Eip?: z.infer<typeof AwsEc2EipDetailsSchema> & unknown
-  AwsEc2Subnet?: z.infer<typeof AwsEc2SubnetDetailsSchema> & unknown
-  AwsEc2NetworkAcl?: z.infer<typeof AwsEc2NetworkAclDetailsSchema> & unknown
-  AwsElbv2LoadBalancer?: z.infer<typeof AwsElbv2LoadBalancerDetailsSchema> & unknown
-  AwsElasticBeanstalkEnvironment?: z.infer<typeof AwsElasticBeanstalkEnvironmentDetailsSchema> &
-    unknown
-  AwsElasticsearchDomain?: z.infer<typeof AwsElasticsearchDomainDetailsSchema> & unknown
-  AwsS3Bucket?: z.infer<typeof AwsS3BucketDetailsSchema> & unknown
-  AwsS3AccountPublicAccessBlock?: z.infer<typeof AwsS3AccountPublicAccessBlockDetailsSchema> &
-    unknown
-  AwsS3Object?: z.infer<typeof AwsS3ObjectDetailsSchema> & unknown
-  AwsSecretsManagerSecret?: z.infer<typeof AwsSecretsManagerSecretDetailsSchema> & unknown
-  AwsIamAccessKey?: z.infer<typeof AwsIamAccessKeyDetailsSchema> & unknown
-  AwsIamUser?: z.infer<typeof AwsIamUserDetailsSchema> & unknown
-  AwsIamPolicy?: z.infer<typeof AwsIamPolicyDetailsSchema> & unknown
-  AwsApiGatewayV2Stage?: z.infer<typeof AwsApiGatewayV2StageDetailsSchema> & unknown
-  AwsApiGatewayV2Api?: z.infer<typeof AwsApiGatewayV2ApiDetailsSchema> & unknown
-  AwsDynamoDbTable?: z.infer<typeof AwsDynamoDbTableDetailsSchema> & unknown
-  AwsApiGatewayStage?: z.infer<typeof AwsApiGatewayStageDetailsSchema> & unknown
-  AwsApiGatewayRestApi?: z.infer<typeof AwsApiGatewayRestApiDetailsSchema> & unknown
-  AwsCloudTrailTrail?: z.infer<typeof AwsCloudTrailTrailDetailsSchema> & unknown
-  AwsSsmPatchCompliance?: z.infer<typeof AwsSsmPatchComplianceDetailsSchema> & unknown
-  AwsCertificateManagerCertificate?: z.infer<typeof AwsCertificateManagerCertificateDetailsSchema> &
-    unknown
-  AwsRedshiftCluster?: z.infer<typeof AwsRedshiftClusterDetailsSchema> & unknown
-  AwsElbLoadBalancer?: z.infer<typeof AwsElbLoadBalancerDetailsSchema> & unknown
-  AwsIamGroup?: z.infer<typeof AwsIamGroupDetailsSchema> & unknown
-  AwsIamRole?: z.infer<typeof AwsIamRoleDetailsSchema> & unknown
-  AwsKmsKey?: z.infer<typeof AwsKmsKeyDetailsSchema> & unknown
-  AwsLambdaFunction?: z.infer<typeof AwsLambdaFunctionDetailsSchema> & unknown
-  AwsLambdaLayerVersion?: z.infer<typeof AwsLambdaLayerVersionDetailsSchema> & unknown
-  AwsRdsDbInstance?: z.infer<typeof AwsRdsDbInstanceDetailsSchema> & unknown
-  AwsSnsTopic?: z.infer<typeof AwsSnsTopicDetailsSchema> & unknown
-  AwsSqsQueue?: z.infer<typeof AwsSqsQueueDetailsSchema> & unknown
-  AwsWafWebAcl?: z.infer<typeof AwsWafWebAclDetailsSchema> & unknown
-  AwsRdsDbSnapshot?: z.infer<typeof AwsRdsDbSnapshotDetailsSchema> & unknown
-  AwsRdsDbClusterSnapshot?: z.infer<typeof AwsRdsDbClusterSnapshotDetailsSchema> & unknown
-  AwsRdsDbCluster?: z.infer<typeof AwsRdsDbClusterDetailsSchema> & unknown
-  AwsEcsCluster?: z.infer<typeof AwsEcsClusterDetailsSchema> & unknown
-  AwsEcsContainer?: z.infer<typeof AwsEcsContainerDetailsSchema> & unknown
-  AwsEcsTaskDefinition?: z.infer<typeof AwsEcsTaskDefinitionDetailsSchema> & unknown
-  Container?: z.infer<typeof ContainerDetailsSchema> & unknown
-  Other?: z.infer<typeof FieldMapSchema> & unknown
-  AwsRdsEventSubscription?: z.infer<typeof AwsRdsEventSubscriptionDetailsSchema> & unknown
-  AwsEcsService?: z.infer<typeof AwsEcsServiceDetailsSchema> & unknown
-  AwsAutoScalingLaunchConfiguration?: z.infer<
-    typeof AwsAutoScalingLaunchConfigurationDetailsSchema
-  > &
-    unknown
-  AwsEc2VpnConnection?: z.infer<typeof AwsEc2VpnConnectionDetailsSchema> & unknown
-  AwsEcrContainerImage?: z.infer<typeof AwsEcrContainerImageDetailsSchema> & unknown
-  AwsOpenSearchServiceDomain?: z.infer<typeof AwsOpenSearchServiceDomainDetailsSchema> & unknown
-  AwsEc2VpcEndpointService?: z.infer<typeof AwsEc2VpcEndpointServiceDetailsSchema> & unknown
-  AwsXrayEncryptionConfig?: z.infer<typeof AwsXrayEncryptionConfigDetailsSchema> & unknown
-  AwsWafRateBasedRule?: z.infer<typeof AwsWafRateBasedRuleDetailsSchema> & unknown
-  AwsWafRegionalRateBasedRule?: z.infer<typeof AwsWafRegionalRateBasedRuleDetailsSchema> & unknown
-  AwsEcrRepository?: z.infer<typeof AwsEcrRepositoryDetailsSchema> & unknown
-  AwsEksCluster?: z.infer<typeof AwsEksClusterDetailsSchema> & unknown
-  AwsNetworkFirewallFirewallPolicy?: z.infer<typeof AwsNetworkFirewallFirewallPolicyDetailsSchema> &
-    unknown
-  AwsNetworkFirewallFirewall?: z.infer<typeof AwsNetworkFirewallFirewallDetailsSchema> & unknown
-  AwsNetworkFirewallRuleGroup?: z.infer<typeof AwsNetworkFirewallRuleGroupDetailsSchema> & unknown
-  AwsRdsDbSecurityGroup?: z.infer<typeof AwsRdsDbSecurityGroupDetailsSchema> & unknown
-  AwsKinesisStream?: z.infer<typeof AwsKinesisStreamDetailsSchema> & unknown
-  AwsEc2TransitGateway?: z.infer<typeof AwsEc2TransitGatewayDetailsSchema> & unknown
-  AwsEfsAccessPoint?: z.infer<typeof AwsEfsAccessPointDetailsSchema> & unknown
-  AwsCloudFormationStack?: z.infer<typeof AwsCloudFormationStackDetailsSchema> & unknown
-  AwsCloudWatchAlarm?: z.infer<typeof AwsCloudWatchAlarmDetailsSchema> & unknown
-  AwsEc2VpcPeeringConnection?: z.infer<typeof AwsEc2VpcPeeringConnectionDetailsSchema> & unknown
-  AwsWafRegionalRuleGroup?: z.infer<typeof AwsWafRegionalRuleGroupDetailsSchema> & unknown
-  AwsWafRegionalRule?: z.infer<typeof AwsWafRegionalRuleDetailsSchema> & unknown
-  AwsWafRegionalWebAcl?: z.infer<typeof AwsWafRegionalWebAclDetailsSchema> & unknown
-  AwsWafRule?: z.infer<typeof AwsWafRuleDetailsSchema> & unknown
-  AwsWafRuleGroup?: z.infer<typeof AwsWafRuleGroupDetailsSchema> & unknown
-  AwsEcsTask?: z.infer<typeof AwsEcsTaskDetailsSchema> & unknown
-  AwsBackupBackupVault?: z.infer<typeof AwsBackupBackupVaultDetailsSchema> & unknown
-  AwsBackupBackupPlan?: z.infer<typeof AwsBackupBackupPlanDetailsSchema> & unknown
-  AwsBackupRecoveryPoint?: z.infer<typeof AwsBackupRecoveryPointDetailsSchema> & unknown
+  AwsAutoScalingAutoScalingGroup?: z.infer<typeof AwsAutoScalingAutoScalingGroupDetailsSchema>
+  AwsCodeBuildProject?: z.infer<typeof AwsCodeBuildProjectDetailsSchema>
+  AwsCloudFrontDistribution?: z.infer<typeof AwsCloudFrontDistributionDetailsSchema>
+  AwsEc2Instance?: z.infer<typeof AwsEc2InstanceDetailsSchema>
+  AwsEc2NetworkInterface?: z.infer<typeof AwsEc2NetworkInterfaceDetailsSchema>
+  AwsEc2SecurityGroup?: z.infer<typeof AwsEc2SecurityGroupDetailsSchema>
+  AwsEc2Volume?: z.infer<typeof AwsEc2VolumeDetailsSchema>
+  AwsEc2Vpc?: z.infer<typeof AwsEc2VpcDetailsSchema>
+  AwsEc2Eip?: z.infer<typeof AwsEc2EipDetailsSchema>
+  AwsEc2Subnet?: z.infer<typeof AwsEc2SubnetDetailsSchema>
+  AwsEc2NetworkAcl?: z.infer<typeof AwsEc2NetworkAclDetailsSchema>
+  AwsElbv2LoadBalancer?: z.infer<typeof AwsElbv2LoadBalancerDetailsSchema>
+  AwsElasticBeanstalkEnvironment?: z.infer<typeof AwsElasticBeanstalkEnvironmentDetailsSchema>
+  AwsElasticsearchDomain?: z.infer<typeof AwsElasticsearchDomainDetailsSchema>
+  AwsS3Bucket?: z.infer<typeof AwsS3BucketDetailsSchema>
+  AwsS3AccountPublicAccessBlock?: z.infer<typeof AwsS3AccountPublicAccessBlockDetailsSchema>
+  AwsS3Object?: z.infer<typeof AwsS3ObjectDetailsSchema>
+  AwsSecretsManagerSecret?: z.infer<typeof AwsSecretsManagerSecretDetailsSchema>
+  AwsIamAccessKey?: z.infer<typeof AwsIamAccessKeyDetailsSchema>
+  AwsIamUser?: z.infer<typeof AwsIamUserDetailsSchema>
+  AwsIamPolicy?: z.infer<typeof AwsIamPolicyDetailsSchema>
+  AwsApiGatewayV2Stage?: z.infer<typeof AwsApiGatewayV2StageDetailsSchema>
+  AwsApiGatewayV2Api?: z.infer<typeof AwsApiGatewayV2ApiDetailsSchema>
+  AwsDynamoDbTable?: z.infer<typeof AwsDynamoDbTableDetailsSchema>
+  AwsApiGatewayStage?: z.infer<typeof AwsApiGatewayStageDetailsSchema>
+  AwsApiGatewayRestApi?: z.infer<typeof AwsApiGatewayRestApiDetailsSchema>
+  AwsCloudTrailTrail?: z.infer<typeof AwsCloudTrailTrailDetailsSchema>
+  AwsSsmPatchCompliance?: z.infer<typeof AwsSsmPatchComplianceDetailsSchema>
+  AwsCertificateManagerCertificate?: z.infer<typeof AwsCertificateManagerCertificateDetailsSchema>
+  AwsRedshiftCluster?: z.infer<typeof AwsRedshiftClusterDetailsSchema>
+  AwsElbLoadBalancer?: z.infer<typeof AwsElbLoadBalancerDetailsSchema>
+  AwsIamGroup?: z.infer<typeof AwsIamGroupDetailsSchema>
+  AwsIamRole?: z.infer<typeof AwsIamRoleDetailsSchema>
+  AwsKmsKey?: z.infer<typeof AwsKmsKeyDetailsSchema>
+  AwsLambdaFunction?: z.infer<typeof AwsLambdaFunctionDetailsSchema>
+  AwsLambdaLayerVersion?: z.infer<typeof AwsLambdaLayerVersionDetailsSchema>
+  AwsRdsDbInstance?: z.infer<typeof AwsRdsDbInstanceDetailsSchema>
+  AwsSnsTopic?: z.infer<typeof AwsSnsTopicDetailsSchema>
+  AwsSqsQueue?: z.infer<typeof AwsSqsQueueDetailsSchema>
+  AwsWafWebAcl?: z.infer<typeof AwsWafWebAclDetailsSchema>
+  AwsRdsDbSnapshot?: z.infer<typeof AwsRdsDbSnapshotDetailsSchema>
+  AwsRdsDbClusterSnapshot?: z.infer<typeof AwsRdsDbClusterSnapshotDetailsSchema>
+  AwsRdsDbCluster?: z.infer<typeof AwsRdsDbClusterDetailsSchema>
+  AwsEcsCluster?: z.infer<typeof AwsEcsClusterDetailsSchema>
+  AwsEcsContainer?: z.infer<typeof AwsEcsContainerDetailsSchema>
+  AwsEcsTaskDefinition?: z.infer<typeof AwsEcsTaskDefinitionDetailsSchema>
+  Container?: z.infer<typeof ContainerDetailsSchema>
+  Other?: z.infer<typeof FieldMapSchema>
+  AwsRdsEventSubscription?: z.infer<typeof AwsRdsEventSubscriptionDetailsSchema>
+  AwsEcsService?: z.infer<typeof AwsEcsServiceDetailsSchema>
+  AwsAutoScalingLaunchConfiguration?: z.infer<typeof AwsAutoScalingLaunchConfigurationDetailsSchema>
+  AwsEc2VpnConnection?: z.infer<typeof AwsEc2VpnConnectionDetailsSchema>
+  AwsEcrContainerImage?: z.infer<typeof AwsEcrContainerImageDetailsSchema>
+  AwsOpenSearchServiceDomain?: z.infer<typeof AwsOpenSearchServiceDomainDetailsSchema>
+  AwsEc2VpcEndpointService?: z.infer<typeof AwsEc2VpcEndpointServiceDetailsSchema>
+  AwsXrayEncryptionConfig?: z.infer<typeof AwsXrayEncryptionConfigDetailsSchema>
+  AwsWafRateBasedRule?: z.infer<typeof AwsWafRateBasedRuleDetailsSchema>
+  AwsWafRegionalRateBasedRule?: z.infer<typeof AwsWafRegionalRateBasedRuleDetailsSchema>
+  AwsEcrRepository?: z.infer<typeof AwsEcrRepositoryDetailsSchema>
+  AwsEksCluster?: z.infer<typeof AwsEksClusterDetailsSchema>
+  AwsNetworkFirewallFirewallPolicy?: z.infer<typeof AwsNetworkFirewallFirewallPolicyDetailsSchema>
+  AwsNetworkFirewallFirewall?: z.infer<typeof AwsNetworkFirewallFirewallDetailsSchema>
+  AwsNetworkFirewallRuleGroup?: z.infer<typeof AwsNetworkFirewallRuleGroupDetailsSchema>
+  AwsRdsDbSecurityGroup?: z.infer<typeof AwsRdsDbSecurityGroupDetailsSchema>
+  AwsKinesisStream?: z.infer<typeof AwsKinesisStreamDetailsSchema>
+  AwsEc2TransitGateway?: z.infer<typeof AwsEc2TransitGatewayDetailsSchema>
+  AwsEfsAccessPoint?: z.infer<typeof AwsEfsAccessPointDetailsSchema>
+  AwsCloudFormationStack?: z.infer<typeof AwsCloudFormationStackDetailsSchema>
+  AwsCloudWatchAlarm?: z.infer<typeof AwsCloudWatchAlarmDetailsSchema>
+  AwsEc2VpcPeeringConnection?: z.infer<typeof AwsEc2VpcPeeringConnectionDetailsSchema>
+  AwsWafRegionalRuleGroup?: z.infer<typeof AwsWafRegionalRuleGroupDetailsSchema>
+  AwsWafRegionalRule?: z.infer<typeof AwsWafRegionalRuleDetailsSchema>
+  AwsWafRegionalWebAcl?: z.infer<typeof AwsWafRegionalWebAclDetailsSchema>
+  AwsWafRule?: z.infer<typeof AwsWafRuleDetailsSchema>
+  AwsWafRuleGroup?: z.infer<typeof AwsWafRuleGroupDetailsSchema>
+  AwsEcsTask?: z.infer<typeof AwsEcsTaskDetailsSchema>
+  AwsBackupBackupVault?: z.infer<typeof AwsBackupBackupVaultDetailsSchema>
+  AwsBackupBackupPlan?: z.infer<typeof AwsBackupBackupPlanDetailsSchema>
+  AwsBackupRecoveryPoint?: z.infer<typeof AwsBackupRecoveryPointDetailsSchema>
   AwsEc2LaunchTemplate?: z.infer<typeof AwsEc2LaunchTemplateDetailsSchema>
   AwsSageMakerNotebookInstance?: z.infer<typeof AwsSageMakerNotebookInstanceDetailsSchema>
   AwsWafv2WebAcl?: z.infer<typeof AwsWafv2WebAclDetailsSchema>
   AwsWafv2RuleGroup?: z.infer<typeof AwsWafv2RuleGroupDetailsSchema>
-  AwsEc2RouteTable?: z.infer<typeof AwsEc2RouteTableDetailsSchema> & unknown
+  AwsEc2RouteTable?: z.infer<typeof AwsEc2RouteTableDetailsSchema>
 }
 
 const ResourceDetailsSchema: z.ZodType<ResourceDetailsType> = z
@@ -12716,14 +12702,14 @@ const ResourceDetailsSchema: z.ZodType<ResourceDetailsType> = z
   .openapi('ResourceDetails')
 
 type ResourceType = {
-  Type: z.infer<typeof NonEmptyStringSchema> & unknown
-  Id: z.infer<typeof NonEmptyStringSchema> & unknown
-  Partition?: z.infer<typeof PartitionSchema> & unknown
-  Region?: z.infer<typeof NonEmptyStringSchema> & unknown
-  ResourceRole?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Tags?: z.infer<typeof FieldMapSchema> & unknown
-  DataClassification?: z.infer<typeof DataClassificationDetailsSchema> & unknown
-  Details?: z.infer<typeof ResourceDetailsSchema> & unknown
+  Type: z.infer<typeof NonEmptyStringSchema>
+  Id: z.infer<typeof NonEmptyStringSchema>
+  Partition?: z.infer<typeof PartitionSchema>
+  Region?: z.infer<typeof NonEmptyStringSchema>
+  ResourceRole?: z.infer<typeof NonEmptyStringSchema>
+  Tags?: z.infer<typeof FieldMapSchema>
+  DataClassification?: z.infer<typeof DataClassificationDetailsSchema>
+  Details?: z.infer<typeof ResourceDetailsSchema>
 }
 
 const ResourceSchema: z.ZodType<ResourceType> = z
@@ -13411,47 +13397,47 @@ const FindingProviderFieldsSchema = z
   .openapi('FindingProviderFields')
 
 type AwsSecurityFindingType = {
-  SchemaVersion: z.infer<typeof NonEmptyStringSchema> & unknown
-  Id: z.infer<typeof NonEmptyStringSchema> & unknown
-  ProductArn: z.infer<typeof NonEmptyStringSchema> & unknown
-  ProductName?: z.infer<typeof NonEmptyStringSchema> & unknown
-  CompanyName?: z.infer<typeof NonEmptyStringSchema> & unknown
-  Region?: z.infer<typeof NonEmptyStringSchema> & unknown
-  GeneratorId: z.infer<typeof NonEmptyStringSchema> & unknown
-  AwsAccountId: z.infer<typeof NonEmptyStringSchema> & unknown
-  Types?: z.infer<typeof TypeListSchema> & unknown
-  FirstObservedAt?: z.infer<typeof NonEmptyStringSchema> & unknown
-  LastObservedAt?: z.infer<typeof NonEmptyStringSchema> & unknown
-  CreatedAt: z.infer<typeof NonEmptyStringSchema> & unknown
-  UpdatedAt: z.infer<typeof NonEmptyStringSchema> & unknown
-  Severity?: z.infer<typeof SeveritySchema> & unknown
-  Confidence?: z.infer<typeof IntegerSchema> & unknown
-  Criticality?: z.infer<typeof IntegerSchema> & unknown
-  Title: z.infer<typeof NonEmptyStringSchema> & unknown
-  Description: z.infer<typeof NonEmptyStringSchema> & unknown
-  Remediation?: z.infer<typeof RemediationSchema> & unknown
-  SourceUrl?: z.infer<typeof NonEmptyStringSchema> & unknown
-  ProductFields?: z.infer<typeof FieldMapSchema> & unknown
-  UserDefinedFields?: z.infer<typeof FieldMapSchema> & unknown
-  Malware?: z.infer<typeof MalwareListSchema> & unknown
-  Network?: z.infer<typeof NetworkSchema> & unknown
-  NetworkPath?: z.infer<typeof NetworkPathListSchema> & unknown
-  Process?: z.infer<typeof ProcessDetailsSchema> & unknown
-  Threats?: z.infer<typeof ThreatListSchema> & unknown
-  ThreatIntelIndicators?: z.infer<typeof ThreatIntelIndicatorListSchema> & unknown
-  Resources: z.infer<typeof ResourceListSchema> & unknown
-  Compliance?: z.infer<typeof ComplianceSchema> & unknown
-  VerificationState?: z.infer<typeof VerificationStateSchema> & unknown
-  WorkflowState?: z.infer<typeof WorkflowStateSchema> & unknown
-  Workflow?: z.infer<typeof WorkflowSchema> & unknown
-  RecordState?: z.infer<typeof RecordStateSchema> & unknown
-  RelatedFindings?: z.infer<typeof RelatedFindingListSchema> & unknown
-  Note?: z.infer<typeof NoteSchema> & unknown
-  Vulnerabilities?: z.infer<typeof VulnerabilityListSchema> & unknown
-  PatchSummary?: z.infer<typeof PatchSummarySchema> & unknown
-  Action?: z.infer<typeof ActionSchema> & unknown
-  FindingProviderFields?: z.infer<typeof FindingProviderFieldsSchema> & unknown
-  Sample?: z.infer<typeof BooleanSchema> & unknown
+  SchemaVersion: z.infer<typeof NonEmptyStringSchema>
+  Id: z.infer<typeof NonEmptyStringSchema>
+  ProductArn: z.infer<typeof NonEmptyStringSchema>
+  ProductName?: z.infer<typeof NonEmptyStringSchema>
+  CompanyName?: z.infer<typeof NonEmptyStringSchema>
+  Region?: z.infer<typeof NonEmptyStringSchema>
+  GeneratorId: z.infer<typeof NonEmptyStringSchema>
+  AwsAccountId: z.infer<typeof NonEmptyStringSchema>
+  Types?: z.infer<typeof TypeListSchema>
+  FirstObservedAt?: z.infer<typeof NonEmptyStringSchema>
+  LastObservedAt?: z.infer<typeof NonEmptyStringSchema>
+  CreatedAt: z.infer<typeof NonEmptyStringSchema>
+  UpdatedAt: z.infer<typeof NonEmptyStringSchema>
+  Severity?: z.infer<typeof SeveritySchema>
+  Confidence?: z.infer<typeof IntegerSchema>
+  Criticality?: z.infer<typeof IntegerSchema>
+  Title: z.infer<typeof NonEmptyStringSchema>
+  Description: z.infer<typeof NonEmptyStringSchema>
+  Remediation?: z.infer<typeof RemediationSchema>
+  SourceUrl?: z.infer<typeof NonEmptyStringSchema>
+  ProductFields?: z.infer<typeof FieldMapSchema>
+  UserDefinedFields?: z.infer<typeof FieldMapSchema>
+  Malware?: z.infer<typeof MalwareListSchema>
+  Network?: z.infer<typeof NetworkSchema>
+  NetworkPath?: z.infer<typeof NetworkPathListSchema>
+  Process?: z.infer<typeof ProcessDetailsSchema>
+  Threats?: z.infer<typeof ThreatListSchema>
+  ThreatIntelIndicators?: z.infer<typeof ThreatIntelIndicatorListSchema>
+  Resources: z.infer<typeof ResourceListSchema>
+  Compliance?: z.infer<typeof ComplianceSchema>
+  VerificationState?: z.infer<typeof VerificationStateSchema>
+  WorkflowState?: z.infer<typeof WorkflowStateSchema>
+  Workflow?: z.infer<typeof WorkflowSchema>
+  RecordState?: z.infer<typeof RecordStateSchema>
+  RelatedFindings?: z.infer<typeof RelatedFindingListSchema>
+  Note?: z.infer<typeof NoteSchema>
+  Vulnerabilities?: z.infer<typeof VulnerabilityListSchema>
+  PatchSummary?: z.infer<typeof PatchSummarySchema>
+  Action?: z.infer<typeof ActionSchema>
+  FindingProviderFields?: z.infer<typeof FindingProviderFieldsSchema>
+  Sample?: z.infer<typeof BooleanSchema>
 }
 
 const AwsSecurityFindingSchema: z.ZodType<AwsSecurityFindingType> = z
@@ -13628,8 +13614,8 @@ const AwsSecurityFindingListSchema: z.ZodType<AwsSecurityFindingListType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type GetFindingsResponseType = {
-  Findings: z.infer<typeof AwsSecurityFindingListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Findings: z.infer<typeof AwsSecurityFindingListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type BatchImportFindingsRequestFindingListType = z.infer<typeof AwsSecurityFindingSchema>[]
@@ -13638,7 +13624,7 @@ const BatchImportFindingsRequestFindingListSchema: z.ZodType<BatchImportFindings
   z.array(AwsSecurityFindingSchema).min(1).max(100).openapi('BatchImportFindingsRequestFindingList')
 
 type BatchImportFindingsRequestType = {
-  Findings: z.infer<typeof BatchImportFindingsRequestFindingListSchema> & unknown
+  Findings: z.infer<typeof BatchImportFindingsRequestFindingListSchema>
 }
 
 const AcceptAdministratorInvitationResponseSchema = z

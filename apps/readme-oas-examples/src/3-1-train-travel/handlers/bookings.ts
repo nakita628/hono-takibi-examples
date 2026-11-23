@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBookingsBookingIdRoute,
   getBookingsBookingIdRoute,
   getBookingsRoute,
@@ -7,21 +7,28 @@ import {
   postBookingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBookingsRouteHandler: RouteHandler<typeof getBookingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bookingsHandler = app
-  .openapi(getBookingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBookingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBookingsBookingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBookingsBookingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBookingsBookingIdPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBookingsRouteHandler: RouteHandler<typeof postBookingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBookingsBookingIdRouteHandler: RouteHandler<
+  typeof getBookingsBookingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBookingsBookingIdRouteHandler: RouteHandler<
+  typeof deleteBookingsBookingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBookingsBookingIdPaymentRouteHandler: RouteHandler<
+  typeof postBookingsBookingIdPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

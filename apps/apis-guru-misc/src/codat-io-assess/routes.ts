@@ -1,5 +1,50 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const EnhancedInvoicesReportReportInfoSchema = z
+  .object({
+    companyName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the company being queried.' }),
+    generatedDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date the report was generated' }),
+    pageNumber: z.int().exactOptional().openapi({ description: 'The number of the page queried.' }),
+    pageSize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of transactions returned per page.' }),
+    reportName: z.string().exactOptional().openapi({ description: 'Name of the report' }),
+    totalResults: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total number of transactions available for a company for the period specified in the query string.',
+      }),
+  })
+  .openapi({
+    description: 'Report additional information, which is specific to Assess reports',
+    examples: [
+      {
+        'Example 1': {
+          value: {
+            companyName: 'string',
+            generatedDate: '2023-01-26T07:36:40.487Z',
+            pageNumber: 0,
+            pageSize: 0,
+            reportName: 'string',
+            totalResults: 0,
+          },
+        },
+      },
+    ],
+    title: 'Report information',
+    required: [],
+  })
+  .openapi('EnhancedInvoicesReportReportInfo')
+
 const CurrencySchema = z
   .string()
   .openapi({
@@ -11,42 +56,42 @@ const CurrencySchema = z
   })
   .openapi('Currency')
 
-const ExcelStatusSchema = z
+const EnhancedInvoicesReportCustomerRefSchema = z
   .object({
-    errorMessage: z.string().exactOptional(),
-    fileSize: z.int().exactOptional(),
-    inProgress: z.boolean().exactOptional(),
-    lastGenerated: z
+    companyName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '`customerName` from the Customer data type' }),
+    id: z.string().min(1).openapi({ description: '`id` from the Customers data type' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('EnhancedInvoicesReportCustomerRef')
+
+const ExcelStatusLastGeneratedSchema = z
+  .string()
+  .openapi({
+    description:
+      'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
+    example: '2022-10-23T00:00:00Z',
+    title: 'Date time',
+  })
+  .openapi('ExcelStatusLastGenerated')
+
+const CategorisedAccountAccountRefSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: "'id' from the Accounts data type." }),
+    name: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
-        example: '2022-10-23T00:00:00Z',
-        title: 'Date time',
-      }),
-    lastInvocationId: z.string().exactOptional(),
-    queued: z.string().exactOptional(),
-    reportType: z.string().exactOptional(),
-    success: z.boolean().exactOptional(),
+      .openapi({ description: "'name' from the Accounts data type." }),
   })
   .openapi({
-    examples: [
-      {
-        errorMessage: 'string',
-        fileSize: 0,
-        inProgress: true,
-        lastGenerated: '2023-01-25T22:36:05.125Z',
-        lastInvocationId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-        queued: '2023-01-25T22:36:05.125Z',
-        reportType: 'string',
-        success: true,
-      },
-    ],
-    title: 'Excel status',
+    description: 'An object containing account reference data.',
+    title: 'Account reference',
     required: [],
   })
-  .openapi('ExcelStatus')
+  .openapi('CategorisedAccountAccountRef')
 
 const CurrencyRateSchema = z
   .number()
@@ -58,129 +103,381 @@ const CurrencyRateSchema = z
   })
   .openapi('CurrencyRate')
 
+const EnhancedInvoicesReportPaymentPaymentLinkTypeSchema = z
+  .enum([
+    'Unknown',
+    'Unlinked',
+    'Invoice',
+    'CreditNote',
+    'Other',
+    'Refund',
+    'Payment',
+    'PaymentOnAccount',
+    'ManualJournal',
+    'Discount',
+  ])
+  .openapi({
+    description:
+      'Types of payment line links, either:  \n`Unknown`  \n`Unlinked` - Not used  \n`Invoice` - ID refers to the invoice  \n`CreditNote` - ID refers to the credit note  \n`Refund` - ID refers to the sibling payment  \n`Payment` - ID refers to the sibling payment  \n`PaymentOnAccount` - ID refers to the customer  \n`Other` - ID refers to the customer  \n`Manual Journal`  \n`Discount` - ID refers to the payment',
+    title: 'Payment Link Type',
+  })
+  .openapi('EnhancedInvoicesReportPaymentPaymentLinkType')
+
+const EnhancedInvoicesReportPaymentPaymentLineLinkSchema = z
+  .strictObject({
+    amount: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  \nA negative link amount _reduces_ the outstanding amount on the accounts receivable account.  \nA positive link amount _increases_ the outstanding amount on the accounts receivable account.',
+      }),
+    currencyRate: CurrencyRateSchema.exactOptional(),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the transaction represented by the link.' }),
+    type: EnhancedInvoicesReportPaymentPaymentLinkTypeSchema,
+  })
+  .openapi({ required: ['type'], title: 'Payment Line Link' })
+  .openapi('EnhancedInvoicesReportPaymentPaymentLineLink')
+
+const EnhancedInvoicesReportPaymentPaymentLineSchema = z
+  .object({
+    allocatedOnDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'The date the payment was allocated.',
+    }),
+    amount: z.number().openapi({ description: 'Amount in the payment currency.' }),
+    links: z.array(EnhancedInvoicesReportPaymentPaymentLineLinkSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: ['amount'], title: 'Payment Line' })
+  .openapi('EnhancedInvoicesReportPaymentPaymentLine')
+
+const CategorisedAccountAccountCategoryDeprecatedAllOf1Schema = z
+  .object({
+    modifiedDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'The date on which this record was last modified in Codat.',
+    }),
+  })
+  .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] })
+  .openapi('CategorisedAccountAccountCategoryDeprecatedAllOf1')
+
+const EnhancedInvoicesReportPaymentSchema = z
+  .object({
+    accountRef: CategorisedAccountAccountRefSchema.exactOptional().openapi({
+      description: 'Account the payment is recorded against in the accounting platform.',
+    }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'ISO currency code recorded for the payment in the accounting platform.',
+    }),
+    currencyRate: CurrencyRateSchema.exactOptional(),
+    customerRef: EnhancedInvoicesReportCustomerRefSchema.exactOptional().openapi({
+      description: 'Customer the payment is recorded against in the accounting platform.',
+    }),
+    date: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'Date the payment was recorded in the accounting software.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier for the payment, unique to the company in the accounting platform.',
+      }),
+    lines: z
+      .array(EnhancedInvoicesReportPaymentPaymentLineSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An array of payment lines.' }),
+    metadata: z
+      .object({
+        isDeleted: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates whether the record has been deleted in the third-party system this record originated from.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ 'x-internal': true, required: [] }),
+    note: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Any additional information associated with the payment.' }),
+    paymentMethodRef: z
+      .object({
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '`id` from the Payment Methods data type' }),
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '`name` from the Payment Methods data type' }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'The Payment Method to which the payment is linked in the accounting platform.',
+        required: [],
+      }),
+    reference: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Friendly reference for the payment.' }),
+    supplementalData: z
+      .object({
+        content: z.record(z.string(), z.record(z.string(), z.any())).nullable().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
+        required: [],
+      }),
+    totalAmount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "Amount of the payment in the payment currency. This value should never change and represents the amount of money paid into the customer's account.",
+      }),
+  })
+  .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['date'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    CategorisedAccountAccountCategoryDeprecatedAllOf1Schema.and(
+      z
+        .object({
+          sourceModifiedDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+            description:
+              'The date on which this record was last modified in the originating system',
+          }),
+        })
+        .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] }),
+    ).openapi({ 'x-internal': true }),
+  )
+  .openapi({
+    description:
+      '> **Payments or bill payments?**  \n> \n>  In Codat, payments represent accounts receivable only. For accounts payable, see [bill payments](https://docs.codat.io/accounting-api#/schemas/BillPayment). These include [bills](https://docs.codat.io/accounting-api#/schemas/Bill) and credit notes against bills.\n\n> View the coverage for payments in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=payments" target="_blank">Data coverage explorer</a>.\n\n## Overview\n\nPayments include all accounts receivable transaction data. This includes [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice) and [credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).\n\nA payment in Codat usually represents an allocation of money within any customer accounts receivable account. This includes, but is not strictly limited to: \n\n- A payment made against an invoice, like a credit card, cheque, or cash payment.\n- An allocation of a customer\'s credit note, either to an invoice or maybe a refund.\n- A payment made directly to that accounts receivable account. This might be an overpayment or a prepayment. It might also be the refund of a payment made directly to an accounts receivable account.\n\nDepending on the payments allowed by the underlying accounting package, some payment types may be combined. Please see the example for more details.\n\nIn Codat, a payment contains details of:\n\n- When the payment was recorded in the accounting system.\n- How much it is for and in what currency that amount is in.\n- Who the payment was _paid by_ – the _customer_.\n- The payment method used.\n- The breakdown of the types of payments – the _line items_.\n\nPayments is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).\n\n## Payment types\n\n## Payment of an invoice\n\nA payment paying a single invoice has one entry in its `lines` array. This **line** has the following properties:\n\n- An _amount_ that indicates the amount of the invoice that was paid. This is always positive.\n- A **links** array containing one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case an `Invoice`.\n  - An **id** that contains the ID of the invoice that was paid.\n  - An **amount** for the link. The sum of the **line.amount** and the **links.amount** must equal `0`.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment.\n\n## Payment of multiple invoices\n\nA single payment can pay multiple invoices. This can be represented in one of two formats depending on how the customer keeps their books:\n\n- The payment has multiple entries in its **lines** array, one for each invoice that is paid. Each line follows the example and rules described in [Payment of an invoice](#payment-of-an-invoice).\n- The payment has a line with multiple links to each invoice. This occurs when the proportion of the original payment allocated to each invoice is not available.\n\nEach **line** has the same properties as those described in [Payment of an invoice](#payment-of-an-invoice), with the **amount** indicating how much of the payment was allocated to the invoice. The sum of line amounts equals the **totalAmount** on the payment.\n\n## Payments and refunds on account\n\nA payment on account, that is a payment that doesn’t pay a specific invoice, has one entry in its lines array. The **line** has the following properties:\n\n- A **totalAmount** that indicates the amount paid by a customer or refunded to them by a company. A payment to the customer is always negative. A refund is always positive.\n- A **links** array containing one element with the following properties:\n- A **type** that indicates the type of link. For a payment this is `PaymentOnAccount`. For a refund this is `Refund`.\n- The **id** containing the ID of the customer.\n- The **amount** for the link is `0` – the **totalAmount** _or_ the amount of the payment or refund.\n\nIt is possible to have a payment that is part _on account_ and part _allocated_ to an invoice. Each line should follow the examples above.\n\n## Using a credit note to pay an invoice\n\nThe payment of an invoice using a credit note has one entry in its **lines** array. This **line** has the following properties:\n\n- An **amount** that indicates the amount of money moved, which in this case is `0`, as the credit note and invoice allocation must balance each other.\n- A **links** array containing two elements:\n  - The first **link** has:\n    - A **type** that indicates the type of **link**, in this case an `Invoice`.\n    - An **id** that contains the ID of the invoice that was paid.\n  - The second **link** has:\n    - A **type** that indicates the type of **link**, in this case a `CreditNote`.\n    - An **id** that contains the ID of the credit note used by this payment.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment.\n\n## Refunding a credit note\n\nA payment refunding a credit note has one entry in its **lines** array. This **line** has the following properties:\n\n- An **amount** that indicates the amount of the credit note that was refunded. This is always negative for a refund.\n- A **links** array that contains one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `CreditNote`.\n  - An **id** that contains the ID of the credit note that was refunded.\n\nThe **totalAmount** field on the payment equals the **amount** field of the **line**. These are both negative, as this is money leaving accounts receivable.\n\n## Refunding a payment\n\nIf a payment is refunded, for example, if a customer overpaid an invoice and the overpayment is returned to the customer, there are two payment records: \n\n- One for the incoming over payment.\n- Another for the outgoing refund.\n\nThe payment issuing the refund has a negative **totalAmount**. This payment also has one entry in its lines array with the following properties:\n\n- An **amount** that indicates the amount that was refunded. This is always negative.\n- A **links** array that contains one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `Payment`.\n  - An **id** that contains the ID of the payment that was refunded.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment and is negative, as this is money leaving accounts receivable.\n\nThe payment that was refunded has a line where the **amount** is positive and the type of the link is `Refund`. This payment may have several entries in its **lines** array if it was used to partly pay an invoice. \n\nFor example: A £1,050 payment on a £1,000 invoice with a refund of £50 has two lines: \n\n- One for £1,000 linked to the invoice that was paid.\n- Another for £50 linked to the payment that refunded the overpayment with a** type** of `Refund` and an ID that corresponds to the payment.\n\nThe **line** linked to the payment has the following properties:\n\n- An **amount** that indicates the amount that was refunded. This is positive as its money that was added to accounts receivable. It\'s balanced out by the negative amount of the refund.\n- A **links** array containing one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `Refund`.\n  - An **id** that contains the ID of the payment that refunded this line.\n\n> **Support for linked payments**\n> \n> Not all accounting packages support linking payments in this way. In some platforms, you may see a payment on account and a refund on account.\n\n## Foreign currencies\n\nThere are two types of currency rate that are included in the payments data type: \n\nPayment currency rate: \n\n- Base currency of the accounts receivable account.\n- Foreign currency of the payment.\n\nPayment line link currency rate: \n\n- Base currency of the item the link represents.\n- Foreign currency of the payment.\n\nThese two rates allow the calculation of currency loss or gain for any of the transactions affected by the payment lines. The second rate is used when a payment is applied to an item in a currency that doesn\'t match either:\n\n- The base currency for the accounts receivable account. \n- The currency of the item.\n\n```json title="Currency rate example"\n{\n    "id": "123",\n    "note": ""\n    "totalAmount": 99.99,\n    "currency": "GBP",\n    "lines": [\n        {\n            "amount": 99.99,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "178",\n                    "amount": -50,\n                    "currencyRate":  1.9998,\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n## Example data\n\n> **Object properties**\n> \n> For the sake of brevity, the examples here may omit properties from objects. For the full object definition, see [Payments](https://api.codat.io/swagger/index.html#/Payments).\n\n## Simple examples\n\n```json title="Payment for invoice"\n{\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Allocation of credit note"\n{\n    "totalAmount": 0,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Payment of invoice and payment on account"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "y",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Refund of credit note"\n{\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Refund on accounts receivable account"\n{\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Linked refund on accounts receivable account"\n{\n    "id" : "payment-001",\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Refund",\n                    "id" : "refund-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n{\n    "id" : "refund-001",\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "Payment",\n                    "id" : "payment-001",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Using a credit note and cash to pay an invoice"\n{\n    "totalAmount": 250,\n    "lines": [\n        {\n            "amount": 0,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "x",\n                    "amount": -750\n                }, \n                {\n                    "type": "CreditNote",\n                    "id": "y",\n                    "amount": 750\n                }\n            ]\n        },\n        {\n            "amount": 250,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "x",\n                    "amount": -250\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n## Complex examples\n\n```json title="Use two credit notes and 1000 in to "bank" (cash, cheque etc.) to pay invoice"\n{\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Pay an invoice with two credit notes and cash, with 1000 left \'on account\'"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "customer-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes pay two invoices with no allocation amount specified"\n{\n    "totalAmount": 0,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "w",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes and cash pay three invoices with no allocation amount specified, and refund cash"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "w",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "u",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Refund",\n                    "id" : "refund-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n{\n    "id" : "refund-001",\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "Payment",\n                    "id" : "payment-001",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\nIn this example, a payment on account is used to pay the same invoice in January and again in February.\n\n```json title="January"\n{\n    "id": "001",\n    "totalAmount": 5000,\n    "date" : "1901-01-01",\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 4000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "PaymentOnAccount-y",\n                    "amount" : -4000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="February"\n{\n    "id": "001",\n    "totalAmount": 5000,\n    "date" : "1901-02-01",\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-y",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 3000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "PaymentOnAccount-y",\n                    "amount" : -3000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes and some cash pay two invoices with no allocations specified"\n{\n    "totalAmount": 500,\n    "lines": [\n        {\n            "amount": 500,\n            "links": [{\n                    "type": "Invoice",\n                    "id": "a",\n                    "amount": -1000\n                }, {\n                    "type": "Invoice",\n                    "id": "b",\n                    "amount": -1000\n                }, {\n                    "type": "CreditNote",\n                    "id": "y",\n                    "amount": 750\n                },{\n                    "type": "CreditNote",\n                    "id": "z",\n                    "amount": 750\n                }\n            ]\n        }\n    ]\n}\n```',
+    required: ['date'],
+    title: 'Payment',
+  })
+  .openapi('EnhancedInvoicesReportPayment')
+
+const EnhancedInvoicesReportInvoiceStatusSchema = z
+  .enum(['Unknown', 'Draft', 'Submitted', 'PartiallyPaid', 'Paid', 'Void'])
+  .openapi({
+    description:
+      "Current state of the invoice:\n\n- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.\n- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).\n- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).\n- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).\n- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.",
+  })
+  .openapi('EnhancedInvoicesReportInvoiceStatus')
+
+const EnhancedInvoicesReportEnhancedInvoiceReportItemSchema = z
+  .object({
+    amountDue: z.number().exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    customerRef: EnhancedInvoicesReportCustomerRefSchema.exactOptional(),
+    dueDate: ExcelStatusLastGeneratedSchema.exactOptional(),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the invoice, which may be a GUID but it may be something else depending on the accounting platdform',
+      }),
+    invoiceNumber: z.string().exactOptional(),
+    issueDate: ExcelStatusLastGeneratedSchema.exactOptional(),
+    paidOnDate: ExcelStatusLastGeneratedSchema.exactOptional(),
+    payments: z.array(EnhancedInvoicesReportPaymentSchema).exactOptional(),
+    status: EnhancedInvoicesReportInvoiceStatusSchema.exactOptional(),
+    totalAmount: z.number().exactOptional(),
+  })
+  .openapi({ title: 'Enhanced invoice report item', required: [] })
+  .openapi('EnhancedInvoicesReportEnhancedInvoiceReportItem')
+
 type EnhancedInvoicesReportType = {
-  reportInfo?: {
-    companyName?: string
-    generatedDate?: string
-    pageNumber?: number
-    pageSize?: number
-    reportName?: string
-    totalResults?: number
-  }
+  reportInfo?: z.infer<typeof EnhancedInvoicesReportReportInfoSchema>
   reportItems?: {
-    invoices?: {
-      amountDue?: number
-      currency?: z.infer<typeof CurrencySchema>
-      customerRef?: { companyName?: string | null; id: string }
-      dueDate?: z.infer<typeof ExcelStatusSchema>
-      id?: string
-      invoiceNumber?: string
-      issueDate?: z.infer<typeof ExcelStatusSchema>
-      paidOnDate?: z.infer<typeof ExcelStatusSchema>
-      payments?: ({
-        accountRef?: { id?: string; name?: string }
-        currency?: z.infer<typeof CurrencySchema>
-        currencyRate?: z.infer<typeof CurrencyRateSchema>
-        customerRef?: { companyName?: string | null; id: string }
-        date?: z.infer<typeof ExcelStatusSchema>
-        id?: string
-        lines?:
-          | {
-              allocatedOnDate?: z.infer<typeof ExcelStatusSchema>
-              amount: number
-              links?:
-                | {
-                    amount?: number | null
-                    currencyRate?: z.infer<typeof CurrencyRateSchema>
-                    id?: string
-                    type:
-                      | 'Unknown'
-                      | 'Unlinked'
-                      | 'Invoice'
-                      | 'CreditNote'
-                      | 'Other'
-                      | 'Refund'
-                      | 'Payment'
-                      | 'PaymentOnAccount'
-                      | 'ManualJournal'
-                      | 'Discount'
-                  }[]
-                | null
-            }[]
-          | null
-        metadata?: { isDeleted?: boolean | null }
-        note?: string | null
-        paymentMethodRef?: { id?: string; name?: string | null }
-        reference?: string | null
-        supplementalData?: { content?: { [key: string]: { [key: string]: unknown } } | null }
-        totalAmount?: number
-      } & ({ modifiedDate?: z.infer<typeof ExcelStatusSchema> } & {
-        sourceModifiedDate?: z.infer<typeof ExcelStatusSchema>
-      }))[]
-      status?: 'Unknown' | 'Draft' | 'Submitted' | 'PartiallyPaid' | 'Paid' | 'Void'
-      totalAmount?: number
-    }[]
+    invoices?: z.infer<typeof EnhancedInvoicesReportEnhancedInvoiceReportItemSchema>[]
   }[]
 }
+
+const FinancialMetricsFinancialMetricErrorSchema = z
+  .object({
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Account categories data has not been synced' }),
+    type: z
+      .enum(['DataNotSynced', 'DataNotSupported', 'DataSyncFailed', 'DataTypeNotEnabled'])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FinancialMetricsFinancialMetricError')
+
+const FinancialMetricsAssessErrorDetailsSchema = z
+  .record(z.string(), z.array(z.string()))
+  .openapi({
+    description: 'Dictionary list outlining the missing properties or allowed values.',
+    examples: [{ missingData: ['Expense.Operating.Interest', 'Expense.NonOperating.Interest'] }],
+    title: 'Assess error details',
+  })
+  .openapi('FinancialMetricsAssessErrorDetails')
+
+const FinancialMetricsFinancialMetricSchema = z
+  .object({
+    errors: z
+      .array(
+        z
+          .object({
+            details: FinancialMetricsAssessErrorDetailsSchema.exactOptional(),
+            message: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Description of the error.',
+                example: 'There are uncategorized accounts IDs, see details.',
+              }),
+            type: z
+              .enum(['UncategorizedAccounts', 'MissingInputData', 'InputDataError'])
+              .exactOptional()
+              .openapi({ description: 'Metric level error.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    key: z
+      .enum([
+        'Unknown',
+        'EBITDA',
+        'DebtServiceCoverageRatio',
+        'CurrentRatio QuickRatio',
+        'GrossProfitMargin',
+        'FixedChargeCoverageRatio',
+        'WorkingCapital',
+        'FreeCashFlow',
+        'NetProfitMargin',
+        'ReturnOnAssetsRatio',
+        'ReturnOnEquityRatio',
+        'OperatingProfitMargin',
+        'DeptToEquity',
+        'DebtToAssets',
+        'InterestCoverageRatio',
+        'CashRatio',
+        'InventoryTurnoverRatio',
+        'AssetTurnoverRatio',
+        'WorkingCapitalTurnoverRatio',
+        'DaysSalesOutstanding',
+        'DaysPayablesOutstanding',
+      ])
+      .exactOptional(),
+    metricUnit: z.enum(['Ratio', 'Money']).exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'Metric name.' }),
+    periods: z
+      .array(
+        z
+          .object({
+            errors: z
+              .array(
+                z
+                  .object({
+                    details: FinancialMetricsAssessErrorDetailsSchema.exactOptional(),
+                    massage: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Description of the error.',
+                        example: 'Missing account data',
+                      }),
+                    type: z
+                      .enum(['MissingAccountData', 'DatesOutOfRange'])
+                      .exactOptional()
+                      .openapi({ description: 'Period error type.' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            fromDate: z.iso
+              .date()
+              .exactOptional()
+              .openapi({ description: 'The date from which the report starts.' }),
+            inputs: z
+              .array(
+                z
+                  .object({
+                    name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The name of the metric input e.g. “Current Assets”, “Capital Expenditure”.',
+                      }),
+                    value: z
+                      .number()
+                      .exactOptional()
+                      .openapi({
+                        description: 'The positive or negative number of the input value.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            toDate: z.iso
+              .date()
+              .exactOptional()
+              .openapi({ description: 'The date on which the report ends (inclusive of day).' }),
+            value: z
+              .number()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The top level metric value that is calculated for the specified period. \n\nIf the system cannot calculate for that period, the value will be null. The system will still show the metric inputs.',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ description: '', title: 'Financial metric', required: [] })
+  .openapi('FinancialMetricsFinancialMetric')
 
 type FinancialMetricsType = {
   currency?: z.infer<typeof CurrencySchema>
-  errors?: {
-    message?: string
-    type?: 'DataNotSynced' | 'DataNotSupported' | 'DataSyncFailed' | 'DataTypeNotEnabled'
-  }[]
-  metrics?: {
-    errors?: {
-      details?: { [key: string]: string[] }
-      message?: string
-      type?: 'UncategorizedAccounts' | 'MissingInputData' | 'InputDataError'
-    }[]
-    key?:
-      | 'Unknown'
-      | 'EBITDA'
-      | 'DebtServiceCoverageRatio'
-      | 'CurrentRatio QuickRatio'
-      | 'GrossProfitMargin'
-      | 'FixedChargeCoverageRatio'
-      | 'WorkingCapital'
-      | 'FreeCashFlow'
-      | 'NetProfitMargin'
-      | 'ReturnOnAssetsRatio'
-      | 'ReturnOnEquityRatio'
-      | 'OperatingProfitMargin'
-      | 'DeptToEquity'
-      | 'DebtToAssets'
-      | 'InterestCoverageRatio'
-      | 'CashRatio'
-      | 'InventoryTurnoverRatio'
-      | 'AssetTurnoverRatio'
-      | 'WorkingCapitalTurnoverRatio'
-      | 'DaysSalesOutstanding'
-      | 'DaysPayablesOutstanding'
-    metricUnit?: 'Ratio' | 'Money'
-    name?: string
-    periods?: {
-      errors?: {
-        details?: { [key: string]: string[] }
-        massage?: string
-        type?: 'MissingAccountData' | 'DatesOutOfRange'
-      }[]
-      fromDate?: string
-      inputs?: { name?: string; value?: number }[]
-      toDate?: string
-      value?: number
-    }[]
-  }[]
+  errors?: z.infer<typeof FinancialMetricsFinancialMetricErrorSchema>[]
+  metrics?: z.infer<typeof FinancialMetricsFinancialMetricSchema>[]
   periodUnit?: 'Month' | 'Week' | 'Day'
 }
 
-type ReportComponentType = {
-  components?: ReportComponentType[]
+const ReportReportComponentMeasureSchema = z
+  .object({
+    index: z.int().exactOptional(),
+    measureDisplayName: z.string().exactOptional(),
+    value: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportReportComponentMeasure')
+
+type ReportReportComponentType = {
+  components?: ReportReportComponentType[]
   dimension?: number
   dimensionDisplayName?: string
   item?: number
   itemDisplayName?: string
-  measures?: { index?: number; measureDisplayName?: string; value?: number }[]
+  measures?: z.infer<typeof ReportReportComponentMeasureSchema>[]
 }
 
 const AccountCategoriesUpdatedWebhookSchema = z
@@ -317,49 +614,17 @@ const CategoriesSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Categories')
 
+const CategorisedAccountAccountCategoryDeprecatedSchema = AccountCategorySchema.and(
+  CategorisedAccountAccountCategoryDeprecatedAllOf1Schema,
+)
+  .openapi({ title: 'Account category' })
+  .openapi('CategorisedAccountAccountCategoryDeprecated')
+
 const CategorisedAccountSchema = z
   .object({
-    accountRef: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'id' from the Accounts data type." }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "'name' from the Accounts data type." }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'An object containing account reference data.',
-        title: 'Account reference',
-        required: [],
-      }),
-    confirmed: AccountCategorySchema.and(
-      z
-        .object({
-          modifiedDate: z
-            .lazy(() => ExcelStatusSchema)
-            .exactOptional()
-            .openapi({ description: 'The date on which this record was last modified in Codat.' }),
-        })
-        .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] }),
-    )
-      .exactOptional()
-      .openapi({ title: 'Account category' }),
-    suggested: AccountCategorySchema.and(
-      z
-        .object({
-          modifiedDate: z
-            .lazy(() => ExcelStatusSchema)
-            .exactOptional()
-            .openapi({ description: 'The date on which this record was last modified in Codat.' }),
-        })
-        .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] }),
-    )
-      .exactOptional()
-      .openapi({ title: 'Account category' }),
+    accountRef: CategorisedAccountAccountRefSchema.exactOptional(),
+    confirmed: CategorisedAccountAccountCategoryDeprecatedSchema.exactOptional(),
+    suggested: CategorisedAccountAccountCategoryDeprecatedSchema.exactOptional(),
   })
   .openapi({
     examples: [
@@ -477,6 +742,35 @@ const ConfirmCategorySchema = z
   .openapi({ required: ['confirmed'], 'x-internal': true })
   .openapi('ConfirmCategory')
 
+const DataIntegrityDetailsDataIntegrityMatchSchema = z
+  .object({
+    amount: z.string().exactOptional().openapi({ description: 'The transaction value.' }),
+    connectionId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'ID GUID representing the connection of the accounting or banking platform.',
+      }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency of the transaction.',
+    }),
+    date: z.string().exactOptional().openapi({ description: 'The date of the transaction.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction description.' }),
+    id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DataIntegrityDetailsDataIntegrityMatch')
+
 const DataIntegrityDetailsSchema = z
   .object({
     amount: z.number().exactOptional().openapi({ description: 'The transaction value.' }),
@@ -490,56 +784,21 @@ const DataIntegrityDetailsSchema = z
     currency: CurrencySchema.exactOptional().openapi({
       description: 'The currency of the transaction.',
     }),
-    date: z
-      .lazy(() => ExcelStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The date of the transaction.' }),
+    date: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'The date of the transaction.',
+    }),
     description: z
       .string()
       .exactOptional()
       .openapi({ description: 'The transaction description.' }),
     id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
-    matches: z
-      .array(
-        z
-          .object({
-            amount: z.string().exactOptional().openapi({ description: 'The transaction value.' }),
-            connectionId: z
-              .uuid()
-              .exactOptional()
-              .openapi({
-                description:
-                  'ID GUID representing the connection of the accounting or banking platform.',
-              }),
-            currency: CurrencySchema.exactOptional().openapi({
-              description: 'The currency of the transaction.',
-            }),
-            date: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The date of the transaction.' }),
-            description: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The transaction description.' }),
-            id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
+    matches: z.array(DataIntegrityDetailsDataIntegrityMatchSchema).exactOptional(),
     type: z.string().exactOptional().openapi({ description: 'The data type of the record.' }),
   })
   .openapi({ title: 'Data integrity details', required: [] })
   .openapi('DataIntegrityDetails')
 
-const DataIntegrityStatusSchema = z
+const DataIntegritySummaryDataIntegrityTypeSchema = z
   .object({
     type: z
       .string()
@@ -550,103 +809,95 @@ const DataIntegrityStatusSchema = z
       }),
   })
   .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        amounts: z
-          .object({
-            currency: CurrencySchema.exactOptional(),
-            max: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Highest value of transaction set.' }),
-            min: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Lowest value of transaction set.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Only returned for transactions. For accounts, there is nothing returned.',
-            required: [],
-          }),
-        connectionIds: z
-          .object({
-            source: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'An array of strings. The connection IDs for the type specified in the url.',
-              }),
-            target: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'An array of strings. The connection IDs for the type being matched to.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        dates: z
-          .object({
-            maxDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({ description: 'Latest date of transaction set.', readOnly: true }),
-            maxOverlappingDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Latest date where transactions exist in both account and banking platforms.',
-                readOnly: true,
-              }),
-            minDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({ description: 'Earliest date of transaction set.', readOnly: true }),
-            minOverlappingDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Earliest date where transactions exist in both accounting and banking platforms.',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Only returned for transactions. For accounts, there is nothing returned.',
-            required: [],
-          }),
-        statusInfo: z
-          .object({
-            currentStatus: z
-              .enum(['Unknown', 'DoesNotExist', 'Error', 'Complete'])
-              .exactOptional()
-              .openapi({
-                description: 'The current status of the most recently run matching algorithm.',
-              }),
-            lastMatched: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The date the matching algorithm last ran against the company’s data type specified.',
-                readOnly: true,
-              }),
-            statusMessage: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Detailed explanation supporting the status value.' }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({ required: [] }),
-  )
+  .openapi('DataIntegritySummaryDataIntegrityType')
+
+const DataIntegrityStatusDataIntegrityAmountsSchema = z
+  .object({
+    currency: CurrencySchema.exactOptional(),
+    max: z.number().exactOptional().openapi({ description: 'Highest value of transaction set.' }),
+    min: z.number().exactOptional().openapi({ description: 'Lowest value of transaction set.' }),
+  })
+  .openapi({
+    description: 'Only returned for transactions. For accounts, there is nothing returned.',
+    required: [],
+  })
+  .openapi('DataIntegrityStatusDataIntegrityAmounts')
+
+const DataIntegrityStatusDataIntegrityConnectionIdSchema = z
+  .object({
+    source: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'An array of strings. The connection IDs for the type specified in the url.',
+      }),
+    target: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'An array of strings. The connection IDs for the type being matched to.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DataIntegrityStatusDataIntegrityConnectionId')
+
+const DataIntegrityStatusDataIntegrityDatesSchema = z
+  .object({
+    maxDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'Latest date of transaction set.',
+      readOnly: true,
+    }),
+    maxOverlappingDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'Latest date where transactions exist in both account and banking platforms.',
+      readOnly: true,
+    }),
+    minDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'Earliest date of transaction set.',
+      readOnly: true,
+    }),
+    minOverlappingDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description:
+        'Earliest date where transactions exist in both accounting and banking platforms.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'Only returned for transactions. For accounts, there is nothing returned.',
+    required: [],
+  })
+  .openapi('DataIntegrityStatusDataIntegrityDates')
+
+const DataIntegrityStatusIntegrityStatusSchema = z
+  .enum(['Unknown', 'DoesNotExist', 'Error', 'Complete'])
+  .openapi({ description: 'The current status of the most recently run matching algorithm.' })
+  .openapi('DataIntegrityStatusIntegrityStatus')
+
+const DataIntegrityStatusDataIntegrityStatusInfoSchema = z
+  .object({
+    currentStatus: DataIntegrityStatusIntegrityStatusSchema.exactOptional(),
+    lastMatched: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description:
+        'The date the matching algorithm last ran against the company’s data type specified.',
+      readOnly: true,
+    }),
+    statusMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Detailed explanation supporting the status value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DataIntegrityStatusDataIntegrityStatusInfo')
+
+const DataIntegrityStatusSchema = DataIntegritySummaryDataIntegrityTypeSchema.and(
+  z
+    .object({
+      amounts: DataIntegrityStatusDataIntegrityAmountsSchema.exactOptional(),
+      connectionIds: DataIntegrityStatusDataIntegrityConnectionIdSchema.exactOptional(),
+      dates: DataIntegrityStatusDataIntegrityDatesSchema.exactOptional(),
+      statusInfo: DataIntegrityStatusDataIntegrityStatusInfoSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
   .openapi({
     examples: [
       {
@@ -673,84 +924,77 @@ const DataIntegrityStatusSchema = z
   })
   .openapi('DataIntegrityStatus')
 
-const DataIntegritySummarySchema = z
+const DataIntegritySummaryDataIntegrityByAmountSchema = z
   .object({
-    type: z
-      .string()
+    currency: CurrencySchema.exactOptional(),
+    matchPercentage: z
+      .number()
       .exactOptional()
       .openapi({
         description:
-          "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
+          'The percentage of the absolute value of transactions of the type specified in the route which have a match.',
+      }),
+    matched: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sum of the absolute value of transactions of the type specified in the route which have a match.',
+      }),
+    total: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The total of unmatched and matched.' }),
+    unmatched: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "The sum of the absolute value of transactions of the type specified in the route which don't have a match.",
       }),
   })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        byAmount: z
-          .object({
-            currency: CurrencySchema.exactOptional(),
-            matchPercentage: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The percentage of the absolute value of transactions of the type specified in the route which have a match.',
-              }),
-            matched: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The sum of the absolute value of transactions of the type specified in the route which have a match.',
-              }),
-            total: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'The total of unmatched and matched.' }),
-            unmatched: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The sum of the absolute value of transactions of the type specified in the route which don't have a match.",
-              }),
-          })
-          .exactOptional()
-          .openapi({ title: 'Data integrity by amount', required: [] }),
-        byCount: z
-          .object({
-            matchPercentage: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The percentage of records of the type specified in the route which have a match.',
-              }),
-            matched: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The number of records of the type specified in the route which do have a match.',
-              }),
-            total: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'The total of unmatched and matched.' }),
-            unmatched: z
-              .number()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The number of records of the type specified in the route which don't have a match.",
-              }),
-          })
-          .exactOptional()
-          .openapi({ title: 'Data integrity by count', required: [] }),
-      })
-      .openapi({ required: [] }),
-  )
+  .openapi({ title: 'Data integrity by amount', required: [] })
+  .openapi('DataIntegritySummaryDataIntegrityByAmount')
+
+const DataIntegritySummaryDataIntegrityByCountSchema = z
+  .object({
+    matchPercentage: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of records of the type specified in the route which have a match.',
+      }),
+    matched: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of records of the type specified in the route which do have a match.',
+      }),
+    total: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The total of unmatched and matched.' }),
+    unmatched: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "The number of records of the type specified in the route which don't have a match.",
+      }),
+  })
+  .openapi({ title: 'Data integrity by count', required: [] })
+  .openapi('DataIntegritySummaryDataIntegrityByCount')
+
+const DataIntegritySummarySchema = DataIntegritySummaryDataIntegrityTypeSchema.and(
+  z
+    .object({
+      byAmount: DataIntegritySummaryDataIntegrityByAmountSchema.exactOptional(),
+      byCount: DataIntegritySummaryDataIntegrityByCountSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
   .openapi({ title: 'Data integrity summary' })
   .openapi('DataIntegritySummary')
 
@@ -761,528 +1005,127 @@ const DetailsSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Details')
 
-const EnhancedCashFlowTransactionsSchema = z
+const EnhancedCashFlowTransactionsSourceRefSchema = z
+  .object({ sourceType: z.string().exactOptional() })
+  .openapi({
+    description: 'A source reference containing the `sourceType` object "Banking".',
+    examples: [{ Example: { value: { sourceRef: { sourceType: 'Banking' } } } }],
+    title: 'Report source reference',
+    required: [],
+  })
+  .openapi('EnhancedCashFlowTransactionsSourceRef')
+
+const EnhancedCashFlowTransactionsAccountsSchema = z
   .object({
-    dataSources: z
-      .array(
-        z
-          .object({
-            accounts: z
-              .array(
-                z
-                  .object({
-                    accountName: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description: 'The name of the account according to the provider.',
-                      }),
-                    accountProvider: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The bank or other financial institution providing the account.',
-                      }),
-                    accountType: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description: 'The type of banking account, e.g. credit or debit.',
-                      }),
-                    currency: CurrencySchema.exactOptional().openapi({
-                      description: 'The currency code for the bank account.',
-                    }),
-                    currentBalance: z
-                      .number()
-                      .exactOptional()
-                      .openapi({ description: 'The balance of the bank account.' }),
-                    platformName: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the banking data source, e.g. "Plaid".' }),
-                    sourceRef: z
-                      .object({ sourceType: z.string().exactOptional() })
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'A source reference containing the `sourceType` object "Banking".',
-                        examples: [
-                          { Example: { value: { sourceRef: { sourceType: 'Banking' } } } },
-                        ],
-                        title: 'Report source reference',
-                        required: [],
-                      }),
-                  })
-                  .openapi({ title: 'Accounts', required: [] }),
-              )
-              .exactOptional()
-              .openapi({
-                description:
-                  'An array containing bank account data for each connected banking data source that have the following data types enabled: `banking-accounts`, `banking-transactions`.',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    reportInfo: z
-      .object({
-        companyName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the company being queried.' }),
-        generatedDate: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Date the report was generated' }),
-        pageNumber: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of the page queried.' }),
-        pageSize: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of transactions returned per page.' }),
-        reportName: z.string().exactOptional().openapi({ description: 'Name of the report' }),
-        totalResults: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The total number of transactions available for a company for the period specified in the query string.',
-          }),
-      })
+    accountName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the account according to the provider.' }),
+    accountProvider: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank or other financial institution providing the account.' }),
+    accountType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of banking account, e.g. credit or debit.' }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency code for the bank account.',
+    }),
+    currentBalance: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The balance of the bank account.' }),
+    platformName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the banking data source, e.g. "Plaid".' }),
+    sourceRef: EnhancedCashFlowTransactionsSourceRefSchema.exactOptional(),
+  })
+  .openapi({ title: 'Accounts', required: [] })
+  .openapi('EnhancedCashFlowTransactionsAccounts')
+
+const EnhancedCashFlowTransactionsDataSourceSchema = z
+  .object({
+    accounts: z
+      .array(EnhancedCashFlowTransactionsAccountsSchema)
       .exactOptional()
       .openapi({
-        description: 'Report additional information, which is specific to Assess reports',
-        examples: [
-          {
-            'Example 1': {
-              value: {
-                companyName: 'string',
-                generatedDate: '2023-01-26T07:36:40.487Z',
-                pageNumber: 0,
-                pageSize: 0,
-                reportName: 'string',
-                totalResults: 0,
-              },
-            },
-          },
-        ],
-        title: 'Report information',
-        required: [],
+        description:
+          'An array containing bank account data for each connected banking data source that have the following data types enabled: `banking-accounts`, `banking-transactions`.',
       }),
-    reportItems: z
-      .array(
-        z
-          .object({
-            transactions: z
-              .array(
-                z
-                  .object({
-                    amount: z
-                      .number()
-                      .exactOptional()
-                      .openapi({ description: 'The bank transaction amount.' }),
-                    currency: z.string().exactOptional(),
-                    date: z
-                      .lazy(() => ExcelStatusSchema)
-                      .exactOptional()
-                      .openapi({ description: 'The date the bank transaction was posted.' }),
-                    description: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'The description of the bank transaction.' }),
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'The unique identifier of the bank transaction.' }),
-                    sourceRef: z
-                      .object({ sourceType: z.string().exactOptional() })
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'A source reference containing the `sourceType` object "Banking".',
-                        examples: [
-                          { Example: { value: { sourceRef: { sourceType: 'Banking' } } } },
-                        ],
-                        title: 'Report source reference',
-                        required: [],
-                      }),
-                    transactionCategory: z
-                      .object({
-                        confidence: z
-                          .number()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Returns the confidence of the suggested category for the transaction.',
-                          }),
-                        levels: z
-                          .array(z.string())
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'An array of category levels against an individual transaction.',
-                          }),
-                      })
-                      .exactOptional()
-                      .openapi({
-                        title: 'Transaction category',
-                        description: 'Contains an array of category levels.',
-                        required: [],
-                      }),
-                  })
-                  .openapi({ title: 'Cash flow transaction', required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'An array of transaction data.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EnhancedCashFlowTransactionsDataSource')
+
+const EnhancedCashFlowTransactionsTransactionCategorySchema = z
+  .object({
+    confidence: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Returns the confidence of the suggested category for the transaction.',
+      }),
+    levels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'An array of category levels against an individual transaction.' }),
+  })
+  .openapi({ title: 'Transaction category', required: [] })
+  .openapi('EnhancedCashFlowTransactionsTransactionCategory')
+
+const EnhancedCashFlowTransactionsEnhancedCashFlowTransactionSchema = z
+  .object({
+    amount: z.number().exactOptional().openapi({ description: 'The bank transaction amount.' }),
+    currency: z.string().exactOptional(),
+    date: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'The date the bank transaction was posted.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the bank transaction.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the bank transaction.' }),
+    sourceRef: EnhancedCashFlowTransactionsSourceRefSchema.exactOptional(),
+    transactionCategory:
+      EnhancedCashFlowTransactionsTransactionCategorySchema.exactOptional().openapi({
+        description: 'Contains an array of category levels.',
+      }),
+  })
+  .openapi({ title: 'Cash flow transaction', required: [] })
+  .openapi('EnhancedCashFlowTransactionsEnhancedCashFlowTransaction')
+
+const EnhancedCashFlowTransactionsEnhancedCashFlowItemSchema = z
+  .object({
+    transactions: z
+      .array(EnhancedCashFlowTransactionsEnhancedCashFlowTransactionSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of transaction data.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnhancedCashFlowTransactionsEnhancedCashFlowItem')
+
+const EnhancedCashFlowTransactionsSchema = z
+  .object({
+    dataSources: z.array(EnhancedCashFlowTransactionsDataSourceSchema).exactOptional(),
+    reportInfo: EnhancedInvoicesReportReportInfoSchema.exactOptional(),
+    reportItems: z.array(EnhancedCashFlowTransactionsEnhancedCashFlowItemSchema).exactOptional(),
   })
   .openapi({ description: '', title: 'Enhanced cash flow transactions', required: [] })
   .openapi('EnhancedCashFlowTransactions')
 
 const EnhancedInvoicesReportSchema: z.ZodType<EnhancedInvoicesReportType> = z
   .object({
-    reportInfo: z
-      .object({
-        companyName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the company being queried.' }),
-        generatedDate: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Date the report was generated' }),
-        pageNumber: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of the page queried.' }),
-        pageSize: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of transactions returned per page.' }),
-        reportName: z.string().exactOptional().openapi({ description: 'Name of the report' }),
-        totalResults: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The total number of transactions available for a company for the period specified in the query string.',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Report additional information, which is specific to Assess reports',
-        examples: [
-          {
-            'Example 1': {
-              value: {
-                companyName: 'string',
-                generatedDate: '2023-01-26T07:36:40.487Z',
-                pageNumber: 0,
-                pageSize: 0,
-                reportName: 'string',
-                totalResults: 0,
-              },
-            },
-          },
-        ],
-        title: 'Report information',
-        required: [],
-      }),
+    reportInfo: EnhancedInvoicesReportReportInfoSchema.exactOptional(),
     reportItems: z
       .array(
         z
           .object({
             invoices: z
-              .array(
-                z
-                  .object({
-                    amountDue: z.number().exactOptional(),
-                    currency: CurrencySchema.exactOptional(),
-                    customerRef: z
-                      .object({
-                        companyName: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: '`customerName` from the Customer data type' }),
-                        id: z
-                          .string()
-                          .min(1)
-                          .openapi({ description: '`id` from the Customers data type' }),
-                      })
-                      .exactOptional()
-                      .openapi({ required: ['id'] }),
-                    dueDate: z.lazy(() => ExcelStatusSchema).exactOptional(),
-                    id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'ID of the invoice, which may be a GUID but it may be something else depending on the accounting platdform',
-                      }),
-                    invoiceNumber: z.string().exactOptional(),
-                    issueDate: z.lazy(() => ExcelStatusSchema).exactOptional(),
-                    paidOnDate: z.lazy(() => ExcelStatusSchema).exactOptional(),
-                    payments: z
-                      .array(
-                        z
-                          .object({
-                            accountRef: z
-                              .object({
-                                id: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({ description: "'id' from the Accounts data type." }),
-                                name: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({ description: "'name' from the Accounts data type." }),
-                              })
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Account the payment is recorded against in the accounting platform.',
-                                title: 'Account reference',
-                                required: [],
-                              }),
-                            currency: CurrencySchema.exactOptional().openapi({
-                              description:
-                                'ISO currency code recorded for the payment in the accounting platform.',
-                            }),
-                            currencyRate: CurrencyRateSchema.exactOptional(),
-                            customerRef: z
-                              .object({
-                                companyName: z
-                                  .string()
-                                  .nullable()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: '`customerName` from the Customer data type',
-                                  }),
-                                id: z
-                                  .string()
-                                  .min(1)
-                                  .openapi({ description: '`id` from the Customers data type' }),
-                              })
-                              .exactOptional()
-                              .openapi({
-                                required: ['id'],
-                                description:
-                                  'Customer the payment is recorded against in the accounting platform.',
-                              }),
-                            date: z
-                              .lazy(() => ExcelStatusSchema)
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Date the payment was recorded in the accounting software.',
-                              }),
-                            id: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Identifier for the payment, unique to the company in the accounting platform.',
-                              }),
-                            lines: z
-                              .array(
-                                z
-                                  .object({
-                                    allocatedOnDate: z
-                                      .lazy(() => ExcelStatusSchema)
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The date the payment was allocated.',
-                                      }),
-                                    amount: z
-                                      .number()
-                                      .openapi({ description: 'Amount in the payment currency.' }),
-                                    links: z
-                                      .array(
-                                        z
-                                          .strictObject({
-                                            amount: z
-                                              .number()
-                                              .nullable()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  \nA negative link amount _reduces_ the outstanding amount on the accounts receivable account.  \nA positive link amount _increases_ the outstanding amount on the accounts receivable account.',
-                                              }),
-                                            currencyRate: CurrencyRateSchema.exactOptional(),
-                                            id: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Unique identifier of the transaction represented by the link.',
-                                              }),
-                                            type: z
-                                              .enum([
-                                                'Unknown',
-                                                'Unlinked',
-                                                'Invoice',
-                                                'CreditNote',
-                                                'Other',
-                                                'Refund',
-                                                'Payment',
-                                                'PaymentOnAccount',
-                                                'ManualJournal',
-                                                'Discount',
-                                              ])
-                                              .openapi({
-                                                description:
-                                                  'Types of payment line links, either:  \n`Unknown`  \n`Unlinked` - Not used  \n`Invoice` - ID refers to the invoice  \n`CreditNote` - ID refers to the credit note  \n`Refund` - ID refers to the sibling payment  \n`Payment` - ID refers to the sibling payment  \n`PaymentOnAccount` - ID refers to the customer  \n`Other` - ID refers to the customer  \n`Manual Journal`  \n`Discount` - ID refers to the payment',
-                                                title: 'Payment Link Type',
-                                              }),
-                                          })
-                                          .openapi({
-                                            required: ['type'],
-                                            title: 'Payment Line Link',
-                                          }),
-                                      )
-                                      .nullable()
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['amount'], title: 'Payment Line' }),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'An array of payment lines.' }),
-                            metadata: z
-                              .object({
-                                isDeleted: z
-                                  .boolean()
-                                  .nullable()
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'Indicates whether the record has been deleted in the third-party system this record originated from.',
-                                  }),
-                              })
-                              .exactOptional()
-                              .openapi({ 'x-internal': true, required: [] }),
-                            note: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Any additional information associated with the payment.',
-                              }),
-                            paymentMethodRef: z
-                              .object({
-                                id: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: '`id` from the Payment Methods data type',
-                                  }),
-                                name: z
-                                  .string()
-                                  .nullable()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: '`name` from the Payment Methods data type',
-                                  }),
-                              })
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The Payment Method to which the payment is linked in the accounting platform.',
-                                required: [],
-                              }),
-                            reference: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'Friendly reference for the payment.' }),
-                            supplementalData: z
-                              .object({
-                                content: z
-                                  .record(z.string(), z.record(z.string(), z.any()))
-                                  .nullable()
-                                  .exactOptional(),
-                              })
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.',
-                                required: [],
-                              }),
-                            totalAmount: z
-                              .number()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  "Amount of the payment in the payment currency. This value should never change and represents the amount of money paid into the customer's account.",
-                              }),
-                          })
-                          .openapi({ required: [] })
-                          .and(z.looseObject({}).openapi({ required: ['date'] }))
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'date')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .and(
-                            z
-                              .object({
-                                modifiedDate: z
-                                  .lazy(() => ExcelStatusSchema)
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'The date on which this record was last modified in Codat.',
-                                  }),
-                              })
-                              .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] })
-                              .and(
-                                z
-                                  .object({
-                                    sourceModifiedDate: z
-                                      .lazy(() => ExcelStatusSchema)
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'The date on which this record was last modified in the originating system',
-                                      }),
-                                  })
-                                  .openapi({
-                                    title: 'Source Modified Date',
-                                    'x-internal': true,
-                                    required: [],
-                                  }),
-                              )
-                              .openapi({ 'x-internal': true }),
-                          )
-                          .openapi({
-                            description:
-                              '> **Payments or bill payments?**  \n> \n>  In Codat, payments represent accounts receivable only. For accounts payable, see [bill payments](https://docs.codat.io/accounting-api#/schemas/BillPayment). These include [bills](https://docs.codat.io/accounting-api#/schemas/Bill) and credit notes against bills.\n\n> View the coverage for payments in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=payments" target="_blank">Data coverage explorer</a>.\n\n## Overview\n\nPayments include all accounts receivable transaction data. This includes [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice) and [credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).\n\nA payment in Codat usually represents an allocation of money within any customer accounts receivable account. This includes, but is not strictly limited to: \n\n- A payment made against an invoice, like a credit card, cheque, or cash payment.\n- An allocation of a customer\'s credit note, either to an invoice or maybe a refund.\n- A payment made directly to that accounts receivable account. This might be an overpayment or a prepayment. It might also be the refund of a payment made directly to an accounts receivable account.\n\nDepending on the payments allowed by the underlying accounting package, some payment types may be combined. Please see the example for more details.\n\nIn Codat, a payment contains details of:\n\n- When the payment was recorded in the accounting system.\n- How much it is for and in what currency that amount is in.\n- Who the payment was _paid by_ – the _customer_.\n- The payment method used.\n- The breakdown of the types of payments – the _line items_.\n\nPayments is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).\n\n## Payment types\n\n## Payment of an invoice\n\nA payment paying a single invoice has one entry in its `lines` array. This **line** has the following properties:\n\n- An _amount_ that indicates the amount of the invoice that was paid. This is always positive.\n- A **links** array containing one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case an `Invoice`.\n  - An **id** that contains the ID of the invoice that was paid.\n  - An **amount** for the link. The sum of the **line.amount** and the **links.amount** must equal `0`.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment.\n\n## Payment of multiple invoices\n\nA single payment can pay multiple invoices. This can be represented in one of two formats depending on how the customer keeps their books:\n\n- The payment has multiple entries in its **lines** array, one for each invoice that is paid. Each line follows the example and rules described in [Payment of an invoice](#payment-of-an-invoice).\n- The payment has a line with multiple links to each invoice. This occurs when the proportion of the original payment allocated to each invoice is not available.\n\nEach **line** has the same properties as those described in [Payment of an invoice](#payment-of-an-invoice), with the **amount** indicating how much of the payment was allocated to the invoice. The sum of line amounts equals the **totalAmount** on the payment.\n\n## Payments and refunds on account\n\nA payment on account, that is a payment that doesn’t pay a specific invoice, has one entry in its lines array. The **line** has the following properties:\n\n- A **totalAmount** that indicates the amount paid by a customer or refunded to them by a company. A payment to the customer is always negative. A refund is always positive.\n- A **links** array containing one element with the following properties:\n- A **type** that indicates the type of link. For a payment this is `PaymentOnAccount`. For a refund this is `Refund`.\n- The **id** containing the ID of the customer.\n- The **amount** for the link is `0` – the **totalAmount** _or_ the amount of the payment or refund.\n\nIt is possible to have a payment that is part _on account_ and part _allocated_ to an invoice. Each line should follow the examples above.\n\n## Using a credit note to pay an invoice\n\nThe payment of an invoice using a credit note has one entry in its **lines** array. This **line** has the following properties:\n\n- An **amount** that indicates the amount of money moved, which in this case is `0`, as the credit note and invoice allocation must balance each other.\n- A **links** array containing two elements:\n  - The first **link** has:\n    - A **type** that indicates the type of **link**, in this case an `Invoice`.\n    - An **id** that contains the ID of the invoice that was paid.\n  - The second **link** has:\n    - A **type** that indicates the type of **link**, in this case a `CreditNote`.\n    - An **id** that contains the ID of the credit note used by this payment.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment.\n\n## Refunding a credit note\n\nA payment refunding a credit note has one entry in its **lines** array. This **line** has the following properties:\n\n- An **amount** that indicates the amount of the credit note that was refunded. This is always negative for a refund.\n- A **links** array that contains one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `CreditNote`.\n  - An **id** that contains the ID of the credit note that was refunded.\n\nThe **totalAmount** field on the payment equals the **amount** field of the **line**. These are both negative, as this is money leaving accounts receivable.\n\n## Refunding a payment\n\nIf a payment is refunded, for example, if a customer overpaid an invoice and the overpayment is returned to the customer, there are two payment records: \n\n- One for the incoming over payment.\n- Another for the outgoing refund.\n\nThe payment issuing the refund has a negative **totalAmount**. This payment also has one entry in its lines array with the following properties:\n\n- An **amount** that indicates the amount that was refunded. This is always negative.\n- A **links** array that contains one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `Payment`.\n  - An **id** that contains the ID of the payment that was refunded.\n\nThe **amount** field on the **line** equals the **totalAmount** on the payment and is negative, as this is money leaving accounts receivable.\n\nThe payment that was refunded has a line where the **amount** is positive and the type of the link is `Refund`. This payment may have several entries in its **lines** array if it was used to partly pay an invoice. \n\nFor example: A £1,050 payment on a £1,000 invoice with a refund of £50 has two lines: \n\n- One for £1,000 linked to the invoice that was paid.\n- Another for £50 linked to the payment that refunded the overpayment with a** type** of `Refund` and an ID that corresponds to the payment.\n\nThe **line** linked to the payment has the following properties:\n\n- An **amount** that indicates the amount that was refunded. This is positive as its money that was added to accounts receivable. It\'s balanced out by the negative amount of the refund.\n- A **links** array containing one element with the following properties:\n  - A **type** that indicates the type of **link**, in this case a `Refund`.\n  - An **id** that contains the ID of the payment that refunded this line.\n\n> **Support for linked payments**\n> \n> Not all accounting packages support linking payments in this way. In some platforms, you may see a payment on account and a refund on account.\n\n## Foreign currencies\n\nThere are two types of currency rate that are included in the payments data type: \n\nPayment currency rate: \n\n- Base currency of the accounts receivable account.\n- Foreign currency of the payment.\n\nPayment line link currency rate: \n\n- Base currency of the item the link represents.\n- Foreign currency of the payment.\n\nThese two rates allow the calculation of currency loss or gain for any of the transactions affected by the payment lines. The second rate is used when a payment is applied to an item in a currency that doesn\'t match either:\n\n- The base currency for the accounts receivable account. \n- The currency of the item.\n\n```json title="Currency rate example"\n{\n    "id": "123",\n    "note": ""\n    "totalAmount": 99.99,\n    "currency": "GBP",\n    "lines": [\n        {\n            "amount": 99.99,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "178",\n                    "amount": -50,\n                    "currencyRate":  1.9998,\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n## Example data\n\n> **Object properties**\n> \n> For the sake of brevity, the examples here may omit properties from objects. For the full object definition, see [Payments](https://api.codat.io/swagger/index.html#/Payments).\n\n## Simple examples\n\n```json title="Payment for invoice"\n{\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Allocation of credit note"\n{\n    "totalAmount": 0,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Payment of invoice and payment on account"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "y",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Refund of credit note"\n{\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Refund on accounts receivable account"\n{\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Linked refund on accounts receivable account"\n{\n    "id" : "payment-001",\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Refund",\n                    "id" : "refund-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n{\n    "id" : "refund-001",\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "Payment",\n                    "id" : "payment-001",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Using a credit note and cash to pay an invoice"\n{\n    "totalAmount": 250,\n    "lines": [\n        {\n            "amount": 0,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "x",\n                    "amount": -750\n                }, \n                {\n                    "type": "CreditNote",\n                    "id": "y",\n                    "amount": 750\n                }\n            ]\n        },\n        {\n            "amount": 250,\n            "links": [\n                {\n                    "type": "Invoice",\n                    "id": "x",\n                    "amount": -250\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n## Complex examples\n\n```json title="Use two credit notes and 1000 in to "bank" (cash, cheque etc.) to pay invoice"\n{\n    "totalAmount": 1000,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Pay an invoice with two credit notes and cash, with 1000 left \'on account\'"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "customer-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes pay two invoices with no allocation amount specified"\n{\n    "totalAmount": 0,\n    "lines": [\n        {\n            "amount" : 0,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "w",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes and cash pay three invoices with no allocation amount specified, and refund cash"\n{\n    "totalAmount": 2000,\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "w",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "x",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "Invoice",\n                    "id" : "u",\n                    "amount" : -1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "y",\n                    "amount" : 1000\n                },\n                {\n                    "type" : "CreditNote",\n                    "id" : "z",\n                    "amount" : 1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Refund",\n                    "id" : "refund-001",\n                    "amount" : -1000\n                }\n            ]\n        }\n    ]\n}\n{\n    "id" : "refund-001",\n    "totalAmount": -1000,\n    "lines": [\n        {\n            "amount" : -1000,\n            "links" : [\n                {\n                    "type" : "Payment",\n                    "id" : "payment-001",\n                    "amount" : 1000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\nIn this example, a payment on account is used to pay the same invoice in January and again in February.\n\n```json title="January"\n{\n    "id": "001",\n    "totalAmount": 5000,\n    "date" : "1901-01-01",\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 4000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "PaymentOnAccount-y",\n                    "amount" : -4000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="February"\n{\n    "id": "001",\n    "totalAmount": 5000,\n    "date" : "1901-02-01",\n    "lines": [\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-x",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 1000,\n            "links" : [\n                {\n                    "type" : "Invoice",\n                    "id" : "Invoice-y",\n                    "amount" : -1000\n                }\n            ]\n        },\n        {\n            "amount" : 3000,\n            "links" : [\n                {\n                    "type" : "PaymentOnAccount",\n                    "id" : "PaymentOnAccount-y",\n                    "amount" : -3000\n                }\n            ]\n        }\n    ]\n}\n```\n\n\n\n```json title="Two credit notes and some cash pay two invoices with no allocations specified"\n{\n    "totalAmount": 500,\n    "lines": [\n        {\n            "amount": 500,\n            "links": [{\n                    "type": "Invoice",\n                    "id": "a",\n                    "amount": -1000\n                }, {\n                    "type": "Invoice",\n                    "id": "b",\n                    "amount": -1000\n                }, {\n                    "type": "CreditNote",\n                    "id": "y",\n                    "amount": 750\n                },{\n                    "type": "CreditNote",\n                    "id": "z",\n                    "amount": 750\n                }\n            ]\n        }\n    ]\n}\n```',
-                            required: ['date'],
-                            title: 'Payment',
-                          }),
-                      )
-                      .exactOptional(),
-                    status: z
-                      .enum(['Unknown', 'Draft', 'Submitted', 'PartiallyPaid', 'Paid', 'Void'])
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "Current state of the invoice:\n\n- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.\n- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).\n- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).\n- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).\n- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.",
-                      }),
-                    totalAmount: z.number().exactOptional(),
-                  })
-                  .openapi({ title: 'Enhanced invoice report item', required: [] }),
-              )
+              .array(EnhancedInvoicesReportEnhancedInvoiceReportItemSchema)
               .exactOptional(),
           })
           .openapi({ required: [] }),
@@ -1297,65 +1140,63 @@ const EnhancedInvoicesReportSchema: z.ZodType<EnhancedInvoicesReportType> = z
   })
   .openapi('EnhancedInvoicesReport')
 
+const EnhancedReportEnhancedReportInfoSchema = z
+  .object({
+    companyName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the company queried.' }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'Currency of the P&L/Balance sheet.',
+    }),
+    generatedDate: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+      description: 'Returns the YYYY-MM-DD datetime of report generation.',
+    }),
+    reportName: z.string().exactOptional().openapi({ description: 'The name of the report.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnhancedReportEnhancedReportInfo')
+
+const EnhancedReportAccountCategoryLevelSchema = z
+  .object({
+    confidence: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Confidence level of the category. This will only be populated where `status` is `Suggested`.',
+      }),
+    levelName: z.string().exactOptional().openapi({ description: 'Account category name.' }),
+  })
+  .openapi({
+    description: 'An object containing an ordered list of account category levels.',
+    title: 'Account category level',
+    required: [],
+  })
+  .openapi('EnhancedReportAccountCategoryLevel')
+
+const EnhancedReportEnhancedReportAccountCategorySchema = z
+  .object({
+    levels: z.array(EnhancedReportAccountCategoryLevelSchema).exactOptional(),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returns a status of "Suggested" or "Confirmed". If an account has a confirmed category, it will replace any suggested category returned.',
+      }),
+  })
+  .openapi({ title: 'Account category', required: [] })
+  .openapi('EnhancedReportEnhancedReportAccountCategory')
+
 const EnhancedReportSchema = z
   .object({
-    reportInfo: z
-      .object({
-        companyName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the company queried.' }),
-        currency: CurrencySchema.exactOptional().openapi({
-          description: 'Currency of the P&L/Balance sheet.',
-        }),
-        generatedDate: z
-          .lazy(() => ExcelStatusSchema)
-          .exactOptional()
-          .openapi({ description: 'Returns the YYYY-MM-DD datetime of report generation.' }),
-        reportName: z.string().exactOptional().openapi({ description: 'The name of the report.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
+    reportInfo: EnhancedReportEnhancedReportInfoSchema.exactOptional(),
     reportItems: z
       .array(
         z
           .object({
-            accountCategory: z
-              .object({
-                levels: z
-                  .array(
-                    z
-                      .object({
-                        confidence: z
-                          .number()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Confidence level of the category. This will only be populated where `status` is `Suggested`.',
-                          }),
-                        levelName: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'Account category name.' }),
-                      })
-                      .openapi({
-                        description:
-                          'An object containing an ordered list of account category levels.',
-                        title: 'Account category level',
-                        required: [],
-                      }),
-                  )
-                  .exactOptional(),
-                status: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Returns a status of "Suggested" or "Confirmed". If an account has a confirmed category, it will replace any suggested category returned.',
-                  }),
-              })
-              .exactOptional()
-              .openapi({ title: 'Account category', required: [] }),
+            accountCategory: EnhancedReportEnhancedReportAccountCategorySchema.exactOptional(),
             accountId: z
               .string()
               .exactOptional()
@@ -1371,10 +1212,9 @@ const EnhancedReportSchema = z
                 description:
                   'Balance of the account as reported on the profit and loss or Balance sheet.',
               }),
-            date: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({ description: 'Last date of the period.' }),
+            date: ExcelStatusLastGeneratedSchema.exactOptional().openapi({
+              description: 'Last date of the period.',
+            }),
           })
           .openapi({ title: 'Report item', required: [] }),
       )
@@ -1440,246 +1280,100 @@ const EnhancedReportSchema = z
   })
   .openapi('EnhancedReport')
 
+const ExcelStatusSchema = z
+  .object({
+    errorMessage: z.string().exactOptional(),
+    fileSize: z.int().exactOptional(),
+    inProgress: z.boolean().exactOptional(),
+    lastGenerated: ExcelStatusLastGeneratedSchema.exactOptional(),
+    lastInvocationId: z.string().exactOptional(),
+    queued: z.string().exactOptional(),
+    reportType: z.string().exactOptional(),
+    success: z.boolean().exactOptional(),
+  })
+  .openapi({
+    examples: [
+      {
+        errorMessage: 'string',
+        fileSize: 0,
+        inProgress: true,
+        lastGenerated: '2023-01-25T22:36:05.125Z',
+        lastInvocationId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        queued: '2023-01-25T22:36:05.125Z',
+        reportType: 'string',
+        success: true,
+      },
+    ],
+    title: 'Excel status',
+    required: [],
+  })
+  .openapi('ExcelStatus')
+
 const FinancialMetricsSchema: z.ZodType<FinancialMetricsType> = z
   .object({
     currency: CurrencySchema.exactOptional(),
     errors: z
-      .array(
-        z
-          .object({
-            message: z
-              .string()
-              .exactOptional()
-              .openapi({ example: 'Account categories data has not been synced' }),
-            type: z
-              .enum(['DataNotSynced', 'DataNotSupported', 'DataSyncFailed', 'DataTypeNotEnabled'])
-              .exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
+      .array(FinancialMetricsFinancialMetricErrorSchema)
       .exactOptional()
       .openapi({ description: 'If there are no errors, an empty array is returned.' }),
-    metrics: z
-      .array(
-        z
-          .object({
-            errors: z
-              .array(
-                z
-                  .object({
-                    details: z
-                      .record(z.string(), z.array(z.string()))
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Dictionary list outlining the missing properties or allowed values.',
-                        examples: [
-                          {
-                            missingData: [
-                              'Expense.Operating.Interest',
-                              'Expense.NonOperating.Interest',
-                            ],
-                          },
-                        ],
-                        title: 'Assess error details',
-                      }),
-                    message: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Description of the error.',
-                        example: 'There are uncategorized accounts IDs, see details.',
-                      }),
-                    type: z
-                      .enum(['UncategorizedAccounts', 'MissingInputData', 'InputDataError'])
-                      .exactOptional()
-                      .openapi({ description: 'Metric level error.' }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-            key: z
-              .enum([
-                'Unknown',
-                'EBITDA',
-                'DebtServiceCoverageRatio',
-                'CurrentRatio QuickRatio',
-                'GrossProfitMargin',
-                'FixedChargeCoverageRatio',
-                'WorkingCapital',
-                'FreeCashFlow',
-                'NetProfitMargin',
-                'ReturnOnAssetsRatio',
-                'ReturnOnEquityRatio',
-                'OperatingProfitMargin',
-                'DeptToEquity',
-                'DebtToAssets',
-                'InterestCoverageRatio',
-                'CashRatio',
-                'InventoryTurnoverRatio',
-                'AssetTurnoverRatio',
-                'WorkingCapitalTurnoverRatio',
-                'DaysSalesOutstanding',
-                'DaysPayablesOutstanding',
-              ])
-              .exactOptional(),
-            metricUnit: z.enum(['Ratio', 'Money']).exactOptional(),
-            name: z.string().exactOptional().openapi({ description: 'Metric name.' }),
-            periods: z
-              .array(
-                z
-                  .object({
-                    errors: z
-                      .array(
-                        z
-                          .object({
-                            details: z
-                              .record(z.string(), z.array(z.string()))
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Dictionary list outlining the missing properties or allowed values.',
-                                examples: [
-                                  {
-                                    missingData: [
-                                      'Expense.Operating.Interest',
-                                      'Expense.NonOperating.Interest',
-                                    ],
-                                  },
-                                ],
-                                title: 'Assess error details',
-                              }),
-                            massage: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Description of the error.',
-                                example: 'Missing account data',
-                              }),
-                            type: z
-                              .enum(['MissingAccountData', 'DatesOutOfRange'])
-                              .exactOptional()
-                              .openapi({ description: 'Period error type.' }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional(),
-                    fromDate: z.iso
-                      .date()
-                      .exactOptional()
-                      .openapi({ description: 'The date from which the report starts.' }),
-                    inputs: z
-                      .array(
-                        z
-                          .object({
-                            name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The name of the metric input e.g. “Current Assets”, “Capital Expenditure”.',
-                              }),
-                            value: z
-                              .number()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The positive or negative number of the input value.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional(),
-                    toDate: z.iso
-                      .date()
-                      .exactOptional()
-                      .openapi({
-                        description: 'The date on which the report ends (inclusive of day).',
-                      }),
-                    value: z
-                      .number()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The top level metric value that is calculated for the specified period. \n\nIf the system cannot calculate for that period, the value will be null. The system will still show the metric inputs.',
-                      }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-          })
-          .openapi({ description: '', title: 'Financial metric', required: [] }),
-      )
-      .exactOptional(),
+    metrics: z.array(FinancialMetricsFinancialMetricSchema).exactOptional(),
     periodUnit: z.enum(['Month', 'Week', 'Day']).exactOptional(),
   })
   .openapi({ title: 'Enhanced financial metrics', required: [] })
   .openapi('FinancialMetrics')
 
-const ReportComponentSchema: z.ZodType<ReportComponentType> = z
+const ReportReportDimensionSchema = z
+  .object({
+    displayName: z.string().exactOptional(),
+    index: z.int().exactOptional(),
+    items: z
+      .array(z.object({ index: z.int().exactOptional() }).openapi({ required: [] }))
+      .exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Dimension', required: [] })
+  .openapi('ReportReportDimension')
+
+const ReportReportErrorSchema = z
+  .object({
+    details: z.record(z.string(), z.array(z.string())).exactOptional(),
+    message: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Error', required: [] })
+  .openapi('ReportReportError')
+
+const ReportReportMeasureSchema = z
+  .object({
+    displayName: z.string().exactOptional(),
+    index: z.int().exactOptional(),
+    type: z.string().exactOptional(),
+    units: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Measure', required: [] })
+  .openapi('ReportReportMeasure')
+
+const ReportReportComponentSchema: z.ZodType<ReportReportComponentType> = z
   .lazy(() =>
     z
       .object({
-        components: z.array(ReportComponentSchema).exactOptional(),
+        components: z.array(ReportReportComponentSchema).exactOptional(),
         dimension: z.int().exactOptional(),
         dimensionDisplayName: z.string().exactOptional(),
         item: z.int().exactOptional(),
         itemDisplayName: z.string().exactOptional(),
-        measures: z
-          .array(
-            z
-              .object({
-                index: z.int().exactOptional(),
-                measureDisplayName: z.string().exactOptional(),
-                value: z.number().exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
+        measures: z.array(ReportReportComponentMeasureSchema).exactOptional(),
       })
       .openapi({ title: 'Report component', required: [] }),
   )
-  .openapi('ReportComponent')
+  .openapi('ReportReportComponent')
 
 const ReportSchema = z
   .object({
-    dimensions: z
-      .array(
-        z
-          .object({
-            displayName: z.string().exactOptional(),
-            index: z.int().exactOptional(),
-            items: z
-              .array(z.object({ index: z.int().exactOptional() }).openapi({ required: [] }))
-              .exactOptional(),
-            type: z.string().exactOptional(),
-          })
-          .openapi({ title: 'Dimension', required: [] }),
-      )
-      .exactOptional(),
-    errors: z
-      .array(
-        z
-          .object({
-            details: z.record(z.string(), z.array(z.string())).exactOptional(),
-            message: z.string().exactOptional(),
-            type: z.string().exactOptional(),
-          })
-          .openapi({ title: 'Error', required: [] }),
-      )
-      .exactOptional(),
-    measures: z
-      .array(
-        z
-          .object({
-            displayName: z.string().exactOptional(),
-            index: z.int().exactOptional(),
-            type: z.string().exactOptional(),
-            units: z.string().exactOptional(),
-          })
-          .openapi({ title: 'Measure', required: [] }),
-      )
-      .exactOptional(),
-    reportData: z.array(ReportComponentSchema).exactOptional(),
+    dimensions: z.array(ReportReportDimensionSchema).exactOptional(),
+    errors: z.array(ReportReportErrorSchema).exactOptional(),
+    measures: z.array(ReportReportMeasureSchema).exactOptional(),
+    reportData: z.array(ReportReportComponentSchema).exactOptional(),
     reportInfo: z.record(z.string(), z.string()).exactOptional(),
   })
   .openapi({

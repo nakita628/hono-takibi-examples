@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendContactRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendContactRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendContactHandler = app.openapi(postSendContactRoute, (c) => {
+export const postSendContactRouteHandler: RouteHandler<typeof postSendContactRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

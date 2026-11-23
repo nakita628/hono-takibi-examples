@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateStorageLocationRoute,
   postActionCreateStorageLocationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateStorageLocationRouteHandler: RouteHandler<
+  typeof getActionCreateStorageLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateStorageLocationHandler = app
-  .openapi(getActionCreateStorageLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateStorageLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateStorageLocationRouteHandler: RouteHandler<
+  typeof postActionCreateStorageLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

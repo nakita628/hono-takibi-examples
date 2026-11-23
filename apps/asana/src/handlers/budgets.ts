@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBudgetsBudgetGidRoute,
   getBudgetsBudgetGidRoute,
   getBudgetsRoute,
@@ -7,21 +7,28 @@ import {
   putBudgetsBudgetGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBudgetsRouteHandler: RouteHandler<typeof getBudgetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const budgetsHandler = app
-  .openapi(getBudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBudgetsBudgetGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBudgetsBudgetGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBudgetsRouteHandler: RouteHandler<typeof postBudgetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetGidRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBudgetsBudgetGidRouteHandler: RouteHandler<
+  typeof putBudgetsBudgetGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBudgetsBudgetGidRouteHandler: RouteHandler<
+  typeof deleteBudgetsBudgetGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGithubLinkRoute,
   getGithubApplicationsRoute,
   getGithubCallbackRoute,
@@ -14,42 +14,62 @@ import {
   postGithubSignupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGithubRouteHandler: RouteHandler<typeof getGithubRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const githubHandler = app
-  .openapi(getGithubRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGithubLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGithubRedeployRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubSignupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGithubSignupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGithubApplicationsRouteHandler: RouteHandler<
+  typeof getGithubApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubCallbackRouteHandler: RouteHandler<typeof getGithubCallbackRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubEmailsRouteHandler: RouteHandler<typeof getGithubEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubKeysRouteHandler: RouteHandler<typeof getGithubKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGithubLinkRouteHandler: RouteHandler<typeof deleteGithubLinkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubLinkRouteHandler: RouteHandler<typeof getGithubLinkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubLoginRouteHandler: RouteHandler<typeof getGithubLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGithubRedeployRouteHandler: RouteHandler<typeof postGithubRedeployRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubSignupRouteHandler: RouteHandler<typeof getGithubSignupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGithubSignupRouteHandler: RouteHandler<typeof postGithubSignupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubUsernameRouteHandler: RouteHandler<typeof getGithubUsernameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

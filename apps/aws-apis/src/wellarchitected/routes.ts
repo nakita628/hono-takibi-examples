@@ -266,7 +266,7 @@ type GetAnswerOutputType = {
   WorkloadId?: z.infer<typeof WorkloadIdSchema>
   MilestoneNumber?: z.infer<typeof MilestoneNumberSchema>
   LensAlias?: z.infer<typeof LensAliasSchema>
-  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  LensArn?: z.infer<typeof LensArnSchema>
   Answer?: z.infer<typeof AnswerSchema>
 }
 
@@ -366,14 +366,14 @@ const LensMetricsSchema: z.ZodType<LensMetricsType> = z
 const LensesAppliedCountSchema = z.int().min(0).openapi('LensesAppliedCount')
 
 type ConsolidatedReportMetricType = {
-  MetricType?: z.infer<typeof MetricTypeSchema> & unknown
+  MetricType?: z.infer<typeof MetricTypeSchema>
   RiskCounts?: z.infer<typeof RiskCountsSchema>
   WorkloadId?: z.infer<typeof WorkloadIdSchema>
   WorkloadName?: z.infer<typeof WorkloadNameSchema>
   WorkloadArn?: z.infer<typeof WorkloadArnSchema>
   UpdatedAt?: z.infer<typeof TimestampSchema>
-  Lenses?: z.infer<typeof LensMetricsSchema> & unknown
-  LensesAppliedCount?: z.infer<typeof LensesAppliedCountSchema> & unknown
+  Lenses?: z.infer<typeof LensMetricsSchema>
+  LensesAppliedCount?: z.infer<typeof LensesAppliedCountSchema>
 }
 
 const ConsolidatedReportMetricSchema: z.ZodType<ConsolidatedReportMetricType> = z
@@ -417,7 +417,7 @@ const Base64StringSchema = z
   .openapi('Base64String')
 
 type GetConsolidatedReportOutputType = {
-  Metrics?: z.infer<typeof ConsolidatedReportMetricsSchema> & unknown
+  Metrics?: z.infer<typeof ConsolidatedReportMetricsSchema>
   NextToken?: z.infer<typeof NextTokenSchema>
   Base64String?: z.infer<typeof Base64StringSchema>
 }
@@ -470,7 +470,7 @@ type ListAnswersOutputType = {
   WorkloadId?: z.infer<typeof WorkloadIdSchema>
   MilestoneNumber?: z.infer<typeof MilestoneNumberSchema>
   LensAlias?: z.infer<typeof LensAliasSchema>
-  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  LensArn?: z.infer<typeof LensArnSchema>
   AnswerSummaries?: z.infer<typeof AnswerSummariesSchema>
   NextToken?: z.infer<typeof NextTokenSchema>
 }
@@ -478,7 +478,7 @@ type ListAnswersOutputType = {
 type UpdateAnswerOutputType = {
   WorkloadId?: z.infer<typeof WorkloadIdSchema>
   LensAlias?: z.infer<typeof LensAliasSchema>
-  LensArn?: z.infer<typeof LensArnSchema> & unknown
+  LensArn?: z.infer<typeof LensArnSchema>
   Answer?: z.infer<typeof AnswerSchema>
 }
 

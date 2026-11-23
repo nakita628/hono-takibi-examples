@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetIpamAddressHistoryRoute,
   postActionGetIpamAddressHistoryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetIpamAddressHistoryRouteHandler: RouteHandler<
+  typeof getActionGetIpamAddressHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetIpamAddressHistoryHandler = app
-  .openapi(getActionGetIpamAddressHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetIpamAddressHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetIpamAddressHistoryRouteHandler: RouteHandler<
+  typeof postActionGetIpamAddressHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

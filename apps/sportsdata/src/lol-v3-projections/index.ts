@@ -1,8 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { formatHandler } from './handlers'
+import {
+  getFormatDfsSlatesByDateDateRoute,
+  getFormatPlayerGameProjectionStatsByDateDateRoute,
+  getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute,
+} from './routes'
+import {
+  getFormatDfsSlatesByDateDateRouteHandler,
+  getFormatPlayerGameProjectionStatsByDateDateRouteHandler,
+  getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', formatHandler)
+export const api = app
+  .openapi(getFormatDfsSlatesByDateDateRoute, getFormatDfsSlatesByDateDateRouteHandler)
+  .openapi(
+    getFormatPlayerGameProjectionStatsByDateDateRoute,
+    getFormatPlayerGameProjectionStatsByDateDateRouteHandler,
+  )
+  .openapi(
+    getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute,
+    getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRouteHandler,
+  )
 
 export default app

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteObjectsDefinitionsDefaultObjectRoute,
   deleteObjectsRecordsDefaultObjectIdRoute,
   getObjectsDefinitionsDefaultObjectRoute,
@@ -19,57 +19,100 @@ import {
   putObjectsRecordsDefaultObjectIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postObjectsBatchDefaultObjectRouteHandler: RouteHandler<
+  typeof postObjectsBatchDefaultObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const objectsHandler = app
-  .openapi(postObjectsBatchDefaultObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsDefinitionsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postObjectsDefinitionsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteObjectsDefinitionsDefaultObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsDefinitionsDefaultObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postObjectsJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsJobsIdErrorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postObjectsJobsIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postObjectsMigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsRecordsDefaultObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postObjectsRecordsDefaultObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteObjectsRecordsDefaultObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getObjectsRecordsDefaultObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchObjectsRecordsDefaultObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putObjectsRecordsDefaultObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getObjectsDefinitionsDefaultRouteHandler: RouteHandler<
+  typeof getObjectsDefinitionsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postObjectsDefinitionsDefaultRouteHandler: RouteHandler<
+  typeof postObjectsDefinitionsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteObjectsDefinitionsDefaultObjectRouteHandler: RouteHandler<
+  typeof deleteObjectsDefinitionsDefaultObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsDefinitionsDefaultObjectRouteHandler: RouteHandler<
+  typeof getObjectsDefinitionsDefaultObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsJobsRouteHandler: RouteHandler<typeof getObjectsJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postObjectsJobsRouteHandler: RouteHandler<typeof postObjectsJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsJobsIdRouteHandler: RouteHandler<typeof getObjectsJobsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsJobsIdErrorsRouteHandler: RouteHandler<
+  typeof getObjectsJobsIdErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postObjectsJobsIdFilesRouteHandler: RouteHandler<
+  typeof postObjectsJobsIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postObjectsMigrationsRouteHandler: RouteHandler<
+  typeof postObjectsMigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsRecordsDefaultObjectRouteHandler: RouteHandler<
+  typeof getObjectsRecordsDefaultObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postObjectsRecordsDefaultObjectRouteHandler: RouteHandler<
+  typeof postObjectsRecordsDefaultObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteObjectsRecordsDefaultObjectIdRouteHandler: RouteHandler<
+  typeof deleteObjectsRecordsDefaultObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getObjectsRecordsDefaultObjectIdRouteHandler: RouteHandler<
+  typeof getObjectsRecordsDefaultObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchObjectsRecordsDefaultObjectIdRouteHandler: RouteHandler<
+  typeof patchObjectsRecordsDefaultObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putObjectsRecordsDefaultObjectIdRouteHandler: RouteHandler<
+  typeof putObjectsRecordsDefaultObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceDeleteConnectClientAddInHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceDeleteConnectClientAddInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

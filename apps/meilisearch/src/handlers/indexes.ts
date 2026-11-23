@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIndexesIndexUidDocumentsDocumentIdRoute,
   deleteIndexesIndexUidDocumentsRoute,
   deleteIndexesIndexUidRoute,
@@ -89,267 +89,520 @@ import {
   putIndexesIndexUidSettingsSynonymsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIndexesRouteHandler: RouteHandler<typeof getIndexesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const indexesHandler = app
-  .openapi(getIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidDeleteBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidDocumentsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidDocumentsEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidDocumentsFetchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidFacetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsDictionaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsDictionaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsDictionaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsDisplayedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsDisplayedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsDisplayedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsDistinctAttributeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsDistinctAttributeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsDistinctAttributeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsEmbeddersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsEmbeddersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidSettingsEmbeddersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsFacetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsFacetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsFacetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsFacetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsFacetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidSettingsFacetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsFilterableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsFilterableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsFilterableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsLocalizedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsLocalizedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsLocalizedAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsNonSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsNonSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsNonSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsPaginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsPaginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidSettingsPaginationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsPrefixSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsPrefixSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsPrefixSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsProximityPrecisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsProximityPrecisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsProximityPrecisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsRankingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsRankingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsRankingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsSearchCutoffMsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsSearchCutoffMsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsSearchCutoffMsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsSearchableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsSearchableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsSearchableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsSeparatorTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsSortableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsSortableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsSortableAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsStopWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsStopWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsStopWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIndexesIndexUidSettingsSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSettingsTypoToleranceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIndexesIndexUidSettingsTypoToleranceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIndexesIndexUidSettingsTypoToleranceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexesIndexUidSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexesIndexUidStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIndexesRouteHandler: RouteHandler<typeof postIndexesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidRouteHandler: RouteHandler<typeof getIndexesIndexUidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidDeleteBatchRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidDeleteBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidDocumentsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidDocumentsRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidDocumentsRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidDocumentsRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidDocumentsDeleteRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidDocumentsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidDocumentsEditRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidDocumentsEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidDocumentsFetchRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidDocumentsFetchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidFacetSearchRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidFacetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSearchRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidSearchRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidSettingsRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsChatRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsChatRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsChatRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsDictionaryRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsDictionaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsDictionaryRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsDictionaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsDictionaryRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsDictionaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsDisplayedAttributesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsDisplayedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsDisplayedAttributesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsDisplayedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsDisplayedAttributesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsDisplayedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsDistinctAttributeRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsDistinctAttributeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsDistinctAttributeRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsDistinctAttributeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsDistinctAttributeRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsDistinctAttributeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsEmbeddersRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsEmbeddersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsEmbeddersRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsEmbeddersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidSettingsEmbeddersRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidSettingsEmbeddersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsFacetSearchRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsFacetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsFacetSearchRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsFacetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsFacetSearchRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsFacetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsFacetingRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsFacetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsFacetingRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsFacetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidSettingsFacetingRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidSettingsFacetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsFilterableAttributesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsFilterableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsFilterableAttributesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsFilterableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsFilterableAttributesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsFilterableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsLocalizedAttributesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsLocalizedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsLocalizedAttributesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsLocalizedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsLocalizedAttributesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsLocalizedAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsNonSeparatorTokensRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsNonSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsNonSeparatorTokensRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsNonSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsNonSeparatorTokensRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsNonSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsPaginationRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsPaginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsPaginationRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsPaginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidSettingsPaginationRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidSettingsPaginationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsPrefixSearchRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsPrefixSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsPrefixSearchRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsPrefixSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsPrefixSearchRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsPrefixSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsProximityPrecisionRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsProximityPrecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsProximityPrecisionRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsProximityPrecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsProximityPrecisionRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsProximityPrecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsRankingRulesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsRankingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsRankingRulesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsRankingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsRankingRulesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsRankingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsSearchCutoffMsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsSearchCutoffMsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsSearchCutoffMsRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsSearchCutoffMsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsSearchCutoffMsRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsSearchCutoffMsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsSearchableAttributesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsSearchableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsSearchableAttributesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsSearchableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsSearchableAttributesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsSearchableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsSeparatorTokensRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsSeparatorTokensRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsSeparatorTokensRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsSeparatorTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsSortableAttributesRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsSortableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsSortableAttributesRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsSortableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsSortableAttributesRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsSortableAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsStopWordsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsStopWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsStopWordsRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsStopWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsStopWordsRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsStopWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsSynonymsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsSynonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIndexesIndexUidSettingsSynonymsRouteHandler: RouteHandler<
+  typeof putIndexesIndexUidSettingsSynonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsSynonymsRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsSynonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSettingsTypoToleranceRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSettingsTypoToleranceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIndexesIndexUidSettingsTypoToleranceRouteHandler: RouteHandler<
+  typeof deleteIndexesIndexUidSettingsTypoToleranceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIndexesIndexUidSettingsTypoToleranceRouteHandler: RouteHandler<
+  typeof patchIndexesIndexUidSettingsTypoToleranceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidSimilarRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexesIndexUidSimilarRouteHandler: RouteHandler<
+  typeof postIndexesIndexUidSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexesIndexUidStatsRouteHandler: RouteHandler<
+  typeof getIndexesIndexUidStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

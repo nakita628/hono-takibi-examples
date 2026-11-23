@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceCreateAvailabilityConfigurationHandler = app.openapi(
-  postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceCreateAvailabilityConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

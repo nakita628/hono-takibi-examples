@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNotificationsThreadsThreadIdRoute,
   deleteNotificationsThreadsThreadIdSubscriptionRoute,
   getNotificationsRoute,
@@ -10,30 +10,50 @@ import {
   putNotificationsThreadsThreadIdSubscriptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNotificationsRouteHandler: RouteHandler<typeof getNotificationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const notificationsHandler = app
-  .openapi(getNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNotificationsThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsThreadsThreadIdSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationsThreadsThreadIdSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsThreadsThreadIdSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putNotificationsRouteHandler: RouteHandler<typeof putNotificationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsThreadsThreadIdRouteHandler: RouteHandler<
+  typeof getNotificationsThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNotificationsThreadsThreadIdRouteHandler: RouteHandler<
+  typeof patchNotificationsThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsThreadsThreadIdRouteHandler: RouteHandler<
+  typeof deleteNotificationsThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsThreadsThreadIdSubscriptionRouteHandler: RouteHandler<
+  typeof getNotificationsThreadsThreadIdSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationsThreadsThreadIdSubscriptionRouteHandler: RouteHandler<
+  typeof putNotificationsThreadsThreadIdSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsThreadsThreadIdSubscriptionRouteHandler: RouteHandler<
+  typeof deleteNotificationsThreadsThreadIdSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

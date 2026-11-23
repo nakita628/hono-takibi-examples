@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/safebrowsing/v4/openapi.yaml',
   output: './src/safebrowsing/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/safebrowsing/types.ts' },
   client: { output: './src/safebrowsing/client.ts', baseUrl: '/' },
   rpc: { output: './src/safebrowsing/rpc.ts', parseResponse: true },

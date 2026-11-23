@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTicketsTicketIdLinkedConversationsIdRoute,
   deleteTicketsTicketIdRoute,
   deleteTicketsTicketIdTagsTagIdRoute,
@@ -14,42 +14,72 @@ import {
   putTicketsTicketIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTicketsTicketIdReplyRouteHandler: RouteHandler<
+  typeof postTicketsTicketIdReplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ticketsHandler = app
-  .openapi(postTicketsTicketIdReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsTicketIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTicketsTicketIdTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsTicketIdLinkedConversationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTicketsTicketIdLinkedConversationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsEnqueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsTicketIdChangeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTicketsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTicketsTicketIdTagsRouteHandler: RouteHandler<
+  typeof postTicketsTicketIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTicketsTicketIdTagsTagIdRouteHandler: RouteHandler<
+  typeof deleteTicketsTicketIdTagsTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTicketsTicketIdLinkedConversationsRouteHandler: RouteHandler<
+  typeof postTicketsTicketIdLinkedConversationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTicketsTicketIdLinkedConversationsIdRouteHandler: RouteHandler<
+  typeof deleteTicketsTicketIdLinkedConversationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTicketsRouteHandler: RouteHandler<typeof postTicketsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTicketsEnqueueRouteHandler: RouteHandler<typeof postTicketsEnqueueRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putTicketsTicketIdRouteHandler: RouteHandler<typeof putTicketsTicketIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTicketsTicketIdRouteHandler: RouteHandler<typeof getTicketsTicketIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTicketsTicketIdRouteHandler: RouteHandler<
+  typeof deleteTicketsTicketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTicketsTicketIdChangeTypeRouteHandler: RouteHandler<
+  typeof postTicketsTicketIdChangeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTicketsSearchRouteHandler: RouteHandler<typeof postTicketsSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

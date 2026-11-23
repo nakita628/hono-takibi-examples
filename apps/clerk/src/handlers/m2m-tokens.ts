@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getM2mTokensRoute,
   postM2mTokensM2mTokenIdRevokeRoute,
   postM2mTokensRoute,
   postM2mTokensVerifyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postM2mTokensRouteHandler: RouteHandler<typeof postM2mTokensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const m2mTokensHandler = app
-  .openapi(postM2mTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getM2mTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postM2mTokensM2mTokenIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postM2mTokensVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getM2mTokensRouteHandler: RouteHandler<typeof getM2mTokensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postM2mTokensM2mTokenIdRevokeRouteHandler: RouteHandler<
+  typeof postM2mTokensM2mTokenIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postM2mTokensVerifyRouteHandler: RouteHandler<
+  typeof postM2mTokensVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

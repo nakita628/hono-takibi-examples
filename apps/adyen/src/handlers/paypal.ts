@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPaypalUpdateOrderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPaypalUpdateOrderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const paypalHandler = app.openapi(postPaypalUpdateOrderRoute, (c) => {
+export const postPaypalUpdateOrderRouteHandler: RouteHandler<
+  typeof postPaypalUpdateOrderRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

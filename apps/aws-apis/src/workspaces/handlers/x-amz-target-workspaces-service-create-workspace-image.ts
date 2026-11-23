@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceCreateWorkspaceImageHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceCreateWorkspaceImageRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceCreateWorkspaceImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1DomainDomainRoute,
   deleteV1DomainPermissionsPolicyDomainRoute,
   deleteV1PackageDomainRepositoryFormatPackageRoute,
@@ -40,126 +40,228 @@ import {
   putV1RepositoryPermissionsPolicyDomainRepositoryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRouteHandler: RouteHandler<
+  typeof postV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1PackageVersionsCopyDomainSourceRepositoryDestinationRepositoryFormatPackageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1DomainDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DomainDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DomainDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1RepositoryDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1RepositoryDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RepositoryDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1RepositoryDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1DomainPermissionsPolicyDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DomainPermissionsPolicyDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1PackageDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PackageDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionsDeleteDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1RepositoryPermissionsPoliciesDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PackageVersionDomainRepositoryFormatPackageVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionsDisposeDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AuthorizationTokenDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PackageVersionAssetDomainRepositoryFormatPackageVersionAssetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PackageVersionReadmeDomainRepositoryFormatPackageVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RepositoryEndpointDomainRepositoryFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RepositoryPermissionsPolicyDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1RepositoryPermissionsPolicyDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionAssetsDomainRepositoryFormatPackageVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionDependenciesDomainRepositoryFormatPackageVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionsDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackagesDomainRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1RepositoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DomainRepositoriesDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1PackageVersionPublishDomainRepositoryFormatPackageVersionAssetXAmzContentSha256Route,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putV1DomainPermissionsPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TagResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UntagResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PackageVersionsUpdateStatusDomainRepositoryFormatPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRouteHandler: RouteHandler<
+  typeof deleteV1RepositoryExternalConnectionDomainRepositoryExternalConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionsCopyDomainSourceRepositoryDestinationRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageVersionsCopyDomainSourceRepositoryDestinationRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DomainDomainRouteHandler: RouteHandler<typeof postV1DomainDomainRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1DomainDomainRouteHandler: RouteHandler<
+  typeof deleteV1DomainDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DomainDomainRouteHandler: RouteHandler<typeof getV1DomainDomainRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1RepositoryDomainRepositoryRouteHandler: RouteHandler<
+  typeof postV1RepositoryDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1RepositoryDomainRepositoryRouteHandler: RouteHandler<
+  typeof deleteV1RepositoryDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RepositoryDomainRepositoryRouteHandler: RouteHandler<
+  typeof getV1RepositoryDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1RepositoryDomainRepositoryRouteHandler: RouteHandler<
+  typeof putV1RepositoryDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1DomainPermissionsPolicyDomainRouteHandler: RouteHandler<
+  typeof deleteV1DomainPermissionsPolicyDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DomainPermissionsPolicyDomainRouteHandler: RouteHandler<
+  typeof getV1DomainPermissionsPolicyDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1PackageDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof deleteV1PackageDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PackageDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof getV1PackageDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionsDeleteDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageVersionsDeleteDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1RepositoryPermissionsPoliciesDomainRepositoryRouteHandler: RouteHandler<
+  typeof deleteV1RepositoryPermissionsPoliciesDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PackageVersionDomainRepositoryFormatPackageVersionRouteHandler: RouteHandler<
+  typeof getV1PackageVersionDomainRepositoryFormatPackageVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionsDisposeDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageVersionsDisposeDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AuthorizationTokenDomainRouteHandler: RouteHandler<
+  typeof postV1AuthorizationTokenDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PackageVersionAssetDomainRepositoryFormatPackageVersionAssetRouteHandler: RouteHandler<
+  typeof getV1PackageVersionAssetDomainRepositoryFormatPackageVersionAssetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PackageVersionReadmeDomainRepositoryFormatPackageVersionRouteHandler: RouteHandler<
+  typeof getV1PackageVersionReadmeDomainRepositoryFormatPackageVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RepositoryEndpointDomainRepositoryFormatRouteHandler: RouteHandler<
+  typeof getV1RepositoryEndpointDomainRepositoryFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RepositoryPermissionsPolicyDomainRepositoryRouteHandler: RouteHandler<
+  typeof getV1RepositoryPermissionsPolicyDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1RepositoryPermissionsPolicyDomainRepositoryRouteHandler: RouteHandler<
+  typeof putV1RepositoryPermissionsPolicyDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DomainsRouteHandler: RouteHandler<typeof postV1DomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionAssetsDomainRepositoryFormatPackageVersionRouteHandler: RouteHandler<
+  typeof postV1PackageVersionAssetsDomainRepositoryFormatPackageVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionDependenciesDomainRepositoryFormatPackageVersionRouteHandler: RouteHandler<
+  typeof postV1PackageVersionDependenciesDomainRepositoryFormatPackageVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionsDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageVersionsDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackagesDomainRepositoryRouteHandler: RouteHandler<
+  typeof postV1PackagesDomainRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1RepositoriesRouteHandler: RouteHandler<typeof postV1RepositoriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DomainRepositoriesDomainRouteHandler: RouteHandler<
+  typeof postV1DomainRepositoriesDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof postV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionPublishDomainRepositoryFormatPackageVersionAssetXAmzContentSha256RouteHandler: RouteHandler<
+  typeof postV1PackageVersionPublishDomainRepositoryFormatPackageVersionAssetXAmzContentSha256Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1DomainPermissionsPolicyRouteHandler: RouteHandler<
+  typeof putV1DomainPermissionsPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TagResourceArnRouteHandler: RouteHandler<
+  typeof postV1TagResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UntagResourceArnRouteHandler: RouteHandler<
+  typeof postV1UntagResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PackageVersionsUpdateStatusDomainRepositoryFormatPackageRouteHandler: RouteHandler<
+  typeof postV1PackageVersionsUpdateStatusDomainRepositoryFormatPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

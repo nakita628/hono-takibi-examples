@@ -89,9 +89,13 @@ type WebhookSubscription = {
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
-  { '/user': { $get: { input: {}; output: {}; outputFormat: string; status: 401 } } } & {
-    '/workspaces': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
-  } & {
+  {
+    '/user': {
+      $get:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+    }
+  } & { '/workspaces': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
     '/workspaces/:workspace_slug': {
       $get: {
         input: { param: { workspace_slug: string } } & {
@@ -181,12 +185,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $post: {
-        input: { param: { workspace_slug: string } } & { json: ActivityAndIdentity }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+      $post:
+        | {
+            input: { param: { workspace_slug: string } } & { json: ActivityAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { workspace_slug: string } } & { json: ActivityAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { workspace_slug: string } } & { json: ActivityAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/:workspace_slug/activities/:id': {
@@ -304,30 +321,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $post: {
-        input: { param: { workspace_slug: string } } & { json: MemberAndIdentity }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+      $post:
+        | {
+            input: { param: { workspace_slug: string } } & { json: MemberAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { workspace_slug: string } } & { json: MemberAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { workspace_slug: string } } & { json: MemberAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { workspace_slug: string } } & { json: MemberAndIdentity }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/:workspace_slug/members/find': {
-      $get: {
-        input: { param: { workspace_slug: string } } & {
-          query: {
-            source?: string | undefined
-            source_host?: string | undefined
-            uid?: string | undefined
-            username?: string | undefined
-            email?: string | undefined
-            github?: string | undefined
+      $get:
+        | {
+            input: { param: { workspace_slug: string } } & {
+              query: {
+                source?: string | undefined
+                source_host?: string | undefined
+                uid?: string | undefined
+                username?: string | undefined
+                email?: string | undefined
+                github?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { workspace_slug: string } } & {
+              query: {
+                source?: string | undefined
+                source_host?: string | undefined
+                uid?: string | undefined
+                username?: string | undefined
+                email?: string | undefined
+                github?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/:workspace_slug/members/:member_slug': {
@@ -381,14 +433,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $post: {
-        input: { param: { workspace_slug: string; member_slug: string } } & {
-          json: CustomOrPostActivity
-        }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+      $post:
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & {
+              json: CustomOrPostActivity
+            }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & {
+              json: CustomOrPostActivity
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & {
+              json: CustomOrPostActivity
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/:workspace_slug/members/:member_slug/activities/:id': {
@@ -422,6 +491,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string; id: string } } & {
+              json: Activity
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/:workspace_slug/members/:member_slug/identities': {
@@ -438,12 +515,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
-      $post: {
-        input: { param: { workspace_slug: string; member_slug: string } } & { json: Identity }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Identity }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+      $post:
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Identity }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Identity }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Identity }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/:workspace_slug/members/:member_slug/notes': {
@@ -455,12 +551,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $post: {
-        input: { param: { workspace_slug: string; member_slug: string } } & { json: Note }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+      $post:
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Note }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { workspace_slug: string; member_slug: string } } & { json: Note }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/:workspace_slug/members/:member_slug/notes/:id': {

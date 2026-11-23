@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNhArtArtworkRoute,
   getNhArtRoute,
   getNhBugsBugRoute,
@@ -31,93 +31,138 @@ import {
   getNhToolsToolRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNhArtRouteHandler: RouteHandler<typeof getNhArtRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const nhHandler = app
-  .openapi(getNhArtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhArtArtworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhBugsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhBugsBugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhClothingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhClothingClothingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFishFishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsAllFossilRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsGroupsFossilGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsIndividualsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFossilsIndividualsFossilRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFurnitureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhFurnitureFurnitureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhInteriorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhInteriorItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhItemsItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhPhotosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhPhotosItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhRecipesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhRecipesItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhSeaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhSeaSeaCreatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhToolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNhToolsToolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNhArtArtworkRouteHandler: RouteHandler<typeof getNhArtArtworkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhBugsRouteHandler: RouteHandler<typeof getNhBugsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhBugsBugRouteHandler: RouteHandler<typeof getNhBugsBugRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhClothingRouteHandler: RouteHandler<typeof getNhClothingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhClothingClothingRouteHandler: RouteHandler<
+  typeof getNhClothingClothingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhEventsRouteHandler: RouteHandler<typeof getNhEventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFishRouteHandler: RouteHandler<typeof getNhFishRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFishFishRouteHandler: RouteHandler<typeof getNhFishFishRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsAllRouteHandler: RouteHandler<typeof getNhFossilsAllRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsAllFossilRouteHandler: RouteHandler<
+  typeof getNhFossilsAllFossilRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsGroupsRouteHandler: RouteHandler<typeof getNhFossilsGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsGroupsFossilGroupRouteHandler: RouteHandler<
+  typeof getNhFossilsGroupsFossilGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsIndividualsRouteHandler: RouteHandler<
+  typeof getNhFossilsIndividualsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFossilsIndividualsFossilRouteHandler: RouteHandler<
+  typeof getNhFossilsIndividualsFossilRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFurnitureRouteHandler: RouteHandler<typeof getNhFurnitureRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhFurnitureFurnitureRouteHandler: RouteHandler<
+  typeof getNhFurnitureFurnitureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhInteriorRouteHandler: RouteHandler<typeof getNhInteriorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhInteriorItemRouteHandler: RouteHandler<typeof getNhInteriorItemRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhItemsRouteHandler: RouteHandler<typeof getNhItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhItemsItemRouteHandler: RouteHandler<typeof getNhItemsItemRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhPhotosRouteHandler: RouteHandler<typeof getNhPhotosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhPhotosItemRouteHandler: RouteHandler<typeof getNhPhotosItemRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhRecipesRouteHandler: RouteHandler<typeof getNhRecipesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhRecipesItemRouteHandler: RouteHandler<typeof getNhRecipesItemRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhSeaRouteHandler: RouteHandler<typeof getNhSeaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhSeaSeaCreatureRouteHandler: RouteHandler<
+  typeof getNhSeaSeaCreatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhToolsRouteHandler: RouteHandler<typeof getNhToolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNhToolsToolRouteHandler: RouteHandler<typeof getNhToolsToolRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -660,7 +660,7 @@ export const postClientRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getClientClientIdRoute = createRoute({
@@ -868,7 +868,7 @@ export const getClientClientIdTokenKindRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getDomainDomainnameRoute = createRoute({
@@ -1935,7 +1935,7 @@ export const postUserRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUserUsernameRoute = createRoute({
@@ -2223,5 +2223,5 @@ export const getUserUsernameTokenKindRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

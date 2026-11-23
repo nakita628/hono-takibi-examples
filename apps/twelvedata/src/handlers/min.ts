@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMinRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMinRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const minHandler = app.openapi(getMinRoute, (c) => {
+export const getMinRouteHandler: RouteHandler<typeof getMinRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

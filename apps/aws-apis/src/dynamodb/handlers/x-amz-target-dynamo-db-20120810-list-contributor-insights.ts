@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810ListContributorInsightsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810ListContributorInsightsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810ListContributorInsightsHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810ListContributorInsightsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810ListContributorInsightsRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810ListContributorInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

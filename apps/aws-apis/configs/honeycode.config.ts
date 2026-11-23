@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/honeycode/2020-03-01/openapi.yaml',
   output: './src/honeycode/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/honeycode/types.ts' },
   client: { output: './src/honeycode/client.ts', baseUrl: '/' },
   rpc: { output: './src/honeycode/rpc.ts', parseResponse: true },

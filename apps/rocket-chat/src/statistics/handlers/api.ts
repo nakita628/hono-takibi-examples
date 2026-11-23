@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1EngagementDashboardChannelsListRoute,
   getApiV1EngagementDashboardMessagesMessagesSentRoute,
   getApiV1EngagementDashboardMessagesOriginRoute,
@@ -14,42 +14,74 @@ import {
   postApiV1StatisticsTelemetryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1StatisticsListRouteHandler: RouteHandler<
+  typeof getApiV1StatisticsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1StatisticsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1StatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1StatisticsTelemetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardUsersNewUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardUsersActiveUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardUsersUsersByTimeOfTheDayInAWeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardUsersChatBusierHourlyDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardUsersChatBusierWeeklyDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardMessagesMessagesSentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardMessagesOriginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardMessagesTopFivePopularChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1EngagementDashboardChannelsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV1StatisticsRouteHandler: RouteHandler<typeof getApiV1StatisticsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1StatisticsTelemetryRouteHandler: RouteHandler<
+  typeof postApiV1StatisticsTelemetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardUsersNewUsersRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardUsersNewUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardUsersActiveUsersRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardUsersActiveUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardUsersUsersByTimeOfTheDayInAWeekRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardUsersUsersByTimeOfTheDayInAWeekRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardUsersChatBusierHourlyDataRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardUsersChatBusierHourlyDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardUsersChatBusierWeeklyDataRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardUsersChatBusierWeeklyDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardMessagesMessagesSentRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardMessagesMessagesSentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardMessagesOriginRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardMessagesOriginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardMessagesTopFivePopularChannelsRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardMessagesTopFivePopularChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1EngagementDashboardChannelsListRouteHandler: RouteHandler<
+  typeof getApiV1EngagementDashboardChannelsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

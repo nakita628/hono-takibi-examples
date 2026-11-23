@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postReplaceStringRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postReplaceStringRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const replaceStringHandler = app.openapi(postReplaceStringRoute, (c) => {
+export const postReplaceStringRouteHandler: RouteHandler<typeof postReplaceStringRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

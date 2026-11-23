@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/transportcg/3.0.0/openapi.yaml',
   output: './src/transportcg/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/transportcg/types.ts' },
   client: { output: './src/transportcg/client.ts', baseUrl: '/' },
   rpc: { output: './src/transportcg/rpc.ts', parseResponse: true },

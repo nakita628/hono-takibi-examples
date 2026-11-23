@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCorporateGroupIdRoute,
   deleteCorporateSubAccountIdRoute,
   deleteCorporateUserRevokeEmailRoute,
@@ -28,84 +28,156 @@ import {
   putCorporateUserInvitationActionEmailRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCorporateGroupRouteHandler: RouteHandler<typeof postCorporateGroupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const corporateHandler = app
-  .openapi(postCorporateGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateGroupUnlinkGroupIdSubAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCorporateGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateInvitedUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateMasterAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateSsoTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateSubAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateSubAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateSubAccountIpAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateSubAccountIpDissociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateSubAccountKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateSubAccountSsoTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCorporateSubAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateSubAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateSubAccountIdApplicationsToggleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateSubAccountIdPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateSubAccountsPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateUserInvitationSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateUserInvitationActionEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCorporateUserRevokeEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateUserEmailPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCorporateUserEmailPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putCorporateGroupUnlinkGroupIdSubAccountsRouteHandler: RouteHandler<
+  typeof putCorporateGroupUnlinkGroupIdSubAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCorporateGroupIdRouteHandler: RouteHandler<
+  typeof deleteCorporateGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateGroupIdRouteHandler: RouteHandler<
+  typeof getCorporateGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateGroupIdRouteHandler: RouteHandler<
+  typeof putCorporateGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateGroupsRouteHandler: RouteHandler<typeof getCorporateGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateInvitedUsersRouteHandler: RouteHandler<
+  typeof getCorporateInvitedUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateIpRouteHandler: RouteHandler<typeof getCorporateIpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateMasterAccountRouteHandler: RouteHandler<
+  typeof getCorporateMasterAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateSsoTokenRouteHandler: RouteHandler<
+  typeof postCorporateSsoTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateSubAccountRouteHandler: RouteHandler<
+  typeof getCorporateSubAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateSubAccountRouteHandler: RouteHandler<
+  typeof postCorporateSubAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateSubAccountIpAssociateRouteHandler: RouteHandler<
+  typeof postCorporateSubAccountIpAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateSubAccountIpDissociateRouteHandler: RouteHandler<
+  typeof putCorporateSubAccountIpDissociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateSubAccountKeyRouteHandler: RouteHandler<
+  typeof postCorporateSubAccountKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateSubAccountSsoTokenRouteHandler: RouteHandler<
+  typeof postCorporateSubAccountSsoTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCorporateSubAccountIdRouteHandler: RouteHandler<
+  typeof deleteCorporateSubAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateSubAccountIdRouteHandler: RouteHandler<
+  typeof getCorporateSubAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateSubAccountIdApplicationsToggleRouteHandler: RouteHandler<
+  typeof putCorporateSubAccountIdApplicationsToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateSubAccountIdPlanRouteHandler: RouteHandler<
+  typeof putCorporateSubAccountIdPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateSubAccountsPlanRouteHandler: RouteHandler<
+  typeof putCorporateSubAccountsPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateUserInvitationSendRouteHandler: RouteHandler<
+  typeof postCorporateUserInvitationSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateUserInvitationActionEmailRouteHandler: RouteHandler<
+  typeof putCorporateUserInvitationActionEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCorporateUserRevokeEmailRouteHandler: RouteHandler<
+  typeof deleteCorporateUserRevokeEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateUserEmailPermissionsRouteHandler: RouteHandler<
+  typeof getCorporateUserEmailPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCorporateUserEmailPermissionsRouteHandler: RouteHandler<
+  typeof putCorporateUserEmailPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

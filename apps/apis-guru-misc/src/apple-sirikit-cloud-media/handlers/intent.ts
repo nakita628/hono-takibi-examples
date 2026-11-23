@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postIntentAddMediaRoute,
   postIntentPlayMediaRoute,
   postIntentUpdateMediaAffinityRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIntentAddMediaRouteHandler: RouteHandler<typeof postIntentAddMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const intentHandler = app
-  .openapi(postIntentAddMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntentPlayMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntentUpdateMediaAffinityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntentPlayMediaRouteHandler: RouteHandler<
+  typeof postIntentPlayMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntentUpdateMediaAffinityRouteHandler: RouteHandler<
+  typeof postIntentUpdateMediaAffinityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

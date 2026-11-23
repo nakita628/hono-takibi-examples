@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postQueryXMLRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postQueryXMLRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const queryXmlHandler = app.openapi(postQueryXMLRoute, (c) => {
+export const postQueryXMLRouteHandler: RouteHandler<typeof postQueryXMLRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

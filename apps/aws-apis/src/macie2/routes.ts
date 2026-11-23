@@ -332,9 +332,9 @@ const ScopingSchema = z
   .openapi('Scoping')
 
 type S3JobDefinitionType = {
-  bucketCriteria?: z.infer<typeof S3BucketCriteriaForJobSchema> & unknown
-  bucketDefinitions?: z.infer<typeof ListOfS3BucketDefinitionForJobSchema> & unknown
-  scoping?: z.infer<typeof ScopingSchema> & unknown
+  bucketCriteria?: z.infer<typeof S3BucketCriteriaForJobSchema>
+  bucketDefinitions?: z.infer<typeof ListOfS3BucketDefinitionForJobSchema>
+  scoping?: z.infer<typeof ScopingSchema>
 }
 
 const S3JobDefinitionSchema: z.ZodType<S3JobDefinitionType> = z
@@ -465,27 +465,27 @@ const UserPausedDetailsSchema = z
   .openapi('UserPausedDetails')
 
 type DescribeClassificationJobResponseType = {
-  allowListIds?: z.infer<typeof ListOfStringSchema> & unknown
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  createdAt?: z.infer<typeof TimestampIso8601Schema> & unknown
-  customDataIdentifierIds?: z.infer<typeof ListOfStringSchema> & unknown
-  description?: z.infer<typeof StringSchema> & unknown
-  initialRun?: z.infer<typeof BooleanSchema> & unknown
-  jobArn?: z.infer<typeof StringSchema> & unknown
-  jobId?: z.infer<typeof StringSchema> & unknown
-  jobStatus?: z.infer<typeof JobStatusSchema> & unknown
-  jobType?: z.infer<typeof JobTypeSchema> & unknown
-  lastRunErrorStatus?: z.infer<typeof LastRunErrorStatusSchema> & unknown
-  lastRunTime?: z.infer<typeof TimestampIso8601Schema> & unknown
-  managedDataIdentifierIds?: z.infer<typeof ListOfStringSchema> & unknown
-  managedDataIdentifierSelector?: z.infer<typeof ManagedDataIdentifierSelectorSchema> & unknown
-  name?: z.infer<typeof StringSchema> & unknown
-  s3JobDefinition?: z.infer<typeof S3JobDefinitionSchema> & unknown
-  samplingPercentage?: z.infer<typeof IntegerSchema> & unknown
-  scheduleFrequency?: z.infer<typeof JobScheduleFrequencySchema> & unknown
-  statistics?: z.infer<typeof StatisticsSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
-  userPausedDetails?: z.infer<typeof UserPausedDetailsSchema> & unknown
+  allowListIds?: z.infer<typeof ListOfStringSchema>
+  clientToken?: z.infer<typeof StringSchema>
+  createdAt?: z.infer<typeof TimestampIso8601Schema>
+  customDataIdentifierIds?: z.infer<typeof ListOfStringSchema>
+  description?: z.infer<typeof StringSchema>
+  initialRun?: z.infer<typeof BooleanSchema>
+  jobArn?: z.infer<typeof StringSchema>
+  jobId?: z.infer<typeof StringSchema>
+  jobStatus?: z.infer<typeof JobStatusSchema>
+  jobType?: z.infer<typeof JobTypeSchema>
+  lastRunErrorStatus?: z.infer<typeof LastRunErrorStatusSchema>
+  lastRunTime?: z.infer<typeof TimestampIso8601Schema>
+  managedDataIdentifierIds?: z.infer<typeof ListOfStringSchema>
+  managedDataIdentifierSelector?: z.infer<typeof ManagedDataIdentifierSelectorSchema>
+  name?: z.infer<typeof StringSchema>
+  s3JobDefinition?: z.infer<typeof S3JobDefinitionSchema>
+  samplingPercentage?: z.infer<typeof IntegerSchema>
+  scheduleFrequency?: z.infer<typeof JobScheduleFrequencySchema>
+  statistics?: z.infer<typeof StatisticsSchema>
+  tags?: z.infer<typeof TagMapSchema>
+  userPausedDetails?: z.infer<typeof UserPausedDetailsSchema>
 }
 
 const FindingCategorySchema = z
@@ -784,12 +784,12 @@ const ClassificationResultStatusSchema = z
   .openapi('ClassificationResultStatus')
 
 type ClassificationResultType = {
-  additionalOccurrences?: z.infer<typeof BooleanSchema> & unknown
-  customDataIdentifiers?: z.infer<typeof CustomDataIdentifiersSchema> & unknown
-  mimeType?: z.infer<typeof StringSchema> & unknown
-  sensitiveData?: z.infer<typeof SensitiveDataSchema> & unknown
-  sizeClassified?: z.infer<typeof LongSchema> & unknown
-  status?: z.infer<typeof ClassificationResultStatusSchema> & unknown
+  additionalOccurrences?: z.infer<typeof BooleanSchema>
+  customDataIdentifiers?: z.infer<typeof CustomDataIdentifiersSchema>
+  mimeType?: z.infer<typeof StringSchema>
+  sensitiveData?: z.infer<typeof SensitiveDataSchema>
+  sizeClassified?: z.infer<typeof LongSchema>
+  status?: z.infer<typeof ClassificationResultStatusSchema>
 }
 
 const ClassificationResultSchema: z.ZodType<ClassificationResultType> = z
@@ -825,11 +825,11 @@ const ClassificationResultSchema: z.ZodType<ClassificationResultType> = z
   .openapi('ClassificationResult')
 
 type ClassificationDetailsType = {
-  detailedResultsLocation?: z.infer<typeof StringSchema> & unknown
-  jobArn?: z.infer<typeof StringSchema> & unknown
-  jobId?: z.infer<typeof StringSchema> & unknown
-  originType?: z.infer<typeof OriginTypeSchema> & unknown
-  result?: z.infer<typeof ClassificationResultSchema> & unknown
+  detailedResultsLocation?: z.infer<typeof StringSchema>
+  jobArn?: z.infer<typeof StringSchema>
+  jobId?: z.infer<typeof StringSchema>
+  originType?: z.infer<typeof OriginTypeSchema>
+  result?: z.infer<typeof ClassificationResultSchema>
 }
 
 const ClassificationDetailsSchema: z.ZodType<ClassificationDetailsType> = z
@@ -1648,24 +1648,24 @@ const FindingTypeSchema = z
   .openapi('FindingType')
 
 type FindingType = {
-  accountId?: z.infer<typeof StringSchema> & unknown
-  archived?: z.infer<typeof BooleanSchema> & unknown
-  category?: z.infer<typeof FindingCategorySchema> & unknown
-  classificationDetails?: z.infer<typeof ClassificationDetailsSchema> & unknown
-  count?: z.infer<typeof LongSchema> & unknown
-  createdAt?: z.infer<typeof TimestampIso8601Schema> & unknown
-  description?: z.infer<typeof StringSchema> & unknown
-  id?: z.infer<typeof StringSchema> & unknown
-  partition?: z.infer<typeof StringSchema> & unknown
-  policyDetails?: z.infer<typeof PolicyDetailsSchema> & unknown
-  region?: z.infer<typeof StringSchema> & unknown
-  resourcesAffected?: z.infer<typeof ResourcesAffectedSchema> & unknown
-  sample?: z.infer<typeof BooleanSchema> & unknown
-  schemaVersion?: z.infer<typeof StringSchema> & unknown
-  severity?: z.infer<typeof SeveritySchema> & unknown
-  title?: z.infer<typeof StringSchema> & unknown
-  type?: z.infer<typeof FindingTypeSchema> & unknown
-  updatedAt?: z.infer<typeof TimestampIso8601Schema> & unknown
+  accountId?: z.infer<typeof StringSchema>
+  archived?: z.infer<typeof BooleanSchema>
+  category?: z.infer<typeof FindingCategorySchema>
+  classificationDetails?: z.infer<typeof ClassificationDetailsSchema>
+  count?: z.infer<typeof LongSchema>
+  createdAt?: z.infer<typeof TimestampIso8601Schema>
+  description?: z.infer<typeof StringSchema>
+  id?: z.infer<typeof StringSchema>
+  partition?: z.infer<typeof StringSchema>
+  policyDetails?: z.infer<typeof PolicyDetailsSchema>
+  region?: z.infer<typeof StringSchema>
+  resourcesAffected?: z.infer<typeof ResourcesAffectedSchema>
+  sample?: z.infer<typeof BooleanSchema>
+  schemaVersion?: z.infer<typeof StringSchema>
+  severity?: z.infer<typeof SeveritySchema>
+  title?: z.infer<typeof StringSchema>
+  type?: z.infer<typeof FindingTypeSchema>
+  updatedAt?: z.infer<typeof TimestampIso8601Schema>
 }
 
 const FindingSchema: z.ZodType<FindingType> = z
@@ -1742,18 +1742,18 @@ const ListOfFindingSchema: z.ZodType<ListOfFindingType> = z
   .array(FindingSchema)
   .openapi('ListOfFinding')
 
-type GetFindingsResponseType = { findings?: z.infer<typeof ListOfFindingSchema> & unknown }
+type GetFindingsResponseType = { findings?: z.infer<typeof ListOfFindingSchema> }
 
 type JobSummaryType = {
-  bucketCriteria?: z.infer<typeof S3BucketCriteriaForJobSchema> & unknown
-  bucketDefinitions?: z.infer<typeof ListOfS3BucketDefinitionForJobSchema> & unknown
-  createdAt?: z.infer<typeof TimestampIso8601Schema> & unknown
-  jobId?: z.infer<typeof StringSchema> & unknown
-  jobStatus?: z.infer<typeof JobStatusSchema> & unknown
-  jobType?: z.infer<typeof JobTypeSchema> & unknown
-  lastRunErrorStatus?: z.infer<typeof LastRunErrorStatusSchema> & unknown
-  name?: z.infer<typeof StringSchema> & unknown
-  userPausedDetails?: z.infer<typeof UserPausedDetailsSchema> & unknown
+  bucketCriteria?: z.infer<typeof S3BucketCriteriaForJobSchema>
+  bucketDefinitions?: z.infer<typeof ListOfS3BucketDefinitionForJobSchema>
+  createdAt?: z.infer<typeof TimestampIso8601Schema>
+  jobId?: z.infer<typeof StringSchema>
+  jobStatus?: z.infer<typeof JobStatusSchema>
+  jobType?: z.infer<typeof JobTypeSchema>
+  lastRunErrorStatus?: z.infer<typeof LastRunErrorStatusSchema>
+  name?: z.infer<typeof StringSchema>
+  userPausedDetails?: z.infer<typeof UserPausedDetailsSchema>
 }
 
 const JobSummarySchema: z.ZodType<JobSummaryType> = z
@@ -1805,24 +1805,24 @@ const ListOfJobSummarySchema: z.ZodType<ListOfJobSummaryType> = z
   .openapi('ListOfJobSummary')
 
 type ListClassificationJobsResponseType = {
-  items?: z.infer<typeof ListOfJobSummarySchema> & unknown
-  nextToken?: z.infer<typeof StringSchema> & unknown
+  items?: z.infer<typeof ListOfJobSummarySchema>
+  nextToken?: z.infer<typeof StringSchema>
 }
 
 type CreateClassificationJobRequestType = {
-  allowListIds?: z.infer<typeof ListOfStringSchema> & unknown
-  clientToken: z.infer<typeof StringSchema> & unknown
-  customDataIdentifierIds?: z.infer<typeof ListOfStringSchema> & unknown
-  description?: z.infer<typeof StringSchema> & unknown
-  initialRun?: z.infer<typeof BooleanSchema> & unknown
-  jobType: z.infer<typeof JobTypeSchema> & unknown
-  managedDataIdentifierIds?: z.infer<typeof ListOfStringSchema> & unknown
-  managedDataIdentifierSelector?: z.infer<typeof ManagedDataIdentifierSelectorSchema> & unknown
-  name: z.infer<typeof StringSchema> & unknown
-  s3JobDefinition: z.infer<typeof S3JobDefinitionSchema> & unknown
-  samplingPercentage?: z.infer<typeof IntegerSchema> & unknown
-  scheduleFrequency?: z.infer<typeof JobScheduleFrequencySchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  allowListIds?: z.infer<typeof ListOfStringSchema>
+  clientToken: z.infer<typeof StringSchema>
+  customDataIdentifierIds?: z.infer<typeof ListOfStringSchema>
+  description?: z.infer<typeof StringSchema>
+  initialRun?: z.infer<typeof BooleanSchema>
+  jobType: z.infer<typeof JobTypeSchema>
+  managedDataIdentifierIds?: z.infer<typeof ListOfStringSchema>
+  managedDataIdentifierSelector?: z.infer<typeof ManagedDataIdentifierSelectorSchema>
+  name: z.infer<typeof StringSchema>
+  s3JobDefinition: z.infer<typeof S3JobDefinitionSchema>
+  samplingPercentage?: z.infer<typeof IntegerSchema>
+  scheduleFrequency?: z.infer<typeof JobScheduleFrequencySchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 const SearchResourcesComparatorSchema = z
@@ -1988,10 +1988,10 @@ const SearchResourcesSortCriteriaSchema = z
   .openapi('SearchResourcesSortCriteria')
 
 type SearchResourcesRequestType = {
-  bucketCriteria?: z.infer<typeof SearchResourcesBucketCriteriaSchema> & unknown
-  maxResults?: z.infer<typeof IntegerSchema> & unknown
-  nextToken?: z.infer<typeof StringSchema> & unknown
-  sortCriteria?: z.infer<typeof SearchResourcesSortCriteriaSchema> & unknown
+  bucketCriteria?: z.infer<typeof SearchResourcesBucketCriteriaSchema>
+  maxResults?: z.infer<typeof IntegerSchema>
+  nextToken?: z.infer<typeof StringSchema>
+  sortCriteria?: z.infer<typeof SearchResourcesSortCriteriaSchema>
 }
 
 const AcceptInvitationResponseSchema = z.looseObject({}).openapi('AcceptInvitationResponse')

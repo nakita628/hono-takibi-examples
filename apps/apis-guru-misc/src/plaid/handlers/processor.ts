@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postProcessorApexProcessorTokenCreateRoute,
   postProcessorAuthGetRoute,
   postProcessorBalanceGetRoute,
@@ -12,36 +12,62 @@ import {
   postProcessorTokenCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postProcessorApexProcessorTokenCreateRouteHandler: RouteHandler<
+  typeof postProcessorApexProcessorTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const processorHandler = app
-  .openapi(postProcessorApexProcessorTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorAuthGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorBalanceGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorBankTransferCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorIdentityGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorSignalDecisionReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorSignalEvaluateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorSignalReturnReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorStripeBankAccountTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProcessorTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProcessorAuthGetRouteHandler: RouteHandler<
+  typeof postProcessorAuthGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorBalanceGetRouteHandler: RouteHandler<
+  typeof postProcessorBalanceGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorBankTransferCreateRouteHandler: RouteHandler<
+  typeof postProcessorBankTransferCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorIdentityGetRouteHandler: RouteHandler<
+  typeof postProcessorIdentityGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorSignalDecisionReportRouteHandler: RouteHandler<
+  typeof postProcessorSignalDecisionReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorSignalEvaluateRouteHandler: RouteHandler<
+  typeof postProcessorSignalEvaluateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorSignalReturnReportRouteHandler: RouteHandler<
+  typeof postProcessorSignalReturnReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorStripeBankAccountTokenCreateRouteHandler: RouteHandler<
+  typeof postProcessorStripeBankAccountTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProcessorTokenCreateRouteHandler: RouteHandler<
+  typeof postProcessorTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

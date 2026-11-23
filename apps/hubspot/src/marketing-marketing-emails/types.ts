@@ -3542,12 +3542,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { emailId: string } } & { query: { archived?: boolean | undefined } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { emailId: string } } & { query: { archived?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { emailId: string } } & { query: { archived?: boolean | undefined } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { emailId: string } } & {
@@ -3631,21 +3638,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/emails/2026-09/:emailId/draft/reset': {
-      $post: {
-        input: { param: { emailId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { param: { emailId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { emailId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/emails/2026-09/:emailId/publish': {
-      $post: {
-        input: { param: { emailId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { param: { emailId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { emailId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/emails/2026-09/:emailId/revisions': {
@@ -3693,12 +3704,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/emails/2026-09/:emailId/revisions/:revisionId/restore': {
-      $post: {
-        input: { param: { emailId: string; revisionId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { emailId: string; revisionId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { emailId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/emails/2026-09/:emailId/revisions/:revisionId/restore-to-draft': {
@@ -3718,12 +3736,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/emails/2026-09/:emailId/unpublish': {
-      $post: {
-        input: { param: { emailId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { param: { emailId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { emailId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

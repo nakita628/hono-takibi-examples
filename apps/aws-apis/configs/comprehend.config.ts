@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/comprehend/2017-11-27/openapi.yaml',
   output: './src/comprehend/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/comprehend/types.ts' },
   client: { output: './src/comprehend/client.ts', baseUrl: '/' },
   rpc: { output: './src/comprehend/rpc.ts', parseResponse: true },

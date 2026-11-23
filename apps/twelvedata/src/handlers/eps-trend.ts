@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEpsTrendRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEpsTrendRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const epsTrendHandler = app.openapi(getEpsTrendRoute, (c) => {
+export const getEpsTrendRouteHandler: RouteHandler<typeof getEpsTrendRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

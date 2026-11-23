@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWirelessGatewaysIdCertificateRoute,
   deleteWirelessGatewaysIdRoute,
   deleteWirelessGatewaysIdTasksRoute,
@@ -17,51 +17,92 @@ import {
   putWirelessGatewaysIdThingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putWirelessGatewaysIdCertificateRouteHandler: RouteHandler<
+  typeof putWirelessGatewaysIdCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wirelessGatewaysHandler = app
-  .openapi(putWirelessGatewaysIdCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessGatewaysIdCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysIdCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWirelessGatewaysIdThingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessGatewaysIdThingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessGatewaysIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessGatewaysIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWirelessGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysIdentifierIdentifierTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysIdFirmwareInformationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessGatewaysIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteWirelessGatewaysIdCertificateRouteHandler: RouteHandler<
+  typeof deleteWirelessGatewaysIdCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysIdCertificateRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysIdCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWirelessGatewaysIdThingRouteHandler: RouteHandler<
+  typeof putWirelessGatewaysIdThingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessGatewaysIdThingRouteHandler: RouteHandler<
+  typeof deleteWirelessGatewaysIdThingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWirelessGatewaysRouteHandler: RouteHandler<
+  typeof postWirelessGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWirelessGatewaysIdTasksRouteHandler: RouteHandler<
+  typeof postWirelessGatewaysIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessGatewaysIdTasksRouteHandler: RouteHandler<
+  typeof deleteWirelessGatewaysIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysIdTasksRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessGatewaysIdRouteHandler: RouteHandler<
+  typeof deleteWirelessGatewaysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWirelessGatewaysIdRouteHandler: RouteHandler<
+  typeof patchWirelessGatewaysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysIdentifierIdentifierTypeRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysIdentifierIdentifierTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysIdFirmwareInformationRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysIdFirmwareInformationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessGatewaysIdStatisticsRouteHandler: RouteHandler<
+  typeof getWirelessGatewaysIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

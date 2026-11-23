@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteClusterParameterGroupRoute,
   postActionDeleteClusterParameterGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteClusterParameterGroupRouteHandler: RouteHandler<
+  typeof getActionDeleteClusterParameterGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteClusterParameterGroupHandler = app
-  .openapi(getActionDeleteClusterParameterGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteClusterParameterGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteClusterParameterGroupRouteHandler: RouteHandler<
+  typeof postActionDeleteClusterParameterGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

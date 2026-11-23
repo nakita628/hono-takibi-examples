@@ -1,195 +1,569 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAlexaForBusinessApproveSkillHandler,
-  xAmzTargetAlexaForBusinessAssociateContactWithAddressBookHandler,
-  xAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileHandler,
-  xAmzTargetAlexaForBusinessAssociateDeviceWithRoomHandler,
-  xAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomHandler,
-  xAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupHandler,
-  xAmzTargetAlexaForBusinessAssociateSkillWithUsersHandler,
-  xAmzTargetAlexaForBusinessCreateAddressBookHandler,
-  xAmzTargetAlexaForBusinessCreateBusinessReportScheduleHandler,
-  xAmzTargetAlexaForBusinessCreateConferenceProviderHandler,
-  xAmzTargetAlexaForBusinessCreateContactHandler,
-  xAmzTargetAlexaForBusinessCreateGatewayGroupHandler,
-  xAmzTargetAlexaForBusinessCreateNetworkProfileHandler,
-  xAmzTargetAlexaForBusinessCreateProfileHandler,
-  xAmzTargetAlexaForBusinessCreateRoomHandler,
-  xAmzTargetAlexaForBusinessCreateSkillGroupHandler,
-  xAmzTargetAlexaForBusinessCreateUserHandler,
-  xAmzTargetAlexaForBusinessDeleteAddressBookHandler,
-  xAmzTargetAlexaForBusinessDeleteBusinessReportScheduleHandler,
-  xAmzTargetAlexaForBusinessDeleteConferenceProviderHandler,
-  xAmzTargetAlexaForBusinessDeleteContactHandler,
-  xAmzTargetAlexaForBusinessDeleteDeviceHandler,
-  xAmzTargetAlexaForBusinessDeleteDeviceUsageDataHandler,
-  xAmzTargetAlexaForBusinessDeleteGatewayGroupHandler,
-  xAmzTargetAlexaForBusinessDeleteNetworkProfileHandler,
-  xAmzTargetAlexaForBusinessDeleteProfileHandler,
-  xAmzTargetAlexaForBusinessDeleteRoomHandler,
-  xAmzTargetAlexaForBusinessDeleteRoomSkillParameterHandler,
-  xAmzTargetAlexaForBusinessDeleteSkillAuthorizationHandler,
-  xAmzTargetAlexaForBusinessDeleteSkillGroupHandler,
-  xAmzTargetAlexaForBusinessDeleteUserHandler,
-  xAmzTargetAlexaForBusinessDisassociateContactFromAddressBookHandler,
-  xAmzTargetAlexaForBusinessDisassociateDeviceFromRoomHandler,
-  xAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupHandler,
-  xAmzTargetAlexaForBusinessDisassociateSkillFromUsersHandler,
-  xAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomHandler,
-  xAmzTargetAlexaForBusinessForgetSmartHomeAppliancesHandler,
-  xAmzTargetAlexaForBusinessGetAddressBookHandler,
-  xAmzTargetAlexaForBusinessGetConferencePreferenceHandler,
-  xAmzTargetAlexaForBusinessGetConferenceProviderHandler,
-  xAmzTargetAlexaForBusinessGetContactHandler,
-  xAmzTargetAlexaForBusinessGetDeviceHandler,
-  xAmzTargetAlexaForBusinessGetGatewayGroupHandler,
-  xAmzTargetAlexaForBusinessGetGatewayHandler,
-  xAmzTargetAlexaForBusinessGetInvitationConfigurationHandler,
-  xAmzTargetAlexaForBusinessGetNetworkProfileHandler,
-  xAmzTargetAlexaForBusinessGetProfileHandler,
-  xAmzTargetAlexaForBusinessGetRoomHandler,
-  xAmzTargetAlexaForBusinessGetRoomSkillParameterHandler,
-  xAmzTargetAlexaForBusinessGetSkillGroupHandler,
-  xAmzTargetAlexaForBusinessListBusinessReportSchedulesHandler,
-  xAmzTargetAlexaForBusinessListConferenceProvidersHandler,
-  xAmzTargetAlexaForBusinessListDeviceEventsHandler,
-  xAmzTargetAlexaForBusinessListGatewayGroupsHandler,
-  xAmzTargetAlexaForBusinessListGatewaysHandler,
-  xAmzTargetAlexaForBusinessListSkillsHandler,
-  xAmzTargetAlexaForBusinessListSkillsStoreCategoriesHandler,
-  xAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryHandler,
-  xAmzTargetAlexaForBusinessListSmartHomeAppliancesHandler,
-  xAmzTargetAlexaForBusinessListTagsHandler,
-  xAmzTargetAlexaForBusinessPutConferencePreferenceHandler,
-  xAmzTargetAlexaForBusinessPutInvitationConfigurationHandler,
-  xAmzTargetAlexaForBusinessPutRoomSkillParameterHandler,
-  xAmzTargetAlexaForBusinessPutSkillAuthorizationHandler,
-  xAmzTargetAlexaForBusinessRegisterAvsDeviceHandler,
-  xAmzTargetAlexaForBusinessRejectSkillHandler,
-  xAmzTargetAlexaForBusinessResolveRoomHandler,
-  xAmzTargetAlexaForBusinessRevokeInvitationHandler,
-  xAmzTargetAlexaForBusinessSearchAddressBooksHandler,
-  xAmzTargetAlexaForBusinessSearchContactsHandler,
-  xAmzTargetAlexaForBusinessSearchDevicesHandler,
-  xAmzTargetAlexaForBusinessSearchNetworkProfilesHandler,
-  xAmzTargetAlexaForBusinessSearchProfilesHandler,
-  xAmzTargetAlexaForBusinessSearchRoomsHandler,
-  xAmzTargetAlexaForBusinessSearchSkillGroupsHandler,
-  xAmzTargetAlexaForBusinessSearchUsersHandler,
-  xAmzTargetAlexaForBusinessSendAnnouncementHandler,
-  xAmzTargetAlexaForBusinessSendInvitationHandler,
-  xAmzTargetAlexaForBusinessStartDeviceSyncHandler,
-  xAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryHandler,
-  xAmzTargetAlexaForBusinessTagResourceHandler,
-  xAmzTargetAlexaForBusinessUntagResourceHandler,
-  xAmzTargetAlexaForBusinessUpdateAddressBookHandler,
-  xAmzTargetAlexaForBusinessUpdateBusinessReportScheduleHandler,
-  xAmzTargetAlexaForBusinessUpdateConferenceProviderHandler,
-  xAmzTargetAlexaForBusinessUpdateContactHandler,
-  xAmzTargetAlexaForBusinessUpdateDeviceHandler,
-  xAmzTargetAlexaForBusinessUpdateGatewayGroupHandler,
-  xAmzTargetAlexaForBusinessUpdateGatewayHandler,
-  xAmzTargetAlexaForBusinessUpdateNetworkProfileHandler,
-  xAmzTargetAlexaForBusinessUpdateProfileHandler,
-  xAmzTargetAlexaForBusinessUpdateRoomHandler,
-  xAmzTargetAlexaForBusinessUpdateSkillGroupHandler,
+  postXAmzTargetAlexaForBusinessApproveSkillRoute,
+  postXAmzTargetAlexaForBusinessAssociateContactWithAddressBookRoute,
+  postXAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileRoute,
+  postXAmzTargetAlexaForBusinessAssociateDeviceWithRoomRoute,
+  postXAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomRoute,
+  postXAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupRoute,
+  postXAmzTargetAlexaForBusinessAssociateSkillWithUsersRoute,
+  postXAmzTargetAlexaForBusinessCreateAddressBookRoute,
+  postXAmzTargetAlexaForBusinessCreateBusinessReportScheduleRoute,
+  postXAmzTargetAlexaForBusinessCreateConferenceProviderRoute,
+  postXAmzTargetAlexaForBusinessCreateContactRoute,
+  postXAmzTargetAlexaForBusinessCreateGatewayGroupRoute,
+  postXAmzTargetAlexaForBusinessCreateNetworkProfileRoute,
+  postXAmzTargetAlexaForBusinessCreateProfileRoute,
+  postXAmzTargetAlexaForBusinessCreateRoomRoute,
+  postXAmzTargetAlexaForBusinessCreateSkillGroupRoute,
+  postXAmzTargetAlexaForBusinessCreateUserRoute,
+  postXAmzTargetAlexaForBusinessDeleteAddressBookRoute,
+  postXAmzTargetAlexaForBusinessDeleteBusinessReportScheduleRoute,
+  postXAmzTargetAlexaForBusinessDeleteConferenceProviderRoute,
+  postXAmzTargetAlexaForBusinessDeleteContactRoute,
+  postXAmzTargetAlexaForBusinessDeleteDeviceRoute,
+  postXAmzTargetAlexaForBusinessDeleteDeviceUsageDataRoute,
+  postXAmzTargetAlexaForBusinessDeleteGatewayGroupRoute,
+  postXAmzTargetAlexaForBusinessDeleteNetworkProfileRoute,
+  postXAmzTargetAlexaForBusinessDeleteProfileRoute,
+  postXAmzTargetAlexaForBusinessDeleteRoomRoute,
+  postXAmzTargetAlexaForBusinessDeleteRoomSkillParameterRoute,
+  postXAmzTargetAlexaForBusinessDeleteSkillAuthorizationRoute,
+  postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute,
+  postXAmzTargetAlexaForBusinessDeleteUserRoute,
+  postXAmzTargetAlexaForBusinessDisassociateContactFromAddressBookRoute,
+  postXAmzTargetAlexaForBusinessDisassociateDeviceFromRoomRoute,
+  postXAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupRoute,
+  postXAmzTargetAlexaForBusinessDisassociateSkillFromUsersRoute,
+  postXAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomRoute,
+  postXAmzTargetAlexaForBusinessForgetSmartHomeAppliancesRoute,
+  postXAmzTargetAlexaForBusinessGetAddressBookRoute,
+  postXAmzTargetAlexaForBusinessGetConferencePreferenceRoute,
+  postXAmzTargetAlexaForBusinessGetConferenceProviderRoute,
+  postXAmzTargetAlexaForBusinessGetContactRoute,
+  postXAmzTargetAlexaForBusinessGetDeviceRoute,
+  postXAmzTargetAlexaForBusinessGetGatewayGroupRoute,
+  postXAmzTargetAlexaForBusinessGetGatewayRoute,
+  postXAmzTargetAlexaForBusinessGetInvitationConfigurationRoute,
+  postXAmzTargetAlexaForBusinessGetNetworkProfileRoute,
+  postXAmzTargetAlexaForBusinessGetProfileRoute,
+  postXAmzTargetAlexaForBusinessGetRoomRoute,
+  postXAmzTargetAlexaForBusinessGetRoomSkillParameterRoute,
+  postXAmzTargetAlexaForBusinessGetSkillGroupRoute,
+  postXAmzTargetAlexaForBusinessListBusinessReportSchedulesRoute,
+  postXAmzTargetAlexaForBusinessListConferenceProvidersRoute,
+  postXAmzTargetAlexaForBusinessListDeviceEventsRoute,
+  postXAmzTargetAlexaForBusinessListGatewayGroupsRoute,
+  postXAmzTargetAlexaForBusinessListGatewaysRoute,
+  postXAmzTargetAlexaForBusinessListSkillsRoute,
+  postXAmzTargetAlexaForBusinessListSkillsStoreCategoriesRoute,
+  postXAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryRoute,
+  postXAmzTargetAlexaForBusinessListSmartHomeAppliancesRoute,
+  postXAmzTargetAlexaForBusinessListTagsRoute,
+  postXAmzTargetAlexaForBusinessPutConferencePreferenceRoute,
+  postXAmzTargetAlexaForBusinessPutInvitationConfigurationRoute,
+  postXAmzTargetAlexaForBusinessPutRoomSkillParameterRoute,
+  postXAmzTargetAlexaForBusinessPutSkillAuthorizationRoute,
+  postXAmzTargetAlexaForBusinessRegisterAVSDeviceRoute,
+  postXAmzTargetAlexaForBusinessRejectSkillRoute,
+  postXAmzTargetAlexaForBusinessResolveRoomRoute,
+  postXAmzTargetAlexaForBusinessRevokeInvitationRoute,
+  postXAmzTargetAlexaForBusinessSearchAddressBooksRoute,
+  postXAmzTargetAlexaForBusinessSearchContactsRoute,
+  postXAmzTargetAlexaForBusinessSearchDevicesRoute,
+  postXAmzTargetAlexaForBusinessSearchNetworkProfilesRoute,
+  postXAmzTargetAlexaForBusinessSearchProfilesRoute,
+  postXAmzTargetAlexaForBusinessSearchRoomsRoute,
+  postXAmzTargetAlexaForBusinessSearchSkillGroupsRoute,
+  postXAmzTargetAlexaForBusinessSearchUsersRoute,
+  postXAmzTargetAlexaForBusinessSendAnnouncementRoute,
+  postXAmzTargetAlexaForBusinessSendInvitationRoute,
+  postXAmzTargetAlexaForBusinessStartDeviceSyncRoute,
+  postXAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryRoute,
+  postXAmzTargetAlexaForBusinessTagResourceRoute,
+  postXAmzTargetAlexaForBusinessUntagResourceRoute,
+  postXAmzTargetAlexaForBusinessUpdateAddressBookRoute,
+  postXAmzTargetAlexaForBusinessUpdateBusinessReportScheduleRoute,
+  postXAmzTargetAlexaForBusinessUpdateConferenceProviderRoute,
+  postXAmzTargetAlexaForBusinessUpdateContactRoute,
+  postXAmzTargetAlexaForBusinessUpdateDeviceRoute,
+  postXAmzTargetAlexaForBusinessUpdateGatewayGroupRoute,
+  postXAmzTargetAlexaForBusinessUpdateGatewayRoute,
+  postXAmzTargetAlexaForBusinessUpdateNetworkProfileRoute,
+  postXAmzTargetAlexaForBusinessUpdateProfileRoute,
+  postXAmzTargetAlexaForBusinessUpdateRoomRoute,
+  postXAmzTargetAlexaForBusinessUpdateSkillGroupRoute,
+} from './routes'
+import {
+  postXAmzTargetAlexaForBusinessApproveSkillRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateContactWithAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateDeviceWithRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessAssociateSkillWithUsersRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateBusinessReportScheduleRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateConferenceProviderRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateContactRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateGatewayGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateNetworkProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateSkillGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessCreateUserRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteBusinessReportScheduleRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteConferenceProviderRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteContactRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteDeviceRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteDeviceUsageDataRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteGatewayGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteNetworkProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteRoomSkillParameterRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteSkillAuthorizationRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteSkillGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessDeleteUserRouteHandler,
+  postXAmzTargetAlexaForBusinessDisassociateContactFromAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessDisassociateDeviceFromRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessDisassociateSkillFromUsersRouteHandler,
+  postXAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessForgetSmartHomeAppliancesRouteHandler,
+  postXAmzTargetAlexaForBusinessGetAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessGetConferencePreferenceRouteHandler,
+  postXAmzTargetAlexaForBusinessGetConferenceProviderRouteHandler,
+  postXAmzTargetAlexaForBusinessGetContactRouteHandler,
+  postXAmzTargetAlexaForBusinessGetDeviceRouteHandler,
+  postXAmzTargetAlexaForBusinessGetGatewayGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessGetGatewayRouteHandler,
+  postXAmzTargetAlexaForBusinessGetInvitationConfigurationRouteHandler,
+  postXAmzTargetAlexaForBusinessGetNetworkProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessGetProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessGetRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessGetRoomSkillParameterRouteHandler,
+  postXAmzTargetAlexaForBusinessGetSkillGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessListBusinessReportSchedulesRouteHandler,
+  postXAmzTargetAlexaForBusinessListConferenceProvidersRouteHandler,
+  postXAmzTargetAlexaForBusinessListDeviceEventsRouteHandler,
+  postXAmzTargetAlexaForBusinessListGatewayGroupsRouteHandler,
+  postXAmzTargetAlexaForBusinessListGatewaysRouteHandler,
+  postXAmzTargetAlexaForBusinessListSkillsRouteHandler,
+  postXAmzTargetAlexaForBusinessListSkillsStoreCategoriesRouteHandler,
+  postXAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryRouteHandler,
+  postXAmzTargetAlexaForBusinessListSmartHomeAppliancesRouteHandler,
+  postXAmzTargetAlexaForBusinessListTagsRouteHandler,
+  postXAmzTargetAlexaForBusinessPutConferencePreferenceRouteHandler,
+  postXAmzTargetAlexaForBusinessPutInvitationConfigurationRouteHandler,
+  postXAmzTargetAlexaForBusinessPutRoomSkillParameterRouteHandler,
+  postXAmzTargetAlexaForBusinessPutSkillAuthorizationRouteHandler,
+  postXAmzTargetAlexaForBusinessRegisterAVSDeviceRouteHandler,
+  postXAmzTargetAlexaForBusinessRejectSkillRouteHandler,
+  postXAmzTargetAlexaForBusinessResolveRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessRevokeInvitationRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchAddressBooksRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchContactsRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchDevicesRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchNetworkProfilesRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchProfilesRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchRoomsRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchSkillGroupsRouteHandler,
+  postXAmzTargetAlexaForBusinessSearchUsersRouteHandler,
+  postXAmzTargetAlexaForBusinessSendAnnouncementRouteHandler,
+  postXAmzTargetAlexaForBusinessSendInvitationRouteHandler,
+  postXAmzTargetAlexaForBusinessStartDeviceSyncRouteHandler,
+  postXAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryRouteHandler,
+  postXAmzTargetAlexaForBusinessTagResourceRouteHandler,
+  postXAmzTargetAlexaForBusinessUntagResourceRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateAddressBookRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateBusinessReportScheduleRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateConferenceProviderRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateContactRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateDeviceRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateGatewayGroupRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateGatewayRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateNetworkProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateProfileRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateRoomRouteHandler,
+  postXAmzTargetAlexaForBusinessUpdateSkillGroupRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAlexaForBusinessApproveSkillHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateContactWithAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateDeviceWithRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessAssociateSkillWithUsersHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateBusinessReportScheduleHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateConferenceProviderHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateContactHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateGatewayGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateNetworkProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateSkillGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessCreateUserHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteBusinessReportScheduleHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteConferenceProviderHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteContactHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteDeviceHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteDeviceUsageDataHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteGatewayGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteNetworkProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteRoomSkillParameterHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteSkillAuthorizationHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteSkillGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessDeleteUserHandler)
-  .route('/', xAmzTargetAlexaForBusinessDisassociateContactFromAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessDisassociateDeviceFromRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessDisassociateSkillFromUsersHandler)
-  .route('/', xAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessForgetSmartHomeAppliancesHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetConferencePreferenceHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetConferenceProviderHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetContactHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetDeviceHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetGatewayHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetGatewayGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetInvitationConfigurationHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetNetworkProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetRoomSkillParameterHandler)
-  .route('/', xAmzTargetAlexaForBusinessGetSkillGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessListBusinessReportSchedulesHandler)
-  .route('/', xAmzTargetAlexaForBusinessListConferenceProvidersHandler)
-  .route('/', xAmzTargetAlexaForBusinessListDeviceEventsHandler)
-  .route('/', xAmzTargetAlexaForBusinessListGatewayGroupsHandler)
-  .route('/', xAmzTargetAlexaForBusinessListGatewaysHandler)
-  .route('/', xAmzTargetAlexaForBusinessListSkillsHandler)
-  .route('/', xAmzTargetAlexaForBusinessListSkillsStoreCategoriesHandler)
-  .route('/', xAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryHandler)
-  .route('/', xAmzTargetAlexaForBusinessListSmartHomeAppliancesHandler)
-  .route('/', xAmzTargetAlexaForBusinessListTagsHandler)
-  .route('/', xAmzTargetAlexaForBusinessPutConferencePreferenceHandler)
-  .route('/', xAmzTargetAlexaForBusinessPutInvitationConfigurationHandler)
-  .route('/', xAmzTargetAlexaForBusinessPutRoomSkillParameterHandler)
-  .route('/', xAmzTargetAlexaForBusinessPutSkillAuthorizationHandler)
-  .route('/', xAmzTargetAlexaForBusinessRegisterAvsDeviceHandler)
-  .route('/', xAmzTargetAlexaForBusinessRejectSkillHandler)
-  .route('/', xAmzTargetAlexaForBusinessResolveRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessRevokeInvitationHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchAddressBooksHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchContactsHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchDevicesHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchNetworkProfilesHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchProfilesHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchRoomsHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchSkillGroupsHandler)
-  .route('/', xAmzTargetAlexaForBusinessSearchUsersHandler)
-  .route('/', xAmzTargetAlexaForBusinessSendAnnouncementHandler)
-  .route('/', xAmzTargetAlexaForBusinessSendInvitationHandler)
-  .route('/', xAmzTargetAlexaForBusinessStartDeviceSyncHandler)
-  .route('/', xAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryHandler)
-  .route('/', xAmzTargetAlexaForBusinessTagResourceHandler)
-  .route('/', xAmzTargetAlexaForBusinessUntagResourceHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateAddressBookHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateBusinessReportScheduleHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateConferenceProviderHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateContactHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateDeviceHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateGatewayHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateGatewayGroupHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateNetworkProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateProfileHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateRoomHandler)
-  .route('/', xAmzTargetAlexaForBusinessUpdateSkillGroupHandler)
+  .openapi(
+    postXAmzTargetAlexaForBusinessApproveSkillRoute,
+    postXAmzTargetAlexaForBusinessApproveSkillRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateContactWithAddressBookRoute,
+    postXAmzTargetAlexaForBusinessAssociateContactWithAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileRoute,
+    postXAmzTargetAlexaForBusinessAssociateDeviceWithNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateDeviceWithRoomRoute,
+    postXAmzTargetAlexaForBusinessAssociateDeviceWithRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomRoute,
+    postXAmzTargetAlexaForBusinessAssociateSkillGroupWithRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessAssociateSkillWithSkillGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessAssociateSkillWithUsersRoute,
+    postXAmzTargetAlexaForBusinessAssociateSkillWithUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateAddressBookRoute,
+    postXAmzTargetAlexaForBusinessCreateAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateBusinessReportScheduleRoute,
+    postXAmzTargetAlexaForBusinessCreateBusinessReportScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateConferenceProviderRoute,
+    postXAmzTargetAlexaForBusinessCreateConferenceProviderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateContactRoute,
+    postXAmzTargetAlexaForBusinessCreateContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateGatewayGroupRoute,
+    postXAmzTargetAlexaForBusinessCreateGatewayGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateNetworkProfileRoute,
+    postXAmzTargetAlexaForBusinessCreateNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateProfileRoute,
+    postXAmzTargetAlexaForBusinessCreateProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateRoomRoute,
+    postXAmzTargetAlexaForBusinessCreateRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessCreateSkillGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessCreateUserRoute,
+    postXAmzTargetAlexaForBusinessCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteAddressBookRoute,
+    postXAmzTargetAlexaForBusinessDeleteAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteBusinessReportScheduleRoute,
+    postXAmzTargetAlexaForBusinessDeleteBusinessReportScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteConferenceProviderRoute,
+    postXAmzTargetAlexaForBusinessDeleteConferenceProviderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteContactRoute,
+    postXAmzTargetAlexaForBusinessDeleteContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteDeviceRoute,
+    postXAmzTargetAlexaForBusinessDeleteDeviceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteDeviceUsageDataRoute,
+    postXAmzTargetAlexaForBusinessDeleteDeviceUsageDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteGatewayGroupRoute,
+    postXAmzTargetAlexaForBusinessDeleteGatewayGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteNetworkProfileRoute,
+    postXAmzTargetAlexaForBusinessDeleteNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteProfileRoute,
+    postXAmzTargetAlexaForBusinessDeleteProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteRoomRoute,
+    postXAmzTargetAlexaForBusinessDeleteRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteRoomSkillParameterRoute,
+    postXAmzTargetAlexaForBusinessDeleteRoomSkillParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteSkillAuthorizationRoute,
+    postXAmzTargetAlexaForBusinessDeleteSkillAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessDeleteSkillGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDeleteUserRoute,
+    postXAmzTargetAlexaForBusinessDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDisassociateContactFromAddressBookRoute,
+    postXAmzTargetAlexaForBusinessDisassociateContactFromAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDisassociateDeviceFromRoomRoute,
+    postXAmzTargetAlexaForBusinessDisassociateDeviceFromRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessDisassociateSkillFromSkillGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDisassociateSkillFromUsersRoute,
+    postXAmzTargetAlexaForBusinessDisassociateSkillFromUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomRoute,
+    postXAmzTargetAlexaForBusinessDisassociateSkillGroupFromRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessForgetSmartHomeAppliancesRoute,
+    postXAmzTargetAlexaForBusinessForgetSmartHomeAppliancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetAddressBookRoute,
+    postXAmzTargetAlexaForBusinessGetAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetConferencePreferenceRoute,
+    postXAmzTargetAlexaForBusinessGetConferencePreferenceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetConferenceProviderRoute,
+    postXAmzTargetAlexaForBusinessGetConferenceProviderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetContactRoute,
+    postXAmzTargetAlexaForBusinessGetContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetDeviceRoute,
+    postXAmzTargetAlexaForBusinessGetDeviceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetGatewayRoute,
+    postXAmzTargetAlexaForBusinessGetGatewayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetGatewayGroupRoute,
+    postXAmzTargetAlexaForBusinessGetGatewayGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetInvitationConfigurationRoute,
+    postXAmzTargetAlexaForBusinessGetInvitationConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetNetworkProfileRoute,
+    postXAmzTargetAlexaForBusinessGetNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetProfileRoute,
+    postXAmzTargetAlexaForBusinessGetProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetRoomRoute,
+    postXAmzTargetAlexaForBusinessGetRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetRoomSkillParameterRoute,
+    postXAmzTargetAlexaForBusinessGetRoomSkillParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessGetSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessGetSkillGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListBusinessReportSchedulesRoute,
+    postXAmzTargetAlexaForBusinessListBusinessReportSchedulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListConferenceProvidersRoute,
+    postXAmzTargetAlexaForBusinessListConferenceProvidersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListDeviceEventsRoute,
+    postXAmzTargetAlexaForBusinessListDeviceEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListGatewayGroupsRoute,
+    postXAmzTargetAlexaForBusinessListGatewayGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListGatewaysRoute,
+    postXAmzTargetAlexaForBusinessListGatewaysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListSkillsRoute,
+    postXAmzTargetAlexaForBusinessListSkillsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListSkillsStoreCategoriesRoute,
+    postXAmzTargetAlexaForBusinessListSkillsStoreCategoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryRoute,
+    postXAmzTargetAlexaForBusinessListSkillsStoreSkillsByCategoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListSmartHomeAppliancesRoute,
+    postXAmzTargetAlexaForBusinessListSmartHomeAppliancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessListTagsRoute,
+    postXAmzTargetAlexaForBusinessListTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessPutConferencePreferenceRoute,
+    postXAmzTargetAlexaForBusinessPutConferencePreferenceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessPutInvitationConfigurationRoute,
+    postXAmzTargetAlexaForBusinessPutInvitationConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessPutRoomSkillParameterRoute,
+    postXAmzTargetAlexaForBusinessPutRoomSkillParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessPutSkillAuthorizationRoute,
+    postXAmzTargetAlexaForBusinessPutSkillAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessRegisterAVSDeviceRoute,
+    postXAmzTargetAlexaForBusinessRegisterAVSDeviceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessRejectSkillRoute,
+    postXAmzTargetAlexaForBusinessRejectSkillRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessResolveRoomRoute,
+    postXAmzTargetAlexaForBusinessResolveRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessRevokeInvitationRoute,
+    postXAmzTargetAlexaForBusinessRevokeInvitationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchAddressBooksRoute,
+    postXAmzTargetAlexaForBusinessSearchAddressBooksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchContactsRoute,
+    postXAmzTargetAlexaForBusinessSearchContactsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchDevicesRoute,
+    postXAmzTargetAlexaForBusinessSearchDevicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchNetworkProfilesRoute,
+    postXAmzTargetAlexaForBusinessSearchNetworkProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchProfilesRoute,
+    postXAmzTargetAlexaForBusinessSearchProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchRoomsRoute,
+    postXAmzTargetAlexaForBusinessSearchRoomsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchSkillGroupsRoute,
+    postXAmzTargetAlexaForBusinessSearchSkillGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSearchUsersRoute,
+    postXAmzTargetAlexaForBusinessSearchUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSendAnnouncementRoute,
+    postXAmzTargetAlexaForBusinessSendAnnouncementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessSendInvitationRoute,
+    postXAmzTargetAlexaForBusinessSendInvitationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessStartDeviceSyncRoute,
+    postXAmzTargetAlexaForBusinessStartDeviceSyncRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryRoute,
+    postXAmzTargetAlexaForBusinessStartSmartHomeApplianceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessTagResourceRoute,
+    postXAmzTargetAlexaForBusinessTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUntagResourceRoute,
+    postXAmzTargetAlexaForBusinessUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateAddressBookRoute,
+    postXAmzTargetAlexaForBusinessUpdateAddressBookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateBusinessReportScheduleRoute,
+    postXAmzTargetAlexaForBusinessUpdateBusinessReportScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateConferenceProviderRoute,
+    postXAmzTargetAlexaForBusinessUpdateConferenceProviderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateContactRoute,
+    postXAmzTargetAlexaForBusinessUpdateContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateDeviceRoute,
+    postXAmzTargetAlexaForBusinessUpdateDeviceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateGatewayRoute,
+    postXAmzTargetAlexaForBusinessUpdateGatewayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateGatewayGroupRoute,
+    postXAmzTargetAlexaForBusinessUpdateGatewayGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateNetworkProfileRoute,
+    postXAmzTargetAlexaForBusinessUpdateNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateProfileRoute,
+    postXAmzTargetAlexaForBusinessUpdateProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateRoomRoute,
+    postXAmzTargetAlexaForBusinessUpdateRoomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAlexaForBusinessUpdateSkillGroupRoute,
+    postXAmzTargetAlexaForBusinessUpdateSkillGroupRouteHandler,
+  )
 
 export default app

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getShippingQuoteShippingQuoteIdRoute, postShippingQuoteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getShippingQuoteShippingQuoteIdRoute, postShippingQuoteRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postShippingQuoteRouteHandler: RouteHandler<typeof postShippingQuoteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const shippingQuoteHandler = app
-  .openapi(postShippingQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShippingQuoteShippingQuoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getShippingQuoteShippingQuoteIdRouteHandler: RouteHandler<
+  typeof getShippingQuoteShippingQuoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

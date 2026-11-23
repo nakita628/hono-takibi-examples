@@ -1,3 +1,4 @@
+type AddressAddressType = 'Billing' | 'Delivery' | 'Order' | 'Inventory' | 'Unknown'
 type Address = {
   city?: string | undefined
   country?: string | undefined
@@ -5,8 +6,9 @@ type Address = {
   line2?: string | undefined
   postalCode?: string | undefined
   region?: string | undefined
-  type?: 'Billing' | 'Delivery' | 'Order' | 'Inventory' | 'Unknown' | undefined
+  type?: AddressAddressType | undefined
 }
+type PhoneNumberNumber = string | null
 type DateTime = string
 type Customer = {
   id: string
@@ -15,7 +17,7 @@ type Customer = {
   defaultCurrency?: {} | undefined
   emailAddress?: string | undefined
   note?: string | undefined
-  phone?: unknown | undefined
+  phone?: PhoneNumberNumber | undefined
   createdDate?: DateTime | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
@@ -29,27 +31,28 @@ type Customers = {
   pageSize: number
   totalResults: number
 }
+type TransactionAllOf1Currency = string
+type TransactionTransactionSourceType = 'Fee' | 'Order' | 'Payment' | 'ServiceCharge' | 'Unknown'
+type TransactionTransactionSourceRef = { id: string; type: TransactionTransactionSourceType }
+type DisputeDisputeStatus =
+  | 'Won'
+  | 'Lost'
+  | 'Accepted'
+  | 'Processing'
+  | 'ChargeRefunded'
+  | 'EvidenceRequired'
+  | 'InquiryEvidenceRequired'
+  | 'InquiryProcessing'
+  | 'InquiryClosed'
+  | 'WaitingThirdParty'
+  | 'Unknown'
 type Dispute = {
   id: string
-  currency: string
-  disputedTransactions?:
-    | { id: string; type: 'Fee' | 'Order' | 'Payment' | 'ServiceCharge' | 'Unknown' }
-    | undefined
+  currency: TransactionAllOf1Currency
+  disputedTransactions?: TransactionTransactionSourceRef | undefined
   dueDate?: DateTime | undefined
   reason?: string | undefined
-  status?:
-    | 'Won'
-    | 'Lost'
-    | 'Accepted'
-    | 'Processing'
-    | 'ChargeRefunded'
-    | 'EvidenceRequired'
-    | 'InquiryEvidenceRequired'
-    | 'InquiryProcessing'
-    | 'InquiryClosed'
-    | 'WaitingThirdParty'
-    | 'Unknown'
-    | undefined
+  status?: DisputeDisputeStatus | undefined
   totalAmount?: number | undefined
   createdDate?: DateTime | undefined
   modifiedDate?: DateTime | undefined
@@ -62,21 +65,18 @@ type Disputes = {
   pageSize: number
   totalResults: number
 }
-type PhoneNumber = {
-  number: string | null
-  type: 'Primary' | 'Landline' | 'Mobile' | 'Fax' | 'Unknown'
+type CompanyInfoAccountBalance = {
+  available?: number | undefined
+  currency?: {} | undefined
+  pending?: number | undefined
+  reserved?: number | undefined
 }
+type PhoneNumberPhoneNumberType = 'Primary' | 'Landline' | 'Mobile' | 'Fax' | 'Unknown'
+type PhoneNumber = { number: PhoneNumberNumber; type: PhoneNumberPhoneNumberType }
 type CompanyInfo = {
-  accountBalances?:
-    | {
-        available?: number | undefined
-        currency?: {} | undefined
-        pending?: number | undefined
-        reserved?: number | undefined
-      }[]
-    | undefined
+  accountBalances?: CompanyInfoAccountBalance[] | undefined
   addresses?: Address[] | undefined
-  baseCurrency?: string | undefined
+  baseCurrency?: TransactionAllOf1Currency | undefined
   commercePlatformRef?: string | undefined
   companyLegalName?: string | undefined
   companyName?: string | undefined
@@ -104,78 +104,75 @@ type LocationsResponse = {
   pageSize: number
   totalResults: number
 }
+type CustomerCustomerRef = { id: string; name: string }
+type LocationsLocationRef = { id: string; name: string }
+type OrderOrderDiscountAllocation = { name?: string | undefined; totalAmount?: number | undefined }
+type ProductProductRef = { id: string; name: string }
+type ProductProductVariantRef = { id: string; name: string }
+type TaxComponentTaxComponentRef = { id: string; name: string }
+type TaxComponentTaxComponentAllocation = {
+  rate?: (number | null) | undefined
+  taxComponentRef?: TaxComponentTaxComponentRef | undefined
+}
+type OrderOrderLineItem = {
+  id: string
+  discountAllocations?: OrderOrderDiscountAllocation[] | undefined
+  productRef?: ProductProductRef | undefined
+  productVariantRef?: ProductProductVariantRef | undefined
+  quantity?: number | undefined
+  taxPercentage?: number | undefined
+  taxes?: TaxComponentTaxComponentAllocation[] | undefined
+  totalAmount?: number | undefined
+  totalTaxAmount?: number | undefined
+  unitPrice?: number | undefined
+}
+type PaymentPaymentStatus = 'Pending' | 'Authorized' | 'Paid' | 'Failed' | 'Cancelled' | 'Unknown'
+type PaymentPaymentType =
+  | 'Cash'
+  | 'Card'
+  | 'Invoice'
+  | 'OnlineCard'
+  | 'Swish'
+  | 'Vipps'
+  | 'Mobile'
+  | 'StoreCredit'
+  | 'Paypal'
+  | 'Custom'
+  | 'Prepaid'
+  | 'Unknown'
+type PaymentPaymentRef = {
+  id: string
+  amount?: (number | null) | undefined
+  currency?: TransactionAllOf1Currency | undefined
+  dueDate?: DateTime | undefined
+  paymentProvider?: string | undefined
+  status?: PaymentPaymentStatus | undefined
+  type?: PaymentPaymentType | undefined
+  createdDate?: DateTime | undefined
+  modifiedDate?: DateTime | undefined
+  sourceModifiedDate?: DateTime | undefined
+}
+type OrderServiceChargeType = 'Generic' | 'Shipping' | 'Overpayment' | 'Unknown'
+type OrderServiceCharge = {
+  description?: string | undefined
+  quantity?: number | undefined
+  taxAmount?: number | undefined
+  taxPercentage?: number | undefined
+  taxes?: TaxComponentTaxComponentAllocation[] | undefined
+  totalAmount?: number | undefined
+  type?: OrderServiceChargeType | undefined
+}
 type Order = {
   id: string
   closedDate?: DateTime | undefined
   country?: string | undefined
   currency?: {} | undefined
-  customerRef?: { id: string; name: string } | undefined
-  locationRef?: { id: string; name: string } | undefined
-  orderLineItems?:
-    | {
-        id: string
-        discountAllocations?:
-          | { name?: string | undefined; totalAmount?: number | undefined }[]
-          | undefined
-        productRef?: { id: string; name: string } | undefined
-        productVariantRef?: { id: string; name: string } | undefined
-        quantity?: number | undefined
-        taxPercentage?: number | undefined
-        taxes?:
-          | {
-              rate?: (number | null) | undefined
-              taxComponentRef?: { id: string; name: string } | undefined
-            }[]
-          | undefined
-        totalAmount?: number | undefined
-        totalTaxAmount?: number | undefined
-        unitPrice?: number | undefined
-      }[]
-    | undefined
+  customerRef?: CustomerCustomerRef | undefined
+  locationRef?: LocationsLocationRef | undefined
+  orderLineItems?: OrderOrderLineItem[] | undefined
   orderNumber?: string | undefined
-  payments?:
-    | {
-        id: string
-        amount?: (number | null) | undefined
-        currency?: string | undefined
-        dueDate?: DateTime | undefined
-        paymentProvider?: string | undefined
-        status?: 'Pending' | 'Authorized' | 'Paid' | 'Failed' | 'Cancelled' | 'Unknown' | undefined
-        type?:
-          | 'Cash'
-          | 'Card'
-          | 'Invoice'
-          | 'OnlineCard'
-          | 'Swish'
-          | 'Vipps'
-          | 'Mobile'
-          | 'StoreCredit'
-          | 'Paypal'
-          | 'Custom'
-          | 'Prepaid'
-          | 'Unknown'
-          | undefined
-        createdDate?: DateTime | undefined
-        modifiedDate?: DateTime | undefined
-        sourceModifiedDate?: DateTime | undefined
-      }[]
-    | undefined
-  serviceCharges?:
-    | {
-        description?: string | undefined
-        quantity?: number | undefined
-        taxAmount?: number | undefined
-        taxPercentage?: number | undefined
-        taxes?:
-          | {
-              rate?: (number | null) | undefined
-              taxComponentRef?: { id: string; name: string } | undefined
-            }[]
-          | undefined
-        totalAmount?: number | undefined
-        type?: 'Generic' | 'Shipping' | 'Overpayment' | 'Unknown' | undefined
-      }[]
-    | undefined
+  payments?: PaymentPaymentRef[] | undefined
+  serviceCharges?: OrderServiceCharge[] | undefined
   totalAmount?: number | undefined
   totalDiscount?: number | undefined
   totalGratuity?: number | undefined
@@ -192,10 +189,11 @@ type Orders = {
   pageSize: number
   totalResults: number
 }
+type PaymentMethodPaymentMethodStatus = 'Active' | 'Archived' | 'Unknown'
 type PaymentMethod = {
   id: string
   name?: string | undefined
-  status?: 'Active' | 'Archived' | 'Unknown' | undefined
+  status?: PaymentMethodPaymentMethodStatus | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
@@ -206,14 +204,15 @@ type PaymentMethods = {
   pageSize: number
   totalResults: number
 }
+type PaymentMethodPaymentMethodRef = { id: string; name: string }
 type Payment = {
   id: string
   amount?: number | undefined
-  currency?: string | undefined
+  currency?: TransactionAllOf1Currency | undefined
   dueDate?: DateTime | undefined
-  paymentMethodRef?: { id: string; name: string } | undefined
+  paymentMethodRef?: PaymentMethodPaymentMethodRef | undefined
   paymentProvider?: string | undefined
-  status?: 'Pending' | 'Authorized' | 'Paid' | 'Failed' | 'Cancelled' | 'Unknown' | undefined
+  status?: PaymentPaymentStatus | undefined
   createdDate?: DateTime | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
@@ -241,42 +240,42 @@ type ProductCategories = {
   pageSize: number
   totalResults: number
 }
+type ProductProductInventoryLocation = {
+  locationRef?: LocationsLocationRef | undefined
+  quantity?: number | undefined
+}
+type ProductProductInventory = {
+  locations?: ProductProductInventoryLocation[] | undefined
+  totalQuantity?: (number | null) | undefined
+}
+type ProductProductPrice = {
+  currency?: TransactionAllOf1Currency | undefined
+  unitPrice?: number | undefined
+}
+type ProductProductVariantStatus = 'Unknown' | 'Published' | 'Unpublished'
+type ProductProductVariant = {
+  id: string
+  barcode?: string | undefined
+  inventory?: ProductProductInventory[] | undefined
+  isTaxEnabled?: boolean | undefined
+  name?: string | undefined
+  prices?: ProductProductPrice[] | undefined
+  shippingRequired?: boolean | undefined
+  sku?: string | undefined
+  status?: ProductProductVariantStatus | undefined
+  unitOfMeasure?: string | undefined
+  vatPercentage?: number | undefined
+  createdDate?: DateTime | undefined
+  modifiedDate?: DateTime | undefined
+  sourceModifiedDate?: DateTime | undefined
+}
 type Product = {
   id: string
   categorization?: string | undefined
   description?: string | undefined
   isGiftCard?: boolean | undefined
   name?: string | undefined
-  variants?:
-    | {
-        id: string
-        barcode?: string | undefined
-        inventory?:
-          | {
-              locations?:
-                | {
-                    locationRef?: { id: string; name: string } | undefined
-                    quantity?: number | undefined
-                  }[]
-                | undefined
-              totalQuantity?: (number | null) | undefined
-            }[]
-          | undefined
-        isTaxEnabled?: boolean | undefined
-        name?: string | undefined
-        prices?:
-          | { currency?: (string | null) | undefined; unitPrice?: number | undefined }[]
-          | undefined
-        shippingRequired?: boolean | undefined
-        sku?: string | undefined
-        status?: 'Unknown' | 'Published' | 'Unpublished' | undefined
-        unitOfMeasure?: string | undefined
-        vatPercentage?: number | undefined
-        createdDate?: DateTime | undefined
-        modifiedDate?: DateTime | undefined
-        sourceModifiedDate?: DateTime | undefined
-      }[]
-    | undefined
+  variants?: ProductProductVariant[] | undefined
 }
 type Products = {
   results?: Product[] | undefined
@@ -294,24 +293,24 @@ type TaxComponent = {
   sourceModifiedDate?: DateTime | undefined
 }
 type TaxComponents = { taxComponents?: TaxComponent[] | undefined }
+type TransactionTransactionType =
+  | 'Payment'
+  | 'Refund'
+  | 'Payout'
+  | 'FailedPayout'
+  | 'Transfer'
+  | 'PaymentFee'
+  | 'PaymentFeeRefund'
+  | 'Unknown'
 type Transaction = {
   id: string
-  currency?: string | undefined
+  currency?: TransactionAllOf1Currency | undefined
   subType?: string | undefined
   totalAmount?: number | undefined
   transactionSourceRef?:
-    | { id: string; type?: 'Fee' | 'Order' | 'Payment' | 'ServiceCharge' | 'Unknown' | undefined }
+    | { id: string; type?: TransactionTransactionSourceType | undefined }
     | undefined
-  type?:
-    | 'Payment'
-    | 'Refund'
-    | 'Payout'
-    | 'FailedPayout'
-    | 'Transfer'
-    | 'PaymentFee'
-    | 'PaymentFeeRefund'
-    | 'Unknown'
-    | undefined
+  type?: TransactionTransactionType | undefined
   createdDate?: DateTime | undefined
   sourceCreatedDate?: DateTime | undefined
   modifiedDate?: DateTime | undefined

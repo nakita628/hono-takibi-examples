@@ -100,12 +100,12 @@ export async function postAttributesRestoreAttributeId(
 
 export async function postAttributesAddTagAttributeIdTagIdLocalLocal(
   args: InferRequestType<
-    (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+    (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.attributes.addTag[':attributeId'][':tagId']['local::local'].$post(args, options),
+    client.attributes.addTag[':attributeId'][':tagId']['local:{local}'].$post(args, options),
   )
 }
 
@@ -316,12 +316,12 @@ export async function postEventsUnpublishEventId(
 
 export async function postEventsAddTagEventIdTagIdLocalLocal(
   args: InferRequestType<
-    (typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']
+    (typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.events.addTag[':eventId'][':tagId']['local::local'].$post(args, options),
+    client.events.addTag[':eventId'][':tagId']['local:{local}'].$post(args, options),
   )
 }
 
@@ -384,12 +384,12 @@ export async function postGalaxiesExportGalaxyId(
 
 export async function postGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocal(
   args: InferRequestType<
-    (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+    (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.galaxies.attachCluster[':attachTargetId'][':attachTargetType']['local::local'].$post(
+    client.galaxies.attachCluster[':attachTargetId'][':attachTargetType']['local:{local}'].$post(
       args,
       options,
     ),

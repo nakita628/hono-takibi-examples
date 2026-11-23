@@ -158,6 +158,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { merchantId: string; installationId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { merchantId: string; installationId: string } }
             output: DefaultErrorResponseEntity
             outputFormat: 'json'
             status: 400

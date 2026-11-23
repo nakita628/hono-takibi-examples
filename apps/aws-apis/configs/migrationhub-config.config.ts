@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/migrationhub-config/2019-06-30/openapi.yaml',
   output: './src/migrationhub-config/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/migrationhub-config/types.ts' },
   client: { output: './src/migrationhub-config/client.ts', baseUrl: '/' },
   rpc: { output: './src/migrationhub-config/rpc.ts', parseResponse: true },

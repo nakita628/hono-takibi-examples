@@ -41,6 +41,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 date?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                domain?: string | undefined
+                country_code?: string | undefined
+                filter?: string | undefined
+                zip?: string | undefined
+                'product_codes[]'?: string | undefined
+                'province '?: string | undefined
+                date?: string | undefined
+              }
+            }
             output: {
               code?: string | undefined
               fields?: string | undefined
@@ -76,6 +92,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }[]
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: {
+              query: {
+                domain?: string | undefined
+                ip?: string | undefined
+                filter?: string | undefined
+                zip?: string | undefined
+                product_code?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
         | {
             input: {
@@ -124,6 +154,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }[]
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: {
+              query: {
+                domain?: string | undefined
+                filter?: string | undefined
+                cursor?: string | undefined
+                Product_code?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
         | {
             input: {

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/tagmanager/v2/openapi.yaml',
   output: './src/tagmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tagmanager/types.ts' },
   client: { output: './src/tagmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/tagmanager/rpc.ts', parseResponse: true },

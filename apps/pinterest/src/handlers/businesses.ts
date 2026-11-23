@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBusinessesBusinessIdAssetGroupsRoute,
   deleteBusinessesBusinessIdInvitesRoute,
   deleteBusinessesBusinessIdMembersAssetsAccessRoute,
@@ -44,138 +44,254 @@ import {
   postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBusinessesEmployersRouteHandler: RouteHandler<
+  typeof getBusinessesEmployersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const businessesHandler = app
-  .openapi(getBusinessesEmployersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAdAccountRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdAdAccountRequestsAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdAdAccountRequestsRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAnalyticsAggregatedTimelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdAssetGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdAssetGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdAssetGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAssetsAssetIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAssetsAssetIdPartnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdAudiencesAdAccountsSharedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdAudiencesBusinessesSharedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdAudiencesSharedAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdInvitesAssetsAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdMembersAssetsAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdMembersAssetsAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdMembersMemberIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdPartnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdPartnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdPartnersAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessesBusinessIdPartnersAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getBusinessesBusinessIdPartnersPartnerIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdRequestsAssetsAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdRmnContractsContractIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdRmnContractsContractIdProcessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessesBusinessIdSystemUsersSystemUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchBusinessesInvitesRouteHandler: RouteHandler<
+  typeof patchBusinessesInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAdAccountRequestsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAdAccountRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdAdAccountRequestsAcceptRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdAdAccountRequestsAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdAdAccountRequestsRejectRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdAdAccountRequestsRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAnalyticsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAnalyticsAggregatedTimelineRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAnalyticsAggregatedTimelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdAssetGroupsRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdAssetGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdAssetGroupsRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdAssetGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdAssetGroupsRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdAssetGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAssetsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAssetsAssetIdMembersRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAssetsAssetIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAssetsAssetIdPartnersRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAssetsAssetIdPartnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAudiencesRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdAudiencesAdAccountsSharedRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdAudiencesAdAccountsSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdAudiencesBusinessesSharedRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdAudiencesBusinessesSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdAudiencesSharedAccountsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdAudiencesSharedAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdInvitesRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdInvitesRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdInvitesRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdInvitesAssetsAccessRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdInvitesAssetsAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdMembersRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdMembersRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdMembersRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdMembersAssetsAccessRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdMembersAssetsAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdMembersAssetsAccessRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdMembersAssetsAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdMembersMemberIdAssetsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdMembersMemberIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdPartnersRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdPartnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdPartnersRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdPartnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdPartnersAssetsRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdPartnersAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdPartnersAssetsRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdPartnersAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRouteHandler: RouteHandler<
+  typeof deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdPartnersPartnerIdAssetsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdPartnersPartnerIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdRequestsAssetsAccessRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdRequestsAssetsAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdRmnContractsContractIdRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdRmnContractsContractIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdRmnContractsContractIdProcessRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdRmnContractsContractIdProcessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRouteHandler: RouteHandler<
+  typeof getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessesBusinessIdRmnPartnersPartnerIdInviteRouteHandler: RouteHandler<
+  typeof postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBusinessesBusinessIdSystemUsersSystemUserIdRouteHandler: RouteHandler<
+  typeof patchBusinessesBusinessIdSystemUsersSystemUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

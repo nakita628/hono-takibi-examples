@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePodcastsIdRoute,
   getPodcastsIdAudienceRoute,
   getPodcastsIdRecommendationsRoute,
@@ -8,24 +8,34 @@ import {
   postPodcastsSubmitRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPodcastsRouteHandler: RouteHandler<typeof postPodcastsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const podcastsHandler = app
-  .openapi(postPodcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPodcastsSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePodcastsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPodcastsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPodcastsIdAudienceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPodcastsIdRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPodcastsSubmitRouteHandler: RouteHandler<typeof postPodcastsSubmitRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePodcastsIdRouteHandler: RouteHandler<typeof deletePodcastsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPodcastsIdRouteHandler: RouteHandler<typeof getPodcastsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPodcastsIdAudienceRouteHandler: RouteHandler<
+  typeof getPodcastsIdAudienceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPodcastsIdRecommendationsRouteHandler: RouteHandler<
+  typeof getPodcastsIdRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

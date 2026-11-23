@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getConnectorApisIdResourcesResourceIdCoverageRoute,
   getConnectorApisIdResourcesResourceIdRoute,
   getConnectorApisIdRoute,
@@ -10,30 +10,50 @@ import {
   getConnectorConnectorsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConnectorApisRouteHandler: RouteHandler<typeof getConnectorApisRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const connectorHandler = app
-  .openapi(getConnectorApisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorApisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorApisIdResourcesResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorApisIdResourcesResourceIdCoverageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorConnectorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorConnectorsIdDocsDocIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectorConnectorsIdResourcesResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConnectorApisIdRouteHandler: RouteHandler<typeof getConnectorApisIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorApisIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof getConnectorApisIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorApisIdResourcesResourceIdCoverageRouteHandler: RouteHandler<
+  typeof getConnectorApisIdResourcesResourceIdCoverageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorConnectorsRouteHandler: RouteHandler<
+  typeof getConnectorConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorConnectorsIdRouteHandler: RouteHandler<
+  typeof getConnectorConnectorsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorConnectorsIdDocsDocIdRouteHandler: RouteHandler<
+  typeof getConnectorConnectorsIdDocsDocIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectorConnectorsIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof getConnectorConnectorsIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

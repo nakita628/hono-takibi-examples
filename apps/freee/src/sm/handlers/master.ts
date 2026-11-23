@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMasterBusinessPhasesRoute,
   getMasterCustomFieldsBusinessDefinitionsRoute,
   getMasterDealLineTypesRoute,
@@ -9,27 +9,42 @@ import {
   getMasterSalesProgressionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMasterBusinessPhasesRouteHandler: RouteHandler<
+  typeof getMasterBusinessPhasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const masterHandler = app
-  .openapi(getMasterBusinessPhasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterSalesProgressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDealLineTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterCustomFieldsBusinessDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMasterSalesProgressionsRouteHandler: RouteHandler<
+  typeof getMasterSalesProgressionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterItemsRouteHandler: RouteHandler<typeof getMasterItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDealLineTypesRouteHandler: RouteHandler<
+  typeof getMasterDealLineTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterEmployeesRouteHandler: RouteHandler<typeof getMasterEmployeesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterMembersRouteHandler: RouteHandler<typeof getMasterMembersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterCustomFieldsBusinessDefinitionsRouteHandler: RouteHandler<
+  typeof getMasterCustomFieldsBusinessDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -6209,7 +6209,6 @@ export const getV2GlossariesGlossaryIdEntriesRoute = createRoute({
   responses: {
     200: {
       description: 'The entries in the requested format.',
-      content: {},
       headers: z.object({ 'X-Trace-ID': XTraceIDHeaderSchema }),
     },
     400: BadRequestGlossariesResponse,

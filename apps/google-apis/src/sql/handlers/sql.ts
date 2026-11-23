@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRoute,
   deleteSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute,
   deleteSqlV1beta4ProjectsProjectInstancesInstanceRoute,
@@ -55,165 +55,320 @@ import {
   putSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSqlV1beta4FlagsRouteHandler: RouteHandler<typeof getSqlV1beta4FlagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const sqlHandler = app
-  .openapi(getSqlV1beta4FlagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSqlV1beta4ProjectsProjectInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSqlV1beta4ProjectsProjectInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSqlV1beta4ProjectsProjectInstancesInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceAddServerCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceConnectSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceCreateEphemeralRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceDemoteMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceFailoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceGetDiskShrinkConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceListServerCasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstancePerformDiskShrinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstancePromoteReplicaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceRescheduleMaintenanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceResetReplicaSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceResetSslConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceRestoreBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceRotateServerCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceStartExternalSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceStartReplicaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceStopReplicaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceTruncateLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectInstancesInstanceUsersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceVerifyExternalSyncSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSqlV1beta4ProjectsProjectInstancesInstanceGenerateEphemeralCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSqlV1beta4ProjectsProjectTiersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSqlV1beta4ProjectsProjectInstancesRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSqlV1beta4ProjectsProjectInstancesInstanceRouteHandler: RouteHandler<
+  typeof deleteSqlV1beta4ProjectsProjectInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSqlV1beta4ProjectsProjectInstancesInstanceRouteHandler: RouteHandler<
+  typeof patchSqlV1beta4ProjectsProjectInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSqlV1beta4ProjectsProjectInstancesInstanceRouteHandler: RouteHandler<
+  typeof putSqlV1beta4ProjectsProjectInstancesInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceAddServerCaRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceAddServerCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRouteHandler: RouteHandler<
+  typeof deleteSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceBackupRunsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceCloneRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceConnectSettingsRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceConnectSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceCreateEphemeralRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceCreateEphemeralRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRouteHandler: RouteHandler<
+  typeof deleteSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRouteHandler: RouteHandler<
+  typeof patchSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRouteHandler: RouteHandler<
+  typeof putSqlV1beta4ProjectsProjectInstancesInstanceDatabasesDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceDemoteMasterRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceDemoteMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceExportRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceFailoverRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceFailoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceGetDiskShrinkConfigRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceGetDiskShrinkConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceImportRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceListServerCasRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceListServerCasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstancePerformDiskShrinkRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstancePerformDiskShrinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstancePromoteReplicaRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstancePromoteReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceRescheduleMaintenanceRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceRescheduleMaintenanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceResetReplicaSizeRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceResetReplicaSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceResetSslConfigRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceResetSslConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceRestartRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceRestoreBackupRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceRestoreBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceRotateServerCaRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceRotateServerCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceSslCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRouteHandler: RouteHandler<
+  typeof deleteSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceSslCertsSha1FingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceStartExternalSyncRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceStartExternalSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceStartReplicaRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceStartReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceStopReplicaRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceStopReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceTruncateLogRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceTruncateLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSqlV1beta4ProjectsProjectInstancesInstanceUsersRouteHandler: RouteHandler<
+  typeof deleteSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceUsersRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceUsersRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSqlV1beta4ProjectsProjectInstancesInstanceUsersRouteHandler: RouteHandler<
+  typeof putSqlV1beta4ProjectsProjectInstancesInstanceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectInstancesInstanceUsersNameRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectInstancesInstanceUsersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceVerifyExternalSyncSettingsRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceVerifyExternalSyncSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSqlV1beta4ProjectsProjectInstancesInstanceGenerateEphemeralCertRouteHandler: RouteHandler<
+  typeof postSqlV1beta4ProjectsProjectInstancesInstanceGenerateEphemeralCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectOperationsRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectOperationsOperationRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSqlV1beta4ProjectsProjectTiersRouteHandler: RouteHandler<
+  typeof getSqlV1beta4ProjectsProjectTiersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

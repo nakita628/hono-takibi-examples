@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDeviceAssociationsV2HealthRoute,
   getDeviceAssociationsV2TrackingIdGeofencesRoute,
   getDeviceAssociationsV2VersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeviceAssociationsV2HealthRouteHandler: RouteHandler<
+  typeof getDeviceAssociationsV2HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deviceAssociationsHandler = app
-  .openapi(getDeviceAssociationsV2HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeviceAssociationsV2VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeviceAssociationsV2TrackingIdGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDeviceAssociationsV2VersionRouteHandler: RouteHandler<
+  typeof getDeviceAssociationsV2VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAssociationsV2TrackingIdGeofencesRouteHandler: RouteHandler<
+  typeof getDeviceAssociationsV2TrackingIdGeofencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

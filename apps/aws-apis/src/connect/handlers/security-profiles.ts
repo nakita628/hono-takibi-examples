@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSecurityProfilesInstanceIdSecurityProfileIdRoute,
   getSecurityProfilesInstanceIdSecurityProfileIdRoute,
   postSecurityProfilesInstanceIdSecurityProfileIdRoute,
   putSecurityProfilesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putSecurityProfilesInstanceIdRouteHandler: RouteHandler<
+  typeof putSecurityProfilesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const securityProfilesHandler = app
-  .openapi(putSecurityProfilesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSecurityProfilesInstanceIdSecurityProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityProfilesInstanceIdSecurityProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityProfilesInstanceIdSecurityProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSecurityProfilesInstanceIdSecurityProfileIdRouteHandler: RouteHandler<
+  typeof deleteSecurityProfilesInstanceIdSecurityProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityProfilesInstanceIdSecurityProfileIdRouteHandler: RouteHandler<
+  typeof getSecurityProfilesInstanceIdSecurityProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSecurityProfilesInstanceIdSecurityProfileIdRouteHandler: RouteHandler<
+  typeof postSecurityProfilesInstanceIdSecurityProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

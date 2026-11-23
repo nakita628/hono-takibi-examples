@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsHandler = app.openapi(
-  postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRouteHandler: RouteHandler<
+  typeof postXAmzTargetComputeOptimizerServiceDescribeRecommendationExportJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

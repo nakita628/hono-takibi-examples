@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAssociateSourceServersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAssociateSourceServersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const associateSourceServersHandler = app.openapi(postAssociateSourceServersRoute, (c) => {
+export const postAssociateSourceServersRouteHandler: RouteHandler<
+  typeof postAssociateSourceServersRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

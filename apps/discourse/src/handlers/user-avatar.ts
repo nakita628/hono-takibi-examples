@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUserAvatarUsernameRefreshGravatarJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUserAvatarUsernameRefreshGravatarJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userAvatarHandler = app.openapi(
-  postUserAvatarUsernameRefreshGravatarJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postUserAvatarUsernameRefreshGravatarJsonRouteHandler: RouteHandler<
+  typeof postUserAvatarUsernameRefreshGravatarJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCopyPadRoute, postCopyPadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCopyPadRoute, postCopyPadRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCopyPadRouteHandler: RouteHandler<typeof getCopyPadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const copyPadHandler = app
-  .openapi(getCopyPadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCopyPadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCopyPadRouteHandler: RouteHandler<typeof postCopyPadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

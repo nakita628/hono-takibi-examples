@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218UpdateLayerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218UpdateLayerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218UpdateLayerHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218UpdateLayerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218UpdateLayerRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218UpdateLayerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

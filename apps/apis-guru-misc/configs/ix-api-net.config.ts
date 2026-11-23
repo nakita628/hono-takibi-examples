@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ix-api.net/2.1.0/openapi.yaml',
   output: './src/ix-api-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ix-api-net/types.ts' },
   client: { output: './src/ix-api-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/ix-api-net/rpc.ts', parseResponse: true },

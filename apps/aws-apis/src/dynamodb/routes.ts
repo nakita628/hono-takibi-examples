@@ -215,9 +215,9 @@ const ConsumedCapacityMultipleSchema = z
   .openapi('ConsumedCapacityMultiple')
 
 type BatchWriteItemOutputType = {
-  UnprocessedItems?: z.infer<typeof BatchWriteItemRequestMapSchema> & unknown
-  ItemCollectionMetrics?: z.infer<typeof ItemCollectionMetricsPerTableSchema> & unknown
-  ConsumedCapacity?: z.infer<typeof ConsumedCapacityMultipleSchema> & unknown
+  UnprocessedItems?: z.infer<typeof BatchWriteItemRequestMapSchema>
+  ItemCollectionMetrics?: z.infer<typeof ItemCollectionMetricsPerTableSchema>
+  ConsumedCapacity?: z.infer<typeof ConsumedCapacityMultipleSchema>
 }
 
 const ReturnConsumedCapacitySchema = z
@@ -233,9 +233,9 @@ const ReturnItemCollectionMetricsSchema = z
   .openapi('ReturnItemCollectionMetrics')
 
 type BatchWriteItemInputType = {
-  RequestItems: z.infer<typeof BatchWriteItemRequestMapSchema> & unknown
+  RequestItems: z.infer<typeof BatchWriteItemRequestMapSchema>
   ReturnConsumedCapacity?: z.infer<typeof ReturnConsumedCapacitySchema>
-  ReturnItemCollectionMetrics?: z.infer<typeof ReturnItemCollectionMetricsSchema> & unknown
+  ReturnItemCollectionMetrics?: z.infer<typeof ReturnItemCollectionMetricsSchema>
 }
 
 const RegionNameSchema = z.string().openapi('RegionName')
@@ -469,8 +469,8 @@ const ReplicaSettingsDescriptionListSchema: z.ZodType<ReplicaSettingsDescription
   .openapi('ReplicaSettingsDescriptionList')
 
 type DescribeGlobalTableSettingsOutputType = {
-  GlobalTableName?: z.infer<typeof TableNameSchema> & unknown
-  ReplicaSettings?: z.infer<typeof ReplicaSettingsDescriptionListSchema> & unknown
+  GlobalTableName?: z.infer<typeof TableNameSchema>
+  ReplicaSettings?: z.infer<typeof ReplicaSettingsDescriptionListSchema>
 }
 
 const TableStatusSchema = z
@@ -537,9 +537,9 @@ const ReplicaAutoScalingDescriptionListSchema: z.ZodType<ReplicaAutoScalingDescr
   .openapi('ReplicaAutoScalingDescriptionList')
 
 type TableAutoScalingDescriptionType = {
-  TableName?: z.infer<typeof TableNameSchema> & unknown
-  TableStatus?: z.infer<typeof TableStatusSchema> & unknown
-  Replicas?: z.infer<typeof ReplicaAutoScalingDescriptionListSchema> & unknown
+  TableName?: z.infer<typeof TableNameSchema>
+  TableStatus?: z.infer<typeof TableStatusSchema>
+  Replicas?: z.infer<typeof ReplicaAutoScalingDescriptionListSchema>
 }
 
 const TableAutoScalingDescriptionSchema: z.ZodType<TableAutoScalingDescriptionType> = z
@@ -560,12 +560,12 @@ const TableAutoScalingDescriptionSchema: z.ZodType<TableAutoScalingDescriptionTy
   .openapi('TableAutoScalingDescription')
 
 type DescribeTableReplicaAutoScalingOutputType = {
-  TableAutoScalingDescription?: z.infer<typeof TableAutoScalingDescriptionSchema> & unknown
+  TableAutoScalingDescription?: z.infer<typeof TableAutoScalingDescriptionSchema>
 }
 
 type UpdateGlobalTableSettingsOutputType = {
-  GlobalTableName?: z.infer<typeof TableNameSchema> & unknown
-  ReplicaSettings?: z.infer<typeof ReplicaSettingsDescriptionListSchema> & unknown
+  GlobalTableName?: z.infer<typeof TableNameSchema>
+  ReplicaSettings?: z.infer<typeof ReplicaSettingsDescriptionListSchema>
 }
 
 const AutoScalingRoleArnSchema = z
@@ -740,22 +740,20 @@ const ReplicaSettingsUpdateListSchema = z
   .openapi('ReplicaSettingsUpdateList')
 
 type UpdateGlobalTableSettingsInputType = {
-  GlobalTableName: z.infer<typeof TableNameSchema> & unknown
-  GlobalTableBillingMode?: z.infer<typeof BillingModeSchema> & unknown
-  GlobalTableProvisionedWriteCapacityUnits?: z.infer<typeof PositiveLongObjectSchema> & unknown
+  GlobalTableName: z.infer<typeof TableNameSchema>
+  GlobalTableBillingMode?: z.infer<typeof BillingModeSchema>
+  GlobalTableProvisionedWriteCapacityUnits?: z.infer<typeof PositiveLongObjectSchema>
   GlobalTableProvisionedWriteCapacityAutoScalingSettingsUpdate?: z.infer<
     typeof AutoScalingSettingsUpdateSchema
-  > &
-    unknown
+  >
   GlobalTableGlobalSecondaryIndexSettingsUpdate?: z.infer<
     typeof GlobalTableGlobalSecondaryIndexSettingsUpdateListSchema
-  > &
-    unknown
-  ReplicaSettingsUpdate?: z.infer<typeof ReplicaSettingsUpdateListSchema> & unknown
+  >
+  ReplicaSettingsUpdate?: z.infer<typeof ReplicaSettingsUpdateListSchema>
 }
 
 type UpdateTableReplicaAutoScalingOutputType = {
-  TableAutoScalingDescription?: z.infer<typeof TableAutoScalingDescriptionSchema> & unknown
+  TableAutoScalingDescription?: z.infer<typeof TableAutoScalingDescriptionSchema>
 }
 
 const GlobalSecondaryIndexAutoScalingUpdateSchema = z
@@ -818,11 +816,10 @@ const ReplicaAutoScalingUpdateListSchema = z
   .openapi('ReplicaAutoScalingUpdateList')
 
 type UpdateTableReplicaAutoScalingInputType = {
-  GlobalSecondaryIndexUpdates?: z.infer<typeof GlobalSecondaryIndexAutoScalingUpdateListSchema> &
-    unknown
-  TableName: z.infer<typeof TableNameSchema> & unknown
+  GlobalSecondaryIndexUpdates?: z.infer<typeof GlobalSecondaryIndexAutoScalingUpdateListSchema>
+  TableName: z.infer<typeof TableNameSchema>
   ProvisionedWriteCapacityAutoScalingUpdate?: z.infer<typeof AutoScalingSettingsUpdateSchema>
-  ReplicaUpdates?: z.infer<typeof ReplicaAutoScalingUpdateListSchema> & unknown
+  ReplicaUpdates?: z.infer<typeof ReplicaAutoScalingUpdateListSchema>
 }
 
 type StringAttributeValueType = string
@@ -882,16 +879,16 @@ const BooleanAttributeValueSchema: z.ZodType<BooleanAttributeValueType> = z
   .openapi('BooleanAttributeValue')
 
 type AttributeValueType = {
-  S?: z.infer<typeof StringAttributeValueSchema> & unknown
-  N?: z.infer<typeof NumberAttributeValueSchema> & unknown
-  B?: z.infer<typeof BinaryAttributeValueSchema> & unknown
-  SS?: z.infer<typeof StringSetAttributeValueSchema> & unknown
-  NS?: z.infer<typeof NumberSetAttributeValueSchema> & unknown
-  BS?: z.infer<typeof BinarySetAttributeValueSchema> & unknown
-  M?: z.infer<typeof MapAttributeValueSchema> & unknown
-  L?: z.infer<typeof ListAttributeValueSchema> & unknown
-  NULL?: z.infer<typeof NullAttributeValueSchema> & unknown
-  BOOL?: z.infer<typeof BooleanAttributeValueSchema> & unknown
+  S?: z.infer<typeof StringAttributeValueSchema>
+  N?: z.infer<typeof NumberAttributeValueSchema>
+  B?: z.infer<typeof BinaryAttributeValueSchema>
+  SS?: z.infer<typeof StringSetAttributeValueSchema>
+  NS?: z.infer<typeof NumberSetAttributeValueSchema>
+  BS?: z.infer<typeof BinarySetAttributeValueSchema>
+  M?: z.infer<typeof MapAttributeValueSchema>
+  L?: z.infer<typeof ListAttributeValueSchema>
+  NULL?: z.infer<typeof NullAttributeValueSchema>
+  BOOL?: z.infer<typeof BooleanAttributeValueSchema>
 }
 
 type MapAttributeValueType = { [key: string]: z.infer<typeof AttributeValueSchema> }

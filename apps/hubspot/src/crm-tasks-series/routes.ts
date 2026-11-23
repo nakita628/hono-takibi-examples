@@ -617,7 +617,7 @@ export const deleteCrmTaskSeries202609TaskIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
     { oauth2: ['crm.objects.tickets.write'] },

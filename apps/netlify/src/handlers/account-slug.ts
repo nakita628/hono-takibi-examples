@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountSlugMembersMemberIdRoute,
   getAccountSlugMembersMemberIdRoute,
   getAccountSlugMembersRoute,
@@ -9,27 +9,44 @@ import {
   putAccountSlugMembersMemberIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountSlugSitesRouteHandler: RouteHandler<
+  typeof postAccountSlugSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountSlugHandler = app
-  .openapi(postAccountSlugSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountSlugSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountSlugMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountSlugMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountSlugMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountSlugMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountSlugMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAccountSlugSitesRouteHandler: RouteHandler<
+  typeof getAccountSlugSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountSlugMembersRouteHandler: RouteHandler<
+  typeof getAccountSlugMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountSlugMembersRouteHandler: RouteHandler<
+  typeof postAccountSlugMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountSlugMembersMemberIdRouteHandler: RouteHandler<
+  typeof getAccountSlugMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountSlugMembersMemberIdRouteHandler: RouteHandler<
+  typeof putAccountSlugMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountSlugMembersMemberIdRouteHandler: RouteHandler<
+  typeof deleteAccountSlugMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

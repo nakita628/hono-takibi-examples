@@ -511,8 +511,8 @@ const FailedCreateAssociationListSchema: z.ZodType<FailedCreateAssociationListTy
   .openapi('FailedCreateAssociationList')
 
 type CreateAssociationBatchResultType = {
-  Successful?: z.infer<typeof AssociationDescriptionListSchema> & unknown
-  Failed?: z.infer<typeof FailedCreateAssociationListSchema> & unknown
+  Successful?: z.infer<typeof AssociationDescriptionListSchema>
+  Failed?: z.infer<typeof FailedCreateAssociationListSchema>
 }
 
 const CreateAssociationBatchRequestEntriesSchema = z
@@ -521,7 +521,7 @@ const CreateAssociationBatchRequestEntriesSchema = z
   .openapi('CreateAssociationBatchRequestEntries')
 
 type CreateAssociationBatchRequestType = {
-  Entries: z.infer<typeof CreateAssociationBatchRequestEntriesSchema> & unknown
+  Entries: z.infer<typeof CreateAssociationBatchRequestEntriesSchema>
 }
 
 const OperatingSystemSchema = z
@@ -745,19 +745,19 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).max(1000).openapi('TagList')
 
 type CreatePatchBaselineRequestType = {
-  OperatingSystem?: z.infer<typeof OperatingSystemSchema> & unknown
-  Name: z.infer<typeof BaselineNameSchema> & unknown
-  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema> & unknown
-  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema> & unknown
-  ApprovedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema> & unknown
-  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema> & unknown
-  RejectedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  RejectedPatchesAction?: z.infer<typeof PatchActionSchema> & unknown
-  Description?: z.infer<typeof BaselineDescriptionSchema> & unknown
-  Sources?: z.infer<typeof PatchSourceListSchema> & unknown
-  ClientToken?: z.infer<typeof ClientTokenSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  OperatingSystem?: z.infer<typeof OperatingSystemSchema>
+  Name: z.infer<typeof BaselineNameSchema>
+  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema>
+  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema>
+  ApprovedPatches?: z.infer<typeof PatchIdListSchema>
+  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema>
+  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema>
+  RejectedPatches?: z.infer<typeof PatchIdListSchema>
+  RejectedPatchesAction?: z.infer<typeof PatchActionSchema>
+  Description?: z.infer<typeof BaselineDescriptionSchema>
+  Sources?: z.infer<typeof PatchSourceListSchema>
+  ClientToken?: z.infer<typeof ClientTokenSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const AutomationExecutionIdSchema = z.string().length(36).openapi('AutomationExecutionId')
@@ -885,36 +885,36 @@ const RunbooksSchema = z.array(RunbookSchema).length(1).openapi('Runbooks')
 const ChangeRequestNameSchema = z.string().min(1).max(1024).openapi('ChangeRequestName')
 
 type AutomationExecutionMetadataType = {
-  AutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema> & unknown
-  DocumentName?: z.infer<typeof DocumentNameSchema> & unknown
-  DocumentVersion?: z.infer<typeof DocumentVersionSchema> & unknown
-  AutomationExecutionStatus?: z.infer<typeof AutomationExecutionStatusSchema> & unknown
-  ExecutionStartTime?: z.infer<typeof DateTimeSchema> & unknown
-  ExecutionEndTime?: z.infer<typeof DateTimeSchema> & unknown
-  ExecutedBy?: z.infer<typeof StringSchema> & unknown
-  LogFile?: z.infer<typeof StringSchema> & unknown
-  Outputs?: z.infer<typeof AutomationParameterMapSchema> & unknown
-  Mode?: z.infer<typeof ExecutionModeSchema> & unknown
-  ParentAutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema> & unknown
-  CurrentStepName?: z.infer<typeof StringSchema> & unknown
-  CurrentAction?: z.infer<typeof StringSchema> & unknown
-  FailureMessage?: z.infer<typeof StringSchema> & unknown
-  TargetParameterName?: z.infer<typeof AutomationParameterKeySchema> & unknown
-  Targets?: z.infer<typeof TargetsSchema> & unknown
-  TargetMaps?: z.infer<typeof TargetMapsSchema> & unknown
-  ResolvedTargets?: z.infer<typeof ResolvedTargetsSchema> & unknown
-  MaxConcurrency?: z.infer<typeof MaxConcurrencySchema> & unknown
-  MaxErrors?: z.infer<typeof MaxErrorsSchema> & unknown
-  Target?: z.infer<typeof StringSchema> & unknown
-  AutomationType?: z.infer<typeof AutomationTypeSchema> & unknown
-  AlarmConfiguration?: z.infer<typeof AlarmConfigurationSchema> & unknown
-  TriggeredAlarms?: z.infer<typeof AlarmStateInformationListSchema> & unknown
-  AutomationSubtype?: z.infer<typeof AutomationSubtypeSchema> & unknown
-  ScheduledTime?: z.infer<typeof DateTimeSchema> & unknown
-  Runbooks?: z.infer<typeof RunbooksSchema> & unknown
-  OpsItemId?: z.infer<typeof StringSchema> & unknown
-  AssociationId?: z.infer<typeof StringSchema> & unknown
-  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema> & unknown
+  AutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema>
+  DocumentName?: z.infer<typeof DocumentNameSchema>
+  DocumentVersion?: z.infer<typeof DocumentVersionSchema>
+  AutomationExecutionStatus?: z.infer<typeof AutomationExecutionStatusSchema>
+  ExecutionStartTime?: z.infer<typeof DateTimeSchema>
+  ExecutionEndTime?: z.infer<typeof DateTimeSchema>
+  ExecutedBy?: z.infer<typeof StringSchema>
+  LogFile?: z.infer<typeof StringSchema>
+  Outputs?: z.infer<typeof AutomationParameterMapSchema>
+  Mode?: z.infer<typeof ExecutionModeSchema>
+  ParentAutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema>
+  CurrentStepName?: z.infer<typeof StringSchema>
+  CurrentAction?: z.infer<typeof StringSchema>
+  FailureMessage?: z.infer<typeof StringSchema>
+  TargetParameterName?: z.infer<typeof AutomationParameterKeySchema>
+  Targets?: z.infer<typeof TargetsSchema>
+  TargetMaps?: z.infer<typeof TargetMapsSchema>
+  ResolvedTargets?: z.infer<typeof ResolvedTargetsSchema>
+  MaxConcurrency?: z.infer<typeof MaxConcurrencySchema>
+  MaxErrors?: z.infer<typeof MaxErrorsSchema>
+  Target?: z.infer<typeof StringSchema>
+  AutomationType?: z.infer<typeof AutomationTypeSchema>
+  AlarmConfiguration?: z.infer<typeof AlarmConfigurationSchema>
+  TriggeredAlarms?: z.infer<typeof AlarmStateInformationListSchema>
+  AutomationSubtype?: z.infer<typeof AutomationSubtypeSchema>
+  ScheduledTime?: z.infer<typeof DateTimeSchema>
+  Runbooks?: z.infer<typeof RunbooksSchema>
+  OpsItemId?: z.infer<typeof StringSchema>
+  AssociationId?: z.infer<typeof StringSchema>
+  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema>
 }
 
 const AutomationExecutionMetadataSchema: z.ZodType<AutomationExecutionMetadataType> = z
@@ -1029,8 +1029,8 @@ const AutomationExecutionMetadataListSchema: z.ZodType<AutomationExecutionMetada
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type DescribeAutomationExecutionsResultType = {
-  AutomationExecutionMetadataList?: z.infer<typeof AutomationExecutionMetadataListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  AutomationExecutionMetadataList?: z.infer<typeof AutomationExecutionMetadataListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const AutomationActionNameSchema = z
@@ -1183,39 +1183,39 @@ const ProgressCountersSchema = z
   .openapi('ProgressCounters')
 
 type AutomationExecutionType = {
-  AutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema> & unknown
-  DocumentName?: z.infer<typeof DocumentNameSchema> & unknown
-  DocumentVersion?: z.infer<typeof DocumentVersionSchema> & unknown
-  ExecutionStartTime?: z.infer<typeof DateTimeSchema> & unknown
-  ExecutionEndTime?: z.infer<typeof DateTimeSchema> & unknown
-  AutomationExecutionStatus?: z.infer<typeof AutomationExecutionStatusSchema> & unknown
-  StepExecutions?: z.infer<typeof StepExecutionListSchema> & unknown
-  StepExecutionsTruncated?: z.infer<typeof BooleanSchema> & unknown
-  Parameters?: z.infer<typeof AutomationParameterMapSchema> & unknown
-  Outputs?: z.infer<typeof AutomationParameterMapSchema> & unknown
-  FailureMessage?: z.infer<typeof StringSchema> & unknown
-  Mode?: z.infer<typeof ExecutionModeSchema> & unknown
-  ParentAutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema> & unknown
-  ExecutedBy?: z.infer<typeof StringSchema> & unknown
-  CurrentStepName?: z.infer<typeof StringSchema> & unknown
-  CurrentAction?: z.infer<typeof StringSchema> & unknown
-  TargetParameterName?: z.infer<typeof AutomationParameterKeySchema> & unknown
-  Targets?: z.infer<typeof TargetsSchema> & unknown
-  TargetMaps?: z.infer<typeof TargetMapsSchema> & unknown
-  ResolvedTargets?: z.infer<typeof ResolvedTargetsSchema> & unknown
-  MaxConcurrency?: z.infer<typeof MaxConcurrencySchema> & unknown
-  MaxErrors?: z.infer<typeof MaxErrorsSchema> & unknown
-  Target?: z.infer<typeof StringSchema> & unknown
-  TargetLocations?: z.infer<typeof TargetLocationsSchema> & unknown
-  ProgressCounters?: z.infer<typeof ProgressCountersSchema> & unknown
-  AlarmConfiguration?: z.infer<typeof AlarmConfigurationSchema> & unknown
-  TriggeredAlarms?: z.infer<typeof AlarmStateInformationListSchema> & unknown
-  AutomationSubtype?: z.infer<typeof AutomationSubtypeSchema> & unknown
-  ScheduledTime?: z.infer<typeof DateTimeSchema> & unknown
-  Runbooks?: z.infer<typeof RunbooksSchema> & unknown
-  OpsItemId?: z.infer<typeof StringSchema> & unknown
-  AssociationId?: z.infer<typeof StringSchema> & unknown
-  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema> & unknown
+  AutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema>
+  DocumentName?: z.infer<typeof DocumentNameSchema>
+  DocumentVersion?: z.infer<typeof DocumentVersionSchema>
+  ExecutionStartTime?: z.infer<typeof DateTimeSchema>
+  ExecutionEndTime?: z.infer<typeof DateTimeSchema>
+  AutomationExecutionStatus?: z.infer<typeof AutomationExecutionStatusSchema>
+  StepExecutions?: z.infer<typeof StepExecutionListSchema>
+  StepExecutionsTruncated?: z.infer<typeof BooleanSchema>
+  Parameters?: z.infer<typeof AutomationParameterMapSchema>
+  Outputs?: z.infer<typeof AutomationParameterMapSchema>
+  FailureMessage?: z.infer<typeof StringSchema>
+  Mode?: z.infer<typeof ExecutionModeSchema>
+  ParentAutomationExecutionId?: z.infer<typeof AutomationExecutionIdSchema>
+  ExecutedBy?: z.infer<typeof StringSchema>
+  CurrentStepName?: z.infer<typeof StringSchema>
+  CurrentAction?: z.infer<typeof StringSchema>
+  TargetParameterName?: z.infer<typeof AutomationParameterKeySchema>
+  Targets?: z.infer<typeof TargetsSchema>
+  TargetMaps?: z.infer<typeof TargetMapsSchema>
+  ResolvedTargets?: z.infer<typeof ResolvedTargetsSchema>
+  MaxConcurrency?: z.infer<typeof MaxConcurrencySchema>
+  MaxErrors?: z.infer<typeof MaxErrorsSchema>
+  Target?: z.infer<typeof StringSchema>
+  TargetLocations?: z.infer<typeof TargetLocationsSchema>
+  ProgressCounters?: z.infer<typeof ProgressCountersSchema>
+  AlarmConfiguration?: z.infer<typeof AlarmConfigurationSchema>
+  TriggeredAlarms?: z.infer<typeof AlarmStateInformationListSchema>
+  AutomationSubtype?: z.infer<typeof AutomationSubtypeSchema>
+  ScheduledTime?: z.infer<typeof DateTimeSchema>
+  Runbooks?: z.infer<typeof RunbooksSchema>
+  OpsItemId?: z.infer<typeof StringSchema>
+  AssociationId?: z.infer<typeof StringSchema>
+  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema>
 }
 
 const AutomationExecutionSchema: z.ZodType<AutomationExecutionType> = z
@@ -1334,7 +1334,7 @@ const AutomationExecutionSchema: z.ZodType<AutomationExecutionType> = z
   .openapi('AutomationExecution')
 
 type GetAutomationExecutionResultType = {
-  AutomationExecution?: z.infer<typeof AutomationExecutionSchema> & unknown
+  AutomationExecution?: z.infer<typeof AutomationExecutionSchema>
 }
 
 const SnapshotIdSchema = z
@@ -1344,15 +1344,15 @@ const SnapshotIdSchema = z
   .openapi('SnapshotId')
 
 type BaselineOverrideType = {
-  OperatingSystem?: z.infer<typeof OperatingSystemSchema> & unknown
+  OperatingSystem?: z.infer<typeof OperatingSystemSchema>
   GlobalFilters?: z.infer<typeof PatchFilterGroupSchema>
   ApprovalRules?: z.infer<typeof PatchRuleGroupSchema>
-  ApprovedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema> & unknown
-  RejectedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  RejectedPatchesAction?: z.infer<typeof PatchActionSchema> & unknown
-  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema> & unknown
-  Sources?: z.infer<typeof PatchSourceListSchema> & unknown
+  ApprovedPatches?: z.infer<typeof PatchIdListSchema>
+  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema>
+  RejectedPatches?: z.infer<typeof PatchIdListSchema>
+  RejectedPatchesAction?: z.infer<typeof PatchActionSchema>
+  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema>
+  Sources?: z.infer<typeof PatchSourceListSchema>
 }
 
 const BaselineOverrideSchema: z.ZodType<BaselineOverrideType> = z
@@ -1394,9 +1394,9 @@ const BaselineOverrideSchema: z.ZodType<BaselineOverrideType> = z
   .openapi('BaselineOverride')
 
 type GetDeployablePatchSnapshotForInstanceRequestType = {
-  InstanceId: z.infer<typeof InstanceIdSchema> & unknown
-  SnapshotId: z.infer<typeof SnapshotIdSchema> & unknown
-  BaselineOverride?: z.infer<typeof BaselineOverrideSchema> & unknown
+  InstanceId: z.infer<typeof InstanceIdSchema>
+  SnapshotId: z.infer<typeof SnapshotIdSchema>
+  BaselineOverride?: z.infer<typeof BaselineOverrideSchema>
 }
 
 const InventoryFilterKeySchema = z.string().min(1).max(200).openapi('InventoryFilterKey')
@@ -1466,11 +1466,11 @@ const ResultAttributeListSchema = z
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 type GetInventoryRequestType = {
-  Filters?: z.infer<typeof InventoryFilterListSchema> & unknown
-  Aggregators?: z.infer<typeof InventoryAggregatorListSchema> & unknown
-  ResultAttributes?: z.infer<typeof ResultAttributeListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
-  MaxResults?: z.infer<typeof MaxResultsSchema> & unknown
+  Filters?: z.infer<typeof InventoryFilterListSchema>
+  Aggregators?: z.infer<typeof InventoryAggregatorListSchema>
+  ResultAttributes?: z.infer<typeof ResultAttributeListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
+  MaxResults?: z.infer<typeof MaxResultsSchema>
 }
 
 const BaselineIdSchema = z
@@ -1490,21 +1490,21 @@ const PatchGroupSchema = z
 const PatchGroupListSchema = z.array(PatchGroupSchema).openapi('PatchGroupList')
 
 type GetPatchBaselineResultType = {
-  BaselineId?: z.infer<typeof BaselineIdSchema> & unknown
-  Name?: z.infer<typeof BaselineNameSchema> & unknown
-  OperatingSystem?: z.infer<typeof OperatingSystemSchema> & unknown
-  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema> & unknown
-  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema> & unknown
-  ApprovedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema> & unknown
-  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema> & unknown
-  RejectedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  RejectedPatchesAction?: z.infer<typeof PatchActionSchema> & unknown
-  PatchGroups?: z.infer<typeof PatchGroupListSchema> & unknown
-  CreatedDate?: z.infer<typeof DateTimeSchema> & unknown
-  ModifiedDate?: z.infer<typeof DateTimeSchema> & unknown
-  Description?: z.infer<typeof BaselineDescriptionSchema> & unknown
-  Sources?: z.infer<typeof PatchSourceListSchema> & unknown
+  BaselineId?: z.infer<typeof BaselineIdSchema>
+  Name?: z.infer<typeof BaselineNameSchema>
+  OperatingSystem?: z.infer<typeof OperatingSystemSchema>
+  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema>
+  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema>
+  ApprovedPatches?: z.infer<typeof PatchIdListSchema>
+  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema>
+  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema>
+  RejectedPatches?: z.infer<typeof PatchIdListSchema>
+  RejectedPatchesAction?: z.infer<typeof PatchActionSchema>
+  PatchGroups?: z.infer<typeof PatchGroupListSchema>
+  CreatedDate?: z.infer<typeof DateTimeSchema>
+  ModifiedDate?: z.infer<typeof DateTimeSchema>
+  Description?: z.infer<typeof BaselineDescriptionSchema>
+  Sources?: z.infer<typeof PatchSourceListSchema>
 }
 
 const AssociationVersionInfoSchema = z
@@ -1588,8 +1588,8 @@ const AssociationVersionListSchema = z
   .openapi('AssociationVersionList')
 
 type ListAssociationVersionsResultType = {
-  AssociationVersions?: z.infer<typeof AssociationVersionListSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  AssociationVersions?: z.infer<typeof AssociationVersionListSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const IdempotencyTokenSchema = z
@@ -1601,49 +1601,49 @@ const IdempotencyTokenSchema = z
 const ChangeDetailsValueSchema = z.string().min(1).max(32768).openapi('ChangeDetailsValue')
 
 type StartChangeRequestExecutionRequestType = {
-  ScheduledTime?: z.infer<typeof DateTimeSchema> & unknown
-  DocumentName: z.infer<typeof DocumentARNSchema> & unknown
-  DocumentVersion?: z.infer<typeof DocumentVersionSchema> & unknown
-  Parameters?: z.infer<typeof AutomationParameterMapSchema> & unknown
-  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema> & unknown
-  ClientToken?: z.infer<typeof IdempotencyTokenSchema> & unknown
-  AutoApprove?: z.infer<typeof BooleanSchema> & unknown
-  Runbooks: z.infer<typeof RunbooksSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  ScheduledEndTime?: z.infer<typeof DateTimeSchema> & unknown
-  ChangeDetails?: z.infer<typeof ChangeDetailsValueSchema> & unknown
+  ScheduledTime?: z.infer<typeof DateTimeSchema>
+  DocumentName: z.infer<typeof DocumentARNSchema>
+  DocumentVersion?: z.infer<typeof DocumentVersionSchema>
+  Parameters?: z.infer<typeof AutomationParameterMapSchema>
+  ChangeRequestName?: z.infer<typeof ChangeRequestNameSchema>
+  ClientToken?: z.infer<typeof IdempotencyTokenSchema>
+  AutoApprove?: z.infer<typeof BooleanSchema>
+  Runbooks: z.infer<typeof RunbooksSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  ScheduledEndTime?: z.infer<typeof DateTimeSchema>
+  ChangeDetails?: z.infer<typeof ChangeDetailsValueSchema>
 }
 
 type UpdatePatchBaselineResultType = {
-  BaselineId?: z.infer<typeof BaselineIdSchema> & unknown
-  Name?: z.infer<typeof BaselineNameSchema> & unknown
-  OperatingSystem?: z.infer<typeof OperatingSystemSchema> & unknown
-  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema> & unknown
-  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema> & unknown
-  ApprovedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema> & unknown
-  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema> & unknown
-  RejectedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  RejectedPatchesAction?: z.infer<typeof PatchActionSchema> & unknown
-  CreatedDate?: z.infer<typeof DateTimeSchema> & unknown
-  ModifiedDate?: z.infer<typeof DateTimeSchema> & unknown
-  Description?: z.infer<typeof BaselineDescriptionSchema> & unknown
-  Sources?: z.infer<typeof PatchSourceListSchema> & unknown
+  BaselineId?: z.infer<typeof BaselineIdSchema>
+  Name?: z.infer<typeof BaselineNameSchema>
+  OperatingSystem?: z.infer<typeof OperatingSystemSchema>
+  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema>
+  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema>
+  ApprovedPatches?: z.infer<typeof PatchIdListSchema>
+  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema>
+  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema>
+  RejectedPatches?: z.infer<typeof PatchIdListSchema>
+  RejectedPatchesAction?: z.infer<typeof PatchActionSchema>
+  CreatedDate?: z.infer<typeof DateTimeSchema>
+  ModifiedDate?: z.infer<typeof DateTimeSchema>
+  Description?: z.infer<typeof BaselineDescriptionSchema>
+  Sources?: z.infer<typeof PatchSourceListSchema>
 }
 
 type UpdatePatchBaselineRequestType = {
-  BaselineId: z.infer<typeof BaselineIdSchema> & unknown
-  Name?: z.infer<typeof BaselineNameSchema> & unknown
-  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema> & unknown
-  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema> & unknown
-  ApprovedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema> & unknown
-  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema> & unknown
-  RejectedPatches?: z.infer<typeof PatchIdListSchema> & unknown
-  RejectedPatchesAction?: z.infer<typeof PatchActionSchema> & unknown
-  Description?: z.infer<typeof BaselineDescriptionSchema> & unknown
-  Sources?: z.infer<typeof PatchSourceListSchema> & unknown
-  Replace?: z.infer<typeof BooleanSchema> & unknown
+  BaselineId: z.infer<typeof BaselineIdSchema>
+  Name?: z.infer<typeof BaselineNameSchema>
+  GlobalFilters?: z.infer<typeof PatchFilterGroupSchema>
+  ApprovalRules?: z.infer<typeof PatchRuleGroupSchema>
+  ApprovedPatches?: z.infer<typeof PatchIdListSchema>
+  ApprovedPatchesComplianceLevel?: z.infer<typeof PatchComplianceLevelSchema>
+  ApprovedPatchesEnableNonSecurity?: z.infer<typeof BooleanSchema>
+  RejectedPatches?: z.infer<typeof PatchIdListSchema>
+  RejectedPatchesAction?: z.infer<typeof PatchActionSchema>
+  Description?: z.infer<typeof BaselineDescriptionSchema>
+  Sources?: z.infer<typeof PatchSourceListSchema>
+  Replace?: z.infer<typeof BooleanSchema>
 }
 
 const InventoryAggregatorSchema: z.ZodType<InventoryAggregatorType> = z
@@ -1765,9 +1765,9 @@ const InventoryGroupListSchema: z.ZodType<InventoryGroupListType> = z
   .openapi('InventoryGroupList')
 
 type InventoryAggregatorType = {
-  Expression?: z.infer<typeof InventoryAggregatorExpressionSchema> & unknown
-  Aggregators?: z.infer<typeof InventoryAggregatorListSchema> & unknown
-  Groups?: z.infer<typeof InventoryGroupListSchema> & unknown
+  Expression?: z.infer<typeof InventoryAggregatorExpressionSchema>
+  Aggregators?: z.infer<typeof InventoryAggregatorListSchema>
+  Groups?: z.infer<typeof InventoryGroupListSchema>
 }
 
 type OpsAggregatorTypeType = string
@@ -1817,12 +1817,12 @@ const OpsAggregatorListSchema: z.ZodType<OpsAggregatorListType> = z
   .openapi('OpsAggregatorList')
 
 type OpsAggregatorType = {
-  AggregatorType?: z.infer<typeof OpsAggregatorTypeSchema> & unknown
-  TypeName?: z.infer<typeof OpsDataTypeNameSchema> & unknown
-  AttributeName?: z.infer<typeof OpsDataAttributeNameSchema> & unknown
-  Values?: z.infer<typeof OpsAggregatorValueMapSchema> & unknown
-  Filters?: z.infer<typeof OpsFilterListSchema> & unknown
-  Aggregators?: z.infer<typeof OpsAggregatorListSchema> & unknown
+  AggregatorType?: z.infer<typeof OpsAggregatorTypeSchema>
+  TypeName?: z.infer<typeof OpsDataTypeNameSchema>
+  AttributeName?: z.infer<typeof OpsDataAttributeNameSchema>
+  Values?: z.infer<typeof OpsAggregatorValueMapSchema>
+  Filters?: z.infer<typeof OpsFilterListSchema>
+  Aggregators?: z.infer<typeof OpsAggregatorListSchema>
 }
 
 const AddTagsToResourceResultSchema = z.looseObject({}).openapi('AddTagsToResourceResult')

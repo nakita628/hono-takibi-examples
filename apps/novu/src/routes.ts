@@ -3573,38 +3573,10 @@ const WorkflowPreferencesDtoSchema = z
         }
         return val
       }, Schema)
-    })()
-      .openapi({
-        oneOf: [
-          {
-            type: 'object',
-            properties: {
-              enabled: {
-                type: 'boolean',
-                description:
-                  'A flag specifying if notification delivery is enabled for the workflow. If true, notification delivery is enabled by default for all channels. This setting can be overridden by the channel preferences.',
-                default: true,
-              },
-              readOnly: {
-                type: 'boolean',
-                description:
-                  'A flag specifying if the preference is read-only. If true, the preference cannot be changed by the Subscriber.',
-                default: false,
-              },
-              condition: {
-                type: 'object',
-                additionalProperties: true,
-                description: 'JsonLogic condition controlling whether this preference applies',
-              },
-            },
-            required: ['enabled', 'readOnly'],
-          },
-        ],
-      })
-      .openapi({
-        description:
-          'A preference for the workflow. The values specified here will be used if no preference is specified for a channel.',
-      }),
+    })().openapi({
+      description:
+        'A preference for the workflow. The values specified here will be used if no preference is specified for a channel.',
+    }),
     channels: z
       .record(z.string(), ChannelPreferenceDtoSchema)
       .openapi({

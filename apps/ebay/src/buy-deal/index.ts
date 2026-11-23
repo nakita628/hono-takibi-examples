@@ -1,11 +1,18 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { dealItemHandler, eventHandler, eventItemHandler } from './handlers'
+import { getDealItemRoute, getEventEventIdRoute, getEventItemRoute, getEventRoute } from './routes'
+import {
+  getDealItemRouteHandler,
+  getEventEventIdRouteHandler,
+  getEventItemRouteHandler,
+  getEventRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', dealItemHandler)
-  .route('/', eventHandler)
-  .route('/', eventItemHandler)
+  .openapi(getDealItemRoute, getDealItemRouteHandler)
+  .openapi(getEventRoute, getEventRouteHandler)
+  .openapi(getEventEventIdRoute, getEventEventIdRouteHandler)
+  .openapi(getEventItemRoute, getEventItemRouteHandler)
 
 export default app

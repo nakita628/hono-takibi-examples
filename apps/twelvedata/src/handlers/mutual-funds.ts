@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMutualFundsFamilyRoute,
   getMutualFundsListRoute,
   getMutualFundsTypeRoute,
@@ -13,39 +13,68 @@ import {
   getMutualFundsWorldSustainabilityRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMutualFundsFamilyRouteHandler: RouteHandler<
+  typeof getMutualFundsFamilyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mutualFundsHandler = app
-  .openapi(getMutualFundsFamilyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldCompositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldPerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldPurchaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldRiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMutualFundsWorldSustainabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMutualFundsListRouteHandler: RouteHandler<typeof getMutualFundsListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsTypeRouteHandler: RouteHandler<typeof getMutualFundsTypeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldCompositionRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldCompositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldPerformanceRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldPerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldPurchaseInfoRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldPurchaseInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldRatingsRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldRiskRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldRiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldSummaryRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMutualFundsWorldSustainabilityRouteHandler: RouteHandler<
+  typeof getMutualFundsWorldSustainabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

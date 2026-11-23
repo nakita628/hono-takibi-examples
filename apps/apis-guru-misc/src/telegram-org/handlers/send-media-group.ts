@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendMediaGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendMediaGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendMediaGroupHandler = app.openapi(postSendMediaGroupRoute, (c) => {
+export const postSendMediaGroupRouteHandler: RouteHandler<typeof postSendMediaGroupRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

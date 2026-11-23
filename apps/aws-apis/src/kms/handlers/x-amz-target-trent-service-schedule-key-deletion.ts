@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceScheduleKeyDeletionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceScheduleKeyDeletionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceScheduleKeyDeletionHandler = app.openapi(
-  postXAmzTargetTrentServiceScheduleKeyDeletionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceScheduleKeyDeletionRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceScheduleKeyDeletionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

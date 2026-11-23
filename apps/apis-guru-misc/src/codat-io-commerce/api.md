@@ -1050,7 +1050,7 @@ auth_header
 |line2|string|false|none|The second line of the address|
 |postalCode|string|false|none|The postal (or zip) code for the address|
 |region|string|false|none|The fourth line of the address, or region|
-|type|string|false|none|The type of the address|
+|type|[AddressAddressType](#schemaaddressaddresstype)|false|none|The type of the address|
 
 #### Enumerated Values
 
@@ -1126,9 +1126,9 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accountBalances|[object]|false|none|The available and current cash balances for the company's accounts|
+|accountBalances|[[CompanyInfoAccountBalance](#schemacompanyinfoaccountbalance)]|false|none|The available and current cash balances for the company's accounts|
 |addresses|[[Address](#schemaaddress)]|false|none|Addresses associated with the company|
-|baseCurrency|string(ISO4217)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|baseCurrency|[TransactionAllOf1Currency](#schematransactionallof1currency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
 |commercePlatformRef|string|false|none|Identifier or reference for the company in the commerce platform|
 |companyLegalName|string|false|none|The full legal name of the company|
 |companyName|string|false|none|The name of the company|
@@ -1271,7 +1271,7 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |defaultCurrency|object|false|none|none|
 |emailAddress|string|false|none|Email address of the customer|
 |note|string|false|none|Any additional information about the customer|
-|phone|string \| null|false|none|A phone number.|
+|phone|[PhoneNumberNumber](#schemaphonenumbernumber)|false|none|A phone number.|
 |createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -1471,11 +1471,11 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|A unique, persistent identifier for this record|
-|currency|string(ISO4217)|true|none|Currency of the disputed transaction.|
-|disputedTransactions|object|false|none|Link to the source event which triggered this transaction.|
+|currency|[TransactionAllOf1Currency](#schematransactionallof1currency)|true|none|Currency of the disputed transaction.|
+|disputedTransactions|[TransactionTransactionSourceRef](#schematransactiontransactionsourceref)|false|none|Link to the source event which triggered this transaction.|
 |dueDate|[DateTime](#schemadatetime)|false|none|Date when the next action in the dispute resolution is due|
 |reason|string|false|none|Reason for the dispute|
-|status|string|false|none|Current status of the dispute|
+|status|[DisputeDisputeStatus](#schemadisputedisputestatus)|false|none|Current status of the dispute|
 |totalAmount|number|false|none|Total transaction amount that is under dispute.|
 |createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -1816,12 +1816,12 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |closedDate|[DateTime](#schemadatetime)|false|none|Date on which order was closed after the product was shipped, paid for, and any refund period had elapsed.|
 |country|string(ISO3166 Alpha-3)|false|none|The Codat country property is returned as it was provided in the underlying platform by the company without any formatting on our part.<br><br>Depending on the platform the value of this property will either be an <a href="https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes" target="_blank">ISO 3166</a> code (2-alpha or 3-alpha) or free-form text returned as a string name in our model. <br><br>For POST operations against platforms that demand a specific format for the country code, we have documented accepted values in the [options](https://docs.codat.io/codat-api#/operations/get-companies-companyId-connections-connectionId-push) endpoint.|
 |currency|object|false|none|none|
-|customerRef|object|false|none|Reference to the customer that placed the order.|
-|locationRef|object|false|none|Reference to the geographic location where the order was placed.|
-|orderLineItems|[object]|false|none|none|
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|Reference to the customer that placed the order.|
+|locationRef|[LocationsLocationRef](#schemalocationslocationref)|false|none|Reference to the geographic location where the order was placed.|
+|orderLineItems|[[OrderOrderLineItem](#schemaorderorderlineitem)]|false|none|none|
 |orderNumber|string|false|none|Friendly reference for the order in the commerce or point of sale platform.|
-|payments|[object]|false|none|none|
-|serviceCharges|[object]|false|none|none|
+|payments|[[PaymentPaymentRef](#schemapaymentpaymentref)]|false|none|none|
+|serviceCharges|[[OrderServiceCharge](#schemaorderservicecharge)]|false|none|none|
 |totalAmount|number|false|none|Total amount of the order, including tax, net of any discounts and refunds.|
 |totalDiscount|number|false|none|Total amount of discount applied to the order.|
 |totalGratuity|number|false|none|Extra amount added to a bill.|
@@ -2024,11 +2024,11 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |---|---|---|---|---|
 |id|string|true|none|A unique, persistent identifier for this record|
 |amount|number|false|none|Payment Amount (including gratuity)|
-|currency|string(ISO4217)|false|none|Currency in which the payment was made|
+|currency|[TransactionAllOf1Currency](#schematransactionallof1currency)|false|none|Currency in which the payment was made|
 |dueDate|[DateTime](#schemadatetime)|false|none|Date by which payment must be made|
-|paymentMethodRef|object|false|none|The payment method the payment is linked to in the commerce platform.|
+|paymentMethodRef|[PaymentMethodPaymentMethodRef](#schemapaymentmethodpaymentmethodref)|false|none|The payment method the payment is linked to in the commerce platform.|
 |paymentProvider|string|false|none|Service provider of the payment, if applicable.|
-|status|string|false|none|Status of the payment|
+|status|[PaymentPaymentStatus](#schemapaymentpaymentstatus)|false|none|Status of the payment|
 |createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -2071,7 +2071,7 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |---|---|---|---|---|
 |id|string|true|none|A unique, persistent identifier for this record|
 |name|string|false|none|The name of the PaymentMethod|
-|status|string|false|none|Status of the Payment Method|
+|status|[PaymentMethodPaymentMethodStatus](#schemapaymentmethodpaymentmethodstatus)|false|none|Status of the Payment Method|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -2193,8 +2193,8 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|number|string \| null|true|none|A phone number.|
-|type|string|true|none|The type of phone number|
+|number|[PhoneNumberNumber](#schemaphonenumbernumber)|true|none|A phone number.|
+|type|[PhoneNumberPhoneNumberType](#schemaphonenumberphonenumbertype)|true|none|The type of phone number|
 
 #### Enumerated Values
 
@@ -2272,7 +2272,7 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |description|string|false|none|Description of the product recorded in the commerce or point of sale platform.|
 |isGiftCard|boolean|false|none|Whether the product represents a gift card or voucher that<br>can be redeemed in the commerce or POS platform<br>|
 |name|string|false|none|Name of the product in the commerce or POS system|
-|variants|[object]|false|none|none|
+|variants|[[ProductProductVariant](#schemaproductproductvariant)]|false|none|none|
 
 <h2 id="tocS_ProductCategories">ProductCategories</h2>
 <!-- backwards compatibility -->
@@ -2619,11 +2619,11 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|A unique, persistent identifier for this record|
-|currency|string(ISO4217)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|currency|[TransactionAllOf1Currency](#schematransactionallof1currency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
 |subType|string|false|none|Non-standardised transaction type data from the commerce platform|
 |totalAmount|number|false|none|The total transaction amount|
 |transactionSourceRef|object|false|none|Link to the source event which triggered this transaction|
-|type|string|false|none|The type of the platform transaction:  <br>- `Unknown`  <br>- `FailedPayout` — Failed transfer of funds from the seller's merchant account to their bank account.  <br>- `Payment` — Credit and debit card payments.  <br>- `PaymentFee` — Payment provider's fee on each card payment.  <br>- `PaymentFeeRefund` — Payment provider's fee that has been refunded to the seller.  <br>- `Payout` — Transfer of funds from the seller's merchant account to their bank account.  <br>- `Refund` — Refunds to a customer's credit or debit card.  <br>- `Transfer` — Secure transfer of funds to the seller's bank account.  |
+|type|[TransactionTransactionType](#schematransactiontransactiontype)|false|none|The type of the platform transaction:  <br>- `Unknown`  <br>- `FailedPayout` — Failed transfer of funds from the seller's merchant account to their bank account.  <br>- `Payment` — Credit and debit card payments.  <br>- `PaymentFee` — Payment provider's fee on each card payment.  <br>- `PaymentFeeRefund` — Payment provider's fee that has been refunded to the seller.  <br>- `Payout` — Transfer of funds from the seller's merchant account to their bank account.  <br>- `Refund` — Refunds to a customer's credit or debit card.  <br>- `Transfer` — Secure transfer of funds to the seller's bank account.  |
 |createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
 |sourceCreatedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was created in the originating system|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -2691,3 +2691,739 @@ Explore our [data coverage](https://knowledge.codat.io/supported-features/commer
 |pageNumber|integer|true|none|none|
 |pageSize|integer|true|none|none|
 |totalResults|integer|true|none|none|
+
+<h2 id="tocS_AddressAddressType">AddressAddressType</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddressaddresstype"></a>
+<a id="schema_AddressAddressType"></a>
+<a id="tocSaddressaddresstype"></a>
+<a id="tocsaddressaddresstype"></a>
+
+```json
+"Billing"
+```
+
+The type of the address
+
+<h2 id="tocS_CompanyInfoAccountBalance">CompanyInfoAccountBalance</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanyinfoaccountbalance"></a>
+<a id="schema_CompanyInfoAccountBalance"></a>
+<a id="tocScompanyinfoaccountbalance"></a>
+<a id="tocscompanyinfoaccountbalance"></a>
+
+```json
+{
+  "available": 0,
+  "currency": {},
+  "pending": 0,
+  "reserved": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|number(decimal)|false|none|The account's current balance|
+|currency|object|false|none|The currency of the account|
+|pending|number(decimal)|false|none|Funds that are not yet available in the balance|
+|reserved|number(decimal)|false|none|Funds reserved as holdings|
+
+<h2 id="tocS_TransactionAllOf1Currency">TransactionAllOf1Currency</h2>
+<!-- backwards compatibility -->
+<a id="schematransactionallof1currency"></a>
+<a id="schema_TransactionAllOf1Currency"></a>
+<a id="tocStransactionallof1currency"></a>
+<a id="tocstransactionallof1currency"></a>
+
+```json
+"GBP"
+```
+
+The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.
+
+## Unknown currencies
+
+In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. 
+
+There are only a very small number of edge cases where this currency code is returned by the Codat system.
+
+<h2 id="tocS_OrderAllOf0">OrderAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderallof0"></a>
+<a id="schema_OrderAllOf0"></a>
+<a id="tocSorderallof0"></a>
+<a id="tocsorderallof0"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|A unique, persistent identifier for this record|
+
+<h2 id="tocS_PhoneNumberNumber">PhoneNumberNumber</h2>
+<!-- backwards compatibility -->
+<a id="schemaphonenumbernumber"></a>
+<a id="schema_PhoneNumberNumber"></a>
+<a id="tocSphonenumbernumber"></a>
+<a id="tocsphonenumbernumber"></a>
+
+```json
+"+44 25691 154789"
+```
+
+A phone number.
+
+<h2 id="tocS_TransactionTransactionSourceRef">TransactionTransactionSourceRef</h2>
+<!-- backwards compatibility -->
+<a id="schematransactiontransactionsourceref"></a>
+<a id="schema_TransactionTransactionSourceRef"></a>
+<a id="tocStransactiontransactionsourceref"></a>
+<a id="tocstransactiontransactionsourceref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "type": "Fee"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the record being referenced|
+|type|string|true|none|The type of record being referenced.|
+|type|[TransactionTransactionSourceType](#schematransactiontransactionsourcetype)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Fee|
+|type|Order|
+|type|Payment|
+|type|ServiceCharge|
+|type|Unknown|
+
+<h2 id="tocS_DisputeDisputeStatus">DisputeDisputeStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemadisputedisputestatus"></a>
+<a id="schema_DisputeDisputeStatus"></a>
+<a id="tocSdisputedisputestatus"></a>
+<a id="tocsdisputedisputestatus"></a>
+
+```json
+"EvidenceRequired"
+```
+
+Current status of the dispute
+
+<h2 id="tocS_CustomerCustomerRef">CustomerCustomerRef</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomercustomerref"></a>
+<a id="schema_CustomerCustomerRef"></a>
+<a id="tocScustomercustomerref"></a>
+<a id="tocscustomercustomerref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "name": "string"
+}
+```
+
+Reference to the customer that placed the order.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the customer being referenced|
+|name|string|true|none|Name of the customer being referenced.|
+
+<h2 id="tocS_LocationsLocationRef">LocationsLocationRef</h2>
+<!-- backwards compatibility -->
+<a id="schemalocationslocationref"></a>
+<a id="schema_LocationsLocationRef"></a>
+<a id="tocSlocationslocationref"></a>
+<a id="tocslocationslocationref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "name": "string"
+}
+```
+
+Reference to the geographic location where the order was placed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the location being referenced.|
+|name|string|true|none|Name of the location being referenced.|
+
+<h2 id="tocS_OrderOrderLineItem">OrderOrderLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderorderlineitem"></a>
+<a id="schema_OrderOrderLineItem"></a>
+<a id="tocSorderorderlineitem"></a>
+<a id="tocsorderorderlineitem"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "discountAllocations": [
+    {
+      "name": "Promotional Discount",
+      "totalAmount": 15.25
+    }
+  ],
+  "productRef": {
+    "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+    "name": "string"
+  },
+  "productVariantRef": {
+    "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+    "name": "string"
+  },
+  "quantity": 0,
+  "taxPercentage": 0,
+  "taxes": [
+    {
+      "rate": 0,
+      "taxComponentRef": {
+        "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+        "name": "string"
+      }
+    }
+  ],
+  "totalAmount": 0,
+  "totalTaxAmount": 0,
+  "unitPrice": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|A unique, persistent identifier for this record|
+|discountAllocations|[[OrderOrderDiscountAllocation](#schemaorderorderdiscountallocation)]|false|none|none|
+|productRef|[ProductProductRef](#schemaproductproductref)|false|none|Reference that links the line item to the correct product details.|
+|productVariantRef|[ProductProductVariantRef](#schemaproductproductvariantref)|false|none|Reference that links the line item to the specific version of product that has been ordered.|
+|quantity|number|false|none|Number of units of the product sold.<br>For refunds, quantity is a negative value.<br>|
+|taxPercentage|number|false|none|Percentage rate (from 0 to 100) of any sale tax applied to the unit amount.|
+|taxes|[[TaxComponentTaxComponentAllocation](#schemataxcomponenttaxcomponentallocation)]|false|none|Taxes breakdown as applied to order lines.|
+|totalAmount|number|false|none|Total price of the line item, including discounts, tax and minus any refunds.|
+|totalTaxAmount|number|false|none|Total amount of tax applied to the line item.|
+|unitPrice|number|false|none|Price per unit of goods or service.|
+
+<h2 id="tocS_PaymentPaymentRef">PaymentPaymentRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymentref"></a>
+<a id="schema_PaymentPaymentRef"></a>
+<a id="tocSpaymentpaymentref"></a>
+<a id="tocspaymentpaymentref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "amount": 194.12,
+  "currency": "GBP",
+  "dueDate": "2022-10-23T00:00:00Z",
+  "paymentProvider": "Amazon Pay",
+  "status": "Pending",
+  "type": "Cash",
+  "createdDate": "2022-10-23T00:00:00Z",
+  "modifiedDate": "2022-10-23T00:00:00Z",
+  "sourceModifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|A unique, persistent identifier for this record|
+|amount|number \| null|false|none|Payment Amount (including gratuity).|
+|currency|[TransactionAllOf1Currency](#schematransactionallof1currency)|false|none|Currency in which the payment was made.|
+|dueDate|[DateTime](#schemadatetime)|false|none|Date by which payment must be made|
+|paymentProvider|string|false|none|Service provider of the payment, if applicable.|
+|status|[PaymentPaymentStatus](#schemapaymentpaymentstatus)|false|none|Status of the payment|
+|type|[PaymentPaymentType](#schemapaymentpaymenttype)|false|none|Status of the payment|
+|createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
+|modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
+|sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|Pending|
+|status|Authorized|
+|status|Paid|
+|status|Failed|
+|status|Cancelled|
+|status|Unknown|
+|type|Cash|
+|type|Card|
+|type|Invoice|
+|type|OnlineCard|
+|type|Swish|
+|type|Vipps|
+|type|Mobile|
+|type|StoreCredit|
+|type|Paypal|
+|type|Custom|
+|type|Prepaid|
+|type|Unknown|
+
+<h2 id="tocS_OrderServiceCharge">OrderServiceCharge</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderservicecharge"></a>
+<a id="schema_OrderServiceCharge"></a>
+<a id="tocSorderservicecharge"></a>
+<a id="tocsorderservicecharge"></a>
+
+```json
+{
+  "description": "A service charge",
+  "quantity": 1,
+  "taxAmount": 0,
+  "taxPercentage": 0,
+  "taxes": [
+    {
+      "rate": 0,
+      "taxComponentRef": {
+        "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+        "name": "string"
+      }
+    }
+  ],
+  "totalAmount": 0,
+  "type": "Overpayment"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|Service charges for this order.|
+|quantity|integer|false|none|The number of times the charge is charged.|
+|taxAmount|number|false|none|Amount of the service charge that is tax.|
+|taxPercentage|number|false|none|Percentage rate (from 0 to 100) of any tax applied to the service charge.|
+|taxes|[[TaxComponentTaxComponentAllocation](#schemataxcomponenttaxcomponentallocation)]|false|none|Taxes breakdown as applied to service charges.|
+|totalAmount|number|false|none|Total service charge, including taxes.|
+|type|[OrderServiceChargeType](#schemaorderservicechargetype)|false|none|The type of the service charge.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Generic|
+|type|Shipping|
+|type|Overpayment|
+|type|Unknown|
+
+<h2 id="tocS_OrderOrderDiscountAllocation">OrderOrderDiscountAllocation</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderorderdiscountallocation"></a>
+<a id="schema_OrderOrderDiscountAllocation"></a>
+<a id="tocSorderorderdiscountallocation"></a>
+<a id="tocsorderorderdiscountallocation"></a>
+
+```json
+{
+  "name": "Promotional Discount",
+  "totalAmount": 15.25
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name of the discount in the commerce or point of sale platform.|
+|totalAmount|number|false|none|Total amount of discount applied.|
+
+<h2 id="tocS_ProductProductRef">ProductProductRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductref"></a>
+<a id="schema_ProductProductRef"></a>
+<a id="tocSproductproductref"></a>
+<a id="tocsproductproductref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "name": "string"
+}
+```
+
+Reference that links the line item to the correct product details.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the product being referenced.|
+|name|string|true|none|Name of the product being referenced.|
+
+<h2 id="tocS_ProductProductVariantRef">ProductProductVariantRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductvariantref"></a>
+<a id="schema_ProductProductVariantRef"></a>
+<a id="tocSproductproductvariantref"></a>
+<a id="tocsproductproductvariantref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "name": "string"
+}
+```
+
+Reference that links the line item to the specific version of product that has been ordered.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the product variant being referenced.|
+|name|string|true|none|Name of the product variant being referenced.|
+
+<h2 id="tocS_TaxComponentTaxComponentAllocation">TaxComponentTaxComponentAllocation</h2>
+<!-- backwards compatibility -->
+<a id="schemataxcomponenttaxcomponentallocation"></a>
+<a id="schema_TaxComponentTaxComponentAllocation"></a>
+<a id="tocStaxcomponenttaxcomponentallocation"></a>
+<a id="tocstaxcomponenttaxcomponentallocation"></a>
+
+```json
+{
+  "rate": 0,
+  "taxComponentRef": {
+    "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+    "name": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rate|number \| null|false|none|Tax amount on order line sale as available from source commerce platform.|
+|taxComponentRef|[TaxComponentTaxComponentRef](#schemataxcomponenttaxcomponentref)|false|none|Taxes rates reference object depending on the rates being available on source commerce package.|
+
+<h2 id="tocS_OrderServiceChargeType">OrderServiceChargeType</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderservicechargetype"></a>
+<a id="schema_OrderServiceChargeType"></a>
+<a id="tocSorderservicechargetype"></a>
+<a id="tocsorderservicechargetype"></a>
+
+```json
+"Overpayment"
+```
+
+The type of the service charge.
+
+<h2 id="tocS_PaymentMethodPaymentMethodRef">PaymentMethodPaymentMethodRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodpaymentmethodref"></a>
+<a id="schema_PaymentMethodPaymentMethodRef"></a>
+<a id="tocSpaymentmethodpaymentmethodref"></a>
+<a id="tocspaymentmethodpaymentmethodref"></a>
+
+```json
+{
+  "id": "EILBDVJVNUAGVKRQ",
+  "name": "AliPay"
+}
+```
+
+The payment method the payment is linked to in the commerce platform.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the location being referenced.|
+|name|string|true|none|Name of the location being referenced.|
+
+<h2 id="tocS_PaymentPaymentStatus">PaymentPaymentStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymentstatus"></a>
+<a id="schema_PaymentPaymentStatus"></a>
+<a id="tocSpaymentpaymentstatus"></a>
+<a id="tocspaymentpaymentstatus"></a>
+
+```json
+"Pending"
+```
+
+Status of the payment
+
+<h2 id="tocS_PaymentPaymentType">PaymentPaymentType</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymenttype"></a>
+<a id="schema_PaymentPaymentType"></a>
+<a id="tocSpaymentpaymenttype"></a>
+<a id="tocspaymentpaymenttype"></a>
+
+```json
+"Cash"
+```
+
+Status of the payment
+
+<h2 id="tocS_PaymentMethodPaymentMethodStatus">PaymentMethodPaymentMethodStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodpaymentmethodstatus"></a>
+<a id="schema_PaymentMethodPaymentMethodStatus"></a>
+<a id="tocSpaymentmethodpaymentmethodstatus"></a>
+<a id="tocspaymentmethodpaymentmethodstatus"></a>
+
+```json
+"Active"
+```
+
+Status of the Payment Method
+
+<h2 id="tocS_PhoneNumberPhoneNumberType">PhoneNumberPhoneNumberType</h2>
+<!-- backwards compatibility -->
+<a id="schemaphonenumberphonenumbertype"></a>
+<a id="schema_PhoneNumberPhoneNumberType"></a>
+<a id="tocSphonenumberphonenumbertype"></a>
+<a id="tocsphonenumberphonenumbertype"></a>
+
+```json
+"Primary"
+```
+
+The type of phone number
+
+<h2 id="tocS_ProductProductVariant">ProductProductVariant</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductvariant"></a>
+<a id="schema_ProductProductVariant"></a>
+<a id="tocSproductproductvariant"></a>
+<a id="tocsproductproductvariant"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "barcode": "564158468416486458646886484",
+  "inventory": [
+    {
+      "locations": [
+        {
+          "locationRef": {
+            "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+            "name": "string"
+          },
+          "quantity": 0
+        }
+      ],
+      "totalQuantity": 0
+    }
+  ],
+  "isTaxEnabled": true,
+  "name": "Red Coat",
+  "prices": [
+    {
+      "currency": "GBP",
+      "unitPrice": 0
+    }
+  ],
+  "shippingRequired": true,
+  "sku": "Coat-Red-Lrg",
+  "status": "Unknown",
+  "unitOfMeasure": "kg",
+  "vatPercentage": 12.5,
+  "createdDate": "2022-10-23T00:00:00Z",
+  "modifiedDate": "2022-10-23T00:00:00Z",
+  "sourceModifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+Represents a variation of a product available for sale, for example an item of clothing that may be available for sale in multiple sizes and colors.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|A unique, persistent identifier for this record|
+|barcode|string|false|none|Unique product number of the variant. This might be a barcode, UPC, ISBN, etc.|
+|inventory|[[ProductProductInventory](#schemaproductproductinventory)]|false|none|Information about the total inventory as well as the locations inventory is in.|
+|isTaxEnabled|boolean|false|none|Whether sales taxes are enabled for this product variant.|
+|name|string|false|none|Name of the product recorded in the commerce or point of sale platform.|
+|prices|[[ProductProductPrice](#schemaproductproductprice)]|false|none|Prices for the product variants in different currencies.|
+|shippingRequired|boolean|false|none|Indicates whether or not the product requires physical delivery.|
+|sku|string|false|none|SKU (stock keeping unit) of the variant, as defined by the merchant.|
+|status|[ProductProductVariantStatus](#schemaproductproductvariantstatus)|false|none|none|
+|unitOfMeasure|string|false|none|Unit of measure for the variant, such as `kg` or `meters`.|
+|vatPercentage|number|false|none|VAT rate for the product variant if sales taxes are enabled.|
+|createdDate|[DateTime](#schemadatetime)|false|none|The date the entity was created.|
+|modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
+|sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|Unknown|
+|status|Published|
+|status|Unpublished|
+
+<h2 id="tocS_ProductProductInventoryLocation">ProductProductInventoryLocation</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductinventorylocation"></a>
+<a id="schema_ProductProductInventoryLocation"></a>
+<a id="tocSproductproductinventorylocation"></a>
+<a id="tocsproductproductinventorylocation"></a>
+
+```json
+{
+  "locationRef": {
+    "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+    "name": "string"
+  },
+  "quantity": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|locationRef|[LocationsLocationRef](#schemalocationslocationref)|false|none|Reference to the geographic location where the order was placed.|
+|quantity|number|false|none|none|
+
+<h2 id="tocS_ProductProductInventory">ProductProductInventory</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductinventory"></a>
+<a id="schema_ProductProductInventory"></a>
+<a id="tocSproductproductinventory"></a>
+<a id="tocsproductproductinventory"></a>
+
+```json
+{
+  "locations": [
+    {
+      "locationRef": {
+        "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+        "name": "string"
+      },
+      "quantity": 0
+    }
+  ],
+  "totalQuantity": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|locations|[[ProductProductInventoryLocation](#schemaproductproductinventorylocation)]|false|none|none|
+|totalQuantity|number \| null|false|none|none|
+
+<h2 id="tocS_ProductProductPrice">ProductProductPrice</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductprice"></a>
+<a id="schema_ProductProductPrice"></a>
+<a id="tocSproductproductprice"></a>
+<a id="tocsproductproductprice"></a>
+
+```json
+{
+  "currency": "GBP",
+  "unitPrice": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|currency|[TransactionAllOf1Currency](#schematransactionallof1currency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|unitPrice|number|false|none|none|
+
+<h2 id="tocS_ProductProductVariantStatus">ProductProductVariantStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaproductproductvariantstatus"></a>
+<a id="schema_ProductProductVariantStatus"></a>
+<a id="tocSproductproductvariantstatus"></a>
+<a id="tocsproductproductvariantstatus"></a>
+
+```json
+"Unknown"
+```
+
+<h2 id="tocS_TaxComponentTaxComponentRef">TaxComponentTaxComponentRef</h2>
+<!-- backwards compatibility -->
+<a id="schemataxcomponenttaxcomponentref"></a>
+<a id="schema_TaxComponentTaxComponentRef"></a>
+<a id="tocStaxcomponenttaxcomponentref"></a>
+<a id="tocstaxcomponenttaxcomponentref"></a>
+
+```json
+{
+  "id": "13d946f0-c5d5-42bc-b092-97ece17923ab",
+  "name": "string"
+}
+```
+
+Taxes rates reference object depending on the rates being available on source commerce package.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identitifer of the tax component being referenced.|
+|name|string|true|none|Name of the tax component being referenced.|
+
+<h2 id="tocS_TransactionTransactionType">TransactionTransactionType</h2>
+<!-- backwards compatibility -->
+<a id="schematransactiontransactiontype"></a>
+<a id="schema_TransactionTransactionType"></a>
+<a id="tocStransactiontransactiontype"></a>
+<a id="tocstransactiontransactiontype"></a>
+
+```json
+"Payment"
+```
+
+The type of the platform transaction:  
+- `Unknown`  
+- `FailedPayout` — Failed transfer of funds from the seller's merchant account to their bank account.  
+- `Payment` — Credit and debit card payments.  
+- `PaymentFee` — Payment provider's fee on each card payment.  
+- `PaymentFeeRefund` — Payment provider's fee that has been refunded to the seller.  
+- `Payout` — Transfer of funds from the seller's merchant account to their bank account.  
+- `Refund` — Refunds to a customer's credit or debit card.  
+- `Transfer` — Secure transfer of funds to the seller's bank account.
+
+<h2 id="tocS_TransactionTransactionSourceType">TransactionTransactionSourceType</h2>
+<!-- backwards compatibility -->
+<a id="schematransactiontransactionsourcetype"></a>
+<a id="schema_TransactionTransactionSourceType"></a>
+<a id="tocStransactiontransactionsourcetype"></a>
+<a id="tocstransactiontransactionsourcetype"></a>
+
+```json
+"Fee"
+```

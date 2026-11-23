@@ -1,51 +1,137 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetMediaStore20170901CreateContainerHandler,
-  xAmzTargetMediaStore20170901DeleteContainerHandler,
-  xAmzTargetMediaStore20170901DeleteContainerPolicyHandler,
-  xAmzTargetMediaStore20170901DeleteCorsPolicyHandler,
-  xAmzTargetMediaStore20170901DeleteLifecyclePolicyHandler,
-  xAmzTargetMediaStore20170901DeleteMetricPolicyHandler,
-  xAmzTargetMediaStore20170901DescribeContainerHandler,
-  xAmzTargetMediaStore20170901GetContainerPolicyHandler,
-  xAmzTargetMediaStore20170901GetCorsPolicyHandler,
-  xAmzTargetMediaStore20170901GetLifecyclePolicyHandler,
-  xAmzTargetMediaStore20170901GetMetricPolicyHandler,
-  xAmzTargetMediaStore20170901ListContainersHandler,
-  xAmzTargetMediaStore20170901ListTagsForResourceHandler,
-  xAmzTargetMediaStore20170901PutContainerPolicyHandler,
-  xAmzTargetMediaStore20170901PutCorsPolicyHandler,
-  xAmzTargetMediaStore20170901PutLifecyclePolicyHandler,
-  xAmzTargetMediaStore20170901PutMetricPolicyHandler,
-  xAmzTargetMediaStore20170901StartAccessLoggingHandler,
-  xAmzTargetMediaStore20170901StopAccessLoggingHandler,
-  xAmzTargetMediaStore20170901TagResourceHandler,
-  xAmzTargetMediaStore20170901UntagResourceHandler,
+  postXAmzTargetMediaStore20170901CreateContainerRoute,
+  postXAmzTargetMediaStore20170901DeleteContainerPolicyRoute,
+  postXAmzTargetMediaStore20170901DeleteContainerRoute,
+  postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute,
+  postXAmzTargetMediaStore20170901DeleteLifecyclePolicyRoute,
+  postXAmzTargetMediaStore20170901DeleteMetricPolicyRoute,
+  postXAmzTargetMediaStore20170901DescribeContainerRoute,
+  postXAmzTargetMediaStore20170901GetContainerPolicyRoute,
+  postXAmzTargetMediaStore20170901GetCorsPolicyRoute,
+  postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute,
+  postXAmzTargetMediaStore20170901GetMetricPolicyRoute,
+  postXAmzTargetMediaStore20170901ListContainersRoute,
+  postXAmzTargetMediaStore20170901ListTagsForResourceRoute,
+  postXAmzTargetMediaStore20170901PutContainerPolicyRoute,
+  postXAmzTargetMediaStore20170901PutCorsPolicyRoute,
+  postXAmzTargetMediaStore20170901PutLifecyclePolicyRoute,
+  postXAmzTargetMediaStore20170901PutMetricPolicyRoute,
+  postXAmzTargetMediaStore20170901StartAccessLoggingRoute,
+  postXAmzTargetMediaStore20170901StopAccessLoggingRoute,
+  postXAmzTargetMediaStore20170901TagResourceRoute,
+  postXAmzTargetMediaStore20170901UntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetMediaStore20170901CreateContainerRouteHandler,
+  postXAmzTargetMediaStore20170901DeleteContainerPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901DeleteContainerRouteHandler,
+  postXAmzTargetMediaStore20170901DeleteCorsPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901DeleteLifecyclePolicyRouteHandler,
+  postXAmzTargetMediaStore20170901DeleteMetricPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901DescribeContainerRouteHandler,
+  postXAmzTargetMediaStore20170901GetContainerPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901GetCorsPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901GetLifecyclePolicyRouteHandler,
+  postXAmzTargetMediaStore20170901GetMetricPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901ListContainersRouteHandler,
+  postXAmzTargetMediaStore20170901ListTagsForResourceRouteHandler,
+  postXAmzTargetMediaStore20170901PutContainerPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901PutCorsPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901PutLifecyclePolicyRouteHandler,
+  postXAmzTargetMediaStore20170901PutMetricPolicyRouteHandler,
+  postXAmzTargetMediaStore20170901StartAccessLoggingRouteHandler,
+  postXAmzTargetMediaStore20170901StopAccessLoggingRouteHandler,
+  postXAmzTargetMediaStore20170901TagResourceRouteHandler,
+  postXAmzTargetMediaStore20170901UntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetMediaStore20170901CreateContainerHandler)
-  .route('/', xAmzTargetMediaStore20170901DeleteContainerHandler)
-  .route('/', xAmzTargetMediaStore20170901DeleteContainerPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901DeleteCorsPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901DeleteLifecyclePolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901DeleteMetricPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901DescribeContainerHandler)
-  .route('/', xAmzTargetMediaStore20170901GetContainerPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901GetCorsPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901GetLifecyclePolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901GetMetricPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901ListContainersHandler)
-  .route('/', xAmzTargetMediaStore20170901ListTagsForResourceHandler)
-  .route('/', xAmzTargetMediaStore20170901PutContainerPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901PutCorsPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901PutLifecyclePolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901PutMetricPolicyHandler)
-  .route('/', xAmzTargetMediaStore20170901StartAccessLoggingHandler)
-  .route('/', xAmzTargetMediaStore20170901StopAccessLoggingHandler)
-  .route('/', xAmzTargetMediaStore20170901TagResourceHandler)
-  .route('/', xAmzTargetMediaStore20170901UntagResourceHandler)
+  .openapi(
+    postXAmzTargetMediaStore20170901CreateContainerRoute,
+    postXAmzTargetMediaStore20170901CreateContainerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DeleteContainerRoute,
+    postXAmzTargetMediaStore20170901DeleteContainerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DeleteContainerPolicyRoute,
+    postXAmzTargetMediaStore20170901DeleteContainerPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute,
+    postXAmzTargetMediaStore20170901DeleteCorsPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DeleteLifecyclePolicyRoute,
+    postXAmzTargetMediaStore20170901DeleteLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DeleteMetricPolicyRoute,
+    postXAmzTargetMediaStore20170901DeleteMetricPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901DescribeContainerRoute,
+    postXAmzTargetMediaStore20170901DescribeContainerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901GetContainerPolicyRoute,
+    postXAmzTargetMediaStore20170901GetContainerPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901GetCorsPolicyRoute,
+    postXAmzTargetMediaStore20170901GetCorsPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute,
+    postXAmzTargetMediaStore20170901GetLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901GetMetricPolicyRoute,
+    postXAmzTargetMediaStore20170901GetMetricPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901ListContainersRoute,
+    postXAmzTargetMediaStore20170901ListContainersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901ListTagsForResourceRoute,
+    postXAmzTargetMediaStore20170901ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901PutContainerPolicyRoute,
+    postXAmzTargetMediaStore20170901PutContainerPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901PutCorsPolicyRoute,
+    postXAmzTargetMediaStore20170901PutCorsPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901PutLifecyclePolicyRoute,
+    postXAmzTargetMediaStore20170901PutLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901PutMetricPolicyRoute,
+    postXAmzTargetMediaStore20170901PutMetricPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901StartAccessLoggingRoute,
+    postXAmzTargetMediaStore20170901StartAccessLoggingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901StopAccessLoggingRoute,
+    postXAmzTargetMediaStore20170901StopAccessLoggingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901TagResourceRoute,
+    postXAmzTargetMediaStore20170901TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMediaStore20170901UntagResourceRoute,
+    postXAmzTargetMediaStore20170901UntagResourceRouteHandler,
+  )
 
 export default app

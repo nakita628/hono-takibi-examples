@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/datafusion/v1beta1/openapi.yaml',
   output: './src/datafusion/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/datafusion/types.ts' },
   client: { output: './src/datafusion/client.ts', baseUrl: '/' },
   rpc: { output: './src/datafusion/rpc.ts', parseResponse: true },

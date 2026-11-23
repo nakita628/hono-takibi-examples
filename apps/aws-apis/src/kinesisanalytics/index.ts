@@ -1,52 +1,131 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionHandler,
-  xAmzTargetKinesisAnalytics20150814AddApplicationInputHandler,
-  xAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationHandler,
-  xAmzTargetKinesisAnalytics20150814AddApplicationOutputHandler,
-  xAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceHandler,
-  xAmzTargetKinesisAnalytics20150814CreateApplicationHandler,
-  xAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionHandler,
-  xAmzTargetKinesisAnalytics20150814DeleteApplicationHandler,
-  xAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationHandler,
-  xAmzTargetKinesisAnalytics20150814DeleteApplicationOutputHandler,
-  xAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceHandler,
-  xAmzTargetKinesisAnalytics20150814DescribeApplicationHandler,
-  xAmzTargetKinesisAnalytics20150814DiscoverInputSchemaHandler,
-  xAmzTargetKinesisAnalytics20150814ListApplicationsHandler,
-  xAmzTargetKinesisAnalytics20150814ListTagsForResourceHandler,
-  xAmzTargetKinesisAnalytics20150814StartApplicationHandler,
-  xAmzTargetKinesisAnalytics20150814StopApplicationHandler,
-  xAmzTargetKinesisAnalytics20150814TagResourceHandler,
-  xAmzTargetKinesisAnalytics20150814UntagResourceHandler,
-  xAmzTargetKinesisAnalytics20150814UpdateApplicationHandler,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionRoute,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationInputRoute,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationOutputRoute,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceRoute,
+  postXAmzTargetKinesisAnalytics20150814CreateApplicationRoute,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationOutputRoute,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationRoute,
+  postXAmzTargetKinesisAnalytics20150814DescribeApplicationRoute,
+  postXAmzTargetKinesisAnalytics20150814DiscoverInputSchemaRoute,
+  postXAmzTargetKinesisAnalytics20150814ListApplicationsRoute,
+  postXAmzTargetKinesisAnalytics20150814ListTagsForResourceRoute,
+  postXAmzTargetKinesisAnalytics20150814StartApplicationRoute,
+  postXAmzTargetKinesisAnalytics20150814StopApplicationRoute,
+  postXAmzTargetKinesisAnalytics20150814TagResourceRoute,
+  postXAmzTargetKinesisAnalytics20150814UntagResourceRoute,
+  postXAmzTargetKinesisAnalytics20150814UpdateApplicationRoute,
+} from './routes'
+import {
+  postXAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationInputRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationOutputRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814CreateApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationOutputRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DeleteApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DescribeApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814DiscoverInputSchemaRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814ListApplicationsRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814ListTagsForResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814StartApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814StopApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814TagResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814UntagResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20150814UpdateApplicationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814AddApplicationInputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814AddApplicationOutputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814CreateApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814DeleteApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionHandler)
-  .route(
-    '/',
-    xAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationHandler,
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionRoute,
+    postXAmzTargetKinesisAnalytics20150814AddApplicationCloudWatchLoggingOptionRouteHandler,
   )
-  .route('/', xAmzTargetKinesisAnalytics20150814DeleteApplicationOutputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814DescribeApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814DiscoverInputSchemaHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814ListApplicationsHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814ListTagsForResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814StartApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814StopApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814TagResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814UntagResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20150814UpdateApplicationHandler)
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814AddApplicationInputRoute,
+    postXAmzTargetKinesisAnalytics20150814AddApplicationInputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20150814AddApplicationInputProcessingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814AddApplicationOutputRoute,
+    postXAmzTargetKinesisAnalytics20150814AddApplicationOutputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceRoute,
+    postXAmzTargetKinesisAnalytics20150814AddApplicationReferenceDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814CreateApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814CreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRoute,
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationCloudWatchLoggingOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationInputProcessingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationOutputRoute,
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationOutputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRoute,
+    postXAmzTargetKinesisAnalytics20150814DeleteApplicationReferenceDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DescribeApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814DescribeApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814DiscoverInputSchemaRoute,
+    postXAmzTargetKinesisAnalytics20150814DiscoverInputSchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814ListApplicationsRoute,
+    postXAmzTargetKinesisAnalytics20150814ListApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814ListTagsForResourceRoute,
+    postXAmzTargetKinesisAnalytics20150814ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814StartApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814StartApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814StopApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814StopApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814TagResourceRoute,
+    postXAmzTargetKinesisAnalytics20150814TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814UntagResourceRoute,
+    postXAmzTargetKinesisAnalytics20150814UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20150814UpdateApplicationRoute,
+    postXAmzTargetKinesisAnalytics20150814UpdateApplicationRouteHandler,
+  )
 
 export default app

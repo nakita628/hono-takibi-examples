@@ -476,12 +476,12 @@ const GatewayRouteStatusSchema = z
   .openapi('GatewayRouteStatus')
 
 type GatewayRouteDataType = {
-  gatewayRouteName: z.infer<typeof ResourceNameSchema> & unknown
-  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  gatewayRouteName: z.infer<typeof ResourceNameSchema>
+  meshName: z.infer<typeof ResourceNameSchema>
   metadata: z.infer<typeof ResourceMetadataSchema>
-  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
-  status: z.infer<typeof GatewayRouteStatusSchema> & unknown
-  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+  spec: z.infer<typeof GatewayRouteSpecSchema>
+  status: z.infer<typeof GatewayRouteStatusSchema>
+  virtualGatewayName: z.infer<typeof ResourceNameSchema>
 }
 
 const GatewayRouteDataSchema: z.ZodType<GatewayRouteDataType> = z
@@ -505,9 +505,7 @@ const GatewayRouteDataSchema: z.ZodType<GatewayRouteDataType> = z
   })
   .openapi('GatewayRouteData')
 
-type CreateGatewayRouteOutputType = {
-  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
-}
+type CreateGatewayRouteOutputType = { gatewayRoute: z.infer<typeof GatewayRouteDataSchema> }
 
 const PercentIntSchema = z.int().min(0).max(100).openapi('PercentInt')
 
@@ -932,12 +930,12 @@ const RouteStatusSchema = z
   .openapi('RouteStatus')
 
 type RouteDataType = {
-  meshName: z.infer<typeof ResourceNameSchema> & unknown
-  metadata: z.infer<typeof ResourceMetadataSchema> & unknown
-  routeName: z.infer<typeof ResourceNameSchema> & unknown
-  spec: z.infer<typeof RouteSpecSchema> & unknown
-  status: z.infer<typeof RouteStatusSchema> & unknown
-  virtualRouterName: z.infer<typeof ResourceNameSchema> & unknown
+  meshName: z.infer<typeof ResourceNameSchema>
+  metadata: z.infer<typeof ResourceMetadataSchema>
+  routeName: z.infer<typeof ResourceNameSchema>
+  spec: z.infer<typeof RouteSpecSchema>
+  status: z.infer<typeof RouteStatusSchema>
+  virtualRouterName: z.infer<typeof ResourceNameSchema>
 }
 
 const RouteDataSchema: z.ZodType<RouteDataType> = z
@@ -961,7 +959,7 @@ const RouteDataSchema: z.ZodType<RouteDataType> = z
   })
   .openapi('RouteData')
 
-type CreateRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+type CreateRouteOutputType = { route: z.infer<typeof RouteDataSchema> }
 
 const FilePathSchema = z.string().min(1).max(255).openapi('FilePath')
 
@@ -1512,8 +1510,8 @@ const VirtualGatewayLoggingSchema = z
   .openapi('VirtualGatewayLogging')
 
 type VirtualGatewaySpecType = {
-  backendDefaults?: z.infer<typeof VirtualGatewayBackendDefaultsSchema> & unknown
-  listeners: z.infer<typeof VirtualGatewayListenersSchema> & unknown
+  backendDefaults?: z.infer<typeof VirtualGatewayBackendDefaultsSchema>
+  listeners: z.infer<typeof VirtualGatewayListenersSchema>
   logging?: z.infer<typeof VirtualGatewayLoggingSchema>
 }
 
@@ -1549,11 +1547,11 @@ const VirtualGatewayStatusSchema = z
   .openapi('VirtualGatewayStatus')
 
 type VirtualGatewayDataType = {
-  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  meshName: z.infer<typeof ResourceNameSchema>
   metadata: z.infer<typeof ResourceMetadataSchema>
-  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
-  status: z.infer<typeof VirtualGatewayStatusSchema> & unknown
-  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+  spec: z.infer<typeof VirtualGatewaySpecSchema>
+  status: z.infer<typeof VirtualGatewayStatusSchema>
+  virtualGatewayName: z.infer<typeof ResourceNameSchema>
 }
 
 const VirtualGatewayDataSchema: z.ZodType<VirtualGatewayDataType> = z
@@ -1578,9 +1576,7 @@ const VirtualGatewayDataSchema: z.ZodType<VirtualGatewayDataType> = z
   })
   .openapi('VirtualGatewayData')
 
-type CreateVirtualGatewayOutputType = {
-  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
-}
+type CreateVirtualGatewayOutputType = { virtualGateway: z.infer<typeof VirtualGatewayDataSchema> }
 
 const ListenerTlsFileCertificateSchema = z
   .object({
@@ -1776,7 +1772,7 @@ const VirtualServiceBackendSchema = z
   })
   .openapi('VirtualServiceBackend')
 
-type BackendType = { virtualService?: z.infer<typeof VirtualServiceBackendSchema> & unknown }
+type BackendType = { virtualService?: z.infer<typeof VirtualServiceBackendSchema> }
 
 const BackendSchema: z.ZodType<BackendType> = z
   .object({
@@ -2267,11 +2263,11 @@ const ServiceDiscoverySchema = z
   .openapi('ServiceDiscovery')
 
 type VirtualNodeSpecType = {
-  backendDefaults?: z.infer<typeof BackendDefaultsSchema> & unknown
-  backends?: z.infer<typeof BackendsSchema> & unknown
-  listeners?: z.infer<typeof ListenersSchema> & unknown
-  logging?: z.infer<typeof LoggingSchema> & unknown
-  serviceDiscovery?: z.infer<typeof ServiceDiscoverySchema> & unknown
+  backendDefaults?: z.infer<typeof BackendDefaultsSchema>
+  backends?: z.infer<typeof BackendsSchema>
+  listeners?: z.infer<typeof ListenersSchema>
+  logging?: z.infer<typeof LoggingSchema>
+  serviceDiscovery?: z.infer<typeof ServiceDiscoverySchema>
 }
 
 const VirtualNodeSpecSchema: z.ZodType<VirtualNodeSpecType> = z
@@ -2317,11 +2313,11 @@ const VirtualNodeStatusSchema = z
   .openapi('VirtualNodeStatus')
 
 type VirtualNodeDataType = {
-  meshName: z.infer<typeof ResourceNameSchema> & unknown
-  metadata: z.infer<typeof ResourceMetadataSchema> & unknown
-  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
-  status: z.infer<typeof VirtualNodeStatusSchema> & unknown
-  virtualNodeName: z.infer<typeof ResourceNameSchema> & unknown
+  meshName: z.infer<typeof ResourceNameSchema>
+  metadata: z.infer<typeof ResourceMetadataSchema>
+  spec: z.infer<typeof VirtualNodeSpecSchema>
+  status: z.infer<typeof VirtualNodeStatusSchema>
+  virtualNodeName: z.infer<typeof ResourceNameSchema>
 }
 
 const VirtualNodeDataSchema: z.ZodType<VirtualNodeDataType> = z
@@ -2344,45 +2340,31 @@ const VirtualNodeDataSchema: z.ZodType<VirtualNodeDataType> = z
   })
   .openapi('VirtualNodeData')
 
-type CreateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+type CreateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> }
 
-type DeleteGatewayRouteOutputType = {
-  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
-}
+type DeleteGatewayRouteOutputType = { gatewayRoute: z.infer<typeof GatewayRouteDataSchema> }
 
-type DeleteRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+type DeleteRouteOutputType = { route: z.infer<typeof RouteDataSchema> }
 
-type DeleteVirtualGatewayOutputType = {
-  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
-}
+type DeleteVirtualGatewayOutputType = { virtualGateway: z.infer<typeof VirtualGatewayDataSchema> }
 
-type DeleteVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+type DeleteVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> }
 
-type DescribeGatewayRouteOutputType = {
-  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
-}
+type DescribeGatewayRouteOutputType = { gatewayRoute: z.infer<typeof GatewayRouteDataSchema> }
 
-type DescribeRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+type DescribeRouteOutputType = { route: z.infer<typeof RouteDataSchema> }
 
-type DescribeVirtualGatewayOutputType = {
-  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
-}
+type DescribeVirtualGatewayOutputType = { virtualGateway: z.infer<typeof VirtualGatewayDataSchema> }
 
-type DescribeVirtualNodeOutputType = {
-  virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown
-}
+type DescribeVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> }
 
-type UpdateGatewayRouteOutputType = {
-  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
-}
+type UpdateGatewayRouteOutputType = { gatewayRoute: z.infer<typeof GatewayRouteDataSchema> }
 
-type UpdateRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+type UpdateRouteOutputType = { route: z.infer<typeof RouteDataSchema> }
 
-type UpdateVirtualGatewayOutputType = {
-  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
-}
+type UpdateVirtualGatewayOutputType = { virtualGateway: z.infer<typeof VirtualGatewayDataSchema> }
 
-type UpdateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+type UpdateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> }
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
@@ -2409,51 +2391,51 @@ const TagRefSchema = z
 const TagListSchema = z.array(TagRefSchema).min(0).max(50).openapi('TagList')
 
 type CreateGatewayRouteInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  gatewayRouteName: z.infer<typeof ResourceNameSchema> & unknown
-  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  gatewayRouteName: z.infer<typeof ResourceNameSchema>
+  spec: z.infer<typeof GatewayRouteSpecSchema>
+  tags?: z.infer<typeof TagListSchema>
 }
 
 type CreateRouteInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  routeName: z.infer<typeof ResourceNameSchema> & unknown
-  spec: z.infer<typeof RouteSpecSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  routeName: z.infer<typeof ResourceNameSchema>
+  spec: z.infer<typeof RouteSpecSchema>
+  tags?: z.infer<typeof TagListSchema>
 }
 
 type CreateVirtualGatewayInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
-  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof VirtualGatewaySpecSchema>
+  tags?: z.infer<typeof TagListSchema>
+  virtualGatewayName: z.infer<typeof ResourceNameSchema>
 }
 
 type CreateVirtualNodeInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
-  virtualNodeName: z.infer<typeof ResourceNameSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof VirtualNodeSpecSchema>
+  tags?: z.infer<typeof TagListSchema>
+  virtualNodeName: z.infer<typeof ResourceNameSchema>
 }
 
 type UpdateGatewayRouteInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof GatewayRouteSpecSchema>
 }
 
 type UpdateRouteInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof RouteSpecSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof RouteSpecSchema>
 }
 
 type UpdateVirtualGatewayInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof VirtualGatewaySpecSchema>
 }
 
 type UpdateVirtualNodeInputType = {
-  clientToken?: z.infer<typeof StringSchema> & unknown
-  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema>
+  spec: z.infer<typeof VirtualNodeSpecSchema>
 }
 
 const CreateGatewayRouteOutputSchema: z.ZodType<CreateGatewayRouteOutputType> = z

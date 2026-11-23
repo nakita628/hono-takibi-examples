@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteContactFlowModulesInstanceIdContactFlowModuleIdRoute,
   getContactFlowModulesInstanceIdContactFlowModuleIdRoute,
   postContactFlowModulesInstanceIdContactFlowModuleIdContentRoute,
@@ -7,21 +7,32 @@ import {
   putContactFlowModulesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putContactFlowModulesInstanceIdRouteHandler: RouteHandler<
+  typeof putContactFlowModulesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contactFlowModulesHandler = app
-  .openapi(putContactFlowModulesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactFlowModulesInstanceIdContactFlowModuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactFlowModulesInstanceIdContactFlowModuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactFlowModulesInstanceIdContactFlowModuleIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactFlowModulesInstanceIdContactFlowModuleIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteContactFlowModulesInstanceIdContactFlowModuleIdRouteHandler: RouteHandler<
+  typeof deleteContactFlowModulesInstanceIdContactFlowModuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactFlowModulesInstanceIdContactFlowModuleIdRouteHandler: RouteHandler<
+  typeof getContactFlowModulesInstanceIdContactFlowModuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactFlowModulesInstanceIdContactFlowModuleIdContentRouteHandler: RouteHandler<
+  typeof postContactFlowModulesInstanceIdContactFlowModuleIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactFlowModulesInstanceIdContactFlowModuleIdMetadataRouteHandler: RouteHandler<
+  typeof postContactFlowModulesInstanceIdContactFlowModuleIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,65 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { crmHandler } from './handlers'
+import {
+  deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute,
+  getCrmAssociations202609DefinitionsConfigurationsAllRoute,
+  getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRoute,
+  getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRoute,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRoute,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRoute,
+  postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+  putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+} from './routes'
+import {
+  deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRouteHandler,
+  getCrmAssociations202609DefinitionsConfigurationsAllRouteHandler,
+  getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRouteHandler,
+  getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRouteHandler,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRouteHandler,
+  postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRouteHandler,
+  postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+  putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', crmHandler)
+export const api = app
+  .openapi(
+    getCrmAssociations202609DefinitionsConfigurationsAllRoute,
+    getCrmAssociations202609DefinitionsConfigurationsAllRouteHandler,
+  )
+  .openapi(
+    getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRoute,
+    getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRouteHandler,
+  )
+  .openapi(
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRoute,
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRouteHandler,
+  )
+  .openapi(
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRoute,
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRouteHandler,
+  )
+  .openapi(
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRoute,
+    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRouteHandler,
+  )
+  .openapi(
+    getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+    getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+  )
+  .openapi(
+    putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+    putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+  )
+  .openapi(
+    postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute,
+    postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler,
+  )
+  .openapi(
+    deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute,
+    deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRouteHandler,
+  )
 
 export default app

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDiscordRoute, postDiscordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDiscordRoute, postDiscordRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDiscordRouteHandler: RouteHandler<typeof getDiscordRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const discordHandler = app
-  .openapi(getDiscordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDiscordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDiscordRouteHandler: RouteHandler<typeof postDiscordRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

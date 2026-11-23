@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFirewallsIdRoute,
   getFirewallsIdActionsActionIdRoute,
   getFirewallsIdActionsRoute,
@@ -12,36 +12,54 @@ import {
   putFirewallsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFirewallsRouteHandler: RouteHandler<typeof getFirewallsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const firewallsHandler = app
-  .openapi(getFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFirewallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFirewallsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFirewallsIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFirewallsIdActionsApplyToResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFirewallsIdActionsRemoveFromResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFirewallsIdActionsSetRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFirewallsIdActionsActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFirewallsRouteHandler: RouteHandler<typeof postFirewallsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFirewallsIdRouteHandler: RouteHandler<typeof deleteFirewallsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFirewallsIdRouteHandler: RouteHandler<typeof getFirewallsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFirewallsIdRouteHandler: RouteHandler<typeof putFirewallsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFirewallsIdActionsRouteHandler: RouteHandler<
+  typeof getFirewallsIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFirewallsIdActionsApplyToResourcesRouteHandler: RouteHandler<
+  typeof postFirewallsIdActionsApplyToResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFirewallsIdActionsRemoveFromResourcesRouteHandler: RouteHandler<
+  typeof postFirewallsIdActionsRemoveFromResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFirewallsIdActionsSetRulesRouteHandler: RouteHandler<
+  typeof postFirewallsIdActionsSetRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFirewallsIdActionsActionIdRouteHandler: RouteHandler<
+  typeof getFirewallsIdActionsActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

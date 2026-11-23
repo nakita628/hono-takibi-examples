@@ -13824,6 +13824,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { requestPublicId: string; requestId: string } } & {
               header: { 'X-Request-ID'?: string | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { requestPublicId: string; requestId: string } } & {
+              header: { 'X-Request-ID'?: string | undefined }
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 401

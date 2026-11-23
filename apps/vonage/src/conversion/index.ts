@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { smsHandler, voiceHandler } from './handlers'
+import { postSmsRoute, postVoiceRoute } from './routes'
+import { postSmsRouteHandler, postVoiceRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', smsHandler).route('/', voiceHandler)
+export const api = app
+  .openapi(postSmsRoute, postSmsRouteHandler)
+  .openapi(postVoiceRoute, postVoiceRouteHandler)
 
 export default app

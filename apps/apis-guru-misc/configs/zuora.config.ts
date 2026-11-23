@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/zuora.com/2021-08-20/openapi.yaml',
   output: './src/zuora/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/zuora/types.ts' },
   client: { output: './src/zuora/client.ts', baseUrl: '/' },
   rpc: { output: './src/zuora/rpc.ts', parseResponse: true },

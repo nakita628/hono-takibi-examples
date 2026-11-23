@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchXProxyEnabledRoute, postXProxyEnabledRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchXProxyEnabledRoute, postXProxyEnabledRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postXProxyEnabledRouteHandler: RouteHandler<typeof postXProxyEnabledRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const xProxyEnabledHandler = app
-  .openapi(postXProxyEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchXProxyEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchXProxyEnabledRouteHandler: RouteHandler<typeof patchXProxyEnabledRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

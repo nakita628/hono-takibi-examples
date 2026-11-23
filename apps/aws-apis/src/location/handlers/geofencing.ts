@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGeofencingV0CollectionsCollectionNameRoute,
   getGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute,
   getGeofencingV0CollectionsCollectionNameRoute,
@@ -13,39 +13,68 @@ import {
   putGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGeofencingV0CollectionsCollectionNameDeleteGeofencesRouteHandler: RouteHandler<
+  typeof postGeofencingV0CollectionsCollectionNameDeleteGeofencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const geofencingHandler = app
-  .openapi(postGeofencingV0CollectionsCollectionNameDeleteGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencingV0CollectionsCollectionNamePositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencingV0CollectionsCollectionNamePutGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencingV0CollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGeofencingV0CollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencingV0CollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGeofencingV0CollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencingV0ListCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencingV0CollectionsCollectionNameListGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGeofencingV0CollectionsCollectionNamePositionsRouteHandler: RouteHandler<
+  typeof postGeofencingV0CollectionsCollectionNamePositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencingV0CollectionsCollectionNamePutGeofencesRouteHandler: RouteHandler<
+  typeof postGeofencingV0CollectionsCollectionNamePutGeofencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencingV0CollectionsRouteHandler: RouteHandler<
+  typeof postGeofencingV0CollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGeofencingV0CollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof deleteGeofencingV0CollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofencingV0CollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof getGeofencingV0CollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGeofencingV0CollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof patchGeofencingV0CollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRouteHandler: RouteHandler<
+  typeof getGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRouteHandler: RouteHandler<
+  typeof putGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencingV0ListCollectionsRouteHandler: RouteHandler<
+  typeof postGeofencingV0ListCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGeofencingV0CollectionsCollectionNameListGeofencesRouteHandler: RouteHandler<
+  typeof postGeofencingV0CollectionsCollectionNameListGeofencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

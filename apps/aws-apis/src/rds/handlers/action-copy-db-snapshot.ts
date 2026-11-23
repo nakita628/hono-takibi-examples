@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCopyDBSnapshotRoute, postActionCopyDBSnapshotRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionCopyDBSnapshotRoute, postActionCopyDBSnapshotRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCopyDBSnapshotRouteHandler: RouteHandler<
+  typeof getActionCopyDBSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCopyDbSnapshotHandler = app
-  .openapi(getActionCopyDBSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCopyDBSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCopyDBSnapshotRouteHandler: RouteHandler<
+  typeof postActionCopyDBSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsKendraFrontendServiceStartDataSourceSyncJobHandler = app.openapi(
-  postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSKendraFrontendServiceStartDataSourceSyncJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

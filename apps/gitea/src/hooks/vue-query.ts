@@ -19138,17 +19138,17 @@ export function useReposOwnerRepoGitCommitsSha<
 export function getReposOwnerRepoGitCommitsShaDiffTypeQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
     >
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/git/commits/:sha.:diffType', toValue(args)] as const
+  return ['repos', '/repos/:owner/:repo/git/commits/:sha.{diffType}', toValue(args)] as const
 }
 
 export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -19157,7 +19157,7 @@ export function getReposOwnerRepoGitCommitsShaDiffTypeQueryOptions(
     queryKey: computed(() => getReposOwnerRepoGitCommitsShaDiffTypeQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(toValue(args), {
+        client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -19172,7 +19172,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+            (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
           >
         >
       >
@@ -19182,7 +19182,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+      (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
     >
   >,
   options?: {
@@ -19194,7 +19194,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
                   >
                 >
               >
@@ -19207,7 +19207,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
                   >
                 >
               >
@@ -19230,7 +19230,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+              (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
             >
           >
         >
@@ -19245,7 +19245,7 @@ export function useReposOwnerRepoGitCommitsShaDiffType<
       queryKey: computed(() => getReposOwnerRepoGitCommitsShaDiffTypeQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(toValue(args), {
+          client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -31909,15 +31909,15 @@ export function usePatchReposOwnerRepoPullsIndex<TError = DefaultError, TOnMutat
 
 export function getReposOwnerRepoPullsIndexDiffTypeQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/pulls/:index.:diffType', toValue(args)] as const
+  return ['repos', '/repos/:owner/:repo/pulls/:index.{diffType}', toValue(args)] as const
 }
 
 export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -31925,7 +31925,7 @@ export function getReposOwnerRepoPullsIndexDiffTypeQueryOptions(
     queryKey: computed(() => getReposOwnerRepoPullsIndexDiffTypeQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(toValue(args), {
+        client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -31939,7 +31939,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+          ReturnType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
         >
       >
     >
@@ -31947,7 +31947,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']>
+    InferRequestType<(typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -31958,7 +31958,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
                   >
                 >
               >
@@ -31971,7 +31971,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
                   >
                 >
               >
@@ -31994,7 +31994,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+              (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
             >
           >
         >
@@ -32009,7 +32009,7 @@ export function useReposOwnerRepoPullsIndexDiffType<
       queryKey: computed(() => getReposOwnerRepoPullsIndexDiffTypeQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(toValue(args), {
+          client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

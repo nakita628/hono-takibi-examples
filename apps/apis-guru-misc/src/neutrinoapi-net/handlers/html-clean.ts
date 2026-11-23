@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postHtmlCleanRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postHtmlCleanRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const htmlCleanHandler = app.openapi(postHtmlCleanRoute, (c) => {
+export const postHtmlCleanRouteHandler: RouteHandler<typeof postHtmlCleanRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

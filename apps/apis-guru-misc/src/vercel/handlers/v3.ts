@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3UserTokensTokenIdRoute,
   getV3EventsRoute,
   getV3SecretsIdOrNameRoute,
@@ -7,21 +7,28 @@ import {
   postV3UserTokensRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3EventsRouteHandler: RouteHandler<typeof getV3EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SecretsIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3UserTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3UserTokensTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3SecretsRouteHandler: RouteHandler<typeof getV3SecretsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SecretsIdOrNameRouteHandler: RouteHandler<
+  typeof getV3SecretsIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3UserTokensRouteHandler: RouteHandler<typeof postV3UserTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3UserTokensTokenIdRouteHandler: RouteHandler<
+  typeof deleteV3UserTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

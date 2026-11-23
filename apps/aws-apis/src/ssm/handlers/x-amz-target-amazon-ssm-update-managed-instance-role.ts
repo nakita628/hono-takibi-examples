@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmUpdateManagedInstanceRoleHandler = app.openapi(
-  postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

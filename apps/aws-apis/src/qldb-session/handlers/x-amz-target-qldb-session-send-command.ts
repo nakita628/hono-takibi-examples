@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetQLDBSessionSendCommandRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetQLDBSessionSendCommandRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetQldbSessionSendCommandHandler = app.openapi(
-  postXAmzTargetQLDBSessionSendCommandRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetQLDBSessionSendCommandRouteHandler: RouteHandler<
+  typeof postXAmzTargetQLDBSessionSendCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

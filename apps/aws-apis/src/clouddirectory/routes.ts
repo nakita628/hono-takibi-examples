@@ -576,8 +576,8 @@ const BatchReadExceptionSchema = z
   .openapi('BatchReadException')
 
 type BatchReadOperationResponseType = {
-  SuccessfulResponse?: z.infer<typeof BatchReadSuccessfulResponseSchema> & unknown
-  ExceptionResponse?: z.infer<typeof BatchReadExceptionSchema> & unknown
+  SuccessfulResponse?: z.infer<typeof BatchReadSuccessfulResponseSchema>
+  ExceptionResponse?: z.infer<typeof BatchReadExceptionSchema>
 }
 
 const BatchReadOperationResponseSchema: z.ZodType<BatchReadOperationResponseType> = z
@@ -601,9 +601,7 @@ const BatchReadOperationResponseListSchema: z.ZodType<BatchReadOperationResponse
   .array(BatchReadOperationResponseSchema)
   .openapi('BatchReadOperationResponseList')
 
-type BatchReadResponseType = {
-  Responses?: z.infer<typeof BatchReadOperationResponseListSchema> & unknown
-}
+type BatchReadResponseType = { Responses?: z.infer<typeof BatchReadOperationResponseListSchema> }
 
 const BatchCreateObjectResponseSchema = z
   .object({
@@ -802,9 +800,7 @@ const BatchWriteOperationResponseListSchema = z
   .array(BatchWriteOperationResponseSchema)
   .openapi('BatchWriteOperationResponseList')
 
-type BatchWriteResponseType = {
-  Responses?: z.infer<typeof BatchWriteOperationResponseListSchema> & unknown
-}
+type BatchWriteResponseType = { Responses?: z.infer<typeof BatchWriteOperationResponseListSchema> }
 
 const NumberResultsSchema = z.int().min(1).openapi('NumberResults')
 
@@ -1185,7 +1181,7 @@ const BatchReadOperationListSchema = z
   .array(BatchReadOperationSchema)
   .openapi('BatchReadOperationList')
 
-type BatchReadRequestType = { Operations: z.infer<typeof BatchReadOperationListSchema> & unknown }
+type BatchReadRequestType = { Operations: z.infer<typeof BatchReadOperationListSchema> }
 
 const BatchReferenceNameSchema = z.string().openapi('BatchReferenceName')
 
@@ -1576,7 +1572,7 @@ const BatchWriteOperationListSchema = z
   .array(BatchWriteOperationSchema)
   .openapi('BatchWriteOperationList')
 
-type BatchWriteRequestType = { Operations: z.infer<typeof BatchWriteOperationListSchema> & unknown }
+type BatchWriteRequestType = { Operations: z.infer<typeof BatchWriteOperationListSchema> }
 
 const FacetAttributeTypeSchema = z
   .enum(['STRING', 'BINARY', 'BOOLEAN', 'NUMBER', 'DATETIME', 'VARIANT'])
@@ -1695,9 +1691,9 @@ const FacetAttributeUpdateListSchema = z
 const ObjectTypeSchema = z.enum(['NODE', 'LEAF_NODE', 'POLICY', 'INDEX']).openapi('ObjectType')
 
 type UpdateFacetRequestType = {
-  Name: z.infer<typeof FacetNameSchema> & unknown
-  AttributeUpdates?: z.infer<typeof FacetAttributeUpdateListSchema> & unknown
-  ObjectType?: z.infer<typeof ObjectTypeSchema> & unknown
+  Name: z.infer<typeof FacetNameSchema>
+  AttributeUpdates?: z.infer<typeof FacetAttributeUpdateListSchema>
+  ObjectType?: z.infer<typeof ObjectTypeSchema>
 }
 
 const AddFacetToObjectResponseSchema = z.looseObject({}).openapi('AddFacetToObjectResponse')

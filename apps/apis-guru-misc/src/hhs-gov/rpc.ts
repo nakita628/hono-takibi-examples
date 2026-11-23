@@ -31,11 +31,11 @@ export async function getResourcesCampaignsIdMediaJson(
 }
 
 export async function getResourcesCampaignsIdSyndicateFormat(
-  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.resources.campaigns[':id']['syndicate.:format'].$get(args, options),
+    client.resources.campaigns[':id']['syndicate.{format}'].$get(args, options),
   )
 }
 
@@ -68,10 +68,12 @@ export async function getResourcesMediaFeaturedJson(
 }
 
 export async function getResourcesMediaMostPopularMediaFormat(
-  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.media['mostPopularMedia.:format'].$get(args, options))
+  return await parseResponse(
+    client.resources.media['mostPopularMedia.{format}'].$get(args, options),
+  )
 }
 
 export async function getResourcesMediaSearchResultsJson(
@@ -110,19 +112,21 @@ export async function getResourcesMediaIdPreviewJpg(
 }
 
 export async function getResourcesMediaIdRelatedMediaFormat(
-  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.resources.media[':id']['relatedMedia.:format'].$get(args, options),
+    client.resources.media[':id']['relatedMedia.{format}'].$get(args, options),
   )
 }
 
 export async function getResourcesMediaIdSyndicateFormat(
-  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.media[':id']['syndicate.:format'].$get(args, options))
+  return await parseResponse(
+    client.resources.media[':id']['syndicate.{format}'].$get(args, options),
+  )
 }
 
 export async function getResourcesMediaIdThumbnailJpg(
@@ -142,10 +146,10 @@ export async function getResourcesMediaIdYoutubeMetaDataJson(
 }
 
 export async function getResourcesMediaTypesFormat(
-  args: InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources['mediaTypes.:format'].$get(args, options))
+  return await parseResponse(client.resources['mediaTypes.{format}'].$get(args, options))
 }
 
 export async function getResourcesSourcesJson(
@@ -163,61 +167,61 @@ export async function getResourcesSourcesIdJson(
 }
 
 export async function getResourcesSourcesIdSyndicateFormat(
-  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.resources.sources[':id']['syndicate.:format'].$get(args, options),
+    client.resources.sources[':id']['syndicate.{format}'].$get(args, options),
   )
 }
 
 export async function getResourcesTagsFormat(
-  args: InferRequestType<(typeof client.resources)['tags.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['tags.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources['tags.:format'].$get(args, options))
+  return await parseResponse(client.resources['tags.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsTagLanguagesFormat(
-  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags['tagLanguages.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags['tagLanguages.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsTagTypesFormat(
-  args: InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags['tagTypes.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags['tagTypes.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsIdFormat(
-  args: InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags[':id.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags[':id.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsIdMediaFormat(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags[':id']['media.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags[':id']['media.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsIdRelatedFormat(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags[':id']['related.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags[':id']['related.{format}'].$get(args, options))
 }
 
 export async function getResourcesTagsIdSyndicateFormat(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.resources.tags[':id']['syndicate.:format'].$get(args, options))
+  return await parseResponse(client.resources.tags[':id']['syndicate.{format}'].$get(args, options))
 }
 
 export async function getResourcesUserMediaListsIdJson(

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/shipping_shipment_tracking_v1.json',
   output: './src/shipping_shipment_tracking_v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shipping_shipment_tracking_v1/types.ts' },
   client: { output: './src/shipping_shipment_tracking_v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/shipping_shipment_tracking_v1/rpc.ts', parseResponse: true },

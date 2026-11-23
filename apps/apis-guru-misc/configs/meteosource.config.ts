@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/meteosource.com/v1/openapi.yaml',
   output: './src/meteosource/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/meteosource/types.ts' },
   client: { output: './src/meteosource/client.ts', baseUrl: '/' },
   rpc: { output: './src/meteosource/rpc.ts', parseResponse: true },

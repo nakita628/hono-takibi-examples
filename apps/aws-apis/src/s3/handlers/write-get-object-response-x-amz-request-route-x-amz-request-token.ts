@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWriteGetObjectResponseXAmzRequestRouteXAmzRequestTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWriteGetObjectResponseXAmzRequestRouteXAmzRequestTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const writeGetObjectResponseXAmzRequestRouteXAmzRequestTokenHandler = app.openapi(
-  postWriteGetObjectResponseXAmzRequestRouteXAmzRequestTokenRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postWriteGetObjectResponseXAmzRequestRouteXAmzRequestTokenRouteHandler: RouteHandler<
+  typeof postWriteGetObjectResponseXAmzRequestRouteXAmzRequestTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

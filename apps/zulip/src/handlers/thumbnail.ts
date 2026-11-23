@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getThumbnailStatusRealmIdStrFilenameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getThumbnailStatusRealmIdStrFilenameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const thumbnailHandler = app.openapi(getThumbnailStatusRealmIdStrFilenameRoute, (c) => {
+export const getThumbnailStatusRealmIdStrFilenameRouteHandler: RouteHandler<
+  typeof getThumbnailStatusRealmIdStrFilenameRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

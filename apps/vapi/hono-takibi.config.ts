@@ -1,12 +1,9 @@
 import { defineConfig } from 'hono-takibi'
 
 export default defineConfig({
-  // Not generated with hono-takibi 0.32.7: the sibling oneOf next to allOf on 24 properties is written into
-  // .openapi() with every $ref inlined, and the run dies with RangeError: Invalid string length
-  // (nakita628/hono-takibi#510). 0.32.6 generated it.
   input: 'https://api.vapi.ai/api-json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

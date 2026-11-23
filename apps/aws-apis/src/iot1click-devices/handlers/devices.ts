@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDevicesDeviceIdEventsFromTimeStampToTimeStampRoute,
   getDevicesDeviceIdMethodsRoute,
   getDevicesDeviceIdRoute,
@@ -11,33 +11,54 @@ import {
   putDevicesDeviceIdUnclaimRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDevicesDeviceIdRouteHandler: RouteHandler<typeof getDevicesDeviceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const devicesHandler = app
-  .openapi(getDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesDeviceIdFinalizeClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesDeviceIdMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesDeviceIdMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesDeviceIdInitiateClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesDeviceIdEventsFromTimeStampToTimeStampRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesDeviceIdUnclaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesDeviceIdStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDevicesDeviceIdFinalizeClaimRouteHandler: RouteHandler<
+  typeof putDevicesDeviceIdFinalizeClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesDeviceIdMethodsRouteHandler: RouteHandler<
+  typeof getDevicesDeviceIdMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesDeviceIdMethodsRouteHandler: RouteHandler<
+  typeof postDevicesDeviceIdMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesDeviceIdInitiateClaimRouteHandler: RouteHandler<
+  typeof putDevicesDeviceIdInitiateClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesDeviceIdEventsFromTimeStampToTimeStampRouteHandler: RouteHandler<
+  typeof getDevicesDeviceIdEventsFromTimeStampToTimeStampRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesRouteHandler: RouteHandler<typeof getDevicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesDeviceIdUnclaimRouteHandler: RouteHandler<
+  typeof putDevicesDeviceIdUnclaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesDeviceIdStateRouteHandler: RouteHandler<
+  typeof putDevicesDeviceIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

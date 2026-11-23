@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeImageIdRoute,
   deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute,
   deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute,
@@ -96,402 +96,566 @@ import {
   putAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsApkRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsApkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const androidpublisherHandler = app
-  .openapi(
-    postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsApkRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsBundleRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsDeviceTierConfigIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameEditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksExternallyHostedRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeDeobfuscationFilesDeobfuscationFileTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameEditsEditIdCountryAvailabilityTrackRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeImageIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameEditsEditIdCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameEditsEditIdValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeDownloadsDownloadIdDownloadRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameInappproductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameInappproductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameOrdersOrderIdRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNamePricingConvertRegionPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenAcknowledgeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenConsumeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenAcknowledgeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenCancelRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenDeferRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRefundRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRevokeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsv2TokensTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAndroidpublisherV3ApplicationsPackageNamePurchasesVoidedpurchasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdActivateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdDeactivateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdActivateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdDeactivateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdMigratePricesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdDownloadRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteAndroidpublisherV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAndroidpublisherV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3NameRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ParentExternalTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ParentGrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAndroidpublisherV3ParentUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAndroidpublisherV3ParentUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsBundleRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsInternalappsharingPackageNameArtifactsBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsDeviceTierConfigIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameDeviceTierConfigsDeviceTierConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksExternallyHostedRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksExternallyHostedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeDeobfuscationFilesDeobfuscationFileTypeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeDeobfuscationFilesDeobfuscationFileTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameEditsEditIdApksApkVersionCodeExpansionFilesExpansionFileTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdBundlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdCountryAvailabilityTrackRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdCountryAvailabilityTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameEditsEditIdDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeImageIdRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameEditsEditIdListingsLanguageImageTypeImageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTestersTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameEditsEditIdTracksTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdCommitRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdCommitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameEditsEditIdValidateRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameEditsEditIdValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeDownloadsDownloadIdDownloadRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameGeneratedApksVersionCodeDownloadsDownloadIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameInappproductsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameInappproductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameInappproductsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameInappproductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRouteHandler: RouteHandler<
+  typeof putAndroidpublisherV3ApplicationsPackageNameInappproductsSkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameOrdersOrderIdRefundRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameOrdersOrderIdRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePricingConvertRegionPricesRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePricingConvertRegionPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenAcknowledgeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenConsumeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesProductsProductIdTokensTokenConsumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenAcknowledgeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenCancelRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenDeferRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenDeferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRefundRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRevokeRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsSubscriptionIdTokensTokenRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsv2TokensTokenRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNamePurchasesSubscriptionsv2TokensTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNamePurchasesVoidedpurchasesRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNamePurchasesVoidedpurchasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameReviewsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdReplyRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameReviewsReviewIdReplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSubscriptionsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdActivateRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdDeactivateRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdOffersOfferIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdActivateRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdDeactivateRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdMigratePricesRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdBasePlansBasePlanIdMigratePricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdArchiveRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSubscriptionsProductIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdDownloadRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ApplicationsPackageNameSystemApksVersionCodeVariantsVariantIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAndroidpublisherV3NameRouteHandler: RouteHandler<
+  typeof deleteAndroidpublisherV3NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3NameRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAndroidpublisherV3NameRouteHandler: RouteHandler<
+  typeof patchAndroidpublisherV3NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3NameRefundRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3NameRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ParentExternalTransactionsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ParentExternalTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ParentGrantsRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ParentGrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAndroidpublisherV3ParentUsersRouteHandler: RouteHandler<
+  typeof getAndroidpublisherV3ParentUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAndroidpublisherV3ParentUsersRouteHandler: RouteHandler<
+  typeof postAndroidpublisherV3ParentUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

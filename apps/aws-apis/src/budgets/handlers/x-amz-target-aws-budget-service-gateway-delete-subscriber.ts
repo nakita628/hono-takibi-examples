@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsBudgetServiceGatewayDeleteSubscriberHandler = app.openapi(
-  postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

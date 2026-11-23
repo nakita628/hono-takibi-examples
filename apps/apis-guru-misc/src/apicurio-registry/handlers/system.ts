@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSystemInfoRoute, getSystemLimitsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSystemInfoRoute, getSystemLimitsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemInfoRouteHandler: RouteHandler<typeof getSystemInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(getSystemInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSystemLimitsRouteHandler: RouteHandler<typeof getSystemLimitsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

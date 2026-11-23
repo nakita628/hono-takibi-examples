@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/fraudlabspro.com/fraud-detection/1.1/openapi.yaml',
   output: './src/fraudlabspro-fraud-detection/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fraudlabspro-fraud-detection/types.ts' },
   client: { output: './src/fraudlabspro-fraud-detection/client.ts', baseUrl: '/' },
   rpc: { output: './src/fraudlabspro-fraud-detection/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/homegraph/v1/openapi.yaml',
   output: './src/homegraph/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/homegraph/types.ts' },
   client: { output: './src/homegraph/client.ts', baseUrl: '/' },
   rpc: { output: './src/homegraph/rpc.ts', parseResponse: true },

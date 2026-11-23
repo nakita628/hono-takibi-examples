@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMessageDetailRecordsIdMessageBodyRoute, getMessageDetailRecordsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getMessageDetailRecordsIdMessageBodyRoute,
+  getMessageDetailRecordsRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getMessageDetailRecordsRouteHandler: RouteHandler<
+  typeof getMessageDetailRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const messageDetailRecordsHandler = app
-  .openapi(getMessageDetailRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessageDetailRecordsIdMessageBodyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMessageDetailRecordsIdMessageBodyRouteHandler: RouteHandler<
+  typeof getMessageDetailRecordsIdMessageBodyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

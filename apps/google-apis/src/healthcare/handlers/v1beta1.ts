@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta1NameDeleteRevisionRoute,
   deleteV1beta1NamePurgeRoute,
   deleteV1beta1NameRoute,
@@ -74,222 +74,430 @@ import {
   putV1beta1ParentFhirTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1beta1ConsentStoreCheckDataAccessRouteHandler: RouteHandler<
+  typeof postV1beta1ConsentStoreCheckDataAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(postV1beta1ConsentStoreCheckDataAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ConsentStoreEvaluateUserConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ConsentStoreQueryAccessibleDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameEverythingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1NamePurgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameTranslateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameFhirMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameConfigureSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1NameDeleteRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameEvaluateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameGetFHIRStoreMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameListRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NlpServiceAnalyzeEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAnnotationStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentAnnotationStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAttributeDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentAttributeDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentConsentArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentConsentArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentConsentStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentConsentStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentDicomStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentDicomStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1ParentDicomWebDicomWebPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentDicomWebDicomWebPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentDicomWebDicomWebPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentFhirReferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentFhirConceptMapTranslateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentFhirObservationLastnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirResourceTypeSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1ParentFhirTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1beta1ParentFhirTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1beta1ParentFhirTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirTypeValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentFhirStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentFhirStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentHl7V2StoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentHl7V2StoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentMessagesBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentMessagesIngestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentUserDataMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentUserDataMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1SourceDatasetDeidentifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1SourceStoreDeidentifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1beta1ConsentStoreEvaluateUserConsentsRouteHandler: RouteHandler<
+  typeof postV1beta1ConsentStoreEvaluateUserConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ConsentStoreQueryAccessibleDataRouteHandler: RouteHandler<
+  typeof postV1beta1ConsentStoreQueryAccessibleDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1NameRouteHandler: RouteHandler<typeof deleteV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameRouteHandler: RouteHandler<typeof getV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1beta1NameRouteHandler: RouteHandler<typeof patchV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1NameRouteHandler: RouteHandler<typeof putV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameEverythingRouteHandler: RouteHandler<
+  typeof getV1beta1NameEverythingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1NamePurgeRouteHandler: RouteHandler<
+  typeof deleteV1beta1NamePurgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameTranslateRouteHandler: RouteHandler<
+  typeof getV1beta1NameTranslateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameHistoryRouteHandler: RouteHandler<
+  typeof getV1beta1NameHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameFhirMetadataRouteHandler: RouteHandler<
+  typeof getV1beta1NameFhirMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameLocationsRouteHandler: RouteHandler<
+  typeof getV1beta1NameLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameOperationsRouteHandler: RouteHandler<
+  typeof getV1beta1NameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameActivateRouteHandler: RouteHandler<
+  typeof postV1beta1NameActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameArchiveRouteHandler: RouteHandler<
+  typeof postV1beta1NameArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameCancelRouteHandler: RouteHandler<
+  typeof postV1beta1NameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameConfigureSearchRouteHandler: RouteHandler<
+  typeof postV1beta1NameConfigureSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1NameDeleteRevisionRouteHandler: RouteHandler<
+  typeof deleteV1beta1NameDeleteRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameEvaluateRouteHandler: RouteHandler<
+  typeof postV1beta1NameEvaluateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameExportRouteHandler: RouteHandler<
+  typeof postV1beta1NameExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameGetFHIRStoreMetricsRouteHandler: RouteHandler<
+  typeof getV1beta1NameGetFHIRStoreMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameImportRouteHandler: RouteHandler<
+  typeof postV1beta1NameImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameListRevisionsRouteHandler: RouteHandler<
+  typeof getV1beta1NameListRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameRejectRouteHandler: RouteHandler<
+  typeof postV1beta1NameRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameRevokeRouteHandler: RouteHandler<
+  typeof postV1beta1NameRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NlpServiceAnalyzeEntitiesRouteHandler: RouteHandler<
+  typeof postV1beta1NlpServiceAnalyzeEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAnnotationStoresRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAnnotationStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentAnnotationStoresRouteHandler: RouteHandler<
+  typeof postV1beta1ParentAnnotationStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAnnotationsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentAnnotationsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAttributeDefinitionsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAttributeDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentAttributeDefinitionsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentAttributeDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentConsentArtifactsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentConsentArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentConsentArtifactsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentConsentArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentConsentStoresRouteHandler: RouteHandler<
+  typeof getV1beta1ParentConsentStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentConsentStoresRouteHandler: RouteHandler<
+  typeof postV1beta1ParentConsentStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentConsentsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentConsentsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentDatasetsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentDatasetsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentDicomStoresRouteHandler: RouteHandler<
+  typeof getV1beta1ParentDicomStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentDicomStoresRouteHandler: RouteHandler<
+  typeof postV1beta1ParentDicomStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1ParentDicomWebDicomWebPathRouteHandler: RouteHandler<
+  typeof deleteV1beta1ParentDicomWebDicomWebPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentDicomWebDicomWebPathRouteHandler: RouteHandler<
+  typeof getV1beta1ParentDicomWebDicomWebPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentDicomWebDicomWebPathRouteHandler: RouteHandler<
+  typeof postV1beta1ParentDicomWebDicomWebPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentFhirReferencesRouteHandler: RouteHandler<
+  typeof getV1beta1ParentFhirReferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentFhirConceptMapTranslateRouteHandler: RouteHandler<
+  typeof getV1beta1ParentFhirConceptMapTranslateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentFhirObservationLastnRouteHandler: RouteHandler<
+  typeof getV1beta1ParentFhirObservationLastnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirSearchRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirResourceTypeSearchRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirResourceTypeSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1ParentFhirTypeRouteHandler: RouteHandler<
+  typeof deleteV1beta1ParentFhirTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1beta1ParentFhirTypeRouteHandler: RouteHandler<
+  typeof patchV1beta1ParentFhirTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirTypeRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1beta1ParentFhirTypeRouteHandler: RouteHandler<
+  typeof putV1beta1ParentFhirTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirTypeValidateRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirTypeValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentFhirStoresRouteHandler: RouteHandler<
+  typeof getV1beta1ParentFhirStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentFhirStoresRouteHandler: RouteHandler<
+  typeof postV1beta1ParentFhirStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentHl7V2StoresRouteHandler: RouteHandler<
+  typeof getV1beta1ParentHl7V2StoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentHl7V2StoresRouteHandler: RouteHandler<
+  typeof postV1beta1ParentHl7V2StoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentMessagesRouteHandler: RouteHandler<
+  typeof getV1beta1ParentMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentMessagesRouteHandler: RouteHandler<
+  typeof postV1beta1ParentMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentMessagesBatchGetRouteHandler: RouteHandler<
+  typeof getV1beta1ParentMessagesBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentMessagesIngestRouteHandler: RouteHandler<
+  typeof postV1beta1ParentMessagesIngestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentUserDataMappingsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentUserDataMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentUserDataMappingsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentUserDataMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getV1beta1ResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1beta1ResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postV1beta1ResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1SourceDatasetDeidentifyRouteHandler: RouteHandler<
+  typeof postV1beta1SourceDatasetDeidentifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1SourceStoreDeidentifyRouteHandler: RouteHandler<
+  typeof postV1beta1SourceStoreDeidentifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTransferServiceSendWorkflowStepStateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTransferServiceSendWorkflowStepStateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTransferServiceSendWorkflowStepStateHandler = app.openapi(
-  postXAmzTargetTransferServiceSendWorkflowStepStateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTransferServiceSendWorkflowStepStateRouteHandler: RouteHandler<
+  typeof postXAmzTargetTransferServiceSendWorkflowStepStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

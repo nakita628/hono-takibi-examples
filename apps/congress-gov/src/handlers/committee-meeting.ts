@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCommitteeMeetingCongressChamberEventIdRoute,
   getCommitteeMeetingCongressChamberRoute,
   getCommitteeMeetingCongressRoute,
   getCommitteeMeetingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommitteeMeetingRouteHandler: RouteHandler<
+  typeof getCommitteeMeetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const committeeMeetingHandler = app
-  .openapi(getCommitteeMeetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeMeetingCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeMeetingCongressChamberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeMeetingCongressChamberEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCommitteeMeetingCongressRouteHandler: RouteHandler<
+  typeof getCommitteeMeetingCongressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeMeetingCongressChamberRouteHandler: RouteHandler<
+  typeof getCommitteeMeetingCongressChamberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeMeetingCongressChamberEventIdRouteHandler: RouteHandler<
+  typeof getCommitteeMeetingCongressChamberEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

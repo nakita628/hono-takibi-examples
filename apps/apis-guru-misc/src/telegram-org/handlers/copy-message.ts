@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCopyMessageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCopyMessageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const copyMessageHandler = app.openapi(postCopyMessageRoute, (c) => {
+export const postCopyMessageRouteHandler: RouteHandler<typeof postCopyMessageRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

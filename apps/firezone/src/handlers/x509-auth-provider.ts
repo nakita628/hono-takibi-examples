@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getX509AuthProviderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getX509AuthProviderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const x509AuthProviderHandler = app.openapi(getX509AuthProviderRoute, (c) => {
+export const getX509AuthProviderRouteHandler: RouteHandler<
+  typeof getX509AuthProviderRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

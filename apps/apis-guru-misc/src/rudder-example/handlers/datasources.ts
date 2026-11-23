@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatasourcesDatasourceIdRoute,
   getDatasourcesDatasourceIdRoute,
   getDatasourcesRoute,
@@ -9,27 +9,40 @@ import {
   putDatasourcesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDatasourcesRouteHandler: RouteHandler<typeof getDatasourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const datasourcesHandler = app
-  .openapi(getDatasourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatasourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatasourcesReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatasourcesReloadDatasourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatasourcesDatasourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatasourcesDatasourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatasourcesDatasourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDatasourcesRouteHandler: RouteHandler<typeof putDatasourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatasourcesReloadRouteHandler: RouteHandler<
+  typeof postDatasourcesReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatasourcesReloadDatasourceIdRouteHandler: RouteHandler<
+  typeof postDatasourcesReloadDatasourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatasourcesDatasourceIdRouteHandler: RouteHandler<
+  typeof deleteDatasourcesDatasourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatasourcesDatasourceIdRouteHandler: RouteHandler<
+  typeof getDatasourcesDatasourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatasourcesDatasourceIdRouteHandler: RouteHandler<
+  typeof postDatasourcesDatasourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

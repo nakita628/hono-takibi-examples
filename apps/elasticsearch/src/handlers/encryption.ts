@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEncryptionResetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEncryptionResetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const encryptionHandler = app.openapi(postEncryptionResetRoute, (c) => {
+export const postEncryptionResetRouteHandler: RouteHandler<
+  typeof postEncryptionResetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

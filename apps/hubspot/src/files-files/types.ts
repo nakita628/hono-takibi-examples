@@ -346,12 +346,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { fileId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { fileId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { fileId: string } }; output: Error; outputFormat: 'text'; status: 200 }
       $patch:
         | {
             input: { param: { fileId: string } } & { json: FileUpdateInput }
@@ -377,12 +374,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/files/2026-09/files/:fileId/gdpr-delete': {
-      $delete: {
-        input: { param: { fileId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { fileId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { fileId: string } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/files/2026-09/files/:fileId/signed-url': {
@@ -493,12 +487,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { folderId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { folderId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { folderId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { folderId: string } } & { json: FolderUpdateInput }
@@ -532,12 +528,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { folderPath: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { folderPath: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { folderPath: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

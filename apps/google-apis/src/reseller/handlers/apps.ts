@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute,
   getAppsResellerV1CustomersCustomerIdRoute,
   getAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute,
@@ -19,66 +19,104 @@ import {
   putAppsResellerV1CustomersCustomerIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppsResellerV1CustomersRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appsHandler = app
-  .openapi(postAppsResellerV1CustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsResellerV1CustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsResellerV1CustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppsResellerV1CustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsResellerV1CustomersCustomerIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangePlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeRenewalSettingsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeSeatsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdStartPaidServiceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsResellerV1ResellernotifyGetwatchdetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsResellerV1ResellernotifyRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsResellerV1ResellernotifyUnregisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsResellerV1SubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAppsResellerV1CustomersCustomerIdRouteHandler: RouteHandler<
+  typeof getAppsResellerV1CustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsResellerV1CustomersCustomerIdRouteHandler: RouteHandler<
+  typeof patchAppsResellerV1CustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppsResellerV1CustomersCustomerIdRouteHandler: RouteHandler<
+  typeof putAppsResellerV1CustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdActivateRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangePlanRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangePlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeRenewalSettingsRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeRenewalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeSeatsRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdChangeSeatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdStartPaidServiceRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdStartPaidServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdSuspendRouteHandler: RouteHandler<
+  typeof postAppsResellerV1CustomersCustomerIdSubscriptionsSubscriptionIdSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsResellerV1ResellernotifyGetwatchdetailsRouteHandler: RouteHandler<
+  typeof getAppsResellerV1ResellernotifyGetwatchdetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1ResellernotifyRegisterRouteHandler: RouteHandler<
+  typeof postAppsResellerV1ResellernotifyRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsResellerV1ResellernotifyUnregisterRouteHandler: RouteHandler<
+  typeof postAppsResellerV1ResellernotifyUnregisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsResellerV1SubscriptionsRouteHandler: RouteHandler<
+  typeof getAppsResellerV1SubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

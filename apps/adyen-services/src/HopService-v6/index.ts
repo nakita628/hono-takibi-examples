@@ -1,8 +1,14 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOnboardingUrlHandler, getPciQuestionnaireUrlHandler } from './handlers'
+import { postGetOnboardingUrlRoute, postGetPciQuestionnaireUrlRoute } from './routes'
+import {
+  postGetOnboardingUrlRouteHandler,
+  postGetPciQuestionnaireUrlRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', getOnboardingUrlHandler).route('/', getPciQuestionnaireUrlHandler)
+export const api = app
+  .openapi(postGetOnboardingUrlRoute, postGetOnboardingUrlRouteHandler)
+  .openapi(postGetPciQuestionnaireUrlRoute, postGetPciQuestionnaireUrlRouteHandler)
 
 export default app

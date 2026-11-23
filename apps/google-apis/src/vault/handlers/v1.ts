@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1MattersMatterIdExportsExportIdRoute,
   deleteV1MattersMatterIdHoldsHoldIdAccountsAccountIdRoute,
   deleteV1MattersMatterIdHoldsHoldIdRoute,
@@ -34,102 +34,186 @@ import {
   putV1MattersMatterIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1MattersRouteHandler: RouteHandler<typeof getV1MattersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1MattersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MattersMatterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MattersMatterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MattersMatterIdExportsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdExportsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MattersMatterIdHoldsHoldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdHoldsHoldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MattersMatterIdHoldsHoldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdHoldsHoldIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdHoldsHoldIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MattersMatterIdHoldsHoldIdAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdHoldsHoldIdAddHeldAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdHoldsHoldIdRemoveHeldAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdSavedQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdSavedQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MattersMatterIdSavedQueriesSavedQueryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MattersMatterIdSavedQueriesSavedQueryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdAddPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdRemovePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdReopenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MattersMatterIdUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1MattersRouteHandler: RouteHandler<typeof postV1MattersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MattersMatterIdRouteHandler: RouteHandler<
+  typeof deleteV1MattersMatterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MattersMatterIdRouteHandler: RouteHandler<
+  typeof putV1MattersMatterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdExportsRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdExportsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MattersMatterIdExportsExportIdRouteHandler: RouteHandler<
+  typeof deleteV1MattersMatterIdExportsExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdExportsExportIdRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdExportsExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdHoldsRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdHoldsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MattersMatterIdHoldsHoldIdRouteHandler: RouteHandler<
+  typeof deleteV1MattersMatterIdHoldsHoldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdHoldsHoldIdRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdHoldsHoldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MattersMatterIdHoldsHoldIdRouteHandler: RouteHandler<
+  typeof putV1MattersMatterIdHoldsHoldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdHoldsHoldIdAccountsRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdHoldsHoldIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdHoldsHoldIdAccountsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdHoldsHoldIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MattersMatterIdHoldsHoldIdAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteV1MattersMatterIdHoldsHoldIdAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdHoldsHoldIdAddHeldAccountsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdHoldsHoldIdAddHeldAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdHoldsHoldIdRemoveHeldAccountsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdHoldsHoldIdRemoveHeldAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdSavedQueriesRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdSavedQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdSavedQueriesRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdSavedQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MattersMatterIdSavedQueriesSavedQueryIdRouteHandler: RouteHandler<
+  typeof deleteV1MattersMatterIdSavedQueriesSavedQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MattersMatterIdSavedQueriesSavedQueryIdRouteHandler: RouteHandler<
+  typeof getV1MattersMatterIdSavedQueriesSavedQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdAddPermissionsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdAddPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdCloseRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdCountRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdRemovePermissionsRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdRemovePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdReopenRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdReopenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MattersMatterIdUndeleteRouteHandler: RouteHandler<
+  typeof postV1MattersMatterIdUndeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameCancelRouteHandler: RouteHandler<typeof postV1NameCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

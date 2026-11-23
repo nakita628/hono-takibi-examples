@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReindexRoute,
   getReindexTaskIdRoute,
   postReindexRoute,
@@ -7,21 +7,28 @@ import {
   postReindexTaskIdRethrottleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postReindexTaskIdCancelRouteHandler: RouteHandler<
+  typeof postReindexTaskIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reindexHandler = app
-  .openapi(postReindexTaskIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReindexTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReindexTaskIdRethrottleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReindexTaskIdRouteHandler: RouteHandler<typeof getReindexTaskIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReindexRouteHandler: RouteHandler<typeof getReindexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReindexRouteHandler: RouteHandler<typeof postReindexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReindexTaskIdRethrottleRouteHandler: RouteHandler<
+  typeof postReindexTaskIdRethrottleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

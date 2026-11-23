@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPersonalCurrentAccountsRoute, headPersonalCurrentAccountsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPersonalCurrentAccountsRoute, headPersonalCurrentAccountsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPersonalCurrentAccountsRouteHandler: RouteHandler<
+  typeof getPersonalCurrentAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const personalCurrentAccountsHandler = app
-  .openapi(getPersonalCurrentAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headPersonalCurrentAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const headPersonalCurrentAccountsRouteHandler: RouteHandler<
+  typeof headPersonalCurrentAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

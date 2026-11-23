@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBridgeDeleteJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBridgeDeleteJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bridgeDeleteJsonHandler = app.openapi(postBridgeDeleteJsonRoute, (c) => {
+export const postBridgeDeleteJsonRouteHandler: RouteHandler<
+  typeof postBridgeDeleteJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

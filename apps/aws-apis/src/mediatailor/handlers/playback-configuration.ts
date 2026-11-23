@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePlaybackConfigurationNameRoute,
   getPlaybackConfigurationNameRoute,
   putPlaybackConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePlaybackConfigurationNameRouteHandler: RouteHandler<
+  typeof deletePlaybackConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const playbackConfigurationHandler = app
-  .openapi(deletePlaybackConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaybackConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlaybackConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPlaybackConfigurationNameRouteHandler: RouteHandler<
+  typeof getPlaybackConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlaybackConfigurationRouteHandler: RouteHandler<
+  typeof putPlaybackConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

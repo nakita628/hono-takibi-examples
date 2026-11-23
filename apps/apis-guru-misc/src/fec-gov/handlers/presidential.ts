@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPresidentialContributionsByCandidateIndexRoute,
   getPresidentialContributionsBySizeIndexRoute,
   getPresidentialContributionsByStateIndexRoute,
@@ -7,21 +7,32 @@ import {
   getPresidentialFinancialSummaryIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPresidentialContributionsByCandidateIndexRouteHandler: RouteHandler<
+  typeof getPresidentialContributionsByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const presidentialHandler = app
-  .openapi(getPresidentialContributionsByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPresidentialContributionsBySizeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPresidentialContributionsByStateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPresidentialCoverageEndDateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPresidentialFinancialSummaryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPresidentialContributionsBySizeIndexRouteHandler: RouteHandler<
+  typeof getPresidentialContributionsBySizeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPresidentialContributionsByStateIndexRouteHandler: RouteHandler<
+  typeof getPresidentialContributionsByStateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPresidentialCoverageEndDateIndexRouteHandler: RouteHandler<
+  typeof getPresidentialCoverageEndDateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPresidentialFinancialSummaryIndexRouteHandler: RouteHandler<
+  typeof getPresidentialFinancialSummaryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

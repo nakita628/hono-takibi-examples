@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wordnik.com/4.0/openapi.yaml',
   output: './src/wordnik/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wordnik/types.ts' },
   client: { output: './src/wordnik/client.ts', baseUrl: '/' },
   rpc: { output: './src/wordnik/rpc.ts', parseResponse: true },

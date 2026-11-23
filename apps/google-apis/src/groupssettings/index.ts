@@ -1,8 +1,16 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { groupUniqueIdHandler } from './handlers'
+import { getGroupUniqueIdRoute, patchGroupUniqueIdRoute, putGroupUniqueIdRoute } from './routes'
+import {
+  getGroupUniqueIdRouteHandler,
+  patchGroupUniqueIdRouteHandler,
+  putGroupUniqueIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', groupUniqueIdHandler)
+export const api = app
+  .openapi(getGroupUniqueIdRoute, getGroupUniqueIdRouteHandler)
+  .openapi(patchGroupUniqueIdRoute, patchGroupUniqueIdRouteHandler)
+  .openapi(putGroupUniqueIdRoute, putGroupUniqueIdRouteHandler)
 
 export default app

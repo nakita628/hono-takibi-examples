@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonPersonalizeUntagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonPersonalizeUntagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonPersonalizeUntagResourceHandler = app.openapi(
-  postXAmzTargetAmazonPersonalizeUntagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonPersonalizeUntagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonPersonalizeUntagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

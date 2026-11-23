@@ -731,5 +731,5 @@ export const postOauth202609TokenRevokeRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'successful operation', content: {} }, default: ErrorResponse },
+  responses: { 200: { description: 'successful operation' }, default: ErrorResponse },
 })

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCollectionsCollectionNameDocumentsDocumentIdRoute,
   deleteCollectionsCollectionNameDocumentsRoute,
   deleteCollectionsCollectionNameRoute,
@@ -16,48 +16,82 @@ import {
   postCollectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCollectionsRouteHandler: RouteHandler<typeof getCollectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const collectionsHandler = app
-  .openapi(getCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionNameDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCollectionsCollectionNameDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionNameDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionNameDocumentsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionNameDocumentsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsCollectionNameDocumentsImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsCollectionNameDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCollectionsCollectionNameDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollectionsCollectionNameDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCollectionsRouteHandler: RouteHandler<typeof postCollectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof patchCollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionNameRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionNameDocumentsRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionNameDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCollectionsCollectionNameDocumentsRouteHandler: RouteHandler<
+  typeof patchCollectionsCollectionNameDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionNameDocumentsRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionNameDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionNameDocumentsSearchRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionNameDocumentsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionNameDocumentsExportRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionNameDocumentsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsCollectionNameDocumentsImportRouteHandler: RouteHandler<
+  typeof postCollectionsCollectionNameDocumentsImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsCollectionNameDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof getCollectionsCollectionNameDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCollectionsCollectionNameDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof patchCollectionsCollectionNameDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollectionsCollectionNameDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof deleteCollectionsCollectionNameDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBikePointIdRoute, getBikePointRoute, getBikePointSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBikePointIdRoute, getBikePointRoute, getBikePointSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBikePointRouteHandler: RouteHandler<typeof getBikePointRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bikePointHandler = app
-  .openapi(getBikePointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBikePointSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBikePointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBikePointSearchRouteHandler: RouteHandler<typeof getBikePointSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBikePointIdRouteHandler: RouteHandler<typeof getBikePointIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

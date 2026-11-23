@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { petsHandler } from './handlers'
+import { getPetsPetIdRoute, getPetsRoute, postPetsRoute } from './routes'
+import { getPetsPetIdRouteHandler, getPetsRouteHandler, postPetsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', petsHandler)
+export const api = app
+  .openapi(getPetsRoute, getPetsRouteHandler)
+  .openapi(postPetsRoute, postPetsRouteHandler)
+  .openapi(getPetsPetIdRoute, getPetsPetIdRouteHandler)
 
 export default app

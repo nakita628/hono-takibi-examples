@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEmailOtpAuthProvidersIdRoute, getEmailOtpAuthProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEmailOtpAuthProvidersIdRoute, getEmailOtpAuthProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEmailOtpAuthProvidersRouteHandler: RouteHandler<
+  typeof getEmailOtpAuthProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const emailOtpAuthProvidersHandler = app
-  .openapi(getEmailOtpAuthProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailOtpAuthProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmailOtpAuthProvidersIdRouteHandler: RouteHandler<
+  typeof getEmailOtpAuthProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

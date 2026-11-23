@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMorphableTargetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMorphableTargetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const morphableTargetsHandler = app.openapi(postMorphableTargetsRoute, (c) => {
+export const postMorphableTargetsRouteHandler: RouteHandler<
+  typeof postMorphableTargetsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

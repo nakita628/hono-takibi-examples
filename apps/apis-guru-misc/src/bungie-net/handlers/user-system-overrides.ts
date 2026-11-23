@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUserSystemOverridesIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUserSystemOverridesIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userSystemOverridesHandler = app.openapi(getUserSystemOverridesIndexRoute, (c) => {
+export const getUserSystemOverridesIndexRouteHandler: RouteHandler<
+  typeof getUserSystemOverridesIndexRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

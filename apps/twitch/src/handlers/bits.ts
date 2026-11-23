@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBitsCheermotesRoute,
   getBitsCustomPowerUpsRoute,
   getBitsExtensionsRoute,
@@ -7,21 +7,32 @@ import {
   putBitsExtensionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBitsLeaderboardRouteHandler: RouteHandler<typeof getBitsLeaderboardRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bitsHandler = app
-  .openapi(getBitsLeaderboardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBitsCheermotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBitsCustomPowerUpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBitsExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBitsExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBitsCheermotesRouteHandler: RouteHandler<typeof getBitsCheermotesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBitsCustomPowerUpsRouteHandler: RouteHandler<
+  typeof getBitsCustomPowerUpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBitsExtensionsRouteHandler: RouteHandler<typeof getBitsExtensionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putBitsExtensionsRouteHandler: RouteHandler<typeof putBitsExtensionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

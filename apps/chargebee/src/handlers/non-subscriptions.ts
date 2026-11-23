@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const nonSubscriptionsHandler = app.openapi(
-  postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRouteHandler: RouteHandler<
+  typeof postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-additional-properties.yaml',
   output: './src/3-0-schema-additional-properties/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-schema-additional-properties/types.ts' },
   client: { output: './src/3-0-schema-additional-properties/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-schema-additional-properties/rpc.ts', parseResponse: true },

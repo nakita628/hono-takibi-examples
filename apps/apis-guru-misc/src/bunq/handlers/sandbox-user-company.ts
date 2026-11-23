@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSandboxUserCompanyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSandboxUserCompanyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sandboxUserCompanyHandler = app.openapi(postSandboxUserCompanyRoute, (c) => {
+export const postSandboxUserCompanyRouteHandler: RouteHandler<
+  typeof postSandboxUserCompanyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

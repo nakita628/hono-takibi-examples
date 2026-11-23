@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBankTransfersBankTransferIDAttachmentsAttachmentIDRoute,
   getBankTransfersBankTransferIDAttachmentsFileNameRoute,
   getBankTransfersBankTransferIDAttachmentsRoute,
@@ -14,42 +14,74 @@ import {
   putBankTransfersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBankTransfersRouteHandler: RouteHandler<typeof getBankTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bankTransfersHandler = app
-  .openapi(getBankTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBankTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBankTransfersBankTransferIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransfersBankTransferIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBankTransfersBankTransferIDAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBankTransfersBankTransferIDAttachmentsAttachmentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBankTransfersBankTransferIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransfersBankTransferIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBankTransfersBankTransferIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBankTransfersBankTransferIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBankTransfersBankTransferIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBankTransfersRouteHandler: RouteHandler<typeof putBankTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransfersRouteHandler: RouteHandler<typeof postBankTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBankTransfersBankTransferIDRouteHandler: RouteHandler<
+  typeof getBankTransfersBankTransferIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransfersBankTransferIDRouteHandler: RouteHandler<
+  typeof postBankTransfersBankTransferIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBankTransfersBankTransferIDAttachmentsRouteHandler: RouteHandler<
+  typeof getBankTransfersBankTransferIDAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBankTransfersBankTransferIDAttachmentsAttachmentIDRouteHandler: RouteHandler<
+  typeof getBankTransfersBankTransferIDAttachmentsAttachmentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBankTransfersBankTransferIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof getBankTransfersBankTransferIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransfersBankTransferIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof postBankTransfersBankTransferIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBankTransfersBankTransferIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof putBankTransfersBankTransferIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBankTransfersBankTransferIDHistoryRouteHandler: RouteHandler<
+  typeof getBankTransfersBankTransferIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBankTransfersBankTransferIDHistoryRouteHandler: RouteHandler<
+  typeof putBankTransfersBankTransferIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

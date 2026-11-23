@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pdfblocks.com/1.5.0/openapi.yaml',
   output: './src/pdfblocks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pdfblocks/types.ts' },
   client: { output: './src/pdfblocks/client.ts', baseUrl: '/' },
   rpc: { output: './src/pdfblocks/rpc.ts', parseResponse: true },

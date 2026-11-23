@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/databrew/2017-07-25/openapi.yaml',
   output: './src/databrew/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/databrew/types.ts' },
   client: { output: './src/databrew/client.ts', baseUrl: '/' },
   rpc: { output: './src/databrew/rpc.ts', parseResponse: true },

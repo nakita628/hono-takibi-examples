@@ -472,22 +472,7 @@ const AccessTokenDetailsSchema = z
   })
   .openapi({
     description: 'Access token details that are currently associated with this user',
-    example: {
-      client_id: 'c456b-26230-fa8ed-d19ab-05ce2-bf0aa',
-      customer_id: '123456789',
-      expires_in: 3600,
-      realm: 'customer',
-      scopes: [
-        'collections.edit',
-        'collections.view',
-        'licenses.create',
-        'licenses.view',
-        'purchases.view',
-        'user.view',
-      ],
-      user_id: '123456789',
-      username: 'jdoe',
-    },
+    example: { $ref: '#/components/schemas/AccessTokenDetailsExample' },
     required: [],
   })
   .openapi('AccessTokenDetails')
@@ -750,70 +735,7 @@ const AudioSchema = z
   })
   .openapi({
     description: 'Audio metadata',
-    example: {
-      added_date: '2016-08-16',
-      artists: [{ name: 'Klimenko Music' }],
-      assets: {
-        clean_audio: { file_size: 35188408 },
-        preview_mp3: {
-          file_size: 4400203,
-          url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3',
-        },
-        preview_ogg: {
-          file_size: 4453197,
-          url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg',
-        },
-        waveform: {
-          file_size: 18778,
-          url: 'https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png',
-        },
-      },
-      bpm: 110,
-      contributor: { id: '2847971' },
-      description:
-        'Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.',
-      duration: 183,
-      genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-      id: '442583',
-      instruments: ['Piano', 'Synth bass', 'Synth drums', 'Synthesizer'],
-      is_adult: false,
-      is_instrumental: true,
-      isrc: '',
-      keywords: [
-        'celebratory',
-        'chic',
-        'euphoric',
-        'good times',
-        'hip',
-        'optimistic',
-        'party',
-        'soaring',
-        'upbeat',
-      ],
-      language: 'en',
-      lyrics: '',
-      media_type: 'audio',
-      moods: [
-        'Bright',
-        'Confident',
-        'Fun',
-        'Happy',
-        'Inspiring',
-        'Optimistic',
-        'Playful',
-        'Sophisticated',
-        'Stylish',
-        'Uplifting',
-      ],
-      published_time: '2016-08-16T14:30:03-04:00',
-      recording_version: '',
-      releases: [],
-      similar_artists: [],
-      title: 'Another Tomorrow',
-      updated_time: '2016-08-18T17:59:33-04:00',
-      url: '',
-      vocal_description: '',
-    },
+    example: { $ref: '#/components/schemas/AudioExample' },
     required: ['id', 'media_type', 'contributor'],
   })
   .openapi('Audio')
@@ -867,73 +789,7 @@ const AudioDataListSchema = z
   })
   .openapi({
     description: 'List of tracks',
-    example: {
-      data: [
-        {
-          added_date: '2016-04-12',
-          artists: [{ name: 'Fin Productions' }],
-          assets: {
-            clean_audio: { file_size: 30760372 },
-            preview_mp3: {
-              file_size: 3846606,
-              url: 'https://ak.picdn.net/shutterstock/audio/434750/preview/preview.mp3',
-            },
-            preview_ogg: {
-              file_size: 4402608,
-              url: 'https://ak.picdn.net/shutterstock/audio/434750/preview/preview.ogg',
-            },
-            waveform: {
-              file_size: 19822,
-              url: 'https://ak.picdn.net/shutterstock/audio/434750/waveform/waveform.png',
-            },
-          },
-          bpm: 100,
-          contributor: { id: '2847971' },
-          description:
-            'Pulsing and feel-good, featuring slick electric guitar, synthesizer, bass, electronic drum pads and drums that create a positive, celebratory mood.',
-          duration: 160,
-          genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-          id: '434750',
-          instruments: ['Bass', 'Drums', 'Electric guitar', 'Pads', 'Percussion', 'Synthesizer'],
-          is_adult: false,
-          is_instrumental: true,
-          isrc: '',
-          keywords: [
-            'breezy',
-            'celebration',
-            'festive',
-            'good times',
-            'hopeful',
-            'optimistic',
-            'party',
-            'positive',
-            'reflective',
-          ],
-          language: 'en',
-          lyrics: '',
-          media_type: 'audio',
-          moods: [
-            'Bright',
-            'Confident',
-            'Fun',
-            'Happy',
-            'Inspiring',
-            'Optimistic',
-            'Playful',
-            'Sophisticated',
-            'Stylish',
-            'Uplifting',
-          ],
-          published_time: '2016-04-12T17:45:29-04:00',
-          recording_version: '',
-          releases: [],
-          similar_artists: [],
-          title: 'Fresh Love',
-          updated_time: '2016-08-18T18:03:11-04:00',
-          vocal_description: '',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/AudioDataListExample' },
     required: [],
   })
   .openapi('AudioDataList')
@@ -946,53 +802,7 @@ const AudioRendersListResultsSchema: z.ZodType<AudioRendersListResultsType> = z
   })
   .openapi({
     description: 'Audio render data',
-    example: {
-      audio_renders: [
-        {
-          created_date: '2021-07-13T16:19:30-04:00',
-          files: [],
-          id: '2yZp13IhLqnjfh2KquDTOHUHzTiP',
-          preset: 'MASTER_MP3',
-          progress_percent: 20,
-          status: 'WAITING_COMPOSE',
-          timeline: {},
-          updated_date: '2021-07-13T16:19:30-04:00',
-        },
-        {
-          created_date: '2021-07-12T16:39:59-04:00',
-          files: [
-            {
-              bits_sample: 16,
-              content_type: 'audio/mp3',
-              download_url:
-                'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3',
-              filename: 'My_audio_ai.mp3',
-              frequency_hz: 44100,
-              kbits_second: 192,
-              size_bytes: 481556,
-              tracks: ['master'],
-            },
-            {
-              bits_sample: 0,
-              content_type: 'application/vnd.amper.waveform+json',
-              download_url:
-                'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/1.json',
-              filename: 'render.json',
-              frequency_hz: 42,
-              kbits_second: 0,
-              size_bytes: 4420,
-              tracks: ['master'],
-            },
-          ],
-          id: 'QwAgKqXQAzr622KuXYZ25C9WRH3a',
-          preset: 'MASTER_MP3',
-          progress_percent: 100,
-          status: 'CREATED',
-          timeline: {},
-          updated_date: '2021-07-12T16:46:26-04:00',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/AudioRendersListResultsExample' },
     required: ['audio_renders'],
   })
   .openapi('AudioRendersListResults')
@@ -1011,78 +821,7 @@ const AudioSearchResultsSchema = z
   })
   .openapi({
     description: 'Audio search results',
-    example: {
-      data: [
-        {
-          added_date: '2016-08-16',
-          artists: [{ name: 'Klimenko Music' }],
-          assets: {
-            clean_audio: { file_size: 35188408 },
-            preview_mp3: {
-              file_size: 4400203,
-              url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3',
-            },
-            preview_ogg: {
-              file_size: 4453197,
-              url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg',
-            },
-            waveform: {
-              file_size: 18778,
-              url: 'https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png',
-            },
-          },
-          bpm: 110,
-          contributor: { id: '2847971' },
-          description:
-            'Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.',
-          duration: 183,
-          genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-          id: '442583',
-          instruments: ['Piano', 'Synth bass', 'Synth drums', 'Synthesizer'],
-          is_adult: false,
-          is_instrumental: true,
-          isrc: '',
-          keywords: [
-            'celebratory',
-            'chic',
-            'euphoric',
-            'good times',
-            'hip',
-            'optimistic',
-            'party',
-            'soaring',
-            'upbeat',
-          ],
-          language: 'en',
-          lyrics: '',
-          media_type: 'audio',
-          moods: [
-            'Bright',
-            'Confident',
-            'Fun',
-            'Happy',
-            'Inspiring',
-            'Optimistic',
-            'Playful',
-            'Sophisticated',
-            'Stylish',
-            'Uplifting',
-          ],
-          published_time: '2016-08-16T14:30:03-04:00',
-          recording_version: '',
-          releases: [],
-          similar_artists: [],
-          title: 'Another Tomorrow',
-          updated_time: '2016-08-18T17:59:33-04:00',
-          url: '',
-          vocal_description: '',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/AudioSearchResultsExample' },
     required: ['data', 'total_count', 'search_id'],
   })
   .openapi('AudioSearchResults')
@@ -1104,9 +843,7 @@ const AudioUrlSchema = z
   })
   .openapi({
     description: 'Audio License URL object',
-    example: {
-      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-    },
+    example: { $ref: '#/components/schemas/UrlExample' },
     required: ['url'],
   })
   .openapi('AudioUrl')
@@ -1635,48 +1372,7 @@ const ImageSchema = z
   })
   .openapi({
     description: 'Information about an image',
-    example: {
-      aspect: 1.5,
-      assets: {
-        huge_thumb: {
-          height: 260,
-          url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-          width: 390,
-        },
-        large_thumb: {
-          height: 100,
-          url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-          width: 150,
-        },
-        preview: {
-          height: 300,
-          url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-          width: 450,
-        },
-        preview_1000: {
-          height: 667,
-          url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-          width: 1000,
-        },
-        preview_1500: {
-          height: 1000,
-          url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-          width: 1500,
-        },
-        small_thumb: {
-          height: 67,
-          url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-          width: 100,
-        },
-      },
-      contributor: { id: '250738318' },
-      description: 'cropped image of woman gardening',
-      has_model_release: true,
-      id: '1572478477',
-      image_type: 'photo',
-      media_type: 'image',
-      original_filename: '123.jpg',
-    },
+    example: { $ref: '#/components/schemas/ImageExample' },
     required: ['id', 'media_type', 'contributor'],
   })
   .openapi('Image')
@@ -1732,56 +1428,7 @@ const ImageSearchResultsSchema = z
   })
   .openapi({
     description: 'Image search results',
-    example: {
-      data: [
-        {
-          aspect: 1.5,
-          assets: {
-            huge_thumb: {
-              height: 260,
-              url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-              width: 390,
-            },
-            large_thumb: {
-              height: 100,
-              url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 150,
-            },
-            preview: {
-              height: 300,
-              url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 450,
-            },
-            preview_1000: {
-              height: 667,
-              url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-              width: 1000,
-            },
-            preview_1500: {
-              height: 1000,
-              url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 1500,
-            },
-            small_thumb: {
-              height: 67,
-              url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 100,
-            },
-          },
-          contributor: { id: '250738318' },
-          description: 'cropped image of woman gardening',
-          has_model_release: true,
-          id: '1572478477',
-          image_type: 'photo',
-          media_type: 'image',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-      spellcheck_info: {},
-      total_count: 45,
-    },
+    example: { $ref: '#/components/schemas/ImageSearchResultsExample' },
     required: ['data', 'total_count', 'search_id'],
   })
   .openapi('ImageSearchResults')
@@ -1799,68 +1446,7 @@ const BulkImageSearchResultsSchema = z
   })
   .openapi({
     description: 'List of search results for each given query',
-    example: {
-      results: [
-        {
-          data: [
-            {
-              aspect: 1.5,
-              assets: {
-                huge_thumb: {
-                  height: 260,
-                  url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                  width: 390,
-                },
-                large_thumb: {
-                  height: 100,
-                  url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                  width: 150,
-                },
-                preview: {
-                  height: 300,
-                  url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                  width: 450,
-                },
-                preview_1000: {
-                  height: 667,
-                  url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                  width: 1000,
-                },
-                preview_1500: {
-                  height: 1000,
-                  url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                  width: 1500,
-                },
-                small_thumb: {
-                  height: 67,
-                  url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                  width: 100,
-                },
-              },
-              contributor: { id: '250738318' },
-              description: 'cropped image of woman gardening',
-              has_model_release: true,
-              id: '1572478477',
-              image_type: 'photo',
-              media_type: 'image',
-            },
-          ],
-          page: 1,
-          per_page: 5,
-          search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-          spellcheck_info: {},
-          total_count: 45,
-        },
-        {
-          data: [],
-          page: 1,
-          per_page: 5,
-          search_id: '749090bb-2967-4a20-b22e-c800dc845e11',
-          spellcheck_info: {},
-          total_count: 0,
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/BulkImageSearchResultsExample' },
     required: [],
   })
   .openapi('BulkImageSearchResults')
@@ -1940,31 +1526,7 @@ const CatalogCollectionSchema = z
   })
   .openapi({
     description: 'Catalog collection',
-    example: {
-      cover_asset: {
-        asset: {
-          id: '1690105108',
-          name: 'Young couple playing tennis at the court',
-          type: 'image',
-        },
-        created_time: '2021-06-10T13:26:09-04:00',
-        id: '123',
-      },
-      created_time: '2021-05-20T16:15:22-04:00',
-      id: '126351028',
-      name: 'My collection',
-      role_assignments: {
-        collection_id: '126351028',
-        roles: {
-          editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-          owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-          viewers: [],
-        },
-      },
-      total_item_count: 2,
-      updated_time: '2021-06-10T13:26:09-04:00',
-      visibility: 'public',
-    },
+    example: { $ref: '#/components/schemas/CatalogCollectionExample' },
     required: [
       'id',
       'name',
@@ -1986,38 +1548,7 @@ const CatalogCollectionDataListSchema = z
   })
   .openapi({
     description: 'List of catalog collections',
-    example: {
-      data: [
-        {
-          cover_asset: {
-            asset: {
-              id: '1690105108',
-              name: 'Young couple playing tennis at the court',
-              type: 'image',
-            },
-            created_time: '2021-06-10T13:26:09-04:00',
-            id: '123',
-          },
-          created_time: '2021-05-20T16:15:22-04:00',
-          id: '126351028',
-          name: 'My collection',
-          role_assignments: {
-            collection_id: '126351028',
-            roles: {
-              editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-              owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-              viewers: [],
-            },
-          },
-          total_item_count: 2,
-          updated_time: '2021-06-10T13:26:09-04:00',
-          visibility: 'public',
-        },
-      ],
-      page: 1,
-      per_page: 20,
-      total_count: 1,
-    },
+    example: { $ref: '#/components/schemas/CatalogCollectionDataListExample' },
     required: ['page', 'per_page', 'total_count', 'data'],
   })
   .openapi('CatalogCollectionDataList')
@@ -2033,23 +1564,7 @@ const CatalogCollectionItemDataListSchema = z
   })
   .openapi({
     description: 'List of catalog collection items',
-    example: {
-      data: [
-        {
-          asset: {
-            id: '1690105108',
-            name: 'Young couple playing tennis at the court',
-            type: 'image',
-          },
-          collection_ids: ['126351028'],
-          created_time: '2021-06-10T13:26:09-04:00',
-          id: '123',
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 82,
-    },
+    example: { $ref: '#/components/schemas/CatalogCollectionItemDataListExample' },
     required: ['page', 'per_page', 'total_count', 'data'],
   })
   .openapi('CatalogCollectionItemDataList')
@@ -2074,15 +1589,7 @@ const CategoryDataListSchema = z
   })
   .openapi({
     description: 'List of categories that images can belong to',
-    example: {
-      data: [
-        { id: '1', name: 'Animals/Wildlife' },
-        { id: '11', name: 'The Arts' },
-      ],
-      page: 1,
-      per_page: 2,
-      total_count: 13,
-    },
+    example: { $ref: '#/components/schemas/CategoryDataListExample' },
     required: [],
   })
   .openapi('CategoryDataList')
@@ -2140,13 +1647,7 @@ const CollectionSchema = z
   })
   .openapi({
     description: 'Metadata about a collection of assets',
-    example: {
-      cover_item: { id: '297886754' },
-      id: '293542904',
-      items_updated_time: '2021-05-20T16:15:22-04:00',
-      name: 'My collection',
-      total_item_count: 85,
-    },
+    example: { $ref: '#/components/schemas/CollectionExample' },
     required: ['id', 'name', 'total_item_count'],
   })
   .openapi('Collection')
@@ -2155,7 +1656,7 @@ const CollectionCreateRequestSchema = z
   .object({ name: z.string().openapi({ description: 'The name of the collection' }) })
   .openapi({
     description: 'Collection creation request',
-    example: { name: 'Test Collection 19cf' },
+    example: { $ref: '#/components/schemas/CollectionCreateRequestExample' },
     required: ['name'],
   })
   .openapi('CollectionCreateRequest')
@@ -2164,7 +1665,7 @@ const CollectionCreateResponseSchema = z
   .object({ id: z.string().openapi({ description: 'ID of the new collection' }) })
   .openapi({
     description: 'Collection creation response',
-    example: { id: '48433105' },
+    example: { $ref: '#/components/schemas/CollectionCreateResponseExample' },
     required: ['id'],
   })
   .openapi('CollectionCreateResponse')
@@ -2189,20 +1690,7 @@ const CollectionDataListSchema = z
   })
   .openapi({
     description: 'List of collections',
-    example: {
-      data: [
-        {
-          cover_item: { id: '297886754' },
-          id: '293542904',
-          items_updated_time: '2021-05-20T16:15:22-04:00',
-          name: 'My collection',
-          total_item_count: 85,
-        },
-      ],
-      page: 1,
-      per_page: 100,
-      total_count: 1,
-    },
+    example: { $ref: '#/components/schemas/CollectionDataListExample' },
     required: [],
   })
   .openapi('CollectionDataList')
@@ -2230,15 +1718,7 @@ const CollectionItemDataListSchema = z
   })
   .openapi({
     description: 'List of items in a collection',
-    example: {
-      data: [
-        { added_time: '2021-07-08T12:33:37.000Z', id: '1690105108', media_type: 'image' },
-        { added_time: '2021-07-08T12:31:43.000Z', id: '1468703072', media_type: 'image' },
-      ],
-      page: 1,
-      per_page: 2,
-      total_count: 82,
-    },
+    example: { $ref: '#/components/schemas/CollectionItemDataListExample' },
     required: [],
   })
   .openapi('CollectionItemDataList')
@@ -2258,7 +1738,7 @@ const CollectionUpdateRequestSchema = z
   .object({ name: z.string().openapi({ description: 'The new name of the collection' }) })
   .openapi({
     description: 'Collection update request',
-    example: { name: 'My collection with a new name' },
+    example: { $ref: '#/components/schemas/CollectionUpdateRequestExample' },
     required: ['name'],
   })
   .openapi('CollectionUpdateRequest')
@@ -2267,7 +1747,7 @@ const ComputerVisionImageCreateResponseSchema = z
   .object({ upload_id: z.string() })
   .openapi({
     description: 'Asset upload information',
-    example: { upload_id: 'Udb14e1c3540bdbf82b4b3fe12d3a44f2' },
+    example: { $ref: '#/components/schemas/ComputerVisionImageCreateResponseExample' },
     required: ['upload_id'],
   })
   .openapi('ComputerVisionImageCreateResponse')
@@ -2355,26 +1835,7 @@ const ContributorProfileSchema = z
   })
   .openapi({
     description: 'Contributor profile data',
-    example: {
-      about: "John Doe's photographs",
-      contributor_type: ['photographer'],
-      display_name: 'John Doe',
-      equipment: ['Nikon', 'Fuji'],
-      id: '12345678',
-      location: 'US',
-      portfolio_url: 'https://www.shutterstock.com/g/jdoe',
-      social_media: {
-        facebook: 'http://example.com/jdoe',
-        google_plus: 'http://example.com/jdoe',
-        linkedin: 'http://example.com/jdoe',
-        pinterest: 'http://example.com/jdoe',
-        tumblr: 'http://example.com/jdoe',
-        twitter: 'http://example.com/jdoe',
-      },
-      styles: ['landscape', 'nature', 'footage_travel'],
-      subjects: ['animals', 'landmarks', 'nature', 'objects', 'recreation'],
-      website: 'http://example.com/profiles/jdoe',
-    },
+    example: { $ref: '#/components/schemas/ContributorProfileExample' },
     required: ['id'],
   })
   .openapi('ContributorProfile')
@@ -2399,33 +1860,7 @@ const ContributorProfileDataListSchema = z
   })
   .openapi({
     description: 'List of contributor profiles',
-    example: {
-      data: [
-        {
-          about: "John Doe's photographs",
-          contributor_type: ['photographer'],
-          display_name: 'John Doe',
-          equipment: ['Nikon', 'Fuji'],
-          id: '12345678',
-          location: 'US',
-          portfolio_url: 'https://www.shutterstock.com/g/jdoe',
-          social_media: {
-            facebook: 'http://example.com/jdoe',
-            google_plus: 'http://example.com/jdoe',
-            linkedin: 'http://example.com/jdoe',
-            pinterest: 'http://example.com/jdoe',
-            tumblr: 'http://example.com/jdoe',
-            twitter: 'http://example.com/jdoe',
-          },
-          styles: ['landscape', 'nature', 'footage_travel'],
-          subjects: ['animals', 'landmarks', 'nature', 'objects', 'recreation'],
-          website: 'http://example.com/profiles/jdoe',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 15,
-    },
+    example: { $ref: '#/components/schemas/ContributorProfileDataListExample' },
     required: [],
   })
   .openapi('ContributorProfileDataList')
@@ -2450,39 +1885,7 @@ const CreateAudioRendersRequestSchema: z.ZodType<CreateAudioRendersRequestType> 
   })
   .openapi({
     description: 'Render request data',
-    example: {
-      audio_renders: [
-        {
-          filename: 'My Project.mp3',
-          preset: 'MASTER_MP3',
-          timeline: {
-            spans: [
-              {
-                id: 111,
-                instrument_groups: [
-                  { instrument_group: 'roomy_kit', statuses: [{ beat: 12, status: 'active' }] },
-                ],
-                regions: [
-                  {
-                    beat: 12,
-                    descriptor: 'cinematic_minimal_tense',
-                    end_type: { beat: 24, event: 'ending', type: 'ringout' },
-                    id: 222,
-                    key: { tonic_note: 'c', tonic_quality: 'major' },
-                    region: 'music',
-                  },
-                ],
-                span_type: 'metered',
-                tempo: 76,
-                tempo_changes: [{ tempo: 86, time: 5 }],
-                time: 5,
-              },
-              { span_type: 'unmetered', time: 20 },
-            ],
-          },
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/CreateAudioRendersRequestExample' },
     required: ['audio_renders'],
   })
   .openapi('CreateAudioRendersRequest')
@@ -2503,11 +1906,7 @@ const CreateCatalogCollectionSchema = z
     visibility: z.enum(['private', 'public']).default('private').exactOptional(),
   })
   .openapi({
-    example: {
-      items: [{ asset: { id: '1690105108', type: 'image' } }],
-      name: 'New Collection',
-      visibility: 'public',
-    },
+    example: { $ref: '#/components/schemas/CreateCatalogCollectionExample' },
     required: ['name'],
   })
   .openapi('CreateCatalogCollection')
@@ -2515,7 +1914,7 @@ const CreateCatalogCollectionSchema = z
 const CreateCatalogCollectionItemsSchema = z
   .object({ items: z.array(CreateCatalogCollectionItemSchema).min(1).max(50) })
   .openapi({
-    example: { items: [{ asset: { id: '1690105108', type: 'image' } }] },
+    example: { $ref: '#/components/schemas/CreateCatalogCollectionItemsExample' },
     required: ['items'],
   })
   .openapi('CreateCatalogCollectionItems')
@@ -2758,139 +2157,7 @@ const DescriptorsListResultSchema = z
   })
   .openapi({
     description: 'List Descriptors results',
-    example: {
-      data: [
-        {
-          average_render_speed: 8.242664029014177,
-          bands: [
-            { id: 'cinematic_minimal_tense_band_1', name: 'Cinematic Minimal Tense Band 1' },
-            { id: 'cinematic_minimal_tense_band_2', name: 'Cinematic Minimal Tense Band 2' },
-          ],
-          id: 'cinematic_minimal_tense',
-          instruments: [
-            { id: 'blue_synth_pad', name: 'Warm Pad - Lush' },
-            { id: 'direct_round_1_synth_bass', name: 'Direct Round 1 Synth Bass' },
-            { id: 'direct_crystal_breath_mid_pad', name: 'Direct Crystal Breath Mid Pad' },
-          ],
-          max_tempo: 76,
-          min_tempo: 58,
-          name: 'Cinematic Minimal Tense',
-          previews: [
-            {
-              content_type: 'audio/mp3',
-              url: 'https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_1_v1.mp3',
-            },
-            {
-              content_type: 'audio/mp3',
-              url: 'https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_2_v1.mp3',
-            },
-          ],
-          tags: [
-            'Tense',
-            'Cinematic',
-            'Negative',
-            'Simple Meter',
-            '4/4',
-            'Natural Minor',
-            'Dorian',
-            'Minimal',
-            'Adagio',
-            'Single Region',
-            'Main',
-            'Entertainment',
-            'Politics',
-            'Keys',
-            'Mid Pads',
-            'Fast',
-            'Slow',
-            'Slow',
-            'Voice',
-            'Medium Bright',
-            'Non Noisy',
-            'Medium Thick',
-            'Angelic',
-            'Direct',
-            'Percussion',
-            'Perc FX',
-            'Misc',
-            'Acoustic Pianos',
-            'Grand',
-            'Nice',
-            'Roomy',
-            'Pop',
-            'Upright',
-            'Clean',
-            'Classic',
-            'Keyboards',
-            'Digital Keyboard',
-            'Strings',
-            'Synth Basses',
-            'Fast',
-            'Dark',
-            'Thick',
-            'Sub',
-            'Synth Mallets',
-            'Dull',
-            'Mid Synth Beds',
-            'Slow',
-            'None',
-            'Medium Noisy',
-            'Harsh',
-            'Fast',
-            'Airy',
-            'Long Textures',
-            'Ambience',
-            'Synth Texture',
-            'Ethereal',
-            'Set Kicks',
-            'Processed',
-            'Hubcap Mallet',
-            'Wide',
-            'Tickie',
-            'Airy',
-            'Chamber',
-            'Thin',
-            'Organ',
-            'Cello Ensemble',
-            'Sweet',
-            'Big',
-            'Di',
-            'Raw',
-            'Bright',
-            'Tight',
-            'Chorus',
-            'Buzzy',
-            'Huge',
-            'Warm',
-            'Jazz',
-            'Brass',
-            'String',
-            'Hollow',
-            'Woodwind',
-            'Breathy',
-            'Crystal',
-            'Rhodes',
-            'Synth Piano',
-            'Noisy',
-            'Woody',
-            'Metallic',
-            'Reverse Piano',
-            'Full',
-            'Foley',
-            'Piano',
-            'Clean',
-            'Delayed',
-            'Reverb',
-            'Low Passed',
-            'Large',
-            'Medium',
-            'Small',
-          ],
-        },
-      ],
-      page: 1,
-      per_page: 1,
-    },
+    example: { $ref: '#/components/schemas/DescriptorsListResultExample' },
     required: [],
   })
   .openapi('DescriptorsListResult')
@@ -3013,28 +2280,7 @@ const DownloadHistoryDataListSchema = z
   })
   .openapi({
     description: 'List of download events',
-    example: {
-      data: [
-        {
-          download_time: '2021-07-15T15:46:34.000Z',
-          id: 'e1eba3833793e77188d22caae8bac9f2cd',
-          image: { format: { size: 'original' }, id: '9763363ao' },
-          is_downloadable: false,
-          license: 'premier_editorial_all_digital',
-          metadata: {
-            client: 'Company A',
-            job: 'Important project',
-            other: 'Important media',
-            purchase_order: '123456',
-          },
-          subscription_id: 's12345678',
-          user: { username: 'editorial_test_account_002' },
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 2890,
-    },
+    example: { $ref: '#/components/schemas/DownloadHistoryDataListExample' },
     required: [],
   })
   .openapi('DownloadHistoryDataList')
@@ -3098,7 +2344,7 @@ const EditorialCategoryResultsSchema = z
   })
   .openapi({
     description: 'List of editorial categories',
-    example: { data: [{ name: 'Animal' }, { name: 'Awards' }, { name: 'Art' }] },
+    example: { $ref: '#/components/schemas/EditorialCategoryResultsExample' },
     required: [],
   })
   .openapi('EditorialCategoryResults')
@@ -3122,58 +2368,7 @@ const EditorialContentSchema = z
   })
   .openapi({
     description: 'Metadata about editorial content',
-    example: {
-      aspect: 1.621,
-      assets: {
-        medium_jpg: { display_name: 'Med', height: 617, is_licensable: true, width: 1000 },
-        original: { display_name: 'Original', height: 3693, is_licensable: true, width: 5985 },
-        small_jpg: { display_name: 'Small', height: 309, is_licensable: true, width: 500 },
-        thumb_170: {
-          height: 105,
-          url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-          width: 170,
-        },
-        thumb_220: {
-          height: 136,
-          url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-          width: 220,
-        },
-        watermark_1500: {
-          height: 926,
-          url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-          width: 1500,
-        },
-        watermark_450: {
-          height: 278,
-          url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-          width: 450,
-        },
-      },
-      byline: 'Jon Super/AP/Shutterstock',
-      caption: '',
-      categories: [{ name: 'Sport' }],
-      date_taken: '2021-05-11',
-      description:
-        "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      id: '10687730b',
-      keywords: [
-        'england',
-        'europe',
-        'leicester city fc',
-        'manchester',
-        'manchester united fc',
-        "men's soccer",
-        "men's sports",
-        'premier league',
-        'professional soccer',
-        'soccer',
-        'sports',
-        'united kingdom',
-        'western europe',
-        'wsoc',
-      ],
-      title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-    },
+    example: { $ref: '#/components/schemas/EditorialContentExample' },
     required: ['id'],
   })
   .openapi('EditorialContent')
@@ -3195,65 +2390,7 @@ const EditorialContentDataListSchema = z
   })
   .openapi({
     description: 'List of editorial items',
-    example: {
-      data: [
-        {
-          aspect: 1.621,
-          assets: {
-            medium_jpg: { display_name: 'Med', height: 617, is_licensable: true, width: 1000 },
-            original: { display_name: 'Original', height: 3693, is_licensable: true, width: 5985 },
-            small_jpg: { display_name: 'Small', height: 309, is_licensable: true, width: 500 },
-            thumb_170: {
-              height: 105,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-              width: 170,
-            },
-            thumb_220: {
-              height: 136,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-              width: 220,
-            },
-            watermark_1500: {
-              height: 926,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-              width: 1500,
-            },
-            watermark_450: {
-              height: 278,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-              width: 450,
-            },
-          },
-          byline: 'Jon Super/AP/Shutterstock',
-          caption: '',
-          categories: [{ name: 'Sport' }],
-          date_taken: '2021-05-11',
-          description:
-            "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-          id: '10687730b',
-          keywords: [
-            'england',
-            'europe',
-            'leicester city fc',
-            'manchester',
-            'manchester united fc',
-            "men's soccer",
-            "men's sports",
-            'premier league',
-            'professional soccer',
-            'soccer',
-            'sports',
-            'united kingdom',
-            'western europe',
-            'wsoc',
-          ],
-          title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 16,
-    },
+    example: { $ref: '#/components/schemas/EditorialContentDataListExample' },
     required: [],
   })
   .openapi('EditorialContentDataList')
@@ -3281,9 +2418,7 @@ const EditorialImageCategoryResultsSchema = z
   .object({ data: z.array(EditorialCategorySchema).exactOptional() })
   .openapi({
     description: 'List of editorial categories',
-    example: {
-      data: [{ name: 'Animal' }, { name: 'Awards' }, { name: 'Art' }, { name: 'Film Stills' }],
-    },
+    example: { $ref: '#/components/schemas/EditorialImageCategoryResultsExample' },
     required: [],
   })
   .openapi('EditorialImageCategoryResults')
@@ -3305,65 +2440,7 @@ const EditorialImageContentDataListSchema = z
   })
   .openapi({
     description: 'List of editorial items',
-    example: {
-      data: [
-        {
-          aspect: 1.621,
-          assets: {
-            medium_jpg: { display_name: 'Med', height: 617, is_licensable: true, width: 1000 },
-            original: { display_name: 'Original', height: 3693, is_licensable: true, width: 5985 },
-            small_jpg: { display_name: 'Small', height: 309, is_licensable: true, width: 500 },
-            thumb_170: {
-              height: 105,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-              width: 170,
-            },
-            thumb_220: {
-              height: 136,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-              width: 220,
-            },
-            watermark_1500: {
-              height: 926,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-              width: 1500,
-            },
-            watermark_450: {
-              height: 278,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-              width: 450,
-            },
-          },
-          byline: 'Jon Super/AP/Shutterstock',
-          caption: '',
-          categories: [{ name: 'Sport' }],
-          date_taken: '2021-05-11',
-          description:
-            "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-          id: '10687730b',
-          keywords: [
-            'england',
-            'europe',
-            'leicester city fc',
-            'manchester',
-            'manchester united fc',
-            "men's soccer",
-            "men's sports",
-            'premier league',
-            'professional soccer',
-            'soccer',
-            'sports',
-            'united kingdom',
-            'western europe',
-            'wsoc',
-          ],
-          title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 23,
-    },
+    example: { $ref: '#/components/schemas/EditorialImageContentDataListExample' },
     required: [],
   })
   .openapi('EditorialImageContentDataList')
@@ -3381,18 +2458,7 @@ const EditorialImageLivefeedSchema = z
   })
   .openapi({
     description: 'Metadata about editorial livefeed',
-    example: {
-      cover_item: {
-        height: 117,
-        id: '9763363q',
-        url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-        width: 170,
-      },
-      created_time: '2018-07-17T12:42:03+00:00',
-      id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-      name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-      total_item_count: 38,
-    },
+    example: { $ref: '#/components/schemas/EditorialImageLivefeedExample' },
     required: ['id', 'name', 'total_item_count'],
   })
   .openapi('EditorialImageLivefeed')
@@ -3410,18 +2476,7 @@ const EditorialLivefeedSchema = z
   })
   .openapi({
     description: 'Metadata about editorial livefeed',
-    example: {
-      cover_item: {
-        height: 117,
-        id: '9763363q',
-        url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-        width: 170,
-      },
-      created_time: '2018-07-17T12:42:03+00:00',
-      id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-      name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-      total_item_count: 38,
-    },
+    example: { $ref: '#/components/schemas/EditorialLivefeedExample' },
     required: ['id', 'name', 'total_item_count'],
   })
   .openapi('EditorialLivefeed')
@@ -3436,25 +2491,7 @@ const EditorialImageLivefeedListSchema = z
   })
   .openapi({
     description: 'List of editorial livefeeds',
-    example: {
-      data: [
-        {
-          cover_item: {
-            height: 117,
-            id: '9763363q',
-            url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-            width: 170,
-          },
-          created_time: '2018-07-17T12:42:03+00:00',
-          id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-          name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-          total_item_count: 38,
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 5300,
-    },
+    example: { $ref: '#/components/schemas/EditorialImageLivefeedListExample' },
     required: ['data', 'total_count'],
   })
   .openapi('EditorialImageLivefeedList')
@@ -3469,25 +2506,7 @@ const EditorialLivefeedListSchema = z
   })
   .openapi({
     description: 'List of editorial livefeeds',
-    example: {
-      data: [
-        {
-          cover_item: {
-            height: 117,
-            id: '9763363q',
-            url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-            width: 170,
-          },
-          created_time: '2018-07-17T12:42:03+00:00',
-          id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-          name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-          total_item_count: 38,
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 56,
-    },
+    example: { $ref: '#/components/schemas/EditorialLivefeedListExample' },
     required: ['data', 'total_count'],
   })
   .openapi('EditorialLivefeedList')
@@ -3514,67 +2533,7 @@ const EditorialSearchResultsSchema = z
   })
   .openapi({
     description: 'Editorial search results',
-    example: {
-      data: [
-        {
-          aspect: 1.621,
-          assets: {
-            medium_jpg: { display_name: 'Med', height: 617, is_licensable: true, width: 1000 },
-            original: { display_name: 'Original', height: 3693, is_licensable: true, width: 5985 },
-            small_jpg: { display_name: 'Small', height: 309, is_licensable: true, width: 500 },
-            thumb_170: {
-              height: 105,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-              width: 170,
-            },
-            thumb_220: {
-              height: 136,
-              url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-              width: 220,
-            },
-            watermark_1500: {
-              height: 926,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-              width: 1500,
-            },
-            watermark_450: {
-              height: 278,
-              url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-              width: 450,
-            },
-          },
-          byline: 'Jon Super/AP/Shutterstock',
-          caption: '',
-          categories: [{ name: 'Sport' }],
-          date_taken: '2021-05-11',
-          description:
-            "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-          id: '10687730b',
-          keywords: [
-            'england',
-            'europe',
-            'leicester city fc',
-            'manchester',
-            'manchester united fc',
-            "men's soccer",
-            "men's sports",
-            'premier league',
-            'professional soccer',
-            'soccer',
-            'sports',
-            'united kingdom',
-            'western europe',
-            'wsoc',
-          ],
-          title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-        },
-      ],
-      next: 'eyJ2IjoyLCJzIjoxLCJwIjpbMF19',
-      per_page: 1,
-      prev: '',
-      search_id: 'BaMzOAkpHIvfnuWVRFs1ag',
-      total_count: 46845,
-    },
+    example: { $ref: '#/components/schemas/EditorialSearchResultsExample' },
     required: ['data', 'total_count'],
   })
   .openapi('EditorialSearchResults')
@@ -3674,55 +2633,7 @@ const EditorialUpdatedResultsSchema = z
   })
   .openapi({
     description: 'Editorial updated results',
-    example: {
-      data: [
-        {
-          aspect: 1.481,
-          assets: {
-            medium_jpg: { display_name: 'Med', height: 675, is_licensable: true, width: 1000 },
-            original: { display_name: 'Original', height: 3263, is_licensable: true, width: 4831 },
-            small_jpg: { display_name: 'Small', height: 337, is_licensable: true, width: 500 },
-            thumb_170: {
-              height: 115,
-              url: 'https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg',
-              width: 170,
-            },
-            thumb_220: {
-              height: 149,
-              url: 'https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg',
-              width: 220,
-            },
-            watermark_1500: {
-              height: 1500,
-              url: 'https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg',
-              width: 1040,
-            },
-            watermark_450: {
-              height: 304,
-              url: 'https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg',
-              width: 450,
-            },
-          },
-          byline: 'ALEX HOFFORD/EPA-EFE/Shutterstock',
-          caption: '',
-          categories: [],
-          commercial_status: { status: 'available' },
-          date_taken: '2018-08-24',
-          description:
-            'Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.',
-          id: '9804979n',
-          keywords: [],
-          rights: { countries: 'CAN,+DEU,+GBR,+USA,-*' },
-          supplier_code: 'EPA',
-          title: 'Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018',
-          updated_time: '2019-07-15T20:04:44-04:00',
-          updates: ['addition'],
-        },
-      ],
-      next: 'eyJ2IjoxLCJzIjoxfQ==',
-      per_page: 1,
-      prev: '',
-    },
+    example: { $ref: '#/components/schemas/EditorialUpdatedResultsExample' },
     required: ['data'],
   })
   .openapi('EditorialUpdatedResults')
@@ -3812,9 +2723,7 @@ const EditorialVideoCategoryResultsSchema = z
   .object({ data: z.array(EditorialCategorySchema).exactOptional() })
   .openapi({
     description: 'List of editorial video categories',
-    example: {
-      data: [{ name: 'Animal' }, { name: 'Awards' }, { name: 'Art' }, { name: 'Film Stills' }],
-    },
+    example: { $ref: '#/components/schemas/EditorialVideoCategoryResultsExample' },
     required: [],
   })
   .openapi('EditorialVideoCategoryResults')
@@ -3837,70 +2746,7 @@ const EditorialVideoContentSchema = z
   })
   .openapi({
     description: 'Metadata about editorial content',
-    example: {
-      aspect: 1,
-      assets: {
-        original: {
-          display_name: 'HD',
-          file_size: 82233387,
-          format: 'avc1',
-          fps: 30,
-          height: 1080,
-          is_licensable: true,
-          width: 1080,
-        },
-        preview_mp4: {
-          url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4',
-        },
-        preview_webm: {
-          url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm',
-        },
-        thumb_jpg: {
-          url: 'https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg',
-        },
-      },
-      byline: 'ViralHog/Shutterstock',
-      caption: '',
-      categories: [],
-      date_taken: '2020-11-13',
-      description:
-        'Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski\'s, and boats. He has brought joy to many people during the pandemic including those with cancer."',
-      id: '10679854a',
-      keywords: [
-        '2020',
-        'adorable',
-        'birds',
-        'bizarre',
-        'canadian goose',
-        'cute',
-        'domesticated animals',
-        'entertainment',
-        'feel good',
-        'flew',
-        'flies',
-        'fly',
-        'flying',
-        'fun',
-        'goose',
-        'jet skis',
-        'nature',
-        'odd',
-        'pets',
-        'played',
-        'playing',
-        'plays',
-        'prior lake',
-        'sports',
-        'strange',
-        'sweet',
-        'usa',
-        'viralhog',
-        'virals',
-        'water sports',
-        'weird',
-      ],
-      title: 'Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020',
-    },
+    example: { $ref: '#/components/schemas/EditorialVideoContentExample' },
     required: ['id'],
   })
   .openapi('EditorialVideoContent')
@@ -3927,80 +2773,7 @@ const EditorialVideoSearchResultsSchema = z
   })
   .openapi({
     description: 'Editorial search results',
-    example: {
-      data: [
-        {
-          aspect: 1,
-          assets: {
-            original: {
-              display_name: 'HD',
-              file_size: 82233387,
-              format: 'avc1',
-              fps: 30,
-              height: 1080,
-              is_licensable: true,
-              width: 1080,
-            },
-            preview_mp4: {
-              url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4',
-            },
-            preview_webm: {
-              url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm',
-            },
-            thumb_jpg: {
-              url: 'https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg',
-            },
-          },
-          byline: 'ViralHog/Shutterstock',
-          caption: '',
-          categories: [],
-          date_taken: '2020-11-13',
-          description:
-            'Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski\'s, and boats. He has brought joy to many people during the pandemic including those with cancer."',
-          id: '10679854a',
-          keywords: [
-            '2020',
-            'adorable',
-            'birds',
-            'bizarre',
-            'canadian goose',
-            'cute',
-            'domesticated animals',
-            'entertainment',
-            'feel good',
-            'flew',
-            'flies',
-            'fly',
-            'flying',
-            'fun',
-            'goose',
-            'jet skis',
-            'nature',
-            'odd',
-            'pets',
-            'played',
-            'playing',
-            'plays',
-            'prior lake',
-            'sports',
-            'strange',
-            'sweet',
-            'usa',
-            'viralhog',
-            'virals',
-            'water sports',
-            'weird',
-          ],
-          title:
-            'Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020',
-        },
-      ],
-      next: 'eyJ2IjoyLCJzIjoyMCwicCI6WzBdfQ==',
-      per_page: 1,
-      prev: '',
-      search_id: 'zhmz9zLmpQehdTPvg8cacQ',
-      total_count: 331,
-    },
+    example: { $ref: '#/components/schemas/EditorialVideoSearchResultsExample' },
     required: ['data', 'total_count'],
   })
   .openapi('EditorialVideoSearchResults')
@@ -4045,17 +2818,7 @@ const FeaturedCollectionSchema = z
   })
   .openapi({
     description: 'Metadata about a featured collection',
-    example: {
-      cover_item: {
-        url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-      },
-      created_time: '2021-07-07T13:10:24.000Z',
-      id: '19853',
-      items_updated_time: '2021-07-08T12:33:37.000Z',
-      name: 'Exercise & Fitness',
-      total_item_count: 82,
-      updated_time: '2021-07-07T13:10:24.000Z',
-    },
+    example: { $ref: '#/components/schemas/FeaturedCollectionExample' },
     required: ['id', 'name', 'total_item_count'],
   })
   .openapi('FeaturedCollection')
@@ -4083,24 +2846,7 @@ const FeaturedCollectionDataListSchema = z
   })
   .openapi({
     description: 'List of featured collections',
-    example: {
-      data: [
-        {
-          cover_item: {
-            url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-          },
-          created_time: '2021-07-07T13:10:24.000Z',
-          id: '19853',
-          items_updated_time: '2021-07-08T12:33:37.000Z',
-          name: 'Exercise & Fitness',
-          total_item_count: 82,
-          updated_time: '2021-07-07T13:10:24.000Z',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/FeaturedCollectionDataListExample' },
     required: [],
   })
   .openapi('FeaturedCollectionDataList')
@@ -4109,9 +2855,7 @@ const GenreListSchema = z
   .strictObject({ data: z.array(z.string()).openapi({ description: 'List of genres' }) })
   .openapi({
     description: 'List of audio genres',
-    example: {
-      data: ['Rock', 'Pop > Singer-Songwriter', 'Pop > Synth Pop', 'Production / Film Scores'],
-    },
+    example: { $ref: '#/components/schemas/GenreListExample' },
     required: ['data'],
   })
   .openapi('GenreList')
@@ -4634,10 +3378,7 @@ const ImageCreateRequestSchema = z
   })
   .openapi({
     description: 'Request to upload an image',
-    example: {
-      base64_image:
-        'R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu',
-    },
+    example: { $ref: '#/components/schemas/ImageCreateRequestExample' },
     required: ['base64_image'],
   })
   .openapi('ImageCreateRequest')
@@ -4646,7 +3387,7 @@ const ImageCreateResponseSchema = z
   .object({ id: z.string() })
   .openapi({
     description: 'Image upload information',
-    example: { id: 'Udb14e1c3540bdbf82b4b3fe12d3a44f2' },
+    example: { $ref: '#/components/schemas/ImageCreateResponseExample' },
     required: ['id'],
   })
   .openapi('ImageCreateResponse')
@@ -4671,54 +3412,7 @@ const ImageDataListSchema = z
   })
   .openapi({
     description: 'List of images',
-    example: {
-      data: [
-        {
-          aspect: 1.5,
-          assets: {
-            huge_thumb: {
-              height: 260,
-              url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-              width: 390,
-            },
-            large_thumb: {
-              height: 100,
-              url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 150,
-            },
-            preview: {
-              height: 300,
-              url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 450,
-            },
-            preview_1000: {
-              height: 667,
-              url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-              width: 1000,
-            },
-            preview_1500: {
-              height: 1000,
-              url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 1500,
-            },
-            small_thumb: {
-              height: 67,
-              url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-              width: 100,
-            },
-          },
-          contributor: { id: '250738318' },
-          description: 'cropped image of woman gardening',
-          has_model_release: true,
-          id: '1572478477',
-          image_type: 'photo',
-          media_type: 'image',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/ImageDataListExample' },
     required: [],
   })
   .openapi('ImageDataList')
@@ -4766,7 +3460,7 @@ const InstrumentListSchema = z
   .strictObject({ data: z.array(z.string()).openapi({ description: 'List of instruments' }) })
   .openapi({
     description: 'List of instruments',
-    example: { data: ['Orchestra', 'Organ', 'Oud', 'Pads', 'Electric Guitar'] },
+    example: { $ref: '#/components/schemas/InstrumentListExample' },
     required: ['data'],
   })
   .openapi('InstrumentList')
@@ -4779,35 +3473,7 @@ const InstrumentsListResultSchema = z
   })
   .openapi({
     description: 'Image search results',
-    example: {
-      data: [
-        {
-          id: 'bright_roomy_kit',
-          name: 'Bright Roomy Kit',
-          previews: [
-            {
-              content_type: 'audio/mp3',
-              url: 'https://public-cdn.ampermusic.com/instruments/previews/bright_roomy_kit_v1.mp3',
-            },
-          ],
-          tags: [
-            'Percussion',
-            'Aux Percs',
-            'Set Cymbals',
-            'Crash',
-            'Open',
-            'Ride',
-            'Set Hi-Hat',
-            'Set Kicks',
-            'Stick Snare',
-            'Quad Toms',
-            'Roto Toms',
-          ],
-        },
-      ],
-      page: 1,
-      per_page: 5,
-    },
+    example: { $ref: '#/components/schemas/InstrumentsListResultExample' },
     required: [],
   })
   .openapi('InstrumentsListResult')
@@ -4826,21 +3492,7 @@ const KeywordDataListSchema = z
   })
   .openapi({
     description: 'List of keywords',
-    example: {
-      data: [
-        'nature',
-        'wildlife',
-        'animal',
-        'cute',
-        'bamboo',
-        'panda',
-        'china',
-        'wild',
-        'endangered',
-        'black',
-        'bear',
-      ],
-    },
+    example: { $ref: '#/components/schemas/KeywordDataListExample' },
     required: [],
   })
   .openapi('KeywordDataList')
@@ -4880,11 +3532,7 @@ const LicenseAudioRequestSchema = z
   })
   .openapi({
     description: 'Audio license request data',
-    example: {
-      audio: [
-        { audio_id: '591623', license: 'audio_platform', metadata: { customer_id: '12345' } },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseAudioRequestExample' },
     required: ['audio'],
   })
   .openapi('LicenseAudioRequest')
@@ -4935,16 +3583,7 @@ const LicenseAudioResultDataListSchema = z
   })
   .openapi({
     description: 'List of audio license results',
-    example: {
-      data: [
-        {
-          allotment_charge: 1,
-          audio_id: '123456789',
-          download: { url: 'http://download2.dev.shutterstock.com/gatekeeper/abc/original.wav' },
-          license_id: 'abcdef123456789ghijklmn',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseAudioResultDataListExample' },
     required: [],
   })
   .openapi('LicenseAudioResultDataList')
@@ -5000,22 +3639,7 @@ const LicenseEditorialContentRequestSchema = z
   })
   .openapi({
     description: 'License editorial content request',
-    example: {
-      country: 'USA',
-      editorial: [
-        {
-          editorial_id: '10687730b',
-          license: 'premier_editorial_comp',
-          metadata: {
-            customer_id: '12345',
-            geo_location: 'US',
-            number_viewed: '15',
-            search_term: 'dog',
-          },
-          size: 'original',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseEditorialContentRequestExample' },
     required: ['country', 'editorial'],
   })
   .openapi('LicenseEditorialContentRequest')
@@ -5030,9 +3654,7 @@ const UrlSchema = z
   })
   .openapi({
     description: 'URL object',
-    example: {
-      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-    },
+    example: { $ref: '#/components/schemas/UrlExample' },
     required: ['url'],
   })
   .openapi('Url')
@@ -5081,20 +3703,7 @@ const LicenseEditorialContentResultsSchema = z
   })
   .openapi({
     description: 'List of editorial license results',
-    example: {
-      data: [
-        {
-          allotment_charge: 1,
-          download: {
-            url: 'https://s3-eu-west-1.amazonaws.com/api-downloads.rexfeatures.com/[random-characters].jpg?Expires=1524717323',
-          },
-          editorial_id: '69656358',
-        },
-      ],
-      page: 1,
-      per_page: 1,
-      total_count: 12,
-    },
+    example: { $ref: '#/components/schemas/LicenseEditorialContentResultsExample' },
     required: [],
   })
   .openapi('LicenseEditorialContentResults')
@@ -5142,17 +3751,7 @@ const LicenseEditorialVideoContentRequestSchema = z
   })
   .openapi({
     description: 'License editorial video content request',
-    example: {
-      country: 'USA',
-      editorial: [
-        {
-          editorial_id: '10679854a',
-          license: 'premier_editorial_video_digital_only',
-          metadata: { purchase_order: '12345' },
-          size: 'original',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseEditorialVideoContentRequestExample' },
     required: ['country', 'editorial'],
   })
   .openapi('LicenseEditorialVideoContentRequest')
@@ -5328,25 +3927,7 @@ const LicenseImageRequestSchema = z
   })
   .openapi({
     description: 'Image license request data',
-    example: {
-      images: [
-        {
-          editorial_acknowledgement: true,
-          format: 'jpg',
-          image_id: '123456789',
-          metadata: {
-            customer_id: '12345',
-            geo_location: 'US',
-            number_viewed: '15',
-            search_term: 'dog',
-          },
-          price: 12.34,
-          show_modal: true,
-          size: 'small',
-          subscription_id: 's12345678',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseImageRequestExample' },
     required: ['images'],
   })
   .openapi('LicenseImageRequest')
@@ -5428,20 +4009,7 @@ const LicenseImageResultDataListSchema = z
   })
   .openapi({
     description: 'List of information about licensed images',
-    example: {
-      data: [
-        {
-          allotment_charge: 1,
-          download: {
-            url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-          },
-          image_id: '59656357',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 23,
-    },
+    example: { $ref: '#/components/schemas/LicenseImageResultDataListExample' },
     required: [],
   })
   .openapi('LicenseImageResultDataList')
@@ -5486,23 +4054,7 @@ const LicenseSFXRequestSchema = z
   })
   .openapi({
     description: 'License sounds effect asset request body',
-    example: {
-      sound_effects: [
-        {
-          format: 'wav',
-          metadata: {
-            customer_id: '12345',
-            geo_location: 'US',
-            number_viewed: '15',
-            search_term: 'dog',
-          },
-          sfx_id: '123456789',
-          show_modal: true,
-          size: 'ambisonic',
-          subscription_id: 's12345678',
-        },
-      ],
-    },
+    example: { $ref: '#/components/schemas/LicenseSFXRequestExample' },
     required: ['sound_effects'],
   })
   .openapi('LicenseSFXRequest')
@@ -5553,20 +4105,7 @@ const LicenseSFXResultDataListSchema = z
   })
   .openapi({
     description: 'List of information about licensed sound effects',
-    example: {
-      data: [
-        {
-          allotment_charge: 1,
-          download: {
-            url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp3',
-          },
-          sfx_id: '123456789',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/LicenseSFXResultDataListExample' },
     required: [],
   })
   .openapi('LicenseSFXResultDataList')
@@ -5617,7 +4156,7 @@ const LicenseVideoRequestSchema = z
   })
   .openapi({
     description: 'List of videos to license',
-    example: { videos: [{ size: 'hd', subscription_id: 's12345678', video_id: '2140697' }] },
+    example: { $ref: '#/components/schemas/LicenseVideoRequestExample' },
     required: ['videos'],
   })
   .openapi('LicenseVideoRequest')
@@ -5676,21 +4215,7 @@ const LicenseVideoResultDataListSchema = z
   })
   .openapi({
     description: 'List of video license results',
-    example: {
-      data: [
-        {
-          allotment_charge: 1,
-          download: {
-            url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp4',
-          },
-          price: { local_amount: 12.34, local_currency: 'EUR' },
-          video_id: '123456789',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/LicenseVideoResultDataListExample' },
     required: [],
   })
   .openapi('LicenseVideoResultDataList')
@@ -5699,9 +4224,7 @@ const MoodListSchema = z
   .strictObject({ data: z.array(z.string()).openapi({ description: 'List of audio moods' }) })
   .openapi({
     description: 'List of audio moods',
-    example: {
-      data: ['Action / Sports', 'Adventure / Discovery', 'Aerobics / Workout', 'Aggressive'],
-    },
+    example: { $ref: '#/components/schemas/MoodListExample' },
     required: ['data'],
   })
   .openapi('MoodList')
@@ -5734,11 +4257,7 @@ const OauthAccessTokenResponseSchema = z
   })
   .openapi({
     description: 'Access token response to client apps',
-    example: {
-      access_token:
-        'v2/NmQwOTc0NTBiMjA5YzZkY2Q4NTkvMTA4OTg1MDk5L2N1c3RvbWVyLzIvZjB2a0RseGo4Rkt6ZjRmVWJNMm10V2VzcHh1NTBlZWJ6andUQU1NeTVYYnNFTDVWOFRJakItS2RnZTlmbEY1Y3haNWdXLUtYc2JhaXo5djk0V0p2QzZUUWZ4c2FNWm41NkdLYUgyVWlCaVUtQTNVMV9YQWpzd3lpblI3SlZEem8wSG1qQ2NzSkJlX3VQTnNXenBIdkd4SXViVi1rRGJTVENCV0g1U3U0RXRJSV9rSm5lQkl5QXlvbm5JN241UUhv',
-      token_type: 'Bearer',
-    },
+    example: { $ref: '#/components/schemas/OauthAccessTokenResponseExample' },
     required: ['access_token', 'token_type'],
   })
   .openapi('OauthAccessTokenResponse')
@@ -5771,12 +4290,7 @@ const RecommendationDataListSchema = z
   })
   .openapi({
     description: 'List of recommended images',
-    example: {
-      data: [{ id: '123456789' }, { id: '99379946' }, { id: '133918412' }],
-      page: 1,
-      per_page: 5,
-      total_count: 12,
-    },
+    example: { $ref: '#/components/schemas/RecommendationDataListExample' },
     required: [],
   })
   .openapi('RecommendationDataList')
@@ -5802,7 +4316,7 @@ const RedownloadImageSchema = z
   })
   .openapi({
     description: 'Data required to redownload an image',
-    example: { size: 'small' },
+    example: { $ref: '#/components/schemas/RedownloadImageExample' },
     required: [],
   })
   .openapi('RedownloadImage')
@@ -5828,7 +4342,7 @@ const RedownloadVideoSchema = z
   })
   .openapi({
     description: 'Data required to redownload a video',
-    example: { size: 'web' },
+    example: { $ref: '#/components/schemas/RedownloadVideoExample' },
     required: [],
   })
   .openapi('RedownloadVideo')
@@ -5840,7 +4354,10 @@ const RemoveCatalogCollectionItemSchema = z
 
 const RemoveCatalogCollectionItemsSchema = z
   .object({ items: z.array(RemoveCatalogCollectionItemSchema).min(1).max(50) })
-  .openapi({ example: { items: [{ id: '123' }] }, required: ['items'] })
+  .openapi({
+    example: { $ref: '#/components/schemas/RemoveCatalogCollectionItemsExample' },
+    required: ['items'],
+  })
   .openapi('RemoveCatalogCollectionItems')
 
 const SFXAssetDetailsSchema = z
@@ -5926,7 +4443,7 @@ const SFXSchema = z
   })
   .openapi({
     description: 'SFX metadata',
-    example: { contributor: { id: '1234' }, id: '123', media_type: 'sfx' },
+    example: { $ref: '#/components/schemas/SFXExample' },
     required: ['id', 'media_type', 'contributor'],
   })
   .openapi('SFX')
@@ -5935,7 +4452,7 @@ const SFXDataListSchema = z
   .object({ data: z.array(SFXSchema).exactOptional().openapi({ description: 'Sound Effects' }) })
   .openapi({
     description: 'List of sound effects',
-    example: { data: [{ contributor: { id: '1234' }, id: '123', media_type: 'sfx' }] },
+    example: { $ref: '#/components/schemas/SFXDataListExample' },
     required: [],
   })
   .openapi('SFXDataList')
@@ -5992,7 +4509,7 @@ const SearchEntitiesRequestSchema = z
   })
   .openapi({
     description: 'Search entity request data',
-    example: { text: 'Planting flowers is a great way to make springtime more beautiful.' },
+    example: { $ref: '#/components/schemas/SearchEntitiesRequestExample' },
     required: ['text'],
   })
   .openapi('SearchEntitiesRequest')
@@ -6021,9 +4538,7 @@ const SfxUrlSchema = z
   })
   .openapi({
     description: 'Sound effect license URL object',
-    example: {
-      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-    },
+    example: { $ref: '#/components/schemas/UrlExample' },
     required: ['url'],
   })
   .openapi('SfxUrl')
@@ -6130,44 +4645,7 @@ const SubscriptionDataListSchema = z
   })
   .openapi({
     description: 'List of subscriptions',
-    example: {
-      data: [
-        {
-          allotment: {
-            downloads_left: 5,
-            downloads_limit: 10,
-            end_time: '2020-05-29T12:10:22-05:00',
-            start_time: '2020-05-29T12:10:22-05:00',
-          },
-          asset_type: 'images',
-          description: 'Annual Subscription',
-          expiration_time: '2020-05-29T12:10:22-05:00',
-          formats: [
-            {
-              description: 'Small',
-              format: 'jpg',
-              media_type: 'image',
-              min_resolution: 500,
-              size: 'small',
-            },
-            {
-              description: 'Med',
-              format: 'jpg',
-              media_type: 'image',
-              min_resolution: 1000,
-              size: 'medium',
-            },
-            { description: 'Vector', format: 'eps', media_type: 'image', size: 'vector' },
-          ],
-          id: 's8906043',
-          license: 'standard',
-          metadata: {},
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 123455,
-    },
+    example: { $ref: '#/components/schemas/SubscriptionDataListExample' },
     required: [],
   })
   .openapi('SubscriptionDataList')
@@ -6178,20 +4656,7 @@ const SuggestionsSchema = z
   })
   .openapi({
     description: 'List of search suggestions',
-    example: {
-      data: [
-        'cat scan',
-        'cats and dogs',
-        'cats playing',
-        'catsuit',
-        'cat silhouette',
-        'catskills',
-        'cats eyes',
-        'cat sitting',
-        'cat sleeping',
-        'cats eye',
-      ],
-    },
+    example: { $ref: '#/components/schemas/SuggestionsExample' },
     required: [],
   })
   .openapi('Suggestions')
@@ -6200,7 +4665,7 @@ const TestEchoSchema = z
   .object({ text: z.string().exactOptional() })
   .openapi({
     description: 'Text to echo in the response',
-    example: { text: 'Test string' },
+    example: { $ref: '#/components/schemas/TestEchoExample' },
     required: [],
   })
   .openapi('TestEcho')
@@ -6248,13 +4713,7 @@ const TestValidateSchema = z
   })
   .openapi({
     description: 'Validation results',
-    example: {
-      header: {
-        'user-agent':
-          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
-      },
-      query: { id: 123456, tag: ['Test string'] },
-    },
+    example: { $ref: '#/components/schemas/TestValidateExample' },
     required: [],
   })
   .openapi('TestValidate')
@@ -6269,7 +4728,7 @@ const UpdateCatalogCollectionSchema = z
     visibility: z.enum(['private', 'public']).exactOptional(),
   })
   .openapi({
-    example: { cover_asset: { id: '123' }, name: 'My Collection', visibility: 'public' },
+    example: { $ref: '#/components/schemas/UpdateCatalogCollectionExample' },
     required: [],
   })
   .openapi('UpdateCatalogCollection')
@@ -6318,18 +4777,7 @@ const UpdatedMediaDataListSchema = z
   })
   .openapi({
     description: 'List of updated media',
-    example: {
-      data: [
-        {
-          id: '123456789',
-          updated_time: '2020-05-29T12:10:22-05:00',
-          updates: ['addition', 'edit'],
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 13,
-    },
+    example: { $ref: '#/components/schemas/UpdatedMediaDataListExample' },
     required: [],
   })
   .openapi('UpdatedMediaDataList')
@@ -6408,15 +4856,7 @@ const UserDetailsSchema = z
   })
   .openapi({
     description: 'User details',
-    example: {
-      contributor_id: '212',
-      first_name: 'John',
-      full_name: 'John Doe',
-      id: '101782699',
-      language: 'es',
-      last_name: 'Doe',
-      username: 'jdoe',
-    },
+    example: { $ref: '#/components/schemas/UserDetailsExample' },
     required: [],
   })
   .openapi('UserDetails')
@@ -6575,137 +5015,7 @@ const VideoSchema = z
   })
   .openapi({
     description: 'Information about a video',
-    example: {
-      added_date: '2019-07-13',
-      aspect: 1.778,
-      aspect_ratio: '16:9',
-      assets: {
-        hd: {
-          display_name: 'Original HD',
-          file_size: 110359552,
-          format: 'avc1',
-          fps: 29.97,
-          height: 1080,
-          is_licensable: true,
-          width: 1920,
-        },
-        preview_jpg: { url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg' },
-        preview_mp4: {
-          url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-        },
-        preview_webm: {
-          url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-        },
-        sd: {
-          display_name: 'Standard Definition MPEG',
-          file_size: 4577280,
-          format: 'mov',
-          fps: 29.97,
-          height: 480,
-          is_licensable: true,
-          width: 852,
-        },
-        thumb_jpg: { url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg' },
-        thumb_jpgs: {
-          urls: [
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg',
-            'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-          ],
-        },
-        thumb_mp4: {
-          url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-        },
-        thumb_webm: {
-          url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-        },
-        web: {
-          display_name: 'Low Resolution MPEG',
-          file_size: 1291264,
-          format: 'mov',
-          fps: 29.97,
-          height: 240,
-          is_licensable: true,
-          width: 426,
-        },
-      },
-      categories: [
-        { id: '12', name: 'Nature' },
-        { id: '13', name: 'People' },
-      ],
-      contributor: { id: '4411978' },
-      description:
-        'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-      duration: 14.081,
-      has_model_release: true,
-      has_property_release: false,
-      id: '1033184651',
-      is_adult: false,
-      is_editorial: false,
-      keywords: [
-        'active',
-        'activity',
-        'adventure',
-        'arms',
-        'backpacker',
-        'carefree',
-        'celebrating',
-        'cliff',
-        'climate',
-        'cloud',
-        'discovery',
-        'escape',
-        'explore',
-        'extreme',
-        'free',
-        'freedom',
-        'girl',
-        'happy',
-        'high',
-        'hiker',
-        'hiking',
-        'hill',
-        'independent',
-        'inspiration',
-        'landscape',
-        'leisure',
-        'lifestyle',
-        'mountain',
-        'mountains',
-        'nature',
-        'outdoor',
-        'peak',
-        'person',
-        'rock',
-        'scenic',
-        'sky',
-        'sport',
-        'success',
-        'summer',
-        'summit',
-        'sun',
-        'sunset',
-        'top',
-        'tourism',
-        'travel',
-        'trekking',
-        'vacation',
-        'view',
-        'winning',
-        'woman',
-      ],
-      media_type: 'video',
-      models: [{ id: '33233810' }, { id: '25487168' }],
-    },
+    example: { $ref: '#/components/schemas/VideoExample' },
     required: ['id', 'media_type', 'contributor'],
   })
   .openapi('Video')
@@ -6733,14 +5043,7 @@ const VideoCollectionItemDataListSchema = z
   })
   .openapi({
     description: 'List of items in a collection',
-    example: {
-      data: [
-        { added_time: '2016-08-18T18:52:59-04:00', id: '76688182', media_type: 'video' },
-        { added_time: '2016-08-18T18:52:59-04:00', id: '40005859', media_type: 'video' },
-      ],
-      page: 1,
-      per_page: 100,
-    },
+    example: { $ref: '#/components/schemas/VideoCollectionItemDataListExample' },
     required: [],
   })
   .openapi('VideoCollectionItemDataList')
@@ -6765,146 +5068,7 @@ const VideoDataListSchema = z
   })
   .openapi({
     description: 'List of videos',
-    example: {
-      data: [
-        {
-          added_date: '2019-07-13',
-          aspect: 1.778,
-          aspect_ratio: '16:9',
-          assets: {
-            hd: {
-              display_name: 'Original HD',
-              file_size: 110359552,
-              format: 'avc1',
-              fps: 29.97,
-              height: 1080,
-              is_licensable: true,
-              width: 1920,
-            },
-            preview_jpg: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-            },
-            preview_mp4: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-            },
-            preview_webm: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-            },
-            sd: {
-              display_name: 'Standard Definition MPEG',
-              file_size: 4577280,
-              format: 'mov',
-              fps: 29.97,
-              height: 480,
-              is_licensable: true,
-              width: 852,
-            },
-            thumb_jpg: { url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg' },
-            thumb_jpgs: {
-              urls: [
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg',
-                'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-              ],
-            },
-            thumb_mp4: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-            },
-            thumb_webm: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-            },
-            web: {
-              display_name: 'Low Resolution MPEG',
-              file_size: 1291264,
-              format: 'mov',
-              fps: 29.97,
-              height: 240,
-              is_licensable: true,
-              width: 426,
-            },
-          },
-          categories: [
-            { id: '12', name: 'Nature' },
-            { id: '13', name: 'People' },
-          ],
-          contributor: { id: '4411978' },
-          description:
-            'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-          duration: 14.081,
-          has_model_release: true,
-          has_property_release: false,
-          id: '1033184651',
-          is_adult: false,
-          is_editorial: false,
-          keywords: [
-            'active',
-            'activity',
-            'adventure',
-            'arms',
-            'backpacker',
-            'carefree',
-            'celebrating',
-            'cliff',
-            'climate',
-            'cloud',
-            'discovery',
-            'escape',
-            'explore',
-            'extreme',
-            'free',
-            'freedom',
-            'girl',
-            'happy',
-            'high',
-            'hiker',
-            'hiking',
-            'hill',
-            'independent',
-            'inspiration',
-            'landscape',
-            'leisure',
-            'lifestyle',
-            'mountain',
-            'mountains',
-            'nature',
-            'outdoor',
-            'peak',
-            'person',
-            'rock',
-            'scenic',
-            'sky',
-            'sport',
-            'success',
-            'summer',
-            'summit',
-            'sun',
-            'sunset',
-            'top',
-            'tourism',
-            'travel',
-            'trekking',
-            'vacation',
-            'view',
-            'winning',
-            'woman',
-          ],
-          media_type: 'video',
-          models: [{ id: '33233810' }, { id: '25487168' }],
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      total_count: 25,
-    },
+    example: { $ref: '#/components/schemas/VideoDataListExample' },
     required: [],
   })
   .openapi('VideoDataList')
@@ -6923,46 +5087,226 @@ const VideoSearchResultsSchema = z
   })
   .openapi({
     description: 'Video search results',
-    example: {
-      data: [
-        {
-          aspect: 1.778,
-          aspect_ratio: '16:9',
-          assets: {
-            preview_jpg: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-            },
-            preview_mp4: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-            },
-            preview_webm: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-            },
-            thumb_jpg: { url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg' },
-            thumb_mp4: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-            },
-            thumb_webm: {
-              url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-            },
-          },
-          contributor: { id: '4411978' },
-          description:
-            'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-          duration: 14.081,
-          has_model_release: true,
-          id: '1033184651',
-          media_type: 'video',
-        },
-      ],
-      page: 1,
-      per_page: 5,
-      search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-      total_count: 123,
-    },
+    example: { $ref: '#/components/schemas/VideoSearchResultsExample' },
     required: ['data', 'total_count', 'search_id'],
   })
   .openapi('VideoSearchResults')
+
+const DescriptorsListResultExampleSchema = z.any().openapi('DescriptorsListResultExample')
+
+const InstrumentsListResultExampleSchema = z.any().openapi('InstrumentsListResultExample')
+
+const AudioRendersListResultsExampleSchema = z.any().openapi('AudioRendersListResultsExample')
+
+const CreateAudioRendersRequestExampleSchema = z.any().openapi('CreateAudioRendersRequestExample')
+
+const AudioDataListExampleSchema = z.any().openapi('AudioDataListExample')
+
+const CollectionDataListExampleSchema = z.any().openapi('CollectionDataListExample')
+
+const CollectionCreateResponseExampleSchema = z.any().openapi('CollectionCreateResponseExample')
+
+const CollectionExampleSchema = z.any().openapi('CollectionExample')
+
+const GenreListExampleSchema = z.any().openapi('GenreListExample')
+
+const InstrumentListExampleSchema = z.any().openapi('InstrumentListExample')
+
+const LicenseAudioRequestExampleSchema = z.any().openapi('LicenseAudioRequestExample')
+
+const LicenseAudioResultDataListExampleSchema = z.any().openapi('LicenseAudioResultDataListExample')
+
+const MoodListExampleSchema = z.any().openapi('MoodListExample')
+
+const AudioSearchResultsExampleSchema = z.any().openapi('AudioSearchResultsExample')
+
+const AudioExampleSchema = z
+  .any()
+  .openapi({
+    description:
+      'Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.',
+    title: 'Another Tomorrow',
+  })
+  .openapi('AudioExample')
+
+const BulkImageSearchResultsExampleSchema = z.any().openapi('BulkImageSearchResultsExample')
+
+const CatalogCollectionDataListExampleSchema = z.any().openapi('CatalogCollectionDataListExample')
+
+const CreateCatalogCollectionExampleSchema = z.any().openapi('CreateCatalogCollectionExample')
+
+const CatalogCollectionExampleSchema = z.any().openapi('CatalogCollectionExample')
+
+const UpdateCatalogCollectionExampleSchema = z.any().openapi('UpdateCatalogCollectionExample')
+
+const RemoveCatalogCollectionItemsExampleSchema = z
+  .any()
+  .openapi('RemoveCatalogCollectionItemsExample')
+
+const CreateCatalogCollectionItemsExampleSchema = z
+  .any()
+  .openapi('CreateCatalogCollectionItemsExample')
+
+const CatalogCollectionItemDataListExampleSchema = z
+  .any()
+  .openapi('CatalogCollectionItemDataListExample')
+
+const ContributorProfileDataListExampleSchema = z.any().openapi('ContributorProfileDataListExample')
+
+const ContributorProfileExampleSchema = z.any().openapi('ContributorProfileExample')
+
+const ImageCreateRequestExampleSchema = z.any().openapi('ImageCreateRequestExample')
+
+const ComputerVisionImageCreateResponseExampleSchema = z
+  .any()
+  .openapi('ComputerVisionImageCreateResponseExample')
+
+const KeywordDataListExampleSchema = z.any().openapi('KeywordDataListExample')
+
+const ImageSearchResultsExampleSchema = z.any().openapi('ImageSearchResultsExample')
+
+const VideoSearchResultsExampleSchema = z.any().openapi('VideoSearchResultsExample')
+
+const EditorialCategoryResultsExampleSchema = z.any().openapi('EditorialCategoryResultsExample')
+
+const EditorialImageCategoryResultsExampleSchema = z
+  .any()
+  .openapi('EditorialImageCategoryResultsExample')
+
+const DownloadHistoryDataListExampleSchema = z.any().openapi('DownloadHistoryDataListExample')
+
+const LicenseEditorialContentRequestExampleSchema = z
+  .any()
+  .openapi('LicenseEditorialContentRequestExample')
+
+const LicenseEditorialContentResultsExampleSchema = z
+  .any()
+  .openapi('LicenseEditorialContentResultsExample')
+
+const EditorialImageLivefeedListExampleSchema = z.any().openapi('EditorialImageLivefeedListExample')
+
+const EditorialImageLivefeedExampleSchema = z.any().openapi('EditorialImageLivefeedExample')
+
+const EditorialImageContentDataListExampleSchema = z
+  .any()
+  .openapi('EditorialImageContentDataListExample')
+
+const EditorialSearchResultsExampleSchema = z.any().openapi('EditorialSearchResultsExample')
+
+const EditorialUpdatedResultsExampleSchema = z.any().openapi('EditorialUpdatedResultsExample')
+
+const EditorialContentExampleSchema = z
+  .any()
+  .openapi({
+    description:
+      "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
+    title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
+  })
+  .openapi('EditorialContentExample')
+
+const EditorialLivefeedListExampleSchema = z.any().openapi('EditorialLivefeedListExample')
+
+const EditorialLivefeedExampleSchema = z.any().openapi('EditorialLivefeedExample')
+
+const EditorialContentDataListExampleSchema = z.any().openapi('EditorialContentDataListExample')
+
+const EditorialVideoCategoryResultsExampleSchema = z
+  .any()
+  .openapi('EditorialVideoCategoryResultsExample')
+
+const LicenseEditorialVideoContentRequestExampleSchema = z
+  .any()
+  .openapi('LicenseEditorialVideoContentRequestExample')
+
+const EditorialVideoSearchResultsExampleSchema = z
+  .any()
+  .openapi('EditorialVideoSearchResultsExample')
+
+const EditorialVideoContentExampleSchema = z
+  .any()
+  .openapi({
+    description:
+      'Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski\'s, and boats. He has brought joy to many people during the pandemic including those with cancer."',
+    title: 'Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020',
+  })
+  .openapi('EditorialVideoContentExample')
+
+const ImageDataListExampleSchema = z.any().openapi('ImageDataListExample')
+
+const ImageCreateResponseExampleSchema = z.any().openapi('ImageCreateResponseExample')
+
+const CategoryDataListExampleSchema = z.any().openapi('CategoryDataListExample')
+
+const CollectionCreateRequestExampleSchema = z.any().openapi('CollectionCreateRequestExample')
+
+const FeaturedCollectionDataListExampleSchema = z.any().openapi('FeaturedCollectionDataListExample')
+
+const FeaturedCollectionExampleSchema = z.any().openapi('FeaturedCollectionExample')
+
+const CollectionItemDataListExampleSchema = z.any().openapi('CollectionItemDataListExample')
+
+const CollectionUpdateRequestExampleSchema = z.any().openapi('CollectionUpdateRequestExample')
+
+const LicenseImageRequestExampleSchema = z.any().openapi('LicenseImageRequestExample')
+
+const LicenseImageResultDataListExampleSchema = z.any().openapi('LicenseImageResultDataListExample')
+
+const RedownloadImageExampleSchema = z.any().openapi('RedownloadImageExample')
+
+const UrlExampleSchema = z.any().openapi('UrlExample')
+
+const RecommendationDataListExampleSchema = z.any().openapi('RecommendationDataListExample')
+
+const SuggestionsExampleSchema = z.any().openapi('SuggestionsExample')
+
+const SearchEntitiesRequestExampleSchema = z.any().openapi('SearchEntitiesRequestExample')
+
+const UpdatedMediaDataListExampleSchema = z.any().openapi('UpdatedMediaDataListExample')
+
+const ImageExampleSchema = z
+  .any()
+  .openapi({ description: 'cropped image of woman gardening' })
+  .openapi('ImageExample')
+
+const OauthAccessTokenResponseExampleSchema = z.any().openapi('OauthAccessTokenResponseExample')
+
+const SFXDataListExampleSchema = z.any().openapi('SFXDataListExample')
+
+const LicenseSFXRequestExampleSchema = z.any().openapi('LicenseSFXRequestExample')
+
+const LicenseSFXResultDataListExampleSchema = z.any().openapi('LicenseSFXResultDataListExample')
+
+const SFXExampleSchema = z.any().openapi('SFXExample')
+
+const TestEchoExampleSchema = z.any().openapi('TestEchoExample')
+
+const TestValidateExampleSchema = z.any().openapi('TestValidateExample')
+
+const UserDetailsExampleSchema = z.any().openapi('UserDetailsExample')
+
+const AccessTokenDetailsExampleSchema = z.any().openapi('AccessTokenDetailsExample')
+
+const SubscriptionDataListExampleSchema = z.any().openapi('SubscriptionDataListExample')
+
+const VideoDataListExampleSchema = z.any().openapi('VideoDataListExample')
+
+const VideoCollectionItemDataListExampleSchema = z
+  .any()
+  .openapi('VideoCollectionItemDataListExample')
+
+const LicenseVideoRequestExampleSchema = z.any().openapi('LicenseVideoRequestExample')
+
+const LicenseVideoResultDataListExampleSchema = z.any().openapi('LicenseVideoResultDataListExample')
+
+const RedownloadVideoExampleSchema = z.any().openapi('RedownloadVideoExample')
+
+const VideoExampleSchema = z
+  .any()
+  .openapi({
+    description:
+      'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
+  })
+  .openapi('VideoExample')
 
 const BasicSecurityScheme = { scheme: 'basic', type: 'http' }
 
@@ -7232,150 +5576,7 @@ export const getV2AiAudioDescriptorsRoute = createRoute({
         'application/json': {
           schema: DescriptorsListResultSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    average_render_speed: 8.242664029014177,
-                    bands: [
-                      {
-                        id: 'cinematic_minimal_tense_band_1',
-                        name: 'Cinematic Minimal Tense Band 1',
-                      },
-                      {
-                        id: 'cinematic_minimal_tense_band_2',
-                        name: 'Cinematic Minimal Tense Band 2',
-                      },
-                    ],
-                    id: 'cinematic_minimal_tense',
-                    instruments: [
-                      { id: 'blue_synth_pad', name: 'Warm Pad - Lush' },
-                      { id: 'direct_round_1_synth_bass', name: 'Direct Round 1 Synth Bass' },
-                      {
-                        id: 'direct_crystal_breath_mid_pad',
-                        name: 'Direct Crystal Breath Mid Pad',
-                      },
-                    ],
-                    max_tempo: 76,
-                    min_tempo: 58,
-                    name: 'Cinematic Minimal Tense',
-                    previews: [
-                      {
-                        content_type: 'audio/mp3',
-                        url: 'https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_1_v1.mp3',
-                      },
-                      {
-                        content_type: 'audio/mp3',
-                        url: 'https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_2_v1.mp3',
-                      },
-                    ],
-                    tags: [
-                      'Tense',
-                      'Cinematic',
-                      'Negative',
-                      'Simple Meter',
-                      '4/4',
-                      'Natural Minor',
-                      'Dorian',
-                      'Minimal',
-                      'Adagio',
-                      'Single Region',
-                      'Main',
-                      'Entertainment',
-                      'Politics',
-                      'Keys',
-                      'Mid Pads',
-                      'Fast',
-                      'Slow',
-                      'Slow',
-                      'Voice',
-                      'Medium Bright',
-                      'Non Noisy',
-                      'Medium Thick',
-                      'Angelic',
-                      'Direct',
-                      'Percussion',
-                      'Perc FX',
-                      'Misc',
-                      'Acoustic Pianos',
-                      'Grand',
-                      'Nice',
-                      'Roomy',
-                      'Pop',
-                      'Upright',
-                      'Clean',
-                      'Classic',
-                      'Keyboards',
-                      'Digital Keyboard',
-                      'Strings',
-                      'Synth Basses',
-                      'Fast',
-                      'Dark',
-                      'Thick',
-                      'Sub',
-                      'Synth Mallets',
-                      'Dull',
-                      'Mid Synth Beds',
-                      'Slow',
-                      'None',
-                      'Medium Noisy',
-                      'Harsh',
-                      'Fast',
-                      'Airy',
-                      'Long Textures',
-                      'Ambience',
-                      'Synth Texture',
-                      'Ethereal',
-                      'Set Kicks',
-                      'Processed',
-                      'Hubcap Mallet',
-                      'Wide',
-                      'Tickie',
-                      'Airy',
-                      'Chamber',
-                      'Thin',
-                      'Organ',
-                      'Cello Ensemble',
-                      'Sweet',
-                      'Big',
-                      'Di',
-                      'Raw',
-                      'Bright',
-                      'Tight',
-                      'Chorus',
-                      'Buzzy',
-                      'Huge',
-                      'Warm',
-                      'Jazz',
-                      'Brass',
-                      'String',
-                      'Hollow',
-                      'Woodwind',
-                      'Breathy',
-                      'Crystal',
-                      'Rhodes',
-                      'Synth Piano',
-                      'Noisy',
-                      'Woody',
-                      'Metallic',
-                      'Reverse Piano',
-                      'Full',
-                      'Foley',
-                      'Piano',
-                      'Clean',
-                      'Delayed',
-                      'Reverb',
-                      'Low Passed',
-                      'Large',
-                      'Medium',
-                      'Small',
-                    ],
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/DescriptorsListResultExample' } },
           },
         },
       },
@@ -7494,37 +5695,7 @@ export const getV2AiAudioInstrumentsRoute = createRoute({
         'application/json': {
           schema: InstrumentsListResultSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    id: 'bright_roomy_kit',
-                    name: 'Bright Roomy Kit',
-                    previews: [
-                      {
-                        content_type: 'audio/mp3',
-                        url: 'https://public-cdn.ampermusic.com/instruments/previews/bright_roomy_kit_v1.mp3',
-                      },
-                    ],
-                    tags: [
-                      'Percussion',
-                      'Aux Percs',
-                      'Set Cymbals',
-                      'Crash',
-                      'Open',
-                      'Ride',
-                      'Set Hi-Hat',
-                      'Set Kicks',
-                      'Stick Snare',
-                      'Quad Toms',
-                      'Roto Toms',
-                    ],
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/InstrumentsListResultExample' } },
           },
         },
       },
@@ -7570,55 +5741,7 @@ export const getV2AiAudioRendersRoute = createRoute({
         'application/json': {
           schema: AudioRendersListResultsSchema,
           examples: {
-            response: {
-              value: {
-                audio_renders: [
-                  {
-                    created_date: '2021-07-13T16:19:30-04:00',
-                    files: [],
-                    id: '2yZp13IhLqnjfh2KquDTOHUHzTiP',
-                    preset: 'MASTER_MP3',
-                    progress_percent: 20,
-                    status: 'WAITING_COMPOSE',
-                    timeline: {},
-                    updated_date: '2021-07-13T16:19:30-04:00',
-                  },
-                  {
-                    created_date: '2021-07-12T16:39:59-04:00',
-                    files: [
-                      {
-                        bits_sample: 16,
-                        content_type: 'audio/mp3',
-                        download_url:
-                          'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3',
-                        filename: 'My_audio_ai.mp3',
-                        frequency_hz: 44100,
-                        kbits_second: 192,
-                        size_bytes: 481556,
-                        tracks: ['master'],
-                      },
-                      {
-                        bits_sample: 0,
-                        content_type: 'application/vnd.amper.waveform+json',
-                        download_url:
-                          'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/1.json',
-                        filename: 'render.json',
-                        frequency_hz: 42,
-                        kbits_second: 0,
-                        size_bytes: 4420,
-                        tracks: ['master'],
-                      },
-                    ],
-                    id: 'QwAgKqXQAzr622KuXYZ25C9WRH3a',
-                    preset: 'MASTER_MP3',
-                    progress_percent: 100,
-                    status: 'CREATED',
-                    timeline: {},
-                    updated_date: '2021-07-12T16:46:26-04:00',
-                  },
-                ],
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/AudioRendersListResultsExample' } },
           },
         },
       },
@@ -7646,42 +5769,7 @@ export const postV2AiAudioRendersRoute = createRoute({
       content: {
         'application/json': {
           schema: CreateAudioRendersRequestSchema,
-          example: {
-            audio_renders: [
-              {
-                filename: 'My Project.mp3',
-                preset: 'MASTER_MP3',
-                timeline: {
-                  spans: [
-                    {
-                      id: 111,
-                      instrument_groups: [
-                        {
-                          instrument_group: 'roomy_kit',
-                          statuses: [{ beat: 12, status: 'active' }],
-                        },
-                      ],
-                      regions: [
-                        {
-                          beat: 12,
-                          descriptor: 'cinematic_minimal_tense',
-                          end_type: { beat: 24, event: 'ending', type: 'ringout' },
-                          id: 222,
-                          key: { tonic_note: 'c', tonic_quality: 'major' },
-                          region: 'music',
-                        },
-                      ],
-                      span_type: 'metered',
-                      tempo: 76,
-                      tempo_changes: [{ tempo: 86, time: 5 }],
-                      time: 5,
-                    },
-                    { span_type: 'unmetered', time: 20 },
-                  ],
-                },
-              },
-            ],
-          },
+          example: { $ref: '#/components/schemas/CreateAudioRendersRequestExample' },
         },
       },
       required: true,
@@ -7798,84 +5886,7 @@ export const getV2AudioRoute = createRoute({
       content: {
         'application/json': {
           schema: AudioDataListSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    added_date: '2016-04-12',
-                    artists: [{ name: 'Fin Productions' }],
-                    assets: {
-                      clean_audio: { file_size: 30760372 },
-                      preview_mp3: {
-                        file_size: 3846606,
-                        url: 'https://ak.picdn.net/shutterstock/audio/434750/preview/preview.mp3',
-                      },
-                      preview_ogg: {
-                        file_size: 4402608,
-                        url: 'https://ak.picdn.net/shutterstock/audio/434750/preview/preview.ogg',
-                      },
-                      waveform: {
-                        file_size: 19822,
-                        url: 'https://ak.picdn.net/shutterstock/audio/434750/waveform/waveform.png',
-                      },
-                    },
-                    bpm: 100,
-                    contributor: { id: '2847971' },
-                    description:
-                      'Pulsing and feel-good, featuring slick electric guitar, synthesizer, bass, electronic drum pads and drums that create a positive, celebratory mood.',
-                    duration: 160,
-                    genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-                    id: '434750',
-                    instruments: [
-                      'Bass',
-                      'Drums',
-                      'Electric guitar',
-                      'Pads',
-                      'Percussion',
-                      'Synthesizer',
-                    ],
-                    is_adult: false,
-                    is_instrumental: true,
-                    isrc: '',
-                    keywords: [
-                      'breezy',
-                      'celebration',
-                      'festive',
-                      'good times',
-                      'hopeful',
-                      'optimistic',
-                      'party',
-                      'positive',
-                      'reflective',
-                    ],
-                    language: 'en',
-                    lyrics: '',
-                    media_type: 'audio',
-                    moods: [
-                      'Bright',
-                      'Confident',
-                      'Fun',
-                      'Happy',
-                      'Inspiring',
-                      'Optimistic',
-                      'Playful',
-                      'Sophisticated',
-                      'Stylish',
-                      'Uplifting',
-                    ],
-                    published_time: '2016-04-12T17:45:29-04:00',
-                    recording_version: '',
-                    releases: [],
-                    similar_artists: [],
-                    title: 'Fresh Love',
-                    updated_time: '2016-08-18T18:03:11-04:00',
-                    vocal_description: '',
-                  },
-                ],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/AudioDataListExample' } } },
         },
       },
     },
@@ -7965,22 +5976,7 @@ export const getV2AudioCollectionsRoute = createRoute({
         'application/json': {
           schema: CollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: { id: '297886754' },
-                    id: '293542904',
-                    items_updated_time: '2021-05-20T16:15:22-04:00',
-                    name: 'My collection',
-                    total_item_count: 85,
-                  },
-                ],
-                page: 1,
-                per_page: 100,
-                total_count: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionDataListExample' } },
           },
         },
       },
@@ -8020,7 +6016,9 @@ export const postV2AudioCollectionsRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionCreateResponseSchema,
-          examples: { response: { value: { id: '48433105' } } },
+          examples: {
+            response: { value: { $ref: '#/components/schemas/CollectionCreateResponseExample' } },
+          },
         },
       },
     },
@@ -8091,17 +6089,7 @@ export const getV2AudioCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionSchema,
-          examples: {
-            response: {
-              value: {
-                cover_item: { id: '297886754' },
-                id: '293542904',
-                items_updated_time: '2021-05-20T16:15:22-04:00',
-                name: 'My collection',
-                total_item_count: 85,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/CollectionExample' } } },
         },
       },
     },
@@ -8441,18 +6429,7 @@ export const getV2AudioGenresRoute = createRoute({
       content: {
         'application/json': {
           schema: GenreListSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  'Rock',
-                  'Pop > Singer-Songwriter',
-                  'Pop > Synth Pop',
-                  'Production / Film Scores',
-                ],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/GenreListExample' } } },
         },
       },
     },
@@ -8489,9 +6466,7 @@ export const getV2AudioInstrumentsRoute = createRoute({
       content: {
         'application/json': {
           schema: InstrumentListSchema,
-          examples: {
-            response: { value: { data: ['Orchestra', 'Organ', 'Oud', 'Pads', 'Electric Guitar'] } },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/InstrumentListExample' } } },
         },
       },
     },
@@ -8762,15 +6737,7 @@ export const postV2AudioLicensesRoute = createRoute({
           examples: {
             default: {
               description: 'Overwrite content of soundbox with new items',
-              value: {
-                audio: [
-                  {
-                    audio_id: '591623',
-                    license: 'audio_platform',
-                    metadata: { customer_id: '12345' },
-                  },
-                ],
-              },
+              value: { $ref: '#/components/schemas/LicenseAudioRequestExample' },
             },
           },
         },
@@ -8785,20 +6752,7 @@ export const postV2AudioLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseAudioResultDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    allotment_charge: 1,
-                    audio_id: '123456789',
-                    download: {
-                      url: 'http://download2.dev.shutterstock.com/gatekeeper/abc/original.wav',
-                    },
-                    license_id: 'abcdef123456789ghijklmn',
-                  },
-                ],
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/LicenseAudioResultDataListExample' } },
           },
         },
       },
@@ -8888,18 +6842,7 @@ export const getV2AudioMoodsRoute = createRoute({
       content: {
         'application/json': {
           schema: MoodListSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  'Action / Sports',
-                  'Adventure / Discovery',
-                  'Aerobics / Workout',
-                  'Aggressive',
-                ],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/MoodListExample' } } },
         },
       },
     },
@@ -9296,80 +7239,7 @@ export const getV2AudioSearchRoute = createRoute({
         'application/json': {
           schema: AudioSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    added_date: '2016-08-16',
-                    artists: [{ name: 'Klimenko Music' }],
-                    assets: {
-                      clean_audio: { file_size: 35188408 },
-                      preview_mp3: {
-                        file_size: 4400203,
-                        url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3',
-                      },
-                      preview_ogg: {
-                        file_size: 4453197,
-                        url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg',
-                      },
-                      waveform: {
-                        file_size: 18778,
-                        url: 'https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png',
-                      },
-                    },
-                    bpm: 110,
-                    contributor: { id: '2847971' },
-                    description:
-                      'Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.',
-                    duration: 183,
-                    genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-                    id: '442583',
-                    instruments: ['Piano', 'Synth bass', 'Synth drums', 'Synthesizer'],
-                    is_adult: false,
-                    is_instrumental: true,
-                    isrc: '',
-                    keywords: [
-                      'celebratory',
-                      'chic',
-                      'euphoric',
-                      'good times',
-                      'hip',
-                      'optimistic',
-                      'party',
-                      'soaring',
-                      'upbeat',
-                    ],
-                    language: 'en',
-                    lyrics: '',
-                    media_type: 'audio',
-                    moods: [
-                      'Bright',
-                      'Confident',
-                      'Fun',
-                      'Happy',
-                      'Inspiring',
-                      'Optimistic',
-                      'Playful',
-                      'Sophisticated',
-                      'Stylish',
-                      'Uplifting',
-                    ],
-                    published_time: '2016-08-16T14:30:03-04:00',
-                    recording_version: '',
-                    releases: [],
-                    similar_artists: [],
-                    title: 'Another Tomorrow',
-                    updated_time: '2016-08-18T17:59:33-04:00',
-                    url: '',
-                    vocal_description: '',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/AudioSearchResultsExample' } },
           },
         },
       },
@@ -9448,74 +7318,7 @@ export const getV2AudioIdRoute = createRoute({
       content: {
         'application/json': {
           schema: AudioSchema,
-          examples: {
-            response: {
-              value: {
-                added_date: '2016-08-16',
-                artists: [{ name: 'Klimenko Music' }],
-                assets: {
-                  clean_audio: { file_size: 35188408 },
-                  preview_mp3: {
-                    file_size: 4400203,
-                    url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3',
-                  },
-                  preview_ogg: {
-                    file_size: 4453197,
-                    url: 'https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg',
-                  },
-                  waveform: {
-                    file_size: 18778,
-                    url: 'https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png',
-                  },
-                },
-                bpm: 110,
-                contributor: { id: '2847971' },
-                description:
-                  'Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.',
-                duration: 183,
-                genres: ['Dance/Electronic', 'Electro Pop', 'Pop/Rock'],
-                id: '442583',
-                instruments: ['Piano', 'Synth bass', 'Synth drums', 'Synthesizer'],
-                is_adult: false,
-                is_instrumental: true,
-                isrc: '',
-                keywords: [
-                  'celebratory',
-                  'chic',
-                  'euphoric',
-                  'good times',
-                  'hip',
-                  'optimistic',
-                  'party',
-                  'soaring',
-                  'upbeat',
-                ],
-                language: 'en',
-                lyrics: '',
-                media_type: 'audio',
-                moods: [
-                  'Bright',
-                  'Confident',
-                  'Fun',
-                  'Happy',
-                  'Inspiring',
-                  'Optimistic',
-                  'Playful',
-                  'Sophisticated',
-                  'Stylish',
-                  'Uplifting',
-                ],
-                published_time: '2016-08-16T14:30:03-04:00',
-                recording_version: '',
-                releases: [],
-                similar_artists: [],
-                title: 'Another Tomorrow',
-                updated_time: '2016-08-18T17:59:33-04:00',
-                url: '',
-                vocal_description: '',
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/AudioExample' } } },
         },
       },
     },
@@ -10238,70 +8041,7 @@ export const postV2BulkSearchImagesRoute = createRoute({
         'application/json': {
           schema: BulkImageSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                results: [
-                  {
-                    data: [
-                      {
-                        aspect: 1.5,
-                        assets: {
-                          huge_thumb: {
-                            height: 260,
-                            url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                            width: 390,
-                          },
-                          large_thumb: {
-                            height: 100,
-                            url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                            width: 150,
-                          },
-                          preview: {
-                            height: 300,
-                            url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                            width: 450,
-                          },
-                          preview_1000: {
-                            height: 667,
-                            url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                            width: 1000,
-                          },
-                          preview_1500: {
-                            height: 1000,
-                            url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                            width: 1500,
-                          },
-                          small_thumb: {
-                            height: 67,
-                            url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                            width: 100,
-                          },
-                        },
-                        contributor: { id: '250738318' },
-                        description: 'cropped image of woman gardening',
-                        has_model_release: true,
-                        id: '1572478477',
-                        image_type: 'photo',
-                        media_type: 'image',
-                      },
-                    ],
-                    page: 1,
-                    per_page: 5,
-                    search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                    spellcheck_info: {},
-                    total_count: 45,
-                  },
-                  {
-                    data: [],
-                    page: 1,
-                    per_page: 5,
-                    search_id: '749090bb-2967-4a20-b22e-c800dc845e11',
-                    spellcheck_info: {},
-                    total_count: 0,
-                  },
-                ],
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/BulkImageSearchResultsExample' } },
           },
         },
       },
@@ -10402,40 +8142,7 @@ export const getV2CatalogCollectionsRoute = createRoute({
         'application/json': {
           schema: CatalogCollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_asset: {
-                      asset: {
-                        id: '1690105108',
-                        name: 'Young couple playing tennis at the court',
-                        type: 'image',
-                      },
-                      created_time: '2021-06-10T13:26:09-04:00',
-                      id: '123',
-                    },
-                    created_time: '2021-05-20T16:15:22-04:00',
-                    id: '126351028',
-                    name: 'My collection',
-                    role_assignments: {
-                      collection_id: '126351028',
-                      roles: {
-                        editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-                        owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-                        viewers: [],
-                      },
-                    },
-                    total_item_count: 2,
-                    updated_time: '2021-06-10T13:26:09-04:00',
-                    visibility: 'public',
-                  },
-                ],
-                page: 1,
-                per_page: 20,
-                total_count: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CatalogCollectionDataListExample' } },
           },
         },
       },
@@ -10462,11 +8169,7 @@ export const postV2CatalogCollectionsRoute = createRoute({
           examples: {
             default: {
               description: 'Create Collection Request',
-              value: {
-                items: [{ asset: { id: '1690105108', type: 'image' } }],
-                name: 'New Collection',
-                visibility: 'public',
-              },
+              value: { $ref: '#/components/schemas/CreateCatalogCollectionExample' },
             },
           },
         },
@@ -10481,33 +8184,7 @@ export const postV2CatalogCollectionsRoute = createRoute({
         'application/json': {
           schema: CatalogCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_asset: {
-                  asset: {
-                    id: '1690105108',
-                    name: 'Young couple playing tennis at the court',
-                    type: 'image',
-                  },
-                  created_time: '2021-06-10T13:26:09-04:00',
-                  id: '123',
-                },
-                created_time: '2021-05-20T16:15:22-04:00',
-                id: '126351028',
-                name: 'My collection',
-                role_assignments: {
-                  collection_id: '126351028',
-                  roles: {
-                    editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-                    owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-                    viewers: [],
-                  },
-                },
-                total_item_count: 2,
-                updated_time: '2021-06-10T13:26:09-04:00',
-                visibility: 'public',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CatalogCollectionExample' } },
           },
         },
       },
@@ -10574,7 +8251,7 @@ export const patchV2CatalogCollectionsCollectionIdRoute = createRoute({
           examples: {
             default: {
               description: 'Collection Metadata',
-              value: { cover_asset: { id: '123' }, name: 'My Collection', visibility: 'public' },
+              value: { $ref: '#/components/schemas/UpdateCatalogCollectionExample' },
             },
           },
         },
@@ -10589,33 +8266,7 @@ export const patchV2CatalogCollectionsCollectionIdRoute = createRoute({
         'application/json': {
           schema: CatalogCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_asset: {
-                  asset: {
-                    id: '1690105108',
-                    name: 'Young couple playing tennis at the court',
-                    type: 'image',
-                  },
-                  created_time: '2021-06-10T13:26:09-04:00',
-                  id: '123',
-                },
-                created_time: '2021-05-20T16:15:22-04:00',
-                id: '126351028',
-                name: 'My collection',
-                role_assignments: {
-                  collection_id: '126351028',
-                  roles: {
-                    editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-                    owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-                    viewers: [],
-                  },
-                },
-                total_item_count: 2,
-                updated_time: '2021-06-10T13:26:09-04:00',
-                visibility: 'public',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CatalogCollectionExample' } },
           },
         },
       },
@@ -10655,7 +8306,7 @@ export const postV2CatalogCollectionsCollectionIdItemsRoute = createRoute({
           examples: {
             default: {
               description: 'Add collection items',
-              value: { items: [{ asset: { id: '1690105108', type: 'image' } }] },
+              value: { $ref: '#/components/schemas/CreateCatalogCollectionItemsExample' },
             },
           },
         },
@@ -10670,33 +8321,7 @@ export const postV2CatalogCollectionsCollectionIdItemsRoute = createRoute({
         'application/json': {
           schema: CatalogCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_asset: {
-                  asset: {
-                    id: '1690105108',
-                    name: 'Young couple playing tennis at the court',
-                    type: 'image',
-                  },
-                  created_time: '2021-06-10T13:26:09-04:00',
-                  id: '123',
-                },
-                created_time: '2021-05-20T16:15:22-04:00',
-                id: '126351028',
-                name: 'My collection',
-                role_assignments: {
-                  collection_id: '126351028',
-                  roles: {
-                    editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-                    owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-                    viewers: [],
-                  },
-                },
-                total_item_count: 2,
-                updated_time: '2021-06-10T13:26:09-04:00',
-                visibility: 'public',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CatalogCollectionExample' } },
           },
         },
       },
@@ -10734,7 +8359,10 @@ export const deleteV2CatalogCollectionsCollectionIdItemsRoute = createRoute({
         'application/json': {
           schema: RemoveCatalogCollectionItemsSchema,
           examples: {
-            default: { description: 'Remove collection items', value: { items: [{ id: '123' }] } },
+            default: {
+              description: 'Remove collection items',
+              value: { $ref: '#/components/schemas/RemoveCatalogCollectionItemsExample' },
+            },
           },
         },
       },
@@ -10748,33 +8376,7 @@ export const deleteV2CatalogCollectionsCollectionIdItemsRoute = createRoute({
         'application/json': {
           schema: CatalogCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_asset: {
-                  asset: {
-                    id: '1690105108',
-                    name: 'Young couple playing tennis at the court',
-                    type: 'image',
-                  },
-                  created_time: '2021-06-10T13:26:09-04:00',
-                  id: '123',
-                },
-                created_time: '2021-05-20T16:15:22-04:00',
-                id: '126351028',
-                name: 'My collection',
-                role_assignments: {
-                  collection_id: '126351028',
-                  roles: {
-                    editors: [{ email: 'userTwo@org.com', id: '987', type: 'USER' }],
-                    owners: [{ email: 'userOne@org.com', id: '321', type: 'USER' }],
-                    viewers: [],
-                  },
-                },
-                total_item_count: 2,
-                updated_time: '2021-06-10T13:26:09-04:00',
-                visibility: 'public',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CatalogCollectionExample' } },
           },
         },
       },
@@ -10919,23 +8521,7 @@ export const getV2CatalogSearchRoute = createRoute({
           schema: CatalogCollectionItemDataListSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  {
-                    asset: {
-                      id: '1690105108',
-                      name: 'Young couple playing tennis at the court',
-                      type: 'image',
-                    },
-                    collection_ids: ['126351028'],
-                    created_time: '2021-06-10T13:26:09-04:00',
-                    id: '123',
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 82,
-              },
+              value: { $ref: '#/components/schemas/CatalogCollectionItemDataListExample' },
             },
           },
         },
@@ -10982,35 +8568,7 @@ export const getV2ContributorsRoute = createRoute({
         'application/json': {
           schema: ContributorProfileDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    about: "John Doe's photographs",
-                    contributor_type: ['photographer'],
-                    display_name: 'John Doe',
-                    equipment: ['Nikon', 'Fuji'],
-                    id: '12345678',
-                    location: 'US',
-                    portfolio_url: 'https://www.shutterstock.com/g/jdoe',
-                    social_media: {
-                      facebook: 'http://example.com/jdoe',
-                      google_plus: 'http://example.com/jdoe',
-                      linkedin: 'http://example.com/jdoe',
-                      pinterest: 'http://example.com/jdoe',
-                      tumblr: 'http://example.com/jdoe',
-                      twitter: 'http://example.com/jdoe',
-                    },
-                    styles: ['landscape', 'nature', 'footage_travel'],
-                    subjects: ['animals', 'landmarks', 'nature', 'objects', 'recreation'],
-                    website: 'http://example.com/profiles/jdoe',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 15,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/ContributorProfileDataListExample' } },
           },
         },
       },
@@ -11053,28 +8611,7 @@ export const getV2ContributorsContributorIdRoute = createRoute({
         'application/json': {
           schema: ContributorProfileSchema,
           examples: {
-            response: {
-              value: {
-                about: "John Doe's photographs",
-                contributor_type: ['photographer'],
-                display_name: 'John Doe',
-                equipment: ['Nikon', 'Fuji'],
-                id: '12345678',
-                location: 'US',
-                portfolio_url: 'https://www.shutterstock.com/g/jdoe',
-                social_media: {
-                  facebook: 'http://example.com/jdoe',
-                  google_plus: 'http://example.com/jdoe',
-                  linkedin: 'http://example.com/jdoe',
-                  pinterest: 'http://example.com/jdoe',
-                  tumblr: 'http://example.com/jdoe',
-                  twitter: 'http://example.com/jdoe',
-                },
-                styles: ['landscape', 'nature', 'footage_travel'],
-                subjects: ['animals', 'landmarks', 'nature', 'objects', 'recreation'],
-                website: 'http://example.com/profiles/jdoe',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/ContributorProfileExample' } },
           },
         },
       },
@@ -11130,22 +8667,7 @@ export const getV2ContributorsContributorIdCollectionsRoute = createRoute({
         'application/json': {
           schema: CollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: { id: '297886754' },
-                    id: '293542904',
-                    items_updated_time: '2021-05-20T16:15:22-04:00',
-                    name: 'My collection',
-                    total_item_count: 85,
-                  },
-                ],
-                page: 1,
-                per_page: 100,
-                total_count: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionDataListExample' } },
           },
         },
       },
@@ -11200,17 +8722,7 @@ export const getV2ContributorsContributorIdCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionSchema,
-          examples: {
-            response: {
-              value: {
-                cover_item: { id: '297886754' },
-                id: '293542904',
-                items_updated_time: '2021-05-20T16:15:22-04:00',
-                name: 'My collection',
-                total_item_count: 85,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/CollectionExample' } } },
         },
       },
     },
@@ -11358,12 +8870,7 @@ export const postV2CvImagesRoute = createRoute({
         'application/json': {
           schema: ImageCreateRequestSchema,
           examples: {
-            default: {
-              value: {
-                base64_image:
-                  'R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu',
-              },
-            },
+            default: { value: { $ref: '#/components/schemas/ImageCreateRequestExample' } },
           },
         },
       },
@@ -11376,7 +8883,11 @@ export const postV2CvImagesRoute = createRoute({
       content: {
         'application/json': {
           schema: ComputerVisionImageCreateResponseSchema,
-          examples: { response: { value: { upload_id: 'Udb14e1c3540bdbf82b4b3fe12d3a44f2' } } },
+          examples: {
+            response: {
+              value: { $ref: '#/components/schemas/ComputerVisionImageCreateResponseExample' },
+            },
+          },
         },
       },
     },
@@ -11423,23 +8934,7 @@ export const getV2CvKeywordsRoute = createRoute({
         'application/json': {
           schema: KeywordDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  'nature',
-                  'wildlife',
-                  'animal',
-                  'cute',
-                  'bamboo',
-                  'panda',
-                  'china',
-                  'wild',
-                  'endangered',
-                  'black',
-                  'bear',
-                ],
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/KeywordDataListExample' } },
           },
         },
       },
@@ -11581,58 +9076,7 @@ export const getV2CvSimilarImagesRoute = createRoute({
         'application/json': {
           schema: ImageSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.5,
-                    assets: {
-                      huge_thumb: {
-                        height: 260,
-                        url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                        width: 390,
-                      },
-                      large_thumb: {
-                        height: 100,
-                        url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 150,
-                      },
-                      preview: {
-                        height: 300,
-                        url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 450,
-                      },
-                      preview_1000: {
-                        height: 667,
-                        url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                        width: 1000,
-                      },
-                      preview_1500: {
-                        height: 1000,
-                        url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 1500,
-                      },
-                      small_thumb: {
-                        height: 67,
-                        url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 100,
-                      },
-                    },
-                    contributor: { id: '250738318' },
-                    description: 'cropped image of woman gardening',
-                    has_model_release: true,
-                    id: '1572478477',
-                    image_type: 'photo',
-                    media_type: 'image',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                spellcheck_info: {},
-                total_count: 45,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/ImageSearchResultsExample' } },
           },
         },
       },
@@ -11773,47 +9217,7 @@ export const getV2CvSimilarVideosRoute = createRoute({
         'application/json': {
           schema: VideoSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.778,
-                    aspect_ratio: '16:9',
-                    assets: {
-                      preview_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      preview_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      preview_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                      thumb_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      thumb_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      thumb_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                    },
-                    contributor: { id: '4411978' },
-                    description:
-                      'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-                    duration: 14.081,
-                    has_model_release: true,
-                    id: '1033184651',
-                    media_type: 'video',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                total_count: 123,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/VideoSearchResultsExample' } },
           },
         },
       },
@@ -11840,9 +9244,7 @@ export const getV2EditorialCategoriesRoute = createRoute({
         'application/json': {
           schema: EditorialCategoryResultsSchema,
           examples: {
-            response: {
-              value: { data: [{ name: 'Animal' }, { name: 'Awards' }, { name: 'Art' }] },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialCategoryResultsExample' } },
           },
         },
       },
@@ -11871,14 +9273,7 @@ export const getV2EditorialImagesCategoriesRoute = createRoute({
           schema: EditorialImageCategoryResultsSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  { name: 'Animal' },
-                  { name: 'Awards' },
-                  { name: 'Art' },
-                  { name: 'Film Stills' },
-                ],
-              },
+              value: { $ref: '#/components/schemas/EditorialImageCategoryResultsExample' },
             },
           },
         },
@@ -12059,30 +9454,7 @@ export const getV2EditorialImagesLicensesRoute = createRoute({
         'application/json': {
           schema: DownloadHistoryDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    download_time: '2021-07-15T15:46:34.000Z',
-                    id: 'e1eba3833793e77188d22caae8bac9f2cd',
-                    image: { format: { size: 'original' }, id: '9763363ao' },
-                    is_downloadable: false,
-                    license: 'premier_editorial_all_digital',
-                    metadata: {
-                      client: 'Company A',
-                      job: 'Important project',
-                      other: 'Important media',
-                      purchase_order: '123456',
-                    },
-                    subscription_id: 's12345678',
-                    user: { username: 'editorial_test_account_002' },
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 2890,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/DownloadHistoryDataListExample' } },
           },
         },
       },
@@ -12108,22 +9480,7 @@ export const postV2EditorialImagesLicensesRoute = createRoute({
       content: {
         'application/json': {
           schema: LicenseEditorialContentRequestSchema,
-          example: {
-            country: 'USA',
-            editorial: [
-              {
-                editorial_id: '10687730b',
-                license: 'premier_editorial_comp',
-                metadata: {
-                  customer_id: '12345',
-                  geo_location: 'US',
-                  number_viewed: '15',
-                  search_term: 'dog',
-                },
-                size: 'original',
-              },
-            ],
-          },
+          example: { $ref: '#/components/schemas/LicenseEditorialContentRequestExample' },
         },
       },
       required: true,
@@ -12137,20 +9494,7 @@ export const postV2EditorialImagesLicensesRoute = createRoute({
           schema: LicenseEditorialContentResultsSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  {
-                    allotment_charge: 1,
-                    download: {
-                      url: 'https://s3-eu-west-1.amazonaws.com/api-downloads.rexfeatures.com/[random-characters].jpg?Expires=1524717323',
-                    },
-                    editorial_id: '69656358',
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 12,
-              },
+              value: { $ref: '#/components/schemas/LicenseEditorialContentResultsExample' },
             },
           },
         },
@@ -12236,27 +9580,7 @@ export const getV2EditorialImagesLivefeedsRoute = createRoute({
         'application/json': {
           schema: EditorialImageLivefeedListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: {
-                      height: 117,
-                      id: '9763363q',
-                      url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-                      width: 170,
-                    },
-                    created_time: '2018-07-17T12:42:03+00:00',
-                    id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-                    name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-                    total_item_count: 38,
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 5300,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialImageLivefeedListExample' } },
           },
         },
       },
@@ -12313,20 +9637,7 @@ export const getV2EditorialImagesLivefeedsIdRoute = createRoute({
         'application/json': {
           schema: EditorialImageLivefeedSchema,
           examples: {
-            response: {
-              value: {
-                cover_item: {
-                  height: 117,
-                  id: '9763363q',
-                  url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-                  width: 170,
-                },
-                created_time: '2018-07-17T12:42:03+00:00',
-                id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-                name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-                total_item_count: 38,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialImageLivefeedExample' } },
           },
         },
       },
@@ -12384,80 +9695,7 @@ export const getV2EditorialImagesLivefeedsIdItemsRoute = createRoute({
           schema: EditorialImageContentDataListSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.621,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 617,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3693,
-                        is_licensable: true,
-                        width: 5985,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 309,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 105,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 136,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 926,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                        width: 1500,
-                      },
-                      watermark_450: {
-                        height: 278,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'Jon Super/AP/Shutterstock',
-                    caption: '',
-                    categories: [{ name: 'Sport' }],
-                    date_taken: '2021-05-11',
-                    description:
-                      "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                    id: '10687730b',
-                    keywords: [
-                      'england',
-                      'europe',
-                      'leicester city fc',
-                      'manchester',
-                      'manchester united fc',
-                      "men's soccer",
-                      "men's sports",
-                      'premier league',
-                      'professional soccer',
-                      'soccer',
-                      'sports',
-                      'united kingdom',
-                      'western europe',
-                      'wsoc',
-                    ],
-                    title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 23,
-              },
+              value: { $ref: '#/components/schemas/EditorialImageContentDataListExample' },
             },
           },
         },
@@ -12619,84 +9857,7 @@ export const getV2EditorialImagesSearchRoute = createRoute({
         'application/json': {
           schema: EditorialSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.621,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 617,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3693,
-                        is_licensable: true,
-                        width: 5985,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 309,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 105,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 136,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 926,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                        width: 1500,
-                      },
-                      watermark_450: {
-                        height: 278,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'Jon Super/AP/Shutterstock',
-                    caption: '',
-                    categories: [{ name: 'Sport' }],
-                    date_taken: '2021-05-11',
-                    description:
-                      "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                    id: '10687730b',
-                    keywords: [
-                      'england',
-                      'europe',
-                      'leicester city fc',
-                      'manchester',
-                      'manchester united fc',
-                      "men's soccer",
-                      "men's sports",
-                      'premier league',
-                      'professional soccer',
-                      'soccer',
-                      'sports',
-                      'united kingdom',
-                      'western europe',
-                      'wsoc',
-                    ],
-                    title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-                  },
-                ],
-                next: 'eyJ2IjoyLCJzIjoxLCJwIjpbMF19',
-                per_page: 1,
-                prev: '',
-                search_id: 'BaMzOAkpHIvfnuWVRFs1ag',
-                total_count: 46845,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialSearchResultsExample' } },
           },
         },
       },
@@ -12873,73 +10034,7 @@ export const getV2EditorialImagesUpdatedRoute = createRoute({
         'application/json': {
           schema: EditorialUpdatedResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.481,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 675,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3263,
-                        is_licensable: true,
-                        width: 4831,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 337,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 115,
-                        url: 'https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 149,
-                        url: 'https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 1500,
-                        url: 'https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg',
-                        width: 1040,
-                      },
-                      watermark_450: {
-                        height: 304,
-                        url: 'https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'ALEX HOFFORD/EPA-EFE/Shutterstock',
-                    caption: '',
-                    categories: [],
-                    commercial_status: { status: 'available' },
-                    date_taken: '2018-08-24',
-                    description:
-                      'Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.',
-                    id: '9804979n',
-                    keywords: [],
-                    rights: { countries: 'CAN,+DEU,+GBR,+USA,-*' },
-                    supplier_code: 'EPA',
-                    title:
-                      'Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018',
-                    updated_time: '2019-07-15T20:04:44-04:00',
-                    updates: ['addition'],
-                  },
-                ],
-                next: 'eyJ2IjoxLCJzIjoxfQ==',
-                per_page: 1,
-                prev: '',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialUpdatedResultsExample' } },
           },
         },
       },
@@ -12998,75 +10093,7 @@ export const getV2EditorialImagesIdRoute = createRoute({
         'application/json': {
           schema: EditorialContentSchema,
           examples: {
-            response: {
-              value: {
-                aspect: 1.621,
-                assets: {
-                  medium_jpg: {
-                    display_name: 'Med',
-                    height: 617,
-                    is_licensable: true,
-                    width: 1000,
-                  },
-                  original: {
-                    display_name: 'Original',
-                    height: 3693,
-                    is_licensable: true,
-                    width: 5985,
-                  },
-                  small_jpg: {
-                    display_name: 'Small',
-                    height: 309,
-                    is_licensable: true,
-                    width: 500,
-                  },
-                  thumb_170: {
-                    height: 105,
-                    url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                    width: 170,
-                  },
-                  thumb_220: {
-                    height: 136,
-                    url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                    width: 220,
-                  },
-                  watermark_1500: {
-                    height: 926,
-                    url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                    width: 1500,
-                  },
-                  watermark_450: {
-                    height: 278,
-                    url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                    width: 450,
-                  },
-                },
-                byline: 'Jon Super/AP/Shutterstock',
-                caption: '',
-                categories: [{ name: 'Sport' }],
-                date_taken: '2021-05-11',
-                description:
-                  "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                id: '10687730b',
-                keywords: [
-                  'england',
-                  'europe',
-                  'leicester city fc',
-                  'manchester',
-                  'manchester united fc',
-                  "men's soccer",
-                  "men's sports",
-                  'premier league',
-                  'professional soccer',
-                  'soccer',
-                  'sports',
-                  'united kingdom',
-                  'western europe',
-                  'wsoc',
-                ],
-                title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialContentExample' } },
           },
         },
       },
@@ -13095,22 +10122,7 @@ export const postV2EditorialLicensesRoute = createRoute({
           schema: LicenseEditorialContentRequestSchema,
           examples: {
             default: {
-              value: {
-                country: 'USA',
-                editorial: [
-                  {
-                    editorial_id: '10687730b',
-                    license: 'premier_editorial_comp',
-                    metadata: {
-                      customer_id: '12345',
-                      geo_location: 'US',
-                      number_viewed: '15',
-                      search_term: 'dog',
-                    },
-                    size: 'original',
-                  },
-                ],
-              },
+              value: { $ref: '#/components/schemas/LicenseEditorialContentRequestExample' },
             },
           },
         },
@@ -13224,27 +10236,7 @@ export const getV2EditorialLivefeedsRoute = createRoute({
         'application/json': {
           schema: EditorialLivefeedListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: {
-                      height: 117,
-                      id: '9763363q',
-                      url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-                      width: 170,
-                    },
-                    created_time: '2018-07-17T12:42:03+00:00',
-                    id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-                    name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-                    total_item_count: 38,
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 56,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialLivefeedListExample' } },
           },
         },
       },
@@ -13304,20 +10296,7 @@ export const getV2EditorialLivefeedsIdRoute = createRoute({
         'application/json': {
           schema: EditorialLivefeedSchema,
           examples: {
-            response: {
-              value: {
-                cover_item: {
-                  height: 117,
-                  id: '9763363q',
-                  url: 'https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg',
-                  width: 170,
-                },
-                created_time: '2018-07-17T12:42:03+00:00',
-                id: '2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202',
-                name: 'Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2',
-                total_item_count: 38,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialLivefeedExample' } },
           },
         },
       },
@@ -13377,82 +10356,7 @@ export const getV2EditorialLivefeedsIdItemsRoute = createRoute({
         'application/json': {
           schema: EditorialContentDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.621,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 617,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3693,
-                        is_licensable: true,
-                        width: 5985,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 309,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 105,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 136,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 926,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                        width: 1500,
-                      },
-                      watermark_450: {
-                        height: 278,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'Jon Super/AP/Shutterstock',
-                    caption: '',
-                    categories: [{ name: 'Sport' }],
-                    date_taken: '2021-05-11',
-                    description:
-                      "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                    id: '10687730b',
-                    keywords: [
-                      'england',
-                      'europe',
-                      'leicester city fc',
-                      'manchester',
-                      'manchester united fc',
-                      "men's soccer",
-                      "men's sports",
-                      'premier league',
-                      'professional soccer',
-                      'soccer',
-                      'sports',
-                      'united kingdom',
-                      'western europe',
-                      'wsoc',
-                    ],
-                    title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 16,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialContentDataListExample' } },
           },
         },
       },
@@ -13609,84 +10513,7 @@ export const getV2EditorialSearchRoute = createRoute({
         'application/json': {
           schema: EditorialSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.621,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 617,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3693,
-                        is_licensable: true,
-                        width: 5985,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 309,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 105,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 136,
-                        url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 926,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                        width: 1500,
-                      },
-                      watermark_450: {
-                        height: 278,
-                        url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'Jon Super/AP/Shutterstock',
-                    caption: '',
-                    categories: [{ name: 'Sport' }],
-                    date_taken: '2021-05-11',
-                    description:
-                      "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                    id: '10687730b',
-                    keywords: [
-                      'england',
-                      'europe',
-                      'leicester city fc',
-                      'manchester',
-                      'manchester united fc',
-                      "men's soccer",
-                      "men's sports",
-                      'premier league',
-                      'professional soccer',
-                      'soccer',
-                      'sports',
-                      'united kingdom',
-                      'western europe',
-                      'wsoc',
-                    ],
-                    title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-                  },
-                ],
-                next: 'eyJ2IjoyLCJzIjoxLCJwIjpbMF19',
-                per_page: 1,
-                prev: '',
-                search_id: 'BaMzOAkpHIvfnuWVRFs1ag',
-                total_count: 46845,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialSearchResultsExample' } },
           },
         },
       },
@@ -13864,73 +10691,7 @@ export const getV2EditorialUpdatedRoute = createRoute({
         'application/json': {
           schema: EditorialUpdatedResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.481,
-                    assets: {
-                      medium_jpg: {
-                        display_name: 'Med',
-                        height: 675,
-                        is_licensable: true,
-                        width: 1000,
-                      },
-                      original: {
-                        display_name: 'Original',
-                        height: 3263,
-                        is_licensable: true,
-                        width: 4831,
-                      },
-                      small_jpg: {
-                        display_name: 'Small',
-                        height: 337,
-                        is_licensable: true,
-                        width: 500,
-                      },
-                      thumb_170: {
-                        height: 115,
-                        url: 'https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg',
-                        width: 170,
-                      },
-                      thumb_220: {
-                        height: 149,
-                        url: 'https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg',
-                        width: 220,
-                      },
-                      watermark_1500: {
-                        height: 1500,
-                        url: 'https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg',
-                        width: 1040,
-                      },
-                      watermark_450: {
-                        height: 304,
-                        url: 'https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg',
-                        width: 450,
-                      },
-                    },
-                    byline: 'ALEX HOFFORD/EPA-EFE/Shutterstock',
-                    caption: '',
-                    categories: [],
-                    commercial_status: { status: 'available' },
-                    date_taken: '2018-08-24',
-                    description:
-                      'Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.',
-                    id: '9804979n',
-                    keywords: [],
-                    rights: { countries: 'CAN,+DEU,+GBR,+USA,-*' },
-                    supplier_code: 'EPA',
-                    title:
-                      'Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018',
-                    updated_time: '2019-07-15T20:04:44-04:00',
-                    updates: ['addition'],
-                  },
-                ],
-                next: 'eyJ2IjoxLCJzIjoxfQ==',
-                per_page: 1,
-                prev: '',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialUpdatedResultsExample' } },
           },
         },
       },
@@ -13960,14 +10721,7 @@ export const getV2EditorialVideosCategoriesRoute = createRoute({
           schema: EditorialVideoCategoryResultsSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  { name: 'Animal' },
-                  { name: 'Awards' },
-                  { name: 'Art' },
-                  { name: 'Film Stills' },
-                ],
-              },
+              value: { $ref: '#/components/schemas/EditorialVideoCategoryResultsExample' },
             },
           },
         },
@@ -14213,17 +10967,7 @@ export const postV2EditorialVideosLicensesRoute = createRoute({
           schema: LicenseEditorialVideoContentRequestSchema,
           examples: {
             default: {
-              value: {
-                country: 'USA',
-                editorial: [
-                  {
-                    editorial_id: '10679854a',
-                    license: 'premier_editorial_video_digital_only',
-                    metadata: { purchase_order: '12345' },
-                    size: 'original',
-                  },
-                ],
-              },
+              value: { $ref: '#/components/schemas/LicenseEditorialVideoContentRequestExample' },
             },
           },
         },
@@ -14445,80 +11189,7 @@ export const getV2EditorialVideosSearchRoute = createRoute({
           schema: EditorialVideoSearchResultsSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1,
-                    assets: {
-                      original: {
-                        display_name: 'HD',
-                        file_size: 82233387,
-                        format: 'avc1',
-                        fps: 30,
-                        height: 1080,
-                        is_licensable: true,
-                        width: 1080,
-                      },
-                      preview_mp4: {
-                        url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4',
-                      },
-                      preview_webm: {
-                        url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm',
-                      },
-                      thumb_jpg: {
-                        url: 'https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg',
-                      },
-                    },
-                    byline: 'ViralHog/Shutterstock',
-                    caption: '',
-                    categories: [],
-                    date_taken: '2020-11-13',
-                    description:
-                      'Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski\'s, and boats. He has brought joy to many people during the pandemic including those with cancer."',
-                    id: '10679854a',
-                    keywords: [
-                      '2020',
-                      'adorable',
-                      'birds',
-                      'bizarre',
-                      'canadian goose',
-                      'cute',
-                      'domesticated animals',
-                      'entertainment',
-                      'feel good',
-                      'flew',
-                      'flies',
-                      'fly',
-                      'flying',
-                      'fun',
-                      'goose',
-                      'jet skis',
-                      'nature',
-                      'odd',
-                      'pets',
-                      'played',
-                      'playing',
-                      'plays',
-                      'prior lake',
-                      'sports',
-                      'strange',
-                      'sweet',
-                      'usa',
-                      'viralhog',
-                      'virals',
-                      'water sports',
-                      'weird',
-                    ],
-                    title:
-                      'Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020',
-                  },
-                ],
-                next: 'eyJ2IjoyLCJzIjoyMCwicCI6WzBdfQ==',
-                per_page: 1,
-                prev: '',
-                search_id: 'zhmz9zLmpQehdTPvg8cacQ',
-                total_count: 331,
-              },
+              value: { $ref: '#/components/schemas/EditorialVideoSearchResultsExample' },
             },
           },
         },
@@ -14591,73 +11262,7 @@ export const getV2EditorialVideosIdRoute = createRoute({
         'application/json': {
           schema: EditorialVideoContentSchema,
           examples: {
-            response: {
-              value: {
-                aspect: 1,
-                assets: {
-                  original: {
-                    display_name: 'HD',
-                    file_size: 82233387,
-                    format: 'avc1',
-                    fps: 30,
-                    height: 1080,
-                    is_licensable: true,
-                    width: 1080,
-                  },
-                  preview_mp4: {
-                    url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4',
-                  },
-                  preview_webm: {
-                    url: 'https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm',
-                  },
-                  thumb_jpg: {
-                    url: 'https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg',
-                  },
-                },
-                byline: 'ViralHog/Shutterstock',
-                caption: '',
-                categories: [],
-                date_taken: '2020-11-13',
-                description:
-                  'Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski\'s, and boats. He has brought joy to many people during the pandemic including those with cancer."',
-                id: '10679854a',
-                keywords: [
-                  '2020',
-                  'adorable',
-                  'birds',
-                  'bizarre',
-                  'canadian goose',
-                  'cute',
-                  'domesticated animals',
-                  'entertainment',
-                  'feel good',
-                  'flew',
-                  'flies',
-                  'fly',
-                  'flying',
-                  'fun',
-                  'goose',
-                  'jet skis',
-                  'nature',
-                  'odd',
-                  'pets',
-                  'played',
-                  'playing',
-                  'plays',
-                  'prior lake',
-                  'sports',
-                  'strange',
-                  'sweet',
-                  'usa',
-                  'viralhog',
-                  'virals',
-                  'water sports',
-                  'weird',
-                ],
-                title:
-                  'Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialVideoContentExample' } },
           },
         },
       },
@@ -14728,75 +11333,7 @@ export const getV2EditorialIdRoute = createRoute({
         'application/json': {
           schema: EditorialContentSchema,
           examples: {
-            response: {
-              value: {
-                aspect: 1.621,
-                assets: {
-                  medium_jpg: {
-                    display_name: 'Med',
-                    height: 617,
-                    is_licensable: true,
-                    width: 1000,
-                  },
-                  original: {
-                    display_name: 'Original',
-                    height: 3693,
-                    is_licensable: true,
-                    width: 5985,
-                  },
-                  small_jpg: {
-                    display_name: 'Small',
-                    height: 309,
-                    is_licensable: true,
-                    width: 500,
-                  },
-                  thumb_170: {
-                    height: 105,
-                    url: 'https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg',
-                    width: 170,
-                  },
-                  thumb_220: {
-                    height: 136,
-                    url: 'https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg',
-                    width: 220,
-                  },
-                  watermark_1500: {
-                    height: 926,
-                    url: 'https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg',
-                    width: 1500,
-                  },
-                  watermark_450: {
-                    height: 278,
-                    url: 'https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg',
-                    width: 450,
-                  },
-                },
-                byline: 'Jon Super/AP/Shutterstock',
-                caption: '',
-                categories: [{ name: 'Sport' }],
-                date_taken: '2021-05-11',
-                description:
-                  "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-                id: '10687730b',
-                keywords: [
-                  'england',
-                  'europe',
-                  'leicester city fc',
-                  'manchester',
-                  'manchester united fc',
-                  "men's soccer",
-                  "men's sports",
-                  'premier league',
-                  'professional soccer',
-                  'soccer',
-                  'sports',
-                  'united kingdom',
-                  'western europe',
-                  'wsoc',
-                ],
-                title: 'Soccer Premier League, Manchester, United Kingdom - 11 May 2021',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/EditorialContentExample' } },
           },
         },
       },
@@ -14870,58 +11407,7 @@ export const getV2ImagesRoute = createRoute({
       content: {
         'application/json': {
           schema: ImageDataListSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.5,
-                    assets: {
-                      huge_thumb: {
-                        height: 260,
-                        url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                        width: 390,
-                      },
-                      large_thumb: {
-                        height: 100,
-                        url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 150,
-                      },
-                      preview: {
-                        height: 300,
-                        url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 450,
-                      },
-                      preview_1000: {
-                        height: 667,
-                        url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                        width: 1000,
-                      },
-                      preview_1500: {
-                        height: 1000,
-                        url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 1500,
-                      },
-                      small_thumb: {
-                        height: 67,
-                        url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 100,
-                      },
-                    },
-                    contributor: { id: '250738318' },
-                    description: 'cropped image of woman gardening',
-                    has_model_release: true,
-                    id: '1572478477',
-                    image_type: 'photo',
-                    media_type: 'image',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/ImageDataListExample' } } },
         },
       },
     },
@@ -14947,12 +11433,7 @@ export const postV2ImagesRoute = createRoute({
         'application/json': {
           schema: ImageCreateRequestSchema,
           examples: {
-            default: {
-              value: {
-                base64_image:
-                  'R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu',
-              },
-            },
+            default: { value: { $ref: '#/components/schemas/ImageCreateRequestExample' } },
           },
         },
       },
@@ -14965,7 +11446,9 @@ export const postV2ImagesRoute = createRoute({
       content: {
         'application/json': {
           schema: ImageCreateResponseSchema,
-          examples: { response: { value: { id: 'Udb14e1c3540bdbf82b4b3fe12d3a44f2' } } },
+          examples: {
+            response: { value: { $ref: '#/components/schemas/ImageCreateResponseExample' } },
+          },
         },
       },
     },
@@ -15007,17 +11490,7 @@ export const getV2ImagesCategoriesRoute = createRoute({
         'application/json': {
           schema: CategoryDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  { id: '1', name: 'Animals/Wildlife' },
-                  { id: '11', name: 'The Arts' },
-                ],
-                page: 1,
-                per_page: 2,
-                total_count: 13,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CategoryDataListExample' } },
           },
         },
       },
@@ -15108,22 +11581,7 @@ export const getV2ImagesCollectionsRoute = createRoute({
         'application/json': {
           schema: CollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: { id: '297886754' },
-                    id: '293542904',
-                    items_updated_time: '2021-05-20T16:15:22-04:00',
-                    name: 'My collection',
-                    total_item_count: 85,
-                  },
-                ],
-                page: 1,
-                per_page: 100,
-                total_count: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionDataListExample' } },
           },
         },
       },
@@ -15149,7 +11607,9 @@ export const postV2ImagesCollectionsRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionCreateRequestSchema,
-          examples: { default: { value: { name: 'Test Collection 19cf' } } },
+          examples: {
+            default: { value: { $ref: '#/components/schemas/CollectionCreateRequestExample' } },
+          },
         },
       },
       required: true,
@@ -15161,7 +11621,9 @@ export const postV2ImagesCollectionsRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionCreateResponseSchema,
-          examples: { response: { value: { id: '48433105' } } },
+          examples: {
+            response: { value: { $ref: '#/components/schemas/CollectionCreateResponseExample' } },
+          },
         },
       },
     },
@@ -15238,26 +11700,7 @@ export const getV2ImagesCollectionsFeaturedRoute = createRoute({
         'application/json': {
           schema: FeaturedCollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: {
-                      url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-                    },
-                    created_time: '2021-07-07T13:10:24.000Z',
-                    id: '19853',
-                    items_updated_time: '2021-07-08T12:33:37.000Z',
-                    name: 'Exercise & Fitness',
-                    total_item_count: 82,
-                    updated_time: '2021-07-07T13:10:24.000Z',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/FeaturedCollectionDataListExample' } },
           },
         },
       },
@@ -15328,19 +11771,7 @@ export const getV2ImagesCollectionsFeaturedIdRoute = createRoute({
         'application/json': {
           schema: FeaturedCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_item: {
-                  url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-                },
-                created_time: '2021-07-07T13:10:24.000Z',
-                id: '19853',
-                items_updated_time: '2021-07-08T12:33:37.000Z',
-                name: 'Exercise & Fitness',
-                total_item_count: 82,
-                updated_time: '2021-07-07T13:10:24.000Z',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/FeaturedCollectionExample' } },
           },
         },
       },
@@ -15428,17 +11859,7 @@ export const getV2ImagesCollectionsFeaturedIdItemsRoute = createRoute({
         'application/json': {
           schema: CollectionItemDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  { added_time: '2021-07-08T12:33:37.000Z', id: '1690105108', media_type: 'image' },
-                  { added_time: '2021-07-08T12:31:43.000Z', id: '1468703072', media_type: 'image' },
-                ],
-                page: 1,
-                per_page: 2,
-                total_count: 82,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionItemDataListExample' } },
           },
         },
       },
@@ -15511,17 +11932,7 @@ export const getV2ImagesCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionSchema,
-          examples: {
-            response: {
-              value: {
-                cover_item: { id: '297886754' },
-                id: '293542904',
-                items_updated_time: '2021-05-20T16:15:22-04:00',
-                name: 'My collection',
-                total_item_count: 85,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/CollectionExample' } } },
         },
       },
     },
@@ -15560,7 +11971,9 @@ export const postV2ImagesCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionUpdateRequestSchema,
-          examples: { default: { value: { name: 'My collection with a new name' } } },
+          examples: {
+            default: { value: { $ref: '#/components/schemas/CollectionUpdateRequestExample' } },
+          },
         },
       },
       required: true,
@@ -15709,17 +12122,7 @@ export const getV2ImagesCollectionsIdItemsRoute = createRoute({
         'application/json': {
           schema: CollectionItemDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  { added_time: '2021-07-08T12:33:37.000Z', id: '1690105108', media_type: 'image' },
-                  { added_time: '2021-07-08T12:31:43.000Z', id: '1468703072', media_type: 'image' },
-                ],
-                page: 1,
-                per_page: 2,
-                total_count: 82,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionItemDataListExample' } },
           },
         },
       },
@@ -16008,30 +12411,7 @@ export const getV2ImagesLicensesRoute = createRoute({
         'application/json': {
           schema: DownloadHistoryDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    download_time: '2021-07-15T15:46:34.000Z',
-                    id: 'e1eba3833793e77188d22caae8bac9f2cd',
-                    image: { format: { size: 'original' }, id: '9763363ao' },
-                    is_downloadable: false,
-                    license: 'premier_editorial_all_digital',
-                    metadata: {
-                      client: 'Company A',
-                      job: 'Important project',
-                      other: 'Important media',
-                      purchase_order: '123456',
-                    },
-                    subscription_id: 's12345678',
-                    user: { username: 'editorial_test_account_002' },
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 2890,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/DownloadHistoryDataListExample' } },
           },
         },
       },
@@ -16115,27 +12495,7 @@ export const postV2ImagesLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseImageRequestSchema,
           examples: {
-            default: {
-              value: {
-                images: [
-                  {
-                    editorial_acknowledgement: true,
-                    format: 'jpg',
-                    image_id: '123456789',
-                    metadata: {
-                      customer_id: '12345',
-                      geo_location: 'US',
-                      number_viewed: '15',
-                      search_term: 'dog',
-                    },
-                    price: 12.34,
-                    show_modal: true,
-                    size: 'small',
-                    subscription_id: 's12345678',
-                  },
-                ],
-              },
-            },
+            default: { value: { $ref: '#/components/schemas/LicenseImageRequestExample' } },
           },
         },
       },
@@ -16149,22 +12509,7 @@ export const postV2ImagesLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseImageResultDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    allotment_charge: 1,
-                    download: {
-                      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-                    },
-                    image_id: '59656357',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 23,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/LicenseImageResultDataListExample' } },
           },
         },
       },
@@ -16202,7 +12547,10 @@ export const postV2ImagesLicensesIdDownloadsRoute = createRoute({
     body: {
       description: 'Information about the images to redownload',
       content: {
-        'application/json': { schema: RedownloadImageSchema, example: { size: 'small' } },
+        'application/json': {
+          schema: RedownloadImageSchema,
+          example: { $ref: '#/components/schemas/RedownloadImageExample' },
+        },
       },
       required: true,
     },
@@ -16213,13 +12561,7 @@ export const postV2ImagesLicensesIdDownloadsRoute = createRoute({
       content: {
         'application/json': {
           schema: UrlSchema,
-          examples: {
-            response: {
-              value: {
-                url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg',
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/UrlExample' } } },
         },
       },
     },
@@ -16298,14 +12640,7 @@ export const getV2ImagesRecommendationsRoute = createRoute({
         'application/json': {
           schema: RecommendationDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [{ id: '123456789' }, { id: '99379946' }, { id: '133918412' }],
-                page: 1,
-                per_page: 5,
-                total_count: 12,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/RecommendationDataListExample' } },
           },
         },
       },
@@ -17097,58 +13432,7 @@ export const getV2ImagesSearchRoute = createRoute({
         'application/json': {
           schema: ImageSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.5,
-                    assets: {
-                      huge_thumb: {
-                        height: 260,
-                        url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                        width: 390,
-                      },
-                      large_thumb: {
-                        height: 100,
-                        url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 150,
-                      },
-                      preview: {
-                        height: 300,
-                        url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 450,
-                      },
-                      preview_1000: {
-                        height: 667,
-                        url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                        width: 1000,
-                      },
-                      preview_1500: {
-                        height: 1000,
-                        url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 1500,
-                      },
-                      small_thumb: {
-                        height: 67,
-                        url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 100,
-                      },
-                    },
-                    contributor: { id: '250738318' },
-                    description: 'cropped image of woman gardening',
-                    has_model_release: true,
-                    id: '1572478477',
-                    image_type: 'photo',
-                    media_type: 'image',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                spellcheck_info: {},
-                total_count: 45,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/ImageSearchResultsExample' } },
           },
         },
       },
@@ -17210,24 +13494,7 @@ export const getV2ImagesSearchSuggestionsRoute = createRoute({
       content: {
         'application/json': {
           schema: SuggestionsSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  'cat scan',
-                  'cats and dogs',
-                  'cats playing',
-                  'catsuit',
-                  'cat silhouette',
-                  'catskills',
-                  'cats eyes',
-                  'cat sitting',
-                  'cat sleeping',
-                  'cats eye',
-                ],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/SuggestionsExample' } } },
         },
       },
     },
@@ -17251,7 +13518,7 @@ export const postV2ImagesSearchSuggestionsRoute = createRoute({
       content: {
         'application/json': {
           schema: SearchEntitiesRequestSchema,
-          example: { text: 'Planting flowers is a great way to make springtime more beautiful.' },
+          example: { $ref: '#/components/schemas/SearchEntitiesRequestExample' },
         },
       },
       required: true,
@@ -17408,20 +13675,7 @@ export const getV2ImagesUpdatedRoute = createRoute({
         'application/json': {
           schema: UpdatedMediaDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    id: '123456789',
-                    updated_time: '2020-05-29T12:10:22-05:00',
-                    updates: ['addition', 'edit'],
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 13,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/UpdatedMediaDataListExample' } },
           },
         },
       },
@@ -17498,52 +13752,7 @@ export const getV2ImagesIdRoute = createRoute({
       content: {
         'application/json': {
           schema: ImageSchema,
-          examples: {
-            response: {
-              value: {
-                aspect: 1.5,
-                assets: {
-                  huge_thumb: {
-                    height: 260,
-                    url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                    width: 390,
-                  },
-                  large_thumb: {
-                    height: 100,
-                    url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                    width: 150,
-                  },
-                  preview: {
-                    height: 300,
-                    url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                    width: 450,
-                  },
-                  preview_1000: {
-                    height: 667,
-                    url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                    width: 1000,
-                  },
-                  preview_1500: {
-                    height: 1000,
-                    url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                    width: 1500,
-                  },
-                  small_thumb: {
-                    height: 67,
-                    url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                    width: 100,
-                  },
-                },
-                contributor: { id: '250738318' },
-                description: 'cropped image of woman gardening',
-                has_model_release: true,
-                id: '1572478477',
-                image_type: 'photo',
-                media_type: 'image',
-                original_filename: '123.jpg',
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/ImageExample' } } },
         },
       },
     },
@@ -17653,58 +13862,7 @@ export const getV2ImagesIdSimilarRoute = createRoute({
         'application/json': {
           schema: ImageSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.5,
-                    assets: {
-                      huge_thumb: {
-                        height: 260,
-                        url: 'https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg',
-                        width: 390,
-                      },
-                      large_thumb: {
-                        height: 100,
-                        url: 'https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 150,
-                      },
-                      preview: {
-                        height: 300,
-                        url: 'https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 450,
-                      },
-                      preview_1000: {
-                        height: 667,
-                        url: 'https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg',
-                        width: 1000,
-                      },
-                      preview_1500: {
-                        height: 1000,
-                        url: 'https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 1500,
-                      },
-                      small_thumb: {
-                        height: 67,
-                        url: 'https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg',
-                        width: 100,
-                      },
-                    },
-                    contributor: { id: '250738318' },
-                    description: 'cropped image of woman gardening',
-                    has_model_release: true,
-                    id: '1572478477',
-                    image_type: 'photo',
-                    media_type: 'image',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                spellcheck_info: {},
-                total_count: 45,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/ImageSearchResultsExample' } },
           },
         },
       },
@@ -17831,13 +13989,7 @@ export const postV2OauthAccessTokenRoute = createRoute({
         'application/json': {
           schema: OauthAccessTokenResponseSchema,
           examples: {
-            response: {
-              value: {
-                access_token:
-                  'v2/NmQwOTc0NTBiMjA5YzZkY2Q4NTkvMTA4OTg1MDk5L2N1c3RvbWVyLzIvZjB2a0RseGo4Rkt6ZjRmVWJNMm10V2VzcHh1NTBlZWJ6andUQU1NeTVYYnNFTDVWOFRJakItS2RnZTlmbEY1Y3haNWdXLUtYc2JhaXo5djk0V0p2QzZUUWZ4c2FNWm41NkdLYUgyVWlCaVUtQTNVMV9YQWpzd3lpblI3SlZEem8wSG1qQ2NzSkJlX3VQTnNXenBIdkd4SXViVi1rRGJTVENCV0g1U3U0RXRJSV9rSm5lQkl5QXlvbm5JN241UUhv',
-                token_type: 'Bearer',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/OauthAccessTokenResponseExample' } },
           },
         },
       },
@@ -18037,11 +14189,7 @@ export const getV2SfxRoute = createRoute({
       content: {
         'application/json': {
           schema: SFXDataListSchema,
-          examples: {
-            response: {
-              value: { data: [{ contributor: { id: '1234' }, id: '123', media_type: 'sfx' }] },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/SFXDataListExample' } } },
         },
       },
     },
@@ -18259,30 +14407,7 @@ export const getV2SfxLicensesRoute = createRoute({
         'application/json': {
           schema: DownloadHistoryDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    download_time: '2021-07-15T15:46:34.000Z',
-                    id: 'e1eba3833793e77188d22caae8bac9f2cd',
-                    image: { format: { size: 'original' }, id: '9763363ao' },
-                    is_downloadable: false,
-                    license: 'premier_editorial_all_digital',
-                    metadata: {
-                      client: 'Company A',
-                      job: 'Important project',
-                      other: 'Important media',
-                      purchase_order: '123456',
-                    },
-                    subscription_id: 's12345678',
-                    user: { username: 'editorial_test_account_002' },
-                  },
-                ],
-                page: 1,
-                per_page: 1,
-                total_count: 2890,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/DownloadHistoryDataListExample' } },
           },
         },
       },
@@ -18307,25 +14432,7 @@ export const postV2SfxLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseSFXRequestSchema,
           examples: {
-            default: {
-              value: {
-                sound_effects: [
-                  {
-                    format: 'wav',
-                    metadata: {
-                      customer_id: '12345',
-                      geo_location: 'US',
-                      number_viewed: '15',
-                      search_term: 'dog',
-                    },
-                    sfx_id: '123456789',
-                    show_modal: true,
-                    size: 'ambisonic',
-                    subscription_id: 's12345678',
-                  },
-                ],
-              },
-            },
+            default: { value: { $ref: '#/components/schemas/LicenseSFXRequestExample' } },
           },
         },
       },
@@ -18339,22 +14446,7 @@ export const postV2SfxLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseSFXResultDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    allotment_charge: 1,
-                    download: {
-                      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp3',
-                    },
-                    sfx_id: '123456789',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/LicenseSFXResultDataListExample' } },
           },
         },
       },
@@ -18748,9 +14840,7 @@ export const getV2SfxIdRoute = createRoute({
       content: {
         'application/json': {
           schema: SFXSchema,
-          examples: {
-            response: { value: { contributor: { id: '1234' }, id: '123', media_type: 'sfx' } },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/SFXExample' } } },
         },
       },
     },
@@ -18790,7 +14880,7 @@ export const getV2TestRoute = createRoute({
       content: {
         'application/json': {
           schema: TestEchoSchema,
-          examples: { response: { value: { text: 'Test string' } } },
+          examples: { response: { value: { $ref: '#/components/schemas/TestEchoExample' } } },
         },
       },
     },
@@ -18865,17 +14955,7 @@ export const getV2TestValidateRoute = createRoute({
       content: {
         'application/json': {
           schema: TestValidateSchema,
-          examples: {
-            response: {
-              value: {
-                header: {
-                  'user-agent':
-                    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
-                },
-                query: { id: 123456, tag: ['Test string'] },
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/TestValidateExample' } } },
         },
       },
     },
@@ -18897,19 +14977,7 @@ export const getV2UserRoute = createRoute({
       content: {
         'application/json': {
           schema: UserDetailsSchema,
-          examples: {
-            response: {
-              value: {
-                contributor_id: '212',
-                first_name: 'John',
-                full_name: 'John Doe',
-                id: '101782699',
-                language: 'es',
-                last_name: 'Doe',
-                username: 'jdoe',
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/UserDetailsExample' } } },
         },
       },
     },
@@ -18933,24 +15001,7 @@ export const getV2UserAccessTokenRoute = createRoute({
         'application/json': {
           schema: AccessTokenDetailsSchema,
           examples: {
-            response: {
-              value: {
-                client_id: 'c456b-26230-fa8ed-d19ab-05ce2-bf0aa',
-                customer_id: '123456789',
-                expires_in: 3600,
-                realm: 'customer',
-                scopes: [
-                  'collections.edit',
-                  'collections.view',
-                  'licenses.create',
-                  'licenses.view',
-                  'purchases.view',
-                  'user.view',
-                ],
-                user_id: '123456789',
-                username: 'jdoe',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/AccessTokenDetailsExample' } },
           },
         },
       },
@@ -18975,46 +15026,7 @@ export const getV2UserSubscriptionsRoute = createRoute({
         'application/json': {
           schema: SubscriptionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    allotment: {
-                      downloads_left: 5,
-                      downloads_limit: 10,
-                      end_time: '2020-05-29T12:10:22-05:00',
-                      start_time: '2020-05-29T12:10:22-05:00',
-                    },
-                    asset_type: 'images',
-                    description: 'Annual Subscription',
-                    expiration_time: '2020-05-29T12:10:22-05:00',
-                    formats: [
-                      {
-                        description: 'Small',
-                        format: 'jpg',
-                        media_type: 'image',
-                        min_resolution: 500,
-                        size: 'small',
-                      },
-                      {
-                        description: 'Med',
-                        format: 'jpg',
-                        media_type: 'image',
-                        min_resolution: 1000,
-                        size: 'medium',
-                      },
-                      { description: 'Vector', format: 'eps', media_type: 'image', size: 'vector' },
-                    ],
-                    id: 's8906043',
-                    license: 'standard',
-                    metadata: {},
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/SubscriptionDataListExample' } },
           },
         },
       },
@@ -19090,152 +15102,7 @@ export const getV2VideosRoute = createRoute({
       content: {
         'application/json': {
           schema: VideoDataListSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    added_date: '2019-07-13',
-                    aspect: 1.778,
-                    aspect_ratio: '16:9',
-                    assets: {
-                      hd: {
-                        display_name: 'Original HD',
-                        file_size: 110359552,
-                        format: 'avc1',
-                        fps: 29.97,
-                        height: 1080,
-                        is_licensable: true,
-                        width: 1920,
-                      },
-                      preview_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      preview_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      preview_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                      sd: {
-                        display_name: 'Standard Definition MPEG',
-                        file_size: 4577280,
-                        format: 'mov',
-                        fps: 29.97,
-                        height: 480,
-                        is_licensable: true,
-                        width: 852,
-                      },
-                      thumb_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      thumb_jpgs: {
-                        urls: [
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg',
-                          'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                        ],
-                      },
-                      thumb_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      thumb_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                      web: {
-                        display_name: 'Low Resolution MPEG',
-                        file_size: 1291264,
-                        format: 'mov',
-                        fps: 29.97,
-                        height: 240,
-                        is_licensable: true,
-                        width: 426,
-                      },
-                    },
-                    categories: [
-                      { id: '12', name: 'Nature' },
-                      { id: '13', name: 'People' },
-                    ],
-                    contributor: { id: '4411978' },
-                    description:
-                      'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-                    duration: 14.081,
-                    has_model_release: true,
-                    has_property_release: false,
-                    id: '1033184651',
-                    is_adult: false,
-                    is_editorial: false,
-                    keywords: [
-                      'active',
-                      'activity',
-                      'adventure',
-                      'arms',
-                      'backpacker',
-                      'carefree',
-                      'celebrating',
-                      'cliff',
-                      'climate',
-                      'cloud',
-                      'discovery',
-                      'escape',
-                      'explore',
-                      'extreme',
-                      'free',
-                      'freedom',
-                      'girl',
-                      'happy',
-                      'high',
-                      'hiker',
-                      'hiking',
-                      'hill',
-                      'independent',
-                      'inspiration',
-                      'landscape',
-                      'leisure',
-                      'lifestyle',
-                      'mountain',
-                      'mountains',
-                      'nature',
-                      'outdoor',
-                      'peak',
-                      'person',
-                      'rock',
-                      'scenic',
-                      'sky',
-                      'sport',
-                      'success',
-                      'summer',
-                      'summit',
-                      'sun',
-                      'sunset',
-                      'top',
-                      'tourism',
-                      'travel',
-                      'trekking',
-                      'vacation',
-                      'view',
-                      'winning',
-                      'woman',
-                    ],
-                    media_type: 'video',
-                    models: [{ id: '33233810' }, { id: '25487168' }],
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 25,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/VideoDataListExample' } } },
         },
       },
     },
@@ -19275,17 +15142,7 @@ export const getV2VideosCategoriesRoute = createRoute({
         'application/json': {
           schema: CategoryDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  { id: '1', name: 'Animals/Wildlife' },
-                  { id: '11', name: 'The Arts' },
-                ],
-                page: 1,
-                per_page: 2,
-                total_count: 13,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CategoryDataListExample' } },
           },
         },
       },
@@ -19374,22 +15231,7 @@ export const getV2VideosCollectionsRoute = createRoute({
         'application/json': {
           schema: CollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: { id: '297886754' },
-                    id: '293542904',
-                    items_updated_time: '2021-05-20T16:15:22-04:00',
-                    name: 'My collection',
-                    total_item_count: 85,
-                  },
-                ],
-                page: 1,
-                per_page: 100,
-                total_count: 1,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionDataListExample' } },
           },
         },
       },
@@ -19415,7 +15257,9 @@ export const postV2VideosCollectionsRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionCreateRequestSchema,
-          examples: { default: { value: { name: 'Test Collection 19cf' } } },
+          examples: {
+            default: { value: { $ref: '#/components/schemas/CollectionCreateRequestExample' } },
+          },
         },
       },
       required: true,
@@ -19427,7 +15271,9 @@ export const postV2VideosCollectionsRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionCreateResponseSchema,
-          examples: { response: { value: { id: '48433105' } } },
+          examples: {
+            response: { value: { $ref: '#/components/schemas/CollectionCreateResponseExample' } },
+          },
         },
       },
     },
@@ -19471,26 +15317,7 @@ export const getV2VideosCollectionsFeaturedRoute = createRoute({
         'application/json': {
           schema: FeaturedCollectionDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    cover_item: {
-                      url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-                    },
-                    created_time: '2021-07-07T13:10:24.000Z',
-                    id: '19853',
-                    items_updated_time: '2021-07-08T12:33:37.000Z',
-                    name: 'Exercise & Fitness',
-                    total_item_count: 82,
-                    updated_time: '2021-07-07T13:10:24.000Z',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/FeaturedCollectionDataListExample' } },
           },
         },
       },
@@ -19548,19 +15375,7 @@ export const getV2VideosCollectionsFeaturedIdRoute = createRoute({
         'application/json': {
           schema: FeaturedCollectionSchema,
           examples: {
-            response: {
-              value: {
-                cover_item: {
-                  url: 'https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg',
-                },
-                created_time: '2021-07-07T13:10:24.000Z',
-                id: '19853',
-                items_updated_time: '2021-07-08T12:33:37.000Z',
-                name: 'Exercise & Fitness',
-                total_item_count: 82,
-                updated_time: '2021-07-07T13:10:24.000Z',
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/FeaturedCollectionExample' } },
           },
         },
       },
@@ -19649,14 +15464,7 @@ export const getV2VideosCollectionsFeaturedIdItemsRoute = createRoute({
           schema: VideoCollectionItemDataListSchema,
           examples: {
             response: {
-              value: {
-                data: [
-                  { added_time: '2016-08-18T18:52:59-04:00', id: '76688182', media_type: 'video' },
-                  { added_time: '2016-08-18T18:52:59-04:00', id: '40005859', media_type: 'video' },
-                ],
-                page: 1,
-                per_page: 100,
-              },
+              value: { $ref: '#/components/schemas/VideoCollectionItemDataListExample' },
             },
           },
         },
@@ -19730,17 +15538,7 @@ export const getV2VideosCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionSchema,
-          examples: {
-            response: {
-              value: {
-                cover_item: { id: '297886754' },
-                id: '293542904',
-                items_updated_time: '2021-05-20T16:15:22-04:00',
-                name: 'My collection',
-                total_item_count: 85,
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/CollectionExample' } } },
         },
       },
     },
@@ -19779,7 +15577,9 @@ export const postV2VideosCollectionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: CollectionUpdateRequestSchema,
-          examples: { default: { value: { name: 'My collection with a new name' } } },
+          examples: {
+            default: { value: { $ref: '#/components/schemas/CollectionUpdateRequestExample' } },
+          },
         },
       },
       required: true,
@@ -19928,17 +15728,7 @@ export const getV2VideosCollectionsIdItemsRoute = createRoute({
         'application/json': {
           schema: CollectionItemDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  { added_time: '2021-07-08T12:33:37.000Z', id: '1690105108', media_type: 'image' },
-                  { added_time: '2021-07-08T12:31:43.000Z', id: '1468703072', media_type: 'image' },
-                ],
-                page: 1,
-                per_page: 2,
-                total_count: 82,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/CollectionItemDataListExample' } },
           },
         },
       },
@@ -20317,11 +16107,7 @@ export const postV2VideosLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseVideoRequestSchema,
           examples: {
-            default: {
-              value: {
-                videos: [{ size: 'hd', subscription_id: 's12345678', video_id: '2140697' }],
-              },
-            },
+            default: { value: { $ref: '#/components/schemas/LicenseVideoRequestExample' } },
           },
         },
       },
@@ -20335,23 +16121,7 @@ export const postV2VideosLicensesRoute = createRoute({
         'application/json': {
           schema: LicenseVideoResultDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    allotment_charge: 1,
-                    download: {
-                      url: 'https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp4',
-                    },
-                    price: { local_amount: 12.34, local_currency: 'EUR' },
-                    video_id: '123456789',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 123455,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/LicenseVideoResultDataListExample' } },
           },
         },
       },
@@ -20388,7 +16158,12 @@ export const postV2VideosLicensesIdDownloadsRoute = createRoute({
     }),
     body: {
       description: 'Information about the videos to redownload',
-      content: { 'application/json': { schema: RedownloadVideoSchema, example: { size: 'web' } } },
+      content: {
+        'application/json': {
+          schema: RedownloadVideoSchema,
+          example: { $ref: '#/components/schemas/RedownloadVideoExample' },
+        },
+      },
       required: true,
     },
   },
@@ -20959,47 +16734,7 @@ export const getV2VideosSearchRoute = createRoute({
         'application/json': {
           schema: VideoSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.778,
-                    aspect_ratio: '16:9',
-                    assets: {
-                      preview_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      preview_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      preview_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                      thumb_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      thumb_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      thumb_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                    },
-                    contributor: { id: '4411978' },
-                    description:
-                      'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-                    duration: 14.081,
-                    has_model_release: true,
-                    id: '1033184651',
-                    media_type: 'video',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                total_count: 123,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/VideoSearchResultsExample' } },
           },
         },
       },
@@ -21062,24 +16797,7 @@ export const getV2VideosSearchSuggestionsRoute = createRoute({
       content: {
         'application/json': {
           schema: SuggestionsSchema,
-          examples: {
-            response: {
-              value: {
-                data: [
-                  'cat scan',
-                  'cats and dogs',
-                  'cats playing',
-                  'catsuit',
-                  'cat silhouette',
-                  'catskills',
-                  'cats eyes',
-                  'cat sitting',
-                  'cat sleeping',
-                  'cats eye',
-                ],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/SuggestionsExample' } } },
         },
       },
     },
@@ -21204,20 +16922,7 @@ export const getV2VideosUpdatedRoute = createRoute({
         'application/json': {
           schema: UpdatedMediaDataListSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    id: '123456789',
-                    updated_time: '2020-05-29T12:10:22-05:00',
-                    updates: ['addition', 'edit'],
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                total_count: 13,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/UpdatedMediaDataListExample' } },
           },
         },
       },
@@ -21294,145 +16999,7 @@ export const getV2VideosIdRoute = createRoute({
       content: {
         'application/json': {
           schema: VideoSchema,
-          examples: {
-            response: {
-              value: {
-                added_date: '2019-07-13',
-                aspect: 1.778,
-                aspect_ratio: '16:9',
-                assets: {
-                  hd: {
-                    display_name: 'Original HD',
-                    file_size: 110359552,
-                    format: 'avc1',
-                    fps: 29.97,
-                    height: 1080,
-                    is_licensable: true,
-                    width: 1920,
-                  },
-                  preview_jpg: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                  },
-                  preview_mp4: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                  },
-                  preview_webm: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                  },
-                  sd: {
-                    display_name: 'Standard Definition MPEG',
-                    file_size: 4577280,
-                    format: 'mov',
-                    fps: 29.97,
-                    height: 480,
-                    is_licensable: true,
-                    width: 852,
-                  },
-                  thumb_jpg: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                  },
-                  thumb_jpgs: {
-                    urls: [
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg',
-                      'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                    ],
-                  },
-                  thumb_mp4: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                  },
-                  thumb_webm: {
-                    url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                  },
-                  web: {
-                    display_name: 'Low Resolution MPEG',
-                    file_size: 1291264,
-                    format: 'mov',
-                    fps: 29.97,
-                    height: 240,
-                    is_licensable: true,
-                    width: 426,
-                  },
-                },
-                categories: [
-                  { id: '12', name: 'Nature' },
-                  { id: '13', name: 'People' },
-                ],
-                contributor: { id: '4411978' },
-                description:
-                  'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-                duration: 14.081,
-                has_model_release: true,
-                has_property_release: false,
-                id: '1033184651',
-                is_adult: false,
-                is_editorial: false,
-                keywords: [
-                  'active',
-                  'activity',
-                  'adventure',
-                  'arms',
-                  'backpacker',
-                  'carefree',
-                  'celebrating',
-                  'cliff',
-                  'climate',
-                  'cloud',
-                  'discovery',
-                  'escape',
-                  'explore',
-                  'extreme',
-                  'free',
-                  'freedom',
-                  'girl',
-                  'happy',
-                  'high',
-                  'hiker',
-                  'hiking',
-                  'hill',
-                  'independent',
-                  'inspiration',
-                  'landscape',
-                  'leisure',
-                  'lifestyle',
-                  'mountain',
-                  'mountains',
-                  'nature',
-                  'outdoor',
-                  'peak',
-                  'person',
-                  'rock',
-                  'scenic',
-                  'sky',
-                  'sport',
-                  'success',
-                  'summer',
-                  'summit',
-                  'sun',
-                  'sunset',
-                  'top',
-                  'tourism',
-                  'travel',
-                  'trekking',
-                  'vacation',
-                  'view',
-                  'winning',
-                  'woman',
-                ],
-                media_type: 'video',
-                models: [{ id: '33233810' }, { id: '25487168' }],
-              },
-            },
-          },
+          examples: { response: { value: { $ref: '#/components/schemas/VideoExample' } } },
         },
       },
     },
@@ -21541,47 +17108,7 @@ export const getV2VideosIdSimilarRoute = createRoute({
         'application/json': {
           schema: VideoSearchResultsSchema,
           examples: {
-            response: {
-              value: {
-                data: [
-                  {
-                    aspect: 1.778,
-                    aspect_ratio: '16:9',
-                    assets: {
-                      preview_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      preview_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      preview_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                      thumb_jpg: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg',
-                      },
-                      thumb_mp4: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4',
-                      },
-                      thumb_webm: {
-                        url: 'https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm',
-                      },
-                    },
-                    contributor: { id: '4411978' },
-                    description:
-                      'Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness',
-                    duration: 14.081,
-                    has_model_release: true,
-                    id: '1033184651',
-                    media_type: 'video',
-                  },
-                ],
-                page: 1,
-                per_page: 5,
-                search_id: '749090bb-2967-4a20-b22e-c800dc845e10',
-                total_count: 123,
-              },
-            },
+            response: { value: { $ref: '#/components/schemas/VideoSearchResultsExample' } },
           },
         },
       },

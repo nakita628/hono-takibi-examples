@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1FilesFileKeyCommentsCommentIdReactionsRoute,
   deleteV1FilesFileKeyCommentsCommentIdRoute,
   deleteV1FilesFileKeyDevResourcesDevResourceIdRoute,
@@ -50,150 +50,280 @@ import {
   putV1DevResourcesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1FilesFileKeyRouteHandler: RouteHandler<typeof getV1FilesFileKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1FilesFileKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ImagesFileKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FilesFileKeyDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TeamsTeamIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TeamsTeamIdProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectIdMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TeamsTeamIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FilesFileKeyCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1FilesFileKeyCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyCommentsCommentIdReactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FilesFileKeyCommentsCommentIdReactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1FilesFileKeyCommentsCommentIdReactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TeamsTeamIdComponentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyComponentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ComponentsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TeamsTeamIdComponentSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyComponentSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ComponentSetsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TeamsTeamIdStylesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyStylesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1StylesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ActivityLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeveloperLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AiUsageDailyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyVariablesLocalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyVariablesPublishedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1FilesFileKeyVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1FilesFileKeyDevResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DevResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1DevResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1FilesFileKeyDevResourcesDevResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyComponentActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyComponentUsagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyStyleActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyStyleUsagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyVariableActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AnalyticsLibrariesFileKeyVariableUsagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OembedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1FilesFileKeyNodesRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ImagesFileKeyRouteHandler: RouteHandler<typeof getV1ImagesFileKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyImagesRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyMetaRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FilesFileKeyDuplicateRouteHandler: RouteHandler<
+  typeof postV1FilesFileKeyDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TeamsRouteHandler: RouteHandler<typeof postV1TeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TeamsTeamIdRouteHandler: RouteHandler<typeof getV1TeamsTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TeamsTeamIdInvitesRouteHandler: RouteHandler<
+  typeof postV1TeamsTeamIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TeamsTeamIdProjectsRouteHandler: RouteHandler<
+  typeof getV1TeamsTeamIdProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectIdMetaRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectIdFilesRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TeamsTeamIdFoldersRouteHandler: RouteHandler<
+  typeof postV1TeamsTeamIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyVersionsRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyCommentsRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FilesFileKeyCommentsRouteHandler: RouteHandler<
+  typeof postV1FilesFileKeyCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1FilesFileKeyCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteV1FilesFileKeyCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyCommentsCommentIdReactionsRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyCommentsCommentIdReactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FilesFileKeyCommentsCommentIdReactionsRouteHandler: RouteHandler<
+  typeof postV1FilesFileKeyCommentsCommentIdReactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1FilesFileKeyCommentsCommentIdReactionsRouteHandler: RouteHandler<
+  typeof deleteV1FilesFileKeyCommentsCommentIdReactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeRouteHandler: RouteHandler<typeof getV1MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TeamsTeamIdComponentsRouteHandler: RouteHandler<
+  typeof getV1TeamsTeamIdComponentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyComponentsRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyComponentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ComponentsKeyRouteHandler: RouteHandler<typeof getV1ComponentsKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TeamsTeamIdComponentSetsRouteHandler: RouteHandler<
+  typeof getV1TeamsTeamIdComponentSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyComponentSetsRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyComponentSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ComponentSetsKeyRouteHandler: RouteHandler<
+  typeof getV1ComponentSetsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TeamsTeamIdStylesRouteHandler: RouteHandler<
+  typeof getV1TeamsTeamIdStylesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyStylesRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyStylesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1StylesKeyRouteHandler: RouteHandler<typeof getV1StylesKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ActivityLogsRouteHandler: RouteHandler<typeof getV1ActivityLogsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeveloperLogsRouteHandler: RouteHandler<
+  typeof postV1DeveloperLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AiUsageDailyRouteHandler: RouteHandler<typeof getV1AiUsageDailyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentsRouteHandler: RouteHandler<typeof getV1PaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyVariablesLocalRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyVariablesLocalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyVariablesPublishedRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyVariablesPublishedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1FilesFileKeyVariablesRouteHandler: RouteHandler<
+  typeof postV1FilesFileKeyVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1FilesFileKeyDevResourcesRouteHandler: RouteHandler<
+  typeof getV1FilesFileKeyDevResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DevResourcesRouteHandler: RouteHandler<typeof postV1DevResourcesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1DevResourcesRouteHandler: RouteHandler<typeof putV1DevResourcesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1FilesFileKeyDevResourcesDevResourceIdRouteHandler: RouteHandler<
+  typeof deleteV1FilesFileKeyDevResourcesDevResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyComponentActionsRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyComponentActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyComponentUsagesRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyComponentUsagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyStyleActionsRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyStyleActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyStyleUsagesRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyStyleUsagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyVariableActionsRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyVariableActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AnalyticsLibrariesFileKeyVariableUsagesRouteHandler: RouteHandler<
+  typeof getV1AnalyticsLibrariesFileKeyVariableUsagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OembedRouteHandler: RouteHandler<typeof getV1OembedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

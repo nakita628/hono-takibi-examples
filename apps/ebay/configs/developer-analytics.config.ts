@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/developer-analytics/v1_beta.0.0/openapi.yaml',
   output: './src/developer-analytics/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/developer-analytics/types.ts' },
   client: { output: './src/developer-analytics/client.ts', baseUrl: '/' },
   rpc: { output: './src/developer-analytics/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPerfectpdfApiRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPerfectpdfApiRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const perfectpdfHandler = app.openapi(postPerfectpdfApiRoute, (c) => {
+export const postPerfectpdfApiRouteHandler: RouteHandler<typeof postPerfectpdfApiRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

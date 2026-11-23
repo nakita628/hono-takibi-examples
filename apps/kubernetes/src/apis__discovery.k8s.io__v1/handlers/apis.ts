@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute,
   deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute,
   getApisDiscoveryK8sIoV1EndpointslicesRoute,
@@ -14,42 +14,74 @@ import {
   putApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisDiscoveryK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisDiscoveryK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1EndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1WatchEndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApisDiscoveryK8sIoV1EndpointslicesRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1EndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRouteHandler: RouteHandler<
+  typeof deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRouteHandler: RouteHandler<
+  typeof postApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRouteHandler: RouteHandler<
+  typeof deleteApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRouteHandler: RouteHandler<
+  typeof patchApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRouteHandler: RouteHandler<
+  typeof putApisDiscoveryK8sIoV1NamespacesNamespaceEndpointslicesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisDiscoveryK8sIoV1WatchEndpointslicesRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1WatchEndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesNameRouteHandler: RouteHandler<
+  typeof getApisDiscoveryK8sIoV1WatchNamespacesNamespaceEndpointslicesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

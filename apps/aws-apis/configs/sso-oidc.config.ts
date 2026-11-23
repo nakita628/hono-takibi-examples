@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/sso-oidc/2019-06-10/openapi.yaml',
   output: './src/sso-oidc/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sso-oidc/types.ts' },
   client: { output: './src/sso-oidc/client.ts', baseUrl: '/' },
   rpc: { output: './src/sso-oidc/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218DetachElasticLoadBalancerHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

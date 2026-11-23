@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworkDevicesDeviceIdRoute,
   getNetworkDevicesRoute,
   getNetworkGatewayRoute,
@@ -7,21 +7,32 @@ import {
   getNetworkRoutesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworkDevicesRouteHandler: RouteHandler<typeof getNetworkDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const networkHandler = app
-  .openapi(getNetworkDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteNetworkDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof deleteNetworkDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkGatewayRouteHandler: RouteHandler<typeof getNetworkGatewayRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkRoutesRouteHandler: RouteHandler<typeof getNetworkRoutesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkInterfacesRouteHandler: RouteHandler<
+  typeof getNetworkInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

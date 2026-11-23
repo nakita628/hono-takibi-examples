@@ -6792,7 +6792,7 @@ export const getV2LocationsTilesMobileGeneralizedZXYPbfRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -7034,7 +7034,7 @@ export const getV2LocationsTilesMobileZXYPbfRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -7257,7 +7257,7 @@ export const getV2LocationsTilesZXYPbfRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },

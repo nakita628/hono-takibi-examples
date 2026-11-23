@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute,
   getUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute,
   postUserHierarchyGroupsInstanceIdHierarchyGroupIdNameRoute,
   putUserHierarchyGroupsInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putUserHierarchyGroupsInstanceIdRouteHandler: RouteHandler<
+  typeof putUserHierarchyGroupsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHierarchyGroupsHandler = app
-  .openapi(putUserHierarchyGroupsInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserHierarchyGroupsInstanceIdHierarchyGroupIdNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteUserHierarchyGroupsInstanceIdHierarchyGroupIdRouteHandler: RouteHandler<
+  typeof deleteUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserHierarchyGroupsInstanceIdHierarchyGroupIdRouteHandler: RouteHandler<
+  typeof getUserHierarchyGroupsInstanceIdHierarchyGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserHierarchyGroupsInstanceIdHierarchyGroupIdNameRouteHandler: RouteHandler<
+  typeof postUserHierarchyGroupsInstanceIdHierarchyGroupIdNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postStagingTablesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postStagingTablesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stagingTablesHandler = app.openapi(postStagingTablesRoute, (c) => {
+export const postStagingTablesRouteHandler: RouteHandler<typeof postStagingTablesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

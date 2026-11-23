@@ -108,18 +108,18 @@ const EbsVolumeSchema = z
 const EbsVolumeListSchema = z.array(EbsVolumeSchema).openapi('EbsVolumeList')
 
 type InstanceType = {
-  Id?: z.infer<typeof InstanceIdSchema> & unknown
-  Ec2InstanceId?: z.infer<typeof InstanceIdSchema> & unknown
-  PublicDnsName?: z.infer<typeof StringSchema> & unknown
-  PublicIpAddress?: z.infer<typeof StringSchema> & unknown
-  PrivateDnsName?: z.infer<typeof StringSchema> & unknown
-  PrivateIpAddress?: z.infer<typeof StringSchema> & unknown
-  Status?: z.infer<typeof InstanceStatusSchema> & unknown
-  InstanceGroupId?: z.infer<typeof StringSchema> & unknown
-  InstanceFleetId?: z.infer<typeof InstanceFleetIdSchema> & unknown
-  Market?: z.infer<typeof MarketTypeSchema> & unknown
-  InstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
-  EbsVolumes?: z.infer<typeof EbsVolumeListSchema> & unknown
+  Id?: z.infer<typeof InstanceIdSchema>
+  Ec2InstanceId?: z.infer<typeof InstanceIdSchema>
+  PublicDnsName?: z.infer<typeof StringSchema>
+  PublicIpAddress?: z.infer<typeof StringSchema>
+  PrivateDnsName?: z.infer<typeof StringSchema>
+  PrivateIpAddress?: z.infer<typeof StringSchema>
+  Status?: z.infer<typeof InstanceStatusSchema>
+  InstanceGroupId?: z.infer<typeof StringSchema>
+  InstanceFleetId?: z.infer<typeof InstanceFleetIdSchema>
+  Market?: z.infer<typeof MarketTypeSchema>
+  InstanceType?: z.infer<typeof InstanceTypeSchema>
+  EbsVolumes?: z.infer<typeof EbsVolumeListSchema>
 }
 
 const NonNegativeDoubleSchema = z.float64().min(0).openapi('NonNegativeDouble')
@@ -419,8 +419,8 @@ const InstanceFleetConfigSchema = z
   .openapi('InstanceFleetConfig')
 
 type AddInstanceFleetInputType = {
-  ClusterId: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  InstanceFleet: z.infer<typeof InstanceFleetConfigSchema> & unknown
+  ClusterId: z.infer<typeof XmlStringMaxLen256Schema>
+  InstanceFleet: z.infer<typeof InstanceFleetConfigSchema>
 }
 
 const InstanceRoleTypeSchema = z.enum(['MASTER', 'CORE', 'TASK']).openapi('InstanceRoleType')
@@ -642,16 +642,16 @@ const AutoScalingPolicySchema = z
   .openapi('AutoScalingPolicy')
 
 type InstanceGroupConfigType = {
-  Name?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  Market?: z.infer<typeof MarketTypeSchema> & unknown
-  InstanceRole: z.infer<typeof InstanceRoleTypeSchema> & unknown
-  BidPrice?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  InstanceType: z.infer<typeof InstanceTypeSchema> & unknown
-  InstanceCount: z.infer<typeof IntegerSchema> & unknown
-  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
-  EbsConfiguration?: z.infer<typeof EbsConfigurationSchema> & unknown
-  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicySchema> & unknown
-  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Name?: z.infer<typeof XmlStringMaxLen256Schema>
+  Market?: z.infer<typeof MarketTypeSchema>
+  InstanceRole: z.infer<typeof InstanceRoleTypeSchema>
+  BidPrice?: z.infer<typeof XmlStringMaxLen256Schema>
+  InstanceType: z.infer<typeof InstanceTypeSchema>
+  InstanceCount: z.infer<typeof IntegerSchema>
+  Configurations?: z.infer<typeof ConfigurationListSchema>
+  EbsConfiguration?: z.infer<typeof EbsConfigurationSchema>
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicySchema>
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema>
 }
 
 const InstanceGroupConfigSchema: z.ZodType<InstanceGroupConfigType> = z
@@ -704,8 +704,8 @@ const InstanceGroupConfigListSchema: z.ZodType<InstanceGroupConfigListType> = z
   .openapi('InstanceGroupConfigList')
 
 type AddInstanceGroupsInputType = {
-  InstanceGroups: z.infer<typeof InstanceGroupConfigListSchema> & unknown
-  JobFlowId: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  InstanceGroups: z.infer<typeof InstanceGroupConfigListSchema>
+  JobFlowId: z.infer<typeof XmlStringMaxLen256Schema>
 }
 
 const XmlStringSchema = z
@@ -1134,7 +1134,7 @@ const JobFlowDetailListSchema: z.ZodType<JobFlowDetailListType> = z
   .array(JobFlowDetailSchema)
   .openapi('JobFlowDetailList')
 
-type DescribeJobFlowsOutputType = { JobFlows?: z.infer<typeof JobFlowDetailListSchema> & unknown }
+type DescribeJobFlowsOutputType = { JobFlows?: z.infer<typeof JobFlowDetailListSchema> }
 
 const ClusterIdSchema = z.string().openapi('ClusterId')
 
@@ -1275,8 +1275,8 @@ const ClusterSummaryListSchema = z.array(ClusterSummarySchema).openapi('ClusterS
 const MarkerSchema = z.string().openapi('Marker')
 
 type ListClustersOutputType = {
-  Clusters?: z.infer<typeof ClusterSummaryListSchema> & unknown
-  Marker?: z.infer<typeof MarkerSchema> & unknown
+  Clusters?: z.infer<typeof ClusterSummaryListSchema>
+  Marker?: z.infer<typeof MarkerSchema>
 }
 
 const InstanceFleetStateSchema = z
@@ -1463,8 +1463,8 @@ const InstanceFleetSchema = z
 const InstanceFleetListSchema = z.array(InstanceFleetSchema).openapi('InstanceFleetList')
 
 type ListInstanceFleetsOutputType = {
-  InstanceFleets?: z.infer<typeof InstanceFleetListSchema> & unknown
-  Marker?: z.infer<typeof MarkerSchema> & unknown
+  InstanceFleets?: z.infer<typeof InstanceFleetListSchema>
+  Marker?: z.infer<typeof MarkerSchema>
 }
 
 const InstanceGroupIdSchema = z.string().openapi('InstanceGroupId')
@@ -1620,24 +1620,24 @@ const AutoScalingPolicyDescriptionSchema = z
   .openapi('AutoScalingPolicyDescription')
 
 type InstanceGroupType = {
-  Id?: z.infer<typeof InstanceGroupIdSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Market?: z.infer<typeof MarketTypeSchema> & unknown
-  InstanceGroupType?: z.infer<typeof InstanceGroupTypeSchema> & unknown
-  BidPrice?: z.infer<typeof StringSchema> & unknown
-  InstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
-  RequestedInstanceCount?: z.infer<typeof IntegerSchema> & unknown
-  RunningInstanceCount?: z.infer<typeof IntegerSchema> & unknown
-  Status?: z.infer<typeof InstanceGroupStatusSchema> & unknown
-  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
-  ConfigurationsVersion?: z.infer<typeof LongSchema> & unknown
-  LastSuccessfullyAppliedConfigurations?: z.infer<typeof ConfigurationListSchema> & unknown
-  LastSuccessfullyAppliedConfigurationsVersion?: z.infer<typeof LongSchema> & unknown
-  EbsBlockDevices?: z.infer<typeof EbsBlockDeviceListSchema> & unknown
-  EbsOptimized?: z.infer<typeof BooleanObjectSchema> & unknown
-  ShrinkPolicy?: z.infer<typeof ShrinkPolicySchema> & unknown
-  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema> & unknown
-  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Id?: z.infer<typeof InstanceGroupIdSchema>
+  Name?: z.infer<typeof StringSchema>
+  Market?: z.infer<typeof MarketTypeSchema>
+  InstanceGroupType?: z.infer<typeof InstanceGroupTypeSchema>
+  BidPrice?: z.infer<typeof StringSchema>
+  InstanceType?: z.infer<typeof InstanceTypeSchema>
+  RequestedInstanceCount?: z.infer<typeof IntegerSchema>
+  RunningInstanceCount?: z.infer<typeof IntegerSchema>
+  Status?: z.infer<typeof InstanceGroupStatusSchema>
+  Configurations?: z.infer<typeof ConfigurationListSchema>
+  ConfigurationsVersion?: z.infer<typeof LongSchema>
+  LastSuccessfullyAppliedConfigurations?: z.infer<typeof ConfigurationListSchema>
+  LastSuccessfullyAppliedConfigurationsVersion?: z.infer<typeof LongSchema>
+  EbsBlockDevices?: z.infer<typeof EbsBlockDeviceListSchema>
+  EbsOptimized?: z.infer<typeof BooleanObjectSchema>
+  ShrinkPolicy?: z.infer<typeof ShrinkPolicySchema>
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema>
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema>
 }
 
 const InstanceGroupSchema: z.ZodType<InstanceGroupType> = z
@@ -1717,21 +1717,21 @@ const InstanceGroupListSchema: z.ZodType<InstanceGroupListType> = z
   .openapi('InstanceGroupList')
 
 type ListInstanceGroupsOutputType = {
-  InstanceGroups?: z.infer<typeof InstanceGroupListSchema> & unknown
-  Marker?: z.infer<typeof MarkerSchema> & unknown
+  InstanceGroups?: z.infer<typeof InstanceGroupListSchema>
+  Marker?: z.infer<typeof MarkerSchema>
 }
 
 type PutAutoScalingPolicyOutputType = {
-  ClusterId?: z.infer<typeof ClusterIdSchema> & unknown
-  InstanceGroupId?: z.infer<typeof InstanceGroupIdSchema> & unknown
-  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema> & unknown
-  ClusterArn?: z.infer<typeof ArnTypeSchema> & unknown
+  ClusterId?: z.infer<typeof ClusterIdSchema>
+  InstanceGroupId?: z.infer<typeof InstanceGroupIdSchema>
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema>
+  ClusterArn?: z.infer<typeof ArnTypeSchema>
 }
 
 type PutAutoScalingPolicyInputType = {
-  ClusterId: z.infer<typeof ClusterIdSchema> & unknown
-  InstanceGroupId: z.infer<typeof InstanceGroupIdSchema> & unknown
-  AutoScalingPolicy: z.infer<typeof AutoScalingPolicySchema> & unknown
+  ClusterId: z.infer<typeof ClusterIdSchema>
+  InstanceGroupId: z.infer<typeof InstanceGroupIdSchema>
+  AutoScalingPolicy: z.infer<typeof AutoScalingPolicySchema>
 }
 
 type InstanceFleetConfigListType = z.infer<typeof InstanceFleetConfigSchema>[]
@@ -1743,23 +1743,23 @@ const InstanceFleetConfigListSchema: z.ZodType<InstanceFleetConfigListType> = z
 const SecurityGroupsListSchema = z.array(XmlStringMaxLen256Schema).openapi('SecurityGroupsList')
 
 type JobFlowInstancesConfigType = {
-  MasterInstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
-  SlaveInstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
-  InstanceCount?: z.infer<typeof IntegerSchema> & unknown
-  InstanceGroups?: z.infer<typeof InstanceGroupConfigListSchema> & unknown
-  InstanceFleets?: z.infer<typeof InstanceFleetConfigListSchema> & unknown
-  Ec2KeyName?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  Placement?: z.infer<typeof PlacementTypeSchema> & unknown
-  KeepJobFlowAliveWhenNoSteps?: z.infer<typeof BooleanSchema> & unknown
-  TerminationProtected?: z.infer<typeof BooleanSchema> & unknown
-  HadoopVersion?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  Ec2SubnetId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  Ec2SubnetIds?: z.infer<typeof XmlStringMaxLen256ListSchema> & unknown
-  EmrManagedMasterSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  EmrManagedSlaveSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  ServiceAccessSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  AdditionalMasterSecurityGroups?: z.infer<typeof SecurityGroupsListSchema> & unknown
-  AdditionalSlaveSecurityGroups?: z.infer<typeof SecurityGroupsListSchema> & unknown
+  MasterInstanceType?: z.infer<typeof InstanceTypeSchema>
+  SlaveInstanceType?: z.infer<typeof InstanceTypeSchema>
+  InstanceCount?: z.infer<typeof IntegerSchema>
+  InstanceGroups?: z.infer<typeof InstanceGroupConfigListSchema>
+  InstanceFleets?: z.infer<typeof InstanceFleetConfigListSchema>
+  Ec2KeyName?: z.infer<typeof XmlStringMaxLen256Schema>
+  Placement?: z.infer<typeof PlacementTypeSchema>
+  KeepJobFlowAliveWhenNoSteps?: z.infer<typeof BooleanSchema>
+  TerminationProtected?: z.infer<typeof BooleanSchema>
+  HadoopVersion?: z.infer<typeof XmlStringMaxLen256Schema>
+  Ec2SubnetId?: z.infer<typeof XmlStringMaxLen256Schema>
+  Ec2SubnetIds?: z.infer<typeof XmlStringMaxLen256ListSchema>
+  EmrManagedMasterSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema>
+  EmrManagedSlaveSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema>
+  ServiceAccessSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema>
+  AdditionalMasterSecurityGroups?: z.infer<typeof SecurityGroupsListSchema>
+  AdditionalSlaveSecurityGroups?: z.infer<typeof SecurityGroupsListSchema>
 }
 
 const JobFlowInstancesConfigSchema: z.ZodType<JobFlowInstancesConfigType> = z
@@ -2024,35 +2024,35 @@ const AutoTerminationPolicySchema = z
   .openapi('AutoTerminationPolicy')
 
 type RunJobFlowInputType = {
-  Name: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  LogUri?: z.infer<typeof XmlStringSchema> & unknown
-  LogEncryptionKmsKeyId?: z.infer<typeof XmlStringSchema> & unknown
-  AdditionalInfo?: z.infer<typeof XmlStringSchema> & unknown
-  AmiVersion?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  ReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  Instances: z.infer<typeof JobFlowInstancesConfigSchema> & unknown
-  Steps?: z.infer<typeof StepConfigListSchema> & unknown
-  BootstrapActions?: z.infer<typeof BootstrapActionConfigListSchema> & unknown
-  SupportedProducts?: z.infer<typeof SupportedProductsListSchema> & unknown
-  NewSupportedProducts?: z.infer<typeof NewSupportedProductsListSchema> & unknown
-  Applications?: z.infer<typeof ApplicationListSchema> & unknown
-  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
-  VisibleToAllUsers?: z.infer<typeof BooleanSchema> & unknown
-  JobFlowRole?: z.infer<typeof XmlStringSchema> & unknown
-  ServiceRole?: z.infer<typeof XmlStringSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  SecurityConfiguration?: z.infer<typeof XmlStringSchema> & unknown
-  AutoScalingRole?: z.infer<typeof XmlStringSchema> & unknown
-  ScaleDownBehavior?: z.infer<typeof ScaleDownBehaviorSchema> & unknown
-  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
-  EbsRootVolumeSize?: z.infer<typeof IntegerSchema> & unknown
-  RepoUpgradeOnBoot?: z.infer<typeof RepoUpgradeOnBootSchema> & unknown
-  KerberosAttributes?: z.infer<typeof KerberosAttributesSchema> & unknown
-  StepConcurrencyLevel?: z.infer<typeof IntegerSchema> & unknown
-  ManagedScalingPolicy?: z.infer<typeof ManagedScalingPolicySchema> & unknown
-  PlacementGroupConfigs?: z.infer<typeof PlacementGroupConfigListSchema> & unknown
+  Name: z.infer<typeof XmlStringMaxLen256Schema>
+  LogUri?: z.infer<typeof XmlStringSchema>
+  LogEncryptionKmsKeyId?: z.infer<typeof XmlStringSchema>
+  AdditionalInfo?: z.infer<typeof XmlStringSchema>
+  AmiVersion?: z.infer<typeof XmlStringMaxLen256Schema>
+  ReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema>
+  Instances: z.infer<typeof JobFlowInstancesConfigSchema>
+  Steps?: z.infer<typeof StepConfigListSchema>
+  BootstrapActions?: z.infer<typeof BootstrapActionConfigListSchema>
+  SupportedProducts?: z.infer<typeof SupportedProductsListSchema>
+  NewSupportedProducts?: z.infer<typeof NewSupportedProductsListSchema>
+  Applications?: z.infer<typeof ApplicationListSchema>
+  Configurations?: z.infer<typeof ConfigurationListSchema>
+  VisibleToAllUsers?: z.infer<typeof BooleanSchema>
+  JobFlowRole?: z.infer<typeof XmlStringSchema>
+  ServiceRole?: z.infer<typeof XmlStringSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  SecurityConfiguration?: z.infer<typeof XmlStringSchema>
+  AutoScalingRole?: z.infer<typeof XmlStringSchema>
+  ScaleDownBehavior?: z.infer<typeof ScaleDownBehaviorSchema>
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema>
+  EbsRootVolumeSize?: z.infer<typeof IntegerSchema>
+  RepoUpgradeOnBoot?: z.infer<typeof RepoUpgradeOnBootSchema>
+  KerberosAttributes?: z.infer<typeof KerberosAttributesSchema>
+  StepConcurrencyLevel?: z.infer<typeof IntegerSchema>
+  ManagedScalingPolicy?: z.infer<typeof ManagedScalingPolicySchema>
+  PlacementGroupConfigs?: z.infer<typeof PlacementGroupConfigListSchema>
   AutoTerminationPolicy?: z.infer<typeof AutoTerminationPolicySchema>
-  OSReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  OSReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema>
 }
 
 const ConfigurationSchema: z.ZodType<ConfigurationType> = z
@@ -2081,9 +2081,9 @@ const ConfigurationSchema: z.ZodType<ConfigurationType> = z
 type ConfigurationListType = z.infer<typeof ConfigurationSchema>[]
 
 type ConfigurationType = {
-  Classification?: z.infer<typeof StringSchema> & unknown
-  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
-  Properties?: z.infer<typeof StringMapSchema> & unknown
+  Classification?: z.infer<typeof StringSchema>
+  Configurations?: z.infer<typeof ConfigurationListSchema>
+  Properties?: z.infer<typeof StringMapSchema>
 }
 
 const AddInstanceFleetOutputSchema = z

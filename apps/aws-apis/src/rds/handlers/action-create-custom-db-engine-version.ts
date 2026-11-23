@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateCustomDBEngineVersionRoute,
   postActionCreateCustomDBEngineVersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateCustomDBEngineVersionRouteHandler: RouteHandler<
+  typeof getActionCreateCustomDBEngineVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateCustomDbEngineVersionHandler = app
-  .openapi(getActionCreateCustomDBEngineVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateCustomDBEngineVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateCustomDBEngineVersionRouteHandler: RouteHandler<
+  typeof postActionCreateCustomDBEngineVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

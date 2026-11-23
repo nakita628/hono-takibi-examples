@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTerminalsRoute,
   getTerminalsTerminalIdTerminalLogosRoute,
   getTerminalsTerminalIdTerminalSettingsRoute,
@@ -11,33 +11,54 @@ import {
   postTerminalsTerminalIdTerminalThemesUnapplyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTerminalsRouteHandler: RouteHandler<typeof getTerminalsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const terminalsHandler = app
-  .openapi(getTerminalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerminalsScheduleActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerminalsTerminalIdReassignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTerminalsTerminalIdTerminalLogosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTerminalsTerminalIdTerminalLogosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTerminalsTerminalIdTerminalSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTerminalsTerminalIdTerminalSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerminalsTerminalIdTerminalThemesUnapplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerminalsTerminalIdTerminalThemesIdApplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTerminalsScheduleActionsRouteHandler: RouteHandler<
+  typeof postTerminalsScheduleActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerminalsTerminalIdReassignRouteHandler: RouteHandler<
+  typeof postTerminalsTerminalIdReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTerminalsTerminalIdTerminalLogosRouteHandler: RouteHandler<
+  typeof getTerminalsTerminalIdTerminalLogosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTerminalsTerminalIdTerminalLogosRouteHandler: RouteHandler<
+  typeof patchTerminalsTerminalIdTerminalLogosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTerminalsTerminalIdTerminalSettingsRouteHandler: RouteHandler<
+  typeof getTerminalsTerminalIdTerminalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTerminalsTerminalIdTerminalSettingsRouteHandler: RouteHandler<
+  typeof patchTerminalsTerminalIdTerminalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerminalsTerminalIdTerminalThemesUnapplyRouteHandler: RouteHandler<
+  typeof postTerminalsTerminalIdTerminalThemesUnapplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerminalsTerminalIdTerminalThemesIdApplyRouteHandler: RouteHandler<
+  typeof postTerminalsTerminalIdTerminalThemesIdApplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

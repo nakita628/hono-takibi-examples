@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCalendarsAllDvdStartDateDaysRoute,
   getCalendarsAllMoviesStartDateDaysRoute,
   getCalendarsAllShowsNewStartDateDaysRoute,
@@ -12,36 +12,62 @@ import {
   getCalendarsMyShowsStartDateDaysRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCalendarsAllDvdStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsAllDvdStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const calendarsHandler = app
-  .openapi(getCalendarsAllDvdStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsAllMoviesStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsAllShowsNewStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsAllShowsPremieresStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsAllShowsStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsMyDvdStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsMyMoviesStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsMyShowsNewStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsMyShowsPremieresStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCalendarsMyShowsStartDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCalendarsAllMoviesStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsAllMoviesStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsAllShowsNewStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsAllShowsNewStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsAllShowsPremieresStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsAllShowsPremieresStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsAllShowsStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsAllShowsStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsMyDvdStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsMyDvdStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsMyMoviesStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsMyMoviesStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsMyShowsNewStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsMyShowsNewStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsMyShowsPremieresStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsMyShowsPremieresStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCalendarsMyShowsStartDateDaysRouteHandler: RouteHandler<
+  typeof getCalendarsMyShowsStartDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

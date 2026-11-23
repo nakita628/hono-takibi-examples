@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMatchMatchKeyRoute,
   getMatchMatchKeySimpleRoute,
   getMatchMatchKeyTimeseriesRoute,
   getMatchMatchKeyZebraMotionworksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMatchMatchKeyRouteHandler: RouteHandler<typeof getMatchMatchKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const matchHandler = app
-  .openapi(getMatchMatchKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMatchMatchKeySimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMatchMatchKeyTimeseriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMatchMatchKeyZebraMotionworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMatchMatchKeySimpleRouteHandler: RouteHandler<
+  typeof getMatchMatchKeySimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMatchMatchKeyTimeseriesRouteHandler: RouteHandler<
+  typeof getMatchMatchKeyTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMatchMatchKeyZebraMotionworksRouteHandler: RouteHandler<
+  typeof getMatchMatchKeyZebraMotionworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

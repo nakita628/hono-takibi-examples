@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAddressAutocompleteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAddressAutocompleteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const addressHandler = app.openapi(postAddressAutocompleteRoute, (c) => {
+export const postAddressAutocompleteRouteHandler: RouteHandler<
+  typeof postAddressAutocompleteRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteServiceDiscoveryAwsIdRoute,
   deleteServiceDiscoveryConsulIdRoute,
   getServiceDiscoveryAwsIdRoute,
@@ -12,36 +12,62 @@ import {
   putServiceDiscoveryConsulIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServiceDiscoveryAwsRouteHandler: RouteHandler<
+  typeof getServiceDiscoveryAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const serviceDiscoveryHandler = app
-  .openapi(getServiceDiscoveryAwsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServiceDiscoveryAwsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServiceDiscoveryAwsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceDiscoveryAwsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServiceDiscoveryAwsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceDiscoveryConsulRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServiceDiscoveryConsulRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServiceDiscoveryConsulIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServiceDiscoveryConsulIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServiceDiscoveryConsulIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postServiceDiscoveryAwsRouteHandler: RouteHandler<
+  typeof postServiceDiscoveryAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServiceDiscoveryAwsIdRouteHandler: RouteHandler<
+  typeof deleteServiceDiscoveryAwsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceDiscoveryAwsIdRouteHandler: RouteHandler<
+  typeof getServiceDiscoveryAwsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServiceDiscoveryAwsIdRouteHandler: RouteHandler<
+  typeof putServiceDiscoveryAwsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceDiscoveryConsulRouteHandler: RouteHandler<
+  typeof getServiceDiscoveryConsulRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServiceDiscoveryConsulRouteHandler: RouteHandler<
+  typeof postServiceDiscoveryConsulRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServiceDiscoveryConsulIdRouteHandler: RouteHandler<
+  typeof deleteServiceDiscoveryConsulIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServiceDiscoveryConsulIdRouteHandler: RouteHandler<
+  typeof getServiceDiscoveryConsulIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServiceDiscoveryConsulIdRouteHandler: RouteHandler<
+  typeof putServiceDiscoveryConsulIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

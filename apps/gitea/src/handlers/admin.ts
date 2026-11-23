@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminActionsRunnersRunnerIdRoute,
   deleteAdminHooksIdRoute,
   deleteAdminUsersUsernameBadgesRoute,
@@ -32,96 +32,166 @@ import {
   postAdminUsersUsernameReposRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminActionsJobsRouteHandler: RouteHandler<
+  typeof getAdminActionsJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminActionsJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminActionsRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminActionsRunnersRegistrationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminActionsRunnersRunnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminActionsRunnersRunnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminActionsRunnersRunnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminActionsRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminCronRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminCronTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminEmailsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminOrgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminPackagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersUsernameBadgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersUsernameBadgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUsernameBadgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUsernameKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersUsernameKeysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUsernameOrgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUsernameRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUsernameReposRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdminActionsRunnersRouteHandler: RouteHandler<
+  typeof getAdminActionsRunnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminActionsRunnersRegistrationTokenRouteHandler: RouteHandler<
+  typeof postAdminActionsRunnersRegistrationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminActionsRunnersRunnerIdRouteHandler: RouteHandler<
+  typeof deleteAdminActionsRunnersRunnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminActionsRunnersRunnerIdRouteHandler: RouteHandler<
+  typeof getAdminActionsRunnersRunnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminActionsRunnersRunnerIdRouteHandler: RouteHandler<
+  typeof patchAdminActionsRunnersRunnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminActionsRunsRouteHandler: RouteHandler<
+  typeof getAdminActionsRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminCronRouteHandler: RouteHandler<typeof getAdminCronRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminCronTaskRouteHandler: RouteHandler<typeof postAdminCronTaskRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminEmailsRouteHandler: RouteHandler<typeof getAdminEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminEmailsSearchRouteHandler: RouteHandler<
+  typeof getAdminEmailsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminHooksRouteHandler: RouteHandler<typeof getAdminHooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminHooksRouteHandler: RouteHandler<typeof postAdminHooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminHooksIdRouteHandler: RouteHandler<typeof deleteAdminHooksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminHooksIdRouteHandler: RouteHandler<typeof getAdminHooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminHooksIdRouteHandler: RouteHandler<typeof patchAdminHooksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminOrgsRouteHandler: RouteHandler<typeof getAdminOrgsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminPackagesRouteHandler: RouteHandler<typeof getAdminPackagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersRouteHandler: RouteHandler<typeof getAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersRouteHandler: RouteHandler<typeof postAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersUsernameRouteHandler: RouteHandler<
+  typeof deleteAdminUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminUsersUsernameRouteHandler: RouteHandler<
+  typeof patchAdminUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersUsernameBadgesRouteHandler: RouteHandler<
+  typeof deleteAdminUsersUsernameBadgesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersUsernameBadgesRouteHandler: RouteHandler<
+  typeof getAdminUsersUsernameBadgesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUsernameBadgesRouteHandler: RouteHandler<
+  typeof postAdminUsersUsernameBadgesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUsernameKeysRouteHandler: RouteHandler<
+  typeof postAdminUsersUsernameKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersUsernameKeysIdRouteHandler: RouteHandler<
+  typeof deleteAdminUsersUsernameKeysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUsernameOrgsRouteHandler: RouteHandler<
+  typeof postAdminUsersUsernameOrgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUsernameRenameRouteHandler: RouteHandler<
+  typeof postAdminUsersUsernameRenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUsernameReposRouteHandler: RouteHandler<
+  typeof postAdminUsersUsernameReposRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

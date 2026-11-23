@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsThemingApiV1ThemeThemeIdRoute,
   putOcsV2PhpAppsThemingApiV1ThemeThemeIdEnableRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putOcsV2PhpAppsThemingApiV1ThemeThemeIdEnableRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsThemingApiV1ThemeThemeIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(putOcsV2PhpAppsThemingApiV1ThemeThemeIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsThemingApiV1ThemeThemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteOcsV2PhpAppsThemingApiV1ThemeThemeIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsThemingApiV1ThemeThemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

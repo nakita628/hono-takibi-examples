@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler } from './handlers'
+import { postV1RenderSyncRoute } from './routes'
+import { postV1RenderSyncRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler)
+export const api = app.openapi(postV1RenderSyncRoute, postV1RenderSyncRouteHandler)
 
 export default app

@@ -1,5 +1,117 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AccountBalanceAccountBalanceAmountsSchema = z
+  .strictObject({
+    available: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The balance available in the account, including any pending transactions. This doesn't include additional funds available from any overdrafts.",
+      }),
+    current: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The balance of the account only including cleared transactions.' }),
+    limit: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum allowed balance for the account. For example, a $100.00 overdraft would show as a limit of `-100.00`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Depending on the data provided by the underlying bank, not all balances are always available.',
+    title: 'Account Balance Amounts',
+    'x-internal': true,
+    required: [],
+  })
+  .openapi('AccountBalanceAccountBalanceAmounts')
+
+const AccountAccountIdentifierTypeSchema = z
+  .enum(['Account', 'Card', 'Credit', 'Depository', 'Investment', 'Loan', 'Other'])
+  .openapi({ description: 'Type of account', 'x-internal': true })
+  .openapi('AccountAccountIdentifierType')
+
+const AccountAccountIdentifiersSchema = z
+  .strictObject({
+    bankCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The local (usually national) routing number for the account.\n\nThis is known by different names in different countries:\n* BSB code (Australia)\n* routing number (Canada, USA)\n* sort code (UK)',
+      }),
+    bic: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ISO 9362 code (commonly called SWIFT code, SWIFT-BIC or BIC) for the account.',
+      }),
+    iban: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The international bank account number (IBAN) for the account, if known.',
+      }),
+    maskedAccountNumber: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A portion of the actual account `number` to help account identification where number is tokenised (Plaid only)',
+      }),
+    number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The account number for the account. When combined with the`bankCode`, this is usually enough to uniquely identify an account within a jurisdiction.',
+      }),
+    subtype: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Detailed account category' }),
+    type: AccountAccountIdentifierTypeSchema,
+  })
+  .openapi({
+    description: 'An object containing bank account identification information.',
+    required: ['type'],
+    title: 'Account Identifiers',
+    'x-internal': true,
+  })
+  .openapi('AccountAccountIdentifiers')
+
+const AccountAccountInstitutionSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The institution's ID, according to the provider." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The institution's name, according to the underlying provider." }),
+  })
+  .openapi({
+    description: 'The bank or other financial institution providing the account.',
+    title: 'Account Institution',
+    'x-internal': true,
+    required: [],
+  })
+  .openapi('AccountAccountInstitution')
+
 const AccountTypeSchema = z
   .enum(['Unknown', 'Credit', 'Debit'])
   .openapi({
@@ -44,38 +156,9 @@ const ModifiedDatesSchema = ModifiedDateSchema.and(SourceModifiedDateSchema)
 
 const AccountSchema = z
   .object({
-    balance: z
-      .strictObject({
-        available: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The balance available in the account, including any pending transactions. This doesn't include additional funds available from any overdrafts.",
-          }),
-        current: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'The balance of the account only including cleared transactions.',
-          }),
-        limit: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The minimum allowed balance for the account. For example, a $100.00 overdraft would show as a limit of `-100.00`.',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'An object containing bank balance data.',
-        title: 'Account Balance Amounts',
-        'x-internal': true,
-        required: [],
-      }),
+    balance: AccountBalanceAccountBalanceAmountsSchema.exactOptional().openapi({
+      description: 'An object containing bank balance data.',
+    }),
     currency: z
       .string()
       .min(1)
@@ -91,63 +174,7 @@ const AccountSchema = z
       .min(1)
       .exactOptional()
       .openapi({ description: 'The ID of the account from the provider.' }),
-    identifiers: z
-      .strictObject({
-        bankCode: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The local (usually national) routing number for the account.\n\nThis is known by different names in different countries:\n* BSB code (Australia)\n* routing number (Canada, USA)\n* sort code (UK)',
-          }),
-        bic: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The ISO 9362 code (commonly called SWIFT code, SWIFT-BIC or BIC) for the account.',
-          }),
-        iban: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The international bank account number (IBAN) for the account, if known.',
-          }),
-        maskedAccountNumber: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'A portion of the actual account `number` to help account identification where number is tokenised (Plaid only)',
-          }),
-        number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The account number for the account. When combined with the`bankCode`, this is usually enough to uniquely identify an account within a jurisdiction.',
-          }),
-        subtype: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Detailed account category' }),
-        type: z
-          .enum(['Account', 'Card', 'Credit', 'Depository', 'Investment', 'Loan', 'Other'])
-          .openapi({ description: 'Type of account', 'x-internal': true }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'An object containing bank account identification information.',
-        required: ['type'],
-        title: 'Account Identifiers',
-        'x-internal': true,
-      }),
+    identifiers: AccountAccountIdentifiersSchema.exactOptional(),
     informalName: z
       .string()
       .nullable()
@@ -156,26 +183,7 @@ const AccountSchema = z
         description:
           'The friendly name of the account, chosen by the holder. This may not have been set by the account holder and therefore is not always available.',
       }),
-    institution: z
-      .strictObject({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "The institution's ID, according to the provider." }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The institution's name, according to the underlying provider.",
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The bank or other financial institution providing the account.',
-        title: 'Account Institution',
-        'x-internal': true,
-        required: [],
-      }),
+    institution: AccountAccountInstitutionSchema.exactOptional(),
     name: z
       .string()
       .min(1)
@@ -259,39 +267,7 @@ const AccountBalanceSchema = z
       .min(1)
       .exactOptional()
       .openapi({ description: 'The unique identifier of the account.' }),
-    balance: z
-      .strictObject({
-        available: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The balance available in the account, including any pending transactions. This doesn't include additional funds available from any overdrafts.",
-          }),
-        current: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'The balance of the account only including cleared transactions.',
-          }),
-        limit: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The minimum allowed balance for the account. For example, a $100.00 overdraft would show as a limit of `-100.00`.',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Depending on the data provided by the underlying bank, not all balances are always available.',
-        title: 'Account Balance Amounts',
-        'x-internal': true,
-        required: [],
-      }),
+    balance: AccountBalanceAccountBalanceAmountsSchema.exactOptional(),
     date: DateTimeSchema.exactOptional().openapi({ description: 'Date of the balance.' }),
   })
   .openapi({ required: [] })
@@ -401,6 +377,46 @@ const AccountsSchema = z
   .openapi({ 'x-internal': true })
   .openapi('Accounts')
 
+const TransactionTransactionCodeSchema = z
+  .enum([
+    'Unknown',
+    'Fee',
+    'Payment',
+    'Cash',
+    'Transfer',
+    'Interest',
+    'Cashback',
+    'Cheque',
+    'DirectDebit',
+    'Purchase',
+    'StandingOrder',
+    'Adjustment',
+    'Credit',
+    'Other',
+    'NotSupported',
+  ])
+  .openapi({ description: 'Code to identify the underlying transaction.', 'x-internal': true })
+  .openapi('TransactionTransactionCode')
+
+const TransactionCategoryTransactionCategoryRefSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .openapi({ description: 'The unique category reference id for the bank transaction.' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The category name reference for the bank transaction.' }),
+  })
+  .openapi({
+    description: 'An object of bank transaction category reference data.',
+    required: ['id'],
+    'x-internal': true,
+  })
+  .openapi('TransactionCategoryTransactionCategoryRef')
+
 const TransactionSchema = z
   .object({
     accountId: z
@@ -415,26 +431,7 @@ const TransactionSchema = z
     authorizedDate: DateTimeSchema.exactOptional().openapi({
       description: 'The date the bank transaction was authorized.',
     }),
-    code: z
-      .enum([
-        'Unknown',
-        'Fee',
-        'Payment',
-        'Cash',
-        'Transfer',
-        'Interest',
-        'Cashback',
-        'Cheque',
-        'DirectDebit',
-        'Purchase',
-        'StandingOrder',
-        'Adjustment',
-        'Credit',
-        'Other',
-        'NotSupported',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Code to identify the underlying transaction.', 'x-internal': true }),
+    code: TransactionTransactionCodeSchema.exactOptional(),
     currency: z
       .string()
       .min(1)
@@ -458,24 +455,7 @@ const TransactionSchema = z
     postedDate: DateTimeSchema.exactOptional().openapi({
       description: 'The date the bank transaction was cleared.',
     }),
-    transactionCategoryRef: z
-      .object({
-        id: z
-          .string()
-          .min(1)
-          .openapi({ description: 'The unique category reference id for the bank transaction.' }),
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The category name reference for the bank transaction.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'An object of bank transaction category reference data.',
-        required: ['id'],
-        'x-internal': true,
-      }),
+    transactionCategoryRef: TransactionCategoryTransactionCategoryRefSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .and(z.looseObject({}).openapi({ required: ['id', 'accountId', 'currency'] }))
@@ -516,6 +496,11 @@ const TransactionSchema = z
   })
   .openapi('Transaction')
 
+const TransactionCategoryTransactionCategoryStatusSchema = z
+  .enum(['Unknown', 'Active', 'Archived'])
+  .openapi({ 'x-internal': true })
+  .openapi('TransactionCategoryTransactionCategoryStatus')
+
 const TransactionCategorySchema = z
   .object({
     hasChildren: z
@@ -540,10 +525,7 @@ const TransactionCategorySchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'The unique identifier of the parent bank transaction category.' }),
-    status: z
-      .enum(['Unknown', 'Active', 'Archived'])
-      .exactOptional()
-      .openapi({ 'x-internal': true }),
+    status: TransactionCategoryTransactionCategoryStatusSchema.exactOptional(),
   })
   .openapi({ description: 'Status of the bank transaction category.', required: [] })
   .and(z.looseObject({}).openapi({ required: ['id', 'name'] }))

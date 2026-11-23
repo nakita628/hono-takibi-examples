@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPrivilegeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPrivilegeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const privilegeHandler = app.openapi(getPrivilegeRoute, (c) => {
+export const getPrivilegeRouteHandler: RouteHandler<typeof getPrivilegeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getApiThingsShadowListNamedShadowsForThingThingNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getApiThingsShadowListNamedShadowsForThingThingNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const apiHandler = app.openapi(
-  getApiThingsShadowListNamedShadowsForThingThingNameRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getApiThingsShadowListNamedShadowsForThingThingNameRouteHandler: RouteHandler<
+  typeof getApiThingsShadowListNamedShadowsForThingThingNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

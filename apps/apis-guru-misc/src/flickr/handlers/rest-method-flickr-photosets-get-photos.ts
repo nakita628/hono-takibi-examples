@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRestMethodFlickrPhotosetsGetPhotosRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRestMethodFlickrPhotosetsGetPhotosRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const restMethodFlickrPhotosetsGetPhotosHandler = app.openapi(
-  getRestMethodFlickrPhotosetsGetPhotosRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getRestMethodFlickrPhotosetsGetPhotosRouteHandler: RouteHandler<
+  typeof getRestMethodFlickrPhotosetsGetPhotosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

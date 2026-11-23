@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/elasticloadbalancingv2/2015-12-01/openapi.yaml',
   output: './src/elasticloadbalancingv2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elasticloadbalancingv2/types.ts' },
   client: { output: './src/elasticloadbalancingv2/client.ts', baseUrl: '/' },
   rpc: { output: './src/elasticloadbalancingv2/rpc.ts', parseResponse: true },

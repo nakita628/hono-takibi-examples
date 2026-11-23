@@ -1,91 +1,257 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsSimbaApiServiceV20180301AssociateFileSystemAliasesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CancelDataRepositoryTaskHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CopyBackupHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateBackupHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateDataRepositoryAssociationHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateDataRepositoryTaskHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateFileCacheHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateFileSystemFromBackupHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateFileSystemHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateSnapshotHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateStorageVirtualMachineHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateVolumeFromBackupHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301CreateVolumeHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteBackupHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteDataRepositoryAssociationHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteFileCacheHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteFileSystemHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteSnapshotHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteStorageVirtualMachineHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DeleteVolumeHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeBackupsHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeDataRepositoryAssociationsHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeDataRepositoryTasksHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeFileCachesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeFileSystemAliasesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeFileSystemsHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeSnapshotsHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeStorageVirtualMachinesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DescribeVolumesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301DisassociateFileSystemAliasesHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301ListTagsForResourceHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301ReleaseFileSystemNfsV3LocksHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301RestoreVolumeFromSnapshotHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301TagResourceHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UntagResourceHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateDataRepositoryAssociationHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateFileCacheHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateFileSystemHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateSnapshotHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateStorageVirtualMachineHandler,
-  xAmzTargetAwsSimbaApiServiceV20180301UpdateVolumeHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301AssociateFileSystemAliasesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CancelDataRepositoryTaskRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CopyBackupRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateBackupRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryAssociationRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryTaskRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileCacheRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemFromBackupRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateSnapshotRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateStorageVirtualMachineRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteBackupRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileSystemRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteSnapshotRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteStorageVirtualMachineRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteVolumeRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeBackupsRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryAssociationsRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryTasksRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileCachesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemAliasesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemsRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeSnapshotsRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeStorageVirtualMachinesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeVolumesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301ListTagsForResourceRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301ReleaseFileSystemNfsV3LocksRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301RestoreVolumeFromSnapshotRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301TagResourceRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UntagResourceRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateDataRepositoryAssociationRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileCacheRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileSystemRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateSnapshotRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateStorageVirtualMachineRoute,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateVolumeRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSSimbaAPIServiceV20180301AssociateFileSystemAliasesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CancelDataRepositoryTaskRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CopyBackupRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateBackupRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryAssociationRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryTaskRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileCacheRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemFromBackupRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateSnapshotRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateStorageVirtualMachineRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteBackupRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileSystemRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteSnapshotRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteStorageVirtualMachineRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteVolumeRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeBackupsRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryAssociationsRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryTasksRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileCachesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemAliasesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemsRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeSnapshotsRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeStorageVirtualMachinesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DescribeVolumesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301ReleaseFileSystemNfsV3LocksRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301RestoreVolumeFromSnapshotRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301TagResourceRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UntagResourceRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateDataRepositoryAssociationRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileCacheRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileSystemRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateSnapshotRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateStorageVirtualMachineRouteHandler,
+  postXAmzTargetAWSSimbaAPIServiceV20180301UpdateVolumeRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301AssociateFileSystemAliasesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CancelDataRepositoryTaskHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CopyBackupHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateBackupHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateDataRepositoryAssociationHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateDataRepositoryTaskHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateFileCacheHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateFileSystemHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateFileSystemFromBackupHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateSnapshotHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateStorageVirtualMachineHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateVolumeHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301CreateVolumeFromBackupHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteBackupHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteDataRepositoryAssociationHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteFileCacheHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteFileSystemHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteSnapshotHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteStorageVirtualMachineHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DeleteVolumeHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeBackupsHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeDataRepositoryAssociationsHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeDataRepositoryTasksHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeFileCachesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeFileSystemAliasesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeFileSystemsHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeSnapshotsHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeStorageVirtualMachinesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DescribeVolumesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301DisassociateFileSystemAliasesHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301ReleaseFileSystemNfsV3LocksHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301RestoreVolumeFromSnapshotHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301TagResourceHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UntagResourceHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateDataRepositoryAssociationHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateFileCacheHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateFileSystemHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateSnapshotHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateStorageVirtualMachineHandler)
-  .route('/', xAmzTargetAwsSimbaApiServiceV20180301UpdateVolumeHandler)
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301AssociateFileSystemAliasesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301AssociateFileSystemAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CancelDataRepositoryTaskRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CancelDataRepositoryTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CopyBackupRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CopyBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateBackupRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryAssociationRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryTaskRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateDataRepositoryTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileCacheRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileCacheRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemFromBackupRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateFileSystemFromBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateSnapshotRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateStorageVirtualMachineRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateStorageVirtualMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteBackupRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteDataRepositoryAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileSystemRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileSystemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteSnapshotRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteStorageVirtualMachineRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteStorageVirtualMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteVolumeRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DeleteVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeBackupsRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryAssociationsRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryTasksRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeDataRepositoryTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileCachesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileCachesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemAliasesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemsRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeFileSystemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeSnapshotsRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeStorageVirtualMachinesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeStorageVirtualMachinesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeVolumesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DescribeVolumesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301ListTagsForResourceRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301ReleaseFileSystemNfsV3LocksRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301ReleaseFileSystemNfsV3LocksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301RestoreVolumeFromSnapshotRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301RestoreVolumeFromSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301TagResourceRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UntagResourceRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateDataRepositoryAssociationRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateDataRepositoryAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileCacheRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileCacheRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileSystemRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateFileSystemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateSnapshotRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateStorageVirtualMachineRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateStorageVirtualMachineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateVolumeRoute,
+    postXAmzTargetAWSSimbaAPIServiceV20180301UpdateVolumeRouteHandler,
+  )
 
 export default app

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/dgecerttn/3.0.0/openapi.yaml',
   output: './src/dgecerttn/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dgecerttn/types.ts' },
   client: { output: './src/dgecerttn/client.ts', baseUrl: '/' },
   rpc: { output: './src/dgecerttn/rpc.ts', parseResponse: true },

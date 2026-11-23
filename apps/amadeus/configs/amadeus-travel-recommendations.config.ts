@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-travel-recommendations/1.0.3/openapi.yaml',
   output: './src/amadeus-travel-recommendations/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/amadeus-travel-recommendations/types.ts' },
   client: { output: './src/amadeus-travel-recommendations/client.ts', baseUrl: '/' },
   rpc: { output: './src/amadeus-travel-recommendations/rpc.ts', parseResponse: true },

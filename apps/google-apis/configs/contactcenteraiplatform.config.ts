@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/contactcenteraiplatform/v1alpha1/openapi.yaml',
   output: './src/contactcenteraiplatform/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/contactcenteraiplatform/types.ts' },
   client: { output: './src/contactcenteraiplatform/client.ts', baseUrl: '/' },
   rpc: { output: './src/contactcenteraiplatform/rpc.ts', parseResponse: true },

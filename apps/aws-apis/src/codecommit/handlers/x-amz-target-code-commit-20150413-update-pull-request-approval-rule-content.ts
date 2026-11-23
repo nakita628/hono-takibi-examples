@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentHandler = app.openapi(
-  postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeCommit20150413UpdatePullRequestApprovalRuleContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

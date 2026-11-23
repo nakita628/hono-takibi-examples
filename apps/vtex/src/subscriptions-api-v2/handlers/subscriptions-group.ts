@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSubscriptionsGroupGroupIdAddressesRoute,
   getSubscriptionsGroupGroupIdConfigRoute,
   getSubscriptionsGroupGroupIdConversationMessageRoute,
@@ -18,54 +18,98 @@ import {
   postSubscriptionsGroupGroupidInstancesInstanceIdRetryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSubscriptionsGroupRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const subscriptionsGroupHandler = app
-  .openapi(getSubscriptionsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupNextPurchaseDateStrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupSimulateGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSubscriptionsGroupGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsGroupGroupIdAdditemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsGroupGroupIdAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSubscriptionsGroupGroupIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdConversationMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdFrequencyOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdPaymentSystemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubscriptionsGroupGroupIdWillCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubscriptionsGroupGroupidInstancesInstanceIdRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSubscriptionsGroupListRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupNextPurchaseDateStrRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupNextPurchaseDateStrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupSimulateGroupIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupSimulateGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSubscriptionsGroupGroupIdRouteHandler: RouteHandler<
+  typeof patchSubscriptionsGroupGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsGroupGroupIdAdditemRouteHandler: RouteHandler<
+  typeof postSubscriptionsGroupGroupIdAdditemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdAddressesRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsGroupGroupIdAddressesRouteHandler: RouteHandler<
+  typeof postSubscriptionsGroupGroupIdAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSubscriptionsGroupGroupIdCancelRouteHandler: RouteHandler<
+  typeof patchSubscriptionsGroupGroupIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdConfigRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdConversationMessageRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdConversationMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdFrequencyOptionsRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdFrequencyOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdPaymentSystemsRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdPaymentSystemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubscriptionsGroupGroupIdWillCreateRouteHandler: RouteHandler<
+  typeof getSubscriptionsGroupGroupIdWillCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubscriptionsGroupGroupidInstancesInstanceIdRetryRouteHandler: RouteHandler<
+  typeof postSubscriptionsGroupGroupidInstancesInstanceIdRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

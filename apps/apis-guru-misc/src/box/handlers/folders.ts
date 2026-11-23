@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute,
   deleteFoldersFolderIdMetadataScopeTemplateKeyRoute,
   deleteFoldersFolderIdRoute,
@@ -29,87 +29,162 @@ import {
   putFoldersFolderIdWatermarkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFoldersRouteHandler: RouteHandler<typeof postFoldersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const foldersHandler = app
-  .openapi(postFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersTrashItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdAddSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdGetSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdRemoveSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdUpdateSharedLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdCollaborationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderIdCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderIdMetadataScopeTemplateKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdMetadataScopeTemplateKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoldersFolderIdMetadataScopeTemplateKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdMetadataScopeTemplateKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderIdTrashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdTrashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFoldersFolderIdWatermarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoldersFolderIdWatermarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFoldersFolderIdWatermarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFoldersTrashItemsRouteHandler: RouteHandler<
+  typeof getFoldersTrashItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderIdRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdRouteHandler: RouteHandler<typeof getFoldersFolderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderIdRouteHandler: RouteHandler<
+  typeof postFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdRouteHandler: RouteHandler<typeof putFoldersFolderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdAddSharedLinkRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdAddSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdGetSharedLinkRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdGetSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdRemoveSharedLinkRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdRemoveSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdUpdateSharedLinkRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdUpdateSharedLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdCollaborationsRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdCollaborationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderIdCopyRouteHandler: RouteHandler<
+  typeof postFoldersFolderIdCopyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdItemsRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdMetadataRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRouteHandler: RouteHandler<
+  typeof postFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdMetadataEnterpriseSecurityClassification6VMVochwUWoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderIdMetadataScopeTemplateKeyRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderIdMetadataScopeTemplateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdMetadataScopeTemplateKeyRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdMetadataScopeTemplateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoldersFolderIdMetadataScopeTemplateKeyRouteHandler: RouteHandler<
+  typeof postFoldersFolderIdMetadataScopeTemplateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdMetadataScopeTemplateKeyRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdMetadataScopeTemplateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderIdTrashRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderIdTrashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdTrashRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdTrashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFoldersFolderIdWatermarkRouteHandler: RouteHandler<
+  typeof deleteFoldersFolderIdWatermarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFoldersFolderIdWatermarkRouteHandler: RouteHandler<
+  typeof getFoldersFolderIdWatermarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFoldersFolderIdWatermarkRouteHandler: RouteHandler<
+  typeof putFoldersFolderIdWatermarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -348,11 +348,11 @@ const BatchPermissionsFailureListSchema: z.ZodType<BatchPermissionsFailureListTy
   .openapi('BatchPermissionsFailureList')
 
 type BatchGrantPermissionsResponseType = {
-  Failures?: z.infer<typeof BatchPermissionsFailureListSchema> & unknown
+  Failures?: z.infer<typeof BatchPermissionsFailureListSchema>
 }
 
 type BatchRevokePermissionsResponseType = {
-  Failures?: z.infer<typeof BatchPermissionsFailureListSchema> & unknown
+  Failures?: z.infer<typeof BatchPermissionsFailureListSchema>
 }
 
 const RAMResourceShareArnSchema = z.string().openapi('RAMResourceShareArn')
@@ -402,13 +402,13 @@ const PrincipalResourcePermissionsListSchema = z
 const TokenSchema = z.string().openapi('Token')
 
 type GetEffectivePermissionsForPathResponseType = {
-  Permissions?: z.infer<typeof PrincipalResourcePermissionsListSchema> & unknown
-  NextToken?: z.infer<typeof TokenSchema> & unknown
+  Permissions?: z.infer<typeof PrincipalResourcePermissionsListSchema>
+  NextToken?: z.infer<typeof TokenSchema>
 }
 
 type ListPermissionsResponseType = {
-  PrincipalResourcePermissions?: z.infer<typeof PrincipalResourcePermissionsListSchema> & unknown
-  NextToken?: z.infer<typeof TokenSchema> & unknown
+  PrincipalResourcePermissions?: z.infer<typeof PrincipalResourcePermissionsListSchema>
+  NextToken?: z.infer<typeof TokenSchema>
 }
 
 const LFTagPairSchema = z
@@ -469,8 +469,8 @@ const TaggedTableSchema = z
 const TableLFTagsListSchema = z.array(TaggedTableSchema).openapi('TableLFTagsList')
 
 type SearchTablesByLFTagsResponseType = {
-  NextToken?: z.infer<typeof TokenSchema> & unknown
-  TableList?: z.infer<typeof TableLFTagsListSchema> & unknown
+  NextToken?: z.infer<typeof TokenSchema>
+  TableList?: z.infer<typeof TableLFTagsListSchema>
 }
 
 const BatchPermissionsRequestEntryListSchema = z
@@ -478,13 +478,13 @@ const BatchPermissionsRequestEntryListSchema = z
   .openapi('BatchPermissionsRequestEntryList')
 
 type BatchGrantPermissionsRequestType = {
-  CatalogId?: z.infer<typeof CatalogIdStringSchema> & unknown
-  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema> & unknown
+  CatalogId?: z.infer<typeof CatalogIdStringSchema>
+  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema>
 }
 
 type BatchRevokePermissionsRequestType = {
-  CatalogId?: z.infer<typeof CatalogIdStringSchema> & unknown
-  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema> & unknown
+  CatalogId?: z.infer<typeof CatalogIdStringSchema>
+  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema>
 }
 
 const LFTagErrorSchema = z

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEnvImpactPeriodRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEnvImpactPeriodRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const envImpactHandler = app.openapi(getEnvImpactPeriodRoute, (c) => {
+export const getEnvImpactPeriodRouteHandler: RouteHandler<typeof getEnvImpactPeriodRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

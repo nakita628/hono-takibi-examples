@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPermissionGroupMaxResultsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPermissionGroupMaxResultsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const permissionGroupMaxResultsHandler = app.openapi(
-  getPermissionGroupMaxResultsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getPermissionGroupMaxResultsRouteHandler: RouteHandler<
+  typeof getPermissionGroupMaxResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

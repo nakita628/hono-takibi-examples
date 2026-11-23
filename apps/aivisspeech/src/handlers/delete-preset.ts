@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeletePresetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeletePresetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deletePresetHandler = app.openapi(postDeletePresetRoute, (c) => {
+export const postDeletePresetRouteHandler: RouteHandler<typeof postDeletePresetRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

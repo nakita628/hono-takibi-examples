@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSwbExternalServiceCreateInstanceAccessControlAttributeConfigurationHandler =
-  app.openapi(
-    postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

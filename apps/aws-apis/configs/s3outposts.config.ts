@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/s3outposts/2017-07-25/openapi.yaml',
   output: './src/s3outposts/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/s3outposts/types.ts' },
   client: { output: './src/s3outposts/client.ts', baseUrl: '/' },
   rpc: { output: './src/s3outposts/rpc.ts', parseResponse: true },

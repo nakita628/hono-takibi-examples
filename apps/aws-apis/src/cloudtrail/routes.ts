@@ -163,8 +163,8 @@ const EventDataStoresSchema = z.array(EventDataStoreSchema).openapi('EventDataSt
 const PaginationTokenSchema = z.string().regex(/.*/).min(4).max(1000).openapi('PaginationToken')
 
 type ListEventDataStoresResponseType = {
-  EventDataStores?: z.infer<typeof EventDataStoresSchema> & unknown
-  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  EventDataStores?: z.infer<typeof EventDataStoresSchema>
+  NextToken?: z.infer<typeof PaginationTokenSchema>
 }
 
 const AddTagsResponseSchema = z

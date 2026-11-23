@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/resourcegroupstaggingapi/2017-01-26/openapi.yaml',
   output: './src/resourcegroupstaggingapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/resourcegroupstaggingapi/types.ts' },
   client: { output: './src/resourcegroupstaggingapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/resourcegroupstaggingapi/rpc.ts', parseResponse: true },

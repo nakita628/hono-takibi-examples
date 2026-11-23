@@ -153,12 +153,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/:source_ids': {
-      $get: {
-        input: { param: { source_ids: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/:source_ids/:z/:x/:y': {
@@ -208,8 +215,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/catalog': { $get: { input: {}; output: Catalog; outputFormat: 'json'; status: 200 } }
   } & {
-    '/font/:fontstack/:start-:end': {
+    '/font/:fontstack/:start-{end}': {
       $get:
+        | {
+            input: { param: { fontstack: string; start: number; end: number } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { fontstack: string; start: number; end: number } }
             output: {}
@@ -248,6 +261,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/ogc/collections/:collection_id/map': {
       $get:
+        | {
+            input: { param: { collection_id: string } } & {
+              query: {
+                width?: (number | null) | undefined
+                height?: (number | null) | undefined
+                bbox?: (string | null) | undefined
+                'bbox-crs'?: (string | null) | undefined
+                center?: (string | null) | undefined
+                'center-crs'?: (string | null) | undefined
+                'scale-denominator'?: (number | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { collection_id: string } } & {
               query: {
@@ -409,23 +438,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/ogc/map': {
-      $get: {
-        input: {
-          query: {
-            width?: (number | null) | undefined
-            height?: (number | null) | undefined
-            bbox?: (string | null) | undefined
-            'bbox-crs'?: (string | null) | undefined
-            center?: (string | null) | undefined
-            'center-crs'?: (string | null) | undefined
-            'scale-denominator'?: (number | null) | undefined
-            collections?: (string | null) | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                width?: (number | null) | undefined
+                height?: (number | null) | undefined
+                bbox?: (string | null) | undefined
+                'bbox-crs'?: (string | null) | undefined
+                center?: (string | null) | undefined
+                'center-crs'?: (string | null) | undefined
+                'scale-denominator'?: (number | null) | undefined
+                collections?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 400
-      }
+        | {
+            input: {
+              query: {
+                width?: (number | null) | undefined
+                height?: (number | null) | undefined
+                bbox?: (string | null) | undefined
+                'bbox-crs'?: (string | null) | undefined
+                center?: (string | null) | undefined
+                'center-crs'?: (string | null) | undefined
+                'scale-denominator'?: (number | null) | undefined
+                collections?: (string | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/ogc/map/tiles': { $get: { input: {}; output: TileSets; outputFormat: 'json'; status: 200 } }
@@ -459,6 +506,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: {
+                tile_matrix_set_id: string
+                tile_matrix: number
+                tile_row: number
+                tile_col: number
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 404
           }
         | {
@@ -480,12 +540,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/ogc/styles/:style_id': {
       $get:
+        | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 200 }
         | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 400 }
         | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/ogc/styles/:style_id/map': {
       $get:
+        | {
+            input: { param: { style_id: string } } & {
+              query: {
+                width?: (number | null) | undefined
+                height?: (number | null) | undefined
+                bbox?: (string | null) | undefined
+                'bbox-crs'?: (string | null) | undefined
+                center?: (string | null) | undefined
+                'center-crs'?: (string | null) | undefined
+                'scale-denominator'?: (number | null) | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { style_id: string } } & {
               query: {
@@ -577,6 +654,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: {
+                style_id: string
+                tile_matrix_set_id: string
+                tile_matrix: number
+                tile_row: number
+                tile_col: number
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 404
           }
         | {
@@ -616,48 +707,77 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/sdf_sprite/:source_ids.json': {
-      $get: {
-        input: { param: { source_ids: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/sdf_sprite/:source_ids.png': {
-      $get: {
-        input: { param: { source_ids: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/sprite/:source_ids.json': {
-      $get: {
-        input: { param: { source_ids: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/sprite/:source_ids.png': {
-      $get: {
-        input: { param: { source_ids: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { source_ids: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/style/:style_id': {
       $get:
+        | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 200 }
         | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 400 }
         | { input: { param: { style_id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
-    '/style/:style_id/:z/:x/:y.:format': {
+    '/style/:style_id/:z/:x/:y.{format}': {
       $get:
         | {
             input: {
@@ -731,8 +851,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/style/:style_id/static/:camera/:size.:format': {
+    '/style/:style_id/static/:camera/:size.{format}': {
       $get:
+        | {
+            input: {
+              param: {
+                style_id: string
+                camera: string
+                size: string
+                format: 'png' | 'jpg' | 'webp'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               param: {
@@ -786,6 +919,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: {
+              param: {
+                style_id: string
+                camera: string
+                size: string
+                format: 'png' | 'jpg' | 'webp'
+              }
+            } & { json: StaticStyleOverlay }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               param: {

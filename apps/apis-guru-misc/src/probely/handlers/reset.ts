@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postResetIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postResetIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const resetHandler = app.openapi(postResetIndexRoute, (c) => {
+export const postResetIndexRouteHandler: RouteHandler<typeof postResetIndexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

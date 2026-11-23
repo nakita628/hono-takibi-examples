@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVariationSetIdRoute,
   getVariationSetAnalyzeIdRoute,
   getVariationSetArchiveYearMonthDayRoute,
@@ -9,27 +9,44 @@ import {
   putVariationSetIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVariationSetIndexRouteHandler: RouteHandler<
+  typeof getVariationSetIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const variationHandler = app
-  .openapi(getVariationSetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVariationSetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariationSetAnalyzeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariationSetArchiveYearMonthDayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVariationSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariationSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVariationSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVariationSetIndexRouteHandler: RouteHandler<
+  typeof postVariationSetIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariationSetAnalyzeIdRouteHandler: RouteHandler<
+  typeof getVariationSetAnalyzeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariationSetArchiveYearMonthDayRouteHandler: RouteHandler<
+  typeof getVariationSetArchiveYearMonthDayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVariationSetIdRouteHandler: RouteHandler<
+  typeof deleteVariationSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariationSetIdRouteHandler: RouteHandler<typeof getVariationSetIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putVariationSetIdRouteHandler: RouteHandler<typeof putVariationSetIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

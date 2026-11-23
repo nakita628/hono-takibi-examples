@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { realtimeContactAnalysisHandler } from './handlers'
+import { postRealtimeContactAnalysisAnalysisSegmentsRoute } from './routes'
+import { postRealtimeContactAnalysisAnalysisSegmentsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', realtimeContactAnalysisHandler)
+export const api = app.openapi(
+  postRealtimeContactAnalysisAnalysisSegmentsRoute,
+  postRealtimeContactAnalysisAnalysisSegmentsRouteHandler,
+)
 
 export default app

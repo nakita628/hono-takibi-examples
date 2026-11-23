@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteItemsCollectionIdRoute,
   deleteItemsCollectionRoute,
   getItemsCollectionIdRoute,
@@ -9,27 +9,44 @@ import {
   postItemsCollectionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getItemsCollectionRouteHandler: RouteHandler<typeof getItemsCollectionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const itemsHandler = app
-  .openapi(getItemsCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchItemsCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchItemsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postItemsCollectionRouteHandler: RouteHandler<
+  typeof postItemsCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchItemsCollectionRouteHandler: RouteHandler<
+  typeof patchItemsCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsCollectionRouteHandler: RouteHandler<
+  typeof deleteItemsCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsCollectionIdRouteHandler: RouteHandler<
+  typeof getItemsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchItemsCollectionIdRouteHandler: RouteHandler<
+  typeof patchItemsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsCollectionIdRouteHandler: RouteHandler<
+  typeof deleteItemsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

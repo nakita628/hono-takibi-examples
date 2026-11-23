@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionChangeMessageVisibilityBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionChangeMessageVisibilityBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionChangeMessageVisibilityBatchHandler = app.openapi(
-  postActionChangeMessageVisibilityBatchRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postActionChangeMessageVisibilityBatchRouteHandler: RouteHandler<
+  typeof postActionChangeMessageVisibilityBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

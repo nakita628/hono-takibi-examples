@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBalanceOverviewCompaniesCompanyAccountCodeBalancesRoute,
   getBalanceOverviewMerchantsMerchantAccountCodeBalancesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBalanceOverviewCompaniesCompanyAccountCodeBalancesRouteHandler: RouteHandler<
+  typeof getBalanceOverviewCompaniesCompanyAccountCodeBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const balanceOverviewHandler = app
-  .openapi(getBalanceOverviewCompaniesCompanyAccountCodeBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalanceOverviewMerchantsMerchantAccountCodeBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBalanceOverviewMerchantsMerchantAccountCodeBalancesRouteHandler: RouteHandler<
+  typeof getBalanceOverviewMerchantsMerchantAccountCodeBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

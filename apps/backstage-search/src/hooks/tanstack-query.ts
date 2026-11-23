@@ -36,7 +36,7 @@ export function getQueryQueryOptions<
   })
 }
 
-export function useQuery<
+export function useGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
@@ -62,7 +62,7 @@ export function useQuery<
   )
 }
 
-export function useSuspenseQuery<
+export function useSuspenseGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(

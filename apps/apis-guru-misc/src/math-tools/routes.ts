@@ -74,8 +74,8 @@ export const getNumbersBaseRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -129,8 +129,8 @@ export const getNumbersBaseBinaryRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -184,8 +184,8 @@ export const getNumbersBaseHexRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -239,8 +239,8 @@ export const getNumbersBaseOctalRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -287,8 +287,8 @@ export const getNumbersCardinalRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -335,8 +335,8 @@ export const getNumbersCurrencyRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -370,8 +370,8 @@ export const getNumbersFactRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -406,8 +406,8 @@ export const getNumbersIsCubeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -442,8 +442,8 @@ export const getNumbersIsPalindromeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -478,8 +478,8 @@ export const getNumbersIsSquareRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -514,8 +514,8 @@ export const getNumbersIsTriangleRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -526,8 +526,8 @@ export const getNumbersNodRoute = createRoute({
   tags: ['Number of the day'],
   description: 'Get the number of the day for current day',
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -562,8 +562,8 @@ export const getNumbersNumeralChineseRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -598,8 +598,8 @@ export const getNumbersNumeralEgyptianRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -634,8 +634,8 @@ export const getNumbersNumeralRomanRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -670,8 +670,8 @@ export const getNumbersOrdinalRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -726,8 +726,8 @@ export const getNumbersPiRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -762,8 +762,8 @@ export const getNumbersPrimeFactorsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -798,8 +798,8 @@ export const getNumbersPrimeIsFermatPrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -834,8 +834,8 @@ export const getNumbersPrimeIsFibonacciPrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -870,8 +870,8 @@ export const getNumbersPrimeIsMersennePrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -906,8 +906,8 @@ export const getNumbersPrimeIsPartitionPrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -942,8 +942,8 @@ export const getNumbersPrimeIsPellPrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -978,8 +978,8 @@ export const getNumbersPrimeIsPerfectRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -1014,8 +1014,8 @@ export const getNumbersPrimeIsPrimeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })
@@ -1090,8 +1090,8 @@ export const getNumbersRandomRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Mathtools-Api-Secret': [] }],
 })

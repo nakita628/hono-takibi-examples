@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/geetanjaliuniv/3.0.0/openapi.yaml',
   output: './src/geetanjaliuniv/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/geetanjaliuniv/types.ts' },
   client: { output: './src/geetanjaliuniv/client.ts', baseUrl: '/' },
   rpc: { output: './src/geetanjaliuniv/rpc.ts', parseResponse: true },

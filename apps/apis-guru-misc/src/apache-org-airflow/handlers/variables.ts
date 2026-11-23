@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVariablesVariableKeyRoute,
   getVariablesRoute,
   getVariablesVariableKeyRoute,
@@ -7,21 +7,28 @@ import {
   postVariablesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVariablesRouteHandler: RouteHandler<typeof getVariablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const variablesHandler = app
-  .openapi(getVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVariablesVariableKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariablesVariableKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVariablesVariableKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVariablesRouteHandler: RouteHandler<typeof postVariablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVariablesVariableKeyRouteHandler: RouteHandler<
+  typeof deleteVariablesVariableKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariablesVariableKeyRouteHandler: RouteHandler<
+  typeof getVariablesVariableKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVariablesVariableKeyRouteHandler: RouteHandler<
+  typeof patchVariablesVariableKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

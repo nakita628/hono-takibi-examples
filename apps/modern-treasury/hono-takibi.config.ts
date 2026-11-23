@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/Modern-Treasury/modern-treasury-openapi/blob/bf82875bae88b66c639b8b1b0b26a04add87b668/openapi/mt_openapi_spec_v1.yaml
   input: 'https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

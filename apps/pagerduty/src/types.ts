@@ -1,3 +1,4 @@
+type PaginationTotal = number | null
 type Tag = {
   id?: string | undefined
   summary?: (string | null) | undefined
@@ -466,6 +467,14 @@ type UserReference = {
   self?: (string | null) | undefined
   html_url?: (string | null) | undefined
 }
+type AutomationActionsAbstractActionAllOf1LastRunByOneOf1 = { id: string; type: string }
+type TemplateAllOf1CreatedByOneOf1 = {
+  id?: string | undefined
+  summary?: (string | null) | undefined
+  type?: 'account_reference' | undefined
+  self?: (string | null) | undefined
+  html_url?: (string | null) | undefined
+}
 type AutomationActionsScriptActionWithTeams = {
   id?: string | undefined
   summary?: (string | null) | undefined
@@ -486,14 +495,8 @@ type AutomationActionsScriptActionWithTeams = {
   last_run?: string | undefined
   last_run_by?:
     | UserReference
-    | { id: string; type: string }
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
+    | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+    | TemplateAllOf1CreatedByOneOf1
     | undefined
   only_invocable_on_unresolved_incidents?: boolean | undefined
   allow_invocation_manually?: boolean | undefined
@@ -522,14 +525,8 @@ type AutomationActionsProcessAutomationJobActionWithTeams = {
   last_run?: string | undefined
   last_run_by?:
     | UserReference
-    | { id: string; type: string }
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
+    | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+    | TemplateAllOf1CreatedByOneOf1
     | undefined
   only_invocable_on_unresolved_incidents?: boolean | undefined
   allow_invocation_manually?: boolean | undefined
@@ -558,14 +555,8 @@ type AutomationActionsScriptAction = {
   last_run?: string | undefined
   last_run_by?:
     | UserReference
-    | { id: string; type: string }
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
+    | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+    | TemplateAllOf1CreatedByOneOf1
     | undefined
   only_invocable_on_unresolved_incidents?: boolean | undefined
   allow_invocation_manually?: boolean | undefined
@@ -593,14 +584,8 @@ type AutomationActionsProcessAutomationJobAction = {
   last_run?: string | undefined
   last_run_by?:
     | UserReference
-    | { id: string; type: string }
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
+    | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+    | TemplateAllOf1CreatedByOneOf1
     | undefined
   only_invocable_on_unresolved_incidents?: boolean | undefined
   allow_invocation_manually?: boolean | undefined
@@ -682,14 +667,8 @@ type AutomationActionsInvocation = {
   metadata: {
     agent:
       | UserReference
-      | { id: string; type: string }
-      | {
-          id?: string | undefined
-          summary?: (string | null) | undefined
-          type?: 'account_reference' | undefined
-          self?: (string | null) | undefined
-          html_url?: (string | null) | undefined
-        }
+      | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+      | TemplateAllOf1CreatedByOneOf1
       | { id: string; type: string }
     incident?: IncidentReference | undefined
   }
@@ -1048,6 +1027,24 @@ type OrchestrationRouter = {
     catch_all?: { actions?: { route_to?: string | undefined } | undefined } | undefined
   }
 }
+type OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions = {
+  severity?: 'info' | 'error' | 'warning' | 'critical' | undefined
+  event_action?: 'trigger' | 'resolve' | undefined
+  variables?:
+    | {
+        name?: string | undefined
+        path?: string | undefined
+        type?: 'regex' | undefined
+        value?: string | undefined
+      }[]
+    | undefined
+  extractions?:
+    | (
+        | { target?: string | undefined; template?: string | undefined }
+        | { target?: string | undefined; regex?: string | undefined; source?: string | undefined }
+      )[]
+    | undefined
+}
 type OrchestrationUnrouted = {
   orchestration_path: {
     type?: { [x: string]: unknown } | undefined
@@ -1059,32 +1056,7 @@ type OrchestrationUnrouted = {
       | undefined
     sets?: { [x: string]: unknown } | undefined
     catch_all?:
-      | {
-          actions?:
-            | {
-                severity?: 'info' | 'error' | 'warning' | 'critical' | undefined
-                event_action?: 'trigger' | 'resolve' | undefined
-                variables?:
-                  | {
-                      name?: string | undefined
-                      path?: string | undefined
-                      type?: 'regex' | undefined
-                      value?: string | undefined
-                    }[]
-                  | undefined
-                extractions?:
-                  | (
-                      | { target?: string | undefined; template?: string | undefined }
-                      | {
-                          target?: string | undefined
-                          regex?: string | undefined
-                          source?: string | undefined
-                        }
-                    )[]
-                  | undefined
-              }
-            | undefined
-        }
+      | { actions?: OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions | undefined }
       | undefined
   }
 }
@@ -1445,6 +1417,46 @@ type IncidentWorkflowInstance = {
   type?: 'incident_workflow_instance' | undefined
   incident?: Reference | undefined
 }
+type IncidentWorkflowActionAllOf1InputsItems = {
+  name?: string | undefined
+  description?: string | undefined
+  type?:
+    | 'text'
+    | 'password'
+    | 'integer'
+    | 'decimal'
+    | 'date'
+    | 'dateTime'
+    | 'boolean'
+    | 'singleChoice'
+    | 'multipleChoice'
+    | 'json'
+    | 'connection'
+    | 'trigger'
+    | undefined
+  default_value?: string | undefined
+  is_required?: boolean | undefined
+  is_hidden?: boolean | undefined
+  advanced?: boolean | undefined
+  metadata?: string | undefined
+  connection_type_id?: string | undefined
+}
+type IncidentWorkflowActionAllOf1OutputsItems = {
+  name?: string | undefined
+  description?: string | undefined
+  type?:
+    | 'text'
+    | 'password'
+    | 'integer'
+    | 'decimal'
+    | 'date'
+    | 'dateTime'
+    | 'boolean'
+    | 'singleChoice'
+    | 'multipleChoice'
+    | 'json'
+    | undefined
+}
 type IncidentWorkflowAction = {
   id?: string | undefined
   summary?: (string | null) | undefined
@@ -1465,50 +1477,8 @@ type IncidentWorkflowAction = {
   metadata?: string | undefined
   created_at?: string | undefined
   created_by_user_id?: string | undefined
-  inputs?:
-    | {
-        name?: string | undefined
-        description?: string | undefined
-        type?:
-          | 'text'
-          | 'password'
-          | 'integer'
-          | 'decimal'
-          | 'date'
-          | 'dateTime'
-          | 'boolean'
-          | 'singleChoice'
-          | 'multipleChoice'
-          | 'json'
-          | 'connection'
-          | 'trigger'
-          | undefined
-        default_value?: string | undefined
-        is_required?: boolean | undefined
-        is_hidden?: boolean | undefined
-        advanced?: boolean | undefined
-        metadata?: string | undefined
-        connection_type_id?: string | undefined
-      }[]
-    | undefined
-  outputs?:
-    | {
-        name?: string | undefined
-        description?: string | undefined
-        type?:
-          | 'text'
-          | 'password'
-          | 'integer'
-          | 'decimal'
-          | 'date'
-          | 'dateTime'
-          | 'boolean'
-          | 'singleChoice'
-          | 'multipleChoice'
-          | 'json'
-          | undefined
-      }[]
-    | undefined
+  inputs?: IncidentWorkflowActionAllOf1InputsItems[] | undefined
+  outputs?: IncidentWorkflowActionAllOf1OutputsItems[] | undefined
 }
 type IncidentWorkflowTrigger = {
   id?: string | undefined
@@ -1932,30 +1902,65 @@ type AlertUpdate = {
   status?: 'resolved' | 'triggered' | undefined
   incident?: AlertUpdateIncidentReference | undefined
 }
+type CustomFieldsFieldValueName = string
+type CustomFieldsFieldValueDisplayName = string
+type CustomFieldsFieldValueFieldType =
+  | 'single_value'
+  | 'single_value_fixed'
+  | 'multi_value'
+  | 'multi_value_fixed'
+type CustomFieldsFieldValueDataType =
+  | 'boolean'
+  | 'integer'
+  | 'float'
+  | 'string'
+  | 'datetime'
+  | 'url'
+type CustomFieldsFieldValueDescription = string | null
+type CustomFieldsFieldValueValueOneOf0 = { value?: (boolean | null) | undefined }
+type CustomFieldsFieldValueValueOneOf1 = { value?: (number | null) | undefined }
+type CustomFieldsFieldValueValueOneOf2 = { value?: (number | null) | undefined }
+type CustomFieldsFieldValueValueOneOf3 = { value?: (string | null) | (string[] | null) | undefined }
+type CustomFieldsFieldValueValueOneOf4 = { value?: (string | null) | undefined }
+type CustomFieldsFieldValueValueOneOf5 = { value?: (string | null) | undefined }
 type CustomFieldsFieldValue = {
   id: string
-  name: string
+  name: CustomFieldsFieldValueName
   type: 'field_value'
-  display_name: string
-  field_type: 'single_value' | 'single_value_fixed' | 'multi_value' | 'multi_value_fixed'
-  data_type: 'boolean' | 'integer' | 'float' | 'string' | 'datetime' | 'url'
-  description: string | null
+  display_name: CustomFieldsFieldValueDisplayName
+  field_type: CustomFieldsFieldValueFieldType
+  data_type: CustomFieldsFieldValueDataType
+  description: CustomFieldsFieldValueDescription
   value:
-    | { value?: (boolean | null) | undefined }
-    | { value?: (number | null) | undefined }
-    | { value?: (number | null) | undefined }
-    | { value?: (string | null) | (string[] | null) | undefined }
-    | { value?: (string | null) | undefined }
-    | { value?: (string | null) | undefined }
+    | CustomFieldsFieldValueValueOneOf0
+    | CustomFieldsFieldValueValueOneOf1
+    | CustomFieldsFieldValueValueOneOf2
+    | CustomFieldsFieldValueValueOneOf3
+    | CustomFieldsFieldValueValueOneOf4
+    | CustomFieldsFieldValueValueOneOf5
 }
 type CustomFieldsEditableFieldValue =
   | {
-      name?: unknown | undefined
-      value?: unknown | unknown | unknown | unknown | unknown | unknown | undefined
+      name?: CustomFieldsFieldValueName | undefined
+      value?:
+        | CustomFieldsFieldValueValueOneOf0
+        | CustomFieldsFieldValueValueOneOf1
+        | CustomFieldsFieldValueValueOneOf2
+        | CustomFieldsFieldValueValueOneOf3
+        | CustomFieldsFieldValueValueOneOf4
+        | CustomFieldsFieldValueValueOneOf5
+        | undefined
     }
   | {
       id?: string | undefined
-      value?: unknown | unknown | unknown | unknown | unknown | unknown | undefined
+      value?:
+        | CustomFieldsFieldValueValueOneOf0
+        | CustomFieldsFieldValueValueOneOf1
+        | CustomFieldsFieldValueValueOneOf2
+        | CustomFieldsFieldValueValueOneOf3
+        | CustomFieldsFieldValueValueOneOf4
+        | CustomFieldsFieldValueValueOneOf5
+        | undefined
     }
 type AcknowledgeLogEntry = {
   id?: string | undefined
@@ -2363,19 +2368,26 @@ type IncidentType = {
   updated_at?: string | undefined
   display_name?: string | undefined
 }
+type IncidentTypeCustomFieldsDefaultValue =
+  | CustomFieldsFieldValueValueOneOf0
+  | CustomFieldsFieldValueValueOneOf2
+  | CustomFieldsFieldValueValueOneOf1
+  | CustomFieldsFieldValueValueOneOf3
+  | CustomFieldsFieldValueValueOneOf4
+  | CustomFieldsFieldValueValueOneOf5
 type IncidentTypeCustomFieldWithOptions = {
   enabled: boolean
   id: string
-  name: unknown
+  name: CustomFieldsFieldValueName
   type: 'field'
   self: string | null
-  description?: unknown | undefined
-  field_type: unknown
-  data_type: unknown
+  description?: CustomFieldsFieldValueDescription | undefined
+  field_type: CustomFieldsFieldValueFieldType
+  data_type: CustomFieldsFieldValueDataType
   updated_at: string
   created_at: string
-  display_name: unknown
-  default_value?: unknown | undefined
+  display_name: CustomFieldsFieldValueDisplayName
+  default_value?: IncidentTypeCustomFieldsDefaultValue | undefined
   incident_type: string
   summary: string | null
   field_options?:
@@ -2405,69 +2417,85 @@ type CustomFieldsEditableFieldOption = {
 type IncidentTypeCustomFields = {
   enabled: boolean
   id: string
-  name: unknown
+  name: CustomFieldsFieldValueName
   type: 'field'
   self: string | null
-  description?: unknown | undefined
-  field_type: unknown
-  data_type: unknown
+  description?: CustomFieldsFieldValueDescription | undefined
+  field_type: CustomFieldsFieldValueFieldType
+  data_type: CustomFieldsFieldValueDataType
   updated_at: string
   created_at: string
-  display_name: unknown
-  default_value?: unknown | unknown | unknown | unknown | unknown | unknown | undefined
+  display_name: CustomFieldsFieldValueDisplayName
+  default_value?: IncidentTypeCustomFieldsDefaultValue | undefined
   incident_type: string
   summary: string | null
   field_options: CustomFieldsEditableFieldOption[]
 }
 type CustomFieldsFieldWithOptions = {
   created_at?: string | undefined
-  data_type?: unknown | undefined
-  default_value?: unknown | undefined
-  description?: unknown | undefined
-  display_name?: unknown | undefined
+  data_type?: CustomFieldsFieldValueDataType | undefined
+  default_value?: IncidentTypeCustomFieldsDefaultValue | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
   field_options?: (CustomFieldsFieldOption[] | null) | undefined
-  field_type?: unknown | undefined
+  field_type?: CustomFieldsFieldValueFieldType | undefined
   id?: string | undefined
-  name?: unknown | undefined
+  name?: CustomFieldsFieldValueName | undefined
   self?: (string | null) | undefined
   summary?: (string | null) | undefined
   type?: 'field' | undefined
   updated_at?: string | undefined
 }
+type CustomFieldsEditableFieldEnabled = true | false
 type CustomFieldsEditableField = {
-  display_name?: unknown | undefined
-  description?: unknown | undefined
-  default_value?: unknown | undefined
-  enabled?: true | false | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  default_value?: IncidentTypeCustomFieldsDefaultValue | undefined
+  enabled?: CustomFieldsEditableFieldEnabled | undefined
 }
 type CustomFieldsField = {
   created_at?: string | undefined
-  data_type?: unknown | undefined
-  default_value?: unknown | undefined
-  description?: unknown | undefined
-  display_name?: unknown | undefined
-  field_type?: unknown | undefined
+  data_type?: CustomFieldsFieldValueDataType | undefined
+  default_value?: IncidentTypeCustomFieldsDefaultValue | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
+  field_type?: CustomFieldsFieldValueFieldType | undefined
   id?: string | undefined
-  name?: unknown | undefined
+  name?: CustomFieldsFieldValueName | undefined
   self?: (string | null) | undefined
   summary?: (string | null) | undefined
   type?: 'field' | undefined
   updated_at?: string | undefined
 }
+type IpAllowListType = 'ip_allow_list'
+type IpAllowListState = 'enabled' | 'disabled'
 type CidrEntry = { cidr: string; description?: (string | null) | undefined }
+type IpAllowListCidrEntries = CidrEntry[]
 type IpAllowListTarget = { type: 'surface'; value: 'web' | 'mobile' }
+type IpAllowListTargets = IpAllowListTarget[]
 type IpAllowList = {
   id?: string | undefined
-  type?: 'ip_allow_list' | undefined
-  state: 'enabled' | 'disabled'
-  cidr_entries: CidrEntry[]
-  targets: IpAllowListTarget[]
+  type?: IpAllowListType | undefined
+  state: IpAllowListState
+  cidr_entries: IpAllowListCidrEntries
+  targets: IpAllowListTargets
 }
 type IpAllowListUpdate = {
-  type?: unknown | undefined
-  state?: unknown | undefined
-  cidr_entries?: unknown | undefined
-  targets?: unknown | undefined
+  type?: IpAllowListType | undefined
+  state?: IpAllowListState | undefined
+  cidr_entries?: IpAllowListCidrEntries | undefined
+  targets?: IpAllowListTargets | undefined
+}
+type LicenseWithCountsAllOf0 = {
+  id: string
+  description: string
+  name: string
+  valid_roles: string[]
+  role_group?: 'FullUser' | 'Stakeholder' | undefined
+  type?: string | undefined
+  self?: string | undefined
+  html_url?: string | undefined
+  summary?: string | undefined
 }
 type LicenseWithCounts = {
   id: string
@@ -2794,57 +2822,85 @@ type ServiceEventRule = {
 }
 type ServiceCustomFieldsFieldOptionUpdateModel = { data: { data_type: 'string'; value: string } }
 type ServiceCustomFieldsFieldCreateModel = {
-  data_type: unknown
-  description?: unknown | undefined
-  display_name: unknown
-  enabled?: unknown | undefined
+  data_type: CustomFieldsFieldValueDataType
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name: CustomFieldsFieldValueDisplayName
+  enabled?: CustomFieldsEditableFieldEnabled | undefined
   field_options?: ServiceCustomFieldsFieldOptionUpdateModel[] | undefined
-  field_type: unknown
-  name: unknown
+  field_type: CustomFieldsFieldValueFieldType
+  name: CustomFieldsFieldValueName
 }
+type ServiceCustomFieldsFieldReadModelCreatedAt = string
+type ServiceCustomFieldsFieldReadModelId = string
+type ServiceCustomFieldsFieldReadModelUpdatedAt = string
 type ServiceCustomFieldsFieldOptionReadModel = {
-  created_at?: unknown | undefined
+  created_at?: ServiceCustomFieldsFieldReadModelCreatedAt | undefined
   data?: { data_type?: 'string' | undefined; value?: string | undefined } | undefined
-  id?: unknown | undefined
+  id?: ServiceCustomFieldsFieldReadModelId | undefined
   type?: 'field_option' | undefined
-  updated_at?: unknown | undefined
+  updated_at?: ServiceCustomFieldsFieldReadModelUpdatedAt | undefined
 }
 type ServiceCustomFieldsFieldReadModel = {
-  created_at?: string | undefined
-  data_type?: unknown | undefined
-  description?: unknown | undefined
-  display_name?: unknown | undefined
-  enabled?: unknown | undefined
+  created_at?: ServiceCustomFieldsFieldReadModelCreatedAt | undefined
+  data_type?: CustomFieldsFieldValueDataType | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
+  enabled?: CustomFieldsEditableFieldEnabled | undefined
   field_options?: ServiceCustomFieldsFieldOptionReadModel[] | undefined
-  field_type?: unknown | undefined
-  id?: string | undefined
-  name?: unknown | undefined
+  field_type?: CustomFieldsFieldValueFieldType | undefined
+  id?: ServiceCustomFieldsFieldReadModelId | undefined
+  name?: CustomFieldsFieldValueName | undefined
   self?: (string | null) | undefined
   summary?: (string | null) | undefined
   type?: 'field' | undefined
-  updated_at?: string | undefined
+  updated_at?: ServiceCustomFieldsFieldReadModelUpdatedAt | undefined
 }
 type ServiceCustomFieldsFieldUpdateModel = {
-  description?: unknown | undefined
-  display_name?: unknown | undefined
-  enabled?: unknown | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
+  enabled?: CustomFieldsEditableFieldEnabled | undefined
   field_options?:
     | { data: { data_type: 'string'; value: string }; id?: string | undefined }[]
     | undefined
 }
 type ServiceCustomFieldsFieldValueReadModel = {
-  data_type?: unknown | undefined
-  description?: unknown | undefined
-  display_name?: unknown | undefined
-  field_type?: unknown | undefined
-  id?: unknown | undefined
-  name?: unknown | undefined
+  data_type?: CustomFieldsFieldValueDataType | undefined
+  description?: CustomFieldsFieldValueDescription | undefined
+  display_name?: CustomFieldsFieldValueDisplayName | undefined
+  field_type?: CustomFieldsFieldValueFieldType | undefined
+  id?: ServiceCustomFieldsFieldReadModelId | undefined
+  name?: CustomFieldsFieldValueName | undefined
   type?: 'field_value' | undefined
-  value?: unknown | unknown | unknown | unknown | unknown | unknown | undefined
+  value?:
+    | CustomFieldsFieldValueValueOneOf0
+    | CustomFieldsFieldValueValueOneOf1
+    | CustomFieldsFieldValueValueOneOf2
+    | CustomFieldsFieldValueValueOneOf3
+    | CustomFieldsFieldValueValueOneOf4
+    | CustomFieldsFieldValueValueOneOf5
+    | undefined
 }
 type ServiceCustomFieldsFieldValueUpdateModel =
-  | { id: unknown; value: unknown | unknown | unknown | unknown | unknown | unknown }
-  | { name: unknown; value: unknown | unknown | unknown | unknown | unknown | unknown }
+  | {
+      id: ServiceCustomFieldsFieldReadModelId
+      value:
+        | CustomFieldsFieldValueValueOneOf0
+        | CustomFieldsFieldValueValueOneOf4
+        | CustomFieldsFieldValueValueOneOf1
+        | CustomFieldsFieldValueValueOneOf2
+        | CustomFieldsFieldValueValueOneOf3
+        | CustomFieldsFieldValueValueOneOf5
+    }
+  | {
+      name: CustomFieldsFieldValueName
+      value:
+        | CustomFieldsFieldValueValueOneOf0
+        | CustomFieldsFieldValueValueOneOf4
+        | CustomFieldsFieldValueValueOneOf1
+        | CustomFieldsFieldValueValueOneOf2
+        | CustomFieldsFieldValueValueOneOf3
+        | CustomFieldsFieldValueValueOneOf5
+    }
 type StandardInclusionExclusion = {
   type?: 'technical_service_reference' | undefined
   id?: string | undefined
@@ -2951,6 +3007,10 @@ type StatusPagePost = {
   ends_at?: (string | null) | undefined
   updates?: StatusPagePostUpdate[] | undefined
 }
+type StatusPagePostUpdateRequestImpactedServicesItems = {
+  service: { id: string; type: string }
+  impact: { id: string; type: string }
+}
 type StatusPagePostPostRequest = {
   type: 'status_page_post'
   title: string
@@ -2962,7 +3022,7 @@ type StatusPagePostPostRequest = {
     message: string
     status: { id: string; type: string }
     severity: { id: string; type: string }
-    impacted_services: unknown[]
+    impacted_services: StatusPagePostUpdateRequestImpactedServicesItems[]
     update_frequency_ms: number | null
     notify_subscribers: boolean
     reported_at?: (string | null) | undefined
@@ -2984,10 +3044,7 @@ type StatusPagePostUpdateRequest = {
   message: string
   status: { id: string; type: string }
   severity: { id: string; type: string }
-  impacted_services: {
-    service: { id: string; type: string }
-    impact: { id: string; type: string }
-  }[]
+  impacted_services: StatusPagePostUpdateRequestImpactedServicesItems[]
   update_frequency_ms: number | null
   notify_subscribers: boolean
   reported_at?: (string | null) | undefined
@@ -3071,26 +3128,8 @@ type Template = {
   self?: (string | null) | undefined
   html_url?: (string | null) | undefined
   type?: 'template' | undefined
-  created_by?:
-    | UserReference
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
-    | undefined
-  updated_by?:
-    | UserReference
-    | {
-        id?: string | undefined
-        summary?: (string | null) | undefined
-        type?: 'account_reference' | undefined
-        self?: (string | null) | undefined
-        html_url?: (string | null) | undefined
-      }
-    | undefined
+  created_by?: UserReference | TemplateAllOf1CreatedByOneOf1 | undefined
+  updated_by?: UserReference | TemplateAllOf1CreatedByOneOf1 | undefined
 }
 type EditableTemplate = {
   template_type?: 'status_update' | undefined
@@ -3708,7 +3747,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               tags: Tag[]
             }
             outputFormat: 'json'
@@ -3943,7 +3982,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               addons: AddonReference[]
             }
             outputFormat: 'json'
@@ -6956,14 +6995,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 metadata: {
                   agent:
                     | UserReference
-                    | { id: string; type: string }
-                    | {
-                        id?: string | undefined
-                        summary?: (string | null) | undefined
-                        type?: 'account_reference' | undefined
-                        self?: (string | null) | undefined
-                        html_url?: (string | null) | undefined
-                      }
+                    | AutomationActionsAbstractActionAllOf1LastRunByOneOf1
+                    | TemplateAllOf1CreatedByOneOf1
                     | { id: string; type: string }
                   incident?: IncidentReference | undefined
                 }
@@ -9693,7 +9726,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               business_services: BusinessService[]
             }
             outputFormat: 'json'
@@ -10250,7 +10283,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               subscribers?: NotificationSubscriber[] | undefined
               account_id?: string | undefined
             }
@@ -13477,7 +13510,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               escalation_policies: EscalationPolicy[]
             }
             outputFormat: 'json'
@@ -14153,7 +14186,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               orchestrations?:
                 | {
                     id?: string | undefined
@@ -14673,7 +14706,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               integrations?: OrchestrationIntegration[] | undefined
-              total?: unknown | undefined
+              total?: PaginationTotal | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -15129,7 +15162,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               integrations?: OrchestrationIntegration[] | undefined
-              total?: unknown | undefined
+              total?: PaginationTotal | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -15793,31 +15826,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     catch_all?:
                       | {
                           actions?:
-                            | {
-                                severity?: 'info' | 'error' | 'warning' | 'critical' | undefined
-                                event_action?: 'trigger' | 'resolve' | undefined
-                                variables?:
-                                  | {
-                                      name?: string | undefined
-                                      path?: string | undefined
-                                      type?: 'regex' | undefined
-                                      value?: string | undefined
-                                    }[]
-                                  | undefined
-                                extractions?:
-                                  | (
-                                      | {
-                                          target?: string | undefined
-                                          template?: string | undefined
-                                        }
-                                      | {
-                                          target?: string | undefined
-                                          regex?: string | undefined
-                                          source?: string | undefined
-                                        }
-                                    )[]
-                                  | undefined
-                              }
+                            | OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions
                             | undefined
                         }
                       | undefined
@@ -18111,7 +18120,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               extension_schemas: ExtensionSchema[]
             }
             outputFormat: 'json'
@@ -19561,7 +19570,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               extensions: Extension[]
             }
             outputFormat: 'json'
@@ -20042,7 +20051,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               incident_workflows: IncidentWorkflow[]
             }
             outputFormat: 'json'
@@ -22062,7 +22071,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               incidents: Incident[]
             }
             outputFormat: 'json'
@@ -22320,7 +22329,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               incidents: Incident[]
             }
             outputFormat: 'json'
@@ -23095,7 +23104,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               alerts: Alert[]
             }
             outputFormat: 'json'
@@ -23240,7 +23249,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               alerts: Alert[]
             }
             outputFormat: 'json'
@@ -23823,7 +23832,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               log_entries: (
                 | AcknowledgeLogEntry
                 | AnnotateLogEntry
@@ -26205,7 +26214,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               subscribers?: NotificationSubscriberWithContext[] | undefined
               account_id?: string | undefined
             }
@@ -29140,26 +29149,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               license_allocations?:
-                | {
-                    user: UserReference
-                    license: {
-                      id: string
-                      description: string
-                      name: string
-                      valid_roles: string[]
-                      role_group?: 'FullUser' | 'Stakeholder' | undefined
-                      type?: string | undefined
-                      self?: string | undefined
-                      html_url?: string | undefined
-                      summary?: string | undefined
-                    }
-                    allocated_at: string
-                  }[]
+                | { user: UserReference; license: LicenseWithCountsAllOf0; allocated_at: string }[]
                 | undefined
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -29286,7 +29281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               log_entries: (
                 | AcknowledgeLogEntry
                 | AnnotateLogEntry
@@ -29652,7 +29647,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               maintenance_windows: MaintenanceWindow[]
             }
             outputFormat: 'json'
@@ -30103,7 +30098,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               notifications: Notification[]
             }
             outputFormat: 'json'
@@ -30413,7 +30408,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               oncalls: Oncall[]
             }
             outputFormat: 'json'
@@ -30822,7 +30817,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               priorities: Priority[]
             }
             outputFormat: 'json'
@@ -30944,7 +30939,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               rulesets?: Ruleset[] | undefined
             }
             outputFormat: 'json'
@@ -31510,7 +31505,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               rules?: EventRule[] | undefined
             }
             outputFormat: 'json'
@@ -31978,7 +31973,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               schedules: Schedule[]
             }
             outputFormat: 'json'
@@ -33641,7 +33636,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               services: Service[]
             }
             outputFormat: 'json'
@@ -34576,7 +34571,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               migrated_at?: string | undefined
               migrated_by?:
                 | { id?: string | undefined; type?: string | undefined; self?: string | undefined }
@@ -37170,7 +37165,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               status_pages?: StatusPage[] | undefined
             }
             outputFormat: 'json'
@@ -37298,7 +37293,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               impacts?: StatusPageImpact[] | undefined
             }
             outputFormat: 'json'
@@ -37491,7 +37486,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               services?: StatusPageService[] | undefined
             }
             outputFormat: 'json'
@@ -37680,7 +37675,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               severities?: StatusPageSeverity[] | undefined
             }
             outputFormat: 'json'
@@ -37874,7 +37869,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               statuses?: StatusPageStatus[] | undefined
             }
             outputFormat: 'json'
@@ -38070,7 +38065,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               posts?: StatusPagePost[] | undefined
             }
             outputFormat: 'json'
@@ -38525,7 +38520,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               post_updates?: StatusPagePostUpdate[] | undefined
             }
             outputFormat: 'json'
@@ -39207,7 +39202,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               subscriptions?: StatusPageSubscription[] | undefined
             }
             outputFormat: 'json'
@@ -39889,7 +39884,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               tags: Tag[]
             }
             outputFormat: 'json'
@@ -40182,7 +40177,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               users?: EntityReference[] | undefined
               teams?: EntityReference[] | undefined
               escalation_policies?: EntityReference[] | undefined
@@ -40362,7 +40357,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               teams: Team[]
             }
             outputFormat: 'json'
@@ -41137,7 +41132,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               members?:
                 | { user?: UserReference | undefined; role?: string | undefined }[]
                 | undefined
@@ -41260,7 +41255,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               subscriptions: {
                 subscription?: NotificationSubscription | undefined
                 subscribable_name?: (string | null) | undefined
@@ -41731,7 +41726,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               templates: Template[]
             }
             outputFormat: 'json'
@@ -42339,7 +42334,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               users: User[]
             }
             outputFormat: 'json'
@@ -44385,19 +44380,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { id: string } } & {
               header: { Accept: string; 'Content-Type': 'application/json' }
             }
-            output: {
-              license: {
-                id: string
-                description: string
-                name: string
-                valid_roles: string[]
-                role_group?: 'FullUser' | 'Stakeholder' | undefined
-                type?: string | undefined
-                self?: string | undefined
-                html_url?: string | undefined
-                summary?: string | undefined
-              }
-            }
+            output: { license: LicenseWithCountsAllOf0 }
             outputFormat: 'json'
             status: 200
           }
@@ -44909,7 +44892,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               subscriptions: {
                 subscription?: NotificationSubscription | undefined
                 subscribable_name?: (string | null) | undefined
@@ -46501,7 +46484,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
               vendors: Vendor[]
             }
             outputFormat: 'json'
@@ -48677,7 +48660,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               offset?: number | undefined
               limit?: number | undefined
               more?: boolean | undefined
-              total?: (number | null) | undefined
+              total?: PaginationTotal | undefined
             }
             outputFormat: 'json'
             status: 200

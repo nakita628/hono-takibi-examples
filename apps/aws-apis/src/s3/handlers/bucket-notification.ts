@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketNotificationRoute, putBucketNotificationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBucketNotificationRoute, putBucketNotificationRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBucketNotificationRouteHandler: RouteHandler<
+  typeof getBucketNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketNotificationHandler = app
-  .openapi(getBucketNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBucketNotificationRouteHandler: RouteHandler<
+  typeof putBucketNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

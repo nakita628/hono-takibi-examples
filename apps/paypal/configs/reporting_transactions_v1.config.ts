@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/reporting_transactions_v1.json',
   output: './src/reporting_transactions_v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/reporting_transactions_v1/types.ts' },
   client: { output: './src/reporting_transactions_v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/reporting_transactions_v1/rpc.ts', parseResponse: true },

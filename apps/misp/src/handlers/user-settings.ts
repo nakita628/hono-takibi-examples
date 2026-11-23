@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserSettingsDeleteUserSettingIdRoute,
   getUserSettingsGetSettingUserIdUserSettingNameRoute,
   getUserSettingsRoute,
@@ -8,24 +8,36 @@ import {
   postUserSettingsSetSettingUserIdUserSettingNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserSettingsRouteHandler: RouteHandler<typeof getUserSettingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userSettingsHandler = app
-  .openapi(getUserSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserSettingsViewUserSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserSettingsSetSettingUserIdUserSettingNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserSettingsGetSettingUserIdUserSettingNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserSettingsDeleteUserSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUserSettingsRouteHandler: RouteHandler<typeof postUserSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserSettingsViewUserSettingIdRouteHandler: RouteHandler<
+  typeof getUserSettingsViewUserSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserSettingsSetSettingUserIdUserSettingNameRouteHandler: RouteHandler<
+  typeof postUserSettingsSetSettingUserIdUserSettingNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserSettingsGetSettingUserIdUserSettingNameRouteHandler: RouteHandler<
+  typeof getUserSettingsGetSettingUserIdUserSettingNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserSettingsDeleteUserSettingIdRouteHandler: RouteHandler<
+  typeof deleteUserSettingsDeleteUserSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

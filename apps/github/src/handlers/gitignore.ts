@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGitignoreTemplatesNameRoute, getGitignoreTemplatesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGitignoreTemplatesNameRoute, getGitignoreTemplatesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGitignoreTemplatesRouteHandler: RouteHandler<
+  typeof getGitignoreTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gitignoreHandler = app
-  .openapi(getGitignoreTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGitignoreTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGitignoreTemplatesNameRouteHandler: RouteHandler<
+  typeof getGitignoreTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

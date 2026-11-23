@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHardwareReservationsIdRoute,
   postHardwareReservationsIdActivateRoute,
   postHardwareReservationsIdMoveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHardwareReservationsIdRouteHandler: RouteHandler<
+  typeof getHardwareReservationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hardwareReservationsHandler = app
-  .openapi(getHardwareReservationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareReservationsIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHardwareReservationsIdMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHardwareReservationsIdActivateRouteHandler: RouteHandler<
+  typeof postHardwareReservationsIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHardwareReservationsIdMoveRouteHandler: RouteHandler<
+  typeof postHardwareReservationsIdMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

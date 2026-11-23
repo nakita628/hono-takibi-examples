@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSearchBoardsRoute, getSearchPartnerPinsRoute, getSearchPinsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSearchBoardsRoute, getSearchPartnerPinsRoute, getSearchPinsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchBoardsRouteHandler: RouteHandler<typeof getSearchBoardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchBoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchPartnerPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchPartnerPinsRouteHandler: RouteHandler<
+  typeof getSearchPartnerPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchPinsRouteHandler: RouteHandler<typeof getSearchPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

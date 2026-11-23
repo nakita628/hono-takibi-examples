@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSecurityProfilesSecurityProfileNameRoute,
   deleteSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute,
   getSecurityProfilesRoute,
@@ -10,30 +10,50 @@ import {
   putSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRouteHandler: RouteHandler<
+  typeof putSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const securityProfilesHandler = app
-  .openapi(putSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityProfilesSecurityProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSecurityProfilesSecurityProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityProfilesSecurityProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSecurityProfilesSecurityProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityProfilesSecurityProfileNameTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRouteHandler: RouteHandler<
+  typeof deleteSecurityProfilesSecurityProfileNameTargetsSecurityProfileTargetArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSecurityProfilesSecurityProfileNameRouteHandler: RouteHandler<
+  typeof postSecurityProfilesSecurityProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSecurityProfilesSecurityProfileNameRouteHandler: RouteHandler<
+  typeof deleteSecurityProfilesSecurityProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityProfilesSecurityProfileNameRouteHandler: RouteHandler<
+  typeof getSecurityProfilesSecurityProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSecurityProfilesSecurityProfileNameRouteHandler: RouteHandler<
+  typeof patchSecurityProfilesSecurityProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityProfilesRouteHandler: RouteHandler<
+  typeof getSecurityProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityProfilesSecurityProfileNameTargetsRouteHandler: RouteHandler<
+  typeof getSecurityProfilesSecurityProfileNameTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

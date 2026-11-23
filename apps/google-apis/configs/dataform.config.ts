@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/dataform/v1beta1/openapi.yaml',
   output: './src/dataform/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dataform/types.ts' },
   client: { output: './src/dataform/client.ts', baseUrl: '/' },
   rpc: { output: './src/dataform/rpc.ts', parseResponse: true },

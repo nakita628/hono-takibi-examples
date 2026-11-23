@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/shipengine.com/1.1.202303022103/openapi.yaml',
   output: './src/shipengine/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shipengine/types.ts' },
   client: { output: './src/shipengine/client.ts', baseUrl: '/' },
   rpc: { output: './src/shipengine/rpc.ts', parseResponse: true },

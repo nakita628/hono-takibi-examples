@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getModalFormTypeaheadUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getModalFormTypeaheadUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const modalFormTypeaheadUrlPathPlaceholderHandler = app.openapi(
-  getModalFormTypeaheadUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getModalFormTypeaheadUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof getModalFormTypeaheadUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

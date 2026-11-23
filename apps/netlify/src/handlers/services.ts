@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getServicesAddonNameManifestRoute,
   getServicesAddonNameRoute,
   getServicesIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServicesIndexRouteHandler: RouteHandler<typeof getServicesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const servicesHandler = app
-  .openapi(getServicesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesAddonNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesAddonNameManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getServicesAddonNameRouteHandler: RouteHandler<
+  typeof getServicesAddonNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesAddonNameManifestRouteHandler: RouteHandler<
+  typeof getServicesAddonNameManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

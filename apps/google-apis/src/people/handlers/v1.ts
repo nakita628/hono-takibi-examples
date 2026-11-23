@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ResourceNameDeleteContactPhotoRoute,
   deleteV1ResourceNameDeleteContactRoute,
   deleteV1ResourceNameRoute,
@@ -25,75 +25,140 @@ import {
   putV1ResourceNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ContactGroupsRouteHandler: RouteHandler<typeof getV1ContactGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ContactGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ContactGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ContactGroupsBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OtherContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OtherContactsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PeopleBatchCreateContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PeopleBatchDeleteContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PeopleBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PeopleBatchUpdateContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PeopleCreateContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PeopleListDirectoryPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PeopleSearchContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PeopleSearchDirectoryPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ResourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ResourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ResourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ResourceNameConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceNameMembersModifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceNameCopyOtherContactToMyContactsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ResourceNameDeleteContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ResourceNameDeleteContactPhotoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ResourceNameUpdateContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ResourceNameUpdateContactPhotoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ContactGroupsRouteHandler: RouteHandler<
+  typeof postV1ContactGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ContactGroupsBatchGetRouteHandler: RouteHandler<
+  typeof getV1ContactGroupsBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OtherContactsRouteHandler: RouteHandler<typeof getV1OtherContactsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OtherContactsSearchRouteHandler: RouteHandler<
+  typeof getV1OtherContactsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PeopleBatchCreateContactsRouteHandler: RouteHandler<
+  typeof postV1PeopleBatchCreateContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PeopleBatchDeleteContactsRouteHandler: RouteHandler<
+  typeof postV1PeopleBatchDeleteContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PeopleBatchGetRouteHandler: RouteHandler<
+  typeof getV1PeopleBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PeopleBatchUpdateContactsRouteHandler: RouteHandler<
+  typeof postV1PeopleBatchUpdateContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PeopleCreateContactRouteHandler: RouteHandler<
+  typeof postV1PeopleCreateContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PeopleListDirectoryPeopleRouteHandler: RouteHandler<
+  typeof getV1PeopleListDirectoryPeopleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PeopleSearchContactsRouteHandler: RouteHandler<
+  typeof getV1PeopleSearchContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PeopleSearchDirectoryPeopleRouteHandler: RouteHandler<
+  typeof getV1PeopleSearchDirectoryPeopleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ResourceNameRouteHandler: RouteHandler<
+  typeof deleteV1ResourceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ResourceNameRouteHandler: RouteHandler<typeof getV1ResourceNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ResourceNameRouteHandler: RouteHandler<typeof putV1ResourceNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ResourceNameConnectionsRouteHandler: RouteHandler<
+  typeof getV1ResourceNameConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceNameMembersModifyRouteHandler: RouteHandler<
+  typeof postV1ResourceNameMembersModifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceNameCopyOtherContactToMyContactsGroupRouteHandler: RouteHandler<
+  typeof postV1ResourceNameCopyOtherContactToMyContactsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ResourceNameDeleteContactRouteHandler: RouteHandler<
+  typeof deleteV1ResourceNameDeleteContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ResourceNameDeleteContactPhotoRouteHandler: RouteHandler<
+  typeof deleteV1ResourceNameDeleteContactPhotoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ResourceNameUpdateContactRouteHandler: RouteHandler<
+  typeof patchV1ResourceNameUpdateContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ResourceNameUpdateContactPhotoRouteHandler: RouteHandler<
+  typeof patchV1ResourceNameUpdateContactPhotoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

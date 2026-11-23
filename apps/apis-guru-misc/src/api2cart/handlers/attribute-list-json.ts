@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAttributeListJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAttributeListJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const attributeListJsonHandler = app.openapi(getAttributeListJsonRoute, (c) => {
+export const getAttributeListJsonRouteHandler: RouteHandler<
+  typeof getAttributeListJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

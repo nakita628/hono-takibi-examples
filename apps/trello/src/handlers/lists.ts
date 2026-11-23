@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getListsIdActionsRoute,
   getListsIdBoardRoute,
   getListsIdCardsRoute,
@@ -13,39 +13,56 @@ import {
   putListsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getListsIdRouteHandler: RouteHandler<typeof getListsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const listsHandler = app
-  .openapi(getListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsIdArchiveAllCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsIdMoveAllCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsIdClosedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsIdIdBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsIdBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsIdCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putListsIdRouteHandler: RouteHandler<typeof putListsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsRouteHandler: RouteHandler<typeof postListsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsIdArchiveAllCardsRouteHandler: RouteHandler<
+  typeof postListsIdArchiveAllCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsIdMoveAllCardsRouteHandler: RouteHandler<
+  typeof postListsIdMoveAllCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsIdClosedRouteHandler: RouteHandler<typeof putListsIdClosedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsIdIdBoardRouteHandler: RouteHandler<typeof putListsIdIdBoardRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsIdFieldRouteHandler: RouteHandler<typeof putListsIdFieldRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsIdActionsRouteHandler: RouteHandler<typeof getListsIdActionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsIdBoardRouteHandler: RouteHandler<typeof getListsIdBoardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsIdCardsRouteHandler: RouteHandler<typeof getListsIdCardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

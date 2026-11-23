@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataConnectorsIdRoute,
   getDataConnectorsDataConnectorIdExecutionResultsIdRoute,
   getDataConnectorsDataConnectorIdExecutionResultsRoute,
@@ -12,36 +12,62 @@ import {
   postDataConnectorsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataConnectorsRouteHandler: RouteHandler<typeof getDataConnectorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dataConnectorsHandler = app
-  .openapi(getDataConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataConnectorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataConnectorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDataConnectorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataConnectorsDataConnectorIdExecutionResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataConnectorsDataConnectorIdExecutionResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataConnectorsIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataConnectorsIdVersionsVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDataConnectorsIdVersionsVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDataConnectorsRouteHandler: RouteHandler<typeof postDataConnectorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataConnectorsIdRouteHandler: RouteHandler<
+  typeof getDataConnectorsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataConnectorsIdRouteHandler: RouteHandler<
+  typeof deleteDataConnectorsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataConnectorsIdRouteHandler: RouteHandler<
+  typeof patchDataConnectorsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataConnectorsDataConnectorIdExecutionResultsRouteHandler: RouteHandler<
+  typeof getDataConnectorsDataConnectorIdExecutionResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataConnectorsDataConnectorIdExecutionResultsIdRouteHandler: RouteHandler<
+  typeof getDataConnectorsDataConnectorIdExecutionResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataConnectorsIdVersionsRouteHandler: RouteHandler<
+  typeof getDataConnectorsIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataConnectorsIdVersionsVersionIdRouteHandler: RouteHandler<
+  typeof getDataConnectorsIdVersionsVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataConnectorsIdVersionsVersionIdRouteHandler: RouteHandler<
+  typeof patchDataConnectorsIdVersionsVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionUpdateSSHPublicKeyRoute, postActionUpdateSSHPublicKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionUpdateSSHPublicKeyRoute, postActionUpdateSSHPublicKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionUpdateSSHPublicKeyRouteHandler: RouteHandler<
+  typeof getActionUpdateSSHPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionUpdateSshPublicKeyHandler = app
-  .openapi(getActionUpdateSSHPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionUpdateSSHPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionUpdateSSHPublicKeyRouteHandler: RouteHandler<
+  typeof postActionUpdateSSHPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

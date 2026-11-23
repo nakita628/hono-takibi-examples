@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppWebhooks202609AppIdSettingsRoute,
   deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
   getAppWebhooks202609AppIdSettingsRoute,
@@ -11,33 +11,56 @@ import {
   putAppWebhooks202609AppIdSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppWebhooks202609AppIdSettingsRouteHandler: RouteHandler<
+  typeof getAppWebhooks202609AppIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appWebhooksHandler = app
-  .openapi(getAppWebhooks202609AppIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppWebhooks202609AppIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppWebhooks202609AppIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppWebhooks202609AppIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppWebhooks202609AppIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppWebhooks202609AppIdSubscriptionsBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAppWebhooks202609AppIdSettingsRouteHandler: RouteHandler<
+  typeof putAppWebhooks202609AppIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppWebhooks202609AppIdSettingsRouteHandler: RouteHandler<
+  typeof deleteAppWebhooks202609AppIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppWebhooks202609AppIdSubscriptionsRouteHandler: RouteHandler<
+  typeof getAppWebhooks202609AppIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppWebhooks202609AppIdSubscriptionsRouteHandler: RouteHandler<
+  typeof postAppWebhooks202609AppIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppWebhooks202609AppIdSubscriptionsBatchUpdateRouteHandler: RouteHandler<
+  typeof postAppWebhooks202609AppIdSubscriptionsBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppWebhooks202609AppIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppWebhooks202609AppIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof patchAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

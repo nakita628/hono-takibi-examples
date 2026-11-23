@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Communication%20Preferences/Subscriptions/Rollouts/176901/2026-09/subscriptions.json',
   output: './src/communication-preferences-subscriptions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/communication-preferences-subscriptions/types.ts' },
   client: { output: './src/communication-preferences-subscriptions/client.ts', baseUrl: '/' },
   rpc: { output: './src/communication-preferences-subscriptions/rpc.ts', parseResponse: true },

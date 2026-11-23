@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postStoregatewayV1StoreGatewayServiceBlockMetadataRoute,
   postStoregatewayV1StoreGatewayServiceGetBlockStatsRoute,
   postStoregatewayV1StoreGatewayServiceLabelNamesRoute,
@@ -8,24 +8,38 @@ import {
   postStoregatewayV1StoreGatewayServiceSeriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postStoregatewayV1StoreGatewayServiceBlockMetadataRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceBlockMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const storegatewayV1StoreGatewayServiceHandler = app
-  .openapi(postStoregatewayV1StoreGatewayServiceBlockMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoregatewayV1StoreGatewayServiceGetBlockStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoregatewayV1StoreGatewayServiceLabelNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoregatewayV1StoreGatewayServiceLabelValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoregatewayV1StoreGatewayServiceProfileTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoregatewayV1StoreGatewayServiceSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStoregatewayV1StoreGatewayServiceGetBlockStatsRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceGetBlockStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStoregatewayV1StoreGatewayServiceLabelNamesRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceLabelNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStoregatewayV1StoreGatewayServiceLabelValuesRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceLabelValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStoregatewayV1StoreGatewayServiceProfileTypesRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceProfileTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStoregatewayV1StoreGatewayServiceSeriesRouteHandler: RouteHandler<
+  typeof postStoregatewayV1StoreGatewayServiceSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

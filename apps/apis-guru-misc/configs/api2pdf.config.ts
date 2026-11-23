@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/api2pdf.com/1.0.0/openapi.yaml',
   output: './src/api2pdf/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/api2pdf/types.ts' },
   client: { output: './src/api2pdf/client.ts', baseUrl: '/' },
   rpc: { output: './src/api2pdf/rpc.ts', parseResponse: true },

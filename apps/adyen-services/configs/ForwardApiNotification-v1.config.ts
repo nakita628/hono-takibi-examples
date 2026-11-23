@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/ForwardApiNotification-v1.json',
   output: './src/ForwardApiNotification-v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ForwardApiNotification-v1/types.ts' },
   client: { output: './src/ForwardApiNotification-v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/ForwardApiNotification-v1/rpc.ts', parseResponse: true },

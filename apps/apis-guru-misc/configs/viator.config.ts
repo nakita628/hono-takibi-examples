@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/viator.com/1.0.0/openapi.yaml',
   output: './src/viator/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/viator/types.ts' },
   client: { output: './src/viator/client.ts', baseUrl: '/' },
   rpc: { output: './src/viator/rpc.ts', parseResponse: true },

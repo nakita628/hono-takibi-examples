@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSIdentityStoreCreateGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSIdentityStoreCreateGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsIdentityStoreCreateGroupHandler = app.openapi(
-  postXAmzTargetAWSIdentityStoreCreateGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSIdentityStoreCreateGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSIdentityStoreCreateGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

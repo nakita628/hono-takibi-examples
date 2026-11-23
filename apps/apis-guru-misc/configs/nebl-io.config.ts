@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/nebl.io/1.3.0/openapi.yaml',
   output: './src/nebl-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nebl-io/types.ts' },
   client: { output: './src/nebl-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/nebl-io/rpc.ts', parseResponse: true },

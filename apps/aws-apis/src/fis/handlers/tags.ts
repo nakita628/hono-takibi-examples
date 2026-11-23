@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTagsResourceArnRoute,
   getTagsResourceArnRoute,
   postTagsResourceArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTagsResourceArnRouteHandler: RouteHandler<typeof getTagsResourceArnRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const tagsHandler = app
-  .openapi(getTagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTagsResourceArnRouteHandler: RouteHandler<
+  typeof postTagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTagsResourceArnRouteHandler: RouteHandler<
+  typeof deleteTagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

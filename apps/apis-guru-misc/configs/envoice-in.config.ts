@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/envoice.in/v1/openapi.yaml',
   output: './src/envoice-in/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/envoice-in/types.ts' },
   client: { output: './src/envoice-in/client.ts', baseUrl: '/' },
   rpc: { output: './src/envoice-in/rpc.ts', parseResponse: true },

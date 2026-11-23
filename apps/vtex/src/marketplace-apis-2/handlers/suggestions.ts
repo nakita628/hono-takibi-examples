@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSuggestionsSellerIdSellerSkuIdRoute,
   getSuggestionsConfigurationAutoapprovalToggleRoute,
   getSuggestionsConfigurationRoute,
@@ -17,51 +17,90 @@ import {
   putSuggestionsSellerIdSellerskuidVersionsVersionMatchesMatchidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSuggestionsRouteHandler: RouteHandler<typeof getSuggestionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const suggestionsHandler = app
-  .openapi(getSuggestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsConfigurationAutoapprovalToggleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsConfigurationAutoapprovalToggleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsConfigurationAutoapprovalToggleSellerSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsConfigurationSellerSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsConfigurationSellerSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsMatchesActionActionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSuggestionsSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsSellerIdSellerSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsSellerIdSellerskuidVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuggestionsSellerIdSellerskuidVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSuggestionsSellerIdSellerskuidVersionsVersionMatchesMatchidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSuggestionsConfigurationRouteHandler: RouteHandler<
+  typeof getSuggestionsConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsConfigurationRouteHandler: RouteHandler<
+  typeof putSuggestionsConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuggestionsConfigurationAutoapprovalToggleRouteHandler: RouteHandler<
+  typeof getSuggestionsConfigurationAutoapprovalToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsConfigurationAutoapprovalToggleRouteHandler: RouteHandler<
+  typeof putSuggestionsConfigurationAutoapprovalToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsConfigurationAutoapprovalToggleSellerSellerIdRouteHandler: RouteHandler<
+  typeof putSuggestionsConfigurationAutoapprovalToggleSellerSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuggestionsConfigurationSellerSellerIdRouteHandler: RouteHandler<
+  typeof getSuggestionsConfigurationSellerSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsConfigurationSellerSellerIdRouteHandler: RouteHandler<
+  typeof putSuggestionsConfigurationSellerSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsMatchesActionActionNameRouteHandler: RouteHandler<
+  typeof putSuggestionsMatchesActionActionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSuggestionsSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof deleteSuggestionsSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuggestionsSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof getSuggestionsSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsSellerIdSellerSkuIdRouteHandler: RouteHandler<
+  typeof putSuggestionsSellerIdSellerSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuggestionsSellerIdSellerskuidVersionsRouteHandler: RouteHandler<
+  typeof getSuggestionsSellerIdSellerskuidVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSuggestionsSellerIdSellerskuidVersionsVersionRouteHandler: RouteHandler<
+  typeof getSuggestionsSellerIdSellerskuidVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSuggestionsSellerIdSellerskuidVersionsVersionMatchesMatchidRouteHandler: RouteHandler<
+  typeof putSuggestionsSellerIdSellerskuidVersionsVersionMatchesMatchidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

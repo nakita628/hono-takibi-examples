@@ -1,24 +1,47 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanHandler,
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanHandler,
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesHandler,
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansHandler,
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataHandler,
-  xAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanRoute,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesRoute,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansRoute,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataRoute,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanRoute,
+} from './routes'
+import {
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRouteHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanRouteHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesRouteHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansRouteHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataRouteHandler,
+  postXAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanHandler)
-  .route('/', xAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanHandler)
-  .route('/', xAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesHandler)
-  .route('/', xAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansHandler)
-  .route(
-    '/',
-    xAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataHandler,
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlanRouteHandler,
   )
-  .route('/', xAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanHandler)
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlansRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanRoute,
+    postXAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlanRouteHandler,
+  )
 
 export default app

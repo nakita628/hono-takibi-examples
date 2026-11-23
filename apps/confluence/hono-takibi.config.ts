@@ -4,7 +4,7 @@ export default defineConfig({
   // Confluence Cloud REST API
   input: 'https://developer.atlassian.com/cloud/confluence/swagger.v3.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

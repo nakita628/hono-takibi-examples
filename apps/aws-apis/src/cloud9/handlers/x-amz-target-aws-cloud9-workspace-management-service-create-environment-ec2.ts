@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCloud9WorkspaceManagementServiceCreateEnvironmentEc2Handler = app.openapi(
-  postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2RouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCloud9WorkspaceManagementServiceCreateEnvironmentEC2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

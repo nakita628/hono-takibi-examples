@@ -1,11 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { mostemailedHandler, mostsharedHandler, mostviewedHandler } from './handlers'
+import {
+  getMostemailedSectionTimePeriodJsonRoute,
+  getMostsharedSectionTimePeriodJsonRoute,
+  getMostviewedSectionTimePeriodJsonRoute,
+} from './routes'
+import {
+  getMostemailedSectionTimePeriodJsonRouteHandler,
+  getMostsharedSectionTimePeriodJsonRouteHandler,
+  getMostviewedSectionTimePeriodJsonRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', mostemailedHandler)
-  .route('/', mostsharedHandler)
-  .route('/', mostviewedHandler)
+  .openapi(
+    getMostemailedSectionTimePeriodJsonRoute,
+    getMostemailedSectionTimePeriodJsonRouteHandler,
+  )
+  .openapi(getMostsharedSectionTimePeriodJsonRoute, getMostsharedSectionTimePeriodJsonRouteHandler)
+  .openapi(getMostviewedSectionTimePeriodJsonRoute, getMostviewedSectionTimePeriodJsonRouteHandler)
 
 export default app

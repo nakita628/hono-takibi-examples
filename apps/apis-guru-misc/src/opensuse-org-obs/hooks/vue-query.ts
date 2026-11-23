@@ -6841,15 +6841,15 @@ export function useWorkerStatus<
 
 export function getWorkerArchitectureNameWorkerIdQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>
+    InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>
   >,
 ) {
-  return ['worker', '/worker/:architecture_name::worker_id', toValue(args)] as const
+  return ['worker', '/worker/:architecture_name:{worker_id}', toValue(args)] as const
 }
 
 export function getWorkerArchitectureNameWorkerIdQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>
+    InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -6857,7 +6857,7 @@ export function getWorkerArchitectureNameWorkerIdQueryOptions(
     queryKey: computed(() => getWorkerArchitectureNameWorkerIdQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.worker[':architecture_name::worker_id'].$get(toValue(args), {
+        client.worker[':architecture_name:{worker_id}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -6870,14 +6870,14 @@ export function useWorkerArchitectureNameWorkerId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+        Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>
+    InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -6886,7 +6886,9 @@ export function useWorkerArchitectureNameWorkerId<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>
+                >
               >
             >
           >,
@@ -6895,7 +6897,9 @@ export function useWorkerArchitectureNameWorkerId<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>
+                >
               >
             >
           >,
@@ -6914,7 +6918,7 @@ export function useWorkerArchitectureNameWorkerId<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.worker)[':architecture_name::worker_id']['$get']>>
+          Awaited<ReturnType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>>
         >
       >
     >,
@@ -6927,7 +6931,7 @@ export function useWorkerArchitectureNameWorkerId<
       queryKey: computed(() => getWorkerArchitectureNameWorkerIdQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.worker[':architecture_name::worker_id'].$get(toValue(args), {
+          client.worker[':architecture_name:{worker_id}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

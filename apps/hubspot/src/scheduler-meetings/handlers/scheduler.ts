@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getScheduler202609MeetingsMeetingLinksBookAvailabilityPageSlugRoute,
   getScheduler202609MeetingsMeetingLinksBookSlugRoute,
   getScheduler202609MeetingsMeetingLinksRoute,
@@ -7,21 +7,32 @@ import {
   postScheduler202609MeetingsMeetingLinksBookRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postScheduler202609MeetingsCalendarRouteHandler: RouteHandler<
+  typeof postScheduler202609MeetingsCalendarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schedulerHandler = app
-  .openapi(postScheduler202609MeetingsCalendarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScheduler202609MeetingsMeetingLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScheduler202609MeetingsMeetingLinksBookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScheduler202609MeetingsMeetingLinksBookAvailabilityPageSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScheduler202609MeetingsMeetingLinksBookSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScheduler202609MeetingsMeetingLinksRouteHandler: RouteHandler<
+  typeof getScheduler202609MeetingsMeetingLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScheduler202609MeetingsMeetingLinksBookRouteHandler: RouteHandler<
+  typeof postScheduler202609MeetingsMeetingLinksBookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScheduler202609MeetingsMeetingLinksBookAvailabilityPageSlugRouteHandler: RouteHandler<
+  typeof getScheduler202609MeetingsMeetingLinksBookAvailabilityPageSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScheduler202609MeetingsMeetingLinksBookSlugRouteHandler: RouteHandler<
+  typeof getScheduler202609MeetingsMeetingLinksBookSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

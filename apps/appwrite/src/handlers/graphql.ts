@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGraphqlMutationRoute, postGraphqlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGraphqlMutationRoute, postGraphqlRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGraphqlRouteHandler: RouteHandler<typeof postGraphqlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const graphqlHandler = app
-  .openapi(postGraphqlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGraphqlMutationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGraphqlMutationRouteHandler: RouteHandler<
+  typeof postGraphqlMutationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

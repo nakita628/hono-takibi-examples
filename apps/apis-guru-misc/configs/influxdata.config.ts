@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/influxdata.com/2.0.0/openapi.yaml',
   output: './src/influxdata/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/influxdata/types.ts' },
   client: { output: './src/influxdata/client.ts', baseUrl: '/' },
   rpc: { output: './src/influxdata/rpc.ts', parseResponse: true },

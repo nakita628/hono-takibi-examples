@@ -46,12 +46,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { appId: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   },
   '/'

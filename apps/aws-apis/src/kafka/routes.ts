@@ -650,7 +650,7 @@ const ClusterInfoSchema = z
   })
   .openapi('ClusterInfo')
 
-type DescribeClusterResponseType = { ClusterInfo?: z.infer<typeof ClusterInfoSchema> & unknown }
+type DescribeClusterResponseType = { ClusterInfo?: z.infer<typeof ClusterInfoSchema> }
 
 const ClusterTypeSchema = z
   .enum(['PROVISIONED', 'SERVERLESS'])
@@ -846,17 +846,17 @@ const ServerlessSchema = z
   .openapi('Serverless')
 
 type ClusterType = {
-  ActiveOperationArn?: z.infer<typeof StringSchema> & unknown
-  ClusterType?: z.infer<typeof ClusterTypeSchema> & unknown
-  ClusterArn?: z.infer<typeof StringSchema> & unknown
-  ClusterName?: z.infer<typeof StringSchema> & unknown
-  CreationTime?: z.infer<typeof TimestampIso8601Schema> & unknown
-  CurrentVersion?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ClusterStateSchema> & unknown
-  StateInfo?: z.infer<typeof StateInfoSchema> & unknown
-  Tags?: z.infer<typeof MapOfStringSchema> & unknown
-  Provisioned?: z.infer<typeof ProvisionedSchema> & unknown
-  Serverless?: z.infer<typeof ServerlessSchema> & unknown
+  ActiveOperationArn?: z.infer<typeof StringSchema>
+  ClusterType?: z.infer<typeof ClusterTypeSchema>
+  ClusterArn?: z.infer<typeof StringSchema>
+  ClusterName?: z.infer<typeof StringSchema>
+  CreationTime?: z.infer<typeof TimestampIso8601Schema>
+  CurrentVersion?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ClusterStateSchema>
+  StateInfo?: z.infer<typeof StateInfoSchema>
+  Tags?: z.infer<typeof MapOfStringSchema>
+  Provisioned?: z.infer<typeof ProvisionedSchema>
+  Serverless?: z.infer<typeof ServerlessSchema>
 }
 
 const ClusterSchema: z.ZodType<ClusterType> = z
@@ -915,7 +915,7 @@ const ClusterSchema: z.ZodType<ClusterType> = z
   })
   .openapi('Cluster')
 
-type DescribeClusterV2ResponseType = { ClusterInfo?: z.infer<typeof ClusterSchema> & unknown }
+type DescribeClusterV2ResponseType = { ClusterInfo?: z.infer<typeof ClusterSchema> }
 
 const ErrorInfoSchema = z
   .object({
@@ -1199,7 +1199,7 @@ const ClusterOperationInfoSchema = z
   .openapi('ClusterOperationInfo')
 
 type DescribeClusterOperationResponseType = {
-  ClusterOperationInfo?: z.infer<typeof ClusterOperationInfoSchema> & unknown
+  ClusterOperationInfo?: z.infer<typeof ClusterOperationInfoSchema>
 }
 
 const ClusterOperationV2ProvisionedSchema = z
@@ -1268,16 +1268,16 @@ const ClusterOperationV2ServerlessSchema = z
   .openapi('ClusterOperationV2Serverless')
 
 type ClusterOperationV2Type = {
-  ClusterArn?: z.infer<typeof StringSchema> & unknown
-  ClusterType?: z.infer<typeof ClusterTypeSchema> & unknown
-  StartTime?: z.infer<typeof TimestampIso8601Schema> & unknown
-  EndTime?: z.infer<typeof TimestampIso8601Schema> & unknown
-  ErrorInfo?: z.infer<typeof ErrorInfoSchema> & unknown
-  OperationArn?: z.infer<typeof StringSchema> & unknown
-  OperationState?: z.infer<typeof StringSchema> & unknown
-  OperationType?: z.infer<typeof StringSchema> & unknown
-  Provisioned?: z.infer<typeof ClusterOperationV2ProvisionedSchema> & unknown
-  Serverless?: z.infer<typeof ClusterOperationV2ServerlessSchema> & unknown
+  ClusterArn?: z.infer<typeof StringSchema>
+  ClusterType?: z.infer<typeof ClusterTypeSchema>
+  StartTime?: z.infer<typeof TimestampIso8601Schema>
+  EndTime?: z.infer<typeof TimestampIso8601Schema>
+  ErrorInfo?: z.infer<typeof ErrorInfoSchema>
+  OperationArn?: z.infer<typeof StringSchema>
+  OperationState?: z.infer<typeof StringSchema>
+  OperationType?: z.infer<typeof StringSchema>
+  Provisioned?: z.infer<typeof ClusterOperationV2ProvisionedSchema>
+  Serverless?: z.infer<typeof ClusterOperationV2ServerlessSchema>
 }
 
 const ClusterOperationV2Schema: z.ZodType<ClusterOperationV2Type> = z
@@ -1331,7 +1331,7 @@ const ClusterOperationV2Schema: z.ZodType<ClusterOperationV2Type> = z
   .openapi('ClusterOperationV2')
 
 type DescribeClusterOperationV2ResponseType = {
-  ClusterOperationInfo?: z.infer<typeof ClusterOperationV2Schema> & unknown
+  ClusterOperationInfo?: z.infer<typeof ClusterOperationV2Schema>
 }
 
 type ListOfClusterOperationInfoType = z.infer<typeof ClusterOperationInfoSchema>[]
@@ -1341,8 +1341,8 @@ const ListOfClusterOperationInfoSchema: z.ZodType<ListOfClusterOperationInfoType
   .openapi('ListOfClusterOperationInfo')
 
 type ListClusterOperationsResponseType = {
-  ClusterOperationInfoList?: z.infer<typeof ListOfClusterOperationInfoSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  ClusterOperationInfoList?: z.infer<typeof ListOfClusterOperationInfoSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type ListOfClusterInfoType = z.infer<typeof ClusterInfoSchema>[]
@@ -1352,8 +1352,8 @@ const ListOfClusterInfoSchema: z.ZodType<ListOfClusterInfoType> = z
   .openapi('ListOfClusterInfo')
 
 type ListClustersResponseType = {
-  ClusterInfoList?: z.infer<typeof ListOfClusterInfoSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  ClusterInfoList?: z.infer<typeof ListOfClusterInfoSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type ListOfClusterType = z.infer<typeof ClusterSchema>[]
@@ -1363,8 +1363,8 @@ const ListOfClusterSchema: z.ZodType<ListOfClusterType> = z
   .openapi('ListOfCluster')
 
 type ListClustersV2ResponseType = {
-  ClusterInfoList?: z.infer<typeof ListOfClusterSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  ClusterInfoList?: z.infer<typeof ListOfClusterSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const StringMin1Max64Schema = z.string().min(1).max(64).openapi('StringMin1Max64')
@@ -1445,10 +1445,10 @@ const ServerlessRequestSchema = z
   .openapi('ServerlessRequest')
 
 type CreateClusterV2RequestType = {
-  ClusterName: z.infer<typeof StringMin1Max64Schema> & unknown
-  Tags?: z.infer<typeof MapOfStringSchema> & unknown
-  Provisioned?: z.infer<typeof ProvisionedRequestSchema> & unknown
-  Serverless?: z.infer<typeof ServerlessRequestSchema> & unknown
+  ClusterName: z.infer<typeof StringMin1Max64Schema>
+  Tags?: z.infer<typeof MapOfStringSchema>
+  Provisioned?: z.infer<typeof ProvisionedRequestSchema>
+  Serverless?: z.infer<typeof ServerlessRequestSchema>
 }
 
 const UnprocessedScramSecretSchema = z

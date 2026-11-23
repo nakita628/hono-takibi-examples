@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStaticStreamingPlaylistsHlsFilenameRoute,
   getStaticStreamingPlaylistsHlsPrivateFilenameRoute,
   getStaticWebVideosFilenameRoute,
   getStaticWebVideosPrivateFilenameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStaticWebVideosFilenameRouteHandler: RouteHandler<
+  typeof getStaticWebVideosFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const staticHandler = app
-  .openapi(getStaticWebVideosFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStaticWebVideosPrivateFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStaticStreamingPlaylistsHlsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStaticStreamingPlaylistsHlsPrivateFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStaticWebVideosPrivateFilenameRouteHandler: RouteHandler<
+  typeof getStaticWebVideosPrivateFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStaticStreamingPlaylistsHlsFilenameRouteHandler: RouteHandler<
+  typeof getStaticStreamingPlaylistsHlsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStaticStreamingPlaylistsHlsPrivateFilenameRouteHandler: RouteHandler<
+  typeof getStaticStreamingPlaylistsHlsPrivateFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

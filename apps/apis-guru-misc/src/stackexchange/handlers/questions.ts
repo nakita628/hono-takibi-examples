@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuestionsFeaturedRoute,
   getQuestionsIdsAnswersRoute,
   getQuestionsIdsCommentsRoute,
@@ -12,36 +12,58 @@ import {
   getQuestionsUnansweredRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuestionsRouteHandler: RouteHandler<typeof getQuestionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const questionsHandler = app
-  .openapi(getQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsFeaturedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsNoAnswersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsUnansweredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsAnswersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsLinkedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuestionsIdsTimelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQuestionsFeaturedRouteHandler: RouteHandler<
+  typeof getQuestionsFeaturedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsNoAnswersRouteHandler: RouteHandler<
+  typeof getQuestionsNoAnswersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsUnansweredRouteHandler: RouteHandler<
+  typeof getQuestionsUnansweredRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsRouteHandler: RouteHandler<typeof getQuestionsIdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsAnswersRouteHandler: RouteHandler<
+  typeof getQuestionsIdsAnswersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsCommentsRouteHandler: RouteHandler<
+  typeof getQuestionsIdsCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsLinkedRouteHandler: RouteHandler<
+  typeof getQuestionsIdsLinkedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsRelatedRouteHandler: RouteHandler<
+  typeof getQuestionsIdsRelatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuestionsIdsTimelineRouteHandler: RouteHandler<
+  typeof getQuestionsIdsTimelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

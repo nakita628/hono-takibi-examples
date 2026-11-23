@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/file-storage/9.3.0/openapi.yaml',
   output: './src/file-storage/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/file-storage/types.ts' },
   client: { output: './src/file-storage/client.ts', baseUrl: '/' },
   rpc: { output: './src/file-storage/rpc.ts', parseResponse: true },

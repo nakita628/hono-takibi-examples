@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChecklistsIdChecklistCheckItemsIdCheckItemRoute,
   deleteChecklistsIdChecklistRoute,
   getChecklistsIdChecklistBoardFieldRoute,
@@ -18,54 +18,96 @@ import {
   putChecklistsIdChecklistRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChecklistsRouteHandler: RouteHandler<typeof postChecklistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const checklistsHandler = app
-  .openapi(postChecklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChecklistsIdChecklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChecklistsIdChecklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistBoardFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistCardsFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistCheckItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChecklistsIdChecklistCheckItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChecklistsIdChecklistCheckItemsIdCheckItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistCheckItemsIdCheckItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChecklistsIdChecklistIdCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChecklistsIdChecklistNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChecklistsIdChecklistPosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecklistsIdChecklistFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteChecklistsIdChecklistRouteHandler: RouteHandler<
+  typeof deleteChecklistsIdChecklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChecklistsIdChecklistRouteHandler: RouteHandler<
+  typeof putChecklistsIdChecklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistBoardRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistBoardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistBoardFieldRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistBoardFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistCardsRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistCardsFilterRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistCardsFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistCheckItemsRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistCheckItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChecklistsIdChecklistCheckItemsRouteHandler: RouteHandler<
+  typeof postChecklistsIdChecklistCheckItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChecklistsIdChecklistCheckItemsIdCheckItemRouteHandler: RouteHandler<
+  typeof deleteChecklistsIdChecklistCheckItemsIdCheckItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistCheckItemsIdCheckItemRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistCheckItemsIdCheckItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChecklistsIdChecklistIdCardRouteHandler: RouteHandler<
+  typeof putChecklistsIdChecklistIdCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChecklistsIdChecklistNameRouteHandler: RouteHandler<
+  typeof putChecklistsIdChecklistNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChecklistsIdChecklistPosRouteHandler: RouteHandler<
+  typeof putChecklistsIdChecklistPosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecklistsIdChecklistFieldRouteHandler: RouteHandler<
+  typeof getChecklistsIdChecklistFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

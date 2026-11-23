@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHtDcperiodRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHtDcperiodRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const htDcperiodHandler = app.openapi(getHtDcperiodRoute, (c) => {
+export const getHtDcperiodRouteHandler: RouteHandler<typeof getHtDcperiodRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

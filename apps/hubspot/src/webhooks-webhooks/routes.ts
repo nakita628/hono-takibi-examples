@@ -1941,7 +1941,7 @@ export const deleteAppWebhooks202609AppIdSettingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -2232,7 +2232,7 @@ export const deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute = crea
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -2647,7 +2647,7 @@ export const getWebhooksJournalJournalLocal202609EarliestRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'The journal has no entries', content: {} },
+    204: { description: 'The journal has no entries' },
     default: ErrorResponse,
   },
   security: [],
@@ -2695,7 +2695,7 @@ export const getWebhooksJournalJournalLocal202609LatestRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'The journal has no entries', content: {} },
+    204: { description: 'The journal has no entries' },
     default: ErrorResponse,
   },
   security: [],
@@ -2760,7 +2760,7 @@ export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute = createR
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'No journal entry exists after the given offset', content: {} },
+    204: { description: 'No journal entry exists after the given offset' },
     default: ErrorResponse,
   },
   security: [],
@@ -3145,7 +3145,7 @@ export const getWebhooksJournalJournal202609EarliestRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'The journal has no entries', content: {} },
+    204: { description: 'The journal has no entries' },
     default: ErrorResponse,
   },
   security: [],
@@ -3193,7 +3193,7 @@ export const getWebhooksJournalJournal202609LatestRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'The journal has no entries', content: {} },
+    204: { description: 'The journal has no entries' },
     default: ErrorResponse,
   },
   security: [],
@@ -3258,7 +3258,7 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
       description: 'successful operation',
       content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
     },
-    204: { description: 'No journal entry exists after the given offset', content: {} },
+    204: { description: 'No journal entry exists after the given offset' },
     default: ErrorResponse,
   },
   security: [],
@@ -3530,7 +3530,7 @@ export const deleteWebhooksJournalSubscriptions202609FiltersFilterIdRoute = crea
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [],
 })
 
@@ -3568,7 +3568,7 @@ export const deleteWebhooksJournalSubscriptions202609PortalsPortalIdRoute = crea
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [],
 })
 
@@ -3649,6 +3649,6 @@ export const deleteWebhooksJournalSubscriptions202609SubscriptionIdRoute = creat
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [],
 })

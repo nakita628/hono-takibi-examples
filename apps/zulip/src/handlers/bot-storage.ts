@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBotStorageRoute, getBotStorageRoute, putBotStorageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteBotStorageRoute, getBotStorageRoute, putBotStorageRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBotStorageRouteHandler: RouteHandler<typeof getBotStorageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const botStorageHandler = app
-  .openapi(getBotStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBotStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBotStorageRouteHandler: RouteHandler<typeof putBotStorageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBotStorageRouteHandler: RouteHandler<typeof deleteBotStorageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

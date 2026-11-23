@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSpriteSourceIdsJsonRoute, getSpriteSourceIdsPngRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSpriteSourceIdsJsonRoute, getSpriteSourceIdsPngRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSpriteSourceIdsJsonRouteHandler: RouteHandler<
+  typeof getSpriteSourceIdsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const spriteHandler = app
-  .openapi(getSpriteSourceIdsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSpriteSourceIdsPngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSpriteSourceIdsPngRouteHandler: RouteHandler<
+  typeof getSpriteSourceIdsPngRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

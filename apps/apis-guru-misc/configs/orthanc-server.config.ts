@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/orthanc-server.com/1.11.3/openapi.yaml',
   output: './src/orthanc-server/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/orthanc-server/types.ts' },
   client: { output: './src/orthanc-server/client.ts', baseUrl: '/' },
   rpc: { output: './src/orthanc-server/rpc.ts', parseResponse: true },

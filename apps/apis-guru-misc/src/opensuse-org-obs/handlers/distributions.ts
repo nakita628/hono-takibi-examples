@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDistributionsDistributionIdRoute,
   getDistributionsDistributionIdRoute,
   getDistributionsIncludeRemotesRoute,
@@ -9,27 +9,44 @@ import {
   putDistributionsDistributionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDistributionsRouteHandler: RouteHandler<typeof getDistributionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const distributionsHandler = app
-  .openapi(getDistributionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDistributionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDistributionsBulkReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistributionsIncludeRemotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDistributionsDistributionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDistributionsDistributionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDistributionsDistributionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDistributionsRouteHandler: RouteHandler<typeof postDistributionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDistributionsBulkReplaceRouteHandler: RouteHandler<
+  typeof putDistributionsBulkReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistributionsIncludeRemotesRouteHandler: RouteHandler<
+  typeof getDistributionsIncludeRemotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDistributionsDistributionIdRouteHandler: RouteHandler<
+  typeof deleteDistributionsDistributionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDistributionsDistributionIdRouteHandler: RouteHandler<
+  typeof getDistributionsDistributionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDistributionsDistributionIdRouteHandler: RouteHandler<
+  typeof putDistributionsDistributionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

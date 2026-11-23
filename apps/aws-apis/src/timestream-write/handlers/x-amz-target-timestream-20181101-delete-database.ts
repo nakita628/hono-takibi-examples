@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTimestream20181101DeleteDatabaseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTimestream20181101DeleteDatabaseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTimestream20181101DeleteDatabaseHandler = app.openapi(
-  postXAmzTargetTimestream20181101DeleteDatabaseRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTimestream20181101DeleteDatabaseRouteHandler: RouteHandler<
+  typeof postXAmzTargetTimestream20181101DeleteDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

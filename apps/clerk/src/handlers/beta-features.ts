@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchBetaFeaturesInstanceSettingsRoute, putBetaFeaturesDomainRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchBetaFeaturesInstanceSettingsRoute, putBetaFeaturesDomainRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const patchBetaFeaturesInstanceSettingsRouteHandler: RouteHandler<
+  typeof patchBetaFeaturesInstanceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const betaFeaturesHandler = app
-  .openapi(patchBetaFeaturesInstanceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBetaFeaturesDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBetaFeaturesDomainRouteHandler: RouteHandler<
+  typeof putBetaFeaturesDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

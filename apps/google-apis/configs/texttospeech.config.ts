@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/texttospeech/v1beta1/openapi.yaml',
   output: './src/texttospeech/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/texttospeech/types.ts' },
   client: { output: './src/texttospeech/client.ts', baseUrl: '/' },
   rpc: { output: './src/texttospeech/rpc.ts', parseResponse: true },

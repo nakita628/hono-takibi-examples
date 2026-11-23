@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionContinueUpdateRollbackRoute,
   postActionContinueUpdateRollbackRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionContinueUpdateRollbackRouteHandler: RouteHandler<
+  typeof getActionContinueUpdateRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionContinueUpdateRollbackHandler = app
-  .openapi(getActionContinueUpdateRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionContinueUpdateRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionContinueUpdateRollbackRouteHandler: RouteHandler<
+  typeof postActionContinueUpdateRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

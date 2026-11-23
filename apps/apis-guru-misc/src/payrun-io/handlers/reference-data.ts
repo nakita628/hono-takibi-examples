@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReferenceDataJournalExpressionDataTableRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReferenceDataJournalExpressionDataTableRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const referenceDataHandler = app.openapi(
-  getReferenceDataJournalExpressionDataTableRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getReferenceDataJournalExpressionDataTableRouteHandler: RouteHandler<
+  typeof getReferenceDataJournalExpressionDataTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

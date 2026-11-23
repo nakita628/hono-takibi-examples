@@ -4006,6 +4006,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/cms/blogs/2026-09/posts/batch/archive': {
       $post:
+        | { input: { json: BatchInputString }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { json: BatchInputString }
             output: BatchResponseBlogPostWithErrors
@@ -4215,12 +4216,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cms/blogs/2026-09/posts/multi-language/set-new-lang-primary': {
-      $put: {
-        input: { json: SetNewLanguagePrimaryRequestVNext }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { json: SetNewLanguagePrimaryRequestVNext }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: SetNewLanguagePrimaryRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/blogs/2026-09/posts/multi-language/update-languages': {
@@ -4233,12 +4241,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cms/blogs/2026-09/posts/schedule': {
-      $post: {
-        input: { json: ContentScheduleRequestVNext }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: ContentScheduleRequestVNext }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: ContentScheduleRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/blogs/2026-09/posts/:objectId': {
@@ -4259,12 +4274,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectId: string } } & {
@@ -4314,21 +4336,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cms/blogs/2026-09/posts/:objectId/draft/push-live': {
-      $post: {
-        input: { param: { objectId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { param: { objectId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { objectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/blogs/2026-09/posts/:objectId/draft/reset': {
-      $post: {
-        input: { param: { objectId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { param: { objectId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { objectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/blogs/2026-09/posts/:objectId/revisions': {

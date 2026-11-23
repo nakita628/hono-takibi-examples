@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueListCrawlsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueListCrawlsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueListCrawlsHandler = app.openapi(
-  postXAmzTargetAWSGlueListCrawlsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueListCrawlsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueListCrawlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

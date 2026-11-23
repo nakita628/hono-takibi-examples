@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1HistoryHistoryItemIdRoute,
   deleteV1VoicesVoiceIdRoute,
   deleteV1VoicesVoiceIdSamplesSampleIdRoute,
@@ -21,63 +21,108 @@ import {
   postV1VoicesVoiceIdSettingsEditRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1HistoryRouteHandler: RouteHandler<typeof getV1HistoryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1HistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1HistoryDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1HistoryDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1HistoryHistoryItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1HistoryHistoryItemIdAudioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TextToSpeechVoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TextToSpeechVoiceIdStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1VoicesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesSettingsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1VoicesVoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesVoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1VoicesVoiceIdEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1VoicesVoiceIdSamplesSampleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesVoiceIdSamplesSampleIdAudioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VoicesVoiceIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1VoicesVoiceIdSettingsEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1HistoryDeleteRouteHandler: RouteHandler<
+  typeof postV1HistoryDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1HistoryDownloadRouteHandler: RouteHandler<
+  typeof postV1HistoryDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1HistoryHistoryItemIdRouteHandler: RouteHandler<
+  typeof deleteV1HistoryHistoryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1HistoryHistoryItemIdAudioRouteHandler: RouteHandler<
+  typeof getV1HistoryHistoryItemIdAudioRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TextToSpeechVoiceIdRouteHandler: RouteHandler<
+  typeof postV1TextToSpeechVoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TextToSpeechVoiceIdStreamRouteHandler: RouteHandler<
+  typeof postV1TextToSpeechVoiceIdStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserRouteHandler: RouteHandler<typeof getV1UserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserSubscriptionRouteHandler: RouteHandler<
+  typeof getV1UserSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesRouteHandler: RouteHandler<typeof getV1VoicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1VoicesAddRouteHandler: RouteHandler<typeof postV1VoicesAddRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesSettingsDefaultRouteHandler: RouteHandler<
+  typeof getV1VoicesSettingsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1VoicesVoiceIdRouteHandler: RouteHandler<
+  typeof deleteV1VoicesVoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesVoiceIdRouteHandler: RouteHandler<typeof getV1VoicesVoiceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1VoicesVoiceIdEditRouteHandler: RouteHandler<
+  typeof postV1VoicesVoiceIdEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1VoicesVoiceIdSamplesSampleIdRouteHandler: RouteHandler<
+  typeof deleteV1VoicesVoiceIdSamplesSampleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesVoiceIdSamplesSampleIdAudioRouteHandler: RouteHandler<
+  typeof getV1VoicesVoiceIdSamplesSampleIdAudioRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VoicesVoiceIdSettingsRouteHandler: RouteHandler<
+  typeof getV1VoicesVoiceIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1VoicesVoiceIdSettingsEditRouteHandler: RouteHandler<
+  typeof postV1VoicesVoiceIdSettingsEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

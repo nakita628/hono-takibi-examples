@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/fungenerators.com/riddle/1.5/openapi.yaml',
   output: './src/fungenerators-riddle/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fungenerators-riddle/types.ts' },
   client: { output: './src/fungenerators-riddle/client.ts', baseUrl: '/' },
   rpc: { output: './src/fungenerators-riddle/rpc.ts', parseResponse: true },

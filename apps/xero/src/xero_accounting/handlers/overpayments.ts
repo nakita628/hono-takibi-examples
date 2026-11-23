@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOverpaymentsOverpaymentIDAllocationsAllocationIDRoute,
   getOverpaymentsOverpaymentIDHistoryRoute,
   getOverpaymentsOverpaymentIDRoute,
@@ -8,24 +8,36 @@ import {
   putOverpaymentsOverpaymentIDHistoryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOverpaymentsRouteHandler: RouteHandler<typeof getOverpaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const overpaymentsHandler = app
-  .openapi(getOverpaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOverpaymentsOverpaymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOverpaymentsOverpaymentIDAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOverpaymentsOverpaymentIDAllocationsAllocationIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOverpaymentsOverpaymentIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOverpaymentsOverpaymentIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOverpaymentsOverpaymentIDRouteHandler: RouteHandler<
+  typeof getOverpaymentsOverpaymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOverpaymentsOverpaymentIDAllocationsRouteHandler: RouteHandler<
+  typeof putOverpaymentsOverpaymentIDAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOverpaymentsOverpaymentIDAllocationsAllocationIDRouteHandler: RouteHandler<
+  typeof deleteOverpaymentsOverpaymentIDAllocationsAllocationIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOverpaymentsOverpaymentIDHistoryRouteHandler: RouteHandler<
+  typeof getOverpaymentsOverpaymentIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOverpaymentsOverpaymentIDHistoryRouteHandler: RouteHandler<
+  typeof putOverpaymentsOverpaymentIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

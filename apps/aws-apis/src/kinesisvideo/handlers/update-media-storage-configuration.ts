@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUpdateMediaStorageConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUpdateMediaStorageConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const updateMediaStorageConfigurationHandler = app.openapi(
-  postUpdateMediaStorageConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postUpdateMediaStorageConfigurationRouteHandler: RouteHandler<
+  typeof postUpdateMediaStorageConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

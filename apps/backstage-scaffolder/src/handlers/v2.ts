@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2ActionsRoute,
   getV2TasksRoute,
   getV2TasksTaskIdEventsRoute,
@@ -13,39 +13,60 @@ import {
   postV2TasksTaskIdRetryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2TemplatesNamespaceKindNameParameterSchemaRouteHandler: RouteHandler<
+  typeof getV2TemplatesNamespaceKindNameParameterSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2TemplatesNamespaceKindNameParameterSchemaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2TasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2TasksTaskIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2TasksTaskIdRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TasksTaskIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2DryRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AutocompleteProviderResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TemplatingExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2ActionsRouteHandler: RouteHandler<typeof getV2ActionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TasksRouteHandler: RouteHandler<typeof getV2TasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2TasksRouteHandler: RouteHandler<typeof postV2TasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TasksTaskIdRouteHandler: RouteHandler<typeof getV2TasksTaskIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2TasksTaskIdCancelRouteHandler: RouteHandler<
+  typeof postV2TasksTaskIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2TasksTaskIdRetryRouteHandler: RouteHandler<
+  typeof postV2TasksTaskIdRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TasksTaskIdEventsRouteHandler: RouteHandler<
+  typeof getV2TasksTaskIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2DryRunRouteHandler: RouteHandler<typeof postV2DryRunRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AutocompleteProviderResourceRouteHandler: RouteHandler<
+  typeof postV2AutocompleteProviderResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TemplatingExtensionsRouteHandler: RouteHandler<
+  typeof getV2TemplatingExtensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

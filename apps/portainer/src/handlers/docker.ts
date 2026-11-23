@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDockerEnvironmentIdContainersContainerIdGpusRoute,
   getDockerEnvironmentIdDashboardRoute,
   getDockerEnvironmentIdImagesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDockerEnvironmentIdContainersContainerIdGpusRouteHandler: RouteHandler<
+  typeof getDockerEnvironmentIdContainersContainerIdGpusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dockerHandler = app
-  .openapi(getDockerEnvironmentIdContainersContainerIdGpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDockerEnvironmentIdDashboardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDockerEnvironmentIdImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDockerEnvironmentIdDashboardRouteHandler: RouteHandler<
+  typeof getDockerEnvironmentIdDashboardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDockerEnvironmentIdImagesRouteHandler: RouteHandler<
+  typeof getDockerEnvironmentIdImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

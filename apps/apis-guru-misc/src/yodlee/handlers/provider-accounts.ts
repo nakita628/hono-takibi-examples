@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProviderAccountsProviderAccountIdRoute,
   getProviderAccountsProfileRoute,
   getProviderAccountsProviderAccountIdRoute,
@@ -8,24 +8,38 @@ import {
   putProviderAccountsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProviderAccountsRouteHandler: RouteHandler<
+  typeof getProviderAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const providerAccountsHandler = app
-  .openapi(getProviderAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProviderAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProviderAccountsProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProviderAccountsProviderAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProviderAccountsProviderAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProviderAccountsProviderAccountIdPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putProviderAccountsRouteHandler: RouteHandler<
+  typeof putProviderAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProviderAccountsProfileRouteHandler: RouteHandler<
+  typeof getProviderAccountsProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProviderAccountsProviderAccountIdRouteHandler: RouteHandler<
+  typeof deleteProviderAccountsProviderAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProviderAccountsProviderAccountIdRouteHandler: RouteHandler<
+  typeof getProviderAccountsProviderAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProviderAccountsProviderAccountIdPreferencesRouteHandler: RouteHandler<
+  typeof putProviderAccountsProviderAccountIdPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

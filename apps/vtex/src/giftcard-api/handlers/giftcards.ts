@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGiftcardsGiftCardIDRoute,
   getGiftcardsGiftCardIDTransactionsRoute,
   getGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRoute,
@@ -13,39 +13,66 @@ import {
   postGiftcardsSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGiftcardsRouteHandler: RouteHandler<typeof postGiftcardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const giftcardsHandler = app
-  .openapi(postGiftcardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGiftcardsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGiftcardsGiftCardIDTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDTransactionsTransactionIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGiftcardsSearchRouteHandler: RouteHandler<
+  typeof postGiftcardsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDTransactionsRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGiftcardsGiftCardIDTransactionsRouteHandler: RouteHandler<
+  typeof postGiftcardsGiftCardIDTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDTransactionsTransactionIDRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDTransactionsTransactionIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDTransactionsTransactionIDAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRouteHandler: RouteHandler<
+  typeof postGiftcardsGiftCardIDTransactionsTransactionIDCancellationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRouteHandler: RouteHandler<
+  typeof getGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRouteHandler: RouteHandler<
+  typeof postGiftcardsGiftCardIDTransactionsTransactionIDSettlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

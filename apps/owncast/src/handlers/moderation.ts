@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getModerationChatUserUserIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getModerationChatUserUserIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const moderationHandler = app.openapi(getModerationChatUserUserIdRoute, (c) => {
+export const getModerationChatUserUserIdRouteHandler: RouteHandler<
+  typeof getModerationChatUserUserIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

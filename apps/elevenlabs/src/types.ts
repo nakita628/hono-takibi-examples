@@ -14107,14 +14107,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/audio-isolation': {
-      $post: {
-        input: {
-          header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
-        } & { form: BodyAudioIsolationV1AudioIsolationPost }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $post:
+        | {
+            input: {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            } & { form: BodyAudioIsolationV1AudioIsolationPost }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            } & { form: BodyAudioIsolationV1AudioIsolationPost }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/audio-isolation/history': {
@@ -14170,14 +14179,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/audio-isolation/stream': {
-      $post: {
-        input: {
-          header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
-        } & { form: BodyAudioIsolationStreamV1AudioIsolationStreamPost }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $post:
+        | {
+            input: {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            } & { form: BodyAudioIsolationStreamV1AudioIsolationStreamPost }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            } & { form: BodyAudioIsolationStreamV1AudioIsolationStreamPost }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/audio-effects/catalog': {
@@ -14221,14 +14239,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/voices/:voice_id/samples/:sample_id/audio': {
-      $get: {
-        input: { param: { voice_id: string; sample_id: string } } & {
-          header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $get:
+        | {
+            input: { param: { voice_id: string; sample_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { voice_id: string; sample_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/text-to-speech/:voice_id': {
@@ -16759,9 +16786,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { dubbing_id: string; language_code: string } } & {
               header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
             output: HTTPValidationError
             outputFormat: 'json'
             status: 422
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 425
           }
     }
   } & {
@@ -16793,9 +16844,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & {
               header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              query: { format_type?: 'srt' | 'webvtt' | 'json' | undefined }
+            } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              query: { format_type?: 'srt' | 'webvtt' | 'json' | undefined }
+            } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
             output: HTTPValidationError
             outputFormat: 'json'
             status: 422
+          }
+        | {
+            input: { param: { dubbing_id: string; language_code: string } } & {
+              query: { format_type?: 'srt' | 'webvtt' | 'json' | undefined }
+            } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 425
           }
     }
   } & {
@@ -17992,6 +18073,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & {
               header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
             } & { form: BodySpeechToTextV1SpeechToTextPost }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                token?: string | ({ [x: string]: unknown } | null) | undefined
+                enable_logging?: boolean | undefined
+              }
+            } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            } & { form: BodySpeechToTextV1SpeechToTextPost }
             output: HTTPValidationError
             outputFormat: 'json'
             status: 422
@@ -18012,6 +18106,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { transcription_id: string } } & {
               header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { transcription_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { transcription_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
             output: HTTPValidationError
             outputFormat: 'json'
             status: 422
@@ -18024,6 +18134,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { [x: string]: unknown }
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { transcription_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
         | {
             input: { param: { transcription_id: string } } & {
@@ -19438,25 +19556,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/convai/conversations/:conversation_id/audio': {
-      $get: {
-        input: { param: { conversation_id: string } } & {
-          header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $get:
+        | {
+            input: { param: { conversation_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { conversation_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v1/convai/conversations/:conversation_id/files/:file_id': {
-      $get: {
-        input: { param: { conversation_id: string; file_id: string } } & {
-          header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+      $get:
+        | {
+            input: { param: { conversation_id: string; file_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { conversation_id: string; file_id: string } } & {
+              header: { 'xi-api-key'?: string | ({ [x: string]: unknown } | null) | undefined }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
       $delete:
         | {
             input: { param: { file_id: string; conversation_id: string } } & {

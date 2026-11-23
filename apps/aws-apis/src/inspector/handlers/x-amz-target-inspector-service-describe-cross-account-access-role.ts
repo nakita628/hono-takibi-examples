@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetInspectorServiceDescribeCrossAccountAccessRoleHandler = app.openapi(
-  postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRouteHandler: RouteHandler<
+  typeof postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

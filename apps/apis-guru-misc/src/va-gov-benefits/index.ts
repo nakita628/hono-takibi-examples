@@ -1,8 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { pathHandler, uploadsHandler } from './handlers'
+import {
+  getUploadsIdDownloadRoute,
+  getUploadsIdRoute,
+  postUploadsReportRoute,
+  postUploadsRoute,
+  postUploadsValidateDocumentRoute,
+  putPathRoute,
+} from './routes'
+import {
+  getUploadsIdDownloadRouteHandler,
+  getUploadsIdRouteHandler,
+  postUploadsReportRouteHandler,
+  postUploadsRouteHandler,
+  postUploadsValidateDocumentRouteHandler,
+  putPathRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', pathHandler).route('/', uploadsHandler)
+export const api = app
+  .openapi(putPathRoute, putPathRouteHandler)
+  .openapi(postUploadsRoute, postUploadsRouteHandler)
+  .openapi(postUploadsReportRoute, postUploadsReportRouteHandler)
+  .openapi(postUploadsValidateDocumentRoute, postUploadsValidateDocumentRouteHandler)
+  .openapi(getUploadsIdRoute, getUploadsIdRouteHandler)
+  .openapi(getUploadsIdDownloadRoute, getUploadsIdDownloadRouteHandler)
 
 export default app

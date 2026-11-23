@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLargedataV4DataIdRoute,
   getLargedataV4DataIdDataRoute,
   getLargedataV4DataIdMetadataRoute,
@@ -12,36 +12,60 @@ import {
   putLargedataV4DataIdPartsPartNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLargedataV4RouteHandler: RouteHandler<typeof postLargedataV4Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const largedataHandler = app
-  .openapi(postLargedataV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4DevicesTrackingIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLargedataV4DataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLargedataV4DataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4DataIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4DataIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLargedataV4DataIdPartsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLargedataV4DataIdPartsPartNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLargedataV4DevicesTrackingIdMetadataRouteHandler: RouteHandler<
+  typeof getLargedataV4DevicesTrackingIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLargedataV4HealthRouteHandler: RouteHandler<
+  typeof getLargedataV4HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLargedataV4VersionRouteHandler: RouteHandler<
+  typeof getLargedataV4VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLargedataV4DataIdRouteHandler: RouteHandler<
+  typeof deleteLargedataV4DataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLargedataV4DataIdRouteHandler: RouteHandler<
+  typeof postLargedataV4DataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLargedataV4DataIdDataRouteHandler: RouteHandler<
+  typeof getLargedataV4DataIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLargedataV4DataIdMetadataRouteHandler: RouteHandler<
+  typeof getLargedataV4DataIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLargedataV4DataIdPartsRouteHandler: RouteHandler<
+  typeof getLargedataV4DataIdPartsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLargedataV4DataIdPartsPartNumberRouteHandler: RouteHandler<
+  typeof putLargedataV4DataIdPartsPartNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

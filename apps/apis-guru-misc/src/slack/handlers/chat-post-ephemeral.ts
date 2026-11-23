@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postChatPostEphemeralRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postChatPostEphemeralRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const chatPostEphemeralHandler = app.openapi(postChatPostEphemeralRoute, (c) => {
+export const postChatPostEphemeralRouteHandler: RouteHandler<
+  typeof postChatPostEphemeralRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

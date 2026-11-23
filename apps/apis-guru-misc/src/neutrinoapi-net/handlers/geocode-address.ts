@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGeocodeAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGeocodeAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const geocodeAddressHandler = app.openapi(getGeocodeAddressRoute, (c) => {
+export const getGeocodeAddressRouteHandler: RouteHandler<typeof getGeocodeAddressRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

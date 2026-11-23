@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCreativecommonsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCreativecommonsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const creativecommonsHandler = app.openapi(getCreativecommonsRoute, (c) => {
+export const getCreativecommonsRouteHandler: RouteHandler<typeof getCreativecommonsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

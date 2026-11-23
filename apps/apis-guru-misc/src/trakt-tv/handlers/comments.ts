@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCommentsIdLikeRoute,
   deleteCommentsIdRoute,
   getCommentsIdItemRoute,
@@ -15,45 +15,74 @@ import {
   putCommentsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCommentsRouteHandler: RouteHandler<typeof postCommentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const commentsHandler = app
-  .openapi(postCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsRecentCommentTypeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsTrendingCommentTypeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsUpdatesCommentTypeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsIdItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCommentsIdLikeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommentsIdLikeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsIdLikesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsIdRepliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommentsIdRepliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCommentsRecentCommentTypeTypeRouteHandler: RouteHandler<
+  typeof getCommentsRecentCommentTypeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsTrendingCommentTypeTypeRouteHandler: RouteHandler<
+  typeof getCommentsTrendingCommentTypeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsUpdatesCommentTypeTypeRouteHandler: RouteHandler<
+  typeof getCommentsUpdatesCommentTypeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCommentsIdRouteHandler: RouteHandler<typeof deleteCommentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsIdRouteHandler: RouteHandler<typeof getCommentsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCommentsIdRouteHandler: RouteHandler<typeof putCommentsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsIdItemRouteHandler: RouteHandler<typeof getCommentsIdItemRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCommentsIdLikeRouteHandler: RouteHandler<
+  typeof deleteCommentsIdLikeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommentsIdLikeRouteHandler: RouteHandler<typeof postCommentsIdLikeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsIdLikesRouteHandler: RouteHandler<typeof getCommentsIdLikesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommentsIdRepliesRouteHandler: RouteHandler<
+  typeof getCommentsIdRepliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommentsIdRepliesRouteHandler: RouteHandler<
+  typeof postCommentsIdRepliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

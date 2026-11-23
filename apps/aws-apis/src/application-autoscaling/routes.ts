@@ -405,12 +405,12 @@ const CustomizedMetricSpecificationSchema = z
 const DisableScaleInSchema = z.boolean().openapi('DisableScaleIn')
 
 type TargetTrackingScalingPolicyConfigurationType = {
-  TargetValue: z.infer<typeof MetricScaleSchema> & unknown
-  PredefinedMetricSpecification?: z.infer<typeof PredefinedMetricSpecificationSchema> & unknown
-  CustomizedMetricSpecification?: z.infer<typeof CustomizedMetricSpecificationSchema> & unknown
-  ScaleOutCooldown?: z.infer<typeof CooldownSchema> & unknown
-  ScaleInCooldown?: z.infer<typeof CooldownSchema> & unknown
-  DisableScaleIn?: z.infer<typeof DisableScaleInSchema> & unknown
+  TargetValue: z.infer<typeof MetricScaleSchema>
+  PredefinedMetricSpecification?: z.infer<typeof PredefinedMetricSpecificationSchema>
+  CustomizedMetricSpecification?: z.infer<typeof CustomizedMetricSpecificationSchema>
+  ScaleOutCooldown?: z.infer<typeof CooldownSchema>
+  ScaleInCooldown?: z.infer<typeof CooldownSchema>
+  DisableScaleIn?: z.infer<typeof DisableScaleInSchema>
 }
 
 const TargetTrackingScalingPolicyConfigurationSchema: z.ZodType<TargetTrackingScalingPolicyConfigurationType> =
@@ -473,19 +473,18 @@ const AlarmsSchema = z.array(AlarmSchema).openapi('Alarms')
 const TimestampTypeSchema = z.iso.datetime({ offset: true }).openapi('TimestampType')
 
 type ScalingPolicyType = {
-  PolicyARN: z.infer<typeof ResourceIdMaxLen1600Schema> & unknown
-  PolicyName: z.infer<typeof PolicyNameSchema> & unknown
-  ServiceNamespace: z.infer<typeof ServiceNamespaceSchema> & unknown
-  ResourceId: z.infer<typeof ResourceIdMaxLen1600Schema> & unknown
-  ScalableDimension: z.infer<typeof ScalableDimensionSchema> & unknown
-  PolicyType: z.infer<typeof PolicyTypeSchema> & unknown
-  StepScalingPolicyConfiguration?: z.infer<typeof StepScalingPolicyConfigurationSchema> & unknown
+  PolicyARN: z.infer<typeof ResourceIdMaxLen1600Schema>
+  PolicyName: z.infer<typeof PolicyNameSchema>
+  ServiceNamespace: z.infer<typeof ServiceNamespaceSchema>
+  ResourceId: z.infer<typeof ResourceIdMaxLen1600Schema>
+  ScalableDimension: z.infer<typeof ScalableDimensionSchema>
+  PolicyType: z.infer<typeof PolicyTypeSchema>
+  StepScalingPolicyConfiguration?: z.infer<typeof StepScalingPolicyConfigurationSchema>
   TargetTrackingScalingPolicyConfiguration?: z.infer<
     typeof TargetTrackingScalingPolicyConfigurationSchema
-  > &
-    unknown
-  Alarms?: z.infer<typeof AlarmsSchema> & unknown
-  CreationTime: z.infer<typeof TimestampTypeSchema> & unknown
+  >
+  Alarms?: z.infer<typeof AlarmsSchema>
+  CreationTime: z.infer<typeof TimestampTypeSchema>
 }
 
 const ScalingPolicySchema: z.ZodType<ScalingPolicyType> = z
@@ -546,21 +545,20 @@ const ScalingPoliciesSchema: z.ZodType<ScalingPoliciesType> = z
   .openapi('ScalingPolicies')
 
 type DescribeScalingPoliciesResponseType = {
-  ScalingPolicies?: z.infer<typeof ScalingPoliciesSchema> & unknown
-  NextToken?: z.infer<typeof XmlStringSchema> & unknown
+  ScalingPolicies?: z.infer<typeof ScalingPoliciesSchema>
+  NextToken?: z.infer<typeof XmlStringSchema>
 }
 
 type PutScalingPolicyRequestType = {
-  PolicyName: z.infer<typeof PolicyNameSchema> & unknown
-  ServiceNamespace: z.infer<typeof ServiceNamespaceSchema> & unknown
-  ResourceId: z.infer<typeof ResourceIdMaxLen1600Schema> & unknown
-  ScalableDimension: z.infer<typeof ScalableDimensionSchema> & unknown
-  PolicyType?: z.infer<typeof PolicyTypeSchema> & unknown
-  StepScalingPolicyConfiguration?: z.infer<typeof StepScalingPolicyConfigurationSchema> & unknown
+  PolicyName: z.infer<typeof PolicyNameSchema>
+  ServiceNamespace: z.infer<typeof ServiceNamespaceSchema>
+  ResourceId: z.infer<typeof ResourceIdMaxLen1600Schema>
+  ScalableDimension: z.infer<typeof ScalableDimensionSchema>
+  PolicyType?: z.infer<typeof PolicyTypeSchema>
+  StepScalingPolicyConfiguration?: z.infer<typeof StepScalingPolicyConfigurationSchema>
   TargetTrackingScalingPolicyConfiguration?: z.infer<
     typeof TargetTrackingScalingPolicyConfigurationSchema
-  > &
-    unknown
+  >
 }
 
 const DeleteScalingPolicyResponseSchema = z

@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { appinstallsHandler } from './handlers'
+import { deleteAppinstalls202609ExternalInstallRoute } from './routes'
+import { deleteAppinstalls202609ExternalInstallRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', appinstallsHandler)
+export const api = app.openapi(
+  deleteAppinstalls202609ExternalInstallRoute,
+  deleteAppinstalls202609ExternalInstallRouteHandler,
+)
 
 export default app

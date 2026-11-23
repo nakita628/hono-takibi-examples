@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVaultsVaultUuidItemsItemUuidRoute,
   getVaultsRoute,
   getVaultsVaultUuidItemsItemUuidFilesFileUuidContentRoute,
@@ -13,39 +13,66 @@ import {
   putVaultsVaultUuidItemsItemUuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVaultsRouteHandler: RouteHandler<typeof getVaultsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vaultsHandler = app
-  .openapi(getVaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultsVaultUuidItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidItemsItemUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVaultsVaultUuidItemsItemUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVaultsVaultUuidItemsItemUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVaultsVaultUuidItemsItemUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidItemsItemUuidFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidItemsItemUuidFilesFileUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultsVaultUuidItemsItemUuidFilesFileUuidContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVaultsVaultUuidRouteHandler: RouteHandler<typeof getVaultsVaultUuidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultUuidItemsRouteHandler: RouteHandler<
+  typeof getVaultsVaultUuidItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultsVaultUuidItemsRouteHandler: RouteHandler<
+  typeof postVaultsVaultUuidItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultUuidItemsItemUuidRouteHandler: RouteHandler<
+  typeof getVaultsVaultUuidItemsItemUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVaultsVaultUuidItemsItemUuidRouteHandler: RouteHandler<
+  typeof putVaultsVaultUuidItemsItemUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVaultsVaultUuidItemsItemUuidRouteHandler: RouteHandler<
+  typeof deleteVaultsVaultUuidItemsItemUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVaultsVaultUuidItemsItemUuidRouteHandler: RouteHandler<
+  typeof patchVaultsVaultUuidItemsItemUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultUuidItemsItemUuidFilesRouteHandler: RouteHandler<
+  typeof getVaultsVaultUuidItemsItemUuidFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultUuidItemsItemUuidFilesFileUuidRouteHandler: RouteHandler<
+  typeof getVaultsVaultUuidItemsItemUuidFilesFileUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultsVaultUuidItemsItemUuidFilesFileUuidContentRouteHandler: RouteHandler<
+  typeof getVaultsVaultUuidItemsItemUuidFilesFileUuidContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

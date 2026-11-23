@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIntegrationsUniqueKeyFunctionsNameRoute,
   deleteIntegrationsUniqueKeyRoute,
   getIntegrationsRoute,
@@ -12,36 +12,60 @@ import {
   postIntegrationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsRouteHandler: RouteHandler<typeof getIntegrationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsQuickstartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsUniqueKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIntegrationsUniqueKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationsUniqueKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsUniqueKeyFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsUniqueKeyFunctionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationsUniqueKeyFunctionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsUniqueKeyFunctionsNameCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegrationsRouteHandler: RouteHandler<typeof postIntegrationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsQuickstartRouteHandler: RouteHandler<
+  typeof postIntegrationsQuickstartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsUniqueKeyRouteHandler: RouteHandler<
+  typeof getIntegrationsUniqueKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIntegrationsUniqueKeyRouteHandler: RouteHandler<
+  typeof patchIntegrationsUniqueKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationsUniqueKeyRouteHandler: RouteHandler<
+  typeof deleteIntegrationsUniqueKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsUniqueKeyFunctionsRouteHandler: RouteHandler<
+  typeof getIntegrationsUniqueKeyFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsUniqueKeyFunctionsNameRouteHandler: RouteHandler<
+  typeof getIntegrationsUniqueKeyFunctionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationsUniqueKeyFunctionsNameRouteHandler: RouteHandler<
+  typeof deleteIntegrationsUniqueKeyFunctionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsUniqueKeyFunctionsNameCodeRouteHandler: RouteHandler<
+  typeof getIntegrationsUniqueKeyFunctionsNameCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteProductVariantPriceDeleteJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteProductVariantPriceDeleteJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const productVariantPriceDeleteJsonHandler = app.openapi(
-  deleteProductVariantPriceDeleteJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteProductVariantPriceDeleteJsonRouteHandler: RouteHandler<
+  typeof deleteProductVariantPriceDeleteJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ip2proxy.com/1.0/openapi.yaml',
   output: './src/ip2proxy/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ip2proxy/types.ts' },
   client: { output: './src/ip2proxy/client.ts', baseUrl: '/' },
   rpc: { output: './src/ip2proxy/rpc.ts', parseResponse: true },

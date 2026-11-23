@@ -21186,7 +21186,7 @@ export const getVersionMediaURLRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Download Media', content: {} } },
+  responses: { 200: { description: 'Download Media' } },
   security: [{ bearerAuth: [] }],
 })
 

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2BotRichmenuAliasRichMenuAliasIdRoute,
   deleteV2BotRichmenuRichMenuIdRoute,
   deleteV2BotUserAllRichmenuRoute,
@@ -76,228 +76,440 @@ import {
   putV2BotCouponCouponIdCloseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2BotChannelWebhookEndpointRouteHandler: RouteHandler<
+  typeof getV2BotChannelWebhookEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2BotChannelWebhookEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2BotChannelWebhookEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotChannelWebhookTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageMessageIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageMessageIdContentPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageMessageIdContentTranscodingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessagePushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageMulticastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageNarrowcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageProgressNarrowcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageQuotaConsumptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryMulticastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageValidateReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageValidatePushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageValidateMulticastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageValidateNarrowcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageValidateBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageAggregationInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageAggregationListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotProfileUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotFollowersIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotGroupGroupIdMemberUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRoomRoomIdMemberUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotGroupGroupIdMembersIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRoomRoomIdMembersIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotGroupGroupIdLeaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRoomRoomIdLeaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotGroupGroupIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotGroupGroupIdMembersCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRoomRoomIdMembersCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuRichMenuIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuRichMenuIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuRichMenuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BotRichmenuRichMenuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotUserAllRichmenuRichMenuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotUserAllRichmenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BotUserAllRichmenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuAliasRichMenuAliasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuAliasRichMenuAliasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BotRichmenuAliasRichMenuAliasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuAliasListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotUserUserIdRichmenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BotUserUserIdRichmenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotUserUserIdRichmenuRichMenuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuBulkLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuBulkUnlinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotRichmenuValidateBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotRichmenuProgressBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotUserUserIdLinkTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessageMarkAsReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotMessagePnpTemplatedPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryPnpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMessageDeliveryPnpTemplatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMembershipSubscriptionUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMembershipListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotMembershipMembershipIdUsersIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotCouponRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotCouponRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotCouponCouponIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2BotCouponCouponIdCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotChatLoadingStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotChatMarkAsReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putV2BotChannelWebhookEndpointRouteHandler: RouteHandler<
+  typeof putV2BotChannelWebhookEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotChannelWebhookTestRouteHandler: RouteHandler<
+  typeof postV2BotChannelWebhookTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageMessageIdContentRouteHandler: RouteHandler<
+  typeof getV2BotMessageMessageIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageMessageIdContentPreviewRouteHandler: RouteHandler<
+  typeof getV2BotMessageMessageIdContentPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageMessageIdContentTranscodingRouteHandler: RouteHandler<
+  typeof getV2BotMessageMessageIdContentTranscodingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageReplyRouteHandler: RouteHandler<
+  typeof postV2BotMessageReplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessagePushRouteHandler: RouteHandler<
+  typeof postV2BotMessagePushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageMulticastRouteHandler: RouteHandler<
+  typeof postV2BotMessageMulticastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageNarrowcastRouteHandler: RouteHandler<
+  typeof postV2BotMessageNarrowcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageProgressNarrowcastRouteHandler: RouteHandler<
+  typeof getV2BotMessageProgressNarrowcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageBroadcastRouteHandler: RouteHandler<
+  typeof postV2BotMessageBroadcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageQuotaRouteHandler: RouteHandler<
+  typeof getV2BotMessageQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageQuotaConsumptionRouteHandler: RouteHandler<
+  typeof getV2BotMessageQuotaConsumptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryReplyRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryReplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryPushRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryMulticastRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryMulticastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryBroadcastRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryBroadcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageValidateReplyRouteHandler: RouteHandler<
+  typeof postV2BotMessageValidateReplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageValidatePushRouteHandler: RouteHandler<
+  typeof postV2BotMessageValidatePushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageValidateMulticastRouteHandler: RouteHandler<
+  typeof postV2BotMessageValidateMulticastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageValidateNarrowcastRouteHandler: RouteHandler<
+  typeof postV2BotMessageValidateNarrowcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageValidateBroadcastRouteHandler: RouteHandler<
+  typeof postV2BotMessageValidateBroadcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageAggregationInfoRouteHandler: RouteHandler<
+  typeof getV2BotMessageAggregationInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageAggregationListRouteHandler: RouteHandler<
+  typeof getV2BotMessageAggregationListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotProfileUserIdRouteHandler: RouteHandler<
+  typeof getV2BotProfileUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotFollowersIdsRouteHandler: RouteHandler<
+  typeof getV2BotFollowersIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotInfoRouteHandler: RouteHandler<typeof getV2BotInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotGroupGroupIdMemberUserIdRouteHandler: RouteHandler<
+  typeof getV2BotGroupGroupIdMemberUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRoomRoomIdMemberUserIdRouteHandler: RouteHandler<
+  typeof getV2BotRoomRoomIdMemberUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotGroupGroupIdMembersIdsRouteHandler: RouteHandler<
+  typeof getV2BotGroupGroupIdMembersIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRoomRoomIdMembersIdsRouteHandler: RouteHandler<
+  typeof getV2BotRoomRoomIdMembersIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotGroupGroupIdLeaveRouteHandler: RouteHandler<
+  typeof postV2BotGroupGroupIdLeaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRoomRoomIdLeaveRouteHandler: RouteHandler<
+  typeof postV2BotRoomRoomIdLeaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotGroupGroupIdSummaryRouteHandler: RouteHandler<
+  typeof getV2BotGroupGroupIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotGroupGroupIdMembersCountRouteHandler: RouteHandler<
+  typeof getV2BotGroupGroupIdMembersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRoomRoomIdMembersCountRouteHandler: RouteHandler<
+  typeof getV2BotRoomRoomIdMembersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuRouteHandler: RouteHandler<typeof postV2BotRichmenuRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuValidateRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuRichMenuIdContentRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuRichMenuIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuRichMenuIdContentRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuRichMenuIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuRichMenuIdRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuRichMenuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BotRichmenuRichMenuIdRouteHandler: RouteHandler<
+  typeof deleteV2BotRichmenuRichMenuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuListRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotUserAllRichmenuRichMenuIdRouteHandler: RouteHandler<
+  typeof postV2BotUserAllRichmenuRichMenuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotUserAllRichmenuRouteHandler: RouteHandler<
+  typeof getV2BotUserAllRichmenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BotUserAllRichmenuRouteHandler: RouteHandler<
+  typeof deleteV2BotUserAllRichmenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuAliasRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuAliasRichMenuAliasIdRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuAliasRichMenuAliasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuAliasRichMenuAliasIdRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuAliasRichMenuAliasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BotRichmenuAliasRichMenuAliasIdRouteHandler: RouteHandler<
+  typeof deleteV2BotRichmenuAliasRichMenuAliasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuAliasListRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuAliasListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotUserUserIdRichmenuRouteHandler: RouteHandler<
+  typeof getV2BotUserUserIdRichmenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BotUserUserIdRichmenuRouteHandler: RouteHandler<
+  typeof deleteV2BotUserUserIdRichmenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotUserUserIdRichmenuRichMenuIdRouteHandler: RouteHandler<
+  typeof postV2BotUserUserIdRichmenuRichMenuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuBulkLinkRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuBulkLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuBulkUnlinkRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuBulkUnlinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuBatchRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotRichmenuValidateBatchRouteHandler: RouteHandler<
+  typeof postV2BotRichmenuValidateBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotRichmenuProgressBatchRouteHandler: RouteHandler<
+  typeof getV2BotRichmenuProgressBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotUserUserIdLinkTokenRouteHandler: RouteHandler<
+  typeof postV2BotUserUserIdLinkTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessageMarkAsReadRouteHandler: RouteHandler<
+  typeof postV2BotMessageMarkAsReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotMessagePnpTemplatedPushRouteHandler: RouteHandler<
+  typeof postV2BotMessagePnpTemplatedPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryPnpRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryPnpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMessageDeliveryPnpTemplatedRouteHandler: RouteHandler<
+  typeof getV2BotMessageDeliveryPnpTemplatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMembershipSubscriptionUserIdRouteHandler: RouteHandler<
+  typeof getV2BotMembershipSubscriptionUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMembershipListRouteHandler: RouteHandler<
+  typeof getV2BotMembershipListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotMembershipMembershipIdUsersIdsRouteHandler: RouteHandler<
+  typeof getV2BotMembershipMembershipIdUsersIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotCouponRouteHandler: RouteHandler<typeof getV2BotCouponRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotCouponRouteHandler: RouteHandler<typeof postV2BotCouponRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotCouponCouponIdRouteHandler: RouteHandler<
+  typeof getV2BotCouponCouponIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2BotCouponCouponIdCloseRouteHandler: RouteHandler<
+  typeof putV2BotCouponCouponIdCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotChatLoadingStartRouteHandler: RouteHandler<
+  typeof postV2BotChatLoadingStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotChatMarkAsReadRouteHandler: RouteHandler<
+  typeof postV2BotChatMarkAsReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

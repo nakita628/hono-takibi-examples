@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postProfilingGroupsClientTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postProfilingGroupsClientTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const profilingGroupsClientTokenHandler = app.openapi(
-  postProfilingGroupsClientTokenRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postProfilingGroupsClientTokenRouteHandler: RouteHandler<
+  typeof postProfilingGroupsClientTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,19 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  acceptDisputeHandler,
-  defendDisputeHandler,
-  deleteDisputeDefenseDocumentHandler,
-  retrieveApplicableDefenseReasonsHandler,
-  supplyDefenseDocumentHandler,
+  postAcceptDisputeRoute,
+  postDefendDisputeRoute,
+  postDeleteDisputeDefenseDocumentRoute,
+  postRetrieveApplicableDefenseReasonsRoute,
+  postSupplyDefenseDocumentRoute,
+} from './routes'
+import {
+  postAcceptDisputeRouteHandler,
+  postDefendDisputeRouteHandler,
+  postDeleteDisputeDefenseDocumentRouteHandler,
+  postRetrieveApplicableDefenseReasonsRouteHandler,
+  postSupplyDefenseDocumentRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', acceptDisputeHandler)
-  .route('/', defendDisputeHandler)
-  .route('/', deleteDisputeDefenseDocumentHandler)
-  .route('/', retrieveApplicableDefenseReasonsHandler)
-  .route('/', supplyDefenseDocumentHandler)
+  .openapi(postAcceptDisputeRoute, postAcceptDisputeRouteHandler)
+  .openapi(postDefendDisputeRoute, postDefendDisputeRouteHandler)
+  .openapi(postDeleteDisputeDefenseDocumentRoute, postDeleteDisputeDefenseDocumentRouteHandler)
+  .openapi(
+    postRetrieveApplicableDefenseReasonsRoute,
+    postRetrieveApplicableDefenseReasonsRouteHandler,
+  )
+  .openapi(postSupplyDefenseDocumentRoute, postSupplyDefenseDocumentRouteHandler)
 
 export default app

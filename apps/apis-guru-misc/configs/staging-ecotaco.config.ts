@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/staging-ecotaco.com/1.0.0/openapi.yaml',
   output: './src/staging-ecotaco/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/staging-ecotaco/types.ts' },
   client: { output: './src/staging-ecotaco/client.ts', baseUrl: '/' },
   rpc: { output: './src/staging-ecotaco/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmReceiveMigrationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmReceiveMigrationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmReceiveMigrationHandler = app.openapi(putVmReceiveMigrationRoute, (c) => {
+export const putVmReceiveMigrationRouteHandler: RouteHandler<
+  typeof putVmReceiveMigrationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

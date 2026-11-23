@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTokensTokenRoute,
   deleteTokensTokenWebhooksIdWebhookRoute,
   getTokensTokenFieldRoute,
@@ -12,36 +12,60 @@ import {
   putTokensTokenWebhooksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteTokensTokenRouteHandler: RouteHandler<typeof deleteTokensTokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const tokensHandler = app
-  .openapi(deleteTokensTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenMemberFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTokensTokenWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTokensTokenWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTokensTokenWebhooksIdWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenWebhooksIdWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensTokenFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTokensTokenRouteHandler: RouteHandler<typeof getTokensTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensTokenMemberRouteHandler: RouteHandler<
+  typeof getTokensTokenMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensTokenMemberFieldRouteHandler: RouteHandler<
+  typeof getTokensTokenMemberFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensTokenWebhooksRouteHandler: RouteHandler<
+  typeof getTokensTokenWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTokensTokenWebhooksRouteHandler: RouteHandler<
+  typeof postTokensTokenWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTokensTokenWebhooksRouteHandler: RouteHandler<
+  typeof putTokensTokenWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTokensTokenWebhooksIdWebhookRouteHandler: RouteHandler<
+  typeof deleteTokensTokenWebhooksIdWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensTokenWebhooksIdWebhookRouteHandler: RouteHandler<
+  typeof getTokensTokenWebhooksIdWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensTokenFieldRouteHandler: RouteHandler<
+  typeof getTokensTokenFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

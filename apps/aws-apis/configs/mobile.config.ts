@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mobile/2017-07-01/openapi.yaml',
   output: './src/mobile/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mobile/types.ts' },
   client: { output: './src/mobile/client.ts', baseUrl: '/' },
   rpc: { output: './src/mobile/rpc.ts', parseResponse: true },

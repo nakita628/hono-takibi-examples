@@ -5422,29 +5422,29 @@ export function injectFilesFileIdTasks<
 }
 
 export function getFilesFileIdThumbnailExtensionQueryKey(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
 ) {
-  return ['files', '/files/:file_id/thumbnail.:extension', args] as const
+  return ['files', '/files/:file_id/thumbnail.{extension}', args] as const
 }
 
 export function getFilesFileIdThumbnailExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+          Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
         >
       >
     >,
@@ -5455,7 +5455,7 @@ export function getFilesFileIdThumbnailExtensionQueryOptions<
     queryKey: getFilesFileIdThumbnailExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.files[':file_id']['thumbnail.:extension'].$get(args, {
+        client.files[':file_id']['thumbnail.{extension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -5468,20 +5468,22 @@ export function injectFilesFileIdThumbnailExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: () => InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+              Awaited<
+                ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
+              >
             >
           >
         >,

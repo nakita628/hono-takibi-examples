@@ -6,8 +6,6 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/team-telnyx/openapi/master/openapi/spec3.json',
   output: './src/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },

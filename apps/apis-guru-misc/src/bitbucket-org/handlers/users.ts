@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute,
   deleteUsersSelectedUserPropertiesAppKeyPropertyNameRoute,
   deleteUsersSelectedUserSshKeysKeyIdRoute,
@@ -17,51 +17,92 @@ import {
   putUsersSelectedUserSshKeysKeyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersSelectedUserRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersSelectedUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserPipelinesConfigVariablesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersSelectedUserPipelinesConfigVariablesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersSelectedUserPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersSelectedUserPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserSearchCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserSshKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersSelectedUserSshKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersSelectedUserSshKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersSelectedUserSshKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersSelectedUserSshKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUsersSelectedUserPipelinesConfigVariablesIndexRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserPipelinesConfigVariablesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersSelectedUserPipelinesConfigVariablesIndexRouteHandler: RouteHandler<
+  typeof postUsersSelectedUserPipelinesConfigVariablesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersSelectedUserPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof deleteUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersSelectedUserPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersSelectedUserPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof putUsersSelectedUserPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersSelectedUserPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof deleteUsersSelectedUserPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersSelectedUserPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersSelectedUserPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof putUsersSelectedUserPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersSelectedUserSearchCodeRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserSearchCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersSelectedUserSshKeysRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserSshKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersSelectedUserSshKeysRouteHandler: RouteHandler<
+  typeof postUsersSelectedUserSshKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersSelectedUserSshKeysKeyIdRouteHandler: RouteHandler<
+  typeof deleteUsersSelectedUserSshKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersSelectedUserSshKeysKeyIdRouteHandler: RouteHandler<
+  typeof getUsersSelectedUserSshKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersSelectedUserSshKeysKeyIdRouteHandler: RouteHandler<
+  typeof putUsersSelectedUserSshKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

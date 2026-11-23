@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWordJsonWordAudioRoute,
   getWordJsonWordDefinitionsRoute,
   getWordJsonWordEtymologiesRoute,
@@ -13,39 +13,68 @@ import {
   getWordJsonWordTopExampleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWordJsonWordAudioRouteHandler: RouteHandler<
+  typeof getWordJsonWordAudioRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wordJsonHandler = app
-  .openapi(getWordJsonWordAudioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordEtymologiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordExamplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordFrequencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordHyphenationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordPhrasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordPronunciationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordRelatedWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordScrabbleScoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordJsonWordTopExampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWordJsonWordDefinitionsRouteHandler: RouteHandler<
+  typeof getWordJsonWordDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordEtymologiesRouteHandler: RouteHandler<
+  typeof getWordJsonWordEtymologiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordExamplesRouteHandler: RouteHandler<
+  typeof getWordJsonWordExamplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordFrequencyRouteHandler: RouteHandler<
+  typeof getWordJsonWordFrequencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordHyphenationRouteHandler: RouteHandler<
+  typeof getWordJsonWordHyphenationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordPhrasesRouteHandler: RouteHandler<
+  typeof getWordJsonWordPhrasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordPronunciationsRouteHandler: RouteHandler<
+  typeof getWordJsonWordPronunciationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordRelatedWordsRouteHandler: RouteHandler<
+  typeof getWordJsonWordRelatedWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordScrabbleScoreRouteHandler: RouteHandler<
+  typeof getWordJsonWordScrabbleScoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordJsonWordTopExampleRouteHandler: RouteHandler<
+  typeof getWordJsonWordTopExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

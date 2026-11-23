@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasTaskServiceIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasTaskServiceIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasTaskHandler = app.openapi(getDbaasTaskServiceIdRoute, (c) => {
+export const getDbaasTaskServiceIdRouteHandler: RouteHandler<
+  typeof getDbaasTaskServiceIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

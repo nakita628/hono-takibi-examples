@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDerivedHoldingSummaryRoute,
   getDerivedNetworthRoute,
   getDerivedTransactionSummaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDerivedHoldingSummaryRouteHandler: RouteHandler<
+  typeof getDerivedHoldingSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const derivedHandler = app
-  .openapi(getDerivedHoldingSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDerivedNetworthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDerivedTransactionSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDerivedNetworthRouteHandler: RouteHandler<typeof getDerivedNetworthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDerivedTransactionSummaryRouteHandler: RouteHandler<
+  typeof getDerivedTransactionSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

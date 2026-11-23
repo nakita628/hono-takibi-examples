@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/peoplegeneratorapi.live/v0/openapi.yaml',
   output: './src/peoplegeneratorapi-live/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/peoplegeneratorapi-live/types.ts' },
   client: { output: './src/peoplegeneratorapi-live/client.ts', baseUrl: '/' },
   rpc: { output: './src/peoplegeneratorapi-live/rpc.ts', parseResponse: true },

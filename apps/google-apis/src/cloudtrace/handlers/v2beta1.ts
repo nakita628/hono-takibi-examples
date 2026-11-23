@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2beta1NameRoute,
   getV2beta1NameRoute,
   getV2beta1ParentTraceSinksRoute,
@@ -7,21 +7,30 @@ import {
   postV2beta1ParentTraceSinksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV2beta1NameRouteHandler: RouteHandler<typeof deleteV2beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v2beta1Handler = app
-  .openapi(deleteV2beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2beta1ParentTraceSinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2beta1ParentTraceSinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2beta1NameRouteHandler: RouteHandler<typeof getV2beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2beta1NameRouteHandler: RouteHandler<typeof patchV2beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2beta1ParentTraceSinksRouteHandler: RouteHandler<
+  typeof getV2beta1ParentTraceSinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2beta1ParentTraceSinksRouteHandler: RouteHandler<
+  typeof postV2beta1ParentTraceSinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

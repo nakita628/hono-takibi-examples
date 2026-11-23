@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/websecurityscanner/v1beta/openapi.yaml',
   output: './src/websecurityscanner/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/websecurityscanner/types.ts' },
   client: { output: './src/websecurityscanner/client.ts', baseUrl: '/' },
   rpc: { output: './src/websecurityscanner/rpc.ts', parseResponse: true },

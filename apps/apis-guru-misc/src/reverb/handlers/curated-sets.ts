@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCuratedSetsSlugRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCuratedSetsSlugRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const curatedSetsHandler = app.openapi(getCuratedSetsSlugRoute, (c) => {
+export const getCuratedSetsSlugRouteHandler: RouteHandler<typeof getCuratedSetsSlugRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

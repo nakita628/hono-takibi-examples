@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTelemetryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTelemetryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const telemetryHandler = app.openapi(getTelemetryRoute, (c) => {
+export const getTelemetryRouteHandler: RouteHandler<typeof getTelemetryRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

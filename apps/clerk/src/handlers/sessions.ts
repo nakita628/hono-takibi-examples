@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSessionsRoute,
   getSessionsSessionIdReverificationsReverificationIdRoute,
   getSessionsSessionIdRoute,
@@ -11,33 +11,52 @@ import {
   postSessionsSessionIdTokensTemplateNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSessionsRouteHandler: RouteHandler<typeof getSessionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sessionsHandler = app
-  .openapi(getSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSessionsSessionIdReverificationsReverificationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdTokensTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSessionsRouteHandler: RouteHandler<typeof postSessionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSessionsSessionIdRouteHandler: RouteHandler<
+  typeof getSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSessionsSessionIdRouteHandler: RouteHandler<
+  typeof patchSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdRefreshRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSessionsSessionIdReverificationsReverificationIdRouteHandler: RouteHandler<
+  typeof getSessionsSessionIdReverificationsReverificationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdRevokeRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdTokensRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdTokensTemplateNameRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdTokensTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

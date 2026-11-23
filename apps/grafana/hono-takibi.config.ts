@@ -4,7 +4,7 @@ export default defineConfig({
   // Grafana HTTP API (grafana/grafana)
   input: 'https://raw.githubusercontent.com/grafana/grafana/main/public/openapi3.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

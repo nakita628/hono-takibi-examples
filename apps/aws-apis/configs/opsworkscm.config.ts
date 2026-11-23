@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/opsworkscm/2016-11-01/openapi.yaml',
   output: './src/opsworkscm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/opsworkscm/types.ts' },
   client: { output: './src/opsworkscm/client.ts', baseUrl: '/' },
   rpc: { output: './src/opsworkscm/rpc.ts', parseResponse: true },

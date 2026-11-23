@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIssueTriggersIdRoute,
   getIssueTriggersIdRoute,
   getIssueTriggersRoute,
@@ -10,30 +10,50 @@ import {
   putIssueTriggersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIssueTriggersRouteHandler: RouteHandler<typeof getIssueTriggersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const issueTriggersHandler = app
-  .openapi(getIssueTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIssueTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIssueTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIssueTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIssueTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIssueTriggersIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIssueTriggersIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIssueTriggersRouteHandler: RouteHandler<typeof postIssueTriggersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putIssueTriggersRouteHandler: RouteHandler<typeof putIssueTriggersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTriggersIdRouteHandler: RouteHandler<typeof getIssueTriggersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putIssueTriggersIdRouteHandler: RouteHandler<typeof putIssueTriggersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIssueTriggersIdRouteHandler: RouteHandler<
+  typeof deleteIssueTriggersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIssueTriggersIdDisableRouteHandler: RouteHandler<
+  typeof putIssueTriggersIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIssueTriggersIdEnableRouteHandler: RouteHandler<
+  typeof putIssueTriggersIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

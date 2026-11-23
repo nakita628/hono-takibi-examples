@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/apmcservices/3.0.0/openapi.yaml',
   output: './src/apmcservices/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apmcservices/types.ts' },
   client: { output: './src/apmcservices/client.ts', baseUrl: '/' },
   rpc: { output: './src/apmcservices/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/magento.com/2.2.10/openapi.yaml',
   output: './src/magento/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/magento/types.ts' },
   client: { output: './src/magento/client.ts', baseUrl: '/' },
   rpc: { output: './src/magento/rpc.ts', parseResponse: true },

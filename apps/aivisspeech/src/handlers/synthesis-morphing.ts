@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSynthesisMorphingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSynthesisMorphingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const synthesisMorphingHandler = app.openapi(postSynthesisMorphingRoute, (c) => {
+export const postSynthesisMorphingRouteHandler: RouteHandler<
+  typeof postSynthesisMorphingRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

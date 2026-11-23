@@ -2247,7 +2247,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/attributes/addTag/:attributeId/:tagId/local::local': {
+    '/attributes/addTag/:attributeId/:tagId/local:{local}': {
       $post:
         | {
             input: { param: { attributeId: string; tagId: string; local: 0 | 1 } } & {
@@ -3229,7 +3229,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/events/addTag/:eventId/:tagId/local::local': {
+    '/events/addTag/:eventId/:tagId/local:{local}': {
       $post:
         | {
             input: { param: { eventId: EventId | UUID; tagId: TagId; local: IsLocal } }
@@ -3529,7 +3529,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/galaxies/attachCluster/:attachTargetId/:attachTargetType/local::local': {
+    '/galaxies/attachCluster/:attachTargetId/:attachTargetType/local:{local}': {
       $post:
         | {
             input: {

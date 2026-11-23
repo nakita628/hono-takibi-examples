@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInboxesInboxIdDocumentsRoute,
   deleteInboxesInboxIdRoute,
   getInboxesInboxIdDocumentsRoute,
@@ -12,36 +12,58 @@ import {
   postInboxesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInboxesRouteHandler: RouteHandler<typeof getInboxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const inboxesHandler = app
-  .openapi(getInboxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInboxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInboxesInboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInboxesInboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchInboxesInboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInboxesInboxIdDocumentVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInboxesInboxIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInboxesInboxIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInboxesInboxIdPaginatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInboxesInboxIdReprocessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInboxesRouteHandler: RouteHandler<typeof postInboxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInboxesInboxIdRouteHandler: RouteHandler<
+  typeof deleteInboxesInboxIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInboxesInboxIdRouteHandler: RouteHandler<typeof getInboxesInboxIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchInboxesInboxIdRouteHandler: RouteHandler<
+  typeof patchInboxesInboxIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInboxesInboxIdDocumentVersionsRouteHandler: RouteHandler<
+  typeof getInboxesInboxIdDocumentVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInboxesInboxIdDocumentsRouteHandler: RouteHandler<
+  typeof deleteInboxesInboxIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInboxesInboxIdDocumentsRouteHandler: RouteHandler<
+  typeof getInboxesInboxIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInboxesInboxIdPaginatedRouteHandler: RouteHandler<
+  typeof getInboxesInboxIdPaginatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInboxesInboxIdReprocessRouteHandler: RouteHandler<
+  typeof postInboxesInboxIdReprocessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

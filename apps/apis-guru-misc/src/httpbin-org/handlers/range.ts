@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRangeNumbytesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRangeNumbytesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rangeHandler = app.openapi(getRangeNumbytesRoute, (c) => {
+export const getRangeNumbytesRouteHandler: RouteHandler<typeof getRangeNumbytesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

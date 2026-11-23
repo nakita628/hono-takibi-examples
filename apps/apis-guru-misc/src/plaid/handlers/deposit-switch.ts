@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postDepositSwitchAltCreateRoute,
   postDepositSwitchCreateRoute,
   postDepositSwitchGetRoute,
   postDepositSwitchTokenCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDepositSwitchAltCreateRouteHandler: RouteHandler<
+  typeof postDepositSwitchAltCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const depositSwitchHandler = app
-  .openapi(postDepositSwitchAltCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDepositSwitchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDepositSwitchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDepositSwitchTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDepositSwitchCreateRouteHandler: RouteHandler<
+  typeof postDepositSwitchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDepositSwitchGetRouteHandler: RouteHandler<
+  typeof postDepositSwitchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDepositSwitchTokenCreateRouteHandler: RouteHandler<
+  typeof postDepositSwitchTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteLocksPathRoute, getLocksPathRoute, postLocksPathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteLocksPathRoute, getLocksPathRoute, postLocksPathRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteLocksPathRouteHandler: RouteHandler<typeof deleteLocksPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const locksHandler = app
-  .openapi(deleteLocksPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocksPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLocksPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLocksPathRouteHandler: RouteHandler<typeof getLocksPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLocksPathRouteHandler: RouteHandler<typeof postLocksPathRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

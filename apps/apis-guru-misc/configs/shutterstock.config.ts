@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/shutterstock.com/1.1.32/openapi.yaml',
   output: './src/shutterstock/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shutterstock/types.ts' },
   client: { output: './src/shutterstock/client.ts', baseUrl: '/' },
   rpc: { output: './src/shutterstock/rpc.ts', parseResponse: true },

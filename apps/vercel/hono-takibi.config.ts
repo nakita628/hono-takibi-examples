@@ -4,7 +4,7 @@ export default defineConfig({
   // Vercel REST API
   input: 'https://openapi.vercel.sh/',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

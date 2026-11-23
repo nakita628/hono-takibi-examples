@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAppRunnerUpdateServiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAppRunnerUpdateServiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAppRunnerUpdateServiceHandler = app.openapi(
-  postXAmzTargetAppRunnerUpdateServiceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAppRunnerUpdateServiceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAppRunnerUpdateServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

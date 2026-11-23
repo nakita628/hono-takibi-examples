@@ -965,13 +965,13 @@ export async function patchAdminExchangeTracingMessageTracesExchangeMessageTrace
 
 export async function getAdminExchangeTracingMessageTracesExchangeMessageTraceIdGetDetailsByRecipientRecipientAddressRecipientAddress(
   args: InferRequestType<
-    (typeof client.admin.exchange.tracing.messageTraces)[':exchangeMessageTrace-id']["getDetailsByRecipient(recipientAddress=':recipientAddress')"]['$get']
+    (typeof client.admin.exchange.tracing.messageTraces)[':exchangeMessageTrace-id']["getDetailsByRecipient(recipientAddress='{recipientAddress}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.admin.exchange.tracing.messageTraces[':exchangeMessageTrace-id'][
-      "getDetailsByRecipient(recipientAddress=':recipientAddress')"
+      "getDetailsByRecipient(recipientAddress='{recipientAddress}')"
     ].$get(args, options),
   )
 }
@@ -1215,34 +1215,34 @@ export async function patchAdminPeopleProfileSourcesProfileSourceId(
 
 export async function getAdminPeopleProfileSourcesSourceIdSourceId(
   args: InferRequestType<
-    (typeof client.admin.people)["profileSources(sourceId=':sourceId')"]['$get']
+    (typeof client.admin.people)["profileSources(sourceId='{sourceId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.admin.people["profileSources(sourceId=':sourceId')"].$get(args, options),
+    client.admin.people["profileSources(sourceId='{sourceId}')"].$get(args, options),
   )
 }
 
 export async function deleteAdminPeopleProfileSourcesSourceIdSourceId(
   args: InferRequestType<
-    (typeof client.admin.people)["profileSources(sourceId=':sourceId')"]['$delete']
+    (typeof client.admin.people)["profileSources(sourceId='{sourceId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.admin.people["profileSources(sourceId=':sourceId')"].$delete(args, options),
+    client.admin.people["profileSources(sourceId='{sourceId}')"].$delete(args, options),
   )
 }
 
 export async function patchAdminPeopleProfileSourcesSourceIdSourceId(
   args: InferRequestType<
-    (typeof client.admin.people)["profileSources(sourceId=':sourceId')"]['$patch']
+    (typeof client.admin.people)["profileSources(sourceId='{sourceId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.admin.people["profileSources(sourceId=':sourceId')"].$patch(args, options),
+    client.admin.people["profileSources(sourceId='{sourceId}')"].$patch(args, options),
   )
 }
 
@@ -1880,13 +1880,13 @@ export async function patchAdminTeamsPolicy(
 
 export async function getAdminTeamsPolicyMicrosoftGraphTeamsAdministrationGetPolicyIdTypeTypeNameName(
   args: InferRequestType<
-    (typeof client.admin.teams.policy)["microsoft.graph.teamsAdministration.getPolicyId(type=':type',name=':name')"]['$get']
+    (typeof client.admin.teams.policy)["microsoft.graph.teamsAdministration.getPolicyId(type='{type}',name='{name}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.admin.teams.policy[
-      "microsoft.graph.teamsAdministration.getPolicyId(type=':type',name=':name')"
+      "microsoft.graph.teamsAdministration.getPolicyId(type='{type}',name='{name}')"
     ].$get(args, options),
   )
 }
@@ -3175,12 +3175,12 @@ export async function patchApplicationsApplicationIdFederatedIdentityCredentials
 
 export async function getApplicationsApplicationIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name=':name')"]['$get']
+    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name='{name}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.applications[':application-id']["federatedIdentityCredentials(name=':name')"].$get(
+    client.applications[':application-id']["federatedIdentityCredentials(name='{name}')"].$get(
       args,
       options,
     ),
@@ -3189,12 +3189,12 @@ export async function getApplicationsApplicationIdFederatedIdentityCredentialsNa
 
 export async function deleteApplicationsApplicationIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name=':name')"]['$delete']
+    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name='{name}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.applications[':application-id']["federatedIdentityCredentials(name=':name')"].$delete(
+    client.applications[':application-id']["federatedIdentityCredentials(name='{name}')"].$delete(
       args,
       options,
     ),
@@ -3203,12 +3203,12 @@ export async function deleteApplicationsApplicationIdFederatedIdentityCredential
 
 export async function patchApplicationsApplicationIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name=':name')"]['$patch']
+    (typeof client.applications)[':application-id']["federatedIdentityCredentials(name='{name}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.applications[':application-id']["federatedIdentityCredentials(name=':name')"].$patch(
+    client.applications[':application-id']["federatedIdentityCredentials(name='{name}')"].$patch(
       args,
       options,
     ),
@@ -4443,47 +4443,49 @@ export async function deleteApplicationsApplicationIdTokenLifetimePoliciesRef(
 }
 
 export async function getApplicationsAppIdAppId(
-  args: InferRequestType<(typeof client)["applications(appId=':appId')"]['$get']>,
+  args: InferRequestType<(typeof client)["applications(appId='{appId}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["applications(appId=':appId')"].$get(args, options))
+  return await parseResponse(client["applications(appId='{appId}')"].$get(args, options))
 }
 
 export async function deleteApplicationsAppIdAppId(
-  args: InferRequestType<(typeof client)["applications(appId=':appId')"]['$delete']>,
+  args: InferRequestType<(typeof client)["applications(appId='{appId}')"]['$delete']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["applications(appId=':appId')"].$delete(args, options))
+  return await parseResponse(client["applications(appId='{appId}')"].$delete(args, options))
 }
 
 export async function patchApplicationsAppIdAppId(
-  args: InferRequestType<(typeof client)["applications(appId=':appId')"]['$patch']>,
+  args: InferRequestType<(typeof client)["applications(appId='{appId}')"]['$patch']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["applications(appId=':appId')"].$patch(args, options))
+  return await parseResponse(client["applications(appId='{appId}')"].$patch(args, options))
 }
 
 export async function getApplicationsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["applications(uniqueName=':uniqueName')"]['$get']>,
+  args: InferRequestType<(typeof client)["applications(uniqueName='{uniqueName}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["applications(uniqueName=':uniqueName')"].$get(args, options))
+  return await parseResponse(client["applications(uniqueName='{uniqueName}')"].$get(args, options))
 }
 
 export async function deleteApplicationsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["applications(uniqueName=':uniqueName')"]['$delete']>,
+  args: InferRequestType<(typeof client)["applications(uniqueName='{uniqueName}')"]['$delete']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["applications(uniqueName=':uniqueName')"].$delete(args, options),
+    client["applications(uniqueName='{uniqueName}')"].$delete(args, options),
   )
 }
 
 export async function patchApplicationsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["applications(uniqueName=':uniqueName')"]['$patch']>,
+  args: InferRequestType<(typeof client)["applications(uniqueName='{uniqueName}')"]['$patch']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["applications(uniqueName=':uniqueName')"].$patch(args, options))
+  return await parseResponse(
+    client["applications(uniqueName='{uniqueName}')"].$patch(args, options),
+  )
 }
 
 export async function getApplicationsCount(
@@ -7056,26 +7058,26 @@ export async function getCommunicationsCallRecordsCount(
 
 export async function getCommunicationsCallRecordsMicrosoftGraphCallRecordsGetDirectRoutingCallsFromDateTimeFromDateTimeToDateTimeToDateTime(
   args: InferRequestType<
-    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)']['$get']
+    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.communications.callRecords[
-      'microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)'
+      'microsoft.graph.callRecords.getDirectRoutingCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})'
     ].$get(args, options),
   )
 }
 
 export async function getCommunicationsCallRecordsMicrosoftGraphCallRecordsGetPstnCallsFromDateTimeFromDateTimeToDateTimeToDateTime(
   args: InferRequestType<
-    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getPstnCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)']['$get']
+    (typeof client.communications.callRecords)['microsoft.graph.callRecords.getPstnCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.communications.callRecords[
-      'microsoft.graph.callRecords.getPstnCalls(fromDateTime=:fromDateTime,toDateTime=:toDateTime)'
+      'microsoft.graph.callRecords.getPstnCalls(fromDateTime={fromDateTime},toDateTime={toDateTime})'
     ].$get(args, options),
   )
 }
@@ -10465,39 +10467,39 @@ export async function patchCopilotReports(
 
 export async function getCopilotReportsGetMicrosoft365CopilotUsageUserDetailPeriodPeriodVersionVersion(
   args: InferRequestType<
-    (typeof client.copilot.reports)["getMicrosoft365CopilotUsageUserDetail(period=':period',version='@version')"]['$get']
+    (typeof client.copilot.reports)["getMicrosoft365CopilotUsageUserDetail(period='{period}',version='@version')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.copilot.reports[
-      "getMicrosoft365CopilotUsageUserDetail(period=':period',version='@version')"
+      "getMicrosoft365CopilotUsageUserDetail(period='{period}',version='@version')"
     ].$get(args, options),
   )
 }
 
 export async function getCopilotReportsGetMicrosoft365CopilotUserCountSummaryPeriodPeriodVersionVersion(
   args: InferRequestType<
-    (typeof client.copilot.reports)["getMicrosoft365CopilotUserCountSummary(period=':period',version='@version')"]['$get']
+    (typeof client.copilot.reports)["getMicrosoft365CopilotUserCountSummary(period='{period}',version='@version')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.copilot.reports[
-      "getMicrosoft365CopilotUserCountSummary(period=':period',version='@version')"
+      "getMicrosoft365CopilotUserCountSummary(period='{period}',version='@version')"
     ].$get(args, options),
   )
 }
 
 export async function getCopilotReportsGetMicrosoft365CopilotUserCountTrendPeriodPeriodVersionVersion(
   args: InferRequestType<
-    (typeof client.copilot.reports)["getMicrosoft365CopilotUserCountTrend(period=':period',version='@version')"]['$get']
+    (typeof client.copilot.reports)["getMicrosoft365CopilotUserCountTrend(period='{period}',version='@version')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.copilot.reports[
-      "getMicrosoft365CopilotUserCountTrend(period=':period',version='@version')"
+      "getMicrosoft365CopilotUserCountTrend(period='{period}',version='@version')"
     ].$get(args, options),
   )
 }
@@ -20548,12 +20550,12 @@ export async function getDeviceManagementAuditEventsCount(
 
 export async function getDeviceManagementAuditEventsGetAuditActivityTypesCategoryCategory(
   args: InferRequestType<
-    (typeof client.deviceManagement.auditEvents)["getAuditActivityTypes(category=':category')"]['$get']
+    (typeof client.deviceManagement.auditEvents)["getAuditActivityTypes(category='{category}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.deviceManagement.auditEvents["getAuditActivityTypes(category=':category')"].$get(
+    client.deviceManagement.auditEvents["getAuditActivityTypes(category='{category}')"].$get(
       args,
       options,
     ),
@@ -22017,13 +22019,13 @@ export async function postDeviceManagementDeviceConfigurationsDeviceConfiguratio
 
 export async function getDeviceManagementDeviceConfigurationsDeviceConfigurationIdGetOmaSettingPlainTextValueSecretReferenceValueIdSecretReferenceValueId(
   args: InferRequestType<
-    (typeof client.deviceManagement.deviceConfigurations)[':deviceConfiguration-id']["getOmaSettingPlainTextValue(secretReferenceValueId=':secretReferenceValueId')"]['$get']
+    (typeof client.deviceManagement.deviceConfigurations)[':deviceConfiguration-id']["getOmaSettingPlainTextValue(secretReferenceValueId='{secretReferenceValueId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.deviceManagement.deviceConfigurations[':deviceConfiguration-id'][
-      "getOmaSettingPlainTextValue(secretReferenceValueId=':secretReferenceValueId')"
+      "getOmaSettingPlainTextValue(secretReferenceValueId='{secretReferenceValueId}')"
     ].$get(args, options),
   )
 }
@@ -23383,12 +23385,12 @@ export async function getDeviceManagementManagedDevicesCount(
 
 export async function getDeviceManagementGetEffectivePermissionsScopeScope(
   args: InferRequestType<
-    (typeof client.deviceManagement)["getEffectivePermissions(scope=':scope')"]['$get']
+    (typeof client.deviceManagement)["getEffectivePermissions(scope='{scope}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.deviceManagement["getEffectivePermissions(scope=':scope')"].$get(args, options),
+    client.deviceManagement["getEffectivePermissions(scope='{scope}')"].$get(args, options),
   )
 }
 
@@ -23405,12 +23407,12 @@ export async function getDeviceManagementUserExperienceAnalyticsSummarizeWorkFro
 
 export async function getDeviceManagementVerifyWindowsEnrollmentAutoDiscoveryDomainNameDomainName(
   args: InferRequestType<
-    (typeof client.deviceManagement)["verifyWindowsEnrollmentAutoDiscovery(domainName=':domainName')"]['$get']
+    (typeof client.deviceManagement)["verifyWindowsEnrollmentAutoDiscovery(domainName='{domainName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.deviceManagement["verifyWindowsEnrollmentAutoDiscovery(domainName=':domainName')"].$get(
+    client.deviceManagement["verifyWindowsEnrollmentAutoDiscovery(domainName='{domainName}')"].$get(
       args,
       options,
     ),
@@ -25893,13 +25895,13 @@ export async function getDeviceManagementUserExperienceAnalyticsDevicePerformanc
 
 export async function getDeviceManagementUserExperienceAnalyticsDevicePerformanceSummarizeDevicePerformanceDevicesSummarizeBySummarizeBy(
   args: InferRequestType<
-    (typeof client.deviceManagement.userExperienceAnalyticsDevicePerformance)["summarizeDevicePerformanceDevices(summarizeBy=':summarizeBy')"]['$get']
+    (typeof client.deviceManagement.userExperienceAnalyticsDevicePerformance)["summarizeDevicePerformanceDevices(summarizeBy='{summarizeBy}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.deviceManagement.userExperienceAnalyticsDevicePerformance[
-      "summarizeDevicePerformanceDevices(summarizeBy=':summarizeBy')"
+      "summarizeDevicePerformanceDevices(summarizeBy='{summarizeBy}')"
     ].$get(args, options),
   )
 }
@@ -27424,7 +27426,7 @@ export async function getDeviceManagementVirtualEndpointProvisioningPoliciesClou
 
 export async function getDeviceManagementVirtualEndpointProvisioningPoliciesCloudPcProvisioningPolicyIdAssignmentsCloudPcProvisioningPolicyAssignmentIdAssignedUsersUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.deviceManagement.virtualEndpoint.provisioningPolicies)[':cloudPcProvisioningPolicy-id']['assignments'][':cloudPcProvisioningPolicyAssignment-id']["assignedUsers(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.deviceManagement.virtualEndpoint.provisioningPolicies)[':cloudPcProvisioningPolicy-id']['assignments'][':cloudPcProvisioningPolicyAssignment-id']["assignedUsers(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -27432,7 +27434,7 @@ export async function getDeviceManagementVirtualEndpointProvisioningPoliciesClou
     client.deviceManagement.virtualEndpoint.provisioningPolicies[
       ':cloudPcProvisioningPolicy-id'
     ].assignments[':cloudPcProvisioningPolicyAssignment-id'][
-      "assignedUsers(userPrincipalName=':userPrincipalName')"
+      "assignedUsers(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -28856,24 +28858,24 @@ export async function getDevicesDeviceIdTransitiveMemberOfGraphGroupCount(
 }
 
 export async function getDevicesDeviceIdDeviceId(
-  args: InferRequestType<(typeof client)["devices(deviceId=':deviceId')"]['$get']>,
+  args: InferRequestType<(typeof client)["devices(deviceId='{deviceId}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["devices(deviceId=':deviceId')"].$get(args, options))
+  return await parseResponse(client["devices(deviceId='{deviceId}')"].$get(args, options))
 }
 
 export async function deleteDevicesDeviceIdDeviceId(
-  args: InferRequestType<(typeof client)["devices(deviceId=':deviceId')"]['$delete']>,
+  args: InferRequestType<(typeof client)["devices(deviceId='{deviceId}')"]['$delete']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["devices(deviceId=':deviceId')"].$delete(args, options))
+  return await parseResponse(client["devices(deviceId='{deviceId}')"].$delete(args, options))
 }
 
 export async function patchDevicesDeviceIdDeviceId(
-  args: InferRequestType<(typeof client)["devices(deviceId=':deviceId')"]['$patch']>,
+  args: InferRequestType<(typeof client)["devices(deviceId='{deviceId}')"]['$patch']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["devices(deviceId=':deviceId')"].$patch(args, options))
+  return await parseResponse(client["devices(deviceId='{deviceId}')"].$patch(args, options))
 }
 
 export async function getDevicesCount(
@@ -30635,12 +30637,12 @@ export async function patchDirectorySubscriptionsCompanySubscriptionId(
 
 export async function getDirectorySubscriptionsCommerceSubscriptionIdCommerceSubscriptionId(
   args: InferRequestType<
-    (typeof client.directory)["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"]['$get']
+    (typeof client.directory)["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.directory["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"].$get(
+    client.directory["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"].$get(
       args,
       options,
     ),
@@ -30649,12 +30651,12 @@ export async function getDirectorySubscriptionsCommerceSubscriptionIdCommerceSub
 
 export async function deleteDirectorySubscriptionsCommerceSubscriptionIdCommerceSubscriptionId(
   args: InferRequestType<
-    (typeof client.directory)["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"]['$delete']
+    (typeof client.directory)["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.directory["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"].$delete(
+    client.directory["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"].$delete(
       args,
       options,
     ),
@@ -30663,12 +30665,12 @@ export async function deleteDirectorySubscriptionsCommerceSubscriptionIdCommerce
 
 export async function patchDirectorySubscriptionsCommerceSubscriptionIdCommerceSubscriptionId(
   args: InferRequestType<
-    (typeof client.directory)["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"]['$patch']
+    (typeof client.directory)["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.directory["subscriptions(commerceSubscriptionId=':commerceSubscriptionId')"].$patch(
+    client.directory["subscriptions(commerceSubscriptionId='{commerceSubscriptionId}')"].$patch(
       args,
       options,
     ),
@@ -31744,34 +31746,34 @@ export async function getDirectoryRolesDirectoryRoleIdScopedMembersCount(
 
 export async function getDirectoryRolesRoleTemplateIdRoleTemplateId(
   args: InferRequestType<
-    (typeof client)["directoryRoles(roleTemplateId=':roleTemplateId')"]['$get']
+    (typeof client)["directoryRoles(roleTemplateId='{roleTemplateId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["directoryRoles(roleTemplateId=':roleTemplateId')"].$get(args, options),
+    client["directoryRoles(roleTemplateId='{roleTemplateId}')"].$get(args, options),
   )
 }
 
 export async function deleteDirectoryRolesRoleTemplateIdRoleTemplateId(
   args: InferRequestType<
-    (typeof client)["directoryRoles(roleTemplateId=':roleTemplateId')"]['$delete']
+    (typeof client)["directoryRoles(roleTemplateId='{roleTemplateId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["directoryRoles(roleTemplateId=':roleTemplateId')"].$delete(args, options),
+    client["directoryRoles(roleTemplateId='{roleTemplateId}')"].$delete(args, options),
   )
 }
 
 export async function patchDirectoryRolesRoleTemplateIdRoleTemplateId(
   args: InferRequestType<
-    (typeof client)["directoryRoles(roleTemplateId=':roleTemplateId')"]['$patch']
+    (typeof client)["directoryRoles(roleTemplateId='{roleTemplateId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["directoryRoles(roleTemplateId=':roleTemplateId')"].$patch(args, options),
+    client["directoryRoles(roleTemplateId='{roleTemplateId}')"].$patch(args, options),
   )
 }
 
@@ -33170,12 +33172,12 @@ export async function getDrivesDriveIdItemsDriveItemIdDelta(
 
 export async function getDrivesDriveIdItemsDriveItemIdDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["delta(token=':token')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id']["delta(token=':token')"].$get(args, options),
+    client.drives[':drive-id'].items[':driveItem-id']["delta(token='{token}')"].$get(args, options),
   )
 }
 
@@ -33228,13 +33230,13 @@ export async function getDrivesDriveIdItemsDriveItemIdGetActivitiesByInterval(
 
 export async function getDrivesDriveIdItemsDriveItemIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -33285,12 +33287,12 @@ export async function postDrivesDriveIdItemsDriveItemIdRestore(
 
 export async function getDrivesDriveIdItemsDriveItemIdSearchQQ(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["search(q=':q')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']["search(q='{q}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id']["search(q=':q')"].$get(args, options),
+    client.drives[':drive-id'].items[':driveItem-id']["search(q='{q}')"].$get(args, options),
   )
 }
 
@@ -38703,26 +38705,26 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookRefreshSession(
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookSessionInfoResourceKeyKey(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["sessionInfoResource(key=':key')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["sessionInfoResource(key='{key}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook[
-      "sessionInfoResource(key=':key')"
+      "sessionInfoResource(key='{key}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTableRowOperationResultKeyKey(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["tableRowOperationResult(key=':key')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']["tableRowOperationResult(key='{key}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook[
-      "tableRowOperationResult(key=':key')"
+      "tableRowOperationResult(key='{key}')"
     ].$get(args, options),
   )
 }
@@ -38843,27 +38845,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNam
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -38882,14 +38884,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookName
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -38908,14 +38910,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamed
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -38934,14 +38936,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamed
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -38999,14 +39001,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookName
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -39064,40 +39066,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookName
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -39116,14 +39118,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamed
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -39142,14 +39144,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamed
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -39181,14 +39183,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamed
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookNamesWorkbookNamedItemIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['names'][':workbookNamedItem-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.names[':workbookNamedItem-id'][
       'range()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -39759,27 +39761,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]['dataBodyRange()']["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['cell(row=:row,column=:column)'].$get(args, options),
+    ]['dataBodyRange()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -39798,14 +39800,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['column(column=:column)'].$get(args, options),
+    ]['dataBodyRange()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -39824,14 +39826,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['columnsAfter(count=:count)'].$get(args, options),
+    ]['dataBodyRange()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -39850,14 +39852,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['columnsBefore(count=:count)'].$get(args, options),
+    ]['dataBodyRange()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -39915,14 +39917,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]['dataBodyRange()']["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -39980,14 +39982,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(
+    ]['dataBodyRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(
       args,
       options,
     ),
@@ -39996,14 +39998,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(
+    ]['dataBodyRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(
       args,
       options,
     ),
@@ -40012,14 +40014,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['row(row=:row)'].$get(args, options),
+    ]['dataBodyRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -40038,14 +40040,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['rowsAbove(count=:count)'].$get(args, options),
+    ]['dataBodyRange()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -40064,14 +40066,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['rowsBelow(count=:count)'].$get(args, options),
+    ]['dataBodyRange()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -40103,14 +40105,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -40233,27 +40235,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]['headerRowRange()']["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['cell(row=:row,column=:column)'].$get(args, options),
+    ]['headerRowRange()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -40272,14 +40274,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['column(column=:column)'].$get(args, options),
+    ]['headerRowRange()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -40298,14 +40300,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['columnsAfter(count=:count)'].$get(args, options),
+    ]['headerRowRange()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -40324,14 +40326,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['columnsBefore(count=:count)'].$get(args, options),
+    ]['headerRowRange()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -40389,14 +40391,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]['headerRowRange()']["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -40454,14 +40456,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(
+    ]['headerRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(
       args,
       options,
     ),
@@ -40470,14 +40472,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(
+    ]['headerRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(
       args,
       options,
     ),
@@ -40486,14 +40488,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['row(row=:row)'].$get(args, options),
+    ]['headerRowRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -40512,14 +40514,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['rowsAbove(count=:count)'].$get(args, options),
+    ]['headerRowRange()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -40538,14 +40540,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['rowsBelow(count=:count)'].$get(args, options),
+    ]['headerRowRange()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -40577,14 +40579,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['headerRowRange()']['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -40707,27 +40709,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]['range()']["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['cell(row=:row,column=:column)'].$get(args, options),
+    ]['range()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -40746,14 +40748,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['column(column=:column)'].$get(args, options),
+    ]['range()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -40772,14 +40774,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['columnsAfter(count=:count)'].$get(args, options),
+    ]['range()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -40798,14 +40800,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['columnsBefore(count=:count)'].$get(args, options),
+    ]['range()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -40863,14 +40865,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]['range()']["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -40928,14 +40930,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(
+    ]['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(
       args,
       options,
     ),
@@ -40944,14 +40946,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(
+    ]['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(
       args,
       options,
     ),
@@ -40960,14 +40962,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['row(row=:row)'].$get(args, options),
+    ]['range()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -40986,14 +40988,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['rowsAbove(count=:count)'].$get(args, options),
+    ]['range()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -41012,14 +41014,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['rowsBelow(count=:count)'].$get(args, options),
+    ]['range()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -41051,14 +41053,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['range()']['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['range()']['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -41181,27 +41183,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]['totalRowRange()']["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['cell(row=:row,column=:column)'].$get(args, options),
+    ]['totalRowRange()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -41220,14 +41222,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['column(column=:column)'].$get(args, options),
+    ]['totalRowRange()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -41246,14 +41248,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['columnsAfter(count=:count)'].$get(args, options),
+    ]['totalRowRange()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -41272,14 +41274,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['columnsBefore(count=:count)'].$get(args, options),
+    ]['totalRowRange()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -41337,14 +41339,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]['totalRowRange()']["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -41402,14 +41404,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(
+    ]['totalRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(
       args,
       options,
     ),
@@ -41418,14 +41420,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(
+    ]['totalRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(
       args,
       options,
     ),
@@ -41434,14 +41436,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['row(row=:row)'].$get(args, options),
+    ]['totalRowRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -41460,14 +41462,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['rowsAbove(count=:count)'].$get(args, options),
+    ]['totalRowRange()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -41486,14 +41488,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['rowsBelow(count=:count)'].$get(args, options),
+    ]['totalRowRange()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -41525,14 +41527,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
       ':workbookTableColumn-id'
-    ]['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['totalRowRange()']['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -41629,104 +41631,104 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].filter.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].filter.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].filter.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexDataBodyRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['dataBodyRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['dataBodyRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ]['dataBodyRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexHeaderRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['headerRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['headerRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ]['headerRowRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ]['range()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdColumnsItemAtIndexIndexTotalRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['totalRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['totalRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].columns[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ]['totalRowRange()'].$get(args, options),
   )
 }
@@ -41811,27 +41813,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -41850,14 +41852,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -41876,14 +41878,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -41902,14 +41904,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -41967,14 +41969,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -42032,40 +42034,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -42084,14 +42086,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -42110,14 +42112,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -42149,14 +42151,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdDataBodyRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'dataBodyRange()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -42279,27 +42281,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -42318,14 +42320,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -42344,14 +42346,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -42370,14 +42372,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -42435,14 +42437,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -42500,40 +42502,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -42552,14 +42554,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -42578,14 +42580,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -42617,14 +42619,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdHeaderRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'headerRowRange()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -42747,27 +42749,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -42786,14 +42788,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -42812,14 +42814,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -42838,14 +42840,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -42903,14 +42905,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -42968,40 +42970,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -43020,14 +43022,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -43046,14 +43048,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -43085,14 +43087,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'range()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -43228,27 +43230,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -43267,14 +43269,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -43293,14 +43295,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -43319,14 +43321,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -43384,14 +43386,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -43449,40 +43451,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -43501,14 +43503,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -43527,14 +43529,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -43566,14 +43568,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdTotalRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'][
       'totalRowRange()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -43761,27 +43763,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTa
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]['range()']["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['cell(row=:row,column=:column)'].$get(args, options),
+    ]['range()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -43800,14 +43802,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['column(column=:column)'].$get(args, options),
+    ]['range()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -43826,14 +43828,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['columnsAfter(count=:count)'].$get(args, options),
+    ]['range()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -43852,14 +43854,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['columnsBefore(count=:count)'].$get(args, options),
+    ]['range()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -43917,14 +43919,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]['range()']["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -43982,14 +43984,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTab
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(
+    ]['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(
       args,
       options,
     ),
@@ -43998,14 +44000,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(
+    ]['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(
       args,
       options,
     ),
@@ -44014,14 +44016,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['row(row=:row)'].$get(args, options),
+    ]['range()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -44040,14 +44042,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['rowsAbove(count=:count)'].$get(args, options),
+    ]['range()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -44066,14 +44068,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['rowsBelow(count=:count)'].$get(args, options),
+    ]['range()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -44105,14 +44107,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsWorkbookTableRowIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
       ':workbookTableRow-id'
-    ]['range()']['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['range()']['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -44209,26 +44211,26 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTabl
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesWorkbookTableIdRowsItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables'][':workbookTable-id']['rows']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[':workbookTable-id'].rows[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ]['range()'].$get(args, options),
   )
 }
@@ -44351,12 +44353,12 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesCount(
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index=:index)'].$get(
+    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index={index})'].$get(
       args,
       options,
     ),
@@ -44365,64 +44367,64 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexI
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['columns']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['columns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].columns.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['columns']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['columns']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].columns.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexClearFilters(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['clearFilters']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['clearFilters']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].clearFilters.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexConvertToRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['convertToRange']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['convertToRange']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].convertToRange.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexDataBodyRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['dataBodyRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['dataBodyRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index=:index)'][
+    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index={index})'][
       'dataBodyRange()'
     ].$get(args, options),
   )
@@ -44430,12 +44432,12 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexI
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexHeaderRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['headerRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['headerRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index=:index)'][
+    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index={index})'][
       'headerRowRange()'
     ].$get(args, options),
   )
@@ -44443,12 +44445,12 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexI
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index=:index)'][
+    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index={index})'][
       'range()'
     ].$get(args, options),
   )
@@ -44456,25 +44458,25 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexI
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexReapplyFilters(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['reapplyFilters']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['reapplyFilters']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].reapplyFilters.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexTotalRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['totalRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['totalRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index=:index)'][
+    client.drives[':drive-id'].items[':driveItem-id'].workbook.tables['itemAt(index={index})'][
       'totalRowRange()'
     ].$get(args, options),
   )
@@ -44482,78 +44484,78 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexI
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexRows(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['rows']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['rows']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].rows.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexRows(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['rows']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['rows']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].rows.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['sort']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['sort']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].sort.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['sort']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['sort']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].sort.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['sort']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['sort']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].sort.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookTablesItemAtIndexIndexWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index=:index)']['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['tables']['itemAt(index={index})']['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.tables[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].worksheet.$get(args, options),
   )
 }
@@ -46913,7 +46915,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdImageWidthWidthHeightHeightFittingModeFittingMode(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']["image(width=:width,height=:height,fittingMode=':fittingMode')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']["image(width={width},height={height},fittingMode='{fittingMode}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -46921,34 +46923,34 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'][
-      "image(width=:width,height=:height,fittingMode=':fittingMode')"
+      "image(width={width},height={height},fittingMode='{fittingMode}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdImageWidthWidthHeightHeight(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['image(width=:width,height=:height)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['image(width={width},height={height})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id']['image(width=:width,height=:height)'].$get(args, options),
+    ].charts[':workbookChart-id']['image(width={width},height={height})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdImageWidthWidth(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['image(width=:width)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['image(width={width})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id']['image(width=:width)'].$get(args, options),
+    ].charts[':workbookChart-id']['image(width={width})'].$get(args, options),
   )
 }
 
@@ -47429,7 +47431,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesWorkbookChartSeriesIdPointsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -47437,14 +47439,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'].series[':workbookChartSeries-id'].points[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesWorkbookChartSeriesIdPointsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index=:index)']['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index={index})']['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -47452,14 +47454,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'].series[':workbookChartSeries-id'].points[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesWorkbookChartSeriesIdPointsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index=:index)']['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index={index})']['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -47467,14 +47469,14 @@ export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkb
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'].series[':workbookChartSeries-id'].points[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesWorkbookChartSeriesIdPointsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index=:index)']['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series'][':workbookChartSeries-id']['points']['itemAt(index={index})']['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -47482,7 +47484,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].charts[':workbookChart-id'].series[':workbookChartSeries-id'].points[
-      'itemAt(index=:index)'
+      'itemAt(index={index})'
     ].format.$patch(args, options),
   )
 }
@@ -47502,79 +47504,79 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].$get(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].format.$get(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].format.$delete(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].format.$patch(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndexPoints(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['points']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['points']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].points.$get(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].points.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsWorkbookChartIdSeriesItemAtIndexIndexPoints(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index=:index)']['points']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts'][':workbookChart-id']['series']['itemAt(index={index})']['points']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts[':workbookChart-id'].series['itemAt(index=:index)'].points.$post(args, options),
+    ].charts[':workbookChart-id'].series['itemAt(index={index})'].points.$post(args, options),
   )
 }
 
@@ -47801,1109 +47803,1109 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameName(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].$get(args, options),
+    ].charts["item(name='{name}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['axes']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['axes']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].axes.$get(args, options),
+    ].charts["item(name='{name}')"].axes.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['axes']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['axes']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].axes.$delete(args, options),
+    ].charts["item(name='{name}')"].axes.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['axes']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['axes']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].axes.$patch(args, options),
+    ].charts["item(name='{name}')"].axes.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['dataLabels']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['dataLabels']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].dataLabels.$get(args, options),
+    ].charts["item(name='{name}')"].dataLabels.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['dataLabels']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['dataLabels']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].dataLabels.$delete(args, options),
+    ].charts["item(name='{name}')"].dataLabels.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['dataLabels']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['dataLabels']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].dataLabels.$patch(args, options),
+    ].charts["item(name='{name}')"].dataLabels.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].format.$get(args, options),
+    ].charts["item(name='{name}')"].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].format.$delete(args, options),
+    ].charts["item(name='{name}')"].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].format.$patch(args, options),
+    ].charts["item(name='{name}')"].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['legend']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['legend']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].legend.$get(args, options),
+    ].charts["item(name='{name}')"].legend.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['legend']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['legend']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].legend.$delete(args, options),
+    ].charts["item(name='{name}')"].legend.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['legend']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['legend']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].legend.$patch(args, options),
+    ].charts["item(name='{name}')"].legend.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameImage(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['image()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['image()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"]['image()'].$get(args, options),
+    ].charts["item(name='{name}')"]['image()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameImageWidthWidthHeightHeightFittingModeFittingMode(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]["image(width=:width,height=:height,fittingMode=':fittingMode')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]["image(width={width},height={height},fittingMode='{fittingMode}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"][
-      "image(width=:width,height=:height,fittingMode=':fittingMode')"
+    ].charts["item(name='{name}')"][
+      "image(width={width},height={height},fittingMode='{fittingMode}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameImageWidthWidthHeightHeight(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['image(width=:width,height=:height)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['image(width={width},height={height})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"]['image(width=:width,height=:height)'].$get(args, options),
+    ].charts["item(name='{name}')"]['image(width={width},height={height})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameImageWidthWidth(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['image(width=:width)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['image(width={width})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"]['image(width=:width)'].$get(args, options),
+    ].charts["item(name='{name}')"]['image(width={width})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameSetData(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['setData']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['setData']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].setData.$post(args, options),
+    ].charts["item(name='{name}')"].setData.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameSetPosition(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['setPosition']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['setPosition']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].setPosition.$post(args, options),
+    ].charts["item(name='{name}')"].setPosition.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameSeries(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['series']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['series']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].series.$get(args, options),
+    ].charts["item(name='{name}')"].series.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameSeries(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['series']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['series']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].series.$post(args, options),
+    ].charts["item(name='{name}')"].series.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['title']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['title']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].title.$get(args, options),
+    ].charts["item(name='{name}')"].title.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['title']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['title']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].title.$delete(args, options),
+    ].charts["item(name='{name}')"].title.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['title']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['title']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].title.$patch(args, options),
+    ].charts["item(name='{name}')"].title.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemNameNameWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name=':name')"]['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']["item(name='{name}')"]['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts["item(name=':name')"].worksheet.$get(args, options),
+    ].charts["item(name='{name}')"].worksheet.$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].$get(args, options),
+    ].charts['itemAt(index={index})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['axes']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['axes']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].axes.$get(args, options),
+    ].charts['itemAt(index={index})'].axes.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['axes']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['axes']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].axes.$delete(args, options),
+    ].charts['itemAt(index={index})'].axes.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexAxes(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['axes']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['axes']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].axes.$patch(args, options),
+    ].charts['itemAt(index={index})'].axes.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['dataLabels']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['dataLabels']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].dataLabels.$get(args, options),
+    ].charts['itemAt(index={index})'].dataLabels.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['dataLabels']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['dataLabels']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].dataLabels.$delete(args, options),
+    ].charts['itemAt(index={index})'].dataLabels.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexDataLabels(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['dataLabels']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['dataLabels']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].dataLabels.$patch(args, options),
+    ].charts['itemAt(index={index})'].dataLabels.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].format.$get(args, options),
+    ].charts['itemAt(index={index})'].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].format.$delete(args, options),
+    ].charts['itemAt(index={index})'].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].format.$patch(args, options),
+    ].charts['itemAt(index={index})'].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['legend']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['legend']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].legend.$get(args, options),
+    ].charts['itemAt(index={index})'].legend.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['legend']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['legend']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].legend.$delete(args, options),
+    ].charts['itemAt(index={index})'].legend.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexLegend(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['legend']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['legend']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].legend.$patch(args, options),
+    ].charts['itemAt(index={index})'].legend.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexImage(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['image()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['image()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)']['image()'].$get(args, options),
+    ].charts['itemAt(index={index})']['image()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexImageWidthWidthHeightHeightFittingModeFittingMode(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']["image(width=:width,height=:height,fittingMode=':fittingMode')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']["image(width={width},height={height},fittingMode='{fittingMode}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'][
-      "image(width=:width,height=:height,fittingMode=':fittingMode')"
+    ].charts['itemAt(index={index})'][
+      "image(width={width},height={height},fittingMode='{fittingMode}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexImageWidthWidthHeightHeight(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['image(width=:width,height=:height)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['image(width={width},height={height})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)']['image(width=:width,height=:height)'].$get(args, options),
+    ].charts['itemAt(index={index})']['image(width={width},height={height})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexImageWidthWidth(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['image(width=:width)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['image(width={width})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)']['image(width=:width)'].$get(args, options),
+    ].charts['itemAt(index={index})']['image(width={width})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexSetData(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['setData']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['setData']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].setData.$post(args, options),
+    ].charts['itemAt(index={index})'].setData.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexSetPosition(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['setPosition']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['setPosition']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].setPosition.$post(args, options),
+    ].charts['itemAt(index={index})'].setPosition.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexSeries(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['series']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['series']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].series.$get(args, options),
+    ].charts['itemAt(index={index})'].series.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexSeries(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['series']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['series']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].series.$post(args, options),
+    ].charts['itemAt(index={index})'].series.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['title']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['title']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].title.$get(args, options),
+    ].charts['itemAt(index={index})'].title.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['title']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['title']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].title.$delete(args, options),
+    ].charts['itemAt(index={index})'].title.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexTitle(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['title']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['title']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].title.$patch(args, options),
+    ].charts['itemAt(index={index})'].title.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdChartsItemAtIndexIndexWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index=:index)']['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['charts']['itemAt(index={index})']['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].charts['itemAt(index=:index)'].worksheet.$get(args, options),
+    ].charts['itemAt(index={index})'].worksheet.$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+      'cell(row={row},column={column})'
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnClear(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['clear']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['clear']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].clear.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnColumnColumnColumn1(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['column(column=:column1)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['column(column={column1})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['column(column=:column1)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['column(column={column1})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnColumnsAfter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['columnsAfter()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['columnsAfter()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['columnsAfter()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnColumnsBefore(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['columnsBefore()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['columnsBefore()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['columnsBefore()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnDelete(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['delete']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['delete']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].delete.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnEntireColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['entireColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['entireColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['entireColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnEntireRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['entireRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['entireRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['entireRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnInsert(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['insert']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['insert']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].insert.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+      'cell(row={row},column={column})'
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnLastCell(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['lastCell()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['lastCell()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['lastCell()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnLastColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['lastColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['lastColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['lastColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnLastRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['lastRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['lastRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['lastRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnMerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['merge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['merge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].merge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnRowRowRow1(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['row(row=:row1)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['row(row={row1})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['row(row=:row1)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['row(row={row1})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnRowsAbove(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['rowsAbove()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['rowsAbove()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['rowsAbove()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnRowsBelow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['rowsBelow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['rowsBelow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['rowsBelow()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnUnmerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['unmerge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['unmerge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].unmerge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnUsedRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['usedRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['usedRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['usedRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+      'cell(row={row},column={column})'
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnVisibleView(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['visibleView()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['visibleView()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ]['visibleView()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['sort']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['sort']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].sort.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['sort']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['sort']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].sort.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['sort']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['sort']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].sort.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdCellRowRowColumnColumnWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row=:row,column=:column)']['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['cell(row={row},column={column})']['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].worksheet.$get(args, options),
   )
 }
@@ -48962,27 +48964,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -49001,14 +49003,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -49027,14 +49029,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -49053,14 +49055,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -49118,14 +49120,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -49183,40 +49185,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -49235,14 +49237,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -49261,14 +49263,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -49300,14 +49302,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'range()'
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
@@ -49378,468 +49380,468 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddress(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+      "range(address='{address}')"
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+      "range(address='{address}')"
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressClear(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['clear']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['clear']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].clear.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['column(column=:column)'].$get(args, options),
+      "range(address='{address}')"
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressColumnsAfter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['columnsAfter()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['columnsAfter()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['columnsAfter()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['columnsAfter(count=:count)'].$get(args, options),
+      "range(address='{address}')"
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressColumnsBefore(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['columnsBefore()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['columnsBefore()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['columnsBefore()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['columnsBefore(count=:count)'].$get(args, options),
+      "range(address='{address}')"
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressDelete(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['delete']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['delete']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].delete.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressEntireColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['entireColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['entireColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['entireColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressEntireRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['entireRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['entireRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['entireRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressInsert(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['insert']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['insert']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].insert.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+      "range(address='{address}')"
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressLastCell(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['lastCell()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['lastCell()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['lastCell()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressLastColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['lastColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['lastColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['lastColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressLastRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['lastRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['lastRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['lastRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressMerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['merge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['merge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].merge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+      "range(address='{address}')"
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+      "range(address='{address}')"
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['row(row=:row)'].$get(args, options),
+      "range(address='{address}')"
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressRowsAbove(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['rowsAbove()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['rowsAbove()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['rowsAbove()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['rowsAbove(count=:count)'].$get(args, options),
+      "range(address='{address}')"
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressRowsBelow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['rowsBelow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['rowsBelow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['rowsBelow()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['rowsBelow(count=:count)'].$get(args, options),
+      "range(address='{address}')"
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressUnmerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['unmerge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['unmerge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].unmerge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressUsedRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['usedRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['usedRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['usedRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
-    ]['usedRange(valuesOnly=:valuesOnly)'].$get(args, options),
+      "range(address='{address}')"
+    ]['usedRange(valuesOnly={valuesOnly})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressVisibleView(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['visibleView()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['visibleView()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ]['visibleView()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['sort']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['sort']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].sort.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['sort']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['sort']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].sort.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['sort']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['sort']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].sort.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdRangeAddressAddressWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address=':address')"]['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']["range(address='{address}')"]['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      "range(address=':address')"
+      "range(address='{address}')"
     ].worksheet.$get(args, options),
   )
 }
@@ -49898,27 +49900,27 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -49937,14 +49939,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['column(column=:column)'].$get(args, options),
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
@@ -49963,14 +49965,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -49989,14 +49991,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -50054,14 +50056,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
@@ -50119,40 +50121,40 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['row(row=:row)'].$get(args, options),
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
@@ -50171,14 +50173,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -50197,14 +50199,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
       'usedRange()'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -50288,442 +50290,442 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['format']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['format']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].format.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['format']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['format']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].format.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyFormat(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['format']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['format']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].format.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]["boundingRect(anotherRange=':anotherRange')"].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]["boundingRect(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['cell(row=:row,column=:column)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyClear(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['clear']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['clear']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].clear.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['column(column=:column)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['column(column={column})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyColumnsAfter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['columnsAfter()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['columnsAfter()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['columnsAfter()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['columnsAfter(count=:count)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyColumnsBefore(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['columnsBefore()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['columnsBefore()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['columnsBefore()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['columnsBefore(count=:count)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyDelete(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['delete']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['delete']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].delete.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyEntireColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['entireColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['entireColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['entireColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyEntireRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['entireRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['entireRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['entireRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyInsert(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['insert']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['insert']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].insert.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]["intersection(anotherRange=':anotherRange')"].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]["intersection(anotherRange='{anotherRange}')"].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyLastCell(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['lastCell()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['lastCell()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['lastCell()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyLastColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['lastColumn()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['lastColumn()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['lastColumn()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyLastRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['lastRow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['lastRow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['lastRow()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyMerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['merge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['merge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].merge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['row(row=:row)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['row(row={row})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyRowsAbove(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['rowsAbove()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['rowsAbove()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['rowsAbove()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['rowsAbove(count=:count)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyRowsBelow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['rowsBelow()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['rowsBelow()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['rowsBelow()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
-    ]['rowsBelow(count=:count)'].$get(args, options),
+      'usedRange(valuesOnly={valuesOnly})'
+    ]['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyUnmerge(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['unmerge']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['unmerge']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].unmerge.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyVisibleView(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['visibleView()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['visibleView()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ]['visibleView()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlySort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['sort']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['sort']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].sort.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlySort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['sort']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['sort']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].sort.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlySort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['sort']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['sort']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].sort.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdUsedRangeValuesOnlyValuesOnlyWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly=:valuesOnly)']['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['usedRange(valuesOnly={valuesOnly})']['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[':workbookWorksheet-id'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].worksheet.$get(args, options),
   )
 }
@@ -50847,14 +50849,14 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']["boundingRect(anotherRange=':anotherRange')"].$get(
+    ].names[':workbookNamedItem-id']['range()']["boundingRect(anotherRange='{anotherRange}')"].$get(
       args,
       options,
     ),
@@ -50863,14 +50865,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['cell(row=:row,column=:column)'].$get(
+    ].names[':workbookNamedItem-id']['range()']['cell(row={row},column={column})'].$get(
       args,
       options,
     ),
@@ -50892,14 +50894,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['column(column=:column)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -50918,14 +50920,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['columnsAfter(count=:count)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -50944,14 +50946,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['columnsBefore(count=:count)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -51009,14 +51011,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']["intersection(anotherRange=':anotherRange')"].$get(
+    ].names[':workbookNamedItem-id']['range()']["intersection(anotherRange='{anotherRange}')"].$get(
       args,
       options,
     ),
@@ -51077,7 +51079,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51085,14 +51087,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].names[':workbookNamedItem-id']['range()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51100,21 +51102,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].names[':workbookNamedItem-id']['range()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['row(row=:row)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -51133,14 +51135,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['rowsAbove(count=:count)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -51159,14 +51161,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['rowsBelow(count=:count)'].$get(args, options),
+    ].names[':workbookNamedItem-id']['range()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -51198,14 +51200,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdNamesWorkbookNamedItemIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['names'][':workbookNamedItem-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].names[':workbookNamedItem-id']['range()']['usedRange(valuesOnly=:valuesOnly)'].$get(
+    ].names[':workbookNamedItem-id']['range()']['usedRange(valuesOnly={valuesOnly})'].$get(
       args,
       options,
     ),
@@ -51929,7 +51931,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51937,14 +51939,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51952,7 +51954,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -51975,7 +51977,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51983,7 +51985,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'column(column=:column)'
+      'column(column={column})'
     ].$get(args, options),
   )
 }
@@ -52005,7 +52007,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52013,7 +52015,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'columnsAfter(count=:count)'
+      'columnsAfter(count={count})'
     ].$get(args, options),
   )
 }
@@ -52035,7 +52037,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52043,7 +52045,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'columnsBefore(count=:count)'
+      'columnsBefore(count={count})'
     ].$get(args, options),
   )
 }
@@ -52110,7 +52112,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52118,7 +52120,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -52186,7 +52188,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52194,14 +52196,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52209,14 +52211,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52224,7 +52226,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'row(row=:row)'
+      'row(row={row})'
     ].$get(args, options),
   )
 }
@@ -52246,7 +52248,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52254,7 +52256,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'rowsAbove(count=:count)'
+      'rowsAbove(count={count})'
     ].$get(args, options),
   )
 }
@@ -52276,7 +52278,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52284,7 +52286,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'rowsBelow(count=:count)'
+      'rowsBelow(count={count})'
     ].$get(args, options),
   )
 }
@@ -52321,7 +52323,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdDataBodyRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52329,7 +52331,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['dataBodyRange()'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -52474,7 +52476,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52482,14 +52484,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52497,7 +52499,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -52519,7 +52521,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52527,7 +52529,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'column(column=:column)'
+      'column(column={column})'
     ].$get(args, options),
   )
 }
@@ -52549,7 +52551,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52557,7 +52559,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'columnsAfter(count=:count)'
+      'columnsAfter(count={count})'
     ].$get(args, options),
   )
 }
@@ -52579,7 +52581,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52587,7 +52589,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'columnsBefore(count=:count)'
+      'columnsBefore(count={count})'
     ].$get(args, options),
   )
 }
@@ -52654,7 +52656,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52662,7 +52664,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -52729,7 +52731,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52737,14 +52739,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52752,14 +52754,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52767,7 +52769,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'row(row=:row)'
+      'row(row={row})'
     ].$get(args, options),
   )
 }
@@ -52789,7 +52791,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52797,7 +52799,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'rowsAbove(count=:count)'
+      'rowsAbove(count={count})'
     ].$get(args, options),
   )
 }
@@ -52819,7 +52821,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52827,7 +52829,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'rowsBelow(count=:count)'
+      'rowsBelow(count={count})'
     ].$get(args, options),
   )
 }
@@ -52864,7 +52866,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdHeaderRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['headerRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -52872,7 +52874,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['headerRowRange()'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -53016,7 +53018,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53024,14 +53026,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53039,7 +53041,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -53062,7 +53064,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53070,7 +53072,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'column(column=:column)'
+      'column(column={column})'
     ].$get(args, options),
   )
 }
@@ -53092,7 +53094,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53100,7 +53102,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'columnsAfter(count=:count)'
+      'columnsAfter(count={count})'
     ].$get(args, options),
   )
 }
@@ -53122,7 +53124,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53130,7 +53132,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'columnsBefore(count=:count)'
+      'columnsBefore(count={count})'
     ].$get(args, options),
   )
 }
@@ -53200,7 +53202,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53208,7 +53210,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -53278,7 +53280,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53286,14 +53288,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53301,14 +53303,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53316,7 +53318,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'row(row=:row)'
+      'row(row={row})'
     ].$get(args, options),
   )
 }
@@ -53339,7 +53341,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53347,7 +53349,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'rowsAbove(count=:count)'
+      'rowsAbove(count={count})'
     ].$get(args, options),
   )
 }
@@ -53370,7 +53372,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53378,7 +53380,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'rowsBelow(count=:count)'
+      'rowsBelow(count={count})'
     ].$get(args, options),
   )
 }
@@ -53417,7 +53419,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53425,7 +53427,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['range()'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -53573,7 +53575,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53581,14 +53583,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53596,7 +53598,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -53619,7 +53621,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53627,7 +53629,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'column(column=:column)'
+      'column(column={column})'
     ].$get(args, options),
   )
 }
@@ -53649,7 +53651,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53657,7 +53659,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'columnsAfter(count=:count)'
+      'columnsAfter(count={count})'
     ].$get(args, options),
   )
 }
@@ -53679,7 +53681,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53687,7 +53689,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'columnsBefore(count=:count)'
+      'columnsBefore(count={count})'
     ].$get(args, options),
   )
 }
@@ -53754,7 +53756,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53762,7 +53764,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -53830,7 +53832,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53838,14 +53840,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53853,14 +53855,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53868,7 +53870,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'row(row=:row)'
+      'row(row={row})'
     ].$get(args, options),
   )
 }
@@ -53890,7 +53892,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53898,7 +53900,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'rowsAbove(count=:count)'
+      'rowsAbove(count={count})'
     ].$get(args, options),
   )
 }
@@ -53920,7 +53922,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53928,7 +53930,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'rowsBelow(count=:count)'
+      'rowsBelow(count={count})'
     ].$get(args, options),
   )
 }
@@ -53965,7 +53967,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsWorkbookTableColumnIdTotalRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns'][':workbookTableColumn-id']['totalRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53973,7 +53975,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].columns[':workbookTableColumn-id']['totalRowRange()'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -54083,66 +54085,66 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)'].$get(args, options),
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)'].filter.$get(args, options),
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})'].filter.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)'].filter.$delete(args, options),
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})'].filter.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexFilter(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['filter']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['filter']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)'].filter.$patch(args, options),
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})'].filter.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexDataBodyRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['dataBodyRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['dataBodyRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)']['dataBodyRange()'].$get(
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})']['dataBodyRange()'].$get(
       args,
       options,
     ),
@@ -54151,14 +54153,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexHeaderRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['headerRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['headerRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)']['headerRowRange()'].$get(
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})']['headerRowRange()'].$get(
       args,
       options,
     ),
@@ -54167,27 +54169,27 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)']['range()'].$get(args, options),
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})']['range()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdColumnsItemAtIndexIndexTotalRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index=:index)']['totalRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['columns']['itemAt(index={index})']['totalRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].columns['itemAt(index=:index)']['totalRowRange()'].$get(
+    ].tables[':workbookTable-id'].columns['itemAt(index={index})']['totalRowRange()'].$get(
       args,
       options,
     ),
@@ -54274,7 +54276,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54282,21 +54284,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['dataBodyRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['cell(row=:row,column=:column)'].$get(
+    ].tables[':workbookTable-id']['dataBodyRange()']['cell(row={row},column={column})'].$get(
       args,
       options,
     ),
@@ -54318,14 +54320,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['column(column=:column)'].$get(args, options),
+    ].tables[':workbookTable-id']['dataBodyRange()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -54344,14 +54346,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['columnsAfter(count=:count)'].$get(
+    ].tables[':workbookTable-id']['dataBodyRange()']['columnsAfter(count={count})'].$get(
       args,
       options,
     ),
@@ -54373,14 +54375,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['columnsBefore(count=:count)'].$get(
+    ].tables[':workbookTable-id']['dataBodyRange()']['columnsBefore(count={count})'].$get(
       args,
       options,
     ),
@@ -54441,7 +54443,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54449,7 +54451,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['dataBodyRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -54508,7 +54510,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54516,14 +54518,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['dataBodyRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54531,21 +54533,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['dataBodyRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['row(row=:row)'].$get(args, options),
+    ].tables[':workbookTable-id']['dataBodyRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -54564,14 +54566,17 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['rowsAbove(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['dataBodyRange()']['rowsAbove(count={count})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
@@ -54590,14 +54595,17 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['rowsBelow(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['dataBodyRange()']['rowsBelow(count={count})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
@@ -54629,14 +54637,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdDataBodyRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(
+    ].tables[':workbookTable-id']['dataBodyRange()']['usedRange(valuesOnly={valuesOnly})'].$get(
       args,
       options,
     ),
@@ -54762,7 +54770,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54770,21 +54778,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['headerRowRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['cell(row=:row,column=:column)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['cell(row={row},column={column})'].$get(
       args,
       options,
     ),
@@ -54806,14 +54814,17 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['column(column=:column)'].$get(args, options),
+    ].tables[':workbookTable-id']['headerRowRange()']['column(column={column})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
@@ -54832,14 +54843,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['columnsAfter(count=:count)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['columnsAfter(count={count})'].$get(
       args,
       options,
     ),
@@ -54861,14 +54872,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['columnsBefore(count=:count)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['columnsBefore(count={count})'].$get(
       args,
       options,
     ),
@@ -54929,7 +54940,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -54937,7 +54948,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['headerRowRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -54996,7 +55007,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55004,14 +55015,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['headerRowRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55019,21 +55030,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['headerRowRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['row(row=:row)'].$get(args, options),
+    ].tables[':workbookTable-id']['headerRowRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -55052,14 +55063,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['rowsAbove(count=:count)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['rowsAbove(count={count})'].$get(
       args,
       options,
     ),
@@ -55081,14 +55092,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['rowsBelow(count=:count)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['rowsBelow(count={count})'].$get(
       args,
       options,
     ),
@@ -55123,14 +55134,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdHeaderRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(
+    ].tables[':workbookTable-id']['headerRowRange()']['usedRange(valuesOnly={valuesOnly})'].$get(
       args,
       options,
     ),
@@ -55256,14 +55267,14 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']["boundingRect(anotherRange=':anotherRange')"].$get(
+    ].tables[':workbookTable-id']['range()']["boundingRect(anotherRange='{anotherRange}')"].$get(
       args,
       options,
     ),
@@ -55272,14 +55283,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['cell(row=:row,column=:column)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['cell(row={row},column={column})'].$get(args, options),
   )
 }
 
@@ -55298,14 +55309,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['column(column=:column)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -55324,14 +55335,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['columnsAfter(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['columnsAfter(count={count})'].$get(args, options),
   )
 }
 
@@ -55350,14 +55361,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['columnsBefore(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['columnsBefore(count={count})'].$get(args, options),
   )
 }
 
@@ -55415,14 +55426,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']["intersection(anotherRange=':anotherRange')"].$get(
+    ].tables[':workbookTable-id']['range()']["intersection(anotherRange='{anotherRange}')"].$get(
       args,
       options,
     ),
@@ -55483,7 +55494,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55491,14 +55502,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['range()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55506,21 +55517,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['range()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['row(row=:row)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -55539,14 +55550,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['rowsAbove(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['rowsAbove(count={count})'].$get(args, options),
   )
 }
 
@@ -55565,14 +55576,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['rowsBelow(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['range()']['rowsBelow(count={count})'].$get(args, options),
   )
 }
 
@@ -55604,14 +55615,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['range()']['usedRange(valuesOnly=:valuesOnly)'].$get(
+    ].tables[':workbookTable-id']['range()']['usedRange(valuesOnly={valuesOnly})'].$get(
       args,
       options,
     ),
@@ -55750,7 +55761,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55758,21 +55769,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['totalRowRange()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['cell(row=:row,column=:column)'].$get(
+    ].tables[':workbookTable-id']['totalRowRange()']['cell(row={row},column={column})'].$get(
       args,
       options,
     ),
@@ -55794,14 +55805,14 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['column(column=:column)'].$get(args, options),
+    ].tables[':workbookTable-id']['totalRowRange()']['column(column={column})'].$get(args, options),
   )
 }
 
@@ -55820,14 +55831,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['columnsAfter(count=:count)'].$get(
+    ].tables[':workbookTable-id']['totalRowRange()']['columnsAfter(count={count})'].$get(
       args,
       options,
     ),
@@ -55849,14 +55860,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['columnsBefore(count=:count)'].$get(
+    ].tables[':workbookTable-id']['totalRowRange()']['columnsBefore(count={count})'].$get(
       args,
       options,
     ),
@@ -55917,7 +55928,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55925,7 +55936,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['totalRowRange()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -55984,7 +55995,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -55992,14 +56003,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['totalRowRange()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56007,21 +56018,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id']['totalRowRange()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['row(row=:row)'].$get(args, options),
+    ].tables[':workbookTable-id']['totalRowRange()']['row(row={row})'].$get(args, options),
   )
 }
 
@@ -56040,14 +56051,17 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['rowsAbove(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['totalRowRange()']['rowsAbove(count={count})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
@@ -56066,14 +56080,17 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['rowsBelow(count=:count)'].$get(args, options),
+    ].tables[':workbookTable-id']['totalRowRange()']['rowsBelow(count={count})'].$get(
+      args,
+      options,
+    ),
   )
 }
 
@@ -56105,14 +56122,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdTotalRowRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly=:valuesOnly)'].$get(
+    ].tables[':workbookTable-id']['totalRowRange()']['usedRange(valuesOnly={valuesOnly})'].$get(
       args,
       options,
     ),
@@ -56312,7 +56329,7 @@ export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeBoundingRectAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["boundingRect(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["boundingRect(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56320,14 +56337,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      "boundingRect(anotherRange=':anotherRange')"
+      "boundingRect(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeCellRowRowColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['cell(row=:row,column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['cell(row={row},column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56335,7 +56352,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'cell(row=:row,column=:column)'
+      'cell(row={row},column={column})'
     ].$get(args, options),
   )
 }
@@ -56358,7 +56375,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnColumnColumn(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['column(column=:column)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['column(column={column})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56366,7 +56383,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'column(column=:column)'
+      'column(column={column})'
     ].$get(args, options),
   )
 }
@@ -56389,7 +56406,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnsAfterCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsAfter(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsAfter(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56397,7 +56414,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'columnsAfter(count=:count)'
+      'columnsAfter(count={count})'
     ].$get(args, options),
   )
 }
@@ -56420,7 +56437,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeColumnsBeforeCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsBefore(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['columnsBefore(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56428,7 +56445,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'columnsBefore(count=:count)'
+      'columnsBefore(count={count})'
     ].$get(args, options),
   )
 }
@@ -56499,7 +56516,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeIntersectionAnotherRangeAnotherRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["intersection(anotherRange=':anotherRange')"]['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']["intersection(anotherRange='{anotherRange}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56507,7 +56524,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      "intersection(anotherRange=':anotherRange')"
+      "intersection(anotherRange='{anotherRange}')"
     ].$get(args, options),
   )
 }
@@ -56578,7 +56595,7 @@ export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkboo
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeOffsetRangeRowOffsetRowOffsetColumnOffsetColumnOffset(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56586,14 +56603,14 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'offsetRange(rowOffset=:rowOffset,columnOffset=:columnOffset)'
+      'offsetRange(rowOffset={rowOffset},columnOffset={columnOffset})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeResizedRangeDeltaRowsDeltaRowsDeltaColumnsDeltaColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56601,21 +56618,21 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'resizedRange(deltaRows=:deltaRows,deltaColumns=:deltaColumns)'
+      'resizedRange(deltaRows={deltaRows},deltaColumns={deltaColumns})'
     ].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowRowRow(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['row(row=:row)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['row(row={row})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()']['row(row=:row)'].$get(
+    ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()']['row(row={row})'].$get(
       args,
       options,
     ),
@@ -56640,7 +56657,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowsAboveCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsAbove(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsAbove(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56648,7 +56665,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'rowsAbove(count=:count)'
+      'rowsAbove(count={count})'
     ].$get(args, options),
   )
 }
@@ -56671,7 +56688,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeRowsBelowCountCount(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsBelow(count=:count)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['rowsBelow(count={count})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56679,7 +56696,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'rowsBelow(count=:count)'
+      'rowsBelow(count={count})'
     ].$get(args, options),
   )
 }
@@ -56718,7 +56735,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsWorkbookTableRowIdRangeUsedRangeValuesOnlyValuesOnly(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['usedRange(valuesOnly=:valuesOnly)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows'][':workbookTableRow-id']['range()']['usedRange(valuesOnly={valuesOnly})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -56726,7 +56743,7 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
     ].tables[':workbookTable-id'].rows[':workbookTableRow-id']['range()'][
-      'usedRange(valuesOnly=:valuesOnly)'
+      'usedRange(valuesOnly={valuesOnly})'
     ].$get(args, options),
   )
 }
@@ -56836,27 +56853,27 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].rows['itemAt(index=:index)'].$get(args, options),
+    ].tables[':workbookTable-id'].rows['itemAt(index={index})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesWorkbookTableIdRowsItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables'][':workbookTable-id']['rows']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables[':workbookTable-id'].rows['itemAt(index=:index)']['range()'].$get(args, options),
+    ].tables[':workbookTable-id'].rows['itemAt(index={index})']['range()'].$get(args, options),
   )
 }
 
@@ -56979,209 +56996,209 @@ export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbook
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndex(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].$get(args, options),
+    ].tables['itemAt(index={index})'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['columns']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['columns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].columns.$get(args, options),
+    ].tables['itemAt(index={index})'].columns.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexColumns(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['columns']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['columns']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].columns.$post(args, options),
+    ].tables['itemAt(index={index})'].columns.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexClearFilters(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['clearFilters']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['clearFilters']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].clearFilters.$post(args, options),
+    ].tables['itemAt(index={index})'].clearFilters.$post(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexConvertToRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['convertToRange']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['convertToRange']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].convertToRange.$post(args, options),
+    ].tables['itemAt(index={index})'].convertToRange.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexDataBodyRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['dataBodyRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['dataBodyRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)']['dataBodyRange()'].$get(args, options),
+    ].tables['itemAt(index={index})']['dataBodyRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexHeaderRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['headerRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['headerRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)']['headerRowRange()'].$get(args, options),
+    ].tables['itemAt(index={index})']['headerRowRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['range()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['range()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)']['range()'].$get(args, options),
+    ].tables['itemAt(index={index})']['range()'].$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexReapplyFilters(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['reapplyFilters']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['reapplyFilters']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].reapplyFilters.$post(args, options),
+    ].tables['itemAt(index={index})'].reapplyFilters.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexTotalRowRange(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['totalRowRange()']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['totalRowRange()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)']['totalRowRange()'].$get(args, options),
+    ].tables['itemAt(index={index})']['totalRowRange()'].$get(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexRows(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['rows']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['rows']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].rows.$get(args, options),
+    ].tables['itemAt(index={index})'].rows.$get(args, options),
   )
 }
 
 export async function postDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexRows(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['rows']['$post']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['rows']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].rows.$post(args, options),
+    ].tables['itemAt(index={index})'].rows.$post(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['sort']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['sort']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].sort.$get(args, options),
+    ].tables['itemAt(index={index})'].sort.$get(args, options),
   )
 }
 
 export async function deleteDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['sort']['$delete']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['sort']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].sort.$delete(args, options),
+    ].tables['itemAt(index={index})'].sort.$delete(args, options),
   )
 }
 
 export async function patchDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexSort(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['sort']['$patch']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['sort']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].sort.$patch(args, options),
+    ].tables['itemAt(index={index})'].sort.$patch(args, options),
   )
 }
 
 export async function getDrivesDriveIdItemsDriveItemIdWorkbookWorksheetsWorkbookWorksheetIdTablesItemAtIndexIndexWorksheet(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index=:index)']['worksheet']['$get']
+    (typeof client.drives)[':drive-id']['items'][':driveItem-id']['workbook']['worksheets'][':workbookWorksheet-id']['tables']['itemAt(index={index})']['worksheet']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].items[':driveItem-id'].workbook.worksheets[
       ':workbookWorksheet-id'
-    ].tables['itemAt(index=:index)'].worksheet.$get(args, options),
+    ].tables['itemAt(index={index})'].worksheet.$get(args, options),
   )
 }
 
@@ -58253,13 +58270,13 @@ export async function getDrivesDriveIdListItemsListItemIdGetActivitiesByInterval
 
 export async function getDrivesDriveIdListItemsListItemIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['list']['items'][':listItem-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.drives)[':drive-id']['list']['items'][':listItem-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.drives[':drive-id'].list.items[':listItem-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -58509,12 +58526,12 @@ export async function getDrivesDriveIdListItemsDelta(
 
 export async function getDrivesDriveIdListItemsDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.drives)[':drive-id']['list']['items']["delta(token=':token')"]['$get']
+    (typeof client.drives)[':drive-id']['list']['items']["delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.drives[':drive-id'].list.items["delta(token=':token')"].$get(args, options),
+    client.drives[':drive-id'].list.items["delta(token='{token}')"].$get(args, options),
   )
 }
 
@@ -58806,10 +58823,10 @@ export async function getDrivesDriveIdRecent(
 }
 
 export async function getDrivesDriveIdSearchQQ(
-  args: InferRequestType<(typeof client.drives)[':drive-id']["search(q=':q')"]['$get']>,
+  args: InferRequestType<(typeof client.drives)[':drive-id']["search(q='{q}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.drives[':drive-id']["search(q=':q')"].$get(args, options))
+  return await parseResponse(client.drives[':drive-id']["search(q='{q}')"].$get(args, options))
 }
 
 export async function getDrivesDriveIdSharedWithMe(
@@ -64021,13 +64038,13 @@ export async function getEmployeeExperienceCommunitiesCommunityIdOwnersUserIdSer
 
 export async function getEmployeeExperienceCommunitiesCommunityIdOwnersUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.employeeExperience.communities)[':community-id']["owners(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.employeeExperience.communities)[':community-id']["owners(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.communities[':community-id'][
-      "owners(userPrincipalName=':userPrincipalName')"
+      "owners(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -64126,39 +64143,39 @@ export async function patchEmployeeExperienceLearningCourseActivitiesLearningCou
 
 export async function getEmployeeExperienceLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$get']
+    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience[
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteEmployeeExperienceLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$delete']
+    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience[
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchEmployeeExperienceLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$patch']
+    (typeof client.employeeExperience)["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience[
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$patch(args, options),
   )
 }
@@ -64288,39 +64305,39 @@ export async function patchEmployeeExperienceLearningProvidersLearningProviderId
 
 export async function getEmployeeExperienceLearningProvidersLearningProviderIdLearningContentsExternalIdExternalId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId=':externalId')"]['$get']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId='{externalId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningContents(externalId=':externalId')"
+      "learningContents(externalId='{externalId}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteEmployeeExperienceLearningProvidersLearningProviderIdLearningContentsExternalIdExternalId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId=':externalId')"]['$delete']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId='{externalId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningContents(externalId=':externalId')"
+      "learningContents(externalId='{externalId}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchEmployeeExperienceLearningProvidersLearningProviderIdLearningContentsExternalIdExternalId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId=':externalId')"]['$patch']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningContents(externalId='{externalId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningContents(externalId=':externalId')"
+      "learningContents(externalId='{externalId}')"
     ].$patch(args, options),
   )
 }
@@ -64405,39 +64422,39 @@ export async function patchEmployeeExperienceLearningProvidersLearningProviderId
 
 export async function getEmployeeExperienceLearningProvidersLearningProviderIdLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$get']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteEmployeeExperienceLearningProvidersLearningProviderIdLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$delete']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchEmployeeExperienceLearningProvidersLearningProviderIdLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$patch']
+    (typeof client.employeeExperience.learningProviders)[':learningProvider-id']["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.employeeExperience.learningProviders[':learningProvider-id'][
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$patch(args, options),
   )
 }
@@ -65848,12 +65865,12 @@ export async function getGroupsGroupIdCalendarEventsDelta(
 
 export async function getGroupsGroupIdCalendarAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['calendar']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.groups)[':group-id']['calendar']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].calendar["allowedCalendarSharingRoles(User=':User')"].$get(
+    client.groups[':group-id'].calendar["allowedCalendarSharingRoles(User='{User}')"].$get(
       args,
       options,
     ),
@@ -68502,13 +68519,13 @@ export async function postGroupsGroupIdOnenoteNotebooksGetNotebookFromWebUrl(
 
 export async function getGroupsGroupIdOnenoteNotebooksGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.groups)[':group-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].onenote.notebooks[
-      'getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -72894,13 +72911,13 @@ export async function getGroupsGroupIdSitesSiteIdListsListIdItemsListItemIdGetAc
 
 export async function getGroupsGroupIdSitesSiteIdListsListIdItemsListItemIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items'][':listItem-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items'][':listItem-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'].lists[':list-id'].items[':listItem-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -73155,13 +73172,13 @@ export async function getGroupsGroupIdSitesSiteIdListsListIdItemsDelta(
 
 export async function getGroupsGroupIdSitesSiteIdListsListIdItemsDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items']["delta(token=':token')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']['lists'][':list-id']['items']["delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'].lists[':list-id'].items[
-      "delta(token=':token')"
+      "delta(token='{token}')"
     ].$get(args, options),
   )
 }
@@ -73539,49 +73556,49 @@ export async function getGroupsGroupIdSitesSiteIdGetActivitiesByInterval(
 
 export async function getGroupsGroupIdSitesSiteIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'][
-      "getApplicableContentTypesForList(listId=':listId')"
+      "getApplicableContentTypesForList(listId='{listId}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPath(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].$get(args, options),
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['analytics']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['analytics']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].analytics.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].analytics.$get(
       args,
       options,
     ),
@@ -73590,12 +73607,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
 
 export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['analytics']['$delete']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['analytics']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].analytics.$delete(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].analytics.$delete(
       args,
       options,
     ),
@@ -73604,12 +73621,12 @@ export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
 
 export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['analytics']['$patch']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['analytics']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].analytics.$patch(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].analytics.$patch(
       args,
       options,
     ),
@@ -73618,12 +73635,12 @@ export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathAnalytics(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathColumns(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['columns']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['columns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].columns.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].columns.$get(
       args,
       options,
     ),
@@ -73632,12 +73649,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathColumns(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathColumns(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['columns']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['columns']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].columns.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].columns.$post(
       args,
       options,
     ),
@@ -73646,12 +73663,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathColumns(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathContentTypes(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['contentTypes']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['contentTypes']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].contentTypes.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].contentTypes.$get(
       args,
       options,
     ),
@@ -73660,12 +73677,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathContentTypes(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathContentTypes(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['contentTypes']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['contentTypes']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].contentTypes.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].contentTypes.$post(
       args,
       options,
     ),
@@ -73674,12 +73691,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathContentTypes(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathCreatedByUser(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['createdByUser']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['createdByUser']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].createdByUser.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].createdByUser.$get(
       args,
       options,
     ),
@@ -73688,12 +73705,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathCreatedByUser(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathDrive(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['drive']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['drive']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].drive.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].drive.$get(
       args,
       options,
     ),
@@ -73702,12 +73719,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathDrive(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathDrives(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['drives']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['drives']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].drives.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].drives.$get(
       args,
       options,
     ),
@@ -73716,12 +73733,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathDrives(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathExternalColumns(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['externalColumns']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['externalColumns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].externalColumns.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].externalColumns.$get(
       args,
       options,
     ),
@@ -73730,12 +73747,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathExternalColumn
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathItems(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['items']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['items']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].items.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].items.$get(
       args,
       options,
     ),
@@ -73744,26 +73761,25 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathItems(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathLastModifiedByUser(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['lastModifiedByUser']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['lastModifiedByUser']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].lastModifiedByUser.$get(
-      args,
-      options,
-    ),
+    client.groups[':group-id'].sites[':site-id'][
+      "getByPath(path='{path}')"
+    ].lastModifiedByUser.$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathLists(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['lists']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['lists']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].lists.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].lists.$get(
       args,
       options,
     ),
@@ -73772,12 +73788,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathLists(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathLists(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['lists']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['lists']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].lists.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].lists.$post(
       args,
       options,
     ),
@@ -73786,12 +73802,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathLists(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathGetActivitiesByInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['getActivitiesByInterval()']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['getActivitiesByInterval()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"][
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"][
       'getActivitiesByInterval()'
     ].$get(args, options),
   )
@@ -73799,38 +73815,38 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathGetActivitiesB
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"][
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]["getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]["getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"][
-      "getApplicableContentTypesForList(listId=':listId')"
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"][
+      "getApplicableContentTypesForList(listId='{listId}')"
     ].$get(args, options),
   )
 }
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['onenote']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['onenote']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].onenote.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].onenote.$get(
       args,
       options,
     ),
@@ -73839,12 +73855,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
 
 export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['onenote']['$delete']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['onenote']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].onenote.$delete(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].onenote.$delete(
       args,
       options,
     ),
@@ -73853,12 +73869,12 @@ export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
 
 export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['onenote']['$patch']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['onenote']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].onenote.$patch(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].onenote.$patch(
       args,
       options,
     ),
@@ -73867,12 +73883,12 @@ export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathOnenote(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathOperations(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['operations']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['operations']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].operations.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].operations.$get(
       args,
       options,
     ),
@@ -73881,12 +73897,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathOperations(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathOperations(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['operations']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['operations']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].operations.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].operations.$post(
       args,
       options,
     ),
@@ -73895,12 +73911,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathOperations(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathPages(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['pages']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['pages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].pages.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].pages.$get(
       args,
       options,
     ),
@@ -73909,12 +73925,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathPages(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathPages(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['pages']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['pages']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].pages.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].pages.$post(
       args,
       options,
     ),
@@ -73923,12 +73939,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathPages(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathPermissions(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['permissions']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['permissions']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].permissions.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].permissions.$get(
       args,
       options,
     ),
@@ -73937,12 +73953,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathPermissions(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathPermissions(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['permissions']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['permissions']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].permissions.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].permissions.$post(
       args,
       options,
     ),
@@ -73951,12 +73967,12 @@ export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathPermissions(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathSites(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['sites']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['sites']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].sites.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].sites.$get(
       args,
       options,
     ),
@@ -73965,12 +73981,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathSites(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['termStore']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['termStore']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].termStore.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].termStore.$get(
       args,
       options,
     ),
@@ -73979,12 +73995,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
 
 export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['termStore']['$delete']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['termStore']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].termStore.$delete(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].termStore.$delete(
       args,
       options,
     ),
@@ -73993,12 +74009,12 @@ export async function deleteGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
 
 export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['termStore']['$patch']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['termStore']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].termStore.$patch(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].termStore.$patch(
       args,
       options,
     ),
@@ -74007,12 +74023,12 @@ export async function patchGroupsGroupIdSitesSiteIdGetByPathPathPathTermStore(
 
 export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathTermStores(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['termStores']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['termStores']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].termStores.$get(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].termStores.$get(
       args,
       options,
     ),
@@ -74021,12 +74037,12 @@ export async function getGroupsGroupIdSitesSiteIdGetByPathPathPathTermStores(
 
 export async function postGroupsGroupIdSitesSiteIdGetByPathPathPathTermStores(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path=':path')"]['termStores']['$post']
+    (typeof client.groups)[':group-id']['sites'][':site-id']["getByPath(path='{path}')"]['termStores']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.groups[':group-id'].sites[':site-id']["getByPath(path=':path')"].termStores.$post(
+    client.groups[':group-id'].sites[':site-id']["getByPath(path='{path}')"].termStores.$post(
       args,
       options,
     ),
@@ -74942,13 +74958,13 @@ export async function postGroupsGroupIdSitesSiteIdOnenoteNotebooksGetNotebookFro
 
 export async function getGroupsGroupIdSitesSiteIdOnenoteNotebooksGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.groups)[':group-id']['sites'][':site-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.groups)[':group-id']['sites'][':site-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.groups[':group-id'].sites[':site-id'].onenote.notebooks[
-      'getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -88499,24 +88515,24 @@ export async function getGroupsGroupIdTransitiveMembersGraphUserCount(
 }
 
 export async function getGroupsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["groups(uniqueName=':uniqueName')"]['$get']>,
+  args: InferRequestType<(typeof client)["groups(uniqueName='{uniqueName}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["groups(uniqueName=':uniqueName')"].$get(args, options))
+  return await parseResponse(client["groups(uniqueName='{uniqueName}')"].$get(args, options))
 }
 
 export async function deleteGroupsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["groups(uniqueName=':uniqueName')"]['$delete']>,
+  args: InferRequestType<(typeof client)["groups(uniqueName='{uniqueName}')"]['$delete']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["groups(uniqueName=':uniqueName')"].$delete(args, options))
+  return await parseResponse(client["groups(uniqueName='{uniqueName}')"].$delete(args, options))
 }
 
 export async function patchGroupsUniqueNameUniqueName(
-  args: InferRequestType<(typeof client)["groups(uniqueName=':uniqueName')"]['$patch']>,
+  args: InferRequestType<(typeof client)["groups(uniqueName='{uniqueName}')"]['$patch']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["groups(uniqueName=':uniqueName')"].$patch(args, options))
+  return await parseResponse(client["groups(uniqueName='{uniqueName}')"].$patch(args, options))
 }
 
 export async function getGroupsCount(
@@ -91912,14 +91928,14 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances[':accessReviewInstance-id'].decisions["filterByCurrentUser(on=':on')"].$get(
+    ].instances[':accessReviewInstance-id'].decisions["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -92270,7 +92286,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesAccessReviewStageIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -92278,7 +92294,7 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
     ].instances[':accessReviewInstance-id'].stages[':accessReviewStage-id'].decisions[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -92344,14 +92360,14 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances[':accessReviewInstance-id'].stages["filterByCurrentUser(on=':on')"].$get(
+    ].instances[':accessReviewInstance-id'].stages["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -92373,14 +92389,14 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewS
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsAccessReviewScheduleDefinitionIdInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)[':accessReviewScheduleDefinition-id']['instances']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances["filterByCurrentUser(on=':on')"].$get(args, options),
+    ].instances["filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -92408,12 +92424,12 @@ export async function getIdentityGovernanceAccessReviewsDefinitionsCount(
 
 export async function getIdentityGovernanceAccessReviewsDefinitionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.definitions)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.definitions)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.accessReviews.definitions["filterByCurrentUser(on=':on')"].$get(
+    client.identityGovernance.accessReviews.definitions["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -92748,15 +92764,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDecisionsCount(
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.decisions)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.decisions)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.accessReviews.unified.decisions["filterByCurrentUser(on=':on')"].$get(
-      args,
-      options,
-    ),
+    client.identityGovernance.accessReviews.unified.decisions[
+      "filterByCurrentUser(on='{on}')"
+    ].$get(args, options),
   )
 }
 
@@ -93146,14 +93161,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccess
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances[':accessReviewInstance-id'].decisions["filterByCurrentUser(on=':on')"].$get(
+    ].instances[':accessReviewInstance-id'].decisions["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -93504,7 +93519,7 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccess
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesAccessReviewStageIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -93512,7 +93527,7 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccess
     client.identityGovernance.accessReviews.unified.definitions[
       ':accessReviewScheduleDefinition-id'
     ].instances[':accessReviewInstance-id'].stages[':accessReviewStage-id'].decisions[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -93578,14 +93593,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccess
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccessReviewScheduleDefinitionIdInstancesAccessReviewInstanceIdStagesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances'][':accessReviewInstance-id']['stages']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances[':accessReviewInstance-id'].stages["filterByCurrentUser(on=':on')"].$get(
+    ].instances[':accessReviewInstance-id'].stages["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -93607,14 +93622,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccess
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsAccessReviewScheduleDefinitionIdInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.definitions)[':accessReviewScheduleDefinition-id']['instances']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.definitions[
       ':accessReviewScheduleDefinition-id'
-    ].instances["filterByCurrentUser(on=':on')"].$get(args, options),
+    ].instances["filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -93644,13 +93659,13 @@ export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsCount(
 
 export async function getIdentityGovernanceAccessReviewsUnifiedDefinitionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.definitions)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.definitions)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.definitions[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -93951,13 +93966,13 @@ export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessRe
 
 export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessReviewInstanceIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.instances[':accessReviewInstance-id'].decisions[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -94285,14 +94300,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessRe
 
 export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessReviewInstanceIdStagesAccessReviewStageIdDecisionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['stages'][':accessReviewStage-id']['decisions']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.instances[':accessReviewInstance-id'].stages[
       ':accessReviewStage-id'
-    ].decisions["filterByCurrentUser(on=':on')"].$get(args, options),
+    ].decisions["filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -94350,13 +94365,13 @@ export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessRe
 
 export async function getIdentityGovernanceAccessReviewsUnifiedInstancesAccessReviewInstanceIdStagesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['stages']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.instances)[':accessReviewInstance-id']['stages']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.accessReviews.unified.instances[':accessReviewInstance-id'].stages[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -94374,15 +94389,14 @@ export async function getIdentityGovernanceAccessReviewsUnifiedInstancesCount(
 
 export async function getIdentityGovernanceAccessReviewsUnifiedInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.accessReviews.unified.instances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.accessReviews.unified.instances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.accessReviews.unified.instances["filterByCurrentUser(on=':on')"].$get(
-      args,
-      options,
-    ),
+    client.identityGovernance.accessReviews.unified.instances[
+      "filterByCurrentUser(on='{on}')"
+    ].$get(args, options),
   )
 }
 
@@ -94673,14 +94687,14 @@ export async function getIdentityGovernanceAppConsentAppConsentRequestsAppConsen
 
 export async function getIdentityGovernanceAppConsentAppConsentRequestsAppConsentRequestIdUserConsentRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.appConsent.appConsentRequests)[':appConsentRequest-id']['userConsentRequests']["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.appConsent.appConsentRequests)[':appConsentRequest-id']['userConsentRequests']["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.appConsent.appConsentRequests[
       ':appConsentRequest-id'
-    ].userConsentRequests["filterByCurrentUser(on=':on')"].$get(args, options),
+    ].userConsentRequests["filterByCurrentUser(on='{on}')"].$get(args, options),
   )
 }
 
@@ -94697,12 +94711,12 @@ export async function getIdentityGovernanceAppConsentAppConsentRequestsCount(
 
 export async function getIdentityGovernanceAppConsentAppConsentRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.appConsent.appConsentRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.appConsent.appConsentRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.appConsent.appConsentRequests["filterByCurrentUser(on=':on')"].$get(
+    client.identityGovernance.appConsent.appConsentRequests["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -98548,13 +98562,13 @@ export async function getIdentityGovernanceEntitlementManagementAccessPackageAss
 
 export async function getIdentityGovernanceEntitlementManagementAccessPackageAssignmentApprovalsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.accessPackageAssignmentApprovals[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -101059,13 +101073,13 @@ export async function getIdentityGovernanceEntitlementManagementAccessPackagesCo
 
 export async function getIdentityGovernanceEntitlementManagementAccessPackagesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.accessPackages)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.accessPackages)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.accessPackages[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -101160,13 +101174,13 @@ export async function getIdentityGovernanceEntitlementManagementAccessPackageSug
 
 export async function getIdentityGovernanceEntitlementManagementAccessPackageSuggestionsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.accessPackageSuggestions)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.accessPackageSuggestions)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.accessPackageSuggestions[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -101593,13 +101607,13 @@ export async function getIdentityGovernanceEntitlementManagementAssignmentReques
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignmentRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignmentRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignmentRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -101741,26 +101755,26 @@ export async function getIdentityGovernanceEntitlementManagementAssignmentsAddit
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentsAdditionalAccessAccessPackageIdAccessPackageIdIncompatibleAccessPackageIdIncompatibleAccessPackageId(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignments)["additionalAccess(accessPackageId=':accessPackageId',incompatibleAccessPackageId=':incompatibleAccessPackageId')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignments)["additionalAccess(accessPackageId='{accessPackageId}',incompatibleAccessPackageId='{incompatibleAccessPackageId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignments[
-      "additionalAccess(accessPackageId=':accessPackageId',incompatibleAccessPackageId=':incompatibleAccessPackageId')"
+      "additionalAccess(accessPackageId='{accessPackageId}',incompatibleAccessPackageId='{incompatibleAccessPackageId}')"
     ].$get(args, options),
   )
 }
 
 export async function getIdentityGovernanceEntitlementManagementAssignmentsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement.assignments)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement.assignments)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.entitlementManagement.assignments[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -117227,12 +117241,12 @@ export async function getIdentityGovernanceEntitlementManagementSubjectsAccessPa
 
 export async function getIdentityGovernanceEntitlementManagementSubjectsObjectIdObjectId(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId=':objectId')"]['$get']
+    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId='{objectId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.entitlementManagement["subjects(objectId=':objectId')"].$get(
+    client.identityGovernance.entitlementManagement["subjects(objectId='{objectId}')"].$get(
       args,
       options,
     ),
@@ -117241,12 +117255,12 @@ export async function getIdentityGovernanceEntitlementManagementSubjectsObjectId
 
 export async function deleteIdentityGovernanceEntitlementManagementSubjectsObjectIdObjectId(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId=':objectId')"]['$delete']
+    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId='{objectId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.entitlementManagement["subjects(objectId=':objectId')"].$delete(
+    client.identityGovernance.entitlementManagement["subjects(objectId='{objectId}')"].$delete(
       args,
       options,
     ),
@@ -117255,12 +117269,12 @@ export async function deleteIdentityGovernanceEntitlementManagementSubjectsObjec
 
 export async function patchIdentityGovernanceEntitlementManagementSubjectsObjectIdObjectId(
   args: InferRequestType<
-    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId=':objectId')"]['$patch']
+    (typeof client.identityGovernance.entitlementManagement)["subjects(objectId='{objectId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.identityGovernance.entitlementManagement["subjects(objectId=':objectId')"].$patch(
+    client.identityGovernance.entitlementManagement["subjects(objectId='{objectId}')"].$patch(
       args,
       options,
     ),
@@ -118226,7 +118240,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdRunsRunIdSubjectProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs'][':run-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs'][':run-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -118234,7 +118248,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[':workflow-id'].runs[
       ':run-id'
     ].subjectProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -118684,7 +118698,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdRunsRunIdUserProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs'][':run-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs'][':run-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -118692,7 +118706,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[':workflow-id'].runs[
       ':run-id'
     ].userProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -118712,13 +118726,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdRunsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['runs']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[':workflow-id'].runs[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -118961,7 +118975,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdSubjectProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -118969,7 +118983,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[
       ':workflow-id'
     ].subjectProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -119181,13 +119195,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdTaskReportsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['taskReports']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['taskReports']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[':workflow-id'].taskReports[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -119717,7 +119731,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
 
 export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflowsWorkflowIdUserProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.deletedItems.workflows)[':workflow-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -119725,7 +119739,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsDeletedItemsWorkflo
     client.identityGovernance.lifecycleWorkflows.deletedItems.workflows[
       ':workflow-id'
     ].userProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -120199,52 +120213,52 @@ export async function patchIdentityGovernanceLifecycleWorkflowsInsights(
 
 export async function getIdentityGovernanceLifecycleWorkflowsInsightsMicrosoftGraphIdentityGovernanceTopTasksProcessedSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.topTasksProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.topTasksProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.insights[
-      'microsoft.graph.identityGovernance.topTasksProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.topTasksProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
 
 export async function getIdentityGovernanceLifecycleWorkflowsInsightsMicrosoftGraphIdentityGovernanceTopWorkflowsProcessedSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.topWorkflowsProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.topWorkflowsProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.insights[
-      'microsoft.graph.identityGovernance.topWorkflowsProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.topWorkflowsProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
 
 export async function getIdentityGovernanceLifecycleWorkflowsInsightsMicrosoftGraphIdentityGovernanceWorkflowsProcessedByCategoryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.workflowsProcessedByCategory(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.workflowsProcessedByCategory(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.insights[
-      'microsoft.graph.identityGovernance.workflowsProcessedByCategory(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.workflowsProcessedByCategory(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
 
 export async function getIdentityGovernanceLifecycleWorkflowsInsightsMicrosoftGraphIdentityGovernanceWorkflowsProcessedSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.workflowsProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.insights)['microsoft.graph.identityGovernance.workflowsProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.insights[
-      'microsoft.graph.identityGovernance.workflowsProcessedSummary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.workflowsProcessedSummary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -121023,7 +121037,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdRunsRunIdSubjectProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs'][':run-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs'][':run-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -121031,7 +121045,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].runs[
       ':run-id'
     ].subjectProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -121481,7 +121495,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdRunsRunIdUserProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs'][':run-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs'][':run-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -121489,7 +121503,7 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].runs[
       ':run-id'
     ].userProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -121510,13 +121524,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdRunsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['runs']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].runs[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -121741,13 +121755,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdSubjectProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['subjectProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].subjectProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -121961,13 +121975,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdTaskReportsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['taskReports']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['taskReports']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].taskReports[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -122480,13 +122494,13 @@ export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowId
 
 export async function getIdentityGovernanceLifecycleWorkflowsWorkflowsWorkflowIdUserProcessingResultsMicrosoftGraphIdentityGovernanceSummaryStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)']['$get']
+    (typeof client.identityGovernance.lifecycleWorkflows.workflows)[':workflow-id']['userProcessingResults']['microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.lifecycleWorkflows.workflows[':workflow-id'].userProcessingResults[
-      'microsoft.graph.identityGovernance.summary(startDateTime=:startDateTime,endDateTime=:endDateTime)'
+      'microsoft.graph.identityGovernance.summary(startDateTime={startDateTime},endDateTime={endDateTime})'
     ].$get(args, options),
   )
 }
@@ -123413,13 +123427,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupAssignmentApprov
 
 export async function getIdentityGovernancePrivilegedAccessGroupAssignmentApprovalsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.assignmentApprovals)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.assignmentApprovals)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.assignmentApprovals[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -123572,13 +123586,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupAssignmentSchedu
 
 export async function getIdentityGovernancePrivilegedAccessGroupAssignmentScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.assignmentScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.assignmentScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.assignmentScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -123767,13 +123781,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupAssignmentSchedu
 
 export async function getIdentityGovernancePrivilegedAccessGroupAssignmentScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.assignmentScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.assignmentScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.assignmentScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -123917,13 +123931,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupAssignmentSchedu
 
 export async function getIdentityGovernancePrivilegedAccessGroupAssignmentSchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.assignmentSchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.assignmentSchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.assignmentSchedules[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -124063,13 +124077,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupEligibilitySched
 
 export async function getIdentityGovernancePrivilegedAccessGroupEligibilityScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.eligibilityScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.eligibilityScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.eligibilityScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -124235,13 +124249,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupEligibilitySched
 
 export async function getIdentityGovernancePrivilegedAccessGroupEligibilityScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.eligibilityScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.eligibilityScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.eligibilityScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -124375,13 +124389,13 @@ export async function getIdentityGovernancePrivilegedAccessGroupEligibilitySched
 
 export async function getIdentityGovernancePrivilegedAccessGroupEligibilitySchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.identityGovernance.privilegedAccess.group.eligibilitySchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.identityGovernance.privilegedAccess.group.eligibilitySchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.identityGovernance.privilegedAccess.group.eligibilitySchedules[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -127459,12 +127473,12 @@ export async function getMeCalendarEventsDelta(
 
 export async function getMeCalendarAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendar)["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendar)["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me.calendar["allowedCalendarSharingRoles(User=':User')"].$get(args, options),
+    client.me.calendar["allowedCalendarSharingRoles(User='{User}')"].$get(args, options),
   )
 }
 
@@ -128070,13 +128084,13 @@ export async function getMeCalendarGroupsCalendarGroupIdCalendarsCalendarIdEvent
 
 export async function getMeCalendarGroupsCalendarGroupIdCalendarsCalendarIdAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendarGroups)[':calendarGroup-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendarGroups)[':calendarGroup-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.calendarGroups[':calendarGroup-id'].calendars[':calendar-id'][
-      "allowedCalendarSharingRoles(User=':User')"
+      "allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -128605,12 +128619,12 @@ export async function getMeCalendarsCalendarIdEventsDelta(
 
 export async function getMeCalendarsCalendarIdAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.me.calendars)[':calendar-id']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.me.calendars)[':calendar-id']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me.calendars[':calendar-id']["allowedCalendarSharingRoles(User=':User')"].$get(
+    client.me.calendars[':calendar-id']["allowedCalendarSharingRoles(User='{User}')"].$get(
       args,
       options,
     ),
@@ -131457,13 +131471,13 @@ export async function getMeDataSecurityAndGovernanceSensitivityLabelsSensitivity
 
 export async function getMeDataSecurityAndGovernanceSensitivityLabelsSensitivityLabelIdSublabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.me.dataSecurityAndGovernance.sensitivityLabels)[':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.me.dataSecurityAndGovernance.sensitivityLabels)[':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.dataSecurityAndGovernance.sensitivityLabels[':sensitivityLabel-id'].sublabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -131492,13 +131506,13 @@ export async function getMeDataSecurityAndGovernanceSensitivityLabelsCount(
 
 export async function getMeDataSecurityAndGovernanceSensitivityLabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.me.dataSecurityAndGovernance.sensitivityLabels)["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.me.dataSecurityAndGovernance.sensitivityLabels)["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.dataSecurityAndGovernance.sensitivityLabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -132037,13 +132051,13 @@ export async function getMeEmployeeExperienceLearningCourseActivitiesLearningCou
 
 export async function getMeEmployeeExperienceLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.me.employeeExperience)["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$get']
+    (typeof client.me.employeeExperience)["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.employeeExperience[
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$get(args, options),
   )
 }
@@ -138760,12 +138774,12 @@ export async function getMeExportDeviceAndAppManagementData(options?: ClientRequ
 
 export async function getMeExportDeviceAndAppManagementDataSkipSkipTopTop(
   args: InferRequestType<
-    (typeof client.me)['exportDeviceAndAppManagementData(skip=:skip,top=:top)']['$get']
+    (typeof client.me)['exportDeviceAndAppManagementData(skip={skip},top={top})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me['exportDeviceAndAppManagementData(skip=:skip,top=:top)'].$get(args, options),
+    client.me['exportDeviceAndAppManagementData(skip={skip},top={top})'].$get(args, options),
   )
 }
 
@@ -138827,12 +138841,12 @@ export async function postMeGetMemberObjects(
 
 export async function getMeReminderViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.me)["reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"]['$get']
+    (typeof client.me)["reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me["reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"].$get(
+    client.me["reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"].$get(
       args,
       options,
     ),
@@ -139906,13 +139920,13 @@ export async function postMeOnenoteNotebooksGetNotebookFromWebUrl(
 
 export async function getMeOnenoteNotebooksGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.me.onenote.notebooks)['getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.me.onenote.notebooks)['getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.onenote.notebooks[
-      'getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -141537,12 +141551,12 @@ export async function getMeOutlookSupportedTimeZones(
 
 export async function getMeOutlookSupportedTimeZonesTimeZoneStandardTimeZoneStandard(
   args: InferRequestType<
-    (typeof client.me.outlook)["supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"]['$get']
+    (typeof client.me.outlook)["supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.me.outlook["supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"].$get(
+    client.me.outlook["supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"].$get(
       args,
       options,
     ),
@@ -143223,13 +143237,13 @@ export async function patchMeSettingsWorkHoursAndLocations(
 
 export async function getMeSettingsWorkHoursAndLocationsOccurrencesViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.me.settings.workHoursAndLocations)["occurrencesView(startDateTime=':startDateTime',endDateTime=':endDateTime')"]['$get']
+    (typeof client.me.settings.workHoursAndLocations)["occurrencesView(startDateTime='{startDateTime}',endDateTime='{endDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.me.settings.workHoursAndLocations[
-      "occurrencesView(startDateTime=':startDateTime',endDateTime=':endDateTime')"
+      "occurrencesView(startDateTime='{startDateTime}',endDateTime='{endDateTime}')"
     ].$get(args, options),
   )
 }
@@ -151789,13 +151803,13 @@ export async function getPrivacySubjectRightsRequestsSubjectRightsRequestIdAppro
 
 export async function getPrivacySubjectRightsRequestsSubjectRightsRequestIdApproversUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.privacy.subjectRightsRequests)[':subjectRightsRequest-id']["approvers(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.privacy.subjectRightsRequests)[':subjectRightsRequest-id']["approvers(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.privacy.subjectRightsRequests[':subjectRightsRequest-id'][
-      "approvers(userPrincipalName=':userPrincipalName')"
+      "approvers(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -151896,13 +151910,13 @@ export async function getPrivacySubjectRightsRequestsSubjectRightsRequestIdColla
 
 export async function getPrivacySubjectRightsRequestsSubjectRightsRequestIdCollaboratorsUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.privacy.subjectRightsRequests)[':subjectRightsRequest-id']["collaborators(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.privacy.subjectRightsRequests)[':subjectRightsRequest-id']["collaborators(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.privacy.subjectRightsRequests[':subjectRightsRequest-id'][
-      "collaborators(userPrincipalName=':userPrincipalName')"
+      "collaborators(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -152088,13 +152102,13 @@ export async function getReportsAuthenticationMethodsUsersRegisteredByFeature(
 
 export async function getReportsAuthenticationMethodsUsersRegisteredByFeatureIncludedUserTypesIncludedUserTypesIncludedUserRolesIncludedUserRoles(
   args: InferRequestType<
-    (typeof client.reports.authenticationMethods)["usersRegisteredByFeature(includedUserTypes=':includedUserTypes',includedUserRoles=':includedUserRoles')"]['$get']
+    (typeof client.reports.authenticationMethods)["usersRegisteredByFeature(includedUserTypes='{includedUserTypes}',includedUserRoles='{includedUserRoles}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports.authenticationMethods[
-      "usersRegisteredByFeature(includedUserTypes=':includedUserTypes',includedUserRoles=':includedUserRoles')"
+      "usersRegisteredByFeature(includedUserTypes='{includedUserTypes}',includedUserRoles='{includedUserRoles}')"
     ].$get(args, options),
   )
 }
@@ -152109,13 +152123,13 @@ export async function getReportsAuthenticationMethodsUsersRegisteredByMethod(
 
 export async function getReportsAuthenticationMethodsUsersRegisteredByMethodIncludedUserTypesIncludedUserTypesIncludedUserRolesIncludedUserRoles(
   args: InferRequestType<
-    (typeof client.reports.authenticationMethods)["usersRegisteredByMethod(includedUserTypes=':includedUserTypes',includedUserRoles=':includedUserRoles')"]['$get']
+    (typeof client.reports.authenticationMethods)["usersRegisteredByMethod(includedUserTypes='{includedUserTypes}',includedUserRoles='{includedUserRoles}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports.authenticationMethods[
-      "usersRegisteredByMethod(includedUserTypes=':includedUserTypes',includedUserRoles=':includedUserRoles')"
+      "usersRegisteredByMethod(includedUserTypes='{includedUserTypes}',includedUserRoles='{includedUserRoles}')"
     ].$get(args, options),
   )
 }
@@ -152310,189 +152324,202 @@ export async function getReportsDeviceConfigurationUserActivity(options?: Client
 
 export async function getReportsGetEmailActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getEmailActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getEmailActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getEmailActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getEmailActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailActivityUserDetailDateDate(
-  args: InferRequestType<(typeof client.reports)['getEmailActivityUserDetail(date=:date)']['$get']>,
+  args: InferRequestType<
+    (typeof client.reports)['getEmailActivityUserDetail(date={date})']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getEmailActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getEmailActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getEmailActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getEmailActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailAppUsageAppsUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailAppUsageAppsUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getEmailAppUsageAppsUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailAppUsageAppsUserCounts(period=':period')"].$get(args, options),
+    client.reports["getEmailAppUsageAppsUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailAppUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailAppUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getEmailAppUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailAppUsageUserCounts(period=':period')"].$get(args, options),
+    client.reports["getEmailAppUsageUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailAppUsageUserDetailDateDate(
-  args: InferRequestType<(typeof client.reports)['getEmailAppUsageUserDetail(date=:date)']['$get']>,
+  args: InferRequestType<
+    (typeof client.reports)['getEmailAppUsageUserDetail(date={date})']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getEmailAppUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['getEmailAppUsageUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailAppUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailAppUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getEmailAppUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailAppUsageUserDetail(period=':period')"].$get(args, options),
+    client.reports["getEmailAppUsageUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetEmailAppUsageVersionsUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getEmailAppUsageVersionsUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getEmailAppUsageVersionsUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getEmailAppUsageVersionsUserCounts(period=':period')"].$get(args, options),
+    client.reports["getEmailAppUsageVersionsUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetGroupArchivedPrintJobsGroupIdGroupIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["getGroupArchivedPrintJobs(groupId=':groupId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["getGroupArchivedPrintJobs(groupId='{groupId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "getGroupArchivedPrintJobs(groupId=':groupId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "getGroupArchivedPrintJobs(groupId='{groupId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsGetM365AppPlatformUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getM365AppPlatformUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getM365AppPlatformUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getM365AppPlatformUserCounts(period=':period')"].$get(args, options),
+    client.reports["getM365AppPlatformUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetM365AppUserCountsPeriodPeriod(
-  args: InferRequestType<(typeof client.reports)["getM365AppUserCounts(period=':period')"]['$get']>,
+  args: InferRequestType<
+    (typeof client.reports)["getM365AppUserCounts(period='{period}')"]['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getM365AppUserCounts(period=':period')"].$get(args, options),
+    client.reports["getM365AppUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetM365AppUserDetailDateDate(
-  args: InferRequestType<(typeof client.reports)['getM365AppUserDetail(date=:date)']['$get']>,
-  options?: ClientRequestOptions,
-) {
-  return await parseResponse(client.reports['getM365AppUserDetail(date=:date)'].$get(args, options))
-}
-
-export async function getReportsGetM365AppUserDetailPeriodPeriod(
-  args: InferRequestType<(typeof client.reports)["getM365AppUserDetail(period=':period')"]['$get']>,
+  args: InferRequestType<(typeof client.reports)['getM365AppUserDetail(date={date})']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getM365AppUserDetail(period=':period')"].$get(args, options),
+    client.reports['getM365AppUserDetail(date={date})'].$get(args, options),
+  )
+}
+
+export async function getReportsGetM365AppUserDetailPeriodPeriod(
+  args: InferRequestType<
+    (typeof client.reports)["getM365AppUserDetail(period='{period}')"]['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.reports["getM365AppUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetMailboxUsageDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getMailboxUsageDetail(period=':period')"]['$get']
+    (typeof client.reports)["getMailboxUsageDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getMailboxUsageDetail(period=':period')"].$get(args, options),
+    client.reports["getMailboxUsageDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetMailboxUsageMailboxCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getMailboxUsageMailboxCounts(period=':period')"]['$get']
+    (typeof client.reports)["getMailboxUsageMailboxCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getMailboxUsageMailboxCounts(period=':period')"].$get(args, options),
+    client.reports["getMailboxUsageMailboxCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetMailboxUsageQuotaStatusMailboxCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getMailboxUsageQuotaStatusMailboxCounts(period=':period')"]['$get']
+    (typeof client.reports)["getMailboxUsageQuotaStatusMailboxCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getMailboxUsageQuotaStatusMailboxCounts(period=':period')"].$get(args, options),
+    client.reports["getMailboxUsageQuotaStatusMailboxCounts(period='{period}')"].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getReportsGetMailboxUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getMailboxUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["getMailboxUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getMailboxUsageStorage(period=':period')"].$get(args, options),
+    client.reports["getMailboxUsageStorage(period='{period}')"].$get(args, options),
   )
 }
 
@@ -152516,410 +152543,410 @@ export async function getReportsGetOffice365ActivationsUserDetail(options?: Clie
 
 export async function getReportsGetOffice365ActiveUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365ActiveUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365ActiveUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365ActiveUserCounts(period=':period')"].$get(args, options),
+    client.reports["getOffice365ActiveUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365ActiveUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getOffice365ActiveUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getOffice365ActiveUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getOffice365ActiveUserDetail(date=:date)'].$get(args, options),
+    client.reports['getOffice365ActiveUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365ActiveUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365ActiveUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365ActiveUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365ActiveUserDetail(period=':period')"].$get(args, options),
+    client.reports["getOffice365ActiveUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365GroupsActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365GroupsActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365GroupsActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getOffice365GroupsActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getOffice365GroupsActivityDetail(date=:date)']['$get']
+    (typeof client.reports)['getOffice365GroupsActivityDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getOffice365GroupsActivityDetail(date=:date)'].$get(args, options),
+    client.reports['getOffice365GroupsActivityDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365GroupsActivityDetail(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365GroupsActivityDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365GroupsActivityDetail(period=':period')"].$get(args, options),
+    client.reports["getOffice365GroupsActivityDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365GroupsActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365GroupsActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365GroupsActivityFileCounts(period=':period')"].$get(args, options),
+    client.reports["getOffice365GroupsActivityFileCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityGroupCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365GroupsActivityGroupCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365GroupsActivityGroupCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365GroupsActivityGroupCounts(period=':period')"].$get(args, options),
+    client.reports["getOffice365GroupsActivityGroupCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365GroupsActivityStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365GroupsActivityStorage(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365GroupsActivityStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365GroupsActivityStorage(period=':period')"].$get(args, options),
+    client.reports["getOffice365GroupsActivityStorage(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOffice365ServicesUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOffice365ServicesUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOffice365ServicesUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOffice365ServicesUserCounts(period=':period')"].$get(args, options),
+    client.reports["getOffice365ServicesUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveActivityFileCounts(period=':period')"].$get(args, options),
+    client.reports["getOneDriveActivityFileCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getOneDriveActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getOneDriveActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getOneDriveActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getOneDriveActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getOneDriveActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getOneDriveActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveUsageAccountCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveUsageAccountCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveUsageAccountCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveUsageAccountCounts(period=':period')"].$get(args, options),
+    client.reports["getOneDriveUsageAccountCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveUsageAccountDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getOneDriveUsageAccountDetail(date=:date)']['$get']
+    (typeof client.reports)['getOneDriveUsageAccountDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getOneDriveUsageAccountDetail(date=:date)'].$get(args, options),
+    client.reports['getOneDriveUsageAccountDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveUsageAccountDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveUsageAccountDetail(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveUsageAccountDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveUsageAccountDetail(period=':period')"].$get(args, options),
+    client.reports["getOneDriveUsageAccountDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveUsageFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveUsageFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveUsageFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveUsageFileCounts(period=':period')"].$get(args, options),
+    client.reports["getOneDriveUsageFileCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetOneDriveUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getOneDriveUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["getOneDriveUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getOneDriveUsageStorage(period=':period')"].$get(args, options),
+    client.reports["getOneDriveUsageStorage(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetPrinterArchivedPrintJobsPrinterIdPrinterIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["getPrinterArchivedPrintJobs(printerId=':printerId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["getPrinterArchivedPrintJobs(printerId='{printerId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "getPrinterArchivedPrintJobs(printerId=':printerId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "getPrinterArchivedPrintJobs(printerId='{printerId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsGetRelyingPartyDetailedSummaryPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getRelyingPartyDetailedSummary(period=':period')"]['$get']
+    (typeof client.reports)["getRelyingPartyDetailedSummary(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getRelyingPartyDetailedSummary(period=':period')"].$get(args, options),
+    client.reports["getRelyingPartyDetailedSummary(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointActivityFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointActivityFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointActivityFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointActivityFileCounts(period=':period')"].$get(args, options),
+    client.reports["getSharePointActivityFileCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointActivityPagesPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointActivityPages(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointActivityPages(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointActivityPages(period=':period')"].$get(args, options),
+    client.reports["getSharePointActivityPages(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getSharePointActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getSharePointActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getSharePointActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getSharePointActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getSharePointActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getSharePointActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsageDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getSharePointSiteUsageDetail(date=:date)']['$get']
+    (typeof client.reports)['getSharePointSiteUsageDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getSharePointSiteUsageDetail(date=:date)'].$get(args, options),
+    client.reports['getSharePointSiteUsageDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsageDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointSiteUsageDetail(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointSiteUsageDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointSiteUsageDetail(period=':period')"].$get(args, options),
+    client.reports["getSharePointSiteUsageDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsageFileCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointSiteUsageFileCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointSiteUsageFileCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointSiteUsageFileCounts(period=':period')"].$get(args, options),
+    client.reports["getSharePointSiteUsageFileCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsagePagesPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointSiteUsagePages(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointSiteUsagePages(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointSiteUsagePages(period=':period')"].$get(args, options),
+    client.reports["getSharePointSiteUsagePages(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsageSiteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointSiteUsageSiteCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointSiteUsageSiteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointSiteUsageSiteCounts(period=':period')"].$get(args, options),
+    client.reports["getSharePointSiteUsageSiteCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSharePointSiteUsageStoragePeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSharePointSiteUsageStorage(period=':period')"]['$get']
+    (typeof client.reports)["getSharePointSiteUsageStorage(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSharePointSiteUsageStorage(period=':period')"].$get(args, options),
+    client.reports["getSharePointSiteUsageStorage(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getSkypeForBusinessActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getSkypeForBusinessActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getSkypeForBusinessActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getSkypeForBusinessActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getSkypeForBusinessActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getSkypeForBusinessActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getSkypeForBusinessActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessDeviceUsageDistributionUserCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessDeviceUsageDistributionUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -152928,12 +152955,12 @@ export async function getReportsGetSkypeForBusinessDeviceUsageDistributionUserCo
 
 export async function getReportsGetSkypeForBusinessDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessDeviceUsageUserCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessDeviceUsageUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -152942,23 +152969,23 @@ export async function getReportsGetSkypeForBusinessDeviceUsageUserCountsPeriodPe
 
 export async function getReportsGetSkypeForBusinessDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getSkypeForBusinessDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getSkypeForBusinessDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getSkypeForBusinessDeviceUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['getSkypeForBusinessDeviceUsageUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetSkypeForBusinessDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessDeviceUsageUserDetail(period=':period')"].$get(
+    client.reports["getSkypeForBusinessDeviceUsageUserDetail(period='{period}')"].$get(
       args,
       options,
     ),
@@ -152967,12 +152994,12 @@ export async function getReportsGetSkypeForBusinessDeviceUsageUserDetailPeriodPe
 
 export async function getReportsGetSkypeForBusinessOrganizerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessOrganizerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessOrganizerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessOrganizerActivityCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessOrganizerActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -152981,12 +153008,12 @@ export async function getReportsGetSkypeForBusinessOrganizerActivityCountsPeriod
 
 export async function getReportsGetSkypeForBusinessOrganizerActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessOrganizerActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessOrganizerActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessOrganizerActivityMinuteCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessOrganizerActivityMinuteCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -152995,12 +153022,12 @@ export async function getReportsGetSkypeForBusinessOrganizerActivityMinuteCounts
 
 export async function getReportsGetSkypeForBusinessOrganizerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessOrganizerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessOrganizerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessOrganizerActivityUserCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessOrganizerActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153009,12 +153036,12 @@ export async function getReportsGetSkypeForBusinessOrganizerActivityUserCountsPe
 
 export async function getReportsGetSkypeForBusinessParticipantActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessParticipantActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessParticipantActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessParticipantActivityCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessParticipantActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153023,12 +153050,12 @@ export async function getReportsGetSkypeForBusinessParticipantActivityCountsPeri
 
 export async function getReportsGetSkypeForBusinessParticipantActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessParticipantActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessParticipantActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessParticipantActivityMinuteCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessParticipantActivityMinuteCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153037,12 +153064,12 @@ export async function getReportsGetSkypeForBusinessParticipantActivityMinuteCoun
 
 export async function getReportsGetSkypeForBusinessParticipantActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessParticipantActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessParticipantActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessParticipantActivityUserCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessParticipantActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153051,12 +153078,12 @@ export async function getReportsGetSkypeForBusinessParticipantActivityUserCounts
 
 export async function getReportsGetSkypeForBusinessPeerToPeerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessPeerToPeerActivityCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessPeerToPeerActivityCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153065,12 +153092,12 @@ export async function getReportsGetSkypeForBusinessPeerToPeerActivityCountsPerio
 
 export async function getReportsGetSkypeForBusinessPeerToPeerActivityMinuteCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityMinuteCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityMinuteCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessPeerToPeerActivityMinuteCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessPeerToPeerActivityMinuteCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153079,12 +153106,12 @@ export async function getReportsGetSkypeForBusinessPeerToPeerActivityMinuteCount
 
 export async function getReportsGetSkypeForBusinessPeerToPeerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getSkypeForBusinessPeerToPeerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getSkypeForBusinessPeerToPeerActivityUserCounts(period=':period')"].$get(
+    client.reports["getSkypeForBusinessPeerToPeerActivityUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153093,12 +153120,12 @@ export async function getReportsGetSkypeForBusinessPeerToPeerActivityUserCountsP
 
 export async function getReportsGetTeamsDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsDeviceUsageDistributionUserCounts(period=':period')"].$get(
+    client.reports["getTeamsDeviceUsageDistributionUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153107,197 +153134,199 @@ export async function getReportsGetTeamsDeviceUsageDistributionUserCountsPeriodP
 
 export async function getReportsGetTeamsDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsDeviceUsageUserCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsDeviceUsageUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getTeamsDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getTeamsDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getTeamsDeviceUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['getTeamsDeviceUsageUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsDeviceUsageUserDetail(period=':period')"].$get(args, options),
+    client.reports["getTeamsDeviceUsageUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsTeamActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsTeamActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsTeamActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsTeamActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsTeamActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsTeamActivityDetailDateDate(
-  args: InferRequestType<(typeof client.reports)['getTeamsTeamActivityDetail(date=:date)']['$get']>,
+  args: InferRequestType<
+    (typeof client.reports)['getTeamsTeamActivityDetail(date={date})']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getTeamsTeamActivityDetail(date=:date)'].$get(args, options),
+    client.reports['getTeamsTeamActivityDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsTeamActivityDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsTeamActivityDetail(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsTeamActivityDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsTeamActivityDetail(period=':period')"].$get(args, options),
+    client.reports["getTeamsTeamActivityDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsTeamActivityDistributionCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsTeamActivityDistributionCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsTeamActivityDistributionCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsTeamActivityDistributionCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsTeamActivityDistributionCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsTeamCountsPeriodPeriod(
-  args: InferRequestType<(typeof client.reports)["getTeamsTeamCounts(period=':period')"]['$get']>,
+  args: InferRequestType<(typeof client.reports)["getTeamsTeamCounts(period='{period}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsTeamCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsTeamCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsUserActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsUserActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsUserActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsUserActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsUserActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsUserActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsUserActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsUserActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsUserActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getTeamsUserActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsUserActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getTeamsUserActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getTeamsUserActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getTeamsUserActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getTeamsUserActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetTeamsUserActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getTeamsUserActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getTeamsUserActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getTeamsUserActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getTeamsUserActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetUserArchivedPrintJobsUserIdUserIdStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.reports)["getUserArchivedPrintJobs(userId=':userId',startDateTime=:startDateTime,endDateTime=:endDateTime)"]['$get']
+    (typeof client.reports)["getUserArchivedPrintJobs(userId='{userId}',startDateTime={startDateTime},endDateTime={endDateTime})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "getUserArchivedPrintJobs(userId=':userId',startDateTime=:startDateTime,endDateTime=:endDateTime)"
+      "getUserArchivedPrintJobs(userId='{userId}',startDateTime={startDateTime},endDateTime={endDateTime})"
     ].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getYammerActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerActivityUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerActivityUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerActivityUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerActivityUserCounts(period=':period')"].$get(args, options),
+    client.reports["getYammerActivityUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerActivityUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getYammerActivityUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getYammerActivityUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getYammerActivityUserDetail(date=:date)'].$get(args, options),
+    client.reports['getYammerActivityUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerActivityUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerActivityUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getYammerActivityUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerActivityUserDetail(period=':period')"].$get(args, options),
+    client.reports["getYammerActivityUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerDeviceUsageDistributionUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerDeviceUsageDistributionUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerDeviceUsageDistributionUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerDeviceUsageDistributionUserCounts(period=':period')"].$get(
+    client.reports["getYammerDeviceUsageDistributionUserCounts(period='{period}')"].$get(
       args,
       options,
     ),
@@ -153306,78 +153335,78 @@ export async function getReportsGetYammerDeviceUsageDistributionUserCountsPeriod
 
 export async function getReportsGetYammerDeviceUsageUserCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerDeviceUsageUserCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerDeviceUsageUserCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerDeviceUsageUserCounts(period=':period')"].$get(args, options),
+    client.reports["getYammerDeviceUsageUserCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerDeviceUsageUserDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getYammerDeviceUsageUserDetail(date=:date)']['$get']
+    (typeof client.reports)['getYammerDeviceUsageUserDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getYammerDeviceUsageUserDetail(date=:date)'].$get(args, options),
+    client.reports['getYammerDeviceUsageUserDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerDeviceUsageUserDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerDeviceUsageUserDetail(period=':period')"]['$get']
+    (typeof client.reports)["getYammerDeviceUsageUserDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerDeviceUsageUserDetail(period=':period')"].$get(args, options),
+    client.reports["getYammerDeviceUsageUserDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerGroupsActivityCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerGroupsActivityCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerGroupsActivityCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerGroupsActivityCounts(period=':period')"].$get(args, options),
+    client.reports["getYammerGroupsActivityCounts(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerGroupsActivityDetailDateDate(
   args: InferRequestType<
-    (typeof client.reports)['getYammerGroupsActivityDetail(date=:date)']['$get']
+    (typeof client.reports)['getYammerGroupsActivityDetail(date={date})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports['getYammerGroupsActivityDetail(date=:date)'].$get(args, options),
+    client.reports['getYammerGroupsActivityDetail(date={date})'].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerGroupsActivityDetailPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerGroupsActivityDetail(period=':period')"]['$get']
+    (typeof client.reports)["getYammerGroupsActivityDetail(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerGroupsActivityDetail(period=':period')"].$get(args, options),
+    client.reports["getYammerGroupsActivityDetail(period='{period}')"].$get(args, options),
   )
 }
 
 export async function getReportsGetYammerGroupsActivityGroupCountsPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["getYammerGroupsActivityGroupCounts(period=':period')"]['$get']
+    (typeof client.reports)["getYammerGroupsActivityGroupCounts(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["getYammerGroupsActivityGroupCounts(period=':period')"].$get(args, options),
+    client.reports["getYammerGroupsActivityGroupCounts(period='{period}')"].$get(args, options),
   )
 }
 
@@ -153391,13 +153420,13 @@ export async function getReportsManagedDeviceEnrollmentFailureDetails(
 
 export async function getReportsManagedDeviceEnrollmentFailureDetailsSkipSkipTopTopFilterFilterSkipTokenSkipToken(
   args: InferRequestType<
-    (typeof client.reports)["managedDeviceEnrollmentFailureDetails(skip=:skip,top=:top,filter=':filter',skipToken=':skipToken')"]['$get']
+    (typeof client.reports)["managedDeviceEnrollmentFailureDetails(skip={skip},top={top},filter='{filter}',skipToken='{skipToken}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.reports[
-      "managedDeviceEnrollmentFailureDetails(skip=:skip,top=:top,filter=':filter',skipToken=':skipToken')"
+      "managedDeviceEnrollmentFailureDetails(skip={skip},top={top},filter='{filter}',skipToken='{skipToken}')"
     ].$get(args, options),
   )
 }
@@ -153410,12 +153439,12 @@ export async function getReportsManagedDeviceEnrollmentTopFailures(options?: Cli
 
 export async function getReportsManagedDeviceEnrollmentTopFailuresPeriodPeriod(
   args: InferRequestType<
-    (typeof client.reports)["managedDeviceEnrollmentTopFailures(period=':period')"]['$get']
+    (typeof client.reports)["managedDeviceEnrollmentTopFailures(period='{period}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.reports["managedDeviceEnrollmentTopFailures(period=':period')"].$get(args, options),
+    client.reports["managedDeviceEnrollmentTopFailures(period='{period}')"].$get(args, options),
   )
 }
 
@@ -154644,13 +154673,13 @@ export async function getRoleManagementDirectoryRoleAssignmentScheduleInstancesC
 
 export async function getRoleManagementDirectoryRoleAssignmentScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleAssignmentScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -154833,13 +154862,13 @@ export async function getRoleManagementDirectoryRoleAssignmentScheduleRequestsCo
 
 export async function getRoleManagementDirectoryRoleAssignmentScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleAssignmentScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -154979,12 +155008,12 @@ export async function getRoleManagementDirectoryRoleAssignmentSchedulesCount(
 
 export async function getRoleManagementDirectoryRoleAssignmentSchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleAssignmentSchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleAssignmentSchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.roleManagement.directory.roleAssignmentSchedules["filterByCurrentUser(on=':on')"].$get(
+    client.roleManagement.directory.roleAssignmentSchedules["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -155287,13 +155316,13 @@ export async function getRoleManagementDirectoryRoleEligibilityScheduleInstances
 
 export async function getRoleManagementDirectoryRoleEligibilityScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilityScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilityScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleEligibilityScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -155450,13 +155479,13 @@ export async function getRoleManagementDirectoryRoleEligibilityScheduleRequestsC
 
 export async function getRoleManagementDirectoryRoleEligibilityScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilityScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilityScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.directory.roleEligibilityScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -155583,12 +155612,12 @@ export async function getRoleManagementDirectoryRoleEligibilitySchedulesCount(
 
 export async function getRoleManagementDirectoryRoleEligibilitySchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.directory.roleEligibilitySchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.directory.roleEligibilitySchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.roleManagement.directory.roleEligibilitySchedules["filterByCurrentUser(on=':on')"].$get(
+    client.roleManagement.directory.roleEligibilitySchedules["filterByCurrentUser(on='{on}')"].$get(
       args,
       options,
     ),
@@ -156265,13 +156294,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -156457,13 +156486,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -156607,13 +156636,13 @@ export async function getRoleManagementEntitlementManagementRoleAssignmentSchedu
 
 export async function getRoleManagementEntitlementManagementRoleAssignmentSchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleAssignmentSchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleAssignmentSchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleAssignmentSchedules[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -156927,13 +156956,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilityScheduleInstances[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -157096,13 +157125,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilityScheduleRequests[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -157233,13 +157262,13 @@ export async function getRoleManagementEntitlementManagementRoleEligibilitySched
 
 export async function getRoleManagementEntitlementManagementRoleEligibilitySchedulesFilterByCurrentUserOnOn(
   args: InferRequestType<
-    (typeof client.roleManagement.entitlementManagement.roleEligibilitySchedules)["filterByCurrentUser(on=':on')"]['$get']
+    (typeof client.roleManagement.entitlementManagement.roleEligibilitySchedules)["filterByCurrentUser(on='{on}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.roleManagement.entitlementManagement.roleEligibilitySchedules[
-      "filterByCurrentUser(on=':on')"
+      "filterByCurrentUser(on='{on}')"
     ].$get(args, options),
   )
 }
@@ -160499,13 +160528,13 @@ export async function getSecurityDataSecurityAndGovernanceSensitivityLabelsSensi
 
 export async function getSecurityDataSecurityAndGovernanceSensitivityLabelsSensitivityLabelIdSublabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.security.dataSecurityAndGovernance.sensitivityLabels)[':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.security.dataSecurityAndGovernance.sensitivityLabels)[':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.security.dataSecurityAndGovernance.sensitivityLabels[':sensitivityLabel-id'].sublabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -160536,13 +160565,13 @@ export async function getSecurityDataSecurityAndGovernanceSensitivityLabelsCount
 
 export async function getSecurityDataSecurityAndGovernanceSensitivityLabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.security.dataSecurityAndGovernance.sensitivityLabels)["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.security.dataSecurityAndGovernance.sensitivityLabels)["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.security.dataSecurityAndGovernance.sensitivityLabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -162008,13 +162037,13 @@ export async function getSecuritySubjectRightsRequestsSubjectRightsRequestIdAppr
 
 export async function getSecuritySubjectRightsRequestsSubjectRightsRequestIdApproversUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.security.subjectRightsRequests)[':subjectRightsRequest-id']["approvers(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.security.subjectRightsRequests)[':subjectRightsRequest-id']["approvers(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.security.subjectRightsRequests[':subjectRightsRequest-id'][
-      "approvers(userPrincipalName=':userPrincipalName')"
+      "approvers(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -162114,13 +162143,13 @@ export async function getSecuritySubjectRightsRequestsSubjectRightsRequestIdColl
 
 export async function getSecuritySubjectRightsRequestsSubjectRightsRequestIdCollaboratorsUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client.security.subjectRightsRequests)[':subjectRightsRequest-id']["collaborators(userPrincipalName=':userPrincipalName')"]['$get']
+    (typeof client.security.subjectRightsRequests)[':subjectRightsRequest-id']["collaborators(userPrincipalName='{userPrincipalName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.security.subjectRightsRequests[':subjectRightsRequest-id'][
-      "collaborators(userPrincipalName=':userPrincipalName')"
+      "collaborators(userPrincipalName='{userPrincipalName}')"
     ].$get(args, options),
   )
 }
@@ -164981,39 +165010,39 @@ export async function patchServicePrincipalsServicePrincipalIdFederatedIdentityC
 
 export async function getServicePrincipalsServicePrincipalIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name=':name')"]['$get']
+    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name='{name}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.servicePrincipals[':servicePrincipal-id'][
-      "federatedIdentityCredentials(name=':name')"
+      "federatedIdentityCredentials(name='{name}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteServicePrincipalsServicePrincipalIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name=':name')"]['$delete']
+    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name='{name}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.servicePrincipals[':servicePrincipal-id'][
-      "federatedIdentityCredentials(name=':name')"
+      "federatedIdentityCredentials(name='{name}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchServicePrincipalsServicePrincipalIdFederatedIdentityCredentialsNameName(
   args: InferRequestType<
-    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name=':name')"]['$patch']
+    (typeof client.servicePrincipals)[':servicePrincipal-id']["federatedIdentityCredentials(name='{name}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.servicePrincipals[':servicePrincipal-id'][
-      "federatedIdentityCredentials(name=':name')"
+      "federatedIdentityCredentials(name='{name}')"
     ].$patch(args, options),
   )
 }
@@ -167128,24 +167157,24 @@ export async function getServicePrincipalsServicePrincipalIdTransitiveMemberOfGr
 }
 
 export async function getServicePrincipalsAppIdAppId(
-  args: InferRequestType<(typeof client)["servicePrincipals(appId=':appId')"]['$get']>,
+  args: InferRequestType<(typeof client)["servicePrincipals(appId='{appId}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["servicePrincipals(appId=':appId')"].$get(args, options))
+  return await parseResponse(client["servicePrincipals(appId='{appId}')"].$get(args, options))
 }
 
 export async function deleteServicePrincipalsAppIdAppId(
-  args: InferRequestType<(typeof client)["servicePrincipals(appId=':appId')"]['$delete']>,
+  args: InferRequestType<(typeof client)["servicePrincipals(appId='{appId}')"]['$delete']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["servicePrincipals(appId=':appId')"].$delete(args, options))
+  return await parseResponse(client["servicePrincipals(appId='{appId}')"].$delete(args, options))
 }
 
 export async function patchServicePrincipalsAppIdAppId(
-  args: InferRequestType<(typeof client)["servicePrincipals(appId=':appId')"]['$patch']>,
+  args: InferRequestType<(typeof client)["servicePrincipals(appId='{appId}')"]['$patch']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client["servicePrincipals(appId=':appId')"].$patch(args, options))
+  return await parseResponse(client["servicePrincipals(appId='{appId}')"].$patch(args, options))
 }
 
 export async function getServicePrincipalsCount(
@@ -168480,13 +168509,13 @@ export async function getSharesSharedDriveItemIdListItemsListItemIdGetActivities
 
 export async function getSharesSharedDriveItemIdListItemsListItemIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.shares)[':sharedDriveItem-id']['list']['items'][':listItem-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.shares)[':sharedDriveItem-id']['list']['items'][':listItem-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.shares[':sharedDriveItem-id'].list.items[':listItem-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -168735,12 +168764,12 @@ export async function getSharesSharedDriveItemIdListItemsDelta(
 
 export async function getSharesSharedDriveItemIdListItemsDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.shares)[':sharedDriveItem-id']['list']['items']["delta(token=':token')"]['$get']
+    (typeof client.shares)[':sharedDriveItem-id']['list']['items']["delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.shares[':sharedDriveItem-id'].list.items["delta(token=':token')"].$get(args, options),
+    client.shares[':sharedDriveItem-id'].list.items["delta(token='{token}')"].$get(args, options),
   )
 }
 
@@ -171114,13 +171143,13 @@ export async function getSitesSiteIdListsListIdItemsListItemIdGetActivitiesByInt
 
 export async function getSitesSiteIdListsListIdItemsListItemIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']['lists'][':list-id']['items'][':listItem-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.sites)[':site-id']['lists'][':list-id']['items'][':listItem-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'].lists[':list-id'].items[':listItem-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
@@ -171372,12 +171401,12 @@ export async function getSitesSiteIdListsListIdItemsDelta(
 
 export async function getSitesSiteIdListsListIdItemsDeltaTokenToken(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']['lists'][':list-id']['items']["delta(token=':token')"]['$get']
+    (typeof client.sites)[':site-id']['lists'][':list-id']['items']["delta(token='{token}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id'].lists[':list-id'].items["delta(token=':token')"].$get(args, options),
+    client.sites[':site-id'].lists[':list-id'].items["delta(token='{token}')"].$get(args, options),
   )
 }
 
@@ -171737,25 +171766,25 @@ export async function getSitesSiteIdGetActivitiesByInterval(
 
 export async function getSitesSiteIdGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.sites)[':site-id']["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.sites)[':site-id']["getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getApplicableContentTypesForList(listId=':listId')"].$get(
+    client.sites[':site-id']["getApplicableContentTypesForList(listId='{listId}')"].$get(
       args,
       options,
     ),
@@ -171763,187 +171792,187 @@ export async function getSitesSiteIdGetApplicableContentTypesForListListIdListId
 }
 
 export async function getSitesSiteIdGetByPathPathPath(
-  args: InferRequestType<(typeof client.sites)[':site-id']["getByPath(path=':path')"]['$get']>,
+  args: InferRequestType<(typeof client.sites)[':site-id']["getByPath(path='{path}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['analytics']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['analytics']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].analytics.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].analytics.$get(args, options),
   )
 }
 
 export async function deleteSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['analytics']['$delete']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['analytics']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].analytics.$delete(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].analytics.$delete(args, options),
   )
 }
 
 export async function patchSitesSiteIdGetByPathPathPathAnalytics(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['analytics']['$patch']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['analytics']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].analytics.$patch(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].analytics.$patch(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathColumns(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['columns']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['columns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].columns.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].columns.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathColumns(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['columns']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['columns']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].columns.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].columns.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathContentTypes(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['contentTypes']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['contentTypes']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].contentTypes.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].contentTypes.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathContentTypes(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['contentTypes']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['contentTypes']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].contentTypes.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].contentTypes.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathCreatedByUser(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['createdByUser']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['createdByUser']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].createdByUser.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].createdByUser.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathDrive(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['drive']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['drive']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].drive.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].drive.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathDrives(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['drives']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['drives']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].drives.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].drives.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathExternalColumns(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['externalColumns']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['externalColumns']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].externalColumns.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].externalColumns.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathItems(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['items']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['items']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].items.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].items.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathLastModifiedByUser(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['lastModifiedByUser']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['lastModifiedByUser']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].lastModifiedByUser.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].lastModifiedByUser.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathLists(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['lists']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['lists']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].lists.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].lists.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathLists(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['lists']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['lists']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].lists.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].lists.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathGetActivitiesByInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['getActivitiesByInterval()']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['getActivitiesByInterval()']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"]['getActivitiesByInterval()'].$get(
+    client.sites[':site-id']["getByPath(path='{path}')"]['getActivitiesByInterval()'].$get(
       args,
       options,
     ),
@@ -171952,192 +171981,192 @@ export async function getSitesSiteIdGetByPathPathPathGetActivitiesByInterval(
 
 export async function getSitesSiteIdGetByPathPathPathGetActivitiesByIntervalStartDateTimeStartDateTimeEndDateTimeEndDateTimeIntervalInterval(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]["getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"]['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]["getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"][
-      "getActivitiesByInterval(startDateTime=':startDateTime',endDateTime=':endDateTime',interval=':interval')"
+    client.sites[':site-id']["getByPath(path='{path}')"][
+      "getActivitiesByInterval(startDateTime='{startDateTime}',endDateTime='{endDateTime}',interval='{interval}')"
     ].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathGetApplicableContentTypesForListListIdListId(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]["getApplicableContentTypesForList(listId=':listId')"]['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]["getApplicableContentTypesForList(listId='{listId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"][
-      "getApplicableContentTypesForList(listId=':listId')"
+    client.sites[':site-id']["getByPath(path='{path}')"][
+      "getApplicableContentTypesForList(listId='{listId}')"
     ].$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['onenote']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['onenote']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].onenote.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].onenote.$get(args, options),
   )
 }
 
 export async function deleteSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['onenote']['$delete']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['onenote']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].onenote.$delete(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].onenote.$delete(args, options),
   )
 }
 
 export async function patchSitesSiteIdGetByPathPathPathOnenote(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['onenote']['$patch']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['onenote']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].onenote.$patch(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].onenote.$patch(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathOperations(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['operations']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['operations']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].operations.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].operations.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathOperations(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['operations']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['operations']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].operations.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].operations.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathPages(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['pages']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['pages']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].pages.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].pages.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathPages(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['pages']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['pages']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].pages.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].pages.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathPermissions(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['permissions']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['permissions']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].permissions.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].permissions.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathPermissions(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['permissions']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['permissions']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].permissions.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].permissions.$post(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathSites(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['sites']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['sites']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].sites.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].sites.$get(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['termStore']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['termStore']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].termStore.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].termStore.$get(args, options),
   )
 }
 
 export async function deleteSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['termStore']['$delete']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['termStore']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].termStore.$delete(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].termStore.$delete(args, options),
   )
 }
 
 export async function patchSitesSiteIdGetByPathPathPathTermStore(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['termStore']['$patch']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['termStore']['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].termStore.$patch(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].termStore.$patch(args, options),
   )
 }
 
 export async function getSitesSiteIdGetByPathPathPathTermStores(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['termStores']['$get']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['termStores']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].termStores.$get(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].termStores.$get(args, options),
   )
 }
 
 export async function postSitesSiteIdGetByPathPathPathTermStores(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']["getByPath(path=':path')"]['termStores']['$post']
+    (typeof client.sites)[':site-id']["getByPath(path='{path}')"]['termStores']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.sites[':site-id']["getByPath(path=':path')"].termStores.$post(args, options),
+    client.sites[':site-id']["getByPath(path='{path}')"].termStores.$post(args, options),
   )
 }
 
@@ -172978,13 +173007,13 @@ export async function postSitesSiteIdOnenoteNotebooksGetNotebookFromWebUrl(
 
 export async function getSitesSiteIdOnenoteNotebooksGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.sites)[':site-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.sites)[':site-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.sites[':site-id'].onenote.notebooks[
-      'getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -181586,13 +181615,13 @@ export async function postSolutionsBackupRestoreBrowseSessionsBrowseSessionBaseI
 
 export async function getSolutionsBackupRestoreBrowseSessionsBrowseSessionBaseIdBrowseNextFetchTokenNextFetchToken(
   args: InferRequestType<
-    (typeof client.solutions.backupRestore.browseSessions)[':browseSessionBase-id']["browse(nextFetchToken=':nextFetchToken')"]['$get']
+    (typeof client.solutions.backupRestore.browseSessions)[':browseSessionBase-id']["browse(nextFetchToken='{nextFetchToken}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.backupRestore.browseSessions[':browseSessionBase-id'][
-      "browse(nextFetchToken=':nextFetchToken')"
+      "browse(nextFetchToken='{nextFetchToken}')"
     ].$get(args, options),
   )
 }
@@ -183465,12 +183494,12 @@ export async function patchSolutionsBackupRestoreReports(
 
 export async function getSolutionsBackupRestoreReportsGetStatisticsByPolicyPolicyIdPolicyId(
   args: InferRequestType<
-    (typeof client.solutions.backupRestore.reports)["getStatisticsByPolicy(policyId=':policyId')"]['$get']
+    (typeof client.solutions.backupRestore.reports)["getStatisticsByPolicy(policyId='{policyId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.backupRestore.reports["getStatisticsByPolicy(policyId=':policyId')"].$get(
+    client.solutions.backupRestore.reports["getStatisticsByPolicy(policyId='{policyId}')"].$get(
       args,
       options,
     ),
@@ -185317,12 +185346,12 @@ export async function getSolutionsMigrationsCrossTenantMigrationJobsCrossTenantM
 
 export async function getSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayName(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['$get']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.migrations["crossTenantMigrationJobs(displayName=':displayName')"].$get(
+    client.solutions.migrations["crossTenantMigrationJobs(displayName='{displayName}')"].$get(
       args,
       options,
     ),
@@ -185331,12 +185360,12 @@ export async function getSolutionsMigrationsCrossTenantMigrationJobsDisplayNameD
 
 export async function deleteSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayName(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['$delete']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.migrations["crossTenantMigrationJobs(displayName=':displayName')"].$delete(
+    client.solutions.migrations["crossTenantMigrationJobs(displayName='{displayName}')"].$delete(
       args,
       options,
     ),
@@ -185345,12 +185374,12 @@ export async function deleteSolutionsMigrationsCrossTenantMigrationJobsDisplayNa
 
 export async function patchSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayName(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['$patch']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.migrations["crossTenantMigrationJobs(displayName=':displayName')"].$patch(
+    client.solutions.migrations["crossTenantMigrationJobs(displayName='{displayName}')"].$patch(
       args,
       options,
     ),
@@ -185359,39 +185388,39 @@ export async function patchSolutionsMigrationsCrossTenantMigrationJobsDisplayNam
 
 export async function postSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayNameCancel(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['cancel']['$post']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['cancel']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.migrations[
-      "crossTenantMigrationJobs(displayName=':displayName')"
+      "crossTenantMigrationJobs(displayName='{displayName}')"
     ].cancel.$post(args, options),
   )
 }
 
 export async function postSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayNameMigrate(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['migrate']['$post']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['migrate']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.migrations[
-      "crossTenantMigrationJobs(displayName=':displayName')"
+      "crossTenantMigrationJobs(displayName='{displayName}')"
     ].migrate.$post(args, options),
   )
 }
 
 export async function postSolutionsMigrationsCrossTenantMigrationJobsDisplayNameDisplayNameValidate(
   args: InferRequestType<
-    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName=':displayName')"]['validate']['$post']
+    (typeof client.solutions.migrations)["crossTenantMigrationJobs(displayName='{displayName}')"]['validate']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.migrations[
-      "crossTenantMigrationJobs(displayName=':displayName')"
+      "crossTenantMigrationJobs(displayName='{displayName}')"
     ].validate.$post(args, options),
   )
 }
@@ -186197,104 +186226,104 @@ export async function getSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRe
 
 export async function getSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email=':email')"]['$get']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email='{email}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email=':email')"]['$delete']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email='{email}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email=':email')"]['$patch']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email='{email}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$patch(args, options),
   )
 }
 
 export async function postSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsEmailEmailCancel(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email=':email')"]['cancel']['$post']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(email='{email}')"]['cancel']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].cancel.$post(args, options),
   )
 }
 
 export async function getSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId=':userId')"]['$get']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId='{userId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId=':userId')"]['$delete']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId='{userId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId=':userId')"]['$patch']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId='{userId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$patch(args, options),
   )
 }
 
 export async function postSolutionsVirtualEventsTownhallsVirtualEventTownhallIdRegistrationsUserIdUserIdCancel(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId=':userId')"]['cancel']['$post']
+    (typeof client.solutions.virtualEvents.townhalls)[':virtualEventTownhall-id']["registrations(userId='{userId}')"]['cancel']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[':virtualEventTownhall-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].cancel.$post(args, options),
   )
 }
@@ -186565,25 +186594,25 @@ export async function getSolutionsVirtualEventsTownhallsCount(
 
 export async function getSolutionsVirtualEventsTownhallsGetByUserIdAndRoleUserIdUserIdRoleRole(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)["getByUserIdAndRole(userId=':userId',role=':role')"]['$get']
+    (typeof client.solutions.virtualEvents.townhalls)["getByUserIdAndRole(userId='{userId}',role='{role}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.townhalls[
-      "getByUserIdAndRole(userId=':userId',role=':role')"
+      "getByUserIdAndRole(userId='{userId}',role='{role}')"
     ].$get(args, options),
   )
 }
 
 export async function getSolutionsVirtualEventsTownhallsGetByUserRoleRoleRole(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.townhalls)["getByUserRole(role=':role')"]['$get']
+    (typeof client.solutions.virtualEvents.townhalls)["getByUserRole(role='{role}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.virtualEvents.townhalls["getByUserRole(role=':role')"].$get(args, options),
+    client.solutions.virtualEvents.townhalls["getByUserRole(role='{role}')"].$get(args, options),
   )
 }
 
@@ -186962,104 +186991,104 @@ export async function getSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegi
 
 export async function getSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email=':email')"]['$get']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email='{email}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email=':email')"]['$delete']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email='{email}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsEmailEmail(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email=':email')"]['$patch']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email='{email}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].$patch(args, options),
   )
 }
 
 export async function postSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsEmailEmailCancel(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email=':email')"]['cancel']['$post']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(email='{email}')"]['cancel']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(email=':email')"
+      "registrations(email='{email}')"
     ].cancel.$post(args, options),
   )
 }
 
 export async function getSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId=':userId')"]['$get']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId='{userId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$get(args, options),
   )
 }
 
 export async function deleteSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId=':userId')"]['$delete']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId='{userId}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$delete(args, options),
   )
 }
 
 export async function patchSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsUserIdUserId(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId=':userId')"]['$patch']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId='{userId}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].$patch(args, options),
   )
 }
 
 export async function postSolutionsVirtualEventsWebinarsVirtualEventWebinarIdRegistrationsUserIdUserIdCancel(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId=':userId')"]['cancel']['$post']
+    (typeof client.solutions.virtualEvents.webinars)[':virtualEventWebinar-id']["registrations(userId='{userId}')"]['cancel']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[':virtualEventWebinar-id'][
-      "registrations(userId=':userId')"
+      "registrations(userId='{userId}')"
     ].cancel.$post(args, options),
   )
 }
@@ -187327,25 +187356,25 @@ export async function getSolutionsVirtualEventsWebinarsCount(
 
 export async function getSolutionsVirtualEventsWebinarsGetByUserIdAndRoleUserIdUserIdRoleRole(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)["getByUserIdAndRole(userId=':userId',role=':role')"]['$get']
+    (typeof client.solutions.virtualEvents.webinars)["getByUserIdAndRole(userId='{userId}',role='{role}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.solutions.virtualEvents.webinars[
-      "getByUserIdAndRole(userId=':userId',role=':role')"
+      "getByUserIdAndRole(userId='{userId}',role='{role}')"
     ].$get(args, options),
   )
 }
 
 export async function getSolutionsVirtualEventsWebinarsGetByUserRoleRoleRole(
   args: InferRequestType<
-    (typeof client.solutions.virtualEvents.webinars)["getByUserRole(role=':role')"]['$get']
+    (typeof client.solutions.virtualEvents.webinars)["getByUserRole(role='{role}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.solutions.virtualEvents.webinars["getByUserRole(role=':role')"].$get(args, options),
+    client.solutions.virtualEvents.webinars["getByUserRole(role='{role}')"].$get(args, options),
   )
 }
 
@@ -195462,12 +195491,12 @@ export async function getTenantRelationshipsDelegatedAdminRelationshipsCount(
 
 export async function getTenantRelationshipsFindTenantInformationByDomainNameDomainNameDomainName(
   args: InferRequestType<
-    (typeof client.tenantRelationships)["findTenantInformationByDomainName(domainName=':domainName')"]['$get']
+    (typeof client.tenantRelationships)["findTenantInformationByDomainName(domainName='{domainName}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.tenantRelationships["findTenantInformationByDomainName(domainName=':domainName')"].$get(
+    client.tenantRelationships["findTenantInformationByDomainName(domainName='{domainName}')"].$get(
       args,
       options,
     ),
@@ -195476,12 +195505,12 @@ export async function getTenantRelationshipsFindTenantInformationByDomainNameDom
 
 export async function getTenantRelationshipsFindTenantInformationByTenantIdTenantIdTenantId(
   args: InferRequestType<
-    (typeof client.tenantRelationships)["findTenantInformationByTenantId(tenantId=':tenantId')"]['$get']
+    (typeof client.tenantRelationships)["findTenantInformationByTenantId(tenantId='{tenantId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.tenantRelationships["findTenantInformationByTenantId(tenantId=':tenantId')"].$get(
+    client.tenantRelationships["findTenantInformationByTenantId(tenantId='{tenantId}')"].$get(
       args,
       options,
     ),
@@ -197547,12 +197576,12 @@ export async function getUsersUserIdCalendarEventsDelta(
 
 export async function getUsersUserIdCalendarAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendar']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendar']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.users[':user-id'].calendar["allowedCalendarSharingRoles(User=':User')"].$get(
+    client.users[':user-id'].calendar["allowedCalendarSharingRoles(User='{User}')"].$get(
       args,
       options,
     ),
@@ -198180,13 +198209,13 @@ export async function getUsersUserIdCalendarGroupsCalendarGroupIdCalendarsCalend
 
 export async function getUsersUserIdCalendarGroupsCalendarGroupIdCalendarsCalendarIdAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendarGroups'][':calendarGroup-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendarGroups'][':calendarGroup-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].calendarGroups[':calendarGroup-id'].calendars[':calendar-id'][
-      "allowedCalendarSharingRoles(User=':User')"
+      "allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -198782,13 +198811,13 @@ export async function getUsersUserIdCalendarsCalendarIdEventsDelta(
 
 export async function getUsersUserIdCalendarsCalendarIdAllowedCalendarSharingRolesUserUser(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User=':User')"]['$get']
+    (typeof client.users)[':user-id']['calendars'][':calendar-id']["allowedCalendarSharingRoles(User='{User}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].calendars[':calendar-id'][
-      "allowedCalendarSharingRoles(User=':User')"
+      "allowedCalendarSharingRoles(User='{User}')"
     ].$get(args, options),
   )
 }
@@ -201969,7 +201998,7 @@ export async function getUsersUserIdDataSecurityAndGovernanceSensitivityLabelsSe
 
 export async function getUsersUserIdDataSecurityAndGovernanceSensitivityLabelsSensitivityLabelIdSublabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['dataSecurityAndGovernance']['sensitivityLabels'][':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.users)[':user-id']['dataSecurityAndGovernance']['sensitivityLabels'][':sensitivityLabel-id']['sublabels']["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -201977,7 +202006,7 @@ export async function getUsersUserIdDataSecurityAndGovernanceSensitivityLabelsSe
     client.users[':user-id'].dataSecurityAndGovernance.sensitivityLabels[
       ':sensitivityLabel-id'
     ].sublabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -202008,13 +202037,13 @@ export async function getUsersUserIdDataSecurityAndGovernanceSensitivityLabelsCo
 
 export async function getUsersUserIdDataSecurityAndGovernanceSensitivityLabelsComputeInheritanceLabelIdsLabelIdsLocaleLocaleContentFormatsContentFormats(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['dataSecurityAndGovernance']['sensitivityLabels']["computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"]['$get']
+    (typeof client.users)[':user-id']['dataSecurityAndGovernance']['sensitivityLabels']["computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].dataSecurityAndGovernance.sensitivityLabels[
-      "computeInheritance(labelIds=:labelIds,locale=':locale',contentFormats=:contentFormats)"
+      "computeInheritance(labelIds={labelIds},locale='{locale}',contentFormats={contentFormats})"
     ].$get(args, options),
   )
 }
@@ -202624,13 +202653,13 @@ export async function getUsersUserIdEmployeeExperienceLearningCourseActivitiesLe
 
 export async function getUsersUserIdEmployeeExperienceLearningCourseActivitiesExternalcourseActivityIdExternalcourseActivityId(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['employeeExperience']["learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"]['$get']
+    (typeof client.users)[':user-id']['employeeExperience']["learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].employeeExperience[
-      "learningCourseActivities(externalcourseActivityId=':externalcourseActivityId')"
+      "learningCourseActivities(externalcourseActivityId='{externalcourseActivityId}')"
     ].$get(args, options),
   )
 }
@@ -210215,12 +210244,12 @@ export async function getUsersUserIdExportDeviceAndAppManagementData(
 
 export async function getUsersUserIdExportDeviceAndAppManagementDataSkipSkipTopTop(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['exportDeviceAndAppManagementData(skip=:skip,top=:top)']['$get']
+    (typeof client.users)[':user-id']['exportDeviceAndAppManagementData(skip={skip},top={top})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.users[':user-id']['exportDeviceAndAppManagementData(skip=:skip,top=:top)'].$get(
+    client.users[':user-id']['exportDeviceAndAppManagementData(skip={skip},top={top})'].$get(
       args,
       options,
     ),
@@ -210295,13 +210324,13 @@ export async function postUsersUserIdGetMemberObjects(
 
 export async function getUsersUserIdReminderViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.users)[':user-id']["reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"]['$get']
+    (typeof client.users)[':user-id']["reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'][
-      "reminderView(StartDateTime=':StartDateTime',EndDateTime=':EndDateTime')"
+      "reminderView(StartDateTime='{StartDateTime}',EndDateTime='{EndDateTime}')"
     ].$get(args, options),
   )
 }
@@ -211448,13 +211477,13 @@ export async function postUsersUserIdOnenoteNotebooksGetNotebookFromWebUrl(
 
 export async function getUsersUserIdOnenoteNotebooksGetRecentNotebooksIncludePersonalNotebooksIncludePersonalNotebooks(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)']['$get']
+    (typeof client.users)[':user-id']['onenote']['notebooks']['getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].onenote.notebooks[
-      'getRecentNotebooks(includePersonalNotebooks=:includePersonalNotebooks)'
+      'getRecentNotebooks(includePersonalNotebooks={includePersonalNotebooks})'
     ].$get(args, options),
   )
 }
@@ -213215,13 +213244,13 @@ export async function getUsersUserIdOutlookSupportedTimeZones(
 
 export async function getUsersUserIdOutlookSupportedTimeZonesTimeZoneStandardTimeZoneStandard(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['outlook']["supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"]['$get']
+    (typeof client.users)[':user-id']['outlook']["supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].outlook[
-      "supportedTimeZones(TimeZoneStandard=':TimeZoneStandard')"
+      "supportedTimeZones(TimeZoneStandard='{TimeZoneStandard}')"
     ].$get(args, options),
   )
 }
@@ -215188,13 +215217,13 @@ export async function patchUsersUserIdSettingsWorkHoursAndLocations(
 
 export async function getUsersUserIdSettingsWorkHoursAndLocationsOccurrencesViewStartDateTimeStartDateTimeEndDateTimeEndDateTime(
   args: InferRequestType<
-    (typeof client.users)[':user-id']['settings']['workHoursAndLocations']["occurrencesView(startDateTime=':startDateTime',endDateTime=':endDateTime')"]['$get']
+    (typeof client.users)[':user-id']['settings']['workHoursAndLocations']["occurrencesView(startDateTime='{startDateTime}',endDateTime='{endDateTime}')"]['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.users[':user-id'].settings.workHoursAndLocations[
-      "occurrencesView(startDateTime=':startDateTime',endDateTime=':endDateTime')"
+      "occurrencesView(startDateTime='{startDateTime}',endDateTime='{endDateTime}')"
     ].$get(args, options),
   )
 }
@@ -216592,33 +216621,33 @@ export async function getUsersUserIdTransitiveMemberOfGraphGroupCount(
 }
 
 export async function getUsersUserPrincipalNameUserPrincipalName(
-  args: InferRequestType<(typeof client)["users(userPrincipalName=':userPrincipalName')"]['$get']>,
+  args: InferRequestType<(typeof client)["users(userPrincipalName='{userPrincipalName}')"]['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["users(userPrincipalName=':userPrincipalName')"].$get(args, options),
+    client["users(userPrincipalName='{userPrincipalName}')"].$get(args, options),
   )
 }
 
 export async function deleteUsersUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client)["users(userPrincipalName=':userPrincipalName')"]['$delete']
+    (typeof client)["users(userPrincipalName='{userPrincipalName}')"]['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["users(userPrincipalName=':userPrincipalName')"].$delete(args, options),
+    client["users(userPrincipalName='{userPrincipalName}')"].$delete(args, options),
   )
 }
 
 export async function patchUsersUserPrincipalNameUserPrincipalName(
   args: InferRequestType<
-    (typeof client)["users(userPrincipalName=':userPrincipalName')"]['$patch']
+    (typeof client)["users(userPrincipalName='{userPrincipalName}')"]['$patch']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client["users(userPrincipalName=':userPrincipalName')"].$patch(args, options),
+    client["users(userPrincipalName='{userPrincipalName}')"].$patch(args, options),
   )
 }
 

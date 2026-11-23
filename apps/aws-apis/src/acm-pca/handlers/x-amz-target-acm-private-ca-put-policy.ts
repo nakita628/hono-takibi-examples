@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetACMPrivateCAPutPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetACMPrivateCAPutPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAcmPrivateCaPutPolicyHandler = app.openapi(
-  postXAmzTargetACMPrivateCAPutPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetACMPrivateCAPutPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetACMPrivateCAPutPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

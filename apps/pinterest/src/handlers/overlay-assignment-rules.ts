@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOverlayAssignmentRulesIdRoute,
   getOverlayAssignmentRulesIdRoute,
   getOverlayAssignmentRulesRoute,
@@ -7,21 +7,32 @@ import {
   postOverlayAssignmentRulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOverlayAssignmentRulesRouteHandler: RouteHandler<
+  typeof getOverlayAssignmentRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const overlayAssignmentRulesHandler = app
-  .openapi(getOverlayAssignmentRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOverlayAssignmentRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOverlayAssignmentRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOverlayAssignmentRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOverlayAssignmentRulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOverlayAssignmentRulesRouteHandler: RouteHandler<
+  typeof postOverlayAssignmentRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOverlayAssignmentRulesIdRouteHandler: RouteHandler<
+  typeof getOverlayAssignmentRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOverlayAssignmentRulesIdRouteHandler: RouteHandler<
+  typeof patchOverlayAssignmentRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOverlayAssignmentRulesIdRouteHandler: RouteHandler<
+  typeof deleteOverlayAssignmentRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

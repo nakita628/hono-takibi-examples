@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChecksumTxtRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChecksumTxtRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checksumTxtHandler = app.openapi(getChecksumTxtRoute, (c) => {
+export const getChecksumTxtRouteHandler: RouteHandler<typeof getChecksumTxtRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

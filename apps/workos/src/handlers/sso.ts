@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSsoAuthorizeRoute,
   getSsoJwksClientIdRoute,
   getSsoLogoutRoute,
@@ -8,24 +8,30 @@ import {
   postSsoTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSsoAuthorizeRouteHandler: RouteHandler<typeof getSsoAuthorizeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ssoHandler = app
-  .openapi(getSsoAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoJwksClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSsoLogoutAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSsoProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSsoTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSsoJwksClientIdRouteHandler: RouteHandler<typeof getSsoJwksClientIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoLogoutRouteHandler: RouteHandler<typeof getSsoLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSsoLogoutAuthorizeRouteHandler: RouteHandler<
+  typeof postSsoLogoutAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSsoProfileRouteHandler: RouteHandler<typeof getSsoProfileRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSsoTokenRouteHandler: RouteHandler<typeof postSsoTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

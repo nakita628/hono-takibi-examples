@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAssetsAssetIdRoute,
   getAssetsAssetIdRoute,
   getAssetsRoute,
@@ -9,27 +9,38 @@ import {
   postAssetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAssetsRouteHandler: RouteHandler<typeof getAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assetsHandler = app
-  .openapi(getAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsAssetsRouteHandler: RouteHandler<typeof optionsAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssetsRouteHandler: RouteHandler<typeof postAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAssetsAssetIdRouteHandler: RouteHandler<
+  typeof deleteAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetIdRouteHandler: RouteHandler<typeof getAssetsAssetIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsAssetsAssetIdRouteHandler: RouteHandler<
+  typeof optionsAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAssetsAssetIdRouteHandler: RouteHandler<typeof patchAssetsAssetIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

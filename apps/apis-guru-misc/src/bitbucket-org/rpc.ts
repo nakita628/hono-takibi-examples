@@ -1083,13 +1083,13 @@ export async function postRepositoriesWorkspaceRepoSlugIssuesExport(
 
 export async function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskIdZip(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.repositories[':workspace'][':repo_slug'].issues.export[
-      ':repo_name-issues-:task_id.zip'
+      ':repo_name-issues-{task_id}.zip'
     ].$get(args, options),
   )
 }

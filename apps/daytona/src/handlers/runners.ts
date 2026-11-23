@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRunnersIdRoute,
   getRunnersBySandboxSandboxIdRoute,
   getRunnersBySnapshotRefRoute,
@@ -13,39 +13,58 @@ import {
   postRunnersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRunnersRouteHandler: RouteHandler<typeof getRunnersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const runnersHandler = app
-  .openapi(getRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRunnersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRunnersBySandboxSandboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRunnersBySnapshotRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRunnersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRunnersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRunnersIdFullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRunnersIdSchedulingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRunnersIdDrainingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRunnersHealthcheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRunnersRouteHandler: RouteHandler<typeof postRunnersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRunnersMeRouteHandler: RouteHandler<typeof getRunnersMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRunnersBySandboxSandboxIdRouteHandler: RouteHandler<
+  typeof getRunnersBySandboxSandboxIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRunnersBySnapshotRefRouteHandler: RouteHandler<
+  typeof getRunnersBySnapshotRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRunnersIdRouteHandler: RouteHandler<typeof deleteRunnersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRunnersIdRouteHandler: RouteHandler<typeof getRunnersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRunnersIdFullRouteHandler: RouteHandler<typeof getRunnersIdFullRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRunnersIdSchedulingRouteHandler: RouteHandler<
+  typeof patchRunnersIdSchedulingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRunnersIdDrainingRouteHandler: RouteHandler<
+  typeof patchRunnersIdDrainingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRunnersHealthcheckRouteHandler: RouteHandler<
+  typeof postRunnersHealthcheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

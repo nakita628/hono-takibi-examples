@@ -283,12 +283,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectType: string } } & { query: { archived?: boolean | undefined } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectType: string } } & { query: { archived?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string } } & { query: { archived?: boolean | undefined } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectType: string } } & { json: ObjectTypeDefinitionPatch }
@@ -321,12 +328,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm-object-schemas/2026-09/schemas/:objectType/associations/:associationIdentifier': {
-      $delete: {
-        input: { param: { associationIdentifier: string; objectType: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { associationIdentifier: string; objectType: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { associationIdentifier: string; objectType: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

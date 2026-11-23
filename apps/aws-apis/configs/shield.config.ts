@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/shield/2016-06-02/openapi.yaml',
   output: './src/shield/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shield/types.ts' },
   client: { output: './src/shield/client.ts', baseUrl: '/' },
   rpc: { output: './src/shield/rpc.ts', parseResponse: true },

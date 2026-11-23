@@ -1,139 +1,401 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementHandler,
-  xAmzTargetPhotonAdminProxyServiceAssociateFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackHandler,
-  xAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackHandler,
-  xAmzTargetPhotonAdminProxyServiceCopyImageHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateAppBlockHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateApplicationHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateEntitlementHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateImageBuilderHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingUrlHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateStackHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateStreamingUrlHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateUpdatedImageHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionHandler,
-  xAmzTargetPhotonAdminProxyServiceCreateUserHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteAppBlockHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteApplicationHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteEntitlementHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteImageBuilderHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteImageHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteStackHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionHandler,
-  xAmzTargetPhotonAdminProxyServiceDeleteUserHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeAppBlocksHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeApplicationsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeEntitlementsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeFleetsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeImageBuildersHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeImagesHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeSessionsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeStacksHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeUsersHandler,
-  xAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsHandler,
-  xAmzTargetPhotonAdminProxyServiceDisableUserHandler,
-  xAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementHandler,
-  xAmzTargetPhotonAdminProxyServiceDisassociateFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceEnableUserHandler,
-  xAmzTargetPhotonAdminProxyServiceExpireSessionHandler,
-  xAmzTargetPhotonAdminProxyServiceListAssociatedFleetsHandler,
-  xAmzTargetPhotonAdminProxyServiceListAssociatedStacksHandler,
-  xAmzTargetPhotonAdminProxyServiceListEntitledApplicationsHandler,
-  xAmzTargetPhotonAdminProxyServiceListTagsForResourceHandler,
-  xAmzTargetPhotonAdminProxyServiceStartFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceStartImageBuilderHandler,
-  xAmzTargetPhotonAdminProxyServiceStopFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceStopImageBuilderHandler,
-  xAmzTargetPhotonAdminProxyServiceTagResourceHandler,
-  xAmzTargetPhotonAdminProxyServiceUntagResourceHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateApplicationHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateEntitlementHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateFleetHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsHandler,
-  xAmzTargetPhotonAdminProxyServiceUpdateStackHandler,
+  postXAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute,
+  postXAmzTargetPhotonAdminProxyServiceAssociateFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackRoute,
+  postXAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackRoute,
+  postXAmzTargetPhotonAdminProxyServiceCopyImageRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateAppBlockRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateApplicationRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateEntitlementRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingURLRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateStackRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateStreamingURLRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateUpdatedImageRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionRoute,
+  postXAmzTargetPhotonAdminProxyServiceCreateUserRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteAppBlockRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteApplicationRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteEntitlementRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImageBuilderRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImageRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteStackRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionRoute,
+  postXAmzTargetPhotonAdminProxyServiceDeleteUserRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeAppBlocksRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeApplicationsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeEntitlementsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeFleetsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImageBuildersRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImagesRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeSessionsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeStacksRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUsersRoute,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsRoute,
+  postXAmzTargetPhotonAdminProxyServiceDisableUserRoute,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementRoute,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceEnableUserRoute,
+  postXAmzTargetPhotonAdminProxyServiceExpireSessionRoute,
+  postXAmzTargetPhotonAdminProxyServiceListAssociatedFleetsRoute,
+  postXAmzTargetPhotonAdminProxyServiceListAssociatedStacksRoute,
+  postXAmzTargetPhotonAdminProxyServiceListEntitledApplicationsRoute,
+  postXAmzTargetPhotonAdminProxyServiceListTagsForResourceRoute,
+  postXAmzTargetPhotonAdminProxyServiceStartFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceStartImageBuilderRoute,
+  postXAmzTargetPhotonAdminProxyServiceStopFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceStopImageBuilderRoute,
+  postXAmzTargetPhotonAdminProxyServiceTagResourceRoute,
+  postXAmzTargetPhotonAdminProxyServiceUntagResourceRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateApplicationRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateEntitlementRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateFleetRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsRoute,
+  postXAmzTargetPhotonAdminProxyServiceUpdateStackRoute,
+} from './routes'
+import {
+  postXAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceAssociateFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCopyImageRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateAppBlockRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateApplicationRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateEntitlementRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingURLRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateStackRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateStreamingURLRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateUpdatedImageRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceCreateUserRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteAppBlockRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteApplicationRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteEntitlementRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImageBuilderRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteImageRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteStackRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDeleteUserRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeAppBlocksRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeApplicationsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeEntitlementsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeFleetsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImageBuildersRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeImagesRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeSessionsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeStacksRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUsersRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDisableUserRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceDisassociateFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceEnableUserRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceExpireSessionRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceListAssociatedFleetsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceListAssociatedStacksRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceListEntitledApplicationsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceListTagsForResourceRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceStartFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceStartImageBuilderRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceStopFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceStopImageBuilderRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceTagResourceRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUntagResourceRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateApplicationRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateEntitlementRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateFleetRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsRouteHandler,
+  postXAmzTargetPhotonAdminProxyServiceUpdateStackRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceAssociateFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCopyImageHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateAppBlockHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateApplicationHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateEntitlementHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateImageBuilderHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingUrlHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateStackHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateStreamingUrlHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateUpdatedImageHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceCreateUserHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteAppBlockHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteApplicationHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteEntitlementHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteImageHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteImageBuilderHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteStackHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDeleteUserHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeAppBlocksHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeApplicationsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeEntitlementsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeFleetsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeImageBuildersHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeImagesHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeSessionsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeStacksHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDescribeUsersHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDisableUserHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceDisassociateFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceEnableUserHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceExpireSessionHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceListAssociatedFleetsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceListAssociatedStacksHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceListEntitledApplicationsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceStartFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceStartImageBuilderHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceStopFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceStopImageBuilderHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceTagResourceHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUntagResourceHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateApplicationHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateEntitlementHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateFleetHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsHandler)
-  .route('/', xAmzTargetPhotonAdminProxyServiceUpdateStackHandler)
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceAssociateApplicationFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute,
+    postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceAssociateFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceAssociateFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackRoute,
+    postXAmzTargetPhotonAdminProxyServiceBatchAssociateUserStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackRoute,
+    postXAmzTargetPhotonAdminProxyServiceBatchDisassociateUserStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCopyImageRoute,
+    postXAmzTargetPhotonAdminProxyServiceCopyImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateAppBlockRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateAppBlockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateApplicationRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateDirectoryConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateEntitlementRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateEntitlementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingURLRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateImageBuilderStreamingURLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateStackRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateStreamingURLRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateStreamingURLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateUpdatedImageRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateUpdatedImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateUsageReportSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceCreateUserRoute,
+    postXAmzTargetPhotonAdminProxyServiceCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteAppBlockRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteAppBlockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteApplicationRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteDirectoryConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteEntitlementRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteEntitlementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteImageRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteImageBuilderRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteImageBuilderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteImagePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteStackRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteUsageReportSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDeleteUserRoute,
+    postXAmzTargetPhotonAdminProxyServiceDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeAppBlocksRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeAppBlocksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeApplicationFleetAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeApplicationsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeDirectoryConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeEntitlementsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeEntitlementsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeFleetsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeFleetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeImageBuildersRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeImageBuildersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeImagePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeImagesRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeSessionsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeStacksRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeStacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeUsageReportSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeUserStackAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDescribeUsersRoute,
+    postXAmzTargetPhotonAdminProxyServiceDescribeUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDisableUserRoute,
+    postXAmzTargetPhotonAdminProxyServiceDisableUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementRoute,
+    postXAmzTargetPhotonAdminProxyServiceDisassociateApplicationFromEntitlementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceDisassociateFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceDisassociateFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceEnableUserRoute,
+    postXAmzTargetPhotonAdminProxyServiceEnableUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceExpireSessionRoute,
+    postXAmzTargetPhotonAdminProxyServiceExpireSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceListAssociatedFleetsRoute,
+    postXAmzTargetPhotonAdminProxyServiceListAssociatedFleetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceListAssociatedStacksRoute,
+    postXAmzTargetPhotonAdminProxyServiceListAssociatedStacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceListEntitledApplicationsRoute,
+    postXAmzTargetPhotonAdminProxyServiceListEntitledApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceListTagsForResourceRoute,
+    postXAmzTargetPhotonAdminProxyServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceStartFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceStartFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceStartImageBuilderRoute,
+    postXAmzTargetPhotonAdminProxyServiceStartImageBuilderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceStopFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceStopFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceStopImageBuilderRoute,
+    postXAmzTargetPhotonAdminProxyServiceStopImageBuilderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceTagResourceRoute,
+    postXAmzTargetPhotonAdminProxyServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUntagResourceRoute,
+    postXAmzTargetPhotonAdminProxyServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateApplicationRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateDirectoryConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateEntitlementRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateEntitlementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateFleetRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateImagePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetPhotonAdminProxyServiceUpdateStackRoute,
+    postXAmzTargetPhotonAdminProxyServiceUpdateStackRouteHandler,
+  )
 
 export default app

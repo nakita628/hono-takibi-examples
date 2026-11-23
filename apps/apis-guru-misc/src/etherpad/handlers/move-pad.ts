@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMovePadRoute, postMovePadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMovePadRoute, postMovePadRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMovePadRouteHandler: RouteHandler<typeof getMovePadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const movePadHandler = app
-  .openapi(getMovePadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMovePadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMovePadRouteHandler: RouteHandler<typeof postMovePadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

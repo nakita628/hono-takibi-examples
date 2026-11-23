@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postScaleoutrelayDemoteNodeIdRoute, postScaleoutrelayPromoteNodeIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postScaleoutrelayDemoteNodeIdRoute,
+  postScaleoutrelayPromoteNodeIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postScaleoutrelayDemoteNodeIdRouteHandler: RouteHandler<
+  typeof postScaleoutrelayDemoteNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scaleoutrelayHandler = app
-  .openapi(postScaleoutrelayDemoteNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScaleoutrelayPromoteNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postScaleoutrelayPromoteNodeIdRouteHandler: RouteHandler<
+  typeof postScaleoutrelayPromoteNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

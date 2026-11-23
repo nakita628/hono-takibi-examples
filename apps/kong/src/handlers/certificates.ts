@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCertificatesCertificateIdRoute,
   deleteCertificatesCertificateIdSnisSniNameOrIdRoute,
   getCertificatesCertificateIdRoute,
@@ -14,42 +14,72 @@ import {
   putCertificatesCertificateIdSnisSniNameOrIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCertificatesRouteHandler: RouteHandler<typeof getCertificatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const certificatesHandler = app
-  .openapi(getCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCertificatesCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCertificatesCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCertificatesCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesCertificateNameOrIdSnisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCertificatesCertificateNameOrIdSnisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCertificatesCertificateIdSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesCertificateIdSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCertificatesCertificateIdSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCertificatesCertificateIdSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCertificatesRouteHandler: RouteHandler<typeof postCertificatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCertificatesCertificateIdRouteHandler: RouteHandler<
+  typeof deleteCertificatesCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesCertificateIdRouteHandler: RouteHandler<
+  typeof getCertificatesCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCertificatesCertificateIdRouteHandler: RouteHandler<
+  typeof patchCertificatesCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCertificatesCertificateIdRouteHandler: RouteHandler<
+  typeof putCertificatesCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesCertificateNameOrIdSnisRouteHandler: RouteHandler<
+  typeof getCertificatesCertificateNameOrIdSnisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCertificatesCertificateNameOrIdSnisRouteHandler: RouteHandler<
+  typeof postCertificatesCertificateNameOrIdSnisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCertificatesCertificateIdSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof deleteCertificatesCertificateIdSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesCertificateIdSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof getCertificatesCertificateIdSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCertificatesCertificateIdSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof patchCertificatesCertificateIdSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCertificatesCertificateIdSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof putCertificatesCertificateIdSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

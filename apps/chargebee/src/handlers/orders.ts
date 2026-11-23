@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOrdersOrderIdRoute,
   getOrdersRoute,
   postOrdersImportOrderRoute,
@@ -13,39 +13,64 @@ import {
   postOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrdersRouteHandler: RouteHandler<typeof getOrdersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ordersHandler = app
-  .openapi(getOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersImportOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdAssignOrderNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdResendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdReopenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdCreateRefundableCreditNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrdersRouteHandler: RouteHandler<typeof postOrdersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersImportOrderRouteHandler: RouteHandler<
+  typeof postOrdersImportOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdAssignOrderNumberRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdAssignOrderNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdResendRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdResendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdReopenRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdReopenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdCancelRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrdersOrderIdRouteHandler: RouteHandler<typeof getOrdersOrderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdRouteHandler: RouteHandler<typeof postOrdersOrderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdDeleteRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdCreateRefundableCreditNoteRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdCreateRefundableCreditNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/devicefarm/2015-06-23/openapi.yaml',
   output: './src/devicefarm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/devicefarm/types.ts' },
   client: { output: './src/devicefarm/client.ts', baseUrl: '/' },
   rpc: { output: './src/devicefarm/rpc.ts', parseResponse: true },

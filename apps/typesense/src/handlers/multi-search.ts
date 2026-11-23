@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMultiSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMultiSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const multiSearchHandler = app.openapi(postMultiSearchRoute, (c) => {
+export const postMultiSearchRouteHandler: RouteHandler<typeof postMultiSearchRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

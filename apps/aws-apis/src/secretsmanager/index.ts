@@ -1,53 +1,143 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetSecretsmanagerCancelRotateSecretHandler,
-  xAmzTargetSecretsmanagerCreateSecretHandler,
-  xAmzTargetSecretsmanagerDeleteResourcePolicyHandler,
-  xAmzTargetSecretsmanagerDeleteSecretHandler,
-  xAmzTargetSecretsmanagerDescribeSecretHandler,
-  xAmzTargetSecretsmanagerGetRandomPasswordHandler,
-  xAmzTargetSecretsmanagerGetResourcePolicyHandler,
-  xAmzTargetSecretsmanagerGetSecretValueHandler,
-  xAmzTargetSecretsmanagerListSecretsHandler,
-  xAmzTargetSecretsmanagerListSecretVersionIdsHandler,
-  xAmzTargetSecretsmanagerPutResourcePolicyHandler,
-  xAmzTargetSecretsmanagerPutSecretValueHandler,
-  xAmzTargetSecretsmanagerRemoveRegionsFromReplicationHandler,
-  xAmzTargetSecretsmanagerReplicateSecretToRegionsHandler,
-  xAmzTargetSecretsmanagerRestoreSecretHandler,
-  xAmzTargetSecretsmanagerRotateSecretHandler,
-  xAmzTargetSecretsmanagerStopReplicationToReplicaHandler,
-  xAmzTargetSecretsmanagerTagResourceHandler,
-  xAmzTargetSecretsmanagerUntagResourceHandler,
-  xAmzTargetSecretsmanagerUpdateSecretHandler,
-  xAmzTargetSecretsmanagerUpdateSecretVersionStageHandler,
-  xAmzTargetSecretsmanagerValidateResourcePolicyHandler,
+  postXAmzTargetSecretsmanagerCancelRotateSecretRoute,
+  postXAmzTargetSecretsmanagerCreateSecretRoute,
+  postXAmzTargetSecretsmanagerDeleteResourcePolicyRoute,
+  postXAmzTargetSecretsmanagerDeleteSecretRoute,
+  postXAmzTargetSecretsmanagerDescribeSecretRoute,
+  postXAmzTargetSecretsmanagerGetRandomPasswordRoute,
+  postXAmzTargetSecretsmanagerGetResourcePolicyRoute,
+  postXAmzTargetSecretsmanagerGetSecretValueRoute,
+  postXAmzTargetSecretsmanagerListSecretsRoute,
+  postXAmzTargetSecretsmanagerListSecretVersionIdsRoute,
+  postXAmzTargetSecretsmanagerPutResourcePolicyRoute,
+  postXAmzTargetSecretsmanagerPutSecretValueRoute,
+  postXAmzTargetSecretsmanagerRemoveRegionsFromReplicationRoute,
+  postXAmzTargetSecretsmanagerReplicateSecretToRegionsRoute,
+  postXAmzTargetSecretsmanagerRestoreSecretRoute,
+  postXAmzTargetSecretsmanagerRotateSecretRoute,
+  postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute,
+  postXAmzTargetSecretsmanagerTagResourceRoute,
+  postXAmzTargetSecretsmanagerUntagResourceRoute,
+  postXAmzTargetSecretsmanagerUpdateSecretRoute,
+  postXAmzTargetSecretsmanagerUpdateSecretVersionStageRoute,
+  postXAmzTargetSecretsmanagerValidateResourcePolicyRoute,
+} from './routes'
+import {
+  postXAmzTargetSecretsmanagerCancelRotateSecretRouteHandler,
+  postXAmzTargetSecretsmanagerCreateSecretRouteHandler,
+  postXAmzTargetSecretsmanagerDeleteResourcePolicyRouteHandler,
+  postXAmzTargetSecretsmanagerDeleteSecretRouteHandler,
+  postXAmzTargetSecretsmanagerDescribeSecretRouteHandler,
+  postXAmzTargetSecretsmanagerGetRandomPasswordRouteHandler,
+  postXAmzTargetSecretsmanagerGetResourcePolicyRouteHandler,
+  postXAmzTargetSecretsmanagerGetSecretValueRouteHandler,
+  postXAmzTargetSecretsmanagerListSecretsRouteHandler,
+  postXAmzTargetSecretsmanagerListSecretVersionIdsRouteHandler,
+  postXAmzTargetSecretsmanagerPutResourcePolicyRouteHandler,
+  postXAmzTargetSecretsmanagerPutSecretValueRouteHandler,
+  postXAmzTargetSecretsmanagerRemoveRegionsFromReplicationRouteHandler,
+  postXAmzTargetSecretsmanagerReplicateSecretToRegionsRouteHandler,
+  postXAmzTargetSecretsmanagerRestoreSecretRouteHandler,
+  postXAmzTargetSecretsmanagerRotateSecretRouteHandler,
+  postXAmzTargetSecretsmanagerStopReplicationToReplicaRouteHandler,
+  postXAmzTargetSecretsmanagerTagResourceRouteHandler,
+  postXAmzTargetSecretsmanagerUntagResourceRouteHandler,
+  postXAmzTargetSecretsmanagerUpdateSecretRouteHandler,
+  postXAmzTargetSecretsmanagerUpdateSecretVersionStageRouteHandler,
+  postXAmzTargetSecretsmanagerValidateResourcePolicyRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetSecretsmanagerCancelRotateSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerCreateSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerDeleteResourcePolicyHandler)
-  .route('/', xAmzTargetSecretsmanagerDeleteSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerDescribeSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerGetRandomPasswordHandler)
-  .route('/', xAmzTargetSecretsmanagerGetResourcePolicyHandler)
-  .route('/', xAmzTargetSecretsmanagerGetSecretValueHandler)
-  .route('/', xAmzTargetSecretsmanagerListSecretVersionIdsHandler)
-  .route('/', xAmzTargetSecretsmanagerListSecretsHandler)
-  .route('/', xAmzTargetSecretsmanagerPutResourcePolicyHandler)
-  .route('/', xAmzTargetSecretsmanagerPutSecretValueHandler)
-  .route('/', xAmzTargetSecretsmanagerRemoveRegionsFromReplicationHandler)
-  .route('/', xAmzTargetSecretsmanagerReplicateSecretToRegionsHandler)
-  .route('/', xAmzTargetSecretsmanagerRestoreSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerRotateSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerStopReplicationToReplicaHandler)
-  .route('/', xAmzTargetSecretsmanagerTagResourceHandler)
-  .route('/', xAmzTargetSecretsmanagerUntagResourceHandler)
-  .route('/', xAmzTargetSecretsmanagerUpdateSecretHandler)
-  .route('/', xAmzTargetSecretsmanagerUpdateSecretVersionStageHandler)
-  .route('/', xAmzTargetSecretsmanagerValidateResourcePolicyHandler)
+  .openapi(
+    postXAmzTargetSecretsmanagerCancelRotateSecretRoute,
+    postXAmzTargetSecretsmanagerCancelRotateSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerCreateSecretRoute,
+    postXAmzTargetSecretsmanagerCreateSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerDeleteResourcePolicyRoute,
+    postXAmzTargetSecretsmanagerDeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerDeleteSecretRoute,
+    postXAmzTargetSecretsmanagerDeleteSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerDescribeSecretRoute,
+    postXAmzTargetSecretsmanagerDescribeSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerGetRandomPasswordRoute,
+    postXAmzTargetSecretsmanagerGetRandomPasswordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerGetResourcePolicyRoute,
+    postXAmzTargetSecretsmanagerGetResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerGetSecretValueRoute,
+    postXAmzTargetSecretsmanagerGetSecretValueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerListSecretVersionIdsRoute,
+    postXAmzTargetSecretsmanagerListSecretVersionIdsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerListSecretsRoute,
+    postXAmzTargetSecretsmanagerListSecretsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerPutResourcePolicyRoute,
+    postXAmzTargetSecretsmanagerPutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerPutSecretValueRoute,
+    postXAmzTargetSecretsmanagerPutSecretValueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerRemoveRegionsFromReplicationRoute,
+    postXAmzTargetSecretsmanagerRemoveRegionsFromReplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerReplicateSecretToRegionsRoute,
+    postXAmzTargetSecretsmanagerReplicateSecretToRegionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerRestoreSecretRoute,
+    postXAmzTargetSecretsmanagerRestoreSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerRotateSecretRoute,
+    postXAmzTargetSecretsmanagerRotateSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute,
+    postXAmzTargetSecretsmanagerStopReplicationToReplicaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerTagResourceRoute,
+    postXAmzTargetSecretsmanagerTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerUntagResourceRoute,
+    postXAmzTargetSecretsmanagerUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerUpdateSecretRoute,
+    postXAmzTargetSecretsmanagerUpdateSecretRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerUpdateSecretVersionStageRoute,
+    postXAmzTargetSecretsmanagerUpdateSecretVersionStageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSecretsmanagerValidateResourcePolicyRoute,
+    postXAmzTargetSecretsmanagerValidateResourcePolicyRouteHandler,
+  )
 
 export default app

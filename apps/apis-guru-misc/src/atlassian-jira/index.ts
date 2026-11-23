@@ -1,8 +1,2153 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { restHandler } from './handlers'
+import {
+  deleteRestApi3AttachmentIdRoute,
+  deleteRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+  deleteRestApi3ComponentIdRoute,
+  deleteRestApi3DashboardDashboardIdGadgetGadgetIdRoute,
+  deleteRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+  deleteRestApi3DashboardIdRoute,
+  deleteRestApi3FieldconfigurationIdRoute,
+  deleteRestApi3FieldconfigurationschemeIdRoute,
+  deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdRoute,
+  deleteRestApi3FieldFieldIdContextContextIdRoute,
+  deleteRestApi3FieldFieldKeyOptionOptionIdIssueRoute,
+  deleteRestApi3FieldFieldKeyOptionOptionIdRoute,
+  deleteRestApi3FieldIdRoute,
+  deleteRestApi3FilterIdColumnsRoute,
+  deleteRestApi3FilterIdFavouriteRoute,
+  deleteRestApi3FilterIdPermissionPermissionIdRoute,
+  deleteRestApi3FilterIdRoute,
+  deleteRestApi3GroupRoute,
+  deleteRestApi3GroupUserRoute,
+  deleteRestApi3IssueIssueIdOrKeyCommentIdRoute,
+  deleteRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+  deleteRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+  deleteRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+  deleteRestApi3IssueIssueIdOrKeyRoute,
+  deleteRestApi3IssueIssueIdOrKeyVotesRoute,
+  deleteRestApi3IssueIssueIdOrKeyWatchersRoute,
+  deleteRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+  deleteRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+  deleteRestApi3IssueLinkLinkIdRoute,
+  deleteRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+  deleteRestApi3IssuePropertiesPropertyKeyRoute,
+  deleteRestApi3IssuetypeIdRoute,
+  deleteRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+  deleteRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeIssueTypeIdRoute,
+  deleteRestApi3IssuetypeschemeIssueTypeSchemeIdRoute,
+  deleteRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute,
+  deleteRestApi3MypreferencesLocaleRoute,
+  deleteRestApi3MypreferencesRoute,
+  deleteRestApi3NotificationschemeNotificationSchemeIdNotificationNotificationIdRoute,
+  deleteRestApi3NotificationschemeNotificationSchemeIdRoute,
+  deleteRestApi3PermissionschemeSchemeIdPermissionPermissionIdRoute,
+  deleteRestApi3PermissionschemeSchemeIdRoute,
+  deleteRestApi3PriorityIdRoute,
+  deleteRestApi3ProjectCategoryIdRoute,
+  deleteRestApi3ProjectProjectIdOrKeyAvatarIdRoute,
+  deleteRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+  deleteRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+  deleteRestApi3ProjectProjectIdOrKeyRoute,
+  deleteRestApi3ResolutionIdRoute,
+  deleteRestApi3RoleIdActorsRoute,
+  deleteRestApi3RoleIdRoute,
+  deleteRestApi3ScreenschemeScreenSchemeIdRoute,
+  deleteRestApi3ScreensScreenIdRoute,
+  deleteRestApi3ScreensScreenIdTabsTabIdFieldsIdRoute,
+  deleteRestApi3ScreensScreenIdTabsTabIdRoute,
+  deleteRestApi3StatusesRoute,
+  deleteRestApi3UiModificationsUiModificationIdRoute,
+  deleteRestApi3UniversalAvatarTypeTypeOwnerOwningObjectIdAvatarIdRoute,
+  deleteRestApi3UserColumnsRoute,
+  deleteRestApi3UserPropertiesPropertyKeyRoute,
+  deleteRestApi3UserRoute,
+  deleteRestApi3VersionIdRoute,
+  deleteRestApi3WebhookRoute,
+  deleteRestApi3WorkflowEntityIdRoute,
+  deleteRestApi3WorkflowschemeIdDefaultRoute,
+  deleteRestApi3WorkflowschemeIdDraftDefaultRoute,
+  deleteRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+  deleteRestApi3WorkflowschemeIdDraftRoute,
+  deleteRestApi3WorkflowschemeIdDraftWorkflowRoute,
+  deleteRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+  deleteRestApi3WorkflowschemeIdRoute,
+  deleteRestApi3WorkflowschemeIdWorkflowRoute,
+  deleteRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+  deleteRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+  deleteRestAtlassianConnect1AppModuleDynamicRoute,
+  getRestApi3AnnouncementBannerRoute,
+  getRestApi3AppFieldFieldIdOrKeyContextConfigurationRoute,
+  getRestApi3ApplicationPropertiesAdvancedSettingsRoute,
+  getRestApi3ApplicationPropertiesRoute,
+  getRestApi3ApplicationroleKeyRoute,
+  getRestApi3ApplicationroleRoute,
+  getRestApi3AttachmentContentIdRoute,
+  getRestApi3AttachmentIdExpandHumanRoute,
+  getRestApi3AttachmentIdExpandRawRoute,
+  getRestApi3AttachmentIdRoute,
+  getRestApi3AttachmentMetaRoute,
+  getRestApi3AttachmentThumbnailIdRoute,
+  getRestApi3AuditingRecordRoute,
+  getRestApi3AvatarTypeSystemRoute,
+  getRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+  getRestApi3CommentCommentIdPropertiesRoute,
+  getRestApi3ComponentIdRelatedIssueCountsRoute,
+  getRestApi3ComponentIdRoute,
+  getRestApi3ConfigurationRoute,
+  getRestApi3ConfigurationTimetrackingListRoute,
+  getRestApi3ConfigurationTimetrackingOptionsRoute,
+  getRestApi3ConfigurationTimetrackingRoute,
+  getRestApi3CustomFieldOptionIdRoute,
+  getRestApi3DashboardDashboardIdGadgetRoute,
+  getRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+  getRestApi3DashboardDashboardIdItemsItemIdPropertiesRoute,
+  getRestApi3DashboardGadgetsRoute,
+  getRestApi3DashboardIdRoute,
+  getRestApi3DashboardRoute,
+  getRestApi3DashboardSearchRoute,
+  getRestApi3EventsRoute,
+  getRestApi3FieldconfigurationIdFieldsRoute,
+  getRestApi3FieldconfigurationRoute,
+  getRestApi3FieldconfigurationschemeMappingRoute,
+  getRestApi3FieldconfigurationschemeProjectRoute,
+  getRestApi3FieldconfigurationschemeRoute,
+  getRestApi3FieldFieldIdContextContextIdOptionRoute,
+  getRestApi3FieldFieldIdContextDefaultValueRoute,
+  getRestApi3FieldFieldIdContextIssuetypemappingRoute,
+  getRestApi3FieldFieldIdContextProjectmappingRoute,
+  getRestApi3FieldFieldIdContextRoute,
+  getRestApi3FieldFieldIdContextsRoute,
+  getRestApi3FieldFieldIdScreensRoute,
+  getRestApi3FieldFieldKeyOptionOptionIdRoute,
+  getRestApi3FieldFieldKeyOptionRoute,
+  getRestApi3FieldFieldKeyOptionSuggestionsEditRoute,
+  getRestApi3FieldFieldKeyOptionSuggestionsSearchRoute,
+  getRestApi3FieldRoute,
+  getRestApi3FieldSearchRoute,
+  getRestApi3FieldSearchTrashedRoute,
+  getRestApi3FilterDefaultShareScopeRoute,
+  getRestApi3FilterFavouriteRoute,
+  getRestApi3FilterIdColumnsRoute,
+  getRestApi3FilterIdPermissionPermissionIdRoute,
+  getRestApi3FilterIdPermissionRoute,
+  getRestApi3FilterIdRoute,
+  getRestApi3FilterMyRoute,
+  getRestApi3FilterRoute,
+  getRestApi3FilterSearchRoute,
+  getRestApi3GroupBulkRoute,
+  getRestApi3GroupMemberRoute,
+  getRestApi3GroupRoute,
+  getRestApi3GroupsPickerRoute,
+  getRestApi3GroupuserpickerRoute,
+  getRestApi3InstanceLicenseRoute,
+  getRestApi3IssueCreatemetaRoute,
+  getRestApi3IssueIssueIdOrKeyChangelogRoute,
+  getRestApi3IssueIssueIdOrKeyCommentIdRoute,
+  getRestApi3IssueIssueIdOrKeyCommentRoute,
+  getRestApi3IssueIssueIdOrKeyEditmetaRoute,
+  getRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+  getRestApi3IssueIssueIdOrKeyPropertiesRoute,
+  getRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+  getRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+  getRestApi3IssueIssueIdOrKeyRoute,
+  getRestApi3IssueIssueIdOrKeyTransitionsRoute,
+  getRestApi3IssueIssueIdOrKeyVotesRoute,
+  getRestApi3IssueIssueIdOrKeyWatchersRoute,
+  getRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+  getRestApi3IssueIssueIdOrKeyWorklogRoute,
+  getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+  getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesRoute,
+  getRestApi3IssueLinkLinkIdRoute,
+  getRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+  getRestApi3IssueLinkTypeRoute,
+  getRestApi3IssuePickerRoute,
+  getRestApi3IssuesecurityschemesIdRoute,
+  getRestApi3IssuesecurityschemesIssueSecuritySchemeIdMembersRoute,
+  getRestApi3IssuesecurityschemesRoute,
+  getRestApi3IssuetypeIdAlternativesRoute,
+  getRestApi3IssuetypeIdRoute,
+  getRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+  getRestApi3IssuetypeIssueTypeIdPropertiesRoute,
+  getRestApi3IssuetypeProjectRoute,
+  getRestApi3IssuetypeRoute,
+  getRestApi3IssuetypeschemeMappingRoute,
+  getRestApi3IssuetypeschemeProjectRoute,
+  getRestApi3IssuetypeschemeRoute,
+  getRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdProjectRoute,
+  getRestApi3IssuetypescreenschemeMappingRoute,
+  getRestApi3IssuetypescreenschemeProjectRoute,
+  getRestApi3IssuetypescreenschemeRoute,
+  getRestApi3JqlAutocompletedataRoute,
+  getRestApi3JqlAutocompletedataSuggestionsRoute,
+  getRestApi3JqlFunctionComputationRoute,
+  getRestApi3LabelRoute,
+  getRestApi3LicenseApproximateLicenseCountProductApplicationKeyRoute,
+  getRestApi3LicenseApproximateLicenseCountRoute,
+  getRestApi3MypermissionsRoute,
+  getRestApi3MypreferencesLocaleRoute,
+  getRestApi3MypreferencesRoute,
+  getRestApi3MyselfRoute,
+  getRestApi3NotificationschemeIdRoute,
+  getRestApi3NotificationschemeProjectRoute,
+  getRestApi3NotificationschemeRoute,
+  getRestApi3PermissionschemeRoute,
+  getRestApi3PermissionschemeSchemeIdPermissionPermissionIdRoute,
+  getRestApi3PermissionschemeSchemeIdPermissionRoute,
+  getRestApi3PermissionschemeSchemeIdRoute,
+  getRestApi3PermissionsRoute,
+  getRestApi3PriorityIdRoute,
+  getRestApi3PriorityRoute,
+  getRestApi3PrioritySearchRoute,
+  getRestApi3ProjectCategoryIdRoute,
+  getRestApi3ProjectCategoryRoute,
+  getRestApi3ProjectProjectIdEmailRoute,
+  getRestApi3ProjectProjectIdHierarchyRoute,
+  getRestApi3ProjectProjectIdOrKeyAvatarsRoute,
+  getRestApi3ProjectProjectIdOrKeyComponentRoute,
+  getRestApi3ProjectProjectIdOrKeyComponentsRoute,
+  getRestApi3ProjectProjectIdOrKeyFeaturesRoute,
+  getRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+  getRestApi3ProjectProjectIdOrKeyPropertiesRoute,
+  getRestApi3ProjectProjectIdOrKeyRoledetailsRoute,
+  getRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+  getRestApi3ProjectProjectIdOrKeyRoleRoute,
+  getRestApi3ProjectProjectIdOrKeyRoute,
+  getRestApi3ProjectProjectIdOrKeyStatusesRoute,
+  getRestApi3ProjectProjectIdOrKeyVersionRoute,
+  getRestApi3ProjectProjectIdOrKeyVersionsRoute,
+  getRestApi3ProjectProjectKeyOrIdIssuesecuritylevelschemeRoute,
+  getRestApi3ProjectProjectKeyOrIdNotificationschemeRoute,
+  getRestApi3ProjectProjectKeyOrIdPermissionschemeRoute,
+  getRestApi3ProjectProjectKeyOrIdSecuritylevelRoute,
+  getRestApi3ProjectRecentRoute,
+  getRestApi3ProjectRoute,
+  getRestApi3ProjectSearchRoute,
+  getRestApi3ProjectTypeAccessibleRoute,
+  getRestApi3ProjectTypeProjectTypeKeyAccessibleRoute,
+  getRestApi3ProjectTypeProjectTypeKeyRoute,
+  getRestApi3ProjectTypeRoute,
+  getRestApi3ProjectvalidateKeyRoute,
+  getRestApi3ProjectvalidateValidProjectKeyRoute,
+  getRestApi3ProjectvalidateValidProjectNameRoute,
+  getRestApi3ResolutionIdRoute,
+  getRestApi3ResolutionRoute,
+  getRestApi3ResolutionSearchRoute,
+  getRestApi3RoleIdActorsRoute,
+  getRestApi3RoleIdRoute,
+  getRestApi3RoleRoute,
+  getRestApi3ScreenschemeRoute,
+  getRestApi3ScreensRoute,
+  getRestApi3ScreensScreenIdAvailableFieldsRoute,
+  getRestApi3ScreensScreenIdTabsRoute,
+  getRestApi3ScreensScreenIdTabsTabIdFieldsRoute,
+  getRestApi3SearchRoute,
+  getRestApi3SecuritylevelIdRoute,
+  getRestApi3ServerInfoRoute,
+  getRestApi3SettingsColumnsRoute,
+  getRestApi3StatuscategoryIdOrKeyRoute,
+  getRestApi3StatuscategoryRoute,
+  getRestApi3StatusesRoute,
+  getRestApi3StatusesSearchRoute,
+  getRestApi3StatusIdOrNameRoute,
+  getRestApi3StatusRoute,
+  getRestApi3TaskTaskIdRoute,
+  getRestApi3UiModificationsRoute,
+  getRestApi3UniversalAvatarTypeTypeOwnerEntityIdRoute,
+  getRestApi3UniversalAvatarViewTypeTypeAvatarIdRoute,
+  getRestApi3UniversalAvatarViewTypeTypeOwnerEntityIdRoute,
+  getRestApi3UniversalAvatarViewTypeTypeRoute,
+  getRestApi3UserAssignableMultiProjectSearchRoute,
+  getRestApi3UserAssignableSearchRoute,
+  getRestApi3UserBulkMigrationRoute,
+  getRestApi3UserBulkRoute,
+  getRestApi3UserColumnsRoute,
+  getRestApi3UserEmailBulkRoute,
+  getRestApi3UserEmailRoute,
+  getRestApi3UserGroupsRoute,
+  getRestApi3UserPermissionSearchRoute,
+  getRestApi3UserPickerRoute,
+  getRestApi3UserPropertiesPropertyKeyRoute,
+  getRestApi3UserPropertiesRoute,
+  getRestApi3UserRoute,
+  getRestApi3UserSearchQueryKeyRoute,
+  getRestApi3UserSearchQueryRoute,
+  getRestApi3UserSearchRoute,
+  getRestApi3UsersRoute,
+  getRestApi3UsersSearchRoute,
+  getRestApi3UserViewissueSearchRoute,
+  getRestApi3VersionIdRelatedIssueCountsRoute,
+  getRestApi3VersionIdRoute,
+  getRestApi3VersionIdUnresolvedIssueCountRoute,
+  getRestApi3WebhookFailedRoute,
+  getRestApi3WebhookRoute,
+  getRestApi3WorkflowRoute,
+  getRestApi3WorkflowRuleConfigRoute,
+  getRestApi3WorkflowschemeIdDefaultRoute,
+  getRestApi3WorkflowschemeIdDraftDefaultRoute,
+  getRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+  getRestApi3WorkflowschemeIdDraftRoute,
+  getRestApi3WorkflowschemeIdDraftWorkflowRoute,
+  getRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+  getRestApi3WorkflowschemeIdRoute,
+  getRestApi3WorkflowschemeIdWorkflowRoute,
+  getRestApi3WorkflowschemeProjectRoute,
+  getRestApi3WorkflowschemeRoute,
+  getRestApi3WorkflowSearchRoute,
+  getRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+  getRestApi3WorklogDeletedRoute,
+  getRestApi3WorklogUpdatedRoute,
+  getRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+  getRestAtlassianConnect1AddonsAddonKeyPropertiesRoute,
+  getRestAtlassianConnect1AppModuleDynamicRoute,
+  postRestApi3AppFieldValueRoute,
+  postRestApi3CommentListRoute,
+  postRestApi3ComponentRoute,
+  postRestApi3DashboardDashboardIdGadgetRoute,
+  postRestApi3DashboardIdCopyRoute,
+  postRestApi3DashboardRoute,
+  postRestApi3ExpressionAnalyseRoute,
+  postRestApi3ExpressionEvalRoute,
+  postRestApi3FieldconfigurationRoute,
+  postRestApi3FieldconfigurationschemeIdMappingDeleteRoute,
+  postRestApi3FieldconfigurationschemeRoute,
+  postRestApi3FieldFieldIdContextContextIdIssuetypeRemoveRoute,
+  postRestApi3FieldFieldIdContextContextIdOptionRoute,
+  postRestApi3FieldFieldIdContextContextIdProjectRemoveRoute,
+  postRestApi3FieldFieldIdContextMappingRoute,
+  postRestApi3FieldFieldIdContextRoute,
+  postRestApi3FieldFieldKeyOptionRoute,
+  postRestApi3FieldIdRestoreRoute,
+  postRestApi3FieldIdTrashRoute,
+  postRestApi3FieldRoute,
+  postRestApi3FilterIdPermissionRoute,
+  postRestApi3FilterRoute,
+  postRestApi3GroupRoute,
+  postRestApi3GroupUserRoute,
+  postRestApi3IssueBulkRoute,
+  postRestApi3IssueIssueIdOrKeyAttachmentsRoute,
+  postRestApi3IssueIssueIdOrKeyChangelogListRoute,
+  postRestApi3IssueIssueIdOrKeyCommentRoute,
+  postRestApi3IssueIssueIdOrKeyNotifyRoute,
+  postRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+  postRestApi3IssueIssueIdOrKeyTransitionsRoute,
+  postRestApi3IssueIssueIdOrKeyVotesRoute,
+  postRestApi3IssueIssueIdOrKeyWatchersRoute,
+  postRestApi3IssueIssueIdOrKeyWorklogRoute,
+  postRestApi3IssueLinkRoute,
+  postRestApi3IssueLinkTypeRoute,
+  postRestApi3IssuePropertiesMultiRoute,
+  postRestApi3IssuePropertiesRoute,
+  postRestApi3IssueRoute,
+  postRestApi3IssuetypeIdAvatar2Route,
+  postRestApi3IssuetypeRoute,
+  postRestApi3IssuetypeschemeRoute,
+  postRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRemoveRoute,
+  postRestApi3IssuetypescreenschemeRoute,
+  postRestApi3IssueWatchingRoute,
+  postRestApi3JqlAutocompletedataRoute,
+  postRestApi3JqlFunctionComputationRoute,
+  postRestApi3JqlMatchRoute,
+  postRestApi3JqlParseRoute,
+  postRestApi3JqlPdcleanerRoute,
+  postRestApi3JqlSanitizeRoute,
+  postRestApi3NotificationschemeRoute,
+  postRestApi3PermissionsCheckRoute,
+  postRestApi3PermissionschemeRoute,
+  postRestApi3PermissionschemeSchemeIdPermissionRoute,
+  postRestApi3PermissionsProjectRoute,
+  postRestApi3PriorityRoute,
+  postRestApi3ProjectCategoryRoute,
+  postRestApi3ProjectProjectIdOrKeyArchiveRoute,
+  postRestApi3ProjectProjectIdOrKeyAvatar2Route,
+  postRestApi3ProjectProjectIdOrKeyDeleteRoute,
+  postRestApi3ProjectProjectIdOrKeyRestoreRoute,
+  postRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+  postRestApi3ProjectRoute,
+  postRestApi3ResolutionRoute,
+  postRestApi3RoleIdActorsRoute,
+  postRestApi3RoleIdRoute,
+  postRestApi3RoleRoute,
+  postRestApi3ScreensAddToDefaultFieldIdRoute,
+  postRestApi3ScreenschemeRoute,
+  postRestApi3ScreensRoute,
+  postRestApi3ScreensScreenIdTabsRoute,
+  postRestApi3ScreensScreenIdTabsTabIdFieldsIdMoveRoute,
+  postRestApi3ScreensScreenIdTabsTabIdFieldsRoute,
+  postRestApi3ScreensScreenIdTabsTabIdMovePosRoute,
+  postRestApi3SearchRoute,
+  postRestApi3StatusesRoute,
+  postRestApi3TaskTaskIdCancelRoute,
+  postRestApi3UiModificationsRoute,
+  postRestApi3UniversalAvatarTypeTypeOwnerEntityIdRoute,
+  postRestApi3UserRoute,
+  postRestApi3VersionIdMoveRoute,
+  postRestApi3VersionIdRemoveAndSwapRoute,
+  postRestApi3VersionRoute,
+  postRestApi3WebhookRoute,
+  postRestApi3WorkflowRoute,
+  postRestApi3WorkflowschemeIdCreatedraftRoute,
+  postRestApi3WorkflowschemeIdDraftPublishRoute,
+  postRestApi3WorkflowschemeRoute,
+  postRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+  postRestApi3WorklogListRoute,
+  postRestAtlassianConnect1AppModuleDynamicRoute,
+  postRestAtlassianConnect1MigrationWorkflowRuleSearchRoute,
+  putRestApi3AnnouncementBannerRoute,
+  putRestApi3AppFieldFieldIdOrKeyContextConfigurationRoute,
+  putRestApi3AppFieldFieldIdOrKeyValueRoute,
+  putRestApi3ApplicationPropertiesIdRoute,
+  putRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+  putRestApi3ComponentIdRoute,
+  putRestApi3ConfigurationTimetrackingOptionsRoute,
+  putRestApi3ConfigurationTimetrackingRoute,
+  putRestApi3DashboardDashboardIdGadgetGadgetIdRoute,
+  putRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+  putRestApi3DashboardIdRoute,
+  putRestApi3FieldconfigurationIdFieldsRoute,
+  putRestApi3FieldconfigurationIdRoute,
+  putRestApi3FieldconfigurationschemeIdMappingRoute,
+  putRestApi3FieldconfigurationschemeIdRoute,
+  putRestApi3FieldconfigurationschemeProjectRoute,
+  putRestApi3FieldFieldIdContextContextIdIssuetypeRoute,
+  putRestApi3FieldFieldIdContextContextIdOptionMoveRoute,
+  putRestApi3FieldFieldIdContextContextIdOptionRoute,
+  putRestApi3FieldFieldIdContextContextIdProjectRoute,
+  putRestApi3FieldFieldIdContextContextIdRoute,
+  putRestApi3FieldFieldIdContextDefaultValueRoute,
+  putRestApi3FieldFieldIdRoute,
+  putRestApi3FieldFieldKeyOptionOptionIdRoute,
+  putRestApi3FilterDefaultShareScopeRoute,
+  putRestApi3FilterIdColumnsRoute,
+  putRestApi3FilterIdFavouriteRoute,
+  putRestApi3FilterIdOwnerRoute,
+  putRestApi3FilterIdRoute,
+  putRestApi3IssueIssueIdOrKeyAssigneeRoute,
+  putRestApi3IssueIssueIdOrKeyCommentIdRoute,
+  putRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+  putRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+  putRestApi3IssueIssueIdOrKeyRoute,
+  putRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+  putRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+  putRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+  putRestApi3IssuePropertiesPropertyKeyRoute,
+  putRestApi3IssuetypeIdRoute,
+  putRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeMoveRoute,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeRoute,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdRoute,
+  putRestApi3IssuetypeschemeProjectRoute,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingDefaultRoute,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRoute,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute,
+  putRestApi3IssuetypescreenschemeProjectRoute,
+  putRestApi3MypreferencesLocaleRoute,
+  putRestApi3MypreferencesRoute,
+  putRestApi3NotificationschemeIdNotificationRoute,
+  putRestApi3NotificationschemeIdRoute,
+  putRestApi3PermissionschemeSchemeIdRoute,
+  putRestApi3PriorityDefaultRoute,
+  putRestApi3PriorityIdRoute,
+  putRestApi3PriorityMoveRoute,
+  putRestApi3ProjectCategoryIdRoute,
+  putRestApi3ProjectProjectIdEmailRoute,
+  putRestApi3ProjectProjectIdOrKeyAvatarRoute,
+  putRestApi3ProjectProjectIdOrKeyFeaturesFeatureKeyRoute,
+  putRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+  putRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+  putRestApi3ProjectProjectIdOrKeyRoute,
+  putRestApi3ProjectProjectIdOrKeyTypeNewProjectTypeKeyRoute,
+  putRestApi3ProjectProjectKeyOrIdPermissionschemeRoute,
+  putRestApi3ResolutionDefaultRoute,
+  putRestApi3ResolutionIdRoute,
+  putRestApi3ResolutionMoveRoute,
+  putRestApi3RoleIdRoute,
+  putRestApi3ScreenschemeScreenSchemeIdRoute,
+  putRestApi3ScreensScreenIdRoute,
+  putRestApi3ScreensScreenIdTabsTabIdRoute,
+  putRestApi3SettingsColumnsRoute,
+  putRestApi3StatusesRoute,
+  putRestApi3UiModificationsUiModificationIdRoute,
+  putRestApi3UserColumnsRoute,
+  putRestApi3UserPropertiesPropertyKeyRoute,
+  putRestApi3VersionIdMergetoMoveIssuesToRoute,
+  putRestApi3VersionIdRoute,
+  putRestApi3WebhookRefreshRoute,
+  putRestApi3WorkflowRuleConfigDeleteRoute,
+  putRestApi3WorkflowRuleConfigRoute,
+  putRestApi3WorkflowschemeIdDefaultRoute,
+  putRestApi3WorkflowschemeIdDraftDefaultRoute,
+  putRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+  putRestApi3WorkflowschemeIdDraftRoute,
+  putRestApi3WorkflowschemeIdDraftWorkflowRoute,
+  putRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+  putRestApi3WorkflowschemeIdRoute,
+  putRestApi3WorkflowschemeIdWorkflowRoute,
+  putRestApi3WorkflowschemeProjectRoute,
+  putRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+  putRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+  putRestAtlassianConnect1MigrationFieldRoute,
+  putRestAtlassianConnect1MigrationPropertiesEntityTypeRoute,
+} from './routes'
+import {
+  deleteRestApi3AttachmentIdRouteHandler,
+  deleteRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3ComponentIdRouteHandler,
+  deleteRestApi3DashboardDashboardIdGadgetGadgetIdRouteHandler,
+  deleteRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3DashboardIdRouteHandler,
+  deleteRestApi3FieldconfigurationIdRouteHandler,
+  deleteRestApi3FieldconfigurationschemeIdRouteHandler,
+  deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdRouteHandler,
+  deleteRestApi3FieldFieldIdContextContextIdRouteHandler,
+  deleteRestApi3FieldFieldKeyOptionOptionIdIssueRouteHandler,
+  deleteRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  deleteRestApi3FieldIdRouteHandler,
+  deleteRestApi3FilterIdColumnsRouteHandler,
+  deleteRestApi3FilterIdFavouriteRouteHandler,
+  deleteRestApi3FilterIdPermissionPermissionIdRouteHandler,
+  deleteRestApi3FilterIdRouteHandler,
+  deleteRestApi3GroupRouteHandler,
+  deleteRestApi3GroupUserRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyVotesRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  deleteRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3IssueLinkLinkIdRouteHandler,
+  deleteRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  deleteRestApi3IssuePropertiesPropertyKeyRouteHandler,
+  deleteRestApi3IssuetypeIdRouteHandler,
+  deleteRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeIssueTypeIdRouteHandler,
+  deleteRestApi3IssuetypeschemeIssueTypeSchemeIdRouteHandler,
+  deleteRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRouteHandler,
+  deleteRestApi3MypreferencesLocaleRouteHandler,
+  deleteRestApi3MypreferencesRouteHandler,
+  deleteRestApi3NotificationschemeNotificationSchemeIdNotificationNotificationIdRouteHandler,
+  deleteRestApi3NotificationschemeNotificationSchemeIdRouteHandler,
+  deleteRestApi3PermissionschemeSchemeIdPermissionPermissionIdRouteHandler,
+  deleteRestApi3PermissionschemeSchemeIdRouteHandler,
+  deleteRestApi3PriorityIdRouteHandler,
+  deleteRestApi3ProjectCategoryIdRouteHandler,
+  deleteRestApi3ProjectProjectIdOrKeyAvatarIdRouteHandler,
+  deleteRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  deleteRestApi3ProjectProjectIdOrKeyRouteHandler,
+  deleteRestApi3ResolutionIdRouteHandler,
+  deleteRestApi3RoleIdActorsRouteHandler,
+  deleteRestApi3RoleIdRouteHandler,
+  deleteRestApi3ScreenschemeScreenSchemeIdRouteHandler,
+  deleteRestApi3ScreensScreenIdRouteHandler,
+  deleteRestApi3ScreensScreenIdTabsTabIdFieldsIdRouteHandler,
+  deleteRestApi3ScreensScreenIdTabsTabIdRouteHandler,
+  deleteRestApi3StatusesRouteHandler,
+  deleteRestApi3UiModificationsUiModificationIdRouteHandler,
+  deleteRestApi3UniversalAvatarTypeTypeOwnerOwningObjectIdAvatarIdRouteHandler,
+  deleteRestApi3UserColumnsRouteHandler,
+  deleteRestApi3UserPropertiesPropertyKeyRouteHandler,
+  deleteRestApi3UserRouteHandler,
+  deleteRestApi3VersionIdRouteHandler,
+  deleteRestApi3WebhookRouteHandler,
+  deleteRestApi3WorkflowEntityIdRouteHandler,
+  deleteRestApi3WorkflowschemeIdDefaultRouteHandler,
+  deleteRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  deleteRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  deleteRestApi3WorkflowschemeIdDraftRouteHandler,
+  deleteRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  deleteRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  deleteRestApi3WorkflowschemeIdRouteHandler,
+  deleteRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  deleteRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  deleteRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  deleteRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  getRestApi3AnnouncementBannerRouteHandler,
+  getRestApi3AppFieldFieldIdOrKeyContextConfigurationRouteHandler,
+  getRestApi3ApplicationPropertiesAdvancedSettingsRouteHandler,
+  getRestApi3ApplicationPropertiesRouteHandler,
+  getRestApi3ApplicationroleKeyRouteHandler,
+  getRestApi3ApplicationroleRouteHandler,
+  getRestApi3AttachmentContentIdRouteHandler,
+  getRestApi3AttachmentIdExpandHumanRouteHandler,
+  getRestApi3AttachmentIdExpandRawRouteHandler,
+  getRestApi3AttachmentIdRouteHandler,
+  getRestApi3AttachmentMetaRouteHandler,
+  getRestApi3AttachmentThumbnailIdRouteHandler,
+  getRestApi3AuditingRecordRouteHandler,
+  getRestApi3AvatarTypeSystemRouteHandler,
+  getRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  getRestApi3CommentCommentIdPropertiesRouteHandler,
+  getRestApi3ComponentIdRelatedIssueCountsRouteHandler,
+  getRestApi3ComponentIdRouteHandler,
+  getRestApi3ConfigurationRouteHandler,
+  getRestApi3ConfigurationTimetrackingListRouteHandler,
+  getRestApi3ConfigurationTimetrackingOptionsRouteHandler,
+  getRestApi3ConfigurationTimetrackingRouteHandler,
+  getRestApi3CustomFieldOptionIdRouteHandler,
+  getRestApi3DashboardDashboardIdGadgetRouteHandler,
+  getRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  getRestApi3DashboardDashboardIdItemsItemIdPropertiesRouteHandler,
+  getRestApi3DashboardGadgetsRouteHandler,
+  getRestApi3DashboardIdRouteHandler,
+  getRestApi3DashboardRouteHandler,
+  getRestApi3DashboardSearchRouteHandler,
+  getRestApi3EventsRouteHandler,
+  getRestApi3FieldconfigurationIdFieldsRouteHandler,
+  getRestApi3FieldconfigurationRouteHandler,
+  getRestApi3FieldconfigurationschemeMappingRouteHandler,
+  getRestApi3FieldconfigurationschemeProjectRouteHandler,
+  getRestApi3FieldconfigurationschemeRouteHandler,
+  getRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  getRestApi3FieldFieldIdContextDefaultValueRouteHandler,
+  getRestApi3FieldFieldIdContextIssuetypemappingRouteHandler,
+  getRestApi3FieldFieldIdContextProjectmappingRouteHandler,
+  getRestApi3FieldFieldIdContextRouteHandler,
+  getRestApi3FieldFieldIdContextsRouteHandler,
+  getRestApi3FieldFieldIdScreensRouteHandler,
+  getRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  getRestApi3FieldFieldKeyOptionRouteHandler,
+  getRestApi3FieldFieldKeyOptionSuggestionsEditRouteHandler,
+  getRestApi3FieldFieldKeyOptionSuggestionsSearchRouteHandler,
+  getRestApi3FieldRouteHandler,
+  getRestApi3FieldSearchRouteHandler,
+  getRestApi3FieldSearchTrashedRouteHandler,
+  getRestApi3FilterDefaultShareScopeRouteHandler,
+  getRestApi3FilterFavouriteRouteHandler,
+  getRestApi3FilterIdColumnsRouteHandler,
+  getRestApi3FilterIdPermissionPermissionIdRouteHandler,
+  getRestApi3FilterIdPermissionRouteHandler,
+  getRestApi3FilterIdRouteHandler,
+  getRestApi3FilterMyRouteHandler,
+  getRestApi3FilterRouteHandler,
+  getRestApi3FilterSearchRouteHandler,
+  getRestApi3GroupBulkRouteHandler,
+  getRestApi3GroupMemberRouteHandler,
+  getRestApi3GroupRouteHandler,
+  getRestApi3GroupsPickerRouteHandler,
+  getRestApi3GroupuserpickerRouteHandler,
+  getRestApi3InstanceLicenseRouteHandler,
+  getRestApi3IssueCreatemetaRouteHandler,
+  getRestApi3IssueIssueIdOrKeyChangelogRouteHandler,
+  getRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  getRestApi3IssueIssueIdOrKeyCommentRouteHandler,
+  getRestApi3IssueIssueIdOrKeyEditmetaRouteHandler,
+  getRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  getRestApi3IssueIssueIdOrKeyPropertiesRouteHandler,
+  getRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  getRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  getRestApi3IssueIssueIdOrKeyRouteHandler,
+  getRestApi3IssueIssueIdOrKeyTransitionsRouteHandler,
+  getRestApi3IssueIssueIdOrKeyVotesRouteHandler,
+  getRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  getRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  getRestApi3IssueIssueIdOrKeyWorklogRouteHandler,
+  getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesRouteHandler,
+  getRestApi3IssueLinkLinkIdRouteHandler,
+  getRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  getRestApi3IssueLinkTypeRouteHandler,
+  getRestApi3IssuePickerRouteHandler,
+  getRestApi3IssuesecurityschemesIdRouteHandler,
+  getRestApi3IssuesecurityschemesIssueSecuritySchemeIdMembersRouteHandler,
+  getRestApi3IssuesecurityschemesRouteHandler,
+  getRestApi3IssuetypeIdAlternativesRouteHandler,
+  getRestApi3IssuetypeIdRouteHandler,
+  getRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  getRestApi3IssuetypeIssueTypeIdPropertiesRouteHandler,
+  getRestApi3IssuetypeProjectRouteHandler,
+  getRestApi3IssuetypeRouteHandler,
+  getRestApi3IssuetypeschemeMappingRouteHandler,
+  getRestApi3IssuetypeschemeProjectRouteHandler,
+  getRestApi3IssuetypeschemeRouteHandler,
+  getRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdProjectRouteHandler,
+  getRestApi3IssuetypescreenschemeMappingRouteHandler,
+  getRestApi3IssuetypescreenschemeProjectRouteHandler,
+  getRestApi3IssuetypescreenschemeRouteHandler,
+  getRestApi3JqlAutocompletedataRouteHandler,
+  getRestApi3JqlAutocompletedataSuggestionsRouteHandler,
+  getRestApi3JqlFunctionComputationRouteHandler,
+  getRestApi3LabelRouteHandler,
+  getRestApi3LicenseApproximateLicenseCountProductApplicationKeyRouteHandler,
+  getRestApi3LicenseApproximateLicenseCountRouteHandler,
+  getRestApi3MypermissionsRouteHandler,
+  getRestApi3MypreferencesLocaleRouteHandler,
+  getRestApi3MypreferencesRouteHandler,
+  getRestApi3MyselfRouteHandler,
+  getRestApi3NotificationschemeIdRouteHandler,
+  getRestApi3NotificationschemeProjectRouteHandler,
+  getRestApi3NotificationschemeRouteHandler,
+  getRestApi3PermissionschemeRouteHandler,
+  getRestApi3PermissionschemeSchemeIdPermissionPermissionIdRouteHandler,
+  getRestApi3PermissionschemeSchemeIdPermissionRouteHandler,
+  getRestApi3PermissionschemeSchemeIdRouteHandler,
+  getRestApi3PermissionsRouteHandler,
+  getRestApi3PriorityIdRouteHandler,
+  getRestApi3PriorityRouteHandler,
+  getRestApi3PrioritySearchRouteHandler,
+  getRestApi3ProjectCategoryIdRouteHandler,
+  getRestApi3ProjectCategoryRouteHandler,
+  getRestApi3ProjectProjectIdEmailRouteHandler,
+  getRestApi3ProjectProjectIdHierarchyRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyAvatarsRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyComponentRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyComponentsRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyFeaturesRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyPropertiesRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyRoledetailsRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyRoleRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyStatusesRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyVersionRouteHandler,
+  getRestApi3ProjectProjectIdOrKeyVersionsRouteHandler,
+  getRestApi3ProjectProjectKeyOrIdIssuesecuritylevelschemeRouteHandler,
+  getRestApi3ProjectProjectKeyOrIdNotificationschemeRouteHandler,
+  getRestApi3ProjectProjectKeyOrIdPermissionschemeRouteHandler,
+  getRestApi3ProjectProjectKeyOrIdSecuritylevelRouteHandler,
+  getRestApi3ProjectRecentRouteHandler,
+  getRestApi3ProjectRouteHandler,
+  getRestApi3ProjectSearchRouteHandler,
+  getRestApi3ProjectTypeAccessibleRouteHandler,
+  getRestApi3ProjectTypeProjectTypeKeyAccessibleRouteHandler,
+  getRestApi3ProjectTypeProjectTypeKeyRouteHandler,
+  getRestApi3ProjectTypeRouteHandler,
+  getRestApi3ProjectvalidateKeyRouteHandler,
+  getRestApi3ProjectvalidateValidProjectKeyRouteHandler,
+  getRestApi3ProjectvalidateValidProjectNameRouteHandler,
+  getRestApi3ResolutionIdRouteHandler,
+  getRestApi3ResolutionRouteHandler,
+  getRestApi3ResolutionSearchRouteHandler,
+  getRestApi3RoleIdActorsRouteHandler,
+  getRestApi3RoleIdRouteHandler,
+  getRestApi3RoleRouteHandler,
+  getRestApi3ScreenschemeRouteHandler,
+  getRestApi3ScreensRouteHandler,
+  getRestApi3ScreensScreenIdAvailableFieldsRouteHandler,
+  getRestApi3ScreensScreenIdTabsRouteHandler,
+  getRestApi3ScreensScreenIdTabsTabIdFieldsRouteHandler,
+  getRestApi3SearchRouteHandler,
+  getRestApi3SecuritylevelIdRouteHandler,
+  getRestApi3ServerInfoRouteHandler,
+  getRestApi3SettingsColumnsRouteHandler,
+  getRestApi3StatuscategoryIdOrKeyRouteHandler,
+  getRestApi3StatuscategoryRouteHandler,
+  getRestApi3StatusesRouteHandler,
+  getRestApi3StatusesSearchRouteHandler,
+  getRestApi3StatusIdOrNameRouteHandler,
+  getRestApi3StatusRouteHandler,
+  getRestApi3TaskTaskIdRouteHandler,
+  getRestApi3UiModificationsRouteHandler,
+  getRestApi3UniversalAvatarTypeTypeOwnerEntityIdRouteHandler,
+  getRestApi3UniversalAvatarViewTypeTypeAvatarIdRouteHandler,
+  getRestApi3UniversalAvatarViewTypeTypeOwnerEntityIdRouteHandler,
+  getRestApi3UniversalAvatarViewTypeTypeRouteHandler,
+  getRestApi3UserAssignableMultiProjectSearchRouteHandler,
+  getRestApi3UserAssignableSearchRouteHandler,
+  getRestApi3UserBulkMigrationRouteHandler,
+  getRestApi3UserBulkRouteHandler,
+  getRestApi3UserColumnsRouteHandler,
+  getRestApi3UserEmailBulkRouteHandler,
+  getRestApi3UserEmailRouteHandler,
+  getRestApi3UserGroupsRouteHandler,
+  getRestApi3UserPermissionSearchRouteHandler,
+  getRestApi3UserPickerRouteHandler,
+  getRestApi3UserPropertiesPropertyKeyRouteHandler,
+  getRestApi3UserPropertiesRouteHandler,
+  getRestApi3UserRouteHandler,
+  getRestApi3UserSearchQueryKeyRouteHandler,
+  getRestApi3UserSearchQueryRouteHandler,
+  getRestApi3UserSearchRouteHandler,
+  getRestApi3UsersRouteHandler,
+  getRestApi3UsersSearchRouteHandler,
+  getRestApi3UserViewissueSearchRouteHandler,
+  getRestApi3VersionIdRelatedIssueCountsRouteHandler,
+  getRestApi3VersionIdRouteHandler,
+  getRestApi3VersionIdUnresolvedIssueCountRouteHandler,
+  getRestApi3WebhookFailedRouteHandler,
+  getRestApi3WebhookRouteHandler,
+  getRestApi3WorkflowRouteHandler,
+  getRestApi3WorkflowRuleConfigRouteHandler,
+  getRestApi3WorkflowschemeIdDefaultRouteHandler,
+  getRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  getRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  getRestApi3WorkflowschemeIdDraftRouteHandler,
+  getRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  getRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  getRestApi3WorkflowschemeIdRouteHandler,
+  getRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  getRestApi3WorkflowschemeProjectRouteHandler,
+  getRestApi3WorkflowschemeRouteHandler,
+  getRestApi3WorkflowSearchRouteHandler,
+  getRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  getRestApi3WorklogDeletedRouteHandler,
+  getRestApi3WorklogUpdatedRouteHandler,
+  getRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  getRestAtlassianConnect1AddonsAddonKeyPropertiesRouteHandler,
+  getRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  postRestApi3AppFieldValueRouteHandler,
+  postRestApi3CommentListRouteHandler,
+  postRestApi3ComponentRouteHandler,
+  postRestApi3DashboardDashboardIdGadgetRouteHandler,
+  postRestApi3DashboardIdCopyRouteHandler,
+  postRestApi3DashboardRouteHandler,
+  postRestApi3ExpressionAnalyseRouteHandler,
+  postRestApi3ExpressionEvalRouteHandler,
+  postRestApi3FieldconfigurationRouteHandler,
+  postRestApi3FieldconfigurationschemeIdMappingDeleteRouteHandler,
+  postRestApi3FieldconfigurationschemeRouteHandler,
+  postRestApi3FieldFieldIdContextContextIdIssuetypeRemoveRouteHandler,
+  postRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  postRestApi3FieldFieldIdContextContextIdProjectRemoveRouteHandler,
+  postRestApi3FieldFieldIdContextMappingRouteHandler,
+  postRestApi3FieldFieldIdContextRouteHandler,
+  postRestApi3FieldFieldKeyOptionRouteHandler,
+  postRestApi3FieldIdRestoreRouteHandler,
+  postRestApi3FieldIdTrashRouteHandler,
+  postRestApi3FieldRouteHandler,
+  postRestApi3FilterIdPermissionRouteHandler,
+  postRestApi3FilterRouteHandler,
+  postRestApi3GroupRouteHandler,
+  postRestApi3GroupUserRouteHandler,
+  postRestApi3IssueBulkRouteHandler,
+  postRestApi3IssueIssueIdOrKeyAttachmentsRouteHandler,
+  postRestApi3IssueIssueIdOrKeyChangelogListRouteHandler,
+  postRestApi3IssueIssueIdOrKeyCommentRouteHandler,
+  postRestApi3IssueIssueIdOrKeyNotifyRouteHandler,
+  postRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  postRestApi3IssueIssueIdOrKeyTransitionsRouteHandler,
+  postRestApi3IssueIssueIdOrKeyVotesRouteHandler,
+  postRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  postRestApi3IssueIssueIdOrKeyWorklogRouteHandler,
+  postRestApi3IssueLinkRouteHandler,
+  postRestApi3IssueLinkTypeRouteHandler,
+  postRestApi3IssuePropertiesMultiRouteHandler,
+  postRestApi3IssuePropertiesRouteHandler,
+  postRestApi3IssueRouteHandler,
+  postRestApi3IssuetypeIdAvatar2RouteHandler,
+  postRestApi3IssuetypeRouteHandler,
+  postRestApi3IssuetypeschemeRouteHandler,
+  postRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRemoveRouteHandler,
+  postRestApi3IssuetypescreenschemeRouteHandler,
+  postRestApi3IssueWatchingRouteHandler,
+  postRestApi3JqlAutocompletedataRouteHandler,
+  postRestApi3JqlFunctionComputationRouteHandler,
+  postRestApi3JqlMatchRouteHandler,
+  postRestApi3JqlParseRouteHandler,
+  postRestApi3JqlPdcleanerRouteHandler,
+  postRestApi3JqlSanitizeRouteHandler,
+  postRestApi3NotificationschemeRouteHandler,
+  postRestApi3PermissionsCheckRouteHandler,
+  postRestApi3PermissionschemeRouteHandler,
+  postRestApi3PermissionschemeSchemeIdPermissionRouteHandler,
+  postRestApi3PermissionsProjectRouteHandler,
+  postRestApi3PriorityRouteHandler,
+  postRestApi3ProjectCategoryRouteHandler,
+  postRestApi3ProjectProjectIdOrKeyArchiveRouteHandler,
+  postRestApi3ProjectProjectIdOrKeyAvatar2RouteHandler,
+  postRestApi3ProjectProjectIdOrKeyDeleteRouteHandler,
+  postRestApi3ProjectProjectIdOrKeyRestoreRouteHandler,
+  postRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  postRestApi3ProjectRouteHandler,
+  postRestApi3ResolutionRouteHandler,
+  postRestApi3RoleIdActorsRouteHandler,
+  postRestApi3RoleIdRouteHandler,
+  postRestApi3RoleRouteHandler,
+  postRestApi3ScreensAddToDefaultFieldIdRouteHandler,
+  postRestApi3ScreenschemeRouteHandler,
+  postRestApi3ScreensRouteHandler,
+  postRestApi3ScreensScreenIdTabsRouteHandler,
+  postRestApi3ScreensScreenIdTabsTabIdFieldsIdMoveRouteHandler,
+  postRestApi3ScreensScreenIdTabsTabIdFieldsRouteHandler,
+  postRestApi3ScreensScreenIdTabsTabIdMovePosRouteHandler,
+  postRestApi3SearchRouteHandler,
+  postRestApi3StatusesRouteHandler,
+  postRestApi3TaskTaskIdCancelRouteHandler,
+  postRestApi3UiModificationsRouteHandler,
+  postRestApi3UniversalAvatarTypeTypeOwnerEntityIdRouteHandler,
+  postRestApi3UserRouteHandler,
+  postRestApi3VersionIdMoveRouteHandler,
+  postRestApi3VersionIdRemoveAndSwapRouteHandler,
+  postRestApi3VersionRouteHandler,
+  postRestApi3WebhookRouteHandler,
+  postRestApi3WorkflowRouteHandler,
+  postRestApi3WorkflowschemeIdCreatedraftRouteHandler,
+  postRestApi3WorkflowschemeIdDraftPublishRouteHandler,
+  postRestApi3WorkflowschemeRouteHandler,
+  postRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  postRestApi3WorklogListRouteHandler,
+  postRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  postRestAtlassianConnect1MigrationWorkflowRuleSearchRouteHandler,
+  putRestApi3AnnouncementBannerRouteHandler,
+  putRestApi3AppFieldFieldIdOrKeyContextConfigurationRouteHandler,
+  putRestApi3AppFieldFieldIdOrKeyValueRouteHandler,
+  putRestApi3ApplicationPropertiesIdRouteHandler,
+  putRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  putRestApi3ComponentIdRouteHandler,
+  putRestApi3ConfigurationTimetrackingOptionsRouteHandler,
+  putRestApi3ConfigurationTimetrackingRouteHandler,
+  putRestApi3DashboardDashboardIdGadgetGadgetIdRouteHandler,
+  putRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  putRestApi3DashboardIdRouteHandler,
+  putRestApi3FieldconfigurationIdFieldsRouteHandler,
+  putRestApi3FieldconfigurationIdRouteHandler,
+  putRestApi3FieldconfigurationschemeIdMappingRouteHandler,
+  putRestApi3FieldconfigurationschemeIdRouteHandler,
+  putRestApi3FieldconfigurationschemeProjectRouteHandler,
+  putRestApi3FieldFieldIdContextContextIdIssuetypeRouteHandler,
+  putRestApi3FieldFieldIdContextContextIdOptionMoveRouteHandler,
+  putRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  putRestApi3FieldFieldIdContextContextIdProjectRouteHandler,
+  putRestApi3FieldFieldIdContextContextIdRouteHandler,
+  putRestApi3FieldFieldIdContextDefaultValueRouteHandler,
+  putRestApi3FieldFieldIdRouteHandler,
+  putRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  putRestApi3FilterDefaultShareScopeRouteHandler,
+  putRestApi3FilterIdColumnsRouteHandler,
+  putRestApi3FilterIdFavouriteRouteHandler,
+  putRestApi3FilterIdOwnerRouteHandler,
+  putRestApi3FilterIdRouteHandler,
+  putRestApi3IssueIssueIdOrKeyAssigneeRouteHandler,
+  putRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  putRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  putRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  putRestApi3IssueIssueIdOrKeyRouteHandler,
+  putRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  putRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  putRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  putRestApi3IssuePropertiesPropertyKeyRouteHandler,
+  putRestApi3IssuetypeIdRouteHandler,
+  putRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeMoveRouteHandler,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeRouteHandler,
+  putRestApi3IssuetypeschemeIssueTypeSchemeIdRouteHandler,
+  putRestApi3IssuetypeschemeProjectRouteHandler,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingDefaultRouteHandler,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRouteHandler,
+  putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRouteHandler,
+  putRestApi3IssuetypescreenschemeProjectRouteHandler,
+  putRestApi3MypreferencesLocaleRouteHandler,
+  putRestApi3MypreferencesRouteHandler,
+  putRestApi3NotificationschemeIdNotificationRouteHandler,
+  putRestApi3NotificationschemeIdRouteHandler,
+  putRestApi3PermissionschemeSchemeIdRouteHandler,
+  putRestApi3PriorityDefaultRouteHandler,
+  putRestApi3PriorityIdRouteHandler,
+  putRestApi3PriorityMoveRouteHandler,
+  putRestApi3ProjectCategoryIdRouteHandler,
+  putRestApi3ProjectProjectIdEmailRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyAvatarRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyFeaturesFeatureKeyRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyRouteHandler,
+  putRestApi3ProjectProjectIdOrKeyTypeNewProjectTypeKeyRouteHandler,
+  putRestApi3ProjectProjectKeyOrIdPermissionschemeRouteHandler,
+  putRestApi3ResolutionDefaultRouteHandler,
+  putRestApi3ResolutionIdRouteHandler,
+  putRestApi3ResolutionMoveRouteHandler,
+  putRestApi3RoleIdRouteHandler,
+  putRestApi3ScreenschemeScreenSchemeIdRouteHandler,
+  putRestApi3ScreensScreenIdRouteHandler,
+  putRestApi3ScreensScreenIdTabsTabIdRouteHandler,
+  putRestApi3SettingsColumnsRouteHandler,
+  putRestApi3StatusesRouteHandler,
+  putRestApi3UiModificationsUiModificationIdRouteHandler,
+  putRestApi3UserColumnsRouteHandler,
+  putRestApi3UserPropertiesPropertyKeyRouteHandler,
+  putRestApi3VersionIdMergetoMoveIssuesToRouteHandler,
+  putRestApi3VersionIdRouteHandler,
+  putRestApi3WebhookRefreshRouteHandler,
+  putRestApi3WorkflowRuleConfigDeleteRouteHandler,
+  putRestApi3WorkflowRuleConfigRouteHandler,
+  putRestApi3WorkflowschemeIdDefaultRouteHandler,
+  putRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  putRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  putRestApi3WorkflowschemeIdDraftRouteHandler,
+  putRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  putRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  putRestApi3WorkflowschemeIdRouteHandler,
+  putRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  putRestApi3WorkflowschemeProjectRouteHandler,
+  putRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  putRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  putRestAtlassianConnect1MigrationFieldRouteHandler,
+  putRestAtlassianConnect1MigrationPropertiesEntityTypeRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', restHandler)
+export const api = app
+  .openapi(getRestApi3AnnouncementBannerRoute, getRestApi3AnnouncementBannerRouteHandler)
+  .openapi(putRestApi3AnnouncementBannerRoute, putRestApi3AnnouncementBannerRouteHandler)
+  .openapi(postRestApi3AppFieldValueRoute, postRestApi3AppFieldValueRouteHandler)
+  .openapi(
+    getRestApi3AppFieldFieldIdOrKeyContextConfigurationRoute,
+    getRestApi3AppFieldFieldIdOrKeyContextConfigurationRouteHandler,
+  )
+  .openapi(
+    putRestApi3AppFieldFieldIdOrKeyContextConfigurationRoute,
+    putRestApi3AppFieldFieldIdOrKeyContextConfigurationRouteHandler,
+  )
+  .openapi(
+    putRestApi3AppFieldFieldIdOrKeyValueRoute,
+    putRestApi3AppFieldFieldIdOrKeyValueRouteHandler,
+  )
+  .openapi(getRestApi3ApplicationPropertiesRoute, getRestApi3ApplicationPropertiesRouteHandler)
+  .openapi(
+    getRestApi3ApplicationPropertiesAdvancedSettingsRoute,
+    getRestApi3ApplicationPropertiesAdvancedSettingsRouteHandler,
+  )
+  .openapi(putRestApi3ApplicationPropertiesIdRoute, putRestApi3ApplicationPropertiesIdRouteHandler)
+  .openapi(getRestApi3ApplicationroleRoute, getRestApi3ApplicationroleRouteHandler)
+  .openapi(getRestApi3ApplicationroleKeyRoute, getRestApi3ApplicationroleKeyRouteHandler)
+  .openapi(getRestApi3AttachmentContentIdRoute, getRestApi3AttachmentContentIdRouteHandler)
+  .openapi(getRestApi3AttachmentMetaRoute, getRestApi3AttachmentMetaRouteHandler)
+  .openapi(getRestApi3AttachmentThumbnailIdRoute, getRestApi3AttachmentThumbnailIdRouteHandler)
+  .openapi(deleteRestApi3AttachmentIdRoute, deleteRestApi3AttachmentIdRouteHandler)
+  .openapi(getRestApi3AttachmentIdRoute, getRestApi3AttachmentIdRouteHandler)
+  .openapi(getRestApi3AttachmentIdExpandHumanRoute, getRestApi3AttachmentIdExpandHumanRouteHandler)
+  .openapi(getRestApi3AttachmentIdExpandRawRoute, getRestApi3AttachmentIdExpandRawRouteHandler)
+  .openapi(getRestApi3AuditingRecordRoute, getRestApi3AuditingRecordRouteHandler)
+  .openapi(getRestApi3AvatarTypeSystemRoute, getRestApi3AvatarTypeSystemRouteHandler)
+  .openapi(postRestApi3CommentListRoute, postRestApi3CommentListRouteHandler)
+  .openapi(
+    getRestApi3CommentCommentIdPropertiesRoute,
+    getRestApi3CommentCommentIdPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+    deleteRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+    getRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3CommentCommentIdPropertiesPropertyKeyRoute,
+    putRestApi3CommentCommentIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(postRestApi3ComponentRoute, postRestApi3ComponentRouteHandler)
+  .openapi(deleteRestApi3ComponentIdRoute, deleteRestApi3ComponentIdRouteHandler)
+  .openapi(getRestApi3ComponentIdRoute, getRestApi3ComponentIdRouteHandler)
+  .openapi(putRestApi3ComponentIdRoute, putRestApi3ComponentIdRouteHandler)
+  .openapi(
+    getRestApi3ComponentIdRelatedIssueCountsRoute,
+    getRestApi3ComponentIdRelatedIssueCountsRouteHandler,
+  )
+  .openapi(getRestApi3ConfigurationRoute, getRestApi3ConfigurationRouteHandler)
+  .openapi(
+    getRestApi3ConfigurationTimetrackingRoute,
+    getRestApi3ConfigurationTimetrackingRouteHandler,
+  )
+  .openapi(
+    putRestApi3ConfigurationTimetrackingRoute,
+    putRestApi3ConfigurationTimetrackingRouteHandler,
+  )
+  .openapi(
+    getRestApi3ConfigurationTimetrackingListRoute,
+    getRestApi3ConfigurationTimetrackingListRouteHandler,
+  )
+  .openapi(
+    getRestApi3ConfigurationTimetrackingOptionsRoute,
+    getRestApi3ConfigurationTimetrackingOptionsRouteHandler,
+  )
+  .openapi(
+    putRestApi3ConfigurationTimetrackingOptionsRoute,
+    putRestApi3ConfigurationTimetrackingOptionsRouteHandler,
+  )
+  .openapi(getRestApi3CustomFieldOptionIdRoute, getRestApi3CustomFieldOptionIdRouteHandler)
+  .openapi(getRestApi3DashboardRoute, getRestApi3DashboardRouteHandler)
+  .openapi(postRestApi3DashboardRoute, postRestApi3DashboardRouteHandler)
+  .openapi(getRestApi3DashboardGadgetsRoute, getRestApi3DashboardGadgetsRouteHandler)
+  .openapi(getRestApi3DashboardSearchRoute, getRestApi3DashboardSearchRouteHandler)
+  .openapi(
+    getRestApi3DashboardDashboardIdGadgetRoute,
+    getRestApi3DashboardDashboardIdGadgetRouteHandler,
+  )
+  .openapi(
+    postRestApi3DashboardDashboardIdGadgetRoute,
+    postRestApi3DashboardDashboardIdGadgetRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3DashboardDashboardIdGadgetGadgetIdRoute,
+    deleteRestApi3DashboardDashboardIdGadgetGadgetIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3DashboardDashboardIdGadgetGadgetIdRoute,
+    putRestApi3DashboardDashboardIdGadgetGadgetIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3DashboardDashboardIdItemsItemIdPropertiesRoute,
+    getRestApi3DashboardDashboardIdItemsItemIdPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+    deleteRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+    getRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRoute,
+    putRestApi3DashboardDashboardIdItemsItemIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(deleteRestApi3DashboardIdRoute, deleteRestApi3DashboardIdRouteHandler)
+  .openapi(getRestApi3DashboardIdRoute, getRestApi3DashboardIdRouteHandler)
+  .openapi(putRestApi3DashboardIdRoute, putRestApi3DashboardIdRouteHandler)
+  .openapi(postRestApi3DashboardIdCopyRoute, postRestApi3DashboardIdCopyRouteHandler)
+  .openapi(getRestApi3EventsRoute, getRestApi3EventsRouteHandler)
+  .openapi(postRestApi3ExpressionAnalyseRoute, postRestApi3ExpressionAnalyseRouteHandler)
+  .openapi(postRestApi3ExpressionEvalRoute, postRestApi3ExpressionEvalRouteHandler)
+  .openapi(getRestApi3FieldRoute, getRestApi3FieldRouteHandler)
+  .openapi(postRestApi3FieldRoute, postRestApi3FieldRouteHandler)
+  .openapi(getRestApi3FieldSearchRoute, getRestApi3FieldSearchRouteHandler)
+  .openapi(getRestApi3FieldSearchTrashedRoute, getRestApi3FieldSearchTrashedRouteHandler)
+  .openapi(putRestApi3FieldFieldIdRoute, putRestApi3FieldFieldIdRouteHandler)
+  .openapi(getRestApi3FieldFieldIdContextRoute, getRestApi3FieldFieldIdContextRouteHandler)
+  .openapi(postRestApi3FieldFieldIdContextRoute, postRestApi3FieldFieldIdContextRouteHandler)
+  .openapi(
+    getRestApi3FieldFieldIdContextDefaultValueRoute,
+    getRestApi3FieldFieldIdContextDefaultValueRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextDefaultValueRoute,
+    putRestApi3FieldFieldIdContextDefaultValueRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldFieldIdContextIssuetypemappingRoute,
+    getRestApi3FieldFieldIdContextIssuetypemappingRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldFieldIdContextMappingRoute,
+    postRestApi3FieldFieldIdContextMappingRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldFieldIdContextProjectmappingRoute,
+    getRestApi3FieldFieldIdContextProjectmappingRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3FieldFieldIdContextContextIdRoute,
+    deleteRestApi3FieldFieldIdContextContextIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextContextIdRoute,
+    putRestApi3FieldFieldIdContextContextIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextContextIdIssuetypeRoute,
+    putRestApi3FieldFieldIdContextContextIdIssuetypeRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldFieldIdContextContextIdIssuetypeRemoveRoute,
+    postRestApi3FieldFieldIdContextContextIdIssuetypeRemoveRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldFieldIdContextContextIdOptionRoute,
+    getRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldFieldIdContextContextIdOptionRoute,
+    postRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextContextIdOptionRoute,
+    putRestApi3FieldFieldIdContextContextIdOptionRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextContextIdOptionMoveRoute,
+    putRestApi3FieldFieldIdContextContextIdOptionMoveRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdRoute,
+    deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldIdContextContextIdProjectRoute,
+    putRestApi3FieldFieldIdContextContextIdProjectRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldFieldIdContextContextIdProjectRemoveRoute,
+    postRestApi3FieldFieldIdContextContextIdProjectRemoveRouteHandler,
+  )
+  .openapi(getRestApi3FieldFieldIdContextsRoute, getRestApi3FieldFieldIdContextsRouteHandler)
+  .openapi(getRestApi3FieldFieldIdScreensRoute, getRestApi3FieldFieldIdScreensRouteHandler)
+  .openapi(getRestApi3FieldFieldKeyOptionRoute, getRestApi3FieldFieldKeyOptionRouteHandler)
+  .openapi(postRestApi3FieldFieldKeyOptionRoute, postRestApi3FieldFieldKeyOptionRouteHandler)
+  .openapi(
+    getRestApi3FieldFieldKeyOptionSuggestionsEditRoute,
+    getRestApi3FieldFieldKeyOptionSuggestionsEditRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldFieldKeyOptionSuggestionsSearchRoute,
+    getRestApi3FieldFieldKeyOptionSuggestionsSearchRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3FieldFieldKeyOptionOptionIdRoute,
+    deleteRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldFieldKeyOptionOptionIdRoute,
+    getRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldFieldKeyOptionOptionIdRoute,
+    putRestApi3FieldFieldKeyOptionOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3FieldFieldKeyOptionOptionIdIssueRoute,
+    deleteRestApi3FieldFieldKeyOptionOptionIdIssueRouteHandler,
+  )
+  .openapi(deleteRestApi3FieldIdRoute, deleteRestApi3FieldIdRouteHandler)
+  .openapi(postRestApi3FieldIdRestoreRoute, postRestApi3FieldIdRestoreRouteHandler)
+  .openapi(postRestApi3FieldIdTrashRoute, postRestApi3FieldIdTrashRouteHandler)
+  .openapi(getRestApi3FieldconfigurationRoute, getRestApi3FieldconfigurationRouteHandler)
+  .openapi(postRestApi3FieldconfigurationRoute, postRestApi3FieldconfigurationRouteHandler)
+  .openapi(deleteRestApi3FieldconfigurationIdRoute, deleteRestApi3FieldconfigurationIdRouteHandler)
+  .openapi(putRestApi3FieldconfigurationIdRoute, putRestApi3FieldconfigurationIdRouteHandler)
+  .openapi(
+    getRestApi3FieldconfigurationIdFieldsRoute,
+    getRestApi3FieldconfigurationIdFieldsRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldconfigurationIdFieldsRoute,
+    putRestApi3FieldconfigurationIdFieldsRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldconfigurationschemeRoute,
+    getRestApi3FieldconfigurationschemeRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldconfigurationschemeRoute,
+    postRestApi3FieldconfigurationschemeRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldconfigurationschemeMappingRoute,
+    getRestApi3FieldconfigurationschemeMappingRouteHandler,
+  )
+  .openapi(
+    getRestApi3FieldconfigurationschemeProjectRoute,
+    getRestApi3FieldconfigurationschemeProjectRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldconfigurationschemeProjectRoute,
+    putRestApi3FieldconfigurationschemeProjectRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3FieldconfigurationschemeIdRoute,
+    deleteRestApi3FieldconfigurationschemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldconfigurationschemeIdRoute,
+    putRestApi3FieldconfigurationschemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3FieldconfigurationschemeIdMappingRoute,
+    putRestApi3FieldconfigurationschemeIdMappingRouteHandler,
+  )
+  .openapi(
+    postRestApi3FieldconfigurationschemeIdMappingDeleteRoute,
+    postRestApi3FieldconfigurationschemeIdMappingDeleteRouteHandler,
+  )
+  .openapi(getRestApi3FilterRoute, getRestApi3FilterRouteHandler)
+  .openapi(postRestApi3FilterRoute, postRestApi3FilterRouteHandler)
+  .openapi(getRestApi3FilterDefaultShareScopeRoute, getRestApi3FilterDefaultShareScopeRouteHandler)
+  .openapi(putRestApi3FilterDefaultShareScopeRoute, putRestApi3FilterDefaultShareScopeRouteHandler)
+  .openapi(getRestApi3FilterFavouriteRoute, getRestApi3FilterFavouriteRouteHandler)
+  .openapi(getRestApi3FilterMyRoute, getRestApi3FilterMyRouteHandler)
+  .openapi(getRestApi3FilterSearchRoute, getRestApi3FilterSearchRouteHandler)
+  .openapi(deleteRestApi3FilterIdRoute, deleteRestApi3FilterIdRouteHandler)
+  .openapi(getRestApi3FilterIdRoute, getRestApi3FilterIdRouteHandler)
+  .openapi(putRestApi3FilterIdRoute, putRestApi3FilterIdRouteHandler)
+  .openapi(deleteRestApi3FilterIdColumnsRoute, deleteRestApi3FilterIdColumnsRouteHandler)
+  .openapi(getRestApi3FilterIdColumnsRoute, getRestApi3FilterIdColumnsRouteHandler)
+  .openapi(putRestApi3FilterIdColumnsRoute, putRestApi3FilterIdColumnsRouteHandler)
+  .openapi(deleteRestApi3FilterIdFavouriteRoute, deleteRestApi3FilterIdFavouriteRouteHandler)
+  .openapi(putRestApi3FilterIdFavouriteRoute, putRestApi3FilterIdFavouriteRouteHandler)
+  .openapi(putRestApi3FilterIdOwnerRoute, putRestApi3FilterIdOwnerRouteHandler)
+  .openapi(getRestApi3FilterIdPermissionRoute, getRestApi3FilterIdPermissionRouteHandler)
+  .openapi(postRestApi3FilterIdPermissionRoute, postRestApi3FilterIdPermissionRouteHandler)
+  .openapi(
+    deleteRestApi3FilterIdPermissionPermissionIdRoute,
+    deleteRestApi3FilterIdPermissionPermissionIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3FilterIdPermissionPermissionIdRoute,
+    getRestApi3FilterIdPermissionPermissionIdRouteHandler,
+  )
+  .openapi(deleteRestApi3GroupRoute, deleteRestApi3GroupRouteHandler)
+  .openapi(getRestApi3GroupRoute, getRestApi3GroupRouteHandler)
+  .openapi(postRestApi3GroupRoute, postRestApi3GroupRouteHandler)
+  .openapi(getRestApi3GroupBulkRoute, getRestApi3GroupBulkRouteHandler)
+  .openapi(getRestApi3GroupMemberRoute, getRestApi3GroupMemberRouteHandler)
+  .openapi(deleteRestApi3GroupUserRoute, deleteRestApi3GroupUserRouteHandler)
+  .openapi(postRestApi3GroupUserRoute, postRestApi3GroupUserRouteHandler)
+  .openapi(getRestApi3GroupsPickerRoute, getRestApi3GroupsPickerRouteHandler)
+  .openapi(getRestApi3GroupuserpickerRoute, getRestApi3GroupuserpickerRouteHandler)
+  .openapi(getRestApi3InstanceLicenseRoute, getRestApi3InstanceLicenseRouteHandler)
+  .openapi(postRestApi3IssueRoute, postRestApi3IssueRouteHandler)
+  .openapi(postRestApi3IssueBulkRoute, postRestApi3IssueBulkRouteHandler)
+  .openapi(getRestApi3IssueCreatemetaRoute, getRestApi3IssueCreatemetaRouteHandler)
+  .openapi(getRestApi3IssuePickerRoute, getRestApi3IssuePickerRouteHandler)
+  .openapi(postRestApi3IssuePropertiesRoute, postRestApi3IssuePropertiesRouteHandler)
+  .openapi(postRestApi3IssuePropertiesMultiRoute, postRestApi3IssuePropertiesMultiRouteHandler)
+  .openapi(
+    deleteRestApi3IssuePropertiesPropertyKeyRoute,
+    deleteRestApi3IssuePropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuePropertiesPropertyKeyRoute,
+    putRestApi3IssuePropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(postRestApi3IssueWatchingRoute, postRestApi3IssueWatchingRouteHandler)
+  .openapi(deleteRestApi3IssueIssueIdOrKeyRoute, deleteRestApi3IssueIssueIdOrKeyRouteHandler)
+  .openapi(getRestApi3IssueIssueIdOrKeyRoute, getRestApi3IssueIssueIdOrKeyRouteHandler)
+  .openapi(putRestApi3IssueIssueIdOrKeyRoute, putRestApi3IssueIssueIdOrKeyRouteHandler)
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyAssigneeRoute,
+    putRestApi3IssueIssueIdOrKeyAssigneeRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyAttachmentsRoute,
+    postRestApi3IssueIssueIdOrKeyAttachmentsRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyChangelogRoute,
+    getRestApi3IssueIssueIdOrKeyChangelogRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyChangelogListRoute,
+    postRestApi3IssueIssueIdOrKeyChangelogListRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyCommentRoute,
+    getRestApi3IssueIssueIdOrKeyCommentRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyCommentRoute,
+    postRestApi3IssueIssueIdOrKeyCommentRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyCommentIdRoute,
+    deleteRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyCommentIdRoute,
+    getRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyCommentIdRoute,
+    putRestApi3IssueIssueIdOrKeyCommentIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyEditmetaRoute,
+    getRestApi3IssueIssueIdOrKeyEditmetaRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyNotifyRoute,
+    postRestApi3IssueIssueIdOrKeyNotifyRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyPropertiesRoute,
+    getRestApi3IssueIssueIdOrKeyPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+    deleteRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+    getRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRoute,
+    putRestApi3IssueIssueIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+    deleteRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+    getRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyRemotelinkRoute,
+    postRestApi3IssueIssueIdOrKeyRemotelinkRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+    deleteRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+    getRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute,
+    putRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyTransitionsRoute,
+    getRestApi3IssueIssueIdOrKeyTransitionsRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyTransitionsRoute,
+    postRestApi3IssueIssueIdOrKeyTransitionsRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyVotesRoute,
+    deleteRestApi3IssueIssueIdOrKeyVotesRouteHandler,
+  )
+  .openapi(getRestApi3IssueIssueIdOrKeyVotesRoute, getRestApi3IssueIssueIdOrKeyVotesRouteHandler)
+  .openapi(postRestApi3IssueIssueIdOrKeyVotesRoute, postRestApi3IssueIssueIdOrKeyVotesRouteHandler)
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyWatchersRoute,
+    deleteRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyWatchersRoute,
+    getRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyWatchersRoute,
+    postRestApi3IssueIssueIdOrKeyWatchersRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyWorklogRoute,
+    getRestApi3IssueIssueIdOrKeyWorklogRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssueIssueIdOrKeyWorklogRoute,
+    postRestApi3IssueIssueIdOrKeyWorklogRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+    deleteRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+    getRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyWorklogIdRoute,
+    putRestApi3IssueIssueIdOrKeyWorklogIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesRoute,
+    getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+    deleteRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+    getRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRoute,
+    putRestApi3IssueIssueIdOrKeyWorklogWorklogIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(postRestApi3IssueLinkRoute, postRestApi3IssueLinkRouteHandler)
+  .openapi(deleteRestApi3IssueLinkLinkIdRoute, deleteRestApi3IssueLinkLinkIdRouteHandler)
+  .openapi(getRestApi3IssueLinkLinkIdRoute, getRestApi3IssueLinkLinkIdRouteHandler)
+  .openapi(getRestApi3IssueLinkTypeRoute, getRestApi3IssueLinkTypeRouteHandler)
+  .openapi(postRestApi3IssueLinkTypeRoute, postRestApi3IssueLinkTypeRouteHandler)
+  .openapi(
+    deleteRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+    deleteRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+    getRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssueLinkTypeIssueLinkTypeIdRoute,
+    putRestApi3IssueLinkTypeIssueLinkTypeIdRouteHandler,
+  )
+  .openapi(getRestApi3IssuesecurityschemesRoute, getRestApi3IssuesecurityschemesRouteHandler)
+  .openapi(getRestApi3IssuesecurityschemesIdRoute, getRestApi3IssuesecurityschemesIdRouteHandler)
+  .openapi(
+    getRestApi3IssuesecurityschemesIssueSecuritySchemeIdMembersRoute,
+    getRestApi3IssuesecurityschemesIssueSecuritySchemeIdMembersRouteHandler,
+  )
+  .openapi(getRestApi3IssuetypeRoute, getRestApi3IssuetypeRouteHandler)
+  .openapi(postRestApi3IssuetypeRoute, postRestApi3IssuetypeRouteHandler)
+  .openapi(getRestApi3IssuetypeProjectRoute, getRestApi3IssuetypeProjectRouteHandler)
+  .openapi(deleteRestApi3IssuetypeIdRoute, deleteRestApi3IssuetypeIdRouteHandler)
+  .openapi(getRestApi3IssuetypeIdRoute, getRestApi3IssuetypeIdRouteHandler)
+  .openapi(putRestApi3IssuetypeIdRoute, putRestApi3IssuetypeIdRouteHandler)
+  .openapi(getRestApi3IssuetypeIdAlternativesRoute, getRestApi3IssuetypeIdAlternativesRouteHandler)
+  .openapi(postRestApi3IssuetypeIdAvatar2Route, postRestApi3IssuetypeIdAvatar2RouteHandler)
+  .openapi(
+    getRestApi3IssuetypeIssueTypeIdPropertiesRoute,
+    getRestApi3IssuetypeIssueTypeIdPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+    deleteRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+    getRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRoute,
+    putRestApi3IssuetypeIssueTypeIdPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(getRestApi3IssuetypeschemeRoute, getRestApi3IssuetypeschemeRouteHandler)
+  .openapi(postRestApi3IssuetypeschemeRoute, postRestApi3IssuetypeschemeRouteHandler)
+  .openapi(getRestApi3IssuetypeschemeMappingRoute, getRestApi3IssuetypeschemeMappingRouteHandler)
+  .openapi(getRestApi3IssuetypeschemeProjectRoute, getRestApi3IssuetypeschemeProjectRouteHandler)
+  .openapi(putRestApi3IssuetypeschemeProjectRoute, putRestApi3IssuetypeschemeProjectRouteHandler)
+  .openapi(
+    deleteRestApi3IssuetypeschemeIssueTypeSchemeIdRoute,
+    deleteRestApi3IssuetypeschemeIssueTypeSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdRoute,
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeRoute,
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeMoveRoute,
+    putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeMoveRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeIssueTypeIdRoute,
+    deleteRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeIssueTypeIdRouteHandler,
+  )
+  .openapi(getRestApi3IssuetypescreenschemeRoute, getRestApi3IssuetypescreenschemeRouteHandler)
+  .openapi(postRestApi3IssuetypescreenschemeRoute, postRestApi3IssuetypescreenschemeRouteHandler)
+  .openapi(
+    getRestApi3IssuetypescreenschemeMappingRoute,
+    getRestApi3IssuetypescreenschemeMappingRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssuetypescreenschemeProjectRoute,
+    getRestApi3IssuetypescreenschemeProjectRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypescreenschemeProjectRoute,
+    putRestApi3IssuetypescreenschemeProjectRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute,
+    deleteRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute,
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRoute,
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRouteHandler,
+  )
+  .openapi(
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingDefaultRoute,
+    putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingDefaultRouteHandler,
+  )
+  .openapi(
+    postRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRemoveRoute,
+    postRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRemoveRouteHandler,
+  )
+  .openapi(
+    getRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdProjectRoute,
+    getRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdProjectRouteHandler,
+  )
+  .openapi(getRestApi3JqlAutocompletedataRoute, getRestApi3JqlAutocompletedataRouteHandler)
+  .openapi(postRestApi3JqlAutocompletedataRoute, postRestApi3JqlAutocompletedataRouteHandler)
+  .openapi(
+    getRestApi3JqlAutocompletedataSuggestionsRoute,
+    getRestApi3JqlAutocompletedataSuggestionsRouteHandler,
+  )
+  .openapi(getRestApi3JqlFunctionComputationRoute, getRestApi3JqlFunctionComputationRouteHandler)
+  .openapi(postRestApi3JqlFunctionComputationRoute, postRestApi3JqlFunctionComputationRouteHandler)
+  .openapi(postRestApi3JqlMatchRoute, postRestApi3JqlMatchRouteHandler)
+  .openapi(postRestApi3JqlParseRoute, postRestApi3JqlParseRouteHandler)
+  .openapi(postRestApi3JqlPdcleanerRoute, postRestApi3JqlPdcleanerRouteHandler)
+  .openapi(postRestApi3JqlSanitizeRoute, postRestApi3JqlSanitizeRouteHandler)
+  .openapi(getRestApi3LabelRoute, getRestApi3LabelRouteHandler)
+  .openapi(
+    getRestApi3LicenseApproximateLicenseCountRoute,
+    getRestApi3LicenseApproximateLicenseCountRouteHandler,
+  )
+  .openapi(
+    getRestApi3LicenseApproximateLicenseCountProductApplicationKeyRoute,
+    getRestApi3LicenseApproximateLicenseCountProductApplicationKeyRouteHandler,
+  )
+  .openapi(getRestApi3MypermissionsRoute, getRestApi3MypermissionsRouteHandler)
+  .openapi(deleteRestApi3MypreferencesRoute, deleteRestApi3MypreferencesRouteHandler)
+  .openapi(getRestApi3MypreferencesRoute, getRestApi3MypreferencesRouteHandler)
+  .openapi(putRestApi3MypreferencesRoute, putRestApi3MypreferencesRouteHandler)
+  .openapi(deleteRestApi3MypreferencesLocaleRoute, deleteRestApi3MypreferencesLocaleRouteHandler)
+  .openapi(getRestApi3MypreferencesLocaleRoute, getRestApi3MypreferencesLocaleRouteHandler)
+  .openapi(putRestApi3MypreferencesLocaleRoute, putRestApi3MypreferencesLocaleRouteHandler)
+  .openapi(getRestApi3MyselfRoute, getRestApi3MyselfRouteHandler)
+  .openapi(getRestApi3NotificationschemeRoute, getRestApi3NotificationschemeRouteHandler)
+  .openapi(postRestApi3NotificationschemeRoute, postRestApi3NotificationschemeRouteHandler)
+  .openapi(
+    getRestApi3NotificationschemeProjectRoute,
+    getRestApi3NotificationschemeProjectRouteHandler,
+  )
+  .openapi(getRestApi3NotificationschemeIdRoute, getRestApi3NotificationschemeIdRouteHandler)
+  .openapi(putRestApi3NotificationschemeIdRoute, putRestApi3NotificationschemeIdRouteHandler)
+  .openapi(
+    putRestApi3NotificationschemeIdNotificationRoute,
+    putRestApi3NotificationschemeIdNotificationRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3NotificationschemeNotificationSchemeIdRoute,
+    deleteRestApi3NotificationschemeNotificationSchemeIdRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3NotificationschemeNotificationSchemeIdNotificationNotificationIdRoute,
+    deleteRestApi3NotificationschemeNotificationSchemeIdNotificationNotificationIdRouteHandler,
+  )
+  .openapi(getRestApi3PermissionsRoute, getRestApi3PermissionsRouteHandler)
+  .openapi(postRestApi3PermissionsCheckRoute, postRestApi3PermissionsCheckRouteHandler)
+  .openapi(postRestApi3PermissionsProjectRoute, postRestApi3PermissionsProjectRouteHandler)
+  .openapi(getRestApi3PermissionschemeRoute, getRestApi3PermissionschemeRouteHandler)
+  .openapi(postRestApi3PermissionschemeRoute, postRestApi3PermissionschemeRouteHandler)
+  .openapi(
+    deleteRestApi3PermissionschemeSchemeIdRoute,
+    deleteRestApi3PermissionschemeSchemeIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3PermissionschemeSchemeIdRoute,
+    getRestApi3PermissionschemeSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3PermissionschemeSchemeIdRoute,
+    putRestApi3PermissionschemeSchemeIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3PermissionschemeSchemeIdPermissionRoute,
+    getRestApi3PermissionschemeSchemeIdPermissionRouteHandler,
+  )
+  .openapi(
+    postRestApi3PermissionschemeSchemeIdPermissionRoute,
+    postRestApi3PermissionschemeSchemeIdPermissionRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3PermissionschemeSchemeIdPermissionPermissionIdRoute,
+    deleteRestApi3PermissionschemeSchemeIdPermissionPermissionIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3PermissionschemeSchemeIdPermissionPermissionIdRoute,
+    getRestApi3PermissionschemeSchemeIdPermissionPermissionIdRouteHandler,
+  )
+  .openapi(getRestApi3PriorityRoute, getRestApi3PriorityRouteHandler)
+  .openapi(postRestApi3PriorityRoute, postRestApi3PriorityRouteHandler)
+  .openapi(putRestApi3PriorityDefaultRoute, putRestApi3PriorityDefaultRouteHandler)
+  .openapi(putRestApi3PriorityMoveRoute, putRestApi3PriorityMoveRouteHandler)
+  .openapi(getRestApi3PrioritySearchRoute, getRestApi3PrioritySearchRouteHandler)
+  .openapi(deleteRestApi3PriorityIdRoute, deleteRestApi3PriorityIdRouteHandler)
+  .openapi(getRestApi3PriorityIdRoute, getRestApi3PriorityIdRouteHandler)
+  .openapi(putRestApi3PriorityIdRoute, putRestApi3PriorityIdRouteHandler)
+  .openapi(getRestApi3ProjectRoute, getRestApi3ProjectRouteHandler)
+  .openapi(postRestApi3ProjectRoute, postRestApi3ProjectRouteHandler)
+  .openapi(getRestApi3ProjectRecentRoute, getRestApi3ProjectRecentRouteHandler)
+  .openapi(getRestApi3ProjectSearchRoute, getRestApi3ProjectSearchRouteHandler)
+  .openapi(getRestApi3ProjectTypeRoute, getRestApi3ProjectTypeRouteHandler)
+  .openapi(getRestApi3ProjectTypeAccessibleRoute, getRestApi3ProjectTypeAccessibleRouteHandler)
+  .openapi(
+    getRestApi3ProjectTypeProjectTypeKeyRoute,
+    getRestApi3ProjectTypeProjectTypeKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectTypeProjectTypeKeyAccessibleRoute,
+    getRestApi3ProjectTypeProjectTypeKeyAccessibleRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3ProjectProjectIdOrKeyRoute,
+    deleteRestApi3ProjectProjectIdOrKeyRouteHandler,
+  )
+  .openapi(getRestApi3ProjectProjectIdOrKeyRoute, getRestApi3ProjectProjectIdOrKeyRouteHandler)
+  .openapi(putRestApi3ProjectProjectIdOrKeyRoute, putRestApi3ProjectProjectIdOrKeyRouteHandler)
+  .openapi(
+    postRestApi3ProjectProjectIdOrKeyArchiveRoute,
+    postRestApi3ProjectProjectIdOrKeyArchiveRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectIdOrKeyAvatarRoute,
+    putRestApi3ProjectProjectIdOrKeyAvatarRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3ProjectProjectIdOrKeyAvatarIdRoute,
+    deleteRestApi3ProjectProjectIdOrKeyAvatarIdRouteHandler,
+  )
+  .openapi(
+    postRestApi3ProjectProjectIdOrKeyAvatar2Route,
+    postRestApi3ProjectProjectIdOrKeyAvatar2RouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyAvatarsRoute,
+    getRestApi3ProjectProjectIdOrKeyAvatarsRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyComponentRoute,
+    getRestApi3ProjectProjectIdOrKeyComponentRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyComponentsRoute,
+    getRestApi3ProjectProjectIdOrKeyComponentsRouteHandler,
+  )
+  .openapi(
+    postRestApi3ProjectProjectIdOrKeyDeleteRoute,
+    postRestApi3ProjectProjectIdOrKeyDeleteRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyFeaturesRoute,
+    getRestApi3ProjectProjectIdOrKeyFeaturesRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectIdOrKeyFeaturesFeatureKeyRoute,
+    putRestApi3ProjectProjectIdOrKeyFeaturesFeatureKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyPropertiesRoute,
+    getRestApi3ProjectProjectIdOrKeyPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+    deleteRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+    getRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRoute,
+    putRestApi3ProjectProjectIdOrKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    postRestApi3ProjectProjectIdOrKeyRestoreRoute,
+    postRestApi3ProjectProjectIdOrKeyRestoreRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyRoleRoute,
+    getRestApi3ProjectProjectIdOrKeyRoleRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+    deleteRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+    getRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  )
+  .openapi(
+    postRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+    postRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectIdOrKeyRoleIdRoute,
+    putRestApi3ProjectProjectIdOrKeyRoleIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyRoledetailsRoute,
+    getRestApi3ProjectProjectIdOrKeyRoledetailsRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyStatusesRoute,
+    getRestApi3ProjectProjectIdOrKeyStatusesRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectIdOrKeyTypeNewProjectTypeKeyRoute,
+    putRestApi3ProjectProjectIdOrKeyTypeNewProjectTypeKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyVersionRoute,
+    getRestApi3ProjectProjectIdOrKeyVersionRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectIdOrKeyVersionsRoute,
+    getRestApi3ProjectProjectIdOrKeyVersionsRouteHandler,
+  )
+  .openapi(getRestApi3ProjectProjectIdEmailRoute, getRestApi3ProjectProjectIdEmailRouteHandler)
+  .openapi(putRestApi3ProjectProjectIdEmailRoute, putRestApi3ProjectProjectIdEmailRouteHandler)
+  .openapi(
+    getRestApi3ProjectProjectIdHierarchyRoute,
+    getRestApi3ProjectProjectIdHierarchyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectKeyOrIdIssuesecuritylevelschemeRoute,
+    getRestApi3ProjectProjectKeyOrIdIssuesecuritylevelschemeRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectKeyOrIdNotificationschemeRoute,
+    getRestApi3ProjectProjectKeyOrIdNotificationschemeRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectKeyOrIdPermissionschemeRoute,
+    getRestApi3ProjectProjectKeyOrIdPermissionschemeRouteHandler,
+  )
+  .openapi(
+    putRestApi3ProjectProjectKeyOrIdPermissionschemeRoute,
+    putRestApi3ProjectProjectKeyOrIdPermissionschemeRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectProjectKeyOrIdSecuritylevelRoute,
+    getRestApi3ProjectProjectKeyOrIdSecuritylevelRouteHandler,
+  )
+  .openapi(getRestApi3ProjectCategoryRoute, getRestApi3ProjectCategoryRouteHandler)
+  .openapi(postRestApi3ProjectCategoryRoute, postRestApi3ProjectCategoryRouteHandler)
+  .openapi(deleteRestApi3ProjectCategoryIdRoute, deleteRestApi3ProjectCategoryIdRouteHandler)
+  .openapi(getRestApi3ProjectCategoryIdRoute, getRestApi3ProjectCategoryIdRouteHandler)
+  .openapi(putRestApi3ProjectCategoryIdRoute, putRestApi3ProjectCategoryIdRouteHandler)
+  .openapi(getRestApi3ProjectvalidateKeyRoute, getRestApi3ProjectvalidateKeyRouteHandler)
+  .openapi(
+    getRestApi3ProjectvalidateValidProjectKeyRoute,
+    getRestApi3ProjectvalidateValidProjectKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3ProjectvalidateValidProjectNameRoute,
+    getRestApi3ProjectvalidateValidProjectNameRouteHandler,
+  )
+  .openapi(getRestApi3ResolutionRoute, getRestApi3ResolutionRouteHandler)
+  .openapi(postRestApi3ResolutionRoute, postRestApi3ResolutionRouteHandler)
+  .openapi(putRestApi3ResolutionDefaultRoute, putRestApi3ResolutionDefaultRouteHandler)
+  .openapi(putRestApi3ResolutionMoveRoute, putRestApi3ResolutionMoveRouteHandler)
+  .openapi(getRestApi3ResolutionSearchRoute, getRestApi3ResolutionSearchRouteHandler)
+  .openapi(deleteRestApi3ResolutionIdRoute, deleteRestApi3ResolutionIdRouteHandler)
+  .openapi(getRestApi3ResolutionIdRoute, getRestApi3ResolutionIdRouteHandler)
+  .openapi(putRestApi3ResolutionIdRoute, putRestApi3ResolutionIdRouteHandler)
+  .openapi(getRestApi3RoleRoute, getRestApi3RoleRouteHandler)
+  .openapi(postRestApi3RoleRoute, postRestApi3RoleRouteHandler)
+  .openapi(deleteRestApi3RoleIdRoute, deleteRestApi3RoleIdRouteHandler)
+  .openapi(getRestApi3RoleIdRoute, getRestApi3RoleIdRouteHandler)
+  .openapi(postRestApi3RoleIdRoute, postRestApi3RoleIdRouteHandler)
+  .openapi(putRestApi3RoleIdRoute, putRestApi3RoleIdRouteHandler)
+  .openapi(deleteRestApi3RoleIdActorsRoute, deleteRestApi3RoleIdActorsRouteHandler)
+  .openapi(getRestApi3RoleIdActorsRoute, getRestApi3RoleIdActorsRouteHandler)
+  .openapi(postRestApi3RoleIdActorsRoute, postRestApi3RoleIdActorsRouteHandler)
+  .openapi(getRestApi3ScreensRoute, getRestApi3ScreensRouteHandler)
+  .openapi(postRestApi3ScreensRoute, postRestApi3ScreensRouteHandler)
+  .openapi(
+    postRestApi3ScreensAddToDefaultFieldIdRoute,
+    postRestApi3ScreensAddToDefaultFieldIdRouteHandler,
+  )
+  .openapi(deleteRestApi3ScreensScreenIdRoute, deleteRestApi3ScreensScreenIdRouteHandler)
+  .openapi(putRestApi3ScreensScreenIdRoute, putRestApi3ScreensScreenIdRouteHandler)
+  .openapi(
+    getRestApi3ScreensScreenIdAvailableFieldsRoute,
+    getRestApi3ScreensScreenIdAvailableFieldsRouteHandler,
+  )
+  .openapi(getRestApi3ScreensScreenIdTabsRoute, getRestApi3ScreensScreenIdTabsRouteHandler)
+  .openapi(postRestApi3ScreensScreenIdTabsRoute, postRestApi3ScreensScreenIdTabsRouteHandler)
+  .openapi(
+    deleteRestApi3ScreensScreenIdTabsTabIdRoute,
+    deleteRestApi3ScreensScreenIdTabsTabIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3ScreensScreenIdTabsTabIdRoute,
+    putRestApi3ScreensScreenIdTabsTabIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3ScreensScreenIdTabsTabIdFieldsRoute,
+    getRestApi3ScreensScreenIdTabsTabIdFieldsRouteHandler,
+  )
+  .openapi(
+    postRestApi3ScreensScreenIdTabsTabIdFieldsRoute,
+    postRestApi3ScreensScreenIdTabsTabIdFieldsRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3ScreensScreenIdTabsTabIdFieldsIdRoute,
+    deleteRestApi3ScreensScreenIdTabsTabIdFieldsIdRouteHandler,
+  )
+  .openapi(
+    postRestApi3ScreensScreenIdTabsTabIdFieldsIdMoveRoute,
+    postRestApi3ScreensScreenIdTabsTabIdFieldsIdMoveRouteHandler,
+  )
+  .openapi(
+    postRestApi3ScreensScreenIdTabsTabIdMovePosRoute,
+    postRestApi3ScreensScreenIdTabsTabIdMovePosRouteHandler,
+  )
+  .openapi(getRestApi3ScreenschemeRoute, getRestApi3ScreenschemeRouteHandler)
+  .openapi(postRestApi3ScreenschemeRoute, postRestApi3ScreenschemeRouteHandler)
+  .openapi(
+    deleteRestApi3ScreenschemeScreenSchemeIdRoute,
+    deleteRestApi3ScreenschemeScreenSchemeIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3ScreenschemeScreenSchemeIdRoute,
+    putRestApi3ScreenschemeScreenSchemeIdRouteHandler,
+  )
+  .openapi(getRestApi3SearchRoute, getRestApi3SearchRouteHandler)
+  .openapi(postRestApi3SearchRoute, postRestApi3SearchRouteHandler)
+  .openapi(getRestApi3SecuritylevelIdRoute, getRestApi3SecuritylevelIdRouteHandler)
+  .openapi(getRestApi3ServerInfoRoute, getRestApi3ServerInfoRouteHandler)
+  .openapi(getRestApi3SettingsColumnsRoute, getRestApi3SettingsColumnsRouteHandler)
+  .openapi(putRestApi3SettingsColumnsRoute, putRestApi3SettingsColumnsRouteHandler)
+  .openapi(getRestApi3StatusRoute, getRestApi3StatusRouteHandler)
+  .openapi(getRestApi3StatusIdOrNameRoute, getRestApi3StatusIdOrNameRouteHandler)
+  .openapi(getRestApi3StatuscategoryRoute, getRestApi3StatuscategoryRouteHandler)
+  .openapi(getRestApi3StatuscategoryIdOrKeyRoute, getRestApi3StatuscategoryIdOrKeyRouteHandler)
+  .openapi(deleteRestApi3StatusesRoute, deleteRestApi3StatusesRouteHandler)
+  .openapi(getRestApi3StatusesRoute, getRestApi3StatusesRouteHandler)
+  .openapi(postRestApi3StatusesRoute, postRestApi3StatusesRouteHandler)
+  .openapi(putRestApi3StatusesRoute, putRestApi3StatusesRouteHandler)
+  .openapi(getRestApi3StatusesSearchRoute, getRestApi3StatusesSearchRouteHandler)
+  .openapi(getRestApi3TaskTaskIdRoute, getRestApi3TaskTaskIdRouteHandler)
+  .openapi(postRestApi3TaskTaskIdCancelRoute, postRestApi3TaskTaskIdCancelRouteHandler)
+  .openapi(getRestApi3UiModificationsRoute, getRestApi3UiModificationsRouteHandler)
+  .openapi(postRestApi3UiModificationsRoute, postRestApi3UiModificationsRouteHandler)
+  .openapi(
+    deleteRestApi3UiModificationsUiModificationIdRoute,
+    deleteRestApi3UiModificationsUiModificationIdRouteHandler,
+  )
+  .openapi(
+    putRestApi3UiModificationsUiModificationIdRoute,
+    putRestApi3UiModificationsUiModificationIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3UniversalAvatarTypeTypeOwnerEntityIdRoute,
+    getRestApi3UniversalAvatarTypeTypeOwnerEntityIdRouteHandler,
+  )
+  .openapi(
+    postRestApi3UniversalAvatarTypeTypeOwnerEntityIdRoute,
+    postRestApi3UniversalAvatarTypeTypeOwnerEntityIdRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3UniversalAvatarTypeTypeOwnerOwningObjectIdAvatarIdRoute,
+    deleteRestApi3UniversalAvatarTypeTypeOwnerOwningObjectIdAvatarIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3UniversalAvatarViewTypeTypeRoute,
+    getRestApi3UniversalAvatarViewTypeTypeRouteHandler,
+  )
+  .openapi(
+    getRestApi3UniversalAvatarViewTypeTypeAvatarIdRoute,
+    getRestApi3UniversalAvatarViewTypeTypeAvatarIdRouteHandler,
+  )
+  .openapi(
+    getRestApi3UniversalAvatarViewTypeTypeOwnerEntityIdRoute,
+    getRestApi3UniversalAvatarViewTypeTypeOwnerEntityIdRouteHandler,
+  )
+  .openapi(deleteRestApi3UserRoute, deleteRestApi3UserRouteHandler)
+  .openapi(getRestApi3UserRoute, getRestApi3UserRouteHandler)
+  .openapi(postRestApi3UserRoute, postRestApi3UserRouteHandler)
+  .openapi(
+    getRestApi3UserAssignableMultiProjectSearchRoute,
+    getRestApi3UserAssignableMultiProjectSearchRouteHandler,
+  )
+  .openapi(getRestApi3UserAssignableSearchRoute, getRestApi3UserAssignableSearchRouteHandler)
+  .openapi(getRestApi3UserBulkRoute, getRestApi3UserBulkRouteHandler)
+  .openapi(getRestApi3UserBulkMigrationRoute, getRestApi3UserBulkMigrationRouteHandler)
+  .openapi(deleteRestApi3UserColumnsRoute, deleteRestApi3UserColumnsRouteHandler)
+  .openapi(getRestApi3UserColumnsRoute, getRestApi3UserColumnsRouteHandler)
+  .openapi(putRestApi3UserColumnsRoute, putRestApi3UserColumnsRouteHandler)
+  .openapi(getRestApi3UserEmailRoute, getRestApi3UserEmailRouteHandler)
+  .openapi(getRestApi3UserEmailBulkRoute, getRestApi3UserEmailBulkRouteHandler)
+  .openapi(getRestApi3UserGroupsRoute, getRestApi3UserGroupsRouteHandler)
+  .openapi(getRestApi3UserPermissionSearchRoute, getRestApi3UserPermissionSearchRouteHandler)
+  .openapi(getRestApi3UserPickerRoute, getRestApi3UserPickerRouteHandler)
+  .openapi(getRestApi3UserPropertiesRoute, getRestApi3UserPropertiesRouteHandler)
+  .openapi(
+    deleteRestApi3UserPropertiesPropertyKeyRoute,
+    deleteRestApi3UserPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestApi3UserPropertiesPropertyKeyRoute,
+    getRestApi3UserPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestApi3UserPropertiesPropertyKeyRoute,
+    putRestApi3UserPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(getRestApi3UserSearchRoute, getRestApi3UserSearchRouteHandler)
+  .openapi(getRestApi3UserSearchQueryRoute, getRestApi3UserSearchQueryRouteHandler)
+  .openapi(getRestApi3UserSearchQueryKeyRoute, getRestApi3UserSearchQueryKeyRouteHandler)
+  .openapi(getRestApi3UserViewissueSearchRoute, getRestApi3UserViewissueSearchRouteHandler)
+  .openapi(getRestApi3UsersRoute, getRestApi3UsersRouteHandler)
+  .openapi(getRestApi3UsersSearchRoute, getRestApi3UsersSearchRouteHandler)
+  .openapi(postRestApi3VersionRoute, postRestApi3VersionRouteHandler)
+  .openapi(deleteRestApi3VersionIdRoute, deleteRestApi3VersionIdRouteHandler)
+  .openapi(getRestApi3VersionIdRoute, getRestApi3VersionIdRouteHandler)
+  .openapi(putRestApi3VersionIdRoute, putRestApi3VersionIdRouteHandler)
+  .openapi(
+    putRestApi3VersionIdMergetoMoveIssuesToRoute,
+    putRestApi3VersionIdMergetoMoveIssuesToRouteHandler,
+  )
+  .openapi(postRestApi3VersionIdMoveRoute, postRestApi3VersionIdMoveRouteHandler)
+  .openapi(
+    getRestApi3VersionIdRelatedIssueCountsRoute,
+    getRestApi3VersionIdRelatedIssueCountsRouteHandler,
+  )
+  .openapi(postRestApi3VersionIdRemoveAndSwapRoute, postRestApi3VersionIdRemoveAndSwapRouteHandler)
+  .openapi(
+    getRestApi3VersionIdUnresolvedIssueCountRoute,
+    getRestApi3VersionIdUnresolvedIssueCountRouteHandler,
+  )
+  .openapi(deleteRestApi3WebhookRoute, deleteRestApi3WebhookRouteHandler)
+  .openapi(getRestApi3WebhookRoute, getRestApi3WebhookRouteHandler)
+  .openapi(postRestApi3WebhookRoute, postRestApi3WebhookRouteHandler)
+  .openapi(getRestApi3WebhookFailedRoute, getRestApi3WebhookFailedRouteHandler)
+  .openapi(putRestApi3WebhookRefreshRoute, putRestApi3WebhookRefreshRouteHandler)
+  .openapi(getRestApi3WorkflowRoute, getRestApi3WorkflowRouteHandler)
+  .openapi(postRestApi3WorkflowRoute, postRestApi3WorkflowRouteHandler)
+  .openapi(getRestApi3WorkflowRuleConfigRoute, getRestApi3WorkflowRuleConfigRouteHandler)
+  .openapi(putRestApi3WorkflowRuleConfigRoute, putRestApi3WorkflowRuleConfigRouteHandler)
+  .openapi(
+    putRestApi3WorkflowRuleConfigDeleteRoute,
+    putRestApi3WorkflowRuleConfigDeleteRouteHandler,
+  )
+  .openapi(getRestApi3WorkflowSearchRoute, getRestApi3WorkflowSearchRouteHandler)
+  .openapi(
+    deleteRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+    deleteRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+    getRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  )
+  .openapi(
+    postRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+    postRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowTransitionsTransitionIdPropertiesRoute,
+    putRestApi3WorkflowTransitionsTransitionIdPropertiesRouteHandler,
+  )
+  .openapi(deleteRestApi3WorkflowEntityIdRoute, deleteRestApi3WorkflowEntityIdRouteHandler)
+  .openapi(getRestApi3WorkflowschemeRoute, getRestApi3WorkflowschemeRouteHandler)
+  .openapi(postRestApi3WorkflowschemeRoute, postRestApi3WorkflowschemeRouteHandler)
+  .openapi(getRestApi3WorkflowschemeProjectRoute, getRestApi3WorkflowschemeProjectRouteHandler)
+  .openapi(putRestApi3WorkflowschemeProjectRoute, putRestApi3WorkflowschemeProjectRouteHandler)
+  .openapi(deleteRestApi3WorkflowschemeIdRoute, deleteRestApi3WorkflowschemeIdRouteHandler)
+  .openapi(getRestApi3WorkflowschemeIdRoute, getRestApi3WorkflowschemeIdRouteHandler)
+  .openapi(putRestApi3WorkflowschemeIdRoute, putRestApi3WorkflowschemeIdRouteHandler)
+  .openapi(
+    postRestApi3WorkflowschemeIdCreatedraftRoute,
+    postRestApi3WorkflowschemeIdCreatedraftRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3WorkflowschemeIdDefaultRoute,
+    deleteRestApi3WorkflowschemeIdDefaultRouteHandler,
+  )
+  .openapi(getRestApi3WorkflowschemeIdDefaultRoute, getRestApi3WorkflowschemeIdDefaultRouteHandler)
+  .openapi(putRestApi3WorkflowschemeIdDefaultRoute, putRestApi3WorkflowschemeIdDefaultRouteHandler)
+  .openapi(
+    deleteRestApi3WorkflowschemeIdDraftRoute,
+    deleteRestApi3WorkflowschemeIdDraftRouteHandler,
+  )
+  .openapi(getRestApi3WorkflowschemeIdDraftRoute, getRestApi3WorkflowschemeIdDraftRouteHandler)
+  .openapi(putRestApi3WorkflowschemeIdDraftRoute, putRestApi3WorkflowschemeIdDraftRouteHandler)
+  .openapi(
+    deleteRestApi3WorkflowschemeIdDraftDefaultRoute,
+    deleteRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowschemeIdDraftDefaultRoute,
+    getRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowschemeIdDraftDefaultRoute,
+    putRestApi3WorkflowschemeIdDraftDefaultRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+    deleteRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+    getRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRoute,
+    putRestApi3WorkflowschemeIdDraftIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    postRestApi3WorkflowschemeIdDraftPublishRoute,
+    postRestApi3WorkflowschemeIdDraftPublishRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3WorkflowschemeIdDraftWorkflowRoute,
+    deleteRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowschemeIdDraftWorkflowRoute,
+    getRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowschemeIdDraftWorkflowRoute,
+    putRestApi3WorkflowschemeIdDraftWorkflowRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+    deleteRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+    getRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowschemeIdIssuetypeIssueTypeRoute,
+    putRestApi3WorkflowschemeIdIssuetypeIssueTypeRouteHandler,
+  )
+  .openapi(
+    deleteRestApi3WorkflowschemeIdWorkflowRoute,
+    deleteRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  )
+  .openapi(
+    getRestApi3WorkflowschemeIdWorkflowRoute,
+    getRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  )
+  .openapi(
+    putRestApi3WorkflowschemeIdWorkflowRoute,
+    putRestApi3WorkflowschemeIdWorkflowRouteHandler,
+  )
+  .openapi(getRestApi3WorklogDeletedRoute, getRestApi3WorklogDeletedRouteHandler)
+  .openapi(postRestApi3WorklogListRoute, postRestApi3WorklogListRouteHandler)
+  .openapi(getRestApi3WorklogUpdatedRoute, getRestApi3WorklogUpdatedRouteHandler)
+  .openapi(
+    getRestAtlassianConnect1AddonsAddonKeyPropertiesRoute,
+    getRestAtlassianConnect1AddonsAddonKeyPropertiesRouteHandler,
+  )
+  .openapi(
+    deleteRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+    deleteRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    getRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+    getRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    putRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRoute,
+    putRestAtlassianConnect1AddonsAddonKeyPropertiesPropertyKeyRouteHandler,
+  )
+  .openapi(
+    deleteRestAtlassianConnect1AppModuleDynamicRoute,
+    deleteRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  )
+  .openapi(
+    getRestAtlassianConnect1AppModuleDynamicRoute,
+    getRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  )
+  .openapi(
+    postRestAtlassianConnect1AppModuleDynamicRoute,
+    postRestAtlassianConnect1AppModuleDynamicRouteHandler,
+  )
+  .openapi(
+    putRestAtlassianConnect1MigrationFieldRoute,
+    putRestAtlassianConnect1MigrationFieldRouteHandler,
+  )
+  .openapi(
+    putRestAtlassianConnect1MigrationPropertiesEntityTypeRoute,
+    putRestAtlassianConnect1MigrationPropertiesEntityTypeRouteHandler,
+  )
+  .openapi(
+    postRestAtlassianConnect1MigrationWorkflowRuleSearchRoute,
+    postRestAtlassianConnect1MigrationWorkflowRuleSearchRouteHandler,
+  )
 
 export default app

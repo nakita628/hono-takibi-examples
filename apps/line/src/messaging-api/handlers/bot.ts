@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBotPnpPushRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBotPnpPushRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const botHandler = app.openapi(postBotPnpPushRoute, (c) => {
+export const postBotPnpPushRouteHandler: RouteHandler<typeof postBotPnpPushRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

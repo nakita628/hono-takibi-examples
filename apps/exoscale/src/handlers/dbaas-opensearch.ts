@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasOpensearchNameRoute,
   deleteDbaasOpensearchServiceNameUserUsernameRoute,
   getDbaasOpensearchNameAclConfigRoute,
@@ -13,39 +13,68 @@ import {
   putDbaasOpensearchServiceNameUserUsernamePasswordResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDbaasOpensearchNameAclConfigRouteHandler: RouteHandler<
+  typeof getDbaasOpensearchNameAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasOpensearchHandler = app
-  .openapi(getDbaasOpensearchNameAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasOpensearchNameAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasOpensearchServiceNameUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasOpensearchServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasOpensearchServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasOpensearchNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasOpensearchServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasOpensearchNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasOpensearchNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasOpensearchNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasOpensearchNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDbaasOpensearchNameAclConfigRouteHandler: RouteHandler<
+  typeof putDbaasOpensearchNameAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasOpensearchServiceNameUserUsernameRouteHandler: RouteHandler<
+  typeof deleteDbaasOpensearchServiceNameUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasOpensearchServiceNameUserRouteHandler: RouteHandler<
+  typeof postDbaasOpensearchServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasOpensearchServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasOpensearchServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasOpensearchNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasOpensearchNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasOpensearchServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasOpensearchServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasOpensearchNameRouteHandler: RouteHandler<
+  typeof postDbaasOpensearchNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasOpensearchNameRouteHandler: RouteHandler<
+  typeof getDbaasOpensearchNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasOpensearchNameRouteHandler: RouteHandler<
+  typeof deleteDbaasOpensearchNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasOpensearchNameRouteHandler: RouteHandler<
+  typeof putDbaasOpensearchNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

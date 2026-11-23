@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDirectoryUsersIdRoute, getDirectoryUsersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDirectoryUsersIdRoute, getDirectoryUsersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDirectoryUsersRouteHandler: RouteHandler<typeof getDirectoryUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const directoryUsersHandler = app
-  .openapi(getDirectoryUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDirectoryUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDirectoryUsersIdRouteHandler: RouteHandler<
+  typeof getDirectoryUsersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

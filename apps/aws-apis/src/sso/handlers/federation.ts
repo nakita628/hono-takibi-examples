@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFederationCredentialsRoleNameAccountIdXAmzSsoBearerTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFederationCredentialsRoleNameAccountIdXAmzSsoBearerTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const federationHandler = app.openapi(
-  getFederationCredentialsRoleNameAccountIdXAmzSsoBearerTokenRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getFederationCredentialsRoleNameAccountIdXAmzSsoBearerTokenRouteHandler: RouteHandler<
+  typeof getFederationCredentialsRoleNameAccountIdXAmzSsoBearerTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

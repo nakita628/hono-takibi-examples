@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wellknown.ai/1.0.0/openapi.yaml',
   output: './src/wellknown-ai/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wellknown-ai/types.ts' },
   client: { output: './src/wellknown-ai/client.ts', baseUrl: '/' },
   rpc: { output: './src/wellknown-ai/rpc.ts', parseResponse: true },

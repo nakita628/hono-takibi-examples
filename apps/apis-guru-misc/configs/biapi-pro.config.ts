@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/biapi.pro/2.0/openapi.yaml',
   output: './src/biapi-pro/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/biapi-pro/types.ts' },
   client: { output: './src/biapi-pro/client.ts', baseUrl: '/' },
   rpc: { output: './src/biapi-pro/rpc.ts', parseResponse: true },

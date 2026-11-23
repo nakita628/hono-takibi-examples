@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchV2NameRoute,
   postV2ParentProfilesCreateOfflineRoute,
   postV2ParentProfilesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const patchV2NameRouteHandler: RouteHandler<typeof patchV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(patchV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentProfilesCreateOfflineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2ParentProfilesRouteHandler: RouteHandler<
+  typeof postV2ParentProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentProfilesCreateOfflineRouteHandler: RouteHandler<
+  typeof postV2ParentProfilesCreateOfflineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

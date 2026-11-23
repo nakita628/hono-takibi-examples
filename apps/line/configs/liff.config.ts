@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/liff.yml',
   output: './src/liff/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/liff/types.ts' },
   client: { output: './src/liff/client.ts', baseUrl: '/' },
   rpc: { output: './src/liff/rpc.ts', parseResponse: true },

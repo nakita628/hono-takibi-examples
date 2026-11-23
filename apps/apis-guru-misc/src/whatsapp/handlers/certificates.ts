@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCertificatesWebhooksCaRoute,
   getCertificatesExternalCaRoute,
   getCertificatesWebhooksCaRoute,
@@ -7,21 +7,32 @@ import {
   postCertificatesWebhooksCaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCertificatesExternalRouteHandler: RouteHandler<
+  typeof postCertificatesExternalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const certificatesHandler = app
-  .openapi(postCertificatesExternalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesExternalCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCertificatesWebhooksCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCertificatesWebhooksCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCertificatesWebhooksCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCertificatesExternalCaRouteHandler: RouteHandler<
+  typeof getCertificatesExternalCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCertificatesWebhooksCaRouteHandler: RouteHandler<
+  typeof deleteCertificatesWebhooksCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCertificatesWebhooksCaRouteHandler: RouteHandler<
+  typeof getCertificatesWebhooksCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCertificatesWebhooksCaRouteHandler: RouteHandler<
+  typeof postCertificatesWebhooksCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

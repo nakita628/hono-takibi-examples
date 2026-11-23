@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRetrieveApplicableDefenseReasonsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRetrieveApplicableDefenseReasonsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const retrieveApplicableDefenseReasonsHandler = app.openapi(
-  postRetrieveApplicableDefenseReasonsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRetrieveApplicableDefenseReasonsRouteHandler: RouteHandler<
+  typeof postRetrieveApplicableDefenseReasonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

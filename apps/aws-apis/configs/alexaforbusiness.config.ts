@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/alexaforbusiness/2017-11-09/openapi.yaml',
   output: './src/alexaforbusiness/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/alexaforbusiness/types.ts' },
   client: { output: './src/alexaforbusiness/client.ts', baseUrl: '/' },
   rpc: { output: './src/alexaforbusiness/rpc.ts', parseResponse: true },

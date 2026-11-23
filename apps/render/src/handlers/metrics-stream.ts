@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMetricsStreamOwnerIdRoute,
   getMetricsStreamOwnerIdRoute,
   putMetricsStreamOwnerIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetricsStreamOwnerIdRouteHandler: RouteHandler<
+  typeof getMetricsStreamOwnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsStreamHandler = app
-  .openapi(getMetricsStreamOwnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMetricsStreamOwnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMetricsStreamOwnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putMetricsStreamOwnerIdRouteHandler: RouteHandler<
+  typeof putMetricsStreamOwnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMetricsStreamOwnerIdRouteHandler: RouteHandler<
+  typeof deleteMetricsStreamOwnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

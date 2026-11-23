@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTwilioRoute, postTwilioRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTwilioRoute, postTwilioRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTwilioRouteHandler: RouteHandler<typeof getTwilioRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const twilioHandler = app
-  .openapi(getTwilioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTwilioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTwilioRouteHandler: RouteHandler<typeof postTwilioRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

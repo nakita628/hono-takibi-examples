@@ -585,12 +585,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/campaigns/2026-09/batch/archive': {
-      $post: {
-        input: { json: BatchInputPublicCampaignDeleteInput }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchInputPublicCampaignDeleteInput }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchInputPublicCampaignDeleteInput }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/campaigns/2026-09/batch/create': {
@@ -741,12 +748,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { campaignGuid: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { campaignGuid: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignGuid: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { campaignGuid: string } } & { json: PublicCampaignInput }
@@ -793,18 +807,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/marketing/campaigns/2026-09/:campaignGuid/assets/:assetType/:assetId': {
-      $put: {
-        input: { param: { assetId: string; assetType: string; campaignGuid: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
-      $delete: {
-        input: { param: { assetId: string; assetType: string; campaignGuid: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { assetId: string; assetType: string; campaignGuid: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { assetId: string; assetType: string; campaignGuid: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete:
+        | {
+            input: { param: { assetId: string; assetType: string; campaignGuid: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { assetId: string; assetType: string; campaignGuid: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/campaigns/2026-09/:campaignGuid/budget': {
@@ -870,12 +898,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { budgetId: bigint; campaignGuid: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { budgetId: bigint; campaignGuid: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { budgetId: bigint; campaignGuid: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/campaigns/2026-09/:campaignGuid/reports/contacts/:contactType': {
@@ -1003,12 +1038,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { campaignGuid: string; spendId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { campaignGuid: string; spendId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignGuid: string; spendId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

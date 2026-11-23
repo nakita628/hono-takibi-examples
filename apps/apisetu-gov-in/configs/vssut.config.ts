@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/vssut/3.0.0/openapi.yaml',
   output: './src/vssut/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vssut/types.ts' },
   client: { output: './src/vssut/client.ts', baseUrl: '/' },
   rpc: { output: './src/vssut/rpc.ts', parseResponse: true },

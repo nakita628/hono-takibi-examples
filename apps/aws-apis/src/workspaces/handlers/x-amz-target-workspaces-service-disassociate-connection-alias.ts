@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceDisassociateConnectionAliasHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceDisassociateConnectionAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

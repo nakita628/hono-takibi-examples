@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiCreditcontrolAccountsCreditAccountIdHoldersHolderIdRoute,
   deleteApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute,
   deleteApiCreditcontrolAccountsCreditAccountIdRoute,
@@ -28,90 +28,158 @@ import {
   putApiCreditcontrolStoreconfigRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiCreditcontrolAccountsRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiCreditcontrolAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCreditcontrolAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCreditcontrolAccountsCreditAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCreditcontrolAccountsCreditAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdCreditlimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCreditcontrolAccountsCreditAccountIdHoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCreditcontrolAccountsCreditAccountIdHoldersHolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCreditcontrolAccountsCreditAccountIdInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPostponementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCreditcontrolAccountsCreditAccountIdStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdStatementsStatementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdToleranceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCreditcontrolAccountsCreditAccountIdTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRefundsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdSettlementRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApiCreditcontrolInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCreditcontrolStoreconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCreditcontrolStoreconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiCreditcontrolAccountsRouteHandler: RouteHandler<
+  typeof postApiCreditcontrolAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsAccountIdRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCreditcontrolAccountsCreditAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiCreditcontrolAccountsCreditAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolAccountsCreditAccountIdRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolAccountsCreditAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdCreditlimitRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdCreditlimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCreditcontrolAccountsCreditAccountIdHoldersRouteHandler: RouteHandler<
+  typeof postApiCreditcontrolAccountsCreditAccountIdHoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCreditcontrolAccountsCreditAccountIdHoldersHolderIdRouteHandler: RouteHandler<
+  typeof deleteApiCreditcontrolAccountsCreditAccountIdHoldersHolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolAccountsCreditAccountIdInvoicesRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolAccountsCreditAccountIdInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof deleteApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPaymentsRouteHandler: RouteHandler<
+  typeof postApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPostponementRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdInvoicesInvoiceIdPostponementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolAccountsCreditAccountIdStatementsRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolAccountsCreditAccountIdStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdStatementsStatementIdRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdStatementsStatementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdToleranceRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdToleranceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCreditcontrolAccountsCreditAccountIdTransactionRouteHandler: RouteHandler<
+  typeof postApiCreditcontrolAccountsCreditAccountIdTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof deleteApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRefundsRouteHandler: RouteHandler<
+  typeof postApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdSettlementRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolAccountsCreditAccountIdTransactionsTransactionIdSettlementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolInvoicesRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCreditcontrolStoreconfigRouteHandler: RouteHandler<
+  typeof getApiCreditcontrolStoreconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCreditcontrolStoreconfigRouteHandler: RouteHandler<
+  typeof putApiCreditcontrolStoreconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

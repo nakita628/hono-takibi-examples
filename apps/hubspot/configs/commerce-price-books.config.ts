@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Commerce/Price%20Books/Rollouts/310989/2026-09/priceBooks.json',
   output: './src/commerce-price-books/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/commerce-price-books/types.ts' },
   client: { output: './src/commerce-price-books/client.ts', baseUrl: '/' },
   rpc: { output: './src/commerce-price-books/rpc.ts', parseResponse: true },

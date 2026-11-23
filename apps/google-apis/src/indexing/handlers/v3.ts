@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV3UrlNotificationsMetadataRoute, postV3UrlNotificationsPublishRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getV3UrlNotificationsMetadataRoute,
+  postV3UrlNotificationsPublishRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3UrlNotificationsMetadataRouteHandler: RouteHandler<
+  typeof getV3UrlNotificationsMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3UrlNotificationsMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3UrlNotificationsPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV3UrlNotificationsPublishRouteHandler: RouteHandler<
+  typeof postV3UrlNotificationsPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

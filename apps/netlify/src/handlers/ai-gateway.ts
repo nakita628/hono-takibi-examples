@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAiGatewayProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAiGatewayProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const aiGatewayHandler = app.openapi(getAiGatewayProvidersRoute, (c) => {
+export const getAiGatewayProvidersRouteHandler: RouteHandler<
+  typeof getAiGatewayProvidersRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

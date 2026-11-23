@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRestMethodFlickrGroupsDiscussRepliesGetInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRestMethodFlickrGroupsDiscussRepliesGetInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const restMethodFlickrGroupsDiscussRepliesGetInfoHandler = app.openapi(
-  getRestMethodFlickrGroupsDiscussRepliesGetInfoRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getRestMethodFlickrGroupsDiscussRepliesGetInfoRouteHandler: RouteHandler<
+  typeof getRestMethodFlickrGroupsDiscussRepliesGetInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSystemFunctionsRoute,
   deleteSystemSecretsRoute,
   getSystemFunctionFunctionNameRoute,
@@ -16,48 +16,80 @@ import {
   putSystemSecretsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemInfoRouteHandler: RouteHandler<typeof getSystemInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(getSystemInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemAlertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSystemFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemScaleFunctionFunctionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemFunctionFunctionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSystemSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSystemAlertRouteHandler: RouteHandler<typeof postSystemAlertRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemFunctionsRouteHandler: RouteHandler<typeof getSystemFunctionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSystemFunctionsRouteHandler: RouteHandler<typeof putSystemFunctionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemFunctionsRouteHandler: RouteHandler<
+  typeof postSystemFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSystemFunctionsRouteHandler: RouteHandler<
+  typeof deleteSystemFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemScaleFunctionFunctionNameRouteHandler: RouteHandler<
+  typeof postSystemScaleFunctionFunctionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemFunctionFunctionNameRouteHandler: RouteHandler<
+  typeof getSystemFunctionFunctionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemSecretsRouteHandler: RouteHandler<typeof getSystemSecretsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSystemSecretsRouteHandler: RouteHandler<typeof putSystemSecretsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemSecretsRouteHandler: RouteHandler<typeof postSystemSecretsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSystemSecretsRouteHandler: RouteHandler<
+  typeof deleteSystemSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemLogsRouteHandler: RouteHandler<typeof getSystemLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemNamespacesRouteHandler: RouteHandler<
+  typeof getSystemNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

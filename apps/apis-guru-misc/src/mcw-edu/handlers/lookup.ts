@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLookupGeneTypesRoute,
   getLookupIdMapEnsemblGeneRgdIdRoute,
   getLookupIdMapEnsemblProteinRgdIdRoute,
@@ -26,78 +26,146 @@ import {
   postLookupIdMapUniProtRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLookupGeneTypesRouteHandler: RouteHandler<typeof getLookupGeneTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const lookupHandler = app
-  .openapi(getLookupGeneTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapEnsemblGeneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapEnsemblGeneRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapEnsemblProteinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapEnsemblProteinRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapEnsemblTranscriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapEnsemblTranscriptRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapGTExRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapGTExRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapGenBankNucleotideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapGenBankNucleotideRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapGenBankProteinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapGenBankProteinRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapHGNCRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapHGNCRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapMGIRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapMGIRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapNCBIGeneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapNCBIGeneRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupIdMapUniProtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupIdMapUniProtRgdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupMapsSpeciesTypeKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupSpeciesTypeKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupStandardUnitAccIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLookupIdMapEnsemblGeneRouteHandler: RouteHandler<
+  typeof postLookupIdMapEnsemblGeneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapEnsemblGeneRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapEnsemblGeneRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapEnsemblProteinRouteHandler: RouteHandler<
+  typeof postLookupIdMapEnsemblProteinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapEnsemblProteinRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapEnsemblProteinRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapEnsemblTranscriptRouteHandler: RouteHandler<
+  typeof postLookupIdMapEnsemblTranscriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapEnsemblTranscriptRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapEnsemblTranscriptRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapGTExRouteHandler: RouteHandler<
+  typeof postLookupIdMapGTExRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapGTExRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapGTExRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapGenBankNucleotideRouteHandler: RouteHandler<
+  typeof postLookupIdMapGenBankNucleotideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapGenBankNucleotideRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapGenBankNucleotideRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapGenBankProteinRouteHandler: RouteHandler<
+  typeof postLookupIdMapGenBankProteinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapGenBankProteinRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapGenBankProteinRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapHGNCRouteHandler: RouteHandler<
+  typeof postLookupIdMapHGNCRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapHGNCRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapHGNCRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapMGIRouteHandler: RouteHandler<typeof postLookupIdMapMGIRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapMGIRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapMGIRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapNCBIGeneRouteHandler: RouteHandler<
+  typeof postLookupIdMapNCBIGeneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapNCBIGeneRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapNCBIGeneRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupIdMapUniProtRouteHandler: RouteHandler<
+  typeof postLookupIdMapUniProtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupIdMapUniProtRgdIdRouteHandler: RouteHandler<
+  typeof getLookupIdMapUniProtRgdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupMapsSpeciesTypeKeyRouteHandler: RouteHandler<
+  typeof getLookupMapsSpeciesTypeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupSpeciesTypeKeysRouteHandler: RouteHandler<
+  typeof getLookupSpeciesTypeKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupStandardUnitAccIdRouteHandler: RouteHandler<
+  typeof getLookupStandardUnitAccIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

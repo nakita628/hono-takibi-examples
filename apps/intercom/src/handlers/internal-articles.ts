@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInternalArticlesInternalArticleIdRoute,
   deleteInternalArticlesInternalArticleIdTagsIdRoute,
   getInternalArticlesInternalArticleIdRoute,
@@ -10,30 +10,50 @@ import {
   putInternalArticlesInternalArticleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInternalArticlesRouteHandler: RouteHandler<
+  typeof getInternalArticlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const internalArticlesHandler = app
-  .openapi(getInternalArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInternalArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternalArticlesInternalArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInternalArticlesInternalArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInternalArticlesInternalArticleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInternalArticlesInternalArticleIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInternalArticlesInternalArticleIdTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternalArticlesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInternalArticlesRouteHandler: RouteHandler<
+  typeof postInternalArticlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInternalArticlesInternalArticleIdRouteHandler: RouteHandler<
+  typeof getInternalArticlesInternalArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInternalArticlesInternalArticleIdRouteHandler: RouteHandler<
+  typeof putInternalArticlesInternalArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInternalArticlesInternalArticleIdRouteHandler: RouteHandler<
+  typeof deleteInternalArticlesInternalArticleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInternalArticlesInternalArticleIdTagsRouteHandler: RouteHandler<
+  typeof postInternalArticlesInternalArticleIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInternalArticlesInternalArticleIdTagsIdRouteHandler: RouteHandler<
+  typeof deleteInternalArticlesInternalArticleIdTagsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInternalArticlesSearchRouteHandler: RouteHandler<
+  typeof getInternalArticlesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

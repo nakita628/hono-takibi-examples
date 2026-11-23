@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBranchesRoute, headBranchesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBranchesRoute, headBranchesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBranchesRouteHandler: RouteHandler<typeof getBranchesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const branchesHandler = app
-  .openapi(getBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const headBranchesRouteHandler: RouteHandler<typeof headBranchesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

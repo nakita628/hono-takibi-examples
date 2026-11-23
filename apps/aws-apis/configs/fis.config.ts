@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/fis/2020-12-01/openapi.yaml',
   output: './src/fis/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fis/types.ts' },
   client: { output: './src/fis/client.ts', baseUrl: '/' },
   rpc: { output: './src/fis/rpc.ts', parseResponse: true },

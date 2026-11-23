@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCreatebabelAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCreatebabelAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createbabelHandler = app.openapi(getCreatebabelAddressRoute, (c) => {
+export const getCreatebabelAddressRouteHandler: RouteHandler<
+  typeof getCreatebabelAddressRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

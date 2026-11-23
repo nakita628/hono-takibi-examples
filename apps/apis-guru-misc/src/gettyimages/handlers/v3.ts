@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3AssetChangesChangeSetsChangeSetIdRoute,
   deleteV3BoardsBoardIdAssetsAssetIdRoute,
   deleteV3BoardsBoardIdAssetsRoute,
@@ -54,162 +54,290 @@ import {
   putV3UsageBatchesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3AffiliatesSearchImagesRouteHandler: RouteHandler<
+  typeof getV3AffiliatesSearchImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3AffiliatesSearchImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3AffiliatesSearchVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ArtistsImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ArtistsVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3AssetChangesChangeSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3AssetChangesChangeSetsChangeSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3AssetChangesChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3AssetLicensingAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3AssetManagementAssetsSendEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3BoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3BoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3BoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3BoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3BoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3BoardsBoardIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3BoardsBoardIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3BoardsBoardIdAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3BoardsBoardIdAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3BoardsBoardIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3BoardsBoardIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3BoardsBoardIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3CollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3CountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3CustomersCurrentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3DownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3DownloadsImagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3DownloadsVideosIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3EventsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ImagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ImagesIdDownloadhistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ImagesIdSameSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ImagesIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3OrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PurchasedAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3SearchByImageUploadsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchImagesCreativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchImagesCreativeByImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchImagesEditorialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchVideosCreativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchVideosCreativeByImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SearchVideosEditorialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3UsageBatchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3VideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3VideosIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3VideosIdDownloadhistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3VideosIdSameSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3VideosIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3AffiliatesSearchVideosRouteHandler: RouteHandler<
+  typeof getV3AffiliatesSearchVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ArtistsImagesRouteHandler: RouteHandler<typeof getV3ArtistsImagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ArtistsVideosRouteHandler: RouteHandler<typeof getV3ArtistsVideosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3AssetChangesChangeSetsRouteHandler: RouteHandler<
+  typeof putV3AssetChangesChangeSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3AssetChangesChangeSetsChangeSetIdRouteHandler: RouteHandler<
+  typeof deleteV3AssetChangesChangeSetsChangeSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3AssetChangesChannelsRouteHandler: RouteHandler<
+  typeof getV3AssetChangesChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3AssetLicensingAssetIdRouteHandler: RouteHandler<
+  typeof postV3AssetLicensingAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3AssetManagementAssetsSendEventsRouteHandler: RouteHandler<
+  typeof getV3AssetManagementAssetsSendEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3BoardsRouteHandler: RouteHandler<typeof getV3BoardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3BoardsRouteHandler: RouteHandler<typeof postV3BoardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3BoardsBoardIdRouteHandler: RouteHandler<
+  typeof deleteV3BoardsBoardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3BoardsBoardIdRouteHandler: RouteHandler<typeof getV3BoardsBoardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3BoardsBoardIdRouteHandler: RouteHandler<typeof putV3BoardsBoardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3BoardsBoardIdAssetsRouteHandler: RouteHandler<
+  typeof deleteV3BoardsBoardIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3BoardsBoardIdAssetsRouteHandler: RouteHandler<
+  typeof putV3BoardsBoardIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3BoardsBoardIdAssetsAssetIdRouteHandler: RouteHandler<
+  typeof deleteV3BoardsBoardIdAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3BoardsBoardIdAssetsAssetIdRouteHandler: RouteHandler<
+  typeof putV3BoardsBoardIdAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3BoardsBoardIdCommentsRouteHandler: RouteHandler<
+  typeof getV3BoardsBoardIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3BoardsBoardIdCommentsRouteHandler: RouteHandler<
+  typeof postV3BoardsBoardIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3BoardsBoardIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteV3BoardsBoardIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3CollectionsRouteHandler: RouteHandler<typeof getV3CollectionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3CountriesRouteHandler: RouteHandler<typeof getV3CountriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3CustomersCurrentRouteHandler: RouteHandler<
+  typeof getV3CustomersCurrentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3DownloadsRouteHandler: RouteHandler<typeof getV3DownloadsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3DownloadsImagesIdRouteHandler: RouteHandler<
+  typeof postV3DownloadsImagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3DownloadsVideosIdRouteHandler: RouteHandler<
+  typeof postV3DownloadsVideosIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3EventsRouteHandler: RouteHandler<typeof getV3EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3EventsIdRouteHandler: RouteHandler<typeof getV3EventsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ImagesRouteHandler: RouteHandler<typeof getV3ImagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ImagesIdRouteHandler: RouteHandler<typeof getV3ImagesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ImagesIdDownloadhistoryRouteHandler: RouteHandler<
+  typeof getV3ImagesIdDownloadhistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ImagesIdSameSeriesRouteHandler: RouteHandler<
+  typeof getV3ImagesIdSameSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ImagesIdSimilarRouteHandler: RouteHandler<
+  typeof getV3ImagesIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3OrdersIdRouteHandler: RouteHandler<typeof getV3OrdersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ProductsRouteHandler: RouteHandler<typeof getV3ProductsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PurchasedAssetsRouteHandler: RouteHandler<
+  typeof getV3PurchasedAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3SearchByImageUploadsFileNameRouteHandler: RouteHandler<
+  typeof putV3SearchByImageUploadsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchEventsRouteHandler: RouteHandler<typeof getV3SearchEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchImagesRouteHandler: RouteHandler<typeof getV3SearchImagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchImagesCreativeRouteHandler: RouteHandler<
+  typeof getV3SearchImagesCreativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchImagesCreativeByImageRouteHandler: RouteHandler<
+  typeof getV3SearchImagesCreativeByImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchImagesEditorialRouteHandler: RouteHandler<
+  typeof getV3SearchImagesEditorialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchVideosCreativeRouteHandler: RouteHandler<
+  typeof getV3SearchVideosCreativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchVideosCreativeByImageRouteHandler: RouteHandler<
+  typeof getV3SearchVideosCreativeByImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SearchVideosEditorialRouteHandler: RouteHandler<
+  typeof getV3SearchVideosEditorialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3UsageBatchesIdRouteHandler: RouteHandler<
+  typeof putV3UsageBatchesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3VideosRouteHandler: RouteHandler<typeof getV3VideosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3VideosIdRouteHandler: RouteHandler<typeof getV3VideosIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3VideosIdDownloadhistoryRouteHandler: RouteHandler<
+  typeof getV3VideosIdDownloadhistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3VideosIdSameSeriesRouteHandler: RouteHandler<
+  typeof getV3VideosIdSameSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3VideosIdSimilarRouteHandler: RouteHandler<
+  typeof getV3VideosIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

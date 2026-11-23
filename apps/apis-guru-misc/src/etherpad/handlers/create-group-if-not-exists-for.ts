@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCreateGroupIfNotExistsForRoute, postCreateGroupIfNotExistsForRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getCreateGroupIfNotExistsForRoute,
+  postCreateGroupIfNotExistsForRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getCreateGroupIfNotExistsForRouteHandler: RouteHandler<
+  typeof getCreateGroupIfNotExistsForRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const createGroupIfNotExistsForHandler = app
-  .openapi(getCreateGroupIfNotExistsForRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreateGroupIfNotExistsForRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCreateGroupIfNotExistsForRouteHandler: RouteHandler<
+  typeof postCreateGroupIfNotExistsForRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

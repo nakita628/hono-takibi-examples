@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGoogleDirectoriesIdRoute, getGoogleDirectoriesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGoogleDirectoriesIdRoute, getGoogleDirectoriesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGoogleDirectoriesRouteHandler: RouteHandler<
+  typeof getGoogleDirectoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const googleDirectoriesHandler = app
-  .openapi(getGoogleDirectoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGoogleDirectoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGoogleDirectoriesIdRouteHandler: RouteHandler<
+  typeof getGoogleDirectoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

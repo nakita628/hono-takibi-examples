@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBoardsBoardIdRoute,
   deleteBoardsBoardIdSectionsSectionIdRoute,
   getBoardsBoardIdPinsRoute,
@@ -13,39 +13,64 @@ import {
   postBoardsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBoardsRouteHandler: RouteHandler<typeof postBoardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const boardsHandler = app
-  .openapi(postBoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBoardsBoardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoardsBoardIdPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoardsBoardIdSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBoardsBoardIdSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBoardsBoardIdSectionsSectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBoardsBoardIdSectionsSectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoardsBoardIdSectionsSectionIdPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBoardsRouteHandler: RouteHandler<typeof getBoardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoardsBoardIdRouteHandler: RouteHandler<typeof getBoardsBoardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBoardsBoardIdRouteHandler: RouteHandler<
+  typeof deleteBoardsBoardIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBoardsBoardIdRouteHandler: RouteHandler<typeof patchBoardsBoardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoardsBoardIdPinsRouteHandler: RouteHandler<
+  typeof getBoardsBoardIdPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoardsBoardIdSectionsRouteHandler: RouteHandler<
+  typeof getBoardsBoardIdSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBoardsBoardIdSectionsRouteHandler: RouteHandler<
+  typeof postBoardsBoardIdSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBoardsBoardIdSectionsSectionIdRouteHandler: RouteHandler<
+  typeof deleteBoardsBoardIdSectionsSectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBoardsBoardIdSectionsSectionIdRouteHandler: RouteHandler<
+  typeof patchBoardsBoardIdSectionsSectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoardsBoardIdSectionsSectionIdPinsRouteHandler: RouteHandler<
+  typeof getBoardsBoardIdSectionsSectionIdPinsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

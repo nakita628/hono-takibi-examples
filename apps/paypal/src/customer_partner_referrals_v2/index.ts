@@ -1,8 +1,20 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v2Handler } from './handlers'
+import {
+  getV2CustomerPartnerReferralsPartnerReferralIdRoute,
+  postV2CustomerPartnerReferralsRoute,
+} from './routes'
+import {
+  getV2CustomerPartnerReferralsPartnerReferralIdRouteHandler,
+  postV2CustomerPartnerReferralsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v2Handler)
+export const api = app
+  .openapi(postV2CustomerPartnerReferralsRoute, postV2CustomerPartnerReferralsRouteHandler)
+  .openapi(
+    getV2CustomerPartnerReferralsPartnerReferralIdRoute,
+    getV2CustomerPartnerReferralsPartnerReferralIdRouteHandler,
+  )
 
 export default app

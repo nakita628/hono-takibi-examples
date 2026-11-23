@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getValidateBasicRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getValidateBasicRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const validateBasicHandler = app.openapi(getValidateBasicRoute, (c) => {
+export const getValidateBasicRouteHandler: RouteHandler<typeof getValidateBasicRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

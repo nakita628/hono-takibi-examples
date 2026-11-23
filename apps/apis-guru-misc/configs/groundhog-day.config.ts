@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/groundhog-day.com/1.2.1/openapi.yaml',
   output: './src/groundhog-day/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/groundhog-day/types.ts' },
   client: { output: './src/groundhog-day/client.ts', baseUrl: '/' },
   rpc: { output: './src/groundhog-day/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUpdateDataRetentionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUpdateDataRetentionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const updateDataRetentionHandler = app.openapi(postUpdateDataRetentionRoute, (c) => {
+export const postUpdateDataRetentionRouteHandler: RouteHandler<
+  typeof postUpdateDataRetentionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

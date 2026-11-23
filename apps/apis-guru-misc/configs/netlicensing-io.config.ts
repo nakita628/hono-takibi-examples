@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/netlicensing.io/2.x/openapi.yaml',
   output: './src/netlicensing-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/netlicensing-io/types.ts' },
   client: { output: './src/netlicensing-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/netlicensing-io/rpc.ts', parseResponse: true },

@@ -23,10 +23,7 @@ export const getApiV1ScansRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'scans found', content: {} },
-    404: { description: 'scans not found' },
-  },
+  responses: { 200: { description: 'scans found' }, 404: { description: 'scans not found' } },
   security: [{ api_key: [] }],
 })
 
@@ -42,10 +39,7 @@ export const getApiV1ScansIdRoute = createRoute({
         .openapi({ param: { in: 'path', name: 'id', required: true, schema: { type: 'string' } } }),
     }),
   },
-  responses: {
-    200: { description: 'scan found', content: {} },
-    404: { description: 'scan not found' },
-  },
+  responses: { 200: { description: 'scan found' }, 404: { description: 'scan not found' } },
   security: [{ api_key: [] }],
 })
 
@@ -74,9 +68,6 @@ export const getApiV1ScansIdFilesFileIdRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'file found', content: {} },
-    404: { description: 'file not found' },
-  },
+  responses: { 200: { description: 'file found' }, 404: { description: 'file not found' } },
   security: [{ api_key: [] }],
 })

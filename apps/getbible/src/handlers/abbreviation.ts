@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAbbreviationBookChapterJsonRoute,
   getAbbreviationBookChapterShaRoute,
   getAbbreviationBookChaptersJsonRoute,
@@ -18,54 +18,98 @@ import {
   getAbbreviationChecksumTxtRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAbbreviationBooksJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationBooksJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const abbreviationHandler = app
-  .openapi(getAbbreviationBooksJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBooksTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBooksShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationChecksumJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationChecksumTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationChecksumShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChaptersJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChaptersTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChaptersShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChecksumJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChecksumTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChecksumShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChapterJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAbbreviationBookChapterShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAbbreviationBooksTxtRouteHandler: RouteHandler<
+  typeof getAbbreviationBooksTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBooksShaRouteHandler: RouteHandler<
+  typeof getAbbreviationBooksShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationChecksumJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationChecksumJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationChecksumTxtRouteHandler: RouteHandler<
+  typeof getAbbreviationChecksumTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationChecksumShaRouteHandler: RouteHandler<
+  typeof getAbbreviationChecksumShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationBookJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookShaRouteHandler: RouteHandler<
+  typeof getAbbreviationBookShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChaptersJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChaptersJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChaptersTxtRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChaptersTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChaptersShaRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChaptersShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChecksumJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChecksumJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChecksumTxtRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChecksumTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChecksumShaRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChecksumShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChapterJsonRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChapterJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAbbreviationBookChapterShaRouteHandler: RouteHandler<
+  typeof getAbbreviationBookChapterShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRedshiftDataDescribeStatementRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRedshiftDataDescribeStatementRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRedshiftDataDescribeStatementHandler = app.openapi(
-  postXAmzTargetRedshiftDataDescribeStatementRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRedshiftDataDescribeStatementRouteHandler: RouteHandler<
+  typeof postXAmzTargetRedshiftDataDescribeStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

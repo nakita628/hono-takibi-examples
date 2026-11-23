@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/reloadly.com/1.0.0/openapi.yaml',
   output: './src/reloadly/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/reloadly/types.ts' },
   client: { output: './src/reloadly/client.ts', baseUrl: '/' },
   rpc: { output: './src/reloadly/rpc.ts', parseResponse: true },

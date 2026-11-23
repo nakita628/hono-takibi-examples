@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSMigrationHubAssociateCreatedArtifactRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSMigrationHubAssociateCreatedArtifactRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsMigrationHubAssociateCreatedArtifactHandler = app.openapi(
-  postXAmzTargetAWSMigrationHubAssociateCreatedArtifactRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSMigrationHubAssociateCreatedArtifactRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSMigrationHubAssociateCreatedArtifactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

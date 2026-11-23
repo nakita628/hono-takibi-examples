@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Marketing/Transactional%20Single%20Send/Rollouts/140892/2026-09/transactionalSingleSend.json',
   output: './src/marketing-transactional-single-send/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/marketing-transactional-single-send/types.ts' },
   client: { output: './src/marketing-transactional-single-send/client.ts', baseUrl: '/' },
   rpc: { output: './src/marketing-transactional-single-send/rpc.ts', parseResponse: true },

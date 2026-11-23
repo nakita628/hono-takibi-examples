@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/qldb/2019-01-02/openapi.yaml',
   output: './src/qldb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/qldb/types.ts' },
   client: { output: './src/qldb/client.ts', baseUrl: '/' },
   rpc: { output: './src/qldb/rpc.ts', parseResponse: true },

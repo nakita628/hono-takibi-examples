@@ -80,8 +80,8 @@ const AddonInfoSchema = z
 const AddonsSchema = z.array(AddonInfoSchema).openapi('Addons')
 
 type DescribeAddonVersionsResponseType = {
-  addons?: z.infer<typeof AddonsSchema> & unknown
-  nextToken?: z.infer<typeof StringSchema> & unknown
+  addons?: z.infer<typeof AddonsSchema>
+  nextToken?: z.infer<typeof StringSchema>
 }
 
 const UpdateStatusSchema = z

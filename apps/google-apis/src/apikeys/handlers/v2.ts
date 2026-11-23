@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2NameRoute,
   getV2KeysLookupKeyRoute,
   getV2NameKeyStringRoute,
@@ -10,30 +10,42 @@ import {
   postV2ParentKeysRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2KeysLookupKeyRouteHandler: RouteHandler<typeof getV2KeysLookupKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2KeysLookupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameKeyStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV2NameRouteHandler: RouteHandler<typeof deleteV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameRouteHandler: RouteHandler<typeof getV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2NameRouteHandler: RouteHandler<typeof patchV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameKeyStringRouteHandler: RouteHandler<typeof getV2NameKeyStringRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameUndeleteRouteHandler: RouteHandler<typeof postV2NameUndeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentKeysRouteHandler: RouteHandler<typeof getV2ParentKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentKeysRouteHandler: RouteHandler<typeof postV2ParentKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmPipelines202609ObjectTypePipelineIdRoute,
   deleteCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute,
   getCrmPipelines202609ObjectTypePipelineIdAuditRoute,
@@ -16,48 +16,86 @@ import {
   putCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmPipelines202609ObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmPipelines202609ObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmPipelines202609ObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelines202609ObjectTypePipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmPipelines202609ObjectTypePipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmPipelines202609ObjectTypePipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmPipelines202609ObjectTypePipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelines202609ObjectTypePipelineIdAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelines202609ObjectTypePipelineIdStagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmPipelines202609ObjectTypePipelineIdStagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelines202609ObjectTypePipelineIdStagesStageIdAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmPipelines202609ObjectTypeRouteHandler: RouteHandler<
+  typeof postCrmPipelines202609ObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelines202609ObjectTypePipelineIdRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypePipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmPipelines202609ObjectTypePipelineIdRouteHandler: RouteHandler<
+  typeof putCrmPipelines202609ObjectTypePipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmPipelines202609ObjectTypePipelineIdRouteHandler: RouteHandler<
+  typeof deleteCrmPipelines202609ObjectTypePipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmPipelines202609ObjectTypePipelineIdRouteHandler: RouteHandler<
+  typeof patchCrmPipelines202609ObjectTypePipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelines202609ObjectTypePipelineIdAuditRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypePipelineIdAuditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelines202609ObjectTypePipelineIdStagesRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypePipelineIdStagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmPipelines202609ObjectTypePipelineIdStagesRouteHandler: RouteHandler<
+  typeof postCrmPipelines202609ObjectTypePipelineIdStagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelines202609ObjectTypePipelineIdStagesStageIdRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmPipelines202609ObjectTypePipelineIdStagesStageIdRouteHandler: RouteHandler<
+  typeof putCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmPipelines202609ObjectTypePipelineIdStagesStageIdRouteHandler: RouteHandler<
+  typeof deleteCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmPipelines202609ObjectTypePipelineIdStagesStageIdRouteHandler: RouteHandler<
+  typeof patchCrmPipelines202609ObjectTypePipelineIdStagesStageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelines202609ObjectTypePipelineIdStagesStageIdAuditRouteHandler: RouteHandler<
+  typeof getCrmPipelines202609ObjectTypePipelineIdStagesStageIdAuditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCompaniesIdRoute,
   getCompaniesIdRoute,
   getCompaniesRoute,
@@ -9,27 +9,38 @@ import {
   postCompaniesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCompaniesRouteHandler: RouteHandler<typeof getCompaniesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const companiesHandler = app
-  .openapi(getCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCompaniesImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCompaniesLinkUnlinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCompaniesRouteHandler: RouteHandler<typeof postCompaniesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCompaniesImportRouteHandler: RouteHandler<
+  typeof postCompaniesImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCompaniesLinkUnlinkIdRouteHandler: RouteHandler<
+  typeof patchCompaniesLinkUnlinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCompaniesIdRouteHandler: RouteHandler<typeof deleteCompaniesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesIdRouteHandler: RouteHandler<typeof getCompaniesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCompaniesIdRouteHandler: RouteHandler<typeof patchCompaniesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

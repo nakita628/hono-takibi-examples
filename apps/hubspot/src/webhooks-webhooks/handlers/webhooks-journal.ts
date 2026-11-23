@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhooksJournalSubscriptions202609FiltersFilterIdRoute,
   deleteWebhooksJournalSubscriptions202609PortalsPortalIdRoute,
   deleteWebhooksJournalSubscriptions202609SubscriptionIdRoute,
@@ -28,84 +28,158 @@ import {
   postWebhooksJournalSubscriptions202609Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebhooksJournalJournalLocal202609BatchEarliestCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609BatchEarliestCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksJournalHandler = app
-  .openapi(getWebhooksJournalJournalLocal202609BatchEarliestCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609BatchLatestCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksJournalJournalLocal202609BatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609EarliestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609LatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournalLocal202609StatusStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609BatchEarliestCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609BatchLatestCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksJournalJournal202609BatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609BatchOffsetNextCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609EarliestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609LatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609OffsetOffsetNextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalJournal202609StatusStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksJournalSnapshots202609CrmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalSubscriptions202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksJournalSubscriptions202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksJournalSubscriptions202609FiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalSubscriptions202609FiltersSubscriptionSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalSubscriptions202609FiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksJournalSubscriptions202609FiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksJournalSubscriptions202609PortalsPortalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksJournalSubscriptions202609SubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksJournalSubscriptions202609SubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebhooksJournalJournalLocal202609BatchLatestCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609BatchLatestCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksJournalJournalLocal202609BatchReadRouteHandler: RouteHandler<
+  typeof postWebhooksJournalJournalLocal202609BatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournalLocal202609BatchOffsetNextCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournalLocal202609EarliestRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609EarliestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournalLocal202609LatestRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609LatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournalLocal202609StatusStatusIdRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournalLocal202609StatusStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609BatchEarliestCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609BatchEarliestCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609BatchLatestCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609BatchLatestCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksJournalJournal202609BatchReadRouteHandler: RouteHandler<
+  typeof postWebhooksJournalJournal202609BatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609BatchOffsetNextCountRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609BatchOffsetNextCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609EarliestRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609EarliestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609LatestRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609LatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609OffsetOffsetNextRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609OffsetOffsetNextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalJournal202609StatusStatusIdRouteHandler: RouteHandler<
+  typeof getWebhooksJournalJournal202609StatusStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksJournalSnapshots202609CrmRouteHandler: RouteHandler<
+  typeof postWebhooksJournalSnapshots202609CrmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalSubscriptions202609RouteHandler: RouteHandler<
+  typeof getWebhooksJournalSubscriptions202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksJournalSubscriptions202609RouteHandler: RouteHandler<
+  typeof postWebhooksJournalSubscriptions202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksJournalSubscriptions202609FiltersRouteHandler: RouteHandler<
+  typeof postWebhooksJournalSubscriptions202609FiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalSubscriptions202609FiltersSubscriptionSubscriptionIdRouteHandler: RouteHandler<
+  typeof getWebhooksJournalSubscriptions202609FiltersSubscriptionSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalSubscriptions202609FiltersFilterIdRouteHandler: RouteHandler<
+  typeof getWebhooksJournalSubscriptions202609FiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksJournalSubscriptions202609FiltersFilterIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksJournalSubscriptions202609FiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksJournalSubscriptions202609PortalsPortalIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksJournalSubscriptions202609PortalsPortalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksJournalSubscriptions202609SubscriptionIdRouteHandler: RouteHandler<
+  typeof getWebhooksJournalSubscriptions202609SubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksJournalSubscriptions202609SubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksJournalSubscriptions202609SubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

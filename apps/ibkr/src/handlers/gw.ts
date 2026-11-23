@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGwApiV1AccountsAccountIdDetailsRoute,
   getGwApiV1AccountsAccountIdKycRoute,
   getGwApiV1AccountsAccountIdLoginMessagesRoute,
@@ -71,213 +71,414 @@ import {
   postGwApiV2ExternalAssetTransfersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGwApiV1AccountsRouteHandler: RouteHandler<
+  typeof postGwApiV1AccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gwHandler = app
-  .openapi(postGwApiV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGwApiV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1AccountsDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1AccountsAccountIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGwApiV1AccountsAccountIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsAccountIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1BalancesQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1BankInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1BankInstructionsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1BankInstructionsBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1EchoSignedJwtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1ExternalAssetTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1ExternalAssetTransfersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1ExternalCashTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1ExternalCashTransfersQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1ExternalCashTransfersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InstructionsCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InstructionsCancelBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InstructionsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InternalAssetTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InternalAssetTransfersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InternalCashTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1InternalCashTransfersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1RestrictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1RestrictionsVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1SsoBrowserSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1SsoSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1StatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1TaxDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1TaxVouchersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV1TradeConfirmationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV2ExternalAssetTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGwApiV2ExternalAssetTransfersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGwApiV1AccountsAccountIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsAccountIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGwApiV1RequestsRequestIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RequestsRequestIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsLoginMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsAccountIdDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsAccountIdKycRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1AccountsAccountIdLoginMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1ClientInstructionsClientInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1EchoHttpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1EnumerationsComplexAssetTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1EnumerationsEnumerationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1FormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1FormsRequiredFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1InstructionSetsInstructionSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1InstructionsInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1ParticipatingBanksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsListsIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsRestrictionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsRestrictionScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1RestrictionsUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1StatementsAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxDocumentsAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxVouchersActiveCountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxVouchersDividendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxVouchersYearsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxVouchersRequestIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TaxVouchersRequestIdStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1TradeConfirmationsAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGwApiV1ValidationsUsernamesUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchGwApiV1AccountsRouteHandler: RouteHandler<
+  typeof patchGwApiV1AccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsRouteHandler: RouteHandler<typeof getGwApiV1AccountsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1AccountsDocumentsRouteHandler: RouteHandler<
+  typeof postGwApiV1AccountsDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1AccountsAccountIdTasksRouteHandler: RouteHandler<
+  typeof postGwApiV1AccountsAccountIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGwApiV1AccountsAccountIdTasksRouteHandler: RouteHandler<
+  typeof patchGwApiV1AccountsAccountIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsAccountIdTasksRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsAccountIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1BalancesQueryRouteHandler: RouteHandler<
+  typeof postGwApiV1BalancesQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1BankInstructionsRouteHandler: RouteHandler<
+  typeof postGwApiV1BankInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1BankInstructionsQueryRouteHandler: RouteHandler<
+  typeof postGwApiV1BankInstructionsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1BankInstructionsBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1BankInstructionsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1EchoSignedJwtRouteHandler: RouteHandler<
+  typeof postGwApiV1EchoSignedJwtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1ExternalAssetTransfersRouteHandler: RouteHandler<
+  typeof postGwApiV1ExternalAssetTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1ExternalAssetTransfersBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1ExternalAssetTransfersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1ExternalCashTransfersRouteHandler: RouteHandler<
+  typeof postGwApiV1ExternalCashTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1ExternalCashTransfersQueryRouteHandler: RouteHandler<
+  typeof postGwApiV1ExternalCashTransfersQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1ExternalCashTransfersBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1ExternalCashTransfersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InstructionsCancelRouteHandler: RouteHandler<
+  typeof postGwApiV1InstructionsCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InstructionsCancelBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1InstructionsCancelBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InstructionsQueryRouteHandler: RouteHandler<
+  typeof postGwApiV1InstructionsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InternalAssetTransfersRouteHandler: RouteHandler<
+  typeof postGwApiV1InternalAssetTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InternalAssetTransfersBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1InternalAssetTransfersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InternalCashTransfersRouteHandler: RouteHandler<
+  typeof postGwApiV1InternalCashTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1InternalCashTransfersBulkRouteHandler: RouteHandler<
+  typeof postGwApiV1InternalCashTransfersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1RestrictionsRouteHandler: RouteHandler<
+  typeof postGwApiV1RestrictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1RestrictionsVerifyRouteHandler: RouteHandler<
+  typeof postGwApiV1RestrictionsVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1SsoBrowserSessionsRouteHandler: RouteHandler<
+  typeof postGwApiV1SsoBrowserSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1SsoSessionsRouteHandler: RouteHandler<
+  typeof postGwApiV1SsoSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1StatementsRouteHandler: RouteHandler<
+  typeof postGwApiV1StatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1TaxDocumentsRouteHandler: RouteHandler<
+  typeof postGwApiV1TaxDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1TaxVouchersRouteHandler: RouteHandler<
+  typeof postGwApiV1TaxVouchersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV1TradeConfirmationsRouteHandler: RouteHandler<
+  typeof postGwApiV1TradeConfirmationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV2ExternalAssetTransfersRouteHandler: RouteHandler<
+  typeof postGwApiV2ExternalAssetTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGwApiV2ExternalAssetTransfersBulkRouteHandler: RouteHandler<
+  typeof postGwApiV2ExternalAssetTransfersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGwApiV1AccountsAccountIdStatusRouteHandler: RouteHandler<
+  typeof patchGwApiV1AccountsAccountIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsAccountIdStatusRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsAccountIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGwApiV1RequestsRequestIdStatusRouteHandler: RouteHandler<
+  typeof patchGwApiV1RequestsRequestIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RequestsRequestIdStatusRouteHandler: RouteHandler<
+  typeof getGwApiV1RequestsRequestIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsLoginMessagesRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsLoginMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsStatusRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsAccountIdDetailsRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsAccountIdDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsAccountIdKycRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsAccountIdKycRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1AccountsAccountIdLoginMessagesRouteHandler: RouteHandler<
+  typeof getGwApiV1AccountsAccountIdLoginMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1ClientInstructionsClientInstructionIdRouteHandler: RouteHandler<
+  typeof getGwApiV1ClientInstructionsClientInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1EchoHttpsRouteHandler: RouteHandler<
+  typeof getGwApiV1EchoHttpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1EnumerationsComplexAssetTransferRouteHandler: RouteHandler<
+  typeof getGwApiV1EnumerationsComplexAssetTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1EnumerationsEnumerationTypeRouteHandler: RouteHandler<
+  typeof getGwApiV1EnumerationsEnumerationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1FormsRouteHandler: RouteHandler<typeof getGwApiV1FormsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1FormsRequiredFormsRouteHandler: RouteHandler<
+  typeof getGwApiV1FormsRequiredFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1InstructionSetsInstructionSetIdRouteHandler: RouteHandler<
+  typeof getGwApiV1InstructionSetsInstructionSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1InstructionsInstructionIdRouteHandler: RouteHandler<
+  typeof getGwApiV1InstructionsInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1ParticipatingBanksRouteHandler: RouteHandler<
+  typeof getGwApiV1ParticipatingBanksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RequestsRouteHandler: RouteHandler<typeof getGwApiV1RequestsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsAccountRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsIdsRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsListRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsListsIdsRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsListsIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsRestrictionRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsRestrictionScopeRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsRestrictionScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1RestrictionsUserRouteHandler: RouteHandler<
+  typeof getGwApiV1RestrictionsUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1StatementsAvailableRouteHandler: RouteHandler<
+  typeof getGwApiV1StatementsAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxDocumentsAvailableRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxDocumentsAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxVouchersActiveCountriesRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxVouchersActiveCountriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxVouchersDividendsRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxVouchersDividendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxVouchersYearsRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxVouchersYearsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxVouchersRequestIdDownloadRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxVouchersRequestIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TaxVouchersRequestIdStateRouteHandler: RouteHandler<
+  typeof getGwApiV1TaxVouchersRequestIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1TradeConfirmationsAvailableRouteHandler: RouteHandler<
+  typeof getGwApiV1TradeConfirmationsAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGwApiV1ValidationsUsernamesUsernameRouteHandler: RouteHandler<
+  typeof getGwApiV1ValidationsUsernamesUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

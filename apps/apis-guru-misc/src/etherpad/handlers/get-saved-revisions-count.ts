@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetSavedRevisionsCountRoute, postGetSavedRevisionsCountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetSavedRevisionsCountRoute, postGetSavedRevisionsCountRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGetSavedRevisionsCountRouteHandler: RouteHandler<
+  typeof getGetSavedRevisionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const getSavedRevisionsCountHandler = app
-  .openapi(getGetSavedRevisionsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGetSavedRevisionsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGetSavedRevisionsCountRouteHandler: RouteHandler<
+  typeof postGetSavedRevisionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

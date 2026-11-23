@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLogLevelsResourceIdentifierResourceTypeRoute,
   deleteLogLevelsRoute,
   getLogLevelsResourceIdentifierResourceTypeRoute,
@@ -8,24 +8,32 @@ import {
   putLogLevelsResourceIdentifierResourceTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLogLevelsRouteHandler: RouteHandler<typeof getLogLevelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const logLevelsHandler = app
-  .openapi(getLogLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLogLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLogLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogLevelsResourceIdentifierResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLogLevelsResourceIdentifierResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLogLevelsResourceIdentifierResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteLogLevelsRouteHandler: RouteHandler<typeof deleteLogLevelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLogLevelsRouteHandler: RouteHandler<typeof postLogLevelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogLevelsResourceIdentifierResourceTypeRouteHandler: RouteHandler<
+  typeof getLogLevelsResourceIdentifierResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLogLevelsResourceIdentifierResourceTypeRouteHandler: RouteHandler<
+  typeof putLogLevelsResourceIdentifierResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLogLevelsResourceIdentifierResourceTypeRouteHandler: RouteHandler<
+  typeof deleteLogLevelsResourceIdentifierResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

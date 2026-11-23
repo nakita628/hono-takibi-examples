@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDictionariesActiveRoute,
   getDictionariesAllRoute,
   getDictionariesCurrencyIsoCodeExchangeRateRoute,
@@ -9,27 +9,44 @@ import {
   postDictionariesCurrencyIsoCodeExchangeRateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDictionariesActiveRouteHandler: RouteHandler<
+  typeof getDictionariesActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dictionariesHandler = app
-  .openapi(getDictionariesActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDictionariesAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDictionariesCurrencyIsoCodeExchangeRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDictionariesCurrencyIsoCodeExchangeRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDictionariesTypeActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDictionariesTypeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDictionariesTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDictionariesAllRouteHandler: RouteHandler<typeof getDictionariesAllRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDictionariesCurrencyIsoCodeExchangeRateRouteHandler: RouteHandler<
+  typeof getDictionariesCurrencyIsoCodeExchangeRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDictionariesCurrencyIsoCodeExchangeRateRouteHandler: RouteHandler<
+  typeof postDictionariesCurrencyIsoCodeExchangeRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDictionariesTypeActiveRouteHandler: RouteHandler<
+  typeof getDictionariesTypeActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDictionariesTypeAllRouteHandler: RouteHandler<
+  typeof getDictionariesTypeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDictionariesTypeIdRouteHandler: RouteHandler<
+  typeof getDictionariesTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

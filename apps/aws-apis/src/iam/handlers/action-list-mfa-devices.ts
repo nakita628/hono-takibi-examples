@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionListMFADevicesRoute, postActionListMFADevicesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionListMFADevicesRoute, postActionListMFADevicesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionListMFADevicesRouteHandler: RouteHandler<
+  typeof getActionListMFADevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionListMfaDevicesHandler = app
-  .openapi(getActionListMFADevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionListMFADevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionListMFADevicesRouteHandler: RouteHandler<
+  typeof postActionListMFADevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -7,15 +7,15 @@ export async function getApi(options?: ClientRequestOptions) {
 }
 
 export async function getApiProjectsIdFormat(
-  args: InferRequestType<(typeof client.api.projects)[':id:.format']['$get']>,
+  args: InferRequestType<(typeof client.api.projects)[':id{.format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api.projects[':id:.format'].$get(args, options))
+  return await parseResponse(client.api.projects[':id{.format}'].$get(args, options))
 }
 
 export async function getApiProjectsFormat(
-  args: InferRequestType<(typeof client.api)['projects:.format']['$get']>,
+  args: InferRequestType<(typeof client.api)['projects{.format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api['projects:.format'].$get(args, options))
+  return await parseResponse(client.api['projects{.format}'].$get(args, options))
 }

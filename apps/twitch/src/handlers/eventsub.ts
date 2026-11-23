@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEventsubConduitsRoute,
   deleteEventsubSubscriptionsRoute,
   getEventsubConduitsRoute,
@@ -11,33 +11,56 @@ import {
   postEventsubSubscriptionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEventsubConduitsRouteHandler: RouteHandler<
+  typeof getEventsubConduitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsubHandler = app
-  .openapi(getEventsubConduitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsubConduitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEventsubConduitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEventsubConduitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsubConduitsShardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEventsubConduitsShardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsubSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEventsubSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsubSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEventsubConduitsRouteHandler: RouteHandler<
+  typeof postEventsubConduitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEventsubConduitsRouteHandler: RouteHandler<
+  typeof patchEventsubConduitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEventsubConduitsRouteHandler: RouteHandler<
+  typeof deleteEventsubConduitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsubConduitsShardsRouteHandler: RouteHandler<
+  typeof getEventsubConduitsShardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEventsubConduitsShardsRouteHandler: RouteHandler<
+  typeof patchEventsubConduitsShardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsubSubscriptionsRouteHandler: RouteHandler<
+  typeof postEventsubSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEventsubSubscriptionsRouteHandler: RouteHandler<
+  typeof deleteEventsubSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsubSubscriptionsRouteHandler: RouteHandler<
+  typeof getEventsubSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

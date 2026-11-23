@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTrackingV0TrackersTrackerNameConsumersConsumerArnRoute,
   deleteTrackingV0TrackersTrackerNameRoute,
   getTrackingV0TrackersTrackerNameDevicesDeviceIdPositionsLatestRoute,
@@ -16,48 +16,86 @@ import {
   postTrackingV0TrackersTrackerNamePositionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTrackingV0TrackersTrackerNameConsumersRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameConsumersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const trackingHandler = app
-  .openapi(postTrackingV0TrackersTrackerNameConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNameDeletePositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNameGetPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNamePositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTrackingV0TrackersTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTrackingV0TrackersTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTrackingV0TrackersTrackerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTrackingV0TrackersTrackerNameConsumersConsumerArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTrackingV0TrackersTrackerNameDevicesDeviceIdPositionsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNameDevicesDeviceIdListPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNameListPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0TrackersTrackerNameListConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrackingV0ListTrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTrackingV0TrackersTrackerNameDeletePositionsRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameDeletePositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersTrackerNameGetPositionsRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameGetPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersTrackerNamePositionsRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNamePositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTrackingV0TrackersTrackerNameRouteHandler: RouteHandler<
+  typeof deleteTrackingV0TrackersTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTrackingV0TrackersTrackerNameRouteHandler: RouteHandler<
+  typeof getTrackingV0TrackersTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTrackingV0TrackersTrackerNameRouteHandler: RouteHandler<
+  typeof patchTrackingV0TrackersTrackerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTrackingV0TrackersTrackerNameConsumersConsumerArnRouteHandler: RouteHandler<
+  typeof deleteTrackingV0TrackersTrackerNameConsumersConsumerArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTrackingV0TrackersTrackerNameDevicesDeviceIdPositionsLatestRouteHandler: RouteHandler<
+  typeof getTrackingV0TrackersTrackerNameDevicesDeviceIdPositionsLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersTrackerNameDevicesDeviceIdListPositionsRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameDevicesDeviceIdListPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersTrackerNameListPositionsRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameListPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0TrackersTrackerNameListConsumersRouteHandler: RouteHandler<
+  typeof postTrackingV0TrackersTrackerNameListConsumersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrackingV0ListTrackersRouteHandler: RouteHandler<
+  typeof postTrackingV0ListTrackersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

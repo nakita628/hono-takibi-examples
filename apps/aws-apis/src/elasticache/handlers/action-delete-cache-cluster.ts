@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDeleteCacheClusterRoute, postActionDeleteCacheClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDeleteCacheClusterRoute, postActionDeleteCacheClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteCacheClusterRouteHandler: RouteHandler<
+  typeof getActionDeleteCacheClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteCacheClusterHandler = app
-  .openapi(getActionDeleteCacheClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteCacheClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteCacheClusterRouteHandler: RouteHandler<
+  typeof postActionDeleteCacheClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

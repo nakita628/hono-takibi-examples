@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersOnDutyLogIdIndexRoute,
   getUsersOnDutyLogIndexRoute,
   postUsersOnDutyLogIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersOnDutyLogIndexRouteHandler: RouteHandler<
+  typeof getUsersOnDutyLogIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersOnDutyLogHandler = app
-  .openapi(getUsersOnDutyLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersOnDutyLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersOnDutyLogIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUsersOnDutyLogIndexRouteHandler: RouteHandler<
+  typeof postUsersOnDutyLogIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersOnDutyLogIdIndexRouteHandler: RouteHandler<
+  typeof getUsersOnDutyLogIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

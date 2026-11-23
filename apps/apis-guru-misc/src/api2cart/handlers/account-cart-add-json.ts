@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAccountCartAddJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAccountCartAddJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const accountCartAddJsonHandler = app.openapi(postAccountCartAddJsonRoute, (c) => {
+export const postAccountCartAddJsonRouteHandler: RouteHandler<
+  typeof postAccountCartAddJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

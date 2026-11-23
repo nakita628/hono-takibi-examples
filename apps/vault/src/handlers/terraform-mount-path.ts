@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTerraformMountPathConfigRoute,
   deleteTerraformMountPathRoleNameRoute,
   getTerraformMountPathConfigRoute,
@@ -12,36 +12,62 @@ import {
   postTerraformMountPathRotateRoleNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTerraformMountPathConfigRouteHandler: RouteHandler<
+  typeof getTerraformMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const terraformMountPathHandler = app
-  .openapi(getTerraformMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerraformMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTerraformMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTerraformMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerraformMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTerraformMountPathRoleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTerraformMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerraformMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTerraformMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTerraformMountPathRotateRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTerraformMountPathConfigRouteHandler: RouteHandler<
+  typeof postTerraformMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTerraformMountPathConfigRouteHandler: RouteHandler<
+  typeof deleteTerraformMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTerraformMountPathCredsNameRouteHandler: RouteHandler<
+  typeof getTerraformMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerraformMountPathCredsNameRouteHandler: RouteHandler<
+  typeof postTerraformMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTerraformMountPathRoleIndexRouteHandler: RouteHandler<
+  typeof getTerraformMountPathRoleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTerraformMountPathRoleNameRouteHandler: RouteHandler<
+  typeof getTerraformMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerraformMountPathRoleNameRouteHandler: RouteHandler<
+  typeof postTerraformMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTerraformMountPathRoleNameRouteHandler: RouteHandler<
+  typeof deleteTerraformMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTerraformMountPathRotateRoleNameRouteHandler: RouteHandler<
+  typeof postTerraformMountPathRotateRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

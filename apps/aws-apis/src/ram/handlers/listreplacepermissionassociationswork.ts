@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListreplacepermissionassociationsworkRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListreplacepermissionassociationsworkRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listreplacepermissionassociationsworkHandler = app.openapi(
-  postListreplacepermissionassociationsworkRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postListreplacepermissionassociationsworkRouteHandler: RouteHandler<
+  typeof postListreplacepermissionassociationsworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

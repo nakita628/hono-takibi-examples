@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworkFeatureConfigsIdRoute,
   getNetworkFeatureConfigsIdRoute,
   getNetworkFeatureConfigsRoute,
@@ -8,24 +8,38 @@ import {
   putNetworkFeatureConfigsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworkFeatureConfigsRouteHandler: RouteHandler<
+  typeof getNetworkFeatureConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const networkFeatureConfigsHandler = app
-  .openapi(getNetworkFeatureConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworkFeatureConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkFeatureConfigsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkFeatureConfigsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNetworkFeatureConfigsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworkFeatureConfigsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNetworkFeatureConfigsRouteHandler: RouteHandler<
+  typeof postNetworkFeatureConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkFeatureConfigsIdRouteHandler: RouteHandler<
+  typeof deleteNetworkFeatureConfigsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkFeatureConfigsIdRouteHandler: RouteHandler<
+  typeof getNetworkFeatureConfigsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNetworkFeatureConfigsIdRouteHandler: RouteHandler<
+  typeof patchNetworkFeatureConfigsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworkFeatureConfigsIdRouteHandler: RouteHandler<
+  typeof putNetworkFeatureConfigsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

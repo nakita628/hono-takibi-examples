@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postForgetWifiRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postForgetWifiRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const forgetWifiHandler = app.openapi(postForgetWifiRoute, (c) => {
+export const postForgetWifiRouteHandler: RouteHandler<typeof postForgetWifiRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

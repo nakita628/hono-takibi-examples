@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSandboxBankIncomeFireWebhookRoute,
   postSandboxBankTransferFireWebhookRoute,
   postSandboxBankTransferSimulateRoute,
@@ -32,96 +32,182 @@ import {
   postSandboxUserResetLoginRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSandboxTransactionsCreateRouteHandler: RouteHandler<
+  typeof postSandboxTransactionsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sandboxHandler = app
-  .openapi(postSandboxTransactionsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxProcessorTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxPublicTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxItemFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxUserFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxItemResetLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxItemApplicationSeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxFdxConsentSeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxItemSetVerificationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxUserResetLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxBankTransferSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferSweepSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferRefundSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferLedgerSimulateAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferLedgerDepositSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferLedgerWithdrawSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferTestClockCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferTestClockAdvanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferTestClockGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTransferTestClockListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxPaymentProfileResetLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxPaymentSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxBankTransferFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxIncomeFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxBankIncomeFireWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxCraCashflowUpdatesUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxCraServicingSimulateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxOauthSelectAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSandboxProcessorTokenCreateRouteHandler: RouteHandler<
+  typeof postSandboxProcessorTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxPublicTokenCreateRouteHandler: RouteHandler<
+  typeof postSandboxPublicTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxItemFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxItemFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxUserFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxUserFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxItemResetLoginRouteHandler: RouteHandler<
+  typeof postSandboxItemResetLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxItemApplicationSeedRouteHandler: RouteHandler<
+  typeof postSandboxItemApplicationSeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxFdxConsentSeedRouteHandler: RouteHandler<
+  typeof postSandboxFdxConsentSeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxItemSetVerificationStatusRouteHandler: RouteHandler<
+  typeof postSandboxItemSetVerificationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxUserResetLoginRouteHandler: RouteHandler<
+  typeof postSandboxUserResetLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxBankTransferSimulateRouteHandler: RouteHandler<
+  typeof postSandboxBankTransferSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferSweepSimulateRouteHandler: RouteHandler<
+  typeof postSandboxTransferSweepSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferSimulateRouteHandler: RouteHandler<
+  typeof postSandboxTransferSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferRefundSimulateRouteHandler: RouteHandler<
+  typeof postSandboxTransferRefundSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferLedgerSimulateAvailableRouteHandler: RouteHandler<
+  typeof postSandboxTransferLedgerSimulateAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferLedgerDepositSimulateRouteHandler: RouteHandler<
+  typeof postSandboxTransferLedgerDepositSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferLedgerWithdrawSimulateRouteHandler: RouteHandler<
+  typeof postSandboxTransferLedgerWithdrawSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxTransferFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferTestClockCreateRouteHandler: RouteHandler<
+  typeof postSandboxTransferTestClockCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferTestClockAdvanceRouteHandler: RouteHandler<
+  typeof postSandboxTransferTestClockAdvanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferTestClockGetRouteHandler: RouteHandler<
+  typeof postSandboxTransferTestClockGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxTransferTestClockListRouteHandler: RouteHandler<
+  typeof postSandboxTransferTestClockListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxPaymentProfileResetLoginRouteHandler: RouteHandler<
+  typeof postSandboxPaymentProfileResetLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxPaymentSimulateRouteHandler: RouteHandler<
+  typeof postSandboxPaymentSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxBankTransferFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxBankTransferFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxIncomeFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxIncomeFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxBankIncomeFireWebhookRouteHandler: RouteHandler<
+  typeof postSandboxBankIncomeFireWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxCraCashflowUpdatesUpdateRouteHandler: RouteHandler<
+  typeof postSandboxCraCashflowUpdatesUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxCraServicingSimulateRouteHandler: RouteHandler<
+  typeof postSandboxCraServicingSimulateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxOauthSelectAccountsRouteHandler: RouteHandler<
+  typeof postSandboxOauthSelectAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

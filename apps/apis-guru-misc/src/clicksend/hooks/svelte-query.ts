@@ -3825,29 +3825,29 @@ export function createEmailHistory<
 }
 
 export function getEmailHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['email', '/email/history/export?filename=:filename', args] as const
+  return ['email', '/email/history/export?filename={filename}', args] as const
 }
 
 export function getEmailHistoryExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -3858,7 +3858,7 @@ export function getEmailHistoryExportFilenameFilenameQueryOptions<
     queryKey: getEmailHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.email.history['export?filename=:filename'].$get(args, {
+        client.email.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3871,13 +3871,13 @@ export function createEmailHistoryExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.email.history)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<(typeof client.email.history)['export?filename={filename}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -3885,7 +3885,7 @@ export function createEmailHistoryExportFilenameFilename<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.email.history)['export?filename=:filename']['$get']>
+                ReturnType<(typeof client.email.history)['export?filename={filename}']['$get']>
               >
             >
           >
@@ -4893,29 +4893,29 @@ export function createDeleteEmailTemplatesTemplateId<
 }
 
 export function getFaxHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['fax', '/fax/history/export?filename=:filename', args] as const
+  return ['fax', '/fax/history/export?filename={filename}', args] as const
 }
 
 export function getFaxHistoryExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -4926,7 +4926,7 @@ export function getFaxHistoryExportFilenameFilenameQueryOptions<
     queryKey: getFaxHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.fax.history['export?filename=:filename'].$get(args, {
+        client.fax.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -4939,20 +4939,20 @@ export function createFaxHistoryExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.fax.history)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<(typeof client.fax.history)['export?filename={filename}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.fax.history)['export?filename=:filename']['$get']>>
+              Awaited<ReturnType<(typeof client.fax.history)['export?filename={filename}']['$get']>>
             >
           >
         >,
@@ -4977,12 +4977,12 @@ export function createFaxHistoryExportFilenameFilename<
 
 export function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryKey(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
 ) {
   return [
     'fax',
-    '/fax/history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by',
+    '/fax/history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}',
     args,
   ] as const
 }
@@ -4993,7 +4993,7 @@ export function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryOp
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+            (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
           >
         >
       >
@@ -5002,7 +5002,7 @@ export function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryOp
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -5012,7 +5012,7 @@ export function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryOp
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+              (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
             >
           >
         >
@@ -5025,10 +5025,9 @@ export function getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryOp
     queryKey: getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.fax['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by'].$get(
-          args,
-          { ...options, init: { ...options?.init, signal } },
-        ),
+        client.fax[
+          'history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}'
+        ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -5040,7 +5039,7 @@ export function createFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+            (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
           >
         >
       >
@@ -5049,7 +5048,7 @@ export function createFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+    (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -5059,7 +5058,7 @@ export function createFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderBy<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.fax)['history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by']['$get']
+                  (typeof client.fax)['history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}']['$get']
                 >
               >
             >
@@ -6326,22 +6325,22 @@ export function createDeleteListsListIdContactsContactId<
 }
 
 export function getListsListIdExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
 ) {
-  return ['lists', '/lists/:list_id/export?filename=:filename', args] as const
+  return ['lists', '/lists/:list_id/export?filename={filename}', args] as const
 }
 
 export function getListsListIdExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
@@ -6349,7 +6348,7 @@ export function getListsListIdExportFilenameFilenameQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+            ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
           >
         >
       >
@@ -6361,7 +6360,7 @@ export function getListsListIdExportFilenameFilenameQueryOptions<
     queryKey: getListsListIdExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.lists[':list_id']['export?filename=:filename'].$get(args, {
+        client.lists[':list_id']['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -6374,14 +6373,14 @@ export function createListsListIdExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.lists)[':list_id']['export?filename=:filename']['$get']
+    (typeof client.lists)[':list_id']['export?filename={filename}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -6390,7 +6389,7 @@ export function createListsListIdExportFilenameFilename<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.lists)[':list_id']['export?filename=:filename']['$get']>
+                ReturnType<(typeof client.lists)[':list_id']['export?filename={filename}']['$get']>
               >
             >
           >
@@ -6835,29 +6834,29 @@ export function createPutMmsCancelAll<TError = DefaultError, TOnMutateResult = u
 }
 
 export function getMmsHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['mms', '/mms/history/export?filename=:filename', args] as const
+  return ['mms', '/mms/history/export?filename={filename}', args] as const
 }
 
 export function getMmsHistoryExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -6868,7 +6867,7 @@ export function getMmsHistoryExportFilenameFilenameQueryOptions<
     queryKey: getMmsHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.mms.history['export?filename=:filename'].$get(args, {
+        client.mms.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -6881,20 +6880,20 @@ export function createMmsHistoryExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.mms.history)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<(typeof client.mms.history)['export?filename={filename}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.mms.history)['export?filename=:filename']['$get']>>
+              Awaited<ReturnType<(typeof client.mms.history)['export?filename={filename}']['$get']>>
             >
           >
         >,
@@ -6919,12 +6918,12 @@ export function createMmsHistoryExportFilenameFilename<
 
 export function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryKey(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
   return [
     'mms',
-    '/mms/history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to',
+    '/mms/history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}',
     args,
   ] as const
 }
@@ -6935,7 +6934,7 @@ export function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryOp
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+            (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
           >
         >
       >
@@ -6944,7 +6943,7 @@ export function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryOp
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -6954,7 +6953,7 @@ export function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryOp
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+              (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
             >
           >
         >
@@ -6967,10 +6966,9 @@ export function getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryOp
     queryKey: getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.mms['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to'].$get(
-          args,
-          { ...options, init: { ...options?.init, signal } },
-        ),
+        client.mms[
+          'history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}'
+        ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -6982,7 +6980,7 @@ export function createMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+            (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
           >
         >
       >
@@ -6991,7 +6989,7 @@ export function createMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -7001,7 +6999,7 @@ export function createMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateTo<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.mms)['history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to']['$get']
+                  (typeof client.mms)['history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}']['$get']
                 >
               >
             >
@@ -7495,10 +7493,10 @@ export function createPostNumbersBuyDedicatedNumber<
 
 export function getNumbersSearchCountrySearch1SearchType2QueryKey(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
 ) {
-  return ['numbers', '/numbers/search/:country?:search=1&:search_type=2', args] as const
+  return ['numbers', '/numbers/search/:country?{search}=1&{search_type}=2', args] as const
 }
 
 export function getNumbersSearchCountrySearch1SearchType2QueryOptions<
@@ -7506,7 +7504,7 @@ export function getNumbersSearchCountrySearch1SearchType2QueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']>
+          ReturnType<(typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']>
         >
       >
     >
@@ -7514,7 +7512,7 @@ export function getNumbersSearchCountrySearch1SearchType2QueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -7523,7 +7521,9 @@ export function getNumbersSearchCountrySearch1SearchType2QueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']>
+            ReturnType<
+              (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
+            >
           >
         >
       >
@@ -7535,7 +7535,7 @@ export function getNumbersSearchCountrySearch1SearchType2QueryOptions<
     queryKey: getNumbersSearchCountrySearch1SearchType2QueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.numbers.search[':country?:search=1&:search_type=2'].$get(args, {
+        client.numbers.search[':country?{search}=1&{search_type}=2'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -7549,7 +7549,7 @@ export function createNumbersSearchCountrySearch1SearchType2<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']>
+          ReturnType<(typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']>
         >
       >
     >
@@ -7557,7 +7557,7 @@ export function createNumbersSearchCountrySearch1SearchType2<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+    (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -7567,7 +7567,7 @@ export function createNumbersSearchCountrySearch1SearchType2<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.numbers.search)[':country?:search=1&:search_type=2']['$get']
+                  (typeof client.numbers.search)[':country?{search}=1&{search_type}=2']['$get']
                 >
               >
             >
@@ -7807,10 +7807,10 @@ export function createPostPostDirectMailCampaignsSend<
 
 export function getPostDirectMailLocationsSearchCountryQQueryQueryKey(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
 ) {
-  return ['post', '/post/direct-mail/locations/search/:country/?q=:query', args] as const
+  return ['post', '/post/direct-mail/locations/search/:country/?q={query}', args] as const
 }
 
 export function getPostDirectMailLocationsSearchCountryQQueryQueryOptions<
@@ -7819,7 +7819,7 @@ export function getPostDirectMailLocationsSearchCountryQQueryQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+            (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
           >
         >
       >
@@ -7828,7 +7828,7 @@ export function getPostDirectMailLocationsSearchCountryQQueryQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -7838,7 +7838,7 @@ export function getPostDirectMailLocationsSearchCountryQQueryQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+              (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
             >
           >
         >
@@ -7851,7 +7851,7 @@ export function getPostDirectMailLocationsSearchCountryQQueryQueryOptions<
     queryKey: getPostDirectMailLocationsSearchCountryQQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.post['direct-mail'].locations.search[':country']['?q=:query'].$get(args, {
+        client.post['direct-mail'].locations.search[':country']['?q={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -7866,7 +7866,7 @@ export function createPostDirectMailLocationsSearchCountryQQuery<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+            (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
           >
         >
       >
@@ -7875,7 +7875,7 @@ export function createPostDirectMailLocationsSearchCountryQQuery<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+    (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -7885,7 +7885,7 @@ export function createPostDirectMailLocationsSearchCountryQQuery<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.post)['direct-mail']['locations']['search'][':country']['?q=:query']['$get']
+                  (typeof client.post)['direct-mail']['locations']['search'][':country']['?q={query}']['$get']
                 >
               >
             >
@@ -8041,9 +8041,11 @@ export function createPostLettersHistory<
 }
 
 export function getPostLettersHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
 ) {
-  return ['post', '/post/letters/history/export?filename=:filename', args] as const
+  return ['post', '/post/letters/history/export?filename={filename}', args] as const
 }
 
 export function getPostLettersHistoryExportFilenameFilenameQueryOptions<
@@ -8051,14 +8053,16 @@ export function getPostLettersHistoryExportFilenameFilenameQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+          ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
         >
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
+  >,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
@@ -8066,7 +8070,7 @@ export function getPostLettersHistoryExportFilenameFilenameQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+            ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
           >
         >
       >
@@ -8078,7 +8082,7 @@ export function getPostLettersHistoryExportFilenameFilenameQueryOptions<
     queryKey: getPostLettersHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.post.letters.history['export?filename=:filename'].$get(args, {
+        client.post.letters.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -8092,7 +8096,7 @@ export function createPostLettersHistoryExportFilenameFilename<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.post.letters.history)['export?filename=:filename']['$get']>
+          ReturnType<(typeof client.post.letters.history)['export?filename={filename}']['$get']>
         >
       >
     >
@@ -8100,7 +8104,7 @@ export function createPostLettersHistoryExportFilenameFilename<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.post.letters.history)['export?filename=:filename']['$get']
+    (typeof client.post.letters.history)['export?filename={filename}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -8110,7 +8114,7 @@ export function createPostLettersHistoryExportFilenameFilename<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.post.letters.history)['export?filename=:filename']['$get']
+                  (typeof client.post.letters.history)['export?filename={filename}']['$get']
                 >
               >
             >
@@ -8249,29 +8253,29 @@ export function createPostPostLettersSend<TError = DefaultError, TOnMutateResult
 }
 
 export function getPostPostcardsExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
 ) {
-  return ['post', '/post/postcards/export?filename=:filename', args] as const
+  return ['post', '/post/postcards/export?filename={filename}', args] as const
 }
 
 export function getPostPostcardsExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.post.postcards)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -8282,7 +8286,7 @@ export function getPostPostcardsExportFilenameFilenameQueryOptions<
     queryKey: getPostPostcardsExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.post.postcards['export?filename=:filename'].$get(args, {
+        client.post.postcards['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -8295,13 +8299,15 @@ export function createPostPostcardsExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.post.postcards)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<
+    (typeof client.post.postcards)['export?filename={filename}']['$get']
+  >,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -8309,7 +8315,7 @@ export function createPostPostcardsExportFilenameFilename<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.post.postcards)['export?filename=:filename']['$get']>
+                ReturnType<(typeof client.post.postcards)['export?filename={filename}']['$get']>
               >
             >
           >
@@ -8876,29 +8882,29 @@ export function createDeletePostReturnAddressesReturnAddressId<
 }
 
 export function getPricingCountryCurrencyCurrencyQueryKey(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
 ) {
-  return ['pricing', '/pricing/:country?currency=:currency', args] as const
+  return ['pricing', '/pricing/:country?currency={currency}', args] as const
 }
 
 export function getPricingCountryCurrencyCurrencyQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+        Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+          Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
         >
       >
     >,
@@ -8909,7 +8915,7 @@ export function getPricingCountryCurrencyCurrencyQueryOptions<
     queryKey: getPricingCountryCurrencyCurrencyQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.pricing[':country?currency=:currency'].$get(args, {
+        client.pricing[':country?currency={currency}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -8922,20 +8928,20 @@ export function createPricingCountryCurrencyCurrency<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+        Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.pricing)[':country?currency=:currency']['$get']>,
+  args: () => InferRequestType<(typeof client.pricing)[':country?currency={currency}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.pricing)[':country?currency=:currency']['$get']>>
+              Awaited<ReturnType<(typeof client.pricing)[':country?currency={currency}']['$get']>>
             >
           >
         >,
@@ -9086,29 +9092,29 @@ export function createPutRechargeCreditCard<TError = DefaultError, TOnMutateResu
 }
 
 export function getRechargePackagesCountryCountryQueryKey(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
 ) {
-  return ['recharge', '/recharge/packages?country=:country', args] as const
+  return ['recharge', '/recharge/packages?country={country}', args] as const
 }
 
 export function getRechargePackagesCountryCountryQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+        Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+          Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
         >
       >
     >,
@@ -9119,7 +9125,7 @@ export function getRechargePackagesCountryCountryQueryOptions<
     queryKey: getRechargePackagesCountryCountryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.recharge['packages?country=:country'].$get(args, {
+        client.recharge['packages?country={country}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -9132,20 +9138,20 @@ export function createRechargePackagesCountryCountry<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+        Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.recharge)['packages?country=:country']['$get']>,
+  args: () => InferRequestType<(typeof client.recharge)['packages?country={country}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.recharge)['packages?country=:country']['$get']>>
+              Awaited<ReturnType<(typeof client.recharge)['packages?country={country}']['$get']>>
             >
           >
         >,
@@ -10073,29 +10079,29 @@ export function createSdkDownloadType<
 }
 
 export function getSearchContactsListsQQQueryKey(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
 ) {
-  return ['search', '/search/contacts-lists?q=:q', args] as const
+  return ['search', '/search/contacts-lists?q={q}', args] as const
 }
 
 export function getSearchContactsListsQQQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
         >
       >
     >,
@@ -10106,7 +10112,7 @@ export function getSearchContactsListsQQQueryOptions<
     queryKey: getSearchContactsListsQQQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['contacts-lists?q=:q'].$get(args, {
+        client.search['contacts-lists?q={q}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -10119,20 +10125,20 @@ export function createSearchContactsListsQQ<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.search)['contacts-lists?q=:q']['$get']>,
+  args: () => InferRequestType<(typeof client.search)['contacts-lists?q={q}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['contacts-lists?q=:q']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['contacts-lists?q={q}']['$get']>>
             >
           >
         >,
@@ -10336,12 +10342,12 @@ export function createPostSmsCampaignsSend<TError = DefaultError, TOnMutateResul
 
 export function getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryKey(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
 ) {
   return [
     'sms-campaigns',
-    '/sms-campaigns/:campaign_id/link-export?filename=:filename',
+    '/sms-campaigns/:campaign_id/link-export?filename={filename}',
     args,
   ] as const
 }
@@ -10352,7 +10358,7 @@ export function getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+            (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
           >
         >
       >
@@ -10361,7 +10367,7 @@ export function getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -10371,7 +10377,7 @@ export function getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+              (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
             >
           >
         >
@@ -10384,7 +10390,7 @@ export function getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryOptions<
     queryKey: getSmsCampaignsCampaignIdLinkExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['sms-campaigns'][':campaign_id']['link-export?filename=:filename'].$get(args, {
+        client['sms-campaigns'][':campaign_id']['link-export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -10399,7 +10405,7 @@ export function createSmsCampaignsCampaignIdLinkExportFilenameFilename<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+            (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
           >
         >
       >
@@ -10408,7 +10414,7 @@ export function createSmsCampaignsCampaignIdLinkExportFilenameFilename<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+    (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -10418,7 +10424,7 @@ export function createSmsCampaignsCampaignIdLinkExportFilenameFilename<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename=:filename']['$get']
+                  (typeof client)['sms-campaigns'][':campaign_id']['link-export?filename={filename}']['$get']
                 >
               >
             >
@@ -11624,29 +11630,29 @@ export function createDeleteSmsEmailSmsEmailAddressId<
 }
 
 export function getSmsHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['sms', '/sms/history/export?filename=:filename', args] as const
+  return ['sms', '/sms/history/export?filename={filename}', args] as const
 }
 
 export function getSmsHistoryExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -11657,7 +11663,7 @@ export function getSmsHistoryExportFilenameFilenameQueryOptions<
     queryKey: getSmsHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sms.history['export?filename=:filename'].$get(args, {
+        client.sms.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -11670,20 +11676,20 @@ export function createSmsHistoryExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.sms.history)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<(typeof client.sms.history)['export?filename={filename}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.sms.history)['export?filename=:filename']['$get']>>
+              Awaited<ReturnType<(typeof client.sms.history)['export?filename={filename}']['$get']>>
             >
           >
         >,
@@ -11708,10 +11714,10 @@ export function createSmsHistoryExportFilenameFilename<
 
 export function getSmsHistoryDateFromDateFromDateToDateToQueryKey(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
-  return ['sms', '/sms/history?date_from=:date_from&date_to=:date_to', args] as const
+  return ['sms', '/sms/history?date_from={date_from}&date_to={date_to}', args] as const
 }
 
 export function getSmsHistoryDateFromDateFromDateToDateToQueryOptions<
@@ -11719,7 +11725,7 @@ export function getSmsHistoryDateFromDateFromDateToDateToQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']>
+          ReturnType<(typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']>
         >
       >
     >
@@ -11727,7 +11733,7 @@ export function getSmsHistoryDateFromDateFromDateToDateToQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -11736,7 +11742,9 @@ export function getSmsHistoryDateFromDateFromDateToDateToQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']>
+            ReturnType<
+              (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
+            >
           >
         >
       >
@@ -11748,7 +11756,7 @@ export function getSmsHistoryDateFromDateFromDateToDateToQueryOptions<
     queryKey: getSmsHistoryDateFromDateFromDateToDateToQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.sms['history?date_from=:date_from&date_to=:date_to'].$get(args, {
+        client.sms['history?date_from={date_from}&date_to={date_to}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -11762,7 +11770,7 @@ export function createSmsHistoryDateFromDateFromDateToDateTo<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']>
+          ReturnType<(typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']>
         >
       >
     >
@@ -11770,7 +11778,7 @@ export function createSmsHistoryDateFromDateFromDateToDateTo<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -11780,7 +11788,7 @@ export function createSmsHistoryDateFromDateFromDateToDateTo<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.sms)['history?date_from=:date_from&date_to=:date_to']['$get']
+                  (typeof client.sms)['history?date_from={date_from}&date_to={date_to}']['$get']
                 >
               >
             >
@@ -13305,7 +13313,7 @@ export function createTimezones<
 }
 
 export function getPostUploadsConvertConvertMutationKey() {
-  return ['uploads?convert=:convert', '/uploads?convert=:convert', 'POST'] as const
+  return ['uploads?convert={convert}', '/uploads?convert={convert}', 'POST'] as const
 }
 
 export function getPostUploadsConvertConvertMutationOptions<
@@ -13316,17 +13324,19 @@ export function getPostUploadsConvertConvertMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['uploads?convert=:convert']['$post']>>
+          Awaited<ReturnType<(typeof client)['uploads?convert={convert}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['uploads?convert=:convert']['$post']>,
+    InferRequestType<(typeof client)['uploads?convert={convert}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostUploadsConvertConvertMutationKey(),
-    async mutationFn(args: InferRequestType<(typeof client)['uploads?convert=:convert']['$post']>) {
-      return parseResponse(client['uploads?convert=:convert'].$post(args, options))
+    async mutationFn(
+      args: InferRequestType<(typeof client)['uploads?convert={convert}']['$post']>,
+    ) {
+      return parseResponse(client['uploads?convert={convert}'].$post(args, options))
     },
   })
 }
@@ -13338,12 +13348,12 @@ export function createPostUploadsConvertConvert<TError = DefaultError, TOnMutate
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client)['uploads?convert=:convert']['$post']>>
+              Awaited<ReturnType<(typeof client)['uploads?convert={convert}']['$post']>>
             >
           >
         >,
         TError,
-        InferRequestType<(typeof client)['uploads?convert=:convert']['$post']>,
+        InferRequestType<(typeof client)['uploads?convert={convert}']['$post']>,
         TOnMutateResult
       >,
       'mutationFn'
@@ -13423,29 +13433,29 @@ export function createPutVoiceCancelAll<TError = DefaultError, TOnMutateResult =
 }
 
 export function getVoiceHistoryExportFilenameFilenameQueryKey(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
 ) {
-  return ['voice', '/voice/history/export?filename=:filename', args] as const
+  return ['voice', '/voice/history/export?filename={filename}', args] as const
 }
 
 export function getVoiceHistoryExportFilenameFilenameQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+          Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
         >
       >
     >,
@@ -13456,7 +13466,7 @@ export function getVoiceHistoryExportFilenameFilenameQueryOptions<
     queryKey: getVoiceHistoryExportFilenameFilenameQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.voice.history['export?filename=:filename'].$get(args, {
+        client.voice.history['export?filename={filename}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -13469,13 +13479,13 @@ export function createVoiceHistoryExportFilenameFilename<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>>
+        Awaited<ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.voice.history)['export?filename=:filename']['$get']>,
+  args: () => InferRequestType<(typeof client.voice.history)['export?filename={filename}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -13483,7 +13493,7 @@ export function createVoiceHistoryExportFilenameFilename<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.voice.history)['export?filename=:filename']['$get']>
+                ReturnType<(typeof client.voice.history)['export?filename={filename}']['$get']>
               >
             >
           >
@@ -13509,10 +13519,10 @@ export function createVoiceHistoryExportFilenameFilename<
 
 export function getVoiceHistoryDateFromDateFromDateToDateToQueryKey(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
 ) {
-  return ['voice', '/voice/history?date_from=:date_from&date_to=:date_to', args] as const
+  return ['voice', '/voice/history?date_from={date_from}&date_to={date_to}', args] as const
 }
 
 export function getVoiceHistoryDateFromDateFromDateToDateToQueryOptions<
@@ -13520,7 +13530,9 @@ export function getVoiceHistoryDateFromDateFromDateToDateToQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']>
+          ReturnType<
+            (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
+          >
         >
       >
     >
@@ -13528,7 +13540,7 @@ export function getVoiceHistoryDateFromDateFromDateToDateToQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -13538,7 +13550,7 @@ export function getVoiceHistoryDateFromDateFromDateToDateToQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+              (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
             >
           >
         >
@@ -13551,7 +13563,7 @@ export function getVoiceHistoryDateFromDateFromDateToDateToQueryOptions<
     queryKey: getVoiceHistoryDateFromDateFromDateToDateToQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.voice['history?date_from=:date_from&date_to=:date_to'].$get(args, {
+        client.voice['history?date_from={date_from}&date_to={date_to}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -13565,7 +13577,9 @@ export function createVoiceHistoryDateFromDateFromDateToDateTo<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']>
+          ReturnType<
+            (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
+          >
         >
       >
     >
@@ -13573,7 +13587,7 @@ export function createVoiceHistoryDateFromDateFromDateToDateTo<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+    (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -13583,7 +13597,7 @@ export function createVoiceHistoryDateFromDateFromDateToDateTo<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.voice)['history?date_from=:date_from&date_to=:date_to']['$get']
+                  (typeof client.voice)['history?date_from={date_from}&date_to={date_to}']['$get']
                 >
               >
             >
@@ -13823,7 +13837,7 @@ export function createPostVoiceReceipts<TError = DefaultError, TOnMutateResult =
 }
 
 export function getPutVoiceReceiptsReadDateBeforeDateBeforeMutationKey() {
-  return ['voice', '/voice/receipts-read?date_before=:date_before', 'PUT'] as const
+  return ['voice', '/voice/receipts-read?date_before={date_before}', 'PUT'] as const
 }
 
 export function getPutVoiceReceiptsReadDateBeforeDateBeforeMutationOptions<
@@ -13835,23 +13849,23 @@ export function getPutVoiceReceiptsReadDateBeforeDateBeforeMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>
+            ReturnType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>,
+    InferRequestType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>,
     TOnMutateResult
   >({
     mutationKey: getPutVoiceReceiptsReadDateBeforeDateBeforeMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.voice)['receipts-read?date_before=:date_before']['$put']
+        (typeof client.voice)['receipts-read?date_before={date_before}']['$put']
       >,
     ) {
       return parseResponse(
-        client.voice['receipts-read?date_before=:date_before'].$put(args, options),
+        client.voice['receipts-read?date_before={date_before}'].$put(args, options),
       )
     },
   })
@@ -13868,13 +13882,13 @@ export function createPutVoiceReceiptsReadDateBeforeDateBefore<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>
+                ReturnType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>
               >
             >
           >
         >,
         TError,
-        InferRequestType<(typeof client.voice)['receipts-read?date_before=:date_before']['$put']>,
+        InferRequestType<(typeof client.voice)['receipts-read?date_before={date_before}']['$put']>,
         TOnMutateResult
       >,
       'mutationFn'

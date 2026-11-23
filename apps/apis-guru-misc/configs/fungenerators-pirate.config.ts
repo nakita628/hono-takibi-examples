@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/fungenerators.com/pirate/1.5/openapi.yaml',
   output: './src/fungenerators-pirate/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fungenerators-pirate/types.ts' },
   client: { output: './src/fungenerators-pirate/client.ts', baseUrl: '/' },
   rpc: { output: './src/fungenerators-pirate/rpc.ts', parseResponse: true },

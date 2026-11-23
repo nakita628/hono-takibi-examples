@@ -41,20 +41,20 @@ export function getTruckKey() {
 }
 
 export function getDirectionsOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>>,
 ) {
-  return ['directions.:outputFormat', '/directions.:outputFormat', toValue(args)] as const
+  return ['directions.{outputFormat}', '/directions.{outputFormat}', toValue(args)] as const
 }
 
 export function getDirectionsOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getDirectionsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['directions.:outputFormat'].$get(toValue(args), {
+        client['directions.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -66,12 +66,14 @@ export function getDirectionsOutputFormatQueryOptions(
 export function useDirectionsOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -79,7 +81,7 @@ export function useDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -88,7 +90,7 @@ export function useDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -107,7 +109,7 @@ export function useDirectionsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -120,7 +122,7 @@ export function useDirectionsOutputFormat<
       queryKey: computed(() => getDirectionsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['directions.:outputFormat'].$get(toValue(args), {
+          client['directions.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -132,7 +134,7 @@ export function useDirectionsOutputFormat<
 }
 
 export function getPostDirectionsOutputFormatMutationKey() {
-  return ['directions.:outputFormat', '/directions.:outputFormat', 'POST'] as const
+  return ['directions.{outputFormat}', '/directions.{outputFormat}', 'POST'] as const
 }
 
 export function getPostDirectionsOutputFormatMutationOptions<
@@ -143,17 +145,19 @@ export function getPostDirectionsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['directions.:outputFormat']['$post']>,
+    InferRequestType<(typeof client)['directions.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostDirectionsOutputFormatMutationKey(),
-    async mutationFn(args: InferRequestType<(typeof client)['directions.:outputFormat']['$post']>) {
-      return parseResponse(client['directions.:outputFormat'].$post(args, options))
+    async mutationFn(
+      args: InferRequestType<(typeof client)['directions.{outputFormat}']['$post']>,
+    ) {
+      return parseResponse(client['directions.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -166,12 +170,12 @@ export function usePostDirectionsOutputFormat<TError = DefaultError, TOnMutateRe
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['directions.:outputFormat']['$post']>,
+          InferRequestType<(typeof client)['directions.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -197,20 +201,20 @@ export function usePostDirectionsOutputFormat<TError = DefaultError, TOnMutateRe
 }
 
 export function getDistanceOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>>,
 ) {
-  return ['distance.:outputFormat', '/distance.:outputFormat', toValue(args)] as const
+  return ['distance.{outputFormat}', '/distance.{outputFormat}', toValue(args)] as const
 }
 
 export function getDistanceOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getDistanceOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['distance.:outputFormat'].$get(toValue(args), {
+        client['distance.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -222,12 +226,12 @@ export function getDistanceOutputFormatQueryOptions(
 export function useDistanceOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -235,7 +239,7 @@ export function useDistanceOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -244,7 +248,7 @@ export function useDistanceOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -262,7 +266,9 @@ export function useDistanceOutputFormat<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>>
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
+        >
       >
     >,
     TError,
@@ -274,7 +280,7 @@ export function useDistanceOutputFormat<
       queryKey: computed(() => getDistanceOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['distance.:outputFormat'].$get(toValue(args), {
+          client['distance.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -286,7 +292,7 @@ export function useDistanceOutputFormat<
 }
 
 export function getPostDistanceOutputFormatMutationKey() {
-  return ['distance.:outputFormat', '/distance.:outputFormat', 'POST'] as const
+  return ['distance.{outputFormat}', '/distance.{outputFormat}', 'POST'] as const
 }
 
 export function getPostDistanceOutputFormatMutationOptions<
@@ -297,17 +303,17 @@ export function getPostDistanceOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['distance.:outputFormat']['$post']>,
+    InferRequestType<(typeof client)['distance.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostDistanceOutputFormatMutationKey(),
-    async mutationFn(args: InferRequestType<(typeof client)['distance.:outputFormat']['$post']>) {
-      return parseResponse(client['distance.:outputFormat'].$post(args, options))
+    async mutationFn(args: InferRequestType<(typeof client)['distance.{outputFormat}']['$post']>) {
+      return parseResponse(client['distance.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -320,12 +326,12 @@ export function usePostDistanceOutputFormat<TError = DefaultError, TOnMutateResu
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['distance.:outputFormat']['$post']>,
+          InferRequestType<(typeof client)['distance.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -352,15 +358,15 @@ export function usePostDistanceOutputFormat<TError = DefaultError, TOnMutateResu
 
 export function getDistanceBetweenPairsOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
 ) {
-  return ['distance', '/distance/betweenPairs.:outputFormat', toValue(args)] as const
+  return ['distance', '/distance/betweenPairs.{outputFormat}', toValue(args)] as const
 }
 
 export function getDistanceBetweenPairsOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -368,7 +374,7 @@ export function getDistanceBetweenPairsOutputFormatQueryOptions(
     queryKey: computed(() => getDistanceBetweenPairsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.distance['betweenPairs.:outputFormat'].$get(toValue(args), {
+        client.distance['betweenPairs.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -381,14 +387,14 @@ export function useDistanceBetweenPairsOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -397,7 +403,7 @@ export function useDistanceBetweenPairsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -406,7 +412,7 @@ export function useDistanceBetweenPairsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -425,7 +431,7 @@ export function useDistanceBetweenPairsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -438,7 +444,7 @@ export function useDistanceBetweenPairsOutputFormat<
       queryKey: computed(() => getDistanceBetweenPairsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.distance['betweenPairs.:outputFormat'].$get(toValue(args), {
+          client.distance['betweenPairs.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -450,7 +456,7 @@ export function useDistanceBetweenPairsOutputFormat<
 }
 
 export function getPostDistanceBetweenPairsOutputFormatMutationKey() {
-  return ['distance', '/distance/betweenPairs.:outputFormat', 'POST'] as const
+  return ['distance', '/distance/betweenPairs.{outputFormat}', 'POST'] as const
 }
 
 export function getPostDistanceBetweenPairsOutputFormatMutationOptions<
@@ -461,19 +467,19 @@ export function getPostDistanceBetweenPairsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostDistanceBetweenPairsOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.distance['betweenPairs.:outputFormat'].$post(args, options))
+      return parseResponse(client.distance['betweenPairs.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -489,12 +495,14 @@ export function usePostDistanceBetweenPairsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>>
+                Awaited<
+                  ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>
+                >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -522,19 +530,19 @@ export function usePostDistanceBetweenPairsOutputFormat<
 
 export function getOptimalDirectionsOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>
   >,
 ) {
   return [
-    'optimalDirections.:outputFormat',
-    '/optimalDirections.:outputFormat',
+    'optimalDirections.{outputFormat}',
+    '/optimalDirections.{outputFormat}',
     toValue(args),
   ] as const
 }
 
 export function getOptimalDirectionsOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -542,7 +550,7 @@ export function getOptimalDirectionsOutputFormatQueryOptions(
     queryKey: computed(() => getOptimalDirectionsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['optimalDirections.:outputFormat'].$get(toValue(args), {
+        client['optimalDirections.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -555,14 +563,14 @@ export function useOptimalDirectionsOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -571,7 +579,7 @@ export function useOptimalDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -580,7 +588,7 @@ export function useOptimalDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -599,7 +607,7 @@ export function useOptimalDirectionsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -612,7 +620,7 @@ export function useOptimalDirectionsOutputFormat<
       queryKey: computed(() => getOptimalDirectionsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['optimalDirections.:outputFormat'].$get(toValue(args), {
+          client['optimalDirections.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -624,7 +632,7 @@ export function useOptimalDirectionsOutputFormat<
 }
 
 export function getPostOptimalDirectionsOutputFormatMutationKey() {
-  return ['optimalDirections.:outputFormat', '/optimalDirections.:outputFormat', 'POST'] as const
+  return ['optimalDirections.{outputFormat}', '/optimalDirections.{outputFormat}', 'POST'] as const
 }
 
 export function getPostOptimalDirectionsOutputFormatMutationOptions<
@@ -635,19 +643,19 @@ export function getPostOptimalDirectionsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$post']>,
+    InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostOptimalDirectionsOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client['optimalDirections.:outputFormat'].$post(args, options))
+      return parseResponse(client['optimalDirections.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -663,12 +671,12 @@ export function usePostOptimalDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$post']>,
+          InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -695,20 +703,20 @@ export function usePostOptimalDirectionsOutputFormat<
 }
 
 export function getOptimalRouteOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>,
 ) {
-  return ['optimalRoute.:outputFormat', '/optimalRoute.:outputFormat', toValue(args)] as const
+  return ['optimalRoute.{outputFormat}', '/optimalRoute.{outputFormat}', toValue(args)] as const
 }
 
 export function getOptimalRouteOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getOptimalRouteOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['optimalRoute.:outputFormat'].$get(toValue(args), {
+        client['optimalRoute.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -721,13 +729,13 @@ export function useOptimalRouteOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -735,7 +743,7 @@ export function useOptimalRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -744,7 +752,7 @@ export function useOptimalRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -763,7 +771,7 @@ export function useOptimalRouteOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -776,7 +784,7 @@ export function useOptimalRouteOutputFormat<
       queryKey: computed(() => getOptimalRouteOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['optimalRoute.:outputFormat'].$get(toValue(args), {
+          client['optimalRoute.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -788,7 +796,7 @@ export function useOptimalRouteOutputFormat<
 }
 
 export function getPostOptimalRouteOutputFormatMutationKey() {
-  return ['optimalRoute.:outputFormat', '/optimalRoute.:outputFormat', 'POST'] as const
+  return ['optimalRoute.{outputFormat}', '/optimalRoute.{outputFormat}', 'POST'] as const
 }
 
 export function getPostOptimalRouteOutputFormatMutationOptions<
@@ -799,19 +807,19 @@ export function getPostOptimalRouteOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$post']>,
+    InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostOptimalRouteOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client['optimalRoute.:outputFormat'].$post(args, options))
+      return parseResponse(client['optimalRoute.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -824,12 +832,12 @@ export function usePostOptimalRouteOutputFormat<TError = DefaultError, TOnMutate
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$post']>,
+          InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -855,20 +863,20 @@ export function usePostOptimalRouteOutputFormat<TError = DefaultError, TOnMutate
 }
 
 export function getRouteOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.{outputFormat}']['$get']>>,
 ) {
-  return ['route.:outputFormat', '/route.:outputFormat', toValue(args)] as const
+  return ['route.{outputFormat}', '/route.{outputFormat}', toValue(args)] as const
 }
 
 export function getRouteOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getRouteOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['route.:outputFormat'].$get(toValue(args), {
+        client['route.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -880,12 +888,12 @@ export function getRouteOutputFormatQueryOptions(
 export function useRouteOutputFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['route.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -893,7 +901,7 @@ export function useRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -902,7 +910,7 @@ export function useRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -920,7 +928,7 @@ export function useRouteOutputFormat<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
       >
     >,
     TError,
@@ -932,7 +940,7 @@ export function useRouteOutputFormat<
       queryKey: computed(() => getRouteOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['route.:outputFormat'].$get(toValue(args), {
+          client['route.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -944,7 +952,7 @@ export function useRouteOutputFormat<
 }
 
 export function getPostRouteOutputFormatMutationKey() {
-  return ['route.:outputFormat', '/route.:outputFormat', 'POST'] as const
+  return ['route.{outputFormat}', '/route.{outputFormat}', 'POST'] as const
 }
 
 export function getPostRouteOutputFormatMutationOptions<
@@ -954,16 +962,16 @@ export function getPostRouteOutputFormatMutationOptions<
   return mutationOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$post']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$post']>>>
       >
     >,
     TError,
-    InferRequestType<(typeof client)['route.:outputFormat']['$post']>,
+    InferRequestType<(typeof client)['route.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostRouteOutputFormatMutationKey(),
-    async mutationFn(args: InferRequestType<(typeof client)['route.:outputFormat']['$post']>) {
-      return parseResponse(client['route.:outputFormat'].$post(args, options))
+    async mutationFn(args: InferRequestType<(typeof client)['route.{outputFormat}']['$post']>) {
+      return parseResponse(client['route.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -976,12 +984,12 @@ export function usePostRouteOutputFormat<TError = DefaultError, TOnMutateResult 
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['route.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['route.:outputFormat']['$post']>,
+          InferRequestType<(typeof client)['route.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1008,15 +1016,15 @@ export function usePostRouteOutputFormat<TError = DefaultError, TOnMutateResult 
 
 export function getTruckDirectionsOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>
   >,
 ) {
-  return ['truck', '/truck/directions.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/directions.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckDirectionsOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1024,7 +1032,7 @@ export function getTruckDirectionsOutputFormatQueryOptions(
     queryKey: computed(() => getTruckDirectionsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck['directions.:outputFormat'].$get(toValue(args), {
+        client.truck['directions.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1037,14 +1045,14 @@ export function useTruckDirectionsOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1053,7 +1061,7 @@ export function useTruckDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1062,7 +1070,7 @@ export function useTruckDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1081,7 +1089,7 @@ export function useTruckDirectionsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1094,7 +1102,7 @@ export function useTruckDirectionsOutputFormat<
       queryKey: computed(() => getTruckDirectionsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck['directions.:outputFormat'].$get(toValue(args), {
+          client.truck['directions.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1106,7 +1114,7 @@ export function useTruckDirectionsOutputFormat<
 }
 
 export function getPostTruckDirectionsOutputFormatMutationKey() {
-  return ['truck', '/truck/directions.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/directions.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckDirectionsOutputFormatMutationOptions<
@@ -1117,19 +1125,19 @@ export function getPostTruckDirectionsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck)['directions.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckDirectionsOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck)['directions.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.truck['directions.:outputFormat'].$post(args, options))
+      return parseResponse(client.truck['directions.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -1145,12 +1153,12 @@ export function usePostTruckDirectionsOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck)['directions.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1177,20 +1185,24 @@ export function usePostTruckDirectionsOutputFormat<
 }
 
 export function getTruckDistanceOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>
+  >,
 ) {
-  return ['truck', '/truck/distance.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/distance.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckDistanceOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>
+  >,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getTruckDistanceOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck['distance.:outputFormat'].$get(toValue(args), {
+        client.truck['distance.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1203,13 +1215,15 @@ export function useTruckDistanceOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>
+  >,
   options?: {
     query?: Omit<
       Extract<
@@ -1217,7 +1231,7 @@ export function useTruckDistanceOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1226,7 +1240,7 @@ export function useTruckDistanceOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1245,7 +1259,7 @@ export function useTruckDistanceOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1258,7 +1272,7 @@ export function useTruckDistanceOutputFormat<
       queryKey: computed(() => getTruckDistanceOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck['distance.:outputFormat'].$get(toValue(args), {
+          client.truck['distance.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1270,7 +1284,7 @@ export function useTruckDistanceOutputFormat<
 }
 
 export function getPostTruckDistanceOutputFormatMutationKey() {
-  return ['truck', '/truck/distance.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/distance.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckDistanceOutputFormatMutationOptions<
@@ -1281,19 +1295,19 @@ export function getPostTruckDistanceOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck)['distance.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckDistanceOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck)['distance.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.truck['distance.:outputFormat'].$post(args, options))
+      return parseResponse(client.truck['distance.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -1306,12 +1320,12 @@ export function usePostTruckDistanceOutputFormat<TError = DefaultError, TOnMutat
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck)['distance.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1338,15 +1352,15 @@ export function usePostTruckDistanceOutputFormat<TError = DefaultError, TOnMutat
 
 export function getTruckDistanceBetweenPairsOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
 ) {
-  return ['truck', '/truck/distance/betweenPairs.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/distance/betweenPairs.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckDistanceBetweenPairsOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1354,7 +1368,7 @@ export function getTruckDistanceBetweenPairsOutputFormatQueryOptions(
     queryKey: computed(() => getTruckDistanceBetweenPairsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck.distance['betweenPairs.:outputFormat'].$get(toValue(args), {
+        client.truck.distance['betweenPairs.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1367,14 +1381,14 @@ export function useTruckDistanceBetweenPairsOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1384,7 +1398,7 @@ export function useTruckDistanceBetweenPairsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+                  ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
                 >
               >
             >
@@ -1395,7 +1409,7 @@ export function useTruckDistanceBetweenPairsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+                  ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
                 >
               >
             >
@@ -1415,7 +1429,7 @@ export function useTruckDistanceBetweenPairsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1428,7 +1442,7 @@ export function useTruckDistanceBetweenPairsOutputFormat<
       queryKey: computed(() => getTruckDistanceBetweenPairsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck.distance['betweenPairs.:outputFormat'].$get(toValue(args), {
+          client.truck.distance['betweenPairs.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1440,7 +1454,7 @@ export function useTruckDistanceBetweenPairsOutputFormat<
 }
 
 export function getPostTruckDistanceBetweenPairsOutputFormatMutationKey() {
-  return ['truck', '/truck/distance/betweenPairs.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/distance/betweenPairs.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckDistanceBetweenPairsOutputFormatMutationOptions<
@@ -1451,19 +1465,25 @@ export function getPostTruckDistanceBetweenPairsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>>
+          Awaited<
+            ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>
+          >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckDistanceBetweenPairsOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>,
+      args: InferRequestType<
+        (typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']
+      >,
     ) {
-      return parseResponse(client.truck.distance['betweenPairs.:outputFormat'].$post(args, options))
+      return parseResponse(
+        client.truck.distance['betweenPairs.{outputFormat}'].$post(args, options),
+      )
     },
   })
 }
@@ -1480,13 +1500,13 @@ export function usePostTruckDistanceBetweenPairsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>
+                  ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>
                 >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1514,15 +1534,15 @@ export function usePostTruckDistanceBetweenPairsOutputFormat<
 
 export function getTruckOptimalDirectionsOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>
   >,
 ) {
-  return ['truck', '/truck/optimalDirections.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/optimalDirections.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckOptimalDirectionsOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1530,7 +1550,7 @@ export function getTruckOptimalDirectionsOutputFormatQueryOptions(
     queryKey: computed(() => getTruckOptimalDirectionsOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck['optimalDirections.:outputFormat'].$get(toValue(args), {
+        client.truck['optimalDirections.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1543,14 +1563,14 @@ export function useTruckOptimalDirectionsOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1560,7 +1580,7 @@ export function useTruckOptimalDirectionsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>
+                  ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>
                 >
               >
             >
@@ -1571,7 +1591,7 @@ export function useTruckOptimalDirectionsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>
+                  ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>
                 >
               >
             >
@@ -1591,7 +1611,7 @@ export function useTruckOptimalDirectionsOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1604,7 +1624,7 @@ export function useTruckOptimalDirectionsOutputFormat<
       queryKey: computed(() => getTruckOptimalDirectionsOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck['optimalDirections.:outputFormat'].$get(toValue(args), {
+          client.truck['optimalDirections.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1616,7 +1636,7 @@ export function useTruckOptimalDirectionsOutputFormat<
 }
 
 export function getPostTruckOptimalDirectionsOutputFormatMutationKey() {
-  return ['truck', '/truck/optimalDirections.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/optimalDirections.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckOptimalDirectionsOutputFormatMutationOptions<
@@ -1627,19 +1647,19 @@ export function getPostTruckOptimalDirectionsOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckOptimalDirectionsOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.truck['optimalDirections.:outputFormat'].$post(args, options))
+      return parseResponse(client.truck['optimalDirections.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -1656,13 +1676,13 @@ export function usePostTruckOptimalDirectionsOutputFormat<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>
+                  ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>
                 >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1690,15 +1710,15 @@ export function usePostTruckOptimalDirectionsOutputFormat<
 
 export function getTruckOptimalRouteOutputFormatQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>
   >,
 ) {
-  return ['truck', '/truck/optimalRoute.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/optimalRoute.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckOptimalRouteOutputFormatQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1706,7 +1726,7 @@ export function getTruckOptimalRouteOutputFormatQueryOptions(
     queryKey: computed(() => getTruckOptimalRouteOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck['optimalRoute.:outputFormat'].$get(toValue(args), {
+        client.truck['optimalRoute.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1719,14 +1739,14 @@ export function useTruckOptimalRouteOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>
+    InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1735,7 +1755,7 @@ export function useTruckOptimalRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1744,7 +1764,7 @@ export function useTruckOptimalRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1763,7 +1783,7 @@ export function useTruckOptimalRouteOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1776,7 +1796,7 @@ export function useTruckOptimalRouteOutputFormat<
       queryKey: computed(() => getTruckOptimalRouteOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck['optimalRoute.:outputFormat'].$get(toValue(args), {
+          client.truck['optimalRoute.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1788,7 +1808,7 @@ export function useTruckOptimalRouteOutputFormat<
 }
 
 export function getPostTruckOptimalRouteOutputFormatMutationKey() {
-  return ['truck', '/truck/optimalRoute.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/optimalRoute.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckOptimalRouteOutputFormatMutationOptions<
@@ -1799,19 +1819,19 @@ export function getPostTruckOptimalRouteOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckOptimalRouteOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.truck['optimalRoute.:outputFormat'].$post(args, options))
+      return parseResponse(client.truck['optimalRoute.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -1827,12 +1847,12 @@ export function usePostTruckOptimalRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1859,20 +1879,20 @@ export function usePostTruckOptimalRouteOutputFormat<
 }
 
 export function getTruckRouteOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>>,
 ) {
-  return ['truck', '/truck/route.:outputFormat', toValue(args)] as const
+  return ['truck', '/truck/route.{outputFormat}', toValue(args)] as const
 }
 
 export function getTruckRouteOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getTruckRouteOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.truck['route.:outputFormat'].$get(toValue(args), {
+        client.truck['route.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1885,13 +1905,13 @@ export function useTruckRouteOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -1899,7 +1919,7 @@ export function useTruckRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1908,7 +1928,7 @@ export function useTruckRouteOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1927,7 +1947,7 @@ export function useTruckRouteOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1940,7 +1960,7 @@ export function useTruckRouteOutputFormat<
       queryKey: computed(() => getTruckRouteOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.truck['route.:outputFormat'].$get(toValue(args), {
+          client.truck['route.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1952,7 +1972,7 @@ export function useTruckRouteOutputFormat<
 }
 
 export function getPostTruckRouteOutputFormatMutationKey() {
-  return ['truck', '/truck/route.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/route.{outputFormat}', 'POST'] as const
 }
 
 export function getPostTruckRouteOutputFormatMutationOptions<
@@ -1963,19 +1983,19 @@ export function getPostTruckRouteOutputFormatMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.truck)['route.:outputFormat']['$post']>,
+    InferRequestType<(typeof client.truck)['route.{outputFormat}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostTruckRouteOutputFormatMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.truck)['route.:outputFormat']['$post']>,
+      args: InferRequestType<(typeof client.truck)['route.{outputFormat}']['$post']>,
     ) {
-      return parseResponse(client.truck['route.:outputFormat'].$post(args, options))
+      return parseResponse(client.truck['route.{outputFormat}'].$post(args, options))
     },
   })
 }
@@ -1988,12 +2008,12 @@ export function usePostTruckRouteOutputFormat<TError = DefaultError, TOnMutateRe
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$post']>>
+                Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$post']>>
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.truck)['route.:outputFormat']['$post']>,
+          InferRequestType<(typeof client.truck)['route.{outputFormat}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }

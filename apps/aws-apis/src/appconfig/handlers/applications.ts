@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
   deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute,
   deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
@@ -27,105 +27,150 @@ import {
   postApplicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApplicationsRouteHandler: RouteHandler<typeof postApplicationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const applicationsHandler = app
-  .openapi(postApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApplicationsApplicationIdConfigurationprofilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationIdConfigurationprofilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApplicationsApplicationIdEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationIdEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteApplicationsApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApplicationsApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationIdEnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApplicationsApplicationIdEnvironmentsEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getApplicationsRouteHandler: RouteHandler<typeof getApplicationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsApplicationIdConfigurationprofilesRouteHandler: RouteHandler<
+  typeof postApplicationsApplicationIdConfigurationprofilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdConfigurationprofilesRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdConfigurationprofilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsApplicationIdEnvironmentsRouteHandler: RouteHandler<
+  typeof postApplicationsApplicationIdEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdEnvironmentsRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRouteHandler: RouteHandler<
+  typeof postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationIdRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApplicationsApplicationIdRouteHandler: RouteHandler<
+  typeof patchApplicationsApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRouteHandler: RouteHandler<
+  typeof patchApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationIdEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApplicationsApplicationIdEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof patchApplicationsApplicationIdEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsVersionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationEnvironmentsEnvironmentConfigurationsConfigurationClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsDeploymentNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRouteHandler: RouteHandler<
+  typeof postApplicationsApplicationIdEnvironmentsEnvironmentIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdHostedconfigurationversionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRouteHandler: RouteHandler<
+  typeof postApplicationsApplicationIdConfigurationprofilesConfigurationProfileIdValidatorsConfigurationVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

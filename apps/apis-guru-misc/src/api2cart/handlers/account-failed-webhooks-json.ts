@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAccountFailedWebhooksJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAccountFailedWebhooksJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const accountFailedWebhooksJsonHandler = app.openapi(
-  getAccountFailedWebhooksJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAccountFailedWebhooksJsonRouteHandler: RouteHandler<
+  typeof getAccountFailedWebhooksJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

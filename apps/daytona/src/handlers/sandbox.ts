@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSandboxSandboxIdOrNameRoute,
   deleteSandboxSandboxIdOrNameSshAccessRoute,
   getSandboxForRunnerRoute,
@@ -43,129 +43,244 @@ import {
   putSandboxSandboxIdStateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSandboxRouteHandler: RouteHandler<typeof getSandboxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sandboxHandler = app
-  .openapi(getSandboxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxPaginatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxForRunnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSandboxSandboxIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNamePauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSandboxSandboxIdOrNameLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSandboxSandboxIdStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameForkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameForksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameParentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameAncestorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNamePublicIsPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdLastActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameAutostopIntervalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameAutoarchiveIntervalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameAutodeleteIntervalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameNetworkSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNamePortsPortPreviewUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNamePortsPortSignedPreviewUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNamePortsPortSignedPreviewUrlTokenExpireRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameBuildLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrNameBuildLogsUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSandboxSandboxIdOrNameSshAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxSandboxIdOrNameSshAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSshAccessValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdToolboxProxyUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdRegionQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdTelemetryLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdTelemetryTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdTelemetryTracesTraceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdTelemetryMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSandboxRouteHandler: RouteHandler<typeof postSandboxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxPaginatedRouteHandler: RouteHandler<
+  typeof getSandboxPaginatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxForRunnerRouteHandler: RouteHandler<
+  typeof getSandboxForRunnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSandboxSandboxIdOrNameRouteHandler: RouteHandler<
+  typeof deleteSandboxSandboxIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameRecoverRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameStartRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameStopRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNamePauseRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNamePauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameResizeRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSandboxSandboxIdOrNameLabelsRouteHandler: RouteHandler<
+  typeof putSandboxSandboxIdOrNameLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSandboxSandboxIdStateRouteHandler: RouteHandler<
+  typeof putSandboxSandboxIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameBackupRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameSnapshotRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameForkRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameForkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameForksRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameForksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameParentRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameParentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameAncestorsRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameAncestorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNamePublicIsPublicRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNamePublicIsPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdLastActivityRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdLastActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameAutostopIntervalRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameAutostopIntervalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameAutoarchiveIntervalRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameAutoarchiveIntervalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameAutodeleteIntervalRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameAutodeleteIntervalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameNetworkSettingsRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameNetworkSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameArchiveRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNamePortsPortPreviewUrlRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNamePortsPortPreviewUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNamePortsPortSignedPreviewUrlRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNamePortsPortSignedPreviewUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNamePortsPortSignedPreviewUrlTokenExpireRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNamePortsPortSignedPreviewUrlTokenExpireRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameBuildLogsRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameBuildLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrNameBuildLogsUrlRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrNameBuildLogsUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSandboxSandboxIdOrNameSshAccessRouteHandler: RouteHandler<
+  typeof deleteSandboxSandboxIdOrNameSshAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSandboxSandboxIdOrNameSshAccessRouteHandler: RouteHandler<
+  typeof postSandboxSandboxIdOrNameSshAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSshAccessValidateRouteHandler: RouteHandler<
+  typeof getSandboxSshAccessValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdToolboxProxyUrlRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdToolboxProxyUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdOrganizationRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdRegionQuotaRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdRegionQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdTelemetryLogsRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdTelemetryLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdTelemetryTracesRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdTelemetryTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdTelemetryTracesTraceIdRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdTelemetryTracesTraceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdTelemetryMetricsRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdTelemetryMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

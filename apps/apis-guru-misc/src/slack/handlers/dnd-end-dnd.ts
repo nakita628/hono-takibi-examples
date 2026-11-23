@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDndEndDndRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDndEndDndRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dndEndDndHandler = app.openapi(postDndEndDndRoute, (c) => {
+export const postDndEndDndRouteHandler: RouteHandler<typeof postDndEndDndRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

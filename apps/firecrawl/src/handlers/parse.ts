@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getParseFormatsRoute, postParseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getParseFormatsRoute, postParseRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postParseRouteHandler: RouteHandler<typeof postParseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const parseHandler = app
-  .openapi(postParseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getParseFormatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getParseFormatsRouteHandler: RouteHandler<typeof getParseFormatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

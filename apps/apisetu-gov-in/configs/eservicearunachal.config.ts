@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/eservicearunachal/3.0.0/openapi.yaml',
   output: './src/eservicearunachal/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/eservicearunachal/types.ts' },
   client: { output: './src/eservicearunachal/client.ts', baseUrl: '/' },
   rpc: { output: './src/eservicearunachal/rpc.ts', parseResponse: true },

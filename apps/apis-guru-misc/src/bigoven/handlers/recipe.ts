@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRecipeIdRoute,
   deleteRecipeRecipeIdNoteNoteIdRoute,
   deleteRecipeRecipeIdReviewReviewIdRoute,
@@ -41,123 +41,224 @@ import {
   putRecipeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRecipeRouteHandler: RouteHandler<typeof postRecipeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const recipeHandler = app
-  .openapi(postRecipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeAutocompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeAutocompleteAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeAutocompleteMineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeGetActiveRecipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeGetSavedStepRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeGetStepNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipePhotosPendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipePostStepRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecipeReviewRepliesReplyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeReviewRepliesReplyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeReviewReviewIdRepliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeReviewReviewIdRepliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeScanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeStepsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecipeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeIdZapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeRecipeIdFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeRecipeIdImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeRecipeIdNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecipeRecipeIdNoteNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdNoteNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeRecipeIdNoteNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdPhotosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeRecipeIdReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecipeRecipeIdReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeRecipeIdReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeRecipeIdScansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRecipeRouteHandler: RouteHandler<typeof putRecipeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeAutocompleteRouteHandler: RouteHandler<
+  typeof getRecipeAutocompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeAutocompleteAllRouteHandler: RouteHandler<
+  typeof getRecipeAutocompleteAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeAutocompleteMineRouteHandler: RouteHandler<
+  typeof getRecipeAutocompleteMineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeCategoriesRouteHandler: RouteHandler<
+  typeof getRecipeCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeGetActiveRecipeRouteHandler: RouteHandler<
+  typeof getRecipeGetActiveRecipeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeGetSavedStepRouteHandler: RouteHandler<
+  typeof postRecipeGetSavedStepRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeGetStepNumberRouteHandler: RouteHandler<
+  typeof postRecipeGetStepNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipePhotosPendingRouteHandler: RouteHandler<
+  typeof getRecipePhotosPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipePostStepRouteHandler: RouteHandler<typeof postRecipePostStepRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecipeReviewRepliesReplyIdRouteHandler: RouteHandler<
+  typeof deleteRecipeReviewRepliesReplyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeReviewRepliesReplyIdRouteHandler: RouteHandler<
+  typeof putRecipeReviewRepliesReplyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeReviewReviewIdRouteHandler: RouteHandler<
+  typeof getRecipeReviewReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeReviewReviewIdRouteHandler: RouteHandler<
+  typeof putRecipeReviewReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeReviewReviewIdRepliesRouteHandler: RouteHandler<
+  typeof getRecipeReviewReviewIdRepliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeReviewReviewIdRepliesRouteHandler: RouteHandler<
+  typeof postRecipeReviewReviewIdRepliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeScanRouteHandler: RouteHandler<typeof postRecipeScanRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeStepsIdRouteHandler: RouteHandler<typeof getRecipeStepsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecipeIdRouteHandler: RouteHandler<typeof deleteRecipeIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeIdRouteHandler: RouteHandler<typeof getRecipeIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeIdZapRouteHandler: RouteHandler<typeof getRecipeIdZapRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeRecipeIdFeedbackRouteHandler: RouteHandler<
+  typeof postRecipeRecipeIdFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeRecipeIdImageRouteHandler: RouteHandler<
+  typeof postRecipeRecipeIdImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdImagesRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeRecipeIdNoteRouteHandler: RouteHandler<
+  typeof postRecipeRecipeIdNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecipeRecipeIdNoteNoteIdRouteHandler: RouteHandler<
+  typeof deleteRecipeRecipeIdNoteNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdNoteNoteIdRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdNoteNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeRecipeIdNoteNoteIdRouteHandler: RouteHandler<
+  typeof putRecipeRecipeIdNoteNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdNotesRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdPhotosRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdPhotosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdRelatedRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdRelatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdReviewRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeRecipeIdReviewRouteHandler: RouteHandler<
+  typeof postRecipeRecipeIdReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecipeRecipeIdReviewReviewIdRouteHandler: RouteHandler<
+  typeof deleteRecipeRecipeIdReviewReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdReviewReviewIdRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdReviewReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeRecipeIdReviewReviewIdRouteHandler: RouteHandler<
+  typeof putRecipeRecipeIdReviewReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdReviewsRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeRecipeIdScansRouteHandler: RouteHandler<
+  typeof getRecipeRecipeIdScansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFindingIdAnalyzerArnRoute, postFindingRoute, putFindingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFindingIdAnalyzerArnRoute, postFindingRoute, putFindingRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFindingIdAnalyzerArnRouteHandler: RouteHandler<
+  typeof getFindingIdAnalyzerArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const findingHandler = app
-  .openapi(getFindingIdAnalyzerArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFindingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFindingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFindingRouteHandler: RouteHandler<typeof postFindingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFindingRouteHandler: RouteHandler<typeof putFindingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

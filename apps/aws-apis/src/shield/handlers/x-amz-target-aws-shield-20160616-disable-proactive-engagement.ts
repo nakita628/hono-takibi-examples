@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShield20160616DisableProactiveEngagementHandler = app.openapi(
-  postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShield20160616DisableProactiveEngagementRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

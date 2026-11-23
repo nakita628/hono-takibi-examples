@@ -200,17 +200,17 @@ const TagMapSchema = z
   .openapi('TagMap')
 
 type GetSuiteRunResponseType = {
-  suiteDefinitionId?: z.infer<typeof UUIDSchema> & unknown
-  suiteDefinitionVersion?: z.infer<typeof SuiteDefinitionVersionSchema> & unknown
-  suiteRunId?: z.infer<typeof UUIDSchema> & unknown
-  suiteRunArn?: z.infer<typeof AmazonResourceNameSchema> & unknown
-  suiteRunConfiguration?: z.infer<typeof SuiteRunConfigurationSchema> & unknown
-  testResult?: z.infer<typeof TestResultSchema> & unknown
-  startTime?: z.infer<typeof TimestampSchema> & unknown
-  endTime?: z.infer<typeof TimestampSchema> & unknown
-  status?: z.infer<typeof SuiteRunStatusSchema> & unknown
-  errorReason?: z.infer<typeof ErrorReasonSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  suiteDefinitionId?: z.infer<typeof UUIDSchema>
+  suiteDefinitionVersion?: z.infer<typeof SuiteDefinitionVersionSchema>
+  suiteRunId?: z.infer<typeof UUIDSchema>
+  suiteRunArn?: z.infer<typeof AmazonResourceNameSchema>
+  suiteRunConfiguration?: z.infer<typeof SuiteRunConfigurationSchema>
+  testResult?: z.infer<typeof TestResultSchema>
+  startTime?: z.infer<typeof TimestampSchema>
+  endTime?: z.infer<typeof TimestampSchema>
+  status?: z.infer<typeof SuiteRunStatusSchema>
+  errorReason?: z.infer<typeof ErrorReasonSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 const SuiteDefinitionNameSchema = z.string().min(1).max(256).openapi('SuiteDefinitionName')

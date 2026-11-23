@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/geomark/4.1.2/openapi.yaml',
   output: './src/geomark/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/geomark/types.ts' },
   client: { output: './src/geomark/client.ts', baseUrl: '/' },
   rpc: { output: './src/geomark/rpc.ts', parseResponse: true },

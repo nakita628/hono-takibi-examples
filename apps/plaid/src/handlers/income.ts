@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postIncomeVerificationCreateRoute,
   postIncomeVerificationDocumentsDownloadRoute,
   postIncomeVerificationPaystubsGetRoute,
@@ -7,21 +7,32 @@ import {
   postIncomeVerificationTaxformsGetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIncomeVerificationCreateRouteHandler: RouteHandler<
+  typeof postIncomeVerificationCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const incomeHandler = app
-  .openapi(postIncomeVerificationCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncomeVerificationPaystubsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncomeVerificationDocumentsDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncomeVerificationTaxformsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncomeVerificationPrecheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIncomeVerificationPaystubsGetRouteHandler: RouteHandler<
+  typeof postIncomeVerificationPaystubsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncomeVerificationDocumentsDownloadRouteHandler: RouteHandler<
+  typeof postIncomeVerificationDocumentsDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncomeVerificationTaxformsGetRouteHandler: RouteHandler<
+  typeof postIncomeVerificationTaxformsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncomeVerificationPrecheckRouteHandler: RouteHandler<
+  typeof postIncomeVerificationPrecheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

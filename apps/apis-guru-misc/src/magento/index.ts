@@ -1,8 +1,1796 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler } from './handlers'
+import {
+  deleteV1AddressesAddressIdRoute,
+  deleteV1AmazonOrderRefRoute,
+  deleteV1BundleProductsSkuOptionsOptionIdChildrenChildSkuRoute,
+  deleteV1BundleProductsSkuOptionsOptionIdRoute,
+  deleteV1CartsCartIdCouponsRoute,
+  deleteV1CartsCartIdGiftCardsGiftCardCodeRoute,
+  deleteV1CartsCartIdItemsItemIdRoute,
+  deleteV1CartsGuestCartsCartIdGiftCardsGiftCardCodeRoute,
+  deleteV1CartsMineCollectionPointSearchRequestRoute,
+  deleteV1CartsMineCouponsRoute,
+  deleteV1CartsMineGiftCardsGiftCardCodeRoute,
+  deleteV1CartsMineItemsItemIdRoute,
+  deleteV1CategoriesCategoryIdProductsSkuRoute,
+  deleteV1CategoriesCategoryIdRoute,
+  deleteV1CmsBlockBlockIdRoute,
+  deleteV1CmsPagePageIdRoute,
+  deleteV1CompanyCompanyIdRoute,
+  deleteV1CompanyRoleRoleIdRoute,
+  deleteV1ConfigurableProductsSkuChildrenChildSkuRoute,
+  deleteV1ConfigurableProductsSkuOptionsIdRoute,
+  deleteV1CouponsCouponIdRoute,
+  deleteV1CustomerGroupsIdRoute,
+  deleteV1CustomersCustomerIdRoute,
+  deleteV1EavAttributeSetsAttributeSetIdRoute,
+  deleteV1GiftWrappingsIdRoute,
+  deleteV1GuestCartsCartIdCollectionPointSearchRequestRoute,
+  deleteV1GuestCartsCartIdCouponsRoute,
+  deleteV1GuestCartsCartIdItemsItemIdRoute,
+  deleteV1NegotiableCartsCartIdCouponsRoute,
+  deleteV1NegotiableCartsCartIdGiftCardsGiftCardCodeRoute,
+  deleteV1ProductsAttributesAttributeCodeOptionsOptionIdRoute,
+  deleteV1ProductsAttributesAttributeCodeRoute,
+  deleteV1ProductsAttributeSetsAttributeSetIdAttributesAttributeCodeRoute,
+  deleteV1ProductsAttributeSetsAttributeSetIdRoute,
+  deleteV1ProductsAttributeSetsGroupsGroupIdRoute,
+  deleteV1ProductsDownloadableLinksIdRoute,
+  deleteV1ProductsDownloadableLinksSamplesIdRoute,
+  deleteV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyRoute,
+  deleteV1ProductsSkuLinksTypeLinkedProductSkuRoute,
+  deleteV1ProductsSkuMediaEntryIdRoute,
+  deleteV1ProductsSkuOptionsOptionIdRoute,
+  deleteV1ProductsSkuRoute,
+  deleteV1ProductsSkuWebsitesWebsiteIdRoute,
+  deleteV1ReturnsIdRoute,
+  deleteV1ReturnsIdTrackingNumbersTrackIdRoute,
+  deleteV1SalesRulesRuleIdRoute,
+  deleteV1SharedCatalogSharedCatalogIdRoute,
+  deleteV1ShipmentTrackIdRoute,
+  deleteV1TaxClassesTaxClassIdRoute,
+  deleteV1TaxRatesRateIdRoute,
+  deleteV1TaxRulesRuleIdRoute,
+  deleteV1TeamTeamIdRoute,
+  getV1AnalyticsLinkRoute,
+  getV1AttributeMetadataCustomerAddressAttributeAttributeCodeRoute,
+  getV1AttributeMetadataCustomerAddressCustomRoute,
+  getV1AttributeMetadataCustomerAddressFormFormCodeRoute,
+  getV1AttributeMetadataCustomerAddressRoute,
+  getV1AttributeMetadataCustomerAttributeAttributeCodeRoute,
+  getV1AttributeMetadataCustomerCustomRoute,
+  getV1AttributeMetadataCustomerFormFormCodeRoute,
+  getV1AttributeMetadataCustomerRoute,
+  getV1BulkBulkUuidDetailedStatusRoute,
+  getV1BulkBulkUuidOperationStatusStatusRoute,
+  getV1BulkBulkUuidStatusRoute,
+  getV1BundleProductsOptionsTypesRoute,
+  getV1BundleProductsProductSkuChildrenRoute,
+  getV1BundleProductsSkuOptionsAllRoute,
+  getV1BundleProductsSkuOptionsOptionIdRoute,
+  getV1CartsCartIdBillingAddressRoute,
+  getV1CartsCartIdCouponsRoute,
+  getV1CartsCartIdGiftMessageItemIdRoute,
+  getV1CartsCartIdGiftMessageRoute,
+  getV1CartsCartIdItemsRoute,
+  getV1CartsCartIdPaymentMethodsRoute,
+  getV1CartsCartIdRoute,
+  getV1CartsCartIdSelectedPaymentMethodRoute,
+  getV1CartsCartIdShippingMethodsRoute,
+  getV1CartsCartIdTotalsRoute,
+  getV1CartsGuestCartsCartIdCheckGiftCardGiftCardCodeRoute,
+  getV1CartsLicenceRoute,
+  getV1CartsMineBillingAddressRoute,
+  getV1CartsMineCheckGiftCardGiftCardCodeRoute,
+  getV1CartsMineCollectionPointSearchResultRoute,
+  getV1CartsMineCouponsRoute,
+  getV1CartsMineGiftMessageItemIdRoute,
+  getV1CartsMineGiftMessageRoute,
+  getV1CartsMineItemsRoute,
+  getV1CartsMinePaymentInformationRoute,
+  getV1CartsMinePaymentMethodsRoute,
+  getV1CartsMineRoute,
+  getV1CartsMineSelectedPaymentMethodRoute,
+  getV1CartsMineShippingMethodsRoute,
+  getV1CartsMineTotalsRoute,
+  getV1CartsQuoteIdGiftCardsRoute,
+  getV1CartsSearchRoute,
+  getV1CategoriesAttributesAttributeCodeOptionsRoute,
+  getV1CategoriesAttributesAttributeCodeRoute,
+  getV1CategoriesAttributesRoute,
+  getV1CategoriesCategoryIdProductsRoute,
+  getV1CategoriesCategoryIdRoute,
+  getV1CategoriesListRoute,
+  getV1CategoriesRoute,
+  getV1CmsBlockBlockIdRoute,
+  getV1CmsBlockSearchRoute,
+  getV1CmsPagePageIdRoute,
+  getV1CmsPageSearchRoute,
+  getV1CompanyCompanyIdRoute,
+  getV1CompanyCreditsCompanyCompanyIdRoute,
+  getV1CompanyCreditsCreditIdRoute,
+  getV1CompanyCreditsHistoryRoute,
+  getV1CompanyCreditsIndexRoute,
+  getV1CompanyIndexRoute,
+  getV1CompanyRoleIndexRoute,
+  getV1CompanyRoleRoleIdRoute,
+  getV1CompanyRoleRoleIdUsersRoute,
+  getV1ConfigurableProductsSkuChildrenRoute,
+  getV1ConfigurableProductsSkuOptionsAllRoute,
+  getV1ConfigurableProductsSkuOptionsIdRoute,
+  getV1CouponsCouponIdRoute,
+  getV1CouponsSearchRoute,
+  getV1CreditmemoIdCommentsRoute,
+  getV1CreditmemoIdRoute,
+  getV1CreditmemosRoute,
+  getV1CustomerGroupsDefaultRoute,
+  getV1CustomerGroupsDefaultStoreIdRoute,
+  getV1CustomerGroupsIdPermissionsRoute,
+  getV1CustomerGroupsIdRoute,
+  getV1CustomerGroupsSearchRoute,
+  getV1CustomersAddressesAddressIdRoute,
+  getV1CustomersCustomerIdBillingAddressRoute,
+  getV1CustomersCustomerIdConfirmRoute,
+  getV1CustomersCustomerIdPasswordResetLinkTokenResetPasswordLinkTokenRoute,
+  getV1CustomersCustomerIdPermissionsReadonlyRoute,
+  getV1CustomersCustomerIdRoute,
+  getV1CustomersCustomerIdShippingAddressRoute,
+  getV1CustomersMeBillingAddressRoute,
+  getV1CustomersMeRoute,
+  getV1CustomersMeShippingAddressRoute,
+  getV1CustomersSearchRoute,
+  getV1DirectoryCountriesCountryIdRoute,
+  getV1DirectoryCountriesRoute,
+  getV1DirectoryCurrencyRoute,
+  getV1EavAttributeSetsAttributeSetIdRoute,
+  getV1EavAttributeSetsListRoute,
+  getV1GiftWrappingsIdRoute,
+  getV1GiftWrappingsRoute,
+  getV1GuestCartsCartIdBillingAddressRoute,
+  getV1GuestCartsCartIdCollectionPointSearchResultRoute,
+  getV1GuestCartsCartIdCouponsRoute,
+  getV1GuestCartsCartIdGiftMessageItemIdRoute,
+  getV1GuestCartsCartIdGiftMessageRoute,
+  getV1GuestCartsCartIdItemsRoute,
+  getV1GuestCartsCartIdPaymentInformationRoute,
+  getV1GuestCartsCartIdPaymentMethodsRoute,
+  getV1GuestCartsCartIdRoute,
+  getV1GuestCartsCartIdSelectedPaymentMethodRoute,
+  getV1GuestCartsCartIdShippingMethodsRoute,
+  getV1GuestCartsCartIdTotalsRoute,
+  getV1HierarchyIdRoute,
+  getV1InvoicesIdCommentsRoute,
+  getV1InvoicesIdRoute,
+  getV1InvoicesRoute,
+  getV1ModulesRoute,
+  getV1NegotiableCartsCartIdBillingAddressRoute,
+  getV1NegotiableCartsCartIdPaymentInformationRoute,
+  getV1NegotiableCartsCartIdTotalsRoute,
+  getV1NegotiableQuoteAttachmentContentRoute,
+  getV1NegotiableQuoteQuoteIdCommentsRoute,
+  getV1OrdersIdCommentsRoute,
+  getV1OrdersIdRoute,
+  getV1OrdersIdStatusesRoute,
+  getV1OrdersItemsIdRoute,
+  getV1OrdersItemsRoute,
+  getV1OrdersRoute,
+  getV1ProductsAttributesAttributeCodeOptionsRoute,
+  getV1ProductsAttributesAttributeCodeRoute,
+  getV1ProductsAttributeSetsAttributeSetIdAttributesRoute,
+  getV1ProductsAttributeSetsAttributeSetIdRoute,
+  getV1ProductsAttributeSetsGroupsListRoute,
+  getV1ProductsAttributeSetsSetsListRoute,
+  getV1ProductsAttributesRoute,
+  getV1ProductsAttributesTypesRoute,
+  getV1ProductsLinksTypeAttributesRoute,
+  getV1ProductsLinksTypesRoute,
+  getV1ProductsMediaTypesAttributeSetNameRoute,
+  getV1ProductsOptionsTypesRoute,
+  getV1ProductsRenderInfoRoute,
+  getV1ProductsRoute,
+  getV1ProductsSkuDownloadableLinksRoute,
+  getV1ProductsSkuDownloadableLinksSamplesRoute,
+  getV1ProductsSkuGroupPricesCustomerGroupIdTiersRoute,
+  getV1ProductsSkuLinksTypeRoute,
+  getV1ProductsSkuMediaEntryIdRoute,
+  getV1ProductsSkuMediaRoute,
+  getV1ProductsSkuOptionsOptionIdRoute,
+  getV1ProductsSkuOptionsRoute,
+  getV1ProductsSkuRoute,
+  getV1ProductsTypesRoute,
+  getV1ReturnsAttributeMetadataAttributeCodeRoute,
+  getV1ReturnsAttributeMetadataCustomRoute,
+  getV1ReturnsAttributeMetadataFormFormCodeRoute,
+  getV1ReturnsAttributeMetadataRoute,
+  getV1ReturnsIdCommentsRoute,
+  getV1ReturnsIdLabelsRoute,
+  getV1ReturnsIdRoute,
+  getV1ReturnsIdTrackingNumbersRoute,
+  getV1ReturnsRoute,
+  getV1SalesRulesRuleIdRoute,
+  getV1SalesRulesSearchRoute,
+  getV1SearchRoute,
+  getV1SharedCatalogIdCategoriesRoute,
+  getV1SharedCatalogIdProductsRoute,
+  getV1SharedCatalogIndexRoute,
+  getV1SharedCatalogSharedCatalogIdCompaniesRoute,
+  getV1SharedCatalogSharedCatalogIdRoute,
+  getV1ShipmentIdCommentsRoute,
+  getV1ShipmentIdLabelRoute,
+  getV1ShipmentIdRoute,
+  getV1ShipmentsRoute,
+  getV1StockItemsLowStockIndexRoute,
+  getV1StockItemsProductSkuRoute,
+  getV1StockStatusesProductSkuRoute,
+  getV1StoreStoreConfigsRoute,
+  getV1StoreStoreGroupsRoute,
+  getV1StoreStoreViewsRoute,
+  getV1StoreWebsitesRoute,
+  getV1TaxClassesSearchRoute,
+  getV1TaxClassesTaxClassIdRoute,
+  getV1TaxRatesRateIdRoute,
+  getV1TaxRatesSearchRoute,
+  getV1TaxRulesRuleIdRoute,
+  getV1TaxRulesSearchRoute,
+  getV1TeamIndexRoute,
+  getV1TeamTeamIdRoute,
+  getV1TransactionsIdRoute,
+  getV1TransactionsRoute,
+  postV1BundleProductsOptionsAddRoute,
+  postV1BundleProductsSkuLinksOptionIdRoute,
+  postV1CartsCartIdBillingAddressRoute,
+  postV1CartsCartIdEstimateShippingMethodsByAddressIdRoute,
+  postV1CartsCartIdEstimateShippingMethodsRoute,
+  postV1CartsCartIdGiftMessageItemIdRoute,
+  postV1CartsCartIdGiftMessageRoute,
+  postV1CartsCartIdShippingInformationRoute,
+  postV1CartsCartIdTotalsInformationRoute,
+  postV1CartsGuestCartsCartIdGiftCardsRoute,
+  postV1CartsIndexRoute,
+  postV1CartsMineBalanceApplyRoute,
+  postV1CartsMineBalanceUnapplyRoute,
+  postV1CartsMineBillingAddressRoute,
+  postV1CartsMineCheckoutFieldsRoute,
+  postV1CartsMineCollectionPointSelectRoute,
+  postV1CartsMineDeliveryOptionRoute,
+  postV1CartsMineEstimateShippingMethodsByAddressIdRoute,
+  postV1CartsMineEstimateShippingMethodsRoute,
+  postV1CartsMineGiftCardsRoute,
+  postV1CartsMineGiftMessageItemIdRoute,
+  postV1CartsMineGiftMessageRoute,
+  postV1CartsMineItemsRoute,
+  postV1CartsMinePaymentInformationRoute,
+  postV1CartsMineRoute,
+  postV1CartsMineSetPaymentInformationRoute,
+  postV1CartsMineShippingInformationRoute,
+  postV1CartsMineTotalsInformationRoute,
+  postV1CartsQuoteIdItemsRoute,
+  postV1CategoriesCategoryIdProductsRoute,
+  postV1CategoriesRoute,
+  postV1CmsBlockRoute,
+  postV1CmsPageRoute,
+  postV1CompanyCreditsCreditIdDecreaseBalanceRoute,
+  postV1CompanyCreditsCreditIdIncreaseBalanceRoute,
+  postV1CompanyIndexRoute,
+  postV1CompanyRoleIndexRoute,
+  postV1ConfigurableProductsSkuChildRoute,
+  postV1ConfigurableProductsSkuOptionsRoute,
+  postV1CouponsDeleteByCodesRoute,
+  postV1CouponsDeleteByIdsRoute,
+  postV1CouponsGenerateRoute,
+  postV1CouponsRoute,
+  postV1CreditmemoIdCommentsRoute,
+  postV1CreditmemoIdEmailsRoute,
+  postV1CreditmemoRefundRoute,
+  postV1CreditmemoRoute,
+  postV1CustomerGroupsRoute,
+  postV1CustomersConfirmRoute,
+  postV1CustomersCustomerIdCartsRoute,
+  postV1CustomersIsEmailAvailableRoute,
+  postV1CustomersResetPasswordRoute,
+  postV1CustomersRoute,
+  postV1EavAttributeSetsRoute,
+  postV1GiftregistryMineEstimateShippingMethodsRoute,
+  postV1GiftWrappingsRoute,
+  postV1GuestCartsCartIdBillingAddressRoute,
+  postV1GuestCartsCartIdCheckoutFieldsRoute,
+  postV1GuestCartsCartIdCollectionPointSelectRoute,
+  postV1GuestCartsCartIdDeliveryOptionRoute,
+  postV1GuestCartsCartIdEstimateShippingMethodsRoute,
+  postV1GuestCartsCartIdGiftMessageItemIdRoute,
+  postV1GuestCartsCartIdGiftMessageRoute,
+  postV1GuestCartsCartIdItemsRoute,
+  postV1GuestCartsCartIdPaymentInformationRoute,
+  postV1GuestCartsCartIdSetPaymentInformationRoute,
+  postV1GuestCartsCartIdShippingInformationRoute,
+  postV1GuestCartsCartIdTotalsInformationRoute,
+  postV1GuestCartsRoute,
+  postV1GuestGiftregistryCartIdEstimateShippingMethodsRoute,
+  postV1IntegrationAdminTokenRoute,
+  postV1IntegrationCustomerTokenRoute,
+  postV1InvoiceInvoiceIdRefundRoute,
+  postV1InvoicesCommentsRoute,
+  postV1InvoicesIdCaptureRoute,
+  postV1InvoicesIdEmailsRoute,
+  postV1InvoicesIdVoidRoute,
+  postV1InvoicesIndexRoute,
+  postV1NegotiableCartsCartIdBillingAddressRoute,
+  postV1NegotiableCartsCartIdEstimateShippingMethodsByAddressIdRoute,
+  postV1NegotiableCartsCartIdEstimateShippingMethodsRoute,
+  postV1NegotiableCartsCartIdGiftCardsRoute,
+  postV1NegotiableCartsCartIdPaymentInformationRoute,
+  postV1NegotiableCartsCartIdSetPaymentInformationRoute,
+  postV1NegotiableCartsCartIdShippingInformationRoute,
+  postV1NegotiableQuoteDeclineRoute,
+  postV1NegotiableQuotePricesUpdatedRoute,
+  postV1NegotiableQuoteRequestRoute,
+  postV1NegotiableQuoteSubmitToCustomerRoute,
+  postV1OrderOrderIdInvoiceRoute,
+  postV1OrderOrderIdRefundRoute,
+  postV1OrderOrderIdShipRoute,
+  postV1OrdersIdCancelRoute,
+  postV1OrdersIdCommentsRoute,
+  postV1OrdersIdEmailsRoute,
+  postV1OrdersIdHoldRoute,
+  postV1OrdersIdUnholdRoute,
+  postV1OrdersIndexRoute,
+  postV1ProductsAttributesAttributeCodeOptionsRoute,
+  postV1ProductsAttributeSetsAttributesRoute,
+  postV1ProductsAttributeSetsGroupsRoute,
+  postV1ProductsAttributeSetsRoute,
+  postV1ProductsAttributesRoute,
+  postV1ProductsBasePricesInformationRoute,
+  postV1ProductsBasePricesRoute,
+  postV1ProductsCostDeleteRoute,
+  postV1ProductsCostInformationRoute,
+  postV1ProductsCostRoute,
+  postV1ProductsOptionsRoute,
+  postV1ProductsRoute,
+  postV1ProductsSkuDownloadableLinksRoute,
+  postV1ProductsSkuDownloadableLinksSamplesRoute,
+  postV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyPricePriceRoute,
+  postV1ProductsSkuLinksRoute,
+  postV1ProductsSkuMediaRoute,
+  postV1ProductsSkuWebsitesRoute,
+  postV1ProductsSpecialPriceDeleteRoute,
+  postV1ProductsSpecialPriceInformationRoute,
+  postV1ProductsSpecialPriceRoute,
+  postV1ProductsTierPricesDeleteRoute,
+  postV1ProductsTierPricesInformationRoute,
+  postV1ProductsTierPricesRoute,
+  postV1RequisitionListsRoute,
+  postV1ReturnsIdCommentsRoute,
+  postV1ReturnsIdTrackingNumbersRoute,
+  postV1ReturnsRoute,
+  postV1RewardMineUseRewardRoute,
+  postV1SalesRulesRoute,
+  postV1SharedCatalogIdAssignCategoriesRoute,
+  postV1SharedCatalogIdAssignProductsRoute,
+  postV1SharedCatalogIdUnassignCategoriesRoute,
+  postV1SharedCatalogIdUnassignProductsRoute,
+  postV1SharedCatalogRoute,
+  postV1SharedCatalogSharedCatalogIdAssignCompaniesRoute,
+  postV1SharedCatalogSharedCatalogIdUnassignCompaniesRoute,
+  postV1ShipmentIdCommentsRoute,
+  postV1ShipmentIdEmailsRoute,
+  postV1ShipmentIndexRoute,
+  postV1ShipmentTrackRoute,
+  postV1TaxClassesRoute,
+  postV1TaxRatesRoute,
+  postV1TaxRulesRoute,
+  postV1TeamCompanyIdRoute,
+  postV1WorldpayGuestCartsCartIdPaymentInformationRoute,
+  putV1AmazonBillingAddressAmazonOrderReferenceIdRoute,
+  putV1AmazonShippingAddressAmazonOrderReferenceIdRoute,
+  putV1BundleProductsOptionsOptionIdRoute,
+  putV1BundleProductsSkuLinksIdRoute,
+  putV1CartsCartIdCouponsCouponCodeRoute,
+  putV1CartsCartIdGiftCardsRoute,
+  putV1CartsCartIdItemsItemIdRoute,
+  putV1CartsCartIdOrderRoute,
+  putV1CartsCartIdRoute,
+  putV1CartsCartIdSelectedPaymentMethodRoute,
+  putV1CartsMineCollectionPointSearchRequestRoute,
+  putV1CartsMineCollectTotalsRoute,
+  putV1CartsMineCouponsCouponCodeRoute,
+  putV1CartsMineItemsItemIdRoute,
+  putV1CartsMineOrderRoute,
+  putV1CartsMineRoute,
+  putV1CartsMineSelectedPaymentMethodRoute,
+  putV1CategoriesCategoryIdMoveRoute,
+  putV1CategoriesCategoryIdProductsRoute,
+  putV1CategoriesIdRoute,
+  putV1CmsBlockIdRoute,
+  putV1CmsPageIdRoute,
+  putV1CompanyAssignRolesRoute,
+  putV1CompanyCompanyIdRoute,
+  putV1CompanyCreditsHistoryHistoryIdRoute,
+  putV1CompanyCreditsIdRoute,
+  putV1CompanyRoleIdRoute,
+  putV1ConfigurableProductsSkuOptionsIdRoute,
+  putV1ConfigurableProductsVariationRoute,
+  putV1CouponsCouponIdRoute,
+  putV1CreditmemoIdRoute,
+  putV1CustomerGroupsDefaultIdRoute,
+  putV1CustomerGroupsIdRoute,
+  putV1CustomersCustomerIdRoute,
+  putV1CustomersEmailActivateRoute,
+  putV1CustomersMeActivateRoute,
+  putV1CustomersMePasswordRoute,
+  putV1CustomersMeRoute,
+  putV1CustomersPasswordRoute,
+  putV1CustomersValidateRoute,
+  putV1EavAttributeSetsAttributeSetIdRoute,
+  putV1GiftWrappingsWrappingIdRoute,
+  putV1GuestCartsCartIdCollectionPointSearchRequestRoute,
+  putV1GuestCartsCartIdCollectTotalsRoute,
+  putV1GuestCartsCartIdCouponsCouponCodeRoute,
+  putV1GuestCartsCartIdItemsItemIdRoute,
+  putV1GuestCartsCartIdOrderRoute,
+  putV1GuestCartsCartIdRoute,
+  putV1GuestCartsCartIdSelectedPaymentMethodRoute,
+  putV1HierarchyMoveIdRoute,
+  putV1NegotiableCartsCartIdCouponsCouponCodeRoute,
+  putV1NegotiableQuoteQuoteIdRoute,
+  putV1NegotiableQuoteQuoteIdShippingMethodRoute,
+  putV1OrdersCreateRoute,
+  putV1OrdersParentIdRoute,
+  putV1ProductsAttributesAttributeCodeRoute,
+  putV1ProductsAttributeSetsAttributeSetIdGroupsRoute,
+  putV1ProductsAttributeSetsAttributeSetIdRoute,
+  putV1ProductsOptionsOptionIdRoute,
+  putV1ProductsProductSkuStockItemsItemIdRoute,
+  putV1ProductsSkuDownloadableLinksIdRoute,
+  putV1ProductsSkuDownloadableLinksSamplesIdRoute,
+  putV1ProductsSkuLinksRoute,
+  putV1ProductsSkuMediaEntryIdRoute,
+  putV1ProductsSkuRoute,
+  putV1ProductsSkuWebsitesRoute,
+  putV1ProductsTierPricesRoute,
+  putV1ReturnsIdRoute,
+  putV1SalesRulesRuleIdRoute,
+  putV1SharedCatalogIdRoute,
+  putV1TaxClassesClassIdRoute,
+  putV1TaxRatesRoute,
+  putV1TaxRulesRoute,
+  putV1TeamTeamIdRoute,
+  putV1TemandoRmaRmaIdShipmentsRoute,
+} from './routes'
+import {
+  deleteV1AddressesAddressIdRouteHandler,
+  deleteV1AmazonOrderRefRouteHandler,
+  deleteV1BundleProductsSkuOptionsOptionIdChildrenChildSkuRouteHandler,
+  deleteV1BundleProductsSkuOptionsOptionIdRouteHandler,
+  deleteV1CartsCartIdCouponsRouteHandler,
+  deleteV1CartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  deleteV1CartsCartIdItemsItemIdRouteHandler,
+  deleteV1CartsGuestCartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  deleteV1CartsMineCollectionPointSearchRequestRouteHandler,
+  deleteV1CartsMineCouponsRouteHandler,
+  deleteV1CartsMineGiftCardsGiftCardCodeRouteHandler,
+  deleteV1CartsMineItemsItemIdRouteHandler,
+  deleteV1CategoriesCategoryIdProductsSkuRouteHandler,
+  deleteV1CategoriesCategoryIdRouteHandler,
+  deleteV1CmsBlockBlockIdRouteHandler,
+  deleteV1CmsPagePageIdRouteHandler,
+  deleteV1CompanyCompanyIdRouteHandler,
+  deleteV1CompanyRoleRoleIdRouteHandler,
+  deleteV1ConfigurableProductsSkuChildrenChildSkuRouteHandler,
+  deleteV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  deleteV1CouponsCouponIdRouteHandler,
+  deleteV1CustomerGroupsIdRouteHandler,
+  deleteV1CustomersCustomerIdRouteHandler,
+  deleteV1EavAttributeSetsAttributeSetIdRouteHandler,
+  deleteV1GiftWrappingsIdRouteHandler,
+  deleteV1GuestCartsCartIdCollectionPointSearchRequestRouteHandler,
+  deleteV1GuestCartsCartIdCouponsRouteHandler,
+  deleteV1GuestCartsCartIdItemsItemIdRouteHandler,
+  deleteV1NegotiableCartsCartIdCouponsRouteHandler,
+  deleteV1NegotiableCartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  deleteV1ProductsAttributesAttributeCodeOptionsOptionIdRouteHandler,
+  deleteV1ProductsAttributesAttributeCodeRouteHandler,
+  deleteV1ProductsAttributeSetsAttributeSetIdAttributesAttributeCodeRouteHandler,
+  deleteV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  deleteV1ProductsAttributeSetsGroupsGroupIdRouteHandler,
+  deleteV1ProductsDownloadableLinksIdRouteHandler,
+  deleteV1ProductsDownloadableLinksSamplesIdRouteHandler,
+  deleteV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyRouteHandler,
+  deleteV1ProductsSkuLinksTypeLinkedProductSkuRouteHandler,
+  deleteV1ProductsSkuMediaEntryIdRouteHandler,
+  deleteV1ProductsSkuOptionsOptionIdRouteHandler,
+  deleteV1ProductsSkuRouteHandler,
+  deleteV1ProductsSkuWebsitesWebsiteIdRouteHandler,
+  deleteV1ReturnsIdRouteHandler,
+  deleteV1ReturnsIdTrackingNumbersTrackIdRouteHandler,
+  deleteV1SalesRulesRuleIdRouteHandler,
+  deleteV1SharedCatalogSharedCatalogIdRouteHandler,
+  deleteV1ShipmentTrackIdRouteHandler,
+  deleteV1TaxClassesTaxClassIdRouteHandler,
+  deleteV1TaxRatesRateIdRouteHandler,
+  deleteV1TaxRulesRuleIdRouteHandler,
+  deleteV1TeamTeamIdRouteHandler,
+  getV1AnalyticsLinkRouteHandler,
+  getV1AttributeMetadataCustomerAddressAttributeAttributeCodeRouteHandler,
+  getV1AttributeMetadataCustomerAddressCustomRouteHandler,
+  getV1AttributeMetadataCustomerAddressFormFormCodeRouteHandler,
+  getV1AttributeMetadataCustomerAddressRouteHandler,
+  getV1AttributeMetadataCustomerAttributeAttributeCodeRouteHandler,
+  getV1AttributeMetadataCustomerCustomRouteHandler,
+  getV1AttributeMetadataCustomerFormFormCodeRouteHandler,
+  getV1AttributeMetadataCustomerRouteHandler,
+  getV1BulkBulkUuidDetailedStatusRouteHandler,
+  getV1BulkBulkUuidOperationStatusStatusRouteHandler,
+  getV1BulkBulkUuidStatusRouteHandler,
+  getV1BundleProductsOptionsTypesRouteHandler,
+  getV1BundleProductsProductSkuChildrenRouteHandler,
+  getV1BundleProductsSkuOptionsAllRouteHandler,
+  getV1BundleProductsSkuOptionsOptionIdRouteHandler,
+  getV1CartsCartIdBillingAddressRouteHandler,
+  getV1CartsCartIdCouponsRouteHandler,
+  getV1CartsCartIdGiftMessageItemIdRouteHandler,
+  getV1CartsCartIdGiftMessageRouteHandler,
+  getV1CartsCartIdItemsRouteHandler,
+  getV1CartsCartIdPaymentMethodsRouteHandler,
+  getV1CartsCartIdRouteHandler,
+  getV1CartsCartIdSelectedPaymentMethodRouteHandler,
+  getV1CartsCartIdShippingMethodsRouteHandler,
+  getV1CartsCartIdTotalsRouteHandler,
+  getV1CartsGuestCartsCartIdCheckGiftCardGiftCardCodeRouteHandler,
+  getV1CartsLicenceRouteHandler,
+  getV1CartsMineBillingAddressRouteHandler,
+  getV1CartsMineCheckGiftCardGiftCardCodeRouteHandler,
+  getV1CartsMineCollectionPointSearchResultRouteHandler,
+  getV1CartsMineCouponsRouteHandler,
+  getV1CartsMineGiftMessageItemIdRouteHandler,
+  getV1CartsMineGiftMessageRouteHandler,
+  getV1CartsMineItemsRouteHandler,
+  getV1CartsMinePaymentInformationRouteHandler,
+  getV1CartsMinePaymentMethodsRouteHandler,
+  getV1CartsMineRouteHandler,
+  getV1CartsMineSelectedPaymentMethodRouteHandler,
+  getV1CartsMineShippingMethodsRouteHandler,
+  getV1CartsMineTotalsRouteHandler,
+  getV1CartsQuoteIdGiftCardsRouteHandler,
+  getV1CartsSearchRouteHandler,
+  getV1CategoriesAttributesAttributeCodeOptionsRouteHandler,
+  getV1CategoriesAttributesAttributeCodeRouteHandler,
+  getV1CategoriesAttributesRouteHandler,
+  getV1CategoriesCategoryIdProductsRouteHandler,
+  getV1CategoriesCategoryIdRouteHandler,
+  getV1CategoriesListRouteHandler,
+  getV1CategoriesRouteHandler,
+  getV1CmsBlockBlockIdRouteHandler,
+  getV1CmsBlockSearchRouteHandler,
+  getV1CmsPagePageIdRouteHandler,
+  getV1CmsPageSearchRouteHandler,
+  getV1CompanyCompanyIdRouteHandler,
+  getV1CompanyCreditsCompanyCompanyIdRouteHandler,
+  getV1CompanyCreditsCreditIdRouteHandler,
+  getV1CompanyCreditsHistoryRouteHandler,
+  getV1CompanyCreditsIndexRouteHandler,
+  getV1CompanyIndexRouteHandler,
+  getV1CompanyRoleIndexRouteHandler,
+  getV1CompanyRoleRoleIdRouteHandler,
+  getV1CompanyRoleRoleIdUsersRouteHandler,
+  getV1ConfigurableProductsSkuChildrenRouteHandler,
+  getV1ConfigurableProductsSkuOptionsAllRouteHandler,
+  getV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  getV1CouponsCouponIdRouteHandler,
+  getV1CouponsSearchRouteHandler,
+  getV1CreditmemoIdCommentsRouteHandler,
+  getV1CreditmemoIdRouteHandler,
+  getV1CreditmemosRouteHandler,
+  getV1CustomerGroupsDefaultRouteHandler,
+  getV1CustomerGroupsDefaultStoreIdRouteHandler,
+  getV1CustomerGroupsIdPermissionsRouteHandler,
+  getV1CustomerGroupsIdRouteHandler,
+  getV1CustomerGroupsSearchRouteHandler,
+  getV1CustomersAddressesAddressIdRouteHandler,
+  getV1CustomersCustomerIdBillingAddressRouteHandler,
+  getV1CustomersCustomerIdConfirmRouteHandler,
+  getV1CustomersCustomerIdPasswordResetLinkTokenResetPasswordLinkTokenRouteHandler,
+  getV1CustomersCustomerIdPermissionsReadonlyRouteHandler,
+  getV1CustomersCustomerIdRouteHandler,
+  getV1CustomersCustomerIdShippingAddressRouteHandler,
+  getV1CustomersMeBillingAddressRouteHandler,
+  getV1CustomersMeRouteHandler,
+  getV1CustomersMeShippingAddressRouteHandler,
+  getV1CustomersSearchRouteHandler,
+  getV1DirectoryCountriesCountryIdRouteHandler,
+  getV1DirectoryCountriesRouteHandler,
+  getV1DirectoryCurrencyRouteHandler,
+  getV1EavAttributeSetsAttributeSetIdRouteHandler,
+  getV1EavAttributeSetsListRouteHandler,
+  getV1GiftWrappingsIdRouteHandler,
+  getV1GiftWrappingsRouteHandler,
+  getV1GuestCartsCartIdBillingAddressRouteHandler,
+  getV1GuestCartsCartIdCollectionPointSearchResultRouteHandler,
+  getV1GuestCartsCartIdCouponsRouteHandler,
+  getV1GuestCartsCartIdGiftMessageItemIdRouteHandler,
+  getV1GuestCartsCartIdGiftMessageRouteHandler,
+  getV1GuestCartsCartIdItemsRouteHandler,
+  getV1GuestCartsCartIdPaymentInformationRouteHandler,
+  getV1GuestCartsCartIdPaymentMethodsRouteHandler,
+  getV1GuestCartsCartIdRouteHandler,
+  getV1GuestCartsCartIdSelectedPaymentMethodRouteHandler,
+  getV1GuestCartsCartIdShippingMethodsRouteHandler,
+  getV1GuestCartsCartIdTotalsRouteHandler,
+  getV1HierarchyIdRouteHandler,
+  getV1InvoicesIdCommentsRouteHandler,
+  getV1InvoicesIdRouteHandler,
+  getV1InvoicesRouteHandler,
+  getV1ModulesRouteHandler,
+  getV1NegotiableCartsCartIdBillingAddressRouteHandler,
+  getV1NegotiableCartsCartIdPaymentInformationRouteHandler,
+  getV1NegotiableCartsCartIdTotalsRouteHandler,
+  getV1NegotiableQuoteAttachmentContentRouteHandler,
+  getV1NegotiableQuoteQuoteIdCommentsRouteHandler,
+  getV1OrdersIdCommentsRouteHandler,
+  getV1OrdersIdRouteHandler,
+  getV1OrdersIdStatusesRouteHandler,
+  getV1OrdersItemsIdRouteHandler,
+  getV1OrdersItemsRouteHandler,
+  getV1OrdersRouteHandler,
+  getV1ProductsAttributesAttributeCodeOptionsRouteHandler,
+  getV1ProductsAttributesAttributeCodeRouteHandler,
+  getV1ProductsAttributeSetsAttributeSetIdAttributesRouteHandler,
+  getV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  getV1ProductsAttributeSetsGroupsListRouteHandler,
+  getV1ProductsAttributeSetsSetsListRouteHandler,
+  getV1ProductsAttributesRouteHandler,
+  getV1ProductsAttributesTypesRouteHandler,
+  getV1ProductsLinksTypeAttributesRouteHandler,
+  getV1ProductsLinksTypesRouteHandler,
+  getV1ProductsMediaTypesAttributeSetNameRouteHandler,
+  getV1ProductsOptionsTypesRouteHandler,
+  getV1ProductsRenderInfoRouteHandler,
+  getV1ProductsRouteHandler,
+  getV1ProductsSkuDownloadableLinksRouteHandler,
+  getV1ProductsSkuDownloadableLinksSamplesRouteHandler,
+  getV1ProductsSkuGroupPricesCustomerGroupIdTiersRouteHandler,
+  getV1ProductsSkuLinksTypeRouteHandler,
+  getV1ProductsSkuMediaEntryIdRouteHandler,
+  getV1ProductsSkuMediaRouteHandler,
+  getV1ProductsSkuOptionsOptionIdRouteHandler,
+  getV1ProductsSkuOptionsRouteHandler,
+  getV1ProductsSkuRouteHandler,
+  getV1ProductsTypesRouteHandler,
+  getV1ReturnsAttributeMetadataAttributeCodeRouteHandler,
+  getV1ReturnsAttributeMetadataCustomRouteHandler,
+  getV1ReturnsAttributeMetadataFormFormCodeRouteHandler,
+  getV1ReturnsAttributeMetadataRouteHandler,
+  getV1ReturnsIdCommentsRouteHandler,
+  getV1ReturnsIdLabelsRouteHandler,
+  getV1ReturnsIdRouteHandler,
+  getV1ReturnsIdTrackingNumbersRouteHandler,
+  getV1ReturnsRouteHandler,
+  getV1SalesRulesRuleIdRouteHandler,
+  getV1SalesRulesSearchRouteHandler,
+  getV1SearchRouteHandler,
+  getV1SharedCatalogIdCategoriesRouteHandler,
+  getV1SharedCatalogIdProductsRouteHandler,
+  getV1SharedCatalogIndexRouteHandler,
+  getV1SharedCatalogSharedCatalogIdCompaniesRouteHandler,
+  getV1SharedCatalogSharedCatalogIdRouteHandler,
+  getV1ShipmentIdCommentsRouteHandler,
+  getV1ShipmentIdLabelRouteHandler,
+  getV1ShipmentIdRouteHandler,
+  getV1ShipmentsRouteHandler,
+  getV1StockItemsLowStockIndexRouteHandler,
+  getV1StockItemsProductSkuRouteHandler,
+  getV1StockStatusesProductSkuRouteHandler,
+  getV1StoreStoreConfigsRouteHandler,
+  getV1StoreStoreGroupsRouteHandler,
+  getV1StoreStoreViewsRouteHandler,
+  getV1StoreWebsitesRouteHandler,
+  getV1TaxClassesSearchRouteHandler,
+  getV1TaxClassesTaxClassIdRouteHandler,
+  getV1TaxRatesRateIdRouteHandler,
+  getV1TaxRatesSearchRouteHandler,
+  getV1TaxRulesRuleIdRouteHandler,
+  getV1TaxRulesSearchRouteHandler,
+  getV1TeamIndexRouteHandler,
+  getV1TeamTeamIdRouteHandler,
+  getV1TransactionsIdRouteHandler,
+  getV1TransactionsRouteHandler,
+  postV1BundleProductsOptionsAddRouteHandler,
+  postV1BundleProductsSkuLinksOptionIdRouteHandler,
+  postV1CartsCartIdBillingAddressRouteHandler,
+  postV1CartsCartIdEstimateShippingMethodsByAddressIdRouteHandler,
+  postV1CartsCartIdEstimateShippingMethodsRouteHandler,
+  postV1CartsCartIdGiftMessageItemIdRouteHandler,
+  postV1CartsCartIdGiftMessageRouteHandler,
+  postV1CartsCartIdShippingInformationRouteHandler,
+  postV1CartsCartIdTotalsInformationRouteHandler,
+  postV1CartsGuestCartsCartIdGiftCardsRouteHandler,
+  postV1CartsIndexRouteHandler,
+  postV1CartsMineBalanceApplyRouteHandler,
+  postV1CartsMineBalanceUnapplyRouteHandler,
+  postV1CartsMineBillingAddressRouteHandler,
+  postV1CartsMineCheckoutFieldsRouteHandler,
+  postV1CartsMineCollectionPointSelectRouteHandler,
+  postV1CartsMineDeliveryOptionRouteHandler,
+  postV1CartsMineEstimateShippingMethodsByAddressIdRouteHandler,
+  postV1CartsMineEstimateShippingMethodsRouteHandler,
+  postV1CartsMineGiftCardsRouteHandler,
+  postV1CartsMineGiftMessageItemIdRouteHandler,
+  postV1CartsMineGiftMessageRouteHandler,
+  postV1CartsMineItemsRouteHandler,
+  postV1CartsMinePaymentInformationRouteHandler,
+  postV1CartsMineRouteHandler,
+  postV1CartsMineSetPaymentInformationRouteHandler,
+  postV1CartsMineShippingInformationRouteHandler,
+  postV1CartsMineTotalsInformationRouteHandler,
+  postV1CartsQuoteIdItemsRouteHandler,
+  postV1CategoriesCategoryIdProductsRouteHandler,
+  postV1CategoriesRouteHandler,
+  postV1CmsBlockRouteHandler,
+  postV1CmsPageRouteHandler,
+  postV1CompanyCreditsCreditIdDecreaseBalanceRouteHandler,
+  postV1CompanyCreditsCreditIdIncreaseBalanceRouteHandler,
+  postV1CompanyIndexRouteHandler,
+  postV1CompanyRoleIndexRouteHandler,
+  postV1ConfigurableProductsSkuChildRouteHandler,
+  postV1ConfigurableProductsSkuOptionsRouteHandler,
+  postV1CouponsDeleteByCodesRouteHandler,
+  postV1CouponsDeleteByIdsRouteHandler,
+  postV1CouponsGenerateRouteHandler,
+  postV1CouponsRouteHandler,
+  postV1CreditmemoIdCommentsRouteHandler,
+  postV1CreditmemoIdEmailsRouteHandler,
+  postV1CreditmemoRefundRouteHandler,
+  postV1CreditmemoRouteHandler,
+  postV1CustomerGroupsRouteHandler,
+  postV1CustomersConfirmRouteHandler,
+  postV1CustomersCustomerIdCartsRouteHandler,
+  postV1CustomersIsEmailAvailableRouteHandler,
+  postV1CustomersResetPasswordRouteHandler,
+  postV1CustomersRouteHandler,
+  postV1EavAttributeSetsRouteHandler,
+  postV1GiftregistryMineEstimateShippingMethodsRouteHandler,
+  postV1GiftWrappingsRouteHandler,
+  postV1GuestCartsCartIdBillingAddressRouteHandler,
+  postV1GuestCartsCartIdCheckoutFieldsRouteHandler,
+  postV1GuestCartsCartIdCollectionPointSelectRouteHandler,
+  postV1GuestCartsCartIdDeliveryOptionRouteHandler,
+  postV1GuestCartsCartIdEstimateShippingMethodsRouteHandler,
+  postV1GuestCartsCartIdGiftMessageItemIdRouteHandler,
+  postV1GuestCartsCartIdGiftMessageRouteHandler,
+  postV1GuestCartsCartIdItemsRouteHandler,
+  postV1GuestCartsCartIdPaymentInformationRouteHandler,
+  postV1GuestCartsCartIdSetPaymentInformationRouteHandler,
+  postV1GuestCartsCartIdShippingInformationRouteHandler,
+  postV1GuestCartsCartIdTotalsInformationRouteHandler,
+  postV1GuestCartsRouteHandler,
+  postV1GuestGiftregistryCartIdEstimateShippingMethodsRouteHandler,
+  postV1IntegrationAdminTokenRouteHandler,
+  postV1IntegrationCustomerTokenRouteHandler,
+  postV1InvoiceInvoiceIdRefundRouteHandler,
+  postV1InvoicesCommentsRouteHandler,
+  postV1InvoicesIdCaptureRouteHandler,
+  postV1InvoicesIdEmailsRouteHandler,
+  postV1InvoicesIdVoidRouteHandler,
+  postV1InvoicesIndexRouteHandler,
+  postV1NegotiableCartsCartIdBillingAddressRouteHandler,
+  postV1NegotiableCartsCartIdEstimateShippingMethodsByAddressIdRouteHandler,
+  postV1NegotiableCartsCartIdEstimateShippingMethodsRouteHandler,
+  postV1NegotiableCartsCartIdGiftCardsRouteHandler,
+  postV1NegotiableCartsCartIdPaymentInformationRouteHandler,
+  postV1NegotiableCartsCartIdSetPaymentInformationRouteHandler,
+  postV1NegotiableCartsCartIdShippingInformationRouteHandler,
+  postV1NegotiableQuoteDeclineRouteHandler,
+  postV1NegotiableQuotePricesUpdatedRouteHandler,
+  postV1NegotiableQuoteRequestRouteHandler,
+  postV1NegotiableQuoteSubmitToCustomerRouteHandler,
+  postV1OrderOrderIdInvoiceRouteHandler,
+  postV1OrderOrderIdRefundRouteHandler,
+  postV1OrderOrderIdShipRouteHandler,
+  postV1OrdersIdCancelRouteHandler,
+  postV1OrdersIdCommentsRouteHandler,
+  postV1OrdersIdEmailsRouteHandler,
+  postV1OrdersIdHoldRouteHandler,
+  postV1OrdersIdUnholdRouteHandler,
+  postV1OrdersIndexRouteHandler,
+  postV1ProductsAttributesAttributeCodeOptionsRouteHandler,
+  postV1ProductsAttributeSetsAttributesRouteHandler,
+  postV1ProductsAttributeSetsGroupsRouteHandler,
+  postV1ProductsAttributeSetsRouteHandler,
+  postV1ProductsAttributesRouteHandler,
+  postV1ProductsBasePricesInformationRouteHandler,
+  postV1ProductsBasePricesRouteHandler,
+  postV1ProductsCostDeleteRouteHandler,
+  postV1ProductsCostInformationRouteHandler,
+  postV1ProductsCostRouteHandler,
+  postV1ProductsOptionsRouteHandler,
+  postV1ProductsRouteHandler,
+  postV1ProductsSkuDownloadableLinksRouteHandler,
+  postV1ProductsSkuDownloadableLinksSamplesRouteHandler,
+  postV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyPricePriceRouteHandler,
+  postV1ProductsSkuLinksRouteHandler,
+  postV1ProductsSkuMediaRouteHandler,
+  postV1ProductsSkuWebsitesRouteHandler,
+  postV1ProductsSpecialPriceDeleteRouteHandler,
+  postV1ProductsSpecialPriceInformationRouteHandler,
+  postV1ProductsSpecialPriceRouteHandler,
+  postV1ProductsTierPricesDeleteRouteHandler,
+  postV1ProductsTierPricesInformationRouteHandler,
+  postV1ProductsTierPricesRouteHandler,
+  postV1RequisitionListsRouteHandler,
+  postV1ReturnsIdCommentsRouteHandler,
+  postV1ReturnsIdTrackingNumbersRouteHandler,
+  postV1ReturnsRouteHandler,
+  postV1RewardMineUseRewardRouteHandler,
+  postV1SalesRulesRouteHandler,
+  postV1SharedCatalogIdAssignCategoriesRouteHandler,
+  postV1SharedCatalogIdAssignProductsRouteHandler,
+  postV1SharedCatalogIdUnassignCategoriesRouteHandler,
+  postV1SharedCatalogIdUnassignProductsRouteHandler,
+  postV1SharedCatalogRouteHandler,
+  postV1SharedCatalogSharedCatalogIdAssignCompaniesRouteHandler,
+  postV1SharedCatalogSharedCatalogIdUnassignCompaniesRouteHandler,
+  postV1ShipmentIdCommentsRouteHandler,
+  postV1ShipmentIdEmailsRouteHandler,
+  postV1ShipmentIndexRouteHandler,
+  postV1ShipmentTrackRouteHandler,
+  postV1TaxClassesRouteHandler,
+  postV1TaxRatesRouteHandler,
+  postV1TaxRulesRouteHandler,
+  postV1TeamCompanyIdRouteHandler,
+  postV1WorldpayGuestCartsCartIdPaymentInformationRouteHandler,
+  putV1AmazonBillingAddressAmazonOrderReferenceIdRouteHandler,
+  putV1AmazonShippingAddressAmazonOrderReferenceIdRouteHandler,
+  putV1BundleProductsOptionsOptionIdRouteHandler,
+  putV1BundleProductsSkuLinksIdRouteHandler,
+  putV1CartsCartIdCouponsCouponCodeRouteHandler,
+  putV1CartsCartIdGiftCardsRouteHandler,
+  putV1CartsCartIdItemsItemIdRouteHandler,
+  putV1CartsCartIdOrderRouteHandler,
+  putV1CartsCartIdRouteHandler,
+  putV1CartsCartIdSelectedPaymentMethodRouteHandler,
+  putV1CartsMineCollectionPointSearchRequestRouteHandler,
+  putV1CartsMineCollectTotalsRouteHandler,
+  putV1CartsMineCouponsCouponCodeRouteHandler,
+  putV1CartsMineItemsItemIdRouteHandler,
+  putV1CartsMineOrderRouteHandler,
+  putV1CartsMineRouteHandler,
+  putV1CartsMineSelectedPaymentMethodRouteHandler,
+  putV1CategoriesCategoryIdMoveRouteHandler,
+  putV1CategoriesCategoryIdProductsRouteHandler,
+  putV1CategoriesIdRouteHandler,
+  putV1CmsBlockIdRouteHandler,
+  putV1CmsPageIdRouteHandler,
+  putV1CompanyAssignRolesRouteHandler,
+  putV1CompanyCompanyIdRouteHandler,
+  putV1CompanyCreditsHistoryHistoryIdRouteHandler,
+  putV1CompanyCreditsIdRouteHandler,
+  putV1CompanyRoleIdRouteHandler,
+  putV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  putV1ConfigurableProductsVariationRouteHandler,
+  putV1CouponsCouponIdRouteHandler,
+  putV1CreditmemoIdRouteHandler,
+  putV1CustomerGroupsDefaultIdRouteHandler,
+  putV1CustomerGroupsIdRouteHandler,
+  putV1CustomersCustomerIdRouteHandler,
+  putV1CustomersEmailActivateRouteHandler,
+  putV1CustomersMeActivateRouteHandler,
+  putV1CustomersMePasswordRouteHandler,
+  putV1CustomersMeRouteHandler,
+  putV1CustomersPasswordRouteHandler,
+  putV1CustomersValidateRouteHandler,
+  putV1EavAttributeSetsAttributeSetIdRouteHandler,
+  putV1GiftWrappingsWrappingIdRouteHandler,
+  putV1GuestCartsCartIdCollectionPointSearchRequestRouteHandler,
+  putV1GuestCartsCartIdCollectTotalsRouteHandler,
+  putV1GuestCartsCartIdCouponsCouponCodeRouteHandler,
+  putV1GuestCartsCartIdItemsItemIdRouteHandler,
+  putV1GuestCartsCartIdOrderRouteHandler,
+  putV1GuestCartsCartIdRouteHandler,
+  putV1GuestCartsCartIdSelectedPaymentMethodRouteHandler,
+  putV1HierarchyMoveIdRouteHandler,
+  putV1NegotiableCartsCartIdCouponsCouponCodeRouteHandler,
+  putV1NegotiableQuoteQuoteIdRouteHandler,
+  putV1NegotiableQuoteQuoteIdShippingMethodRouteHandler,
+  putV1OrdersCreateRouteHandler,
+  putV1OrdersParentIdRouteHandler,
+  putV1ProductsAttributesAttributeCodeRouteHandler,
+  putV1ProductsAttributeSetsAttributeSetIdGroupsRouteHandler,
+  putV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  putV1ProductsOptionsOptionIdRouteHandler,
+  putV1ProductsProductSkuStockItemsItemIdRouteHandler,
+  putV1ProductsSkuDownloadableLinksIdRouteHandler,
+  putV1ProductsSkuDownloadableLinksSamplesIdRouteHandler,
+  putV1ProductsSkuLinksRouteHandler,
+  putV1ProductsSkuMediaEntryIdRouteHandler,
+  putV1ProductsSkuRouteHandler,
+  putV1ProductsSkuWebsitesRouteHandler,
+  putV1ProductsTierPricesRouteHandler,
+  putV1ReturnsIdRouteHandler,
+  putV1SalesRulesRuleIdRouteHandler,
+  putV1SharedCatalogIdRouteHandler,
+  putV1TaxClassesClassIdRouteHandler,
+  putV1TaxRatesRouteHandler,
+  putV1TaxRulesRouteHandler,
+  putV1TeamTeamIdRouteHandler,
+  putV1TemandoRmaRmaIdShipmentsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler)
+export const api = app
+  .openapi(deleteV1AddressesAddressIdRoute, deleteV1AddressesAddressIdRouteHandler)
+  .openapi(
+    putV1AmazonBillingAddressAmazonOrderReferenceIdRoute,
+    putV1AmazonBillingAddressAmazonOrderReferenceIdRouteHandler,
+  )
+  .openapi(
+    putV1AmazonShippingAddressAmazonOrderReferenceIdRoute,
+    putV1AmazonShippingAddressAmazonOrderReferenceIdRouteHandler,
+  )
+  .openapi(deleteV1AmazonOrderRefRoute, deleteV1AmazonOrderRefRouteHandler)
+  .openapi(getV1AnalyticsLinkRoute, getV1AnalyticsLinkRouteHandler)
+  .openapi(getV1AttributeMetadataCustomerRoute, getV1AttributeMetadataCustomerRouteHandler)
+  .openapi(
+    getV1AttributeMetadataCustomerAttributeAttributeCodeRoute,
+    getV1AttributeMetadataCustomerAttributeAttributeCodeRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerCustomRoute,
+    getV1AttributeMetadataCustomerCustomRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerFormFormCodeRoute,
+    getV1AttributeMetadataCustomerFormFormCodeRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerAddressRoute,
+    getV1AttributeMetadataCustomerAddressRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerAddressAttributeAttributeCodeRoute,
+    getV1AttributeMetadataCustomerAddressAttributeAttributeCodeRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerAddressCustomRoute,
+    getV1AttributeMetadataCustomerAddressCustomRouteHandler,
+  )
+  .openapi(
+    getV1AttributeMetadataCustomerAddressFormFormCodeRoute,
+    getV1AttributeMetadataCustomerAddressFormFormCodeRouteHandler,
+  )
+  .openapi(getV1BulkBulkUuidDetailedStatusRoute, getV1BulkBulkUuidDetailedStatusRouteHandler)
+  .openapi(
+    getV1BulkBulkUuidOperationStatusStatusRoute,
+    getV1BulkBulkUuidOperationStatusStatusRouteHandler,
+  )
+  .openapi(getV1BulkBulkUuidStatusRoute, getV1BulkBulkUuidStatusRouteHandler)
+  .openapi(postV1BundleProductsOptionsAddRoute, postV1BundleProductsOptionsAddRouteHandler)
+  .openapi(getV1BundleProductsOptionsTypesRoute, getV1BundleProductsOptionsTypesRouteHandler)
+  .openapi(putV1BundleProductsOptionsOptionIdRoute, putV1BundleProductsOptionsOptionIdRouteHandler)
+  .openapi(
+    getV1BundleProductsProductSkuChildrenRoute,
+    getV1BundleProductsProductSkuChildrenRouteHandler,
+  )
+  .openapi(putV1BundleProductsSkuLinksIdRoute, putV1BundleProductsSkuLinksIdRouteHandler)
+  .openapi(
+    postV1BundleProductsSkuLinksOptionIdRoute,
+    postV1BundleProductsSkuLinksOptionIdRouteHandler,
+  )
+  .openapi(getV1BundleProductsSkuOptionsAllRoute, getV1BundleProductsSkuOptionsAllRouteHandler)
+  .openapi(
+    deleteV1BundleProductsSkuOptionsOptionIdRoute,
+    deleteV1BundleProductsSkuOptionsOptionIdRouteHandler,
+  )
+  .openapi(
+    getV1BundleProductsSkuOptionsOptionIdRoute,
+    getV1BundleProductsSkuOptionsOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteV1BundleProductsSkuOptionsOptionIdChildrenChildSkuRoute,
+    deleteV1BundleProductsSkuOptionsOptionIdChildrenChildSkuRouteHandler,
+  )
+  .openapi(postV1CartsIndexRoute, postV1CartsIndexRouteHandler)
+  .openapi(
+    getV1CartsGuestCartsCartIdCheckGiftCardGiftCardCodeRoute,
+    getV1CartsGuestCartsCartIdCheckGiftCardGiftCardCodeRouteHandler,
+  )
+  .openapi(
+    postV1CartsGuestCartsCartIdGiftCardsRoute,
+    postV1CartsGuestCartsCartIdGiftCardsRouteHandler,
+  )
+  .openapi(
+    deleteV1CartsGuestCartsCartIdGiftCardsGiftCardCodeRoute,
+    deleteV1CartsGuestCartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  )
+  .openapi(getV1CartsLicenceRoute, getV1CartsLicenceRouteHandler)
+  .openapi(getV1CartsMineRoute, getV1CartsMineRouteHandler)
+  .openapi(postV1CartsMineRoute, postV1CartsMineRouteHandler)
+  .openapi(putV1CartsMineRoute, putV1CartsMineRouteHandler)
+  .openapi(postV1CartsMineBalanceApplyRoute, postV1CartsMineBalanceApplyRouteHandler)
+  .openapi(postV1CartsMineBalanceUnapplyRoute, postV1CartsMineBalanceUnapplyRouteHandler)
+  .openapi(getV1CartsMineBillingAddressRoute, getV1CartsMineBillingAddressRouteHandler)
+  .openapi(postV1CartsMineBillingAddressRoute, postV1CartsMineBillingAddressRouteHandler)
+  .openapi(
+    getV1CartsMineCheckGiftCardGiftCardCodeRoute,
+    getV1CartsMineCheckGiftCardGiftCardCodeRouteHandler,
+  )
+  .openapi(postV1CartsMineCheckoutFieldsRoute, postV1CartsMineCheckoutFieldsRouteHandler)
+  .openapi(putV1CartsMineCollectTotalsRoute, putV1CartsMineCollectTotalsRouteHandler)
+  .openapi(
+    deleteV1CartsMineCollectionPointSearchRequestRoute,
+    deleteV1CartsMineCollectionPointSearchRequestRouteHandler,
+  )
+  .openapi(
+    putV1CartsMineCollectionPointSearchRequestRoute,
+    putV1CartsMineCollectionPointSearchRequestRouteHandler,
+  )
+  .openapi(
+    getV1CartsMineCollectionPointSearchResultRoute,
+    getV1CartsMineCollectionPointSearchResultRouteHandler,
+  )
+  .openapi(
+    postV1CartsMineCollectionPointSelectRoute,
+    postV1CartsMineCollectionPointSelectRouteHandler,
+  )
+  .openapi(deleteV1CartsMineCouponsRoute, deleteV1CartsMineCouponsRouteHandler)
+  .openapi(getV1CartsMineCouponsRoute, getV1CartsMineCouponsRouteHandler)
+  .openapi(putV1CartsMineCouponsCouponCodeRoute, putV1CartsMineCouponsCouponCodeRouteHandler)
+  .openapi(postV1CartsMineDeliveryOptionRoute, postV1CartsMineDeliveryOptionRouteHandler)
+  .openapi(
+    postV1CartsMineEstimateShippingMethodsRoute,
+    postV1CartsMineEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(
+    postV1CartsMineEstimateShippingMethodsByAddressIdRoute,
+    postV1CartsMineEstimateShippingMethodsByAddressIdRouteHandler,
+  )
+  .openapi(getV1CartsMineGiftMessageRoute, getV1CartsMineGiftMessageRouteHandler)
+  .openapi(postV1CartsMineGiftMessageRoute, postV1CartsMineGiftMessageRouteHandler)
+  .openapi(getV1CartsMineGiftMessageItemIdRoute, getV1CartsMineGiftMessageItemIdRouteHandler)
+  .openapi(postV1CartsMineGiftMessageItemIdRoute, postV1CartsMineGiftMessageItemIdRouteHandler)
+  .openapi(postV1CartsMineGiftCardsRoute, postV1CartsMineGiftCardsRouteHandler)
+  .openapi(
+    deleteV1CartsMineGiftCardsGiftCardCodeRoute,
+    deleteV1CartsMineGiftCardsGiftCardCodeRouteHandler,
+  )
+  .openapi(getV1CartsMineItemsRoute, getV1CartsMineItemsRouteHandler)
+  .openapi(postV1CartsMineItemsRoute, postV1CartsMineItemsRouteHandler)
+  .openapi(deleteV1CartsMineItemsItemIdRoute, deleteV1CartsMineItemsItemIdRouteHandler)
+  .openapi(putV1CartsMineItemsItemIdRoute, putV1CartsMineItemsItemIdRouteHandler)
+  .openapi(putV1CartsMineOrderRoute, putV1CartsMineOrderRouteHandler)
+  .openapi(getV1CartsMinePaymentInformationRoute, getV1CartsMinePaymentInformationRouteHandler)
+  .openapi(postV1CartsMinePaymentInformationRoute, postV1CartsMinePaymentInformationRouteHandler)
+  .openapi(getV1CartsMinePaymentMethodsRoute, getV1CartsMinePaymentMethodsRouteHandler)
+  .openapi(
+    getV1CartsMineSelectedPaymentMethodRoute,
+    getV1CartsMineSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    putV1CartsMineSelectedPaymentMethodRoute,
+    putV1CartsMineSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    postV1CartsMineSetPaymentInformationRoute,
+    postV1CartsMineSetPaymentInformationRouteHandler,
+  )
+  .openapi(postV1CartsMineShippingInformationRoute, postV1CartsMineShippingInformationRouteHandler)
+  .openapi(getV1CartsMineShippingMethodsRoute, getV1CartsMineShippingMethodsRouteHandler)
+  .openapi(getV1CartsMineTotalsRoute, getV1CartsMineTotalsRouteHandler)
+  .openapi(postV1CartsMineTotalsInformationRoute, postV1CartsMineTotalsInformationRouteHandler)
+  .openapi(getV1CartsSearchRoute, getV1CartsSearchRouteHandler)
+  .openapi(getV1CartsCartIdRoute, getV1CartsCartIdRouteHandler)
+  .openapi(putV1CartsCartIdRoute, putV1CartsCartIdRouteHandler)
+  .openapi(getV1CartsCartIdBillingAddressRoute, getV1CartsCartIdBillingAddressRouteHandler)
+  .openapi(postV1CartsCartIdBillingAddressRoute, postV1CartsCartIdBillingAddressRouteHandler)
+  .openapi(deleteV1CartsCartIdCouponsRoute, deleteV1CartsCartIdCouponsRouteHandler)
+  .openapi(getV1CartsCartIdCouponsRoute, getV1CartsCartIdCouponsRouteHandler)
+  .openapi(putV1CartsCartIdCouponsCouponCodeRoute, putV1CartsCartIdCouponsCouponCodeRouteHandler)
+  .openapi(
+    postV1CartsCartIdEstimateShippingMethodsRoute,
+    postV1CartsCartIdEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(
+    postV1CartsCartIdEstimateShippingMethodsByAddressIdRoute,
+    postV1CartsCartIdEstimateShippingMethodsByAddressIdRouteHandler,
+  )
+  .openapi(getV1CartsCartIdGiftMessageRoute, getV1CartsCartIdGiftMessageRouteHandler)
+  .openapi(postV1CartsCartIdGiftMessageRoute, postV1CartsCartIdGiftMessageRouteHandler)
+  .openapi(getV1CartsCartIdGiftMessageItemIdRoute, getV1CartsCartIdGiftMessageItemIdRouteHandler)
+  .openapi(postV1CartsCartIdGiftMessageItemIdRoute, postV1CartsCartIdGiftMessageItemIdRouteHandler)
+  .openapi(putV1CartsCartIdGiftCardsRoute, putV1CartsCartIdGiftCardsRouteHandler)
+  .openapi(
+    deleteV1CartsCartIdGiftCardsGiftCardCodeRoute,
+    deleteV1CartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  )
+  .openapi(getV1CartsCartIdItemsRoute, getV1CartsCartIdItemsRouteHandler)
+  .openapi(deleteV1CartsCartIdItemsItemIdRoute, deleteV1CartsCartIdItemsItemIdRouteHandler)
+  .openapi(putV1CartsCartIdItemsItemIdRoute, putV1CartsCartIdItemsItemIdRouteHandler)
+  .openapi(putV1CartsCartIdOrderRoute, putV1CartsCartIdOrderRouteHandler)
+  .openapi(getV1CartsCartIdPaymentMethodsRoute, getV1CartsCartIdPaymentMethodsRouteHandler)
+  .openapi(
+    getV1CartsCartIdSelectedPaymentMethodRoute,
+    getV1CartsCartIdSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    putV1CartsCartIdSelectedPaymentMethodRoute,
+    putV1CartsCartIdSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    postV1CartsCartIdShippingInformationRoute,
+    postV1CartsCartIdShippingInformationRouteHandler,
+  )
+  .openapi(getV1CartsCartIdShippingMethodsRoute, getV1CartsCartIdShippingMethodsRouteHandler)
+  .openapi(getV1CartsCartIdTotalsRoute, getV1CartsCartIdTotalsRouteHandler)
+  .openapi(postV1CartsCartIdTotalsInformationRoute, postV1CartsCartIdTotalsInformationRouteHandler)
+  .openapi(getV1CartsQuoteIdGiftCardsRoute, getV1CartsQuoteIdGiftCardsRouteHandler)
+  .openapi(postV1CartsQuoteIdItemsRoute, postV1CartsQuoteIdItemsRouteHandler)
+  .openapi(getV1CategoriesRoute, getV1CategoriesRouteHandler)
+  .openapi(postV1CategoriesRoute, postV1CategoriesRouteHandler)
+  .openapi(getV1CategoriesAttributesRoute, getV1CategoriesAttributesRouteHandler)
+  .openapi(
+    getV1CategoriesAttributesAttributeCodeRoute,
+    getV1CategoriesAttributesAttributeCodeRouteHandler,
+  )
+  .openapi(
+    getV1CategoriesAttributesAttributeCodeOptionsRoute,
+    getV1CategoriesAttributesAttributeCodeOptionsRouteHandler,
+  )
+  .openapi(getV1CategoriesListRoute, getV1CategoriesListRouteHandler)
+  .openapi(deleteV1CategoriesCategoryIdRoute, deleteV1CategoriesCategoryIdRouteHandler)
+  .openapi(getV1CategoriesCategoryIdRoute, getV1CategoriesCategoryIdRouteHandler)
+  .openapi(putV1CategoriesCategoryIdMoveRoute, putV1CategoriesCategoryIdMoveRouteHandler)
+  .openapi(getV1CategoriesCategoryIdProductsRoute, getV1CategoriesCategoryIdProductsRouteHandler)
+  .openapi(postV1CategoriesCategoryIdProductsRoute, postV1CategoriesCategoryIdProductsRouteHandler)
+  .openapi(putV1CategoriesCategoryIdProductsRoute, putV1CategoriesCategoryIdProductsRouteHandler)
+  .openapi(
+    deleteV1CategoriesCategoryIdProductsSkuRoute,
+    deleteV1CategoriesCategoryIdProductsSkuRouteHandler,
+  )
+  .openapi(putV1CategoriesIdRoute, putV1CategoriesIdRouteHandler)
+  .openapi(postV1CmsBlockRoute, postV1CmsBlockRouteHandler)
+  .openapi(getV1CmsBlockSearchRoute, getV1CmsBlockSearchRouteHandler)
+  .openapi(deleteV1CmsBlockBlockIdRoute, deleteV1CmsBlockBlockIdRouteHandler)
+  .openapi(getV1CmsBlockBlockIdRoute, getV1CmsBlockBlockIdRouteHandler)
+  .openapi(putV1CmsBlockIdRoute, putV1CmsBlockIdRouteHandler)
+  .openapi(postV1CmsPageRoute, postV1CmsPageRouteHandler)
+  .openapi(getV1CmsPageSearchRoute, getV1CmsPageSearchRouteHandler)
+  .openapi(putV1CmsPageIdRoute, putV1CmsPageIdRouteHandler)
+  .openapi(deleteV1CmsPagePageIdRoute, deleteV1CmsPagePageIdRouteHandler)
+  .openapi(getV1CmsPagePageIdRoute, getV1CmsPagePageIdRouteHandler)
+  .openapi(getV1CompanyIndexRoute, getV1CompanyIndexRouteHandler)
+  .openapi(postV1CompanyIndexRoute, postV1CompanyIndexRouteHandler)
+  .openapi(putV1CompanyAssignRolesRoute, putV1CompanyAssignRolesRouteHandler)
+  .openapi(getV1CompanyRoleIndexRoute, getV1CompanyRoleIndexRouteHandler)
+  .openapi(postV1CompanyRoleIndexRoute, postV1CompanyRoleIndexRouteHandler)
+  .openapi(putV1CompanyRoleIdRoute, putV1CompanyRoleIdRouteHandler)
+  .openapi(deleteV1CompanyRoleRoleIdRoute, deleteV1CompanyRoleRoleIdRouteHandler)
+  .openapi(getV1CompanyRoleRoleIdRoute, getV1CompanyRoleRoleIdRouteHandler)
+  .openapi(getV1CompanyRoleRoleIdUsersRoute, getV1CompanyRoleRoleIdUsersRouteHandler)
+  .openapi(deleteV1CompanyCompanyIdRoute, deleteV1CompanyCompanyIdRouteHandler)
+  .openapi(getV1CompanyCompanyIdRoute, getV1CompanyCompanyIdRouteHandler)
+  .openapi(putV1CompanyCompanyIdRoute, putV1CompanyCompanyIdRouteHandler)
+  .openapi(getV1CompanyCreditsIndexRoute, getV1CompanyCreditsIndexRouteHandler)
+  .openapi(
+    getV1CompanyCreditsCompanyCompanyIdRoute,
+    getV1CompanyCreditsCompanyCompanyIdRouteHandler,
+  )
+  .openapi(getV1CompanyCreditsHistoryRoute, getV1CompanyCreditsHistoryRouteHandler)
+  .openapi(
+    putV1CompanyCreditsHistoryHistoryIdRoute,
+    putV1CompanyCreditsHistoryHistoryIdRouteHandler,
+  )
+  .openapi(getV1CompanyCreditsCreditIdRoute, getV1CompanyCreditsCreditIdRouteHandler)
+  .openapi(
+    postV1CompanyCreditsCreditIdDecreaseBalanceRoute,
+    postV1CompanyCreditsCreditIdDecreaseBalanceRouteHandler,
+  )
+  .openapi(
+    postV1CompanyCreditsCreditIdIncreaseBalanceRoute,
+    postV1CompanyCreditsCreditIdIncreaseBalanceRouteHandler,
+  )
+  .openapi(putV1CompanyCreditsIdRoute, putV1CompanyCreditsIdRouteHandler)
+  .openapi(putV1ConfigurableProductsVariationRoute, putV1ConfigurableProductsVariationRouteHandler)
+  .openapi(postV1ConfigurableProductsSkuChildRoute, postV1ConfigurableProductsSkuChildRouteHandler)
+  .openapi(
+    getV1ConfigurableProductsSkuChildrenRoute,
+    getV1ConfigurableProductsSkuChildrenRouteHandler,
+  )
+  .openapi(
+    deleteV1ConfigurableProductsSkuChildrenChildSkuRoute,
+    deleteV1ConfigurableProductsSkuChildrenChildSkuRouteHandler,
+  )
+  .openapi(
+    postV1ConfigurableProductsSkuOptionsRoute,
+    postV1ConfigurableProductsSkuOptionsRouteHandler,
+  )
+  .openapi(
+    getV1ConfigurableProductsSkuOptionsAllRoute,
+    getV1ConfigurableProductsSkuOptionsAllRouteHandler,
+  )
+  .openapi(
+    deleteV1ConfigurableProductsSkuOptionsIdRoute,
+    deleteV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  )
+  .openapi(
+    getV1ConfigurableProductsSkuOptionsIdRoute,
+    getV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  )
+  .openapi(
+    putV1ConfigurableProductsSkuOptionsIdRoute,
+    putV1ConfigurableProductsSkuOptionsIdRouteHandler,
+  )
+  .openapi(postV1CouponsRoute, postV1CouponsRouteHandler)
+  .openapi(postV1CouponsDeleteByCodesRoute, postV1CouponsDeleteByCodesRouteHandler)
+  .openapi(postV1CouponsDeleteByIdsRoute, postV1CouponsDeleteByIdsRouteHandler)
+  .openapi(postV1CouponsGenerateRoute, postV1CouponsGenerateRouteHandler)
+  .openapi(getV1CouponsSearchRoute, getV1CouponsSearchRouteHandler)
+  .openapi(deleteV1CouponsCouponIdRoute, deleteV1CouponsCouponIdRouteHandler)
+  .openapi(getV1CouponsCouponIdRoute, getV1CouponsCouponIdRouteHandler)
+  .openapi(putV1CouponsCouponIdRoute, putV1CouponsCouponIdRouteHandler)
+  .openapi(postV1CreditmemoRoute, postV1CreditmemoRouteHandler)
+  .openapi(postV1CreditmemoRefundRoute, postV1CreditmemoRefundRouteHandler)
+  .openapi(getV1CreditmemoIdRoute, getV1CreditmemoIdRouteHandler)
+  .openapi(putV1CreditmemoIdRoute, putV1CreditmemoIdRouteHandler)
+  .openapi(getV1CreditmemoIdCommentsRoute, getV1CreditmemoIdCommentsRouteHandler)
+  .openapi(postV1CreditmemoIdCommentsRoute, postV1CreditmemoIdCommentsRouteHandler)
+  .openapi(postV1CreditmemoIdEmailsRoute, postV1CreditmemoIdEmailsRouteHandler)
+  .openapi(getV1CreditmemosRoute, getV1CreditmemosRouteHandler)
+  .openapi(postV1CustomerGroupsRoute, postV1CustomerGroupsRouteHandler)
+  .openapi(getV1CustomerGroupsDefaultRoute, getV1CustomerGroupsDefaultRouteHandler)
+  .openapi(putV1CustomerGroupsDefaultIdRoute, putV1CustomerGroupsDefaultIdRouteHandler)
+  .openapi(getV1CustomerGroupsDefaultStoreIdRoute, getV1CustomerGroupsDefaultStoreIdRouteHandler)
+  .openapi(getV1CustomerGroupsSearchRoute, getV1CustomerGroupsSearchRouteHandler)
+  .openapi(deleteV1CustomerGroupsIdRoute, deleteV1CustomerGroupsIdRouteHandler)
+  .openapi(getV1CustomerGroupsIdRoute, getV1CustomerGroupsIdRouteHandler)
+  .openapi(putV1CustomerGroupsIdRoute, putV1CustomerGroupsIdRouteHandler)
+  .openapi(getV1CustomerGroupsIdPermissionsRoute, getV1CustomerGroupsIdPermissionsRouteHandler)
+  .openapi(postV1CustomersRoute, postV1CustomersRouteHandler)
+  .openapi(getV1CustomersAddressesAddressIdRoute, getV1CustomersAddressesAddressIdRouteHandler)
+  .openapi(postV1CustomersConfirmRoute, postV1CustomersConfirmRouteHandler)
+  .openapi(postV1CustomersIsEmailAvailableRoute, postV1CustomersIsEmailAvailableRouteHandler)
+  .openapi(getV1CustomersMeRoute, getV1CustomersMeRouteHandler)
+  .openapi(putV1CustomersMeRoute, putV1CustomersMeRouteHandler)
+  .openapi(putV1CustomersMeActivateRoute, putV1CustomersMeActivateRouteHandler)
+  .openapi(getV1CustomersMeBillingAddressRoute, getV1CustomersMeBillingAddressRouteHandler)
+  .openapi(putV1CustomersMePasswordRoute, putV1CustomersMePasswordRouteHandler)
+  .openapi(getV1CustomersMeShippingAddressRoute, getV1CustomersMeShippingAddressRouteHandler)
+  .openapi(putV1CustomersPasswordRoute, putV1CustomersPasswordRouteHandler)
+  .openapi(postV1CustomersResetPasswordRoute, postV1CustomersResetPasswordRouteHandler)
+  .openapi(getV1CustomersSearchRoute, getV1CustomersSearchRouteHandler)
+  .openapi(putV1CustomersValidateRoute, putV1CustomersValidateRouteHandler)
+  .openapi(deleteV1CustomersCustomerIdRoute, deleteV1CustomersCustomerIdRouteHandler)
+  .openapi(getV1CustomersCustomerIdRoute, getV1CustomersCustomerIdRouteHandler)
+  .openapi(putV1CustomersCustomerIdRoute, putV1CustomersCustomerIdRouteHandler)
+  .openapi(
+    getV1CustomersCustomerIdBillingAddressRoute,
+    getV1CustomersCustomerIdBillingAddressRouteHandler,
+  )
+  .openapi(postV1CustomersCustomerIdCartsRoute, postV1CustomersCustomerIdCartsRouteHandler)
+  .openapi(getV1CustomersCustomerIdConfirmRoute, getV1CustomersCustomerIdConfirmRouteHandler)
+  .openapi(
+    getV1CustomersCustomerIdPasswordResetLinkTokenResetPasswordLinkTokenRoute,
+    getV1CustomersCustomerIdPasswordResetLinkTokenResetPasswordLinkTokenRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerIdPermissionsReadonlyRoute,
+    getV1CustomersCustomerIdPermissionsReadonlyRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerIdShippingAddressRoute,
+    getV1CustomersCustomerIdShippingAddressRouteHandler,
+  )
+  .openapi(putV1CustomersEmailActivateRoute, putV1CustomersEmailActivateRouteHandler)
+  .openapi(getV1DirectoryCountriesRoute, getV1DirectoryCountriesRouteHandler)
+  .openapi(getV1DirectoryCountriesCountryIdRoute, getV1DirectoryCountriesCountryIdRouteHandler)
+  .openapi(getV1DirectoryCurrencyRoute, getV1DirectoryCurrencyRouteHandler)
+  .openapi(postV1EavAttributeSetsRoute, postV1EavAttributeSetsRouteHandler)
+  .openapi(getV1EavAttributeSetsListRoute, getV1EavAttributeSetsListRouteHandler)
+  .openapi(
+    deleteV1EavAttributeSetsAttributeSetIdRoute,
+    deleteV1EavAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(
+    getV1EavAttributeSetsAttributeSetIdRoute,
+    getV1EavAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(
+    putV1EavAttributeSetsAttributeSetIdRoute,
+    putV1EavAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(getV1GiftWrappingsRoute, getV1GiftWrappingsRouteHandler)
+  .openapi(postV1GiftWrappingsRoute, postV1GiftWrappingsRouteHandler)
+  .openapi(deleteV1GiftWrappingsIdRoute, deleteV1GiftWrappingsIdRouteHandler)
+  .openapi(getV1GiftWrappingsIdRoute, getV1GiftWrappingsIdRouteHandler)
+  .openapi(putV1GiftWrappingsWrappingIdRoute, putV1GiftWrappingsWrappingIdRouteHandler)
+  .openapi(
+    postV1GiftregistryMineEstimateShippingMethodsRoute,
+    postV1GiftregistryMineEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(postV1GuestCartsRoute, postV1GuestCartsRouteHandler)
+  .openapi(getV1GuestCartsCartIdRoute, getV1GuestCartsCartIdRouteHandler)
+  .openapi(putV1GuestCartsCartIdRoute, putV1GuestCartsCartIdRouteHandler)
+  .openapi(
+    getV1GuestCartsCartIdBillingAddressRoute,
+    getV1GuestCartsCartIdBillingAddressRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdBillingAddressRoute,
+    postV1GuestCartsCartIdBillingAddressRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdCheckoutFieldsRoute,
+    postV1GuestCartsCartIdCheckoutFieldsRouteHandler,
+  )
+  .openapi(putV1GuestCartsCartIdCollectTotalsRoute, putV1GuestCartsCartIdCollectTotalsRouteHandler)
+  .openapi(
+    deleteV1GuestCartsCartIdCollectionPointSearchRequestRoute,
+    deleteV1GuestCartsCartIdCollectionPointSearchRequestRouteHandler,
+  )
+  .openapi(
+    putV1GuestCartsCartIdCollectionPointSearchRequestRoute,
+    putV1GuestCartsCartIdCollectionPointSearchRequestRouteHandler,
+  )
+  .openapi(
+    getV1GuestCartsCartIdCollectionPointSearchResultRoute,
+    getV1GuestCartsCartIdCollectionPointSearchResultRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdCollectionPointSelectRoute,
+    postV1GuestCartsCartIdCollectionPointSelectRouteHandler,
+  )
+  .openapi(deleteV1GuestCartsCartIdCouponsRoute, deleteV1GuestCartsCartIdCouponsRouteHandler)
+  .openapi(getV1GuestCartsCartIdCouponsRoute, getV1GuestCartsCartIdCouponsRouteHandler)
+  .openapi(
+    putV1GuestCartsCartIdCouponsCouponCodeRoute,
+    putV1GuestCartsCartIdCouponsCouponCodeRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdDeliveryOptionRoute,
+    postV1GuestCartsCartIdDeliveryOptionRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdEstimateShippingMethodsRoute,
+    postV1GuestCartsCartIdEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(getV1GuestCartsCartIdGiftMessageRoute, getV1GuestCartsCartIdGiftMessageRouteHandler)
+  .openapi(postV1GuestCartsCartIdGiftMessageRoute, postV1GuestCartsCartIdGiftMessageRouteHandler)
+  .openapi(
+    getV1GuestCartsCartIdGiftMessageItemIdRoute,
+    getV1GuestCartsCartIdGiftMessageItemIdRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdGiftMessageItemIdRoute,
+    postV1GuestCartsCartIdGiftMessageItemIdRouteHandler,
+  )
+  .openapi(getV1GuestCartsCartIdItemsRoute, getV1GuestCartsCartIdItemsRouteHandler)
+  .openapi(postV1GuestCartsCartIdItemsRoute, postV1GuestCartsCartIdItemsRouteHandler)
+  .openapi(
+    deleteV1GuestCartsCartIdItemsItemIdRoute,
+    deleteV1GuestCartsCartIdItemsItemIdRouteHandler,
+  )
+  .openapi(putV1GuestCartsCartIdItemsItemIdRoute, putV1GuestCartsCartIdItemsItemIdRouteHandler)
+  .openapi(putV1GuestCartsCartIdOrderRoute, putV1GuestCartsCartIdOrderRouteHandler)
+  .openapi(
+    getV1GuestCartsCartIdPaymentInformationRoute,
+    getV1GuestCartsCartIdPaymentInformationRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdPaymentInformationRoute,
+    postV1GuestCartsCartIdPaymentInformationRouteHandler,
+  )
+  .openapi(
+    getV1GuestCartsCartIdPaymentMethodsRoute,
+    getV1GuestCartsCartIdPaymentMethodsRouteHandler,
+  )
+  .openapi(
+    getV1GuestCartsCartIdSelectedPaymentMethodRoute,
+    getV1GuestCartsCartIdSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    putV1GuestCartsCartIdSelectedPaymentMethodRoute,
+    putV1GuestCartsCartIdSelectedPaymentMethodRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdSetPaymentInformationRoute,
+    postV1GuestCartsCartIdSetPaymentInformationRouteHandler,
+  )
+  .openapi(
+    postV1GuestCartsCartIdShippingInformationRoute,
+    postV1GuestCartsCartIdShippingInformationRouteHandler,
+  )
+  .openapi(
+    getV1GuestCartsCartIdShippingMethodsRoute,
+    getV1GuestCartsCartIdShippingMethodsRouteHandler,
+  )
+  .openapi(getV1GuestCartsCartIdTotalsRoute, getV1GuestCartsCartIdTotalsRouteHandler)
+  .openapi(
+    postV1GuestCartsCartIdTotalsInformationRoute,
+    postV1GuestCartsCartIdTotalsInformationRouteHandler,
+  )
+  .openapi(
+    postV1GuestGiftregistryCartIdEstimateShippingMethodsRoute,
+    postV1GuestGiftregistryCartIdEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(putV1HierarchyMoveIdRoute, putV1HierarchyMoveIdRouteHandler)
+  .openapi(getV1HierarchyIdRoute, getV1HierarchyIdRouteHandler)
+  .openapi(postV1IntegrationAdminTokenRoute, postV1IntegrationAdminTokenRouteHandler)
+  .openapi(postV1IntegrationCustomerTokenRoute, postV1IntegrationCustomerTokenRouteHandler)
+  .openapi(postV1InvoiceInvoiceIdRefundRoute, postV1InvoiceInvoiceIdRefundRouteHandler)
+  .openapi(getV1InvoicesRoute, getV1InvoicesRouteHandler)
+  .openapi(postV1InvoicesIndexRoute, postV1InvoicesIndexRouteHandler)
+  .openapi(postV1InvoicesCommentsRoute, postV1InvoicesCommentsRouteHandler)
+  .openapi(getV1InvoicesIdRoute, getV1InvoicesIdRouteHandler)
+  .openapi(postV1InvoicesIdCaptureRoute, postV1InvoicesIdCaptureRouteHandler)
+  .openapi(getV1InvoicesIdCommentsRoute, getV1InvoicesIdCommentsRouteHandler)
+  .openapi(postV1InvoicesIdEmailsRoute, postV1InvoicesIdEmailsRouteHandler)
+  .openapi(postV1InvoicesIdVoidRoute, postV1InvoicesIdVoidRouteHandler)
+  .openapi(getV1ModulesRoute, getV1ModulesRouteHandler)
+  .openapi(
+    getV1NegotiableCartsCartIdBillingAddressRoute,
+    getV1NegotiableCartsCartIdBillingAddressRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdBillingAddressRoute,
+    postV1NegotiableCartsCartIdBillingAddressRouteHandler,
+  )
+  .openapi(
+    deleteV1NegotiableCartsCartIdCouponsRoute,
+    deleteV1NegotiableCartsCartIdCouponsRouteHandler,
+  )
+  .openapi(
+    putV1NegotiableCartsCartIdCouponsCouponCodeRoute,
+    putV1NegotiableCartsCartIdCouponsCouponCodeRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdEstimateShippingMethodsRoute,
+    postV1NegotiableCartsCartIdEstimateShippingMethodsRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdEstimateShippingMethodsByAddressIdRoute,
+    postV1NegotiableCartsCartIdEstimateShippingMethodsByAddressIdRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdGiftCardsRoute,
+    postV1NegotiableCartsCartIdGiftCardsRouteHandler,
+  )
+  .openapi(
+    deleteV1NegotiableCartsCartIdGiftCardsGiftCardCodeRoute,
+    deleteV1NegotiableCartsCartIdGiftCardsGiftCardCodeRouteHandler,
+  )
+  .openapi(
+    getV1NegotiableCartsCartIdPaymentInformationRoute,
+    getV1NegotiableCartsCartIdPaymentInformationRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdPaymentInformationRoute,
+    postV1NegotiableCartsCartIdPaymentInformationRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdSetPaymentInformationRoute,
+    postV1NegotiableCartsCartIdSetPaymentInformationRouteHandler,
+  )
+  .openapi(
+    postV1NegotiableCartsCartIdShippingInformationRoute,
+    postV1NegotiableCartsCartIdShippingInformationRouteHandler,
+  )
+  .openapi(getV1NegotiableCartsCartIdTotalsRoute, getV1NegotiableCartsCartIdTotalsRouteHandler)
+  .openapi(
+    getV1NegotiableQuoteAttachmentContentRoute,
+    getV1NegotiableQuoteAttachmentContentRouteHandler,
+  )
+  .openapi(postV1NegotiableQuoteDeclineRoute, postV1NegotiableQuoteDeclineRouteHandler)
+  .openapi(postV1NegotiableQuotePricesUpdatedRoute, postV1NegotiableQuotePricesUpdatedRouteHandler)
+  .openapi(postV1NegotiableQuoteRequestRoute, postV1NegotiableQuoteRequestRouteHandler)
+  .openapi(
+    postV1NegotiableQuoteSubmitToCustomerRoute,
+    postV1NegotiableQuoteSubmitToCustomerRouteHandler,
+  )
+  .openapi(putV1NegotiableQuoteQuoteIdRoute, putV1NegotiableQuoteQuoteIdRouteHandler)
+  .openapi(
+    getV1NegotiableQuoteQuoteIdCommentsRoute,
+    getV1NegotiableQuoteQuoteIdCommentsRouteHandler,
+  )
+  .openapi(
+    putV1NegotiableQuoteQuoteIdShippingMethodRoute,
+    putV1NegotiableQuoteQuoteIdShippingMethodRouteHandler,
+  )
+  .openapi(postV1OrderOrderIdInvoiceRoute, postV1OrderOrderIdInvoiceRouteHandler)
+  .openapi(postV1OrderOrderIdRefundRoute, postV1OrderOrderIdRefundRouteHandler)
+  .openapi(postV1OrderOrderIdShipRoute, postV1OrderOrderIdShipRouteHandler)
+  .openapi(getV1OrdersRoute, getV1OrdersRouteHandler)
+  .openapi(postV1OrdersIndexRoute, postV1OrdersIndexRouteHandler)
+  .openapi(putV1OrdersCreateRoute, putV1OrdersCreateRouteHandler)
+  .openapi(getV1OrdersItemsRoute, getV1OrdersItemsRouteHandler)
+  .openapi(getV1OrdersItemsIdRoute, getV1OrdersItemsIdRouteHandler)
+  .openapi(getV1OrdersIdRoute, getV1OrdersIdRouteHandler)
+  .openapi(postV1OrdersIdCancelRoute, postV1OrdersIdCancelRouteHandler)
+  .openapi(getV1OrdersIdCommentsRoute, getV1OrdersIdCommentsRouteHandler)
+  .openapi(postV1OrdersIdCommentsRoute, postV1OrdersIdCommentsRouteHandler)
+  .openapi(postV1OrdersIdEmailsRoute, postV1OrdersIdEmailsRouteHandler)
+  .openapi(postV1OrdersIdHoldRoute, postV1OrdersIdHoldRouteHandler)
+  .openapi(getV1OrdersIdStatusesRoute, getV1OrdersIdStatusesRouteHandler)
+  .openapi(postV1OrdersIdUnholdRoute, postV1OrdersIdUnholdRouteHandler)
+  .openapi(putV1OrdersParentIdRoute, putV1OrdersParentIdRouteHandler)
+  .openapi(getV1ProductsRoute, getV1ProductsRouteHandler)
+  .openapi(postV1ProductsRoute, postV1ProductsRouteHandler)
+  .openapi(getV1ProductsRenderInfoRoute, getV1ProductsRenderInfoRouteHandler)
+  .openapi(postV1ProductsAttributeSetsRoute, postV1ProductsAttributeSetsRouteHandler)
+  .openapi(
+    postV1ProductsAttributeSetsAttributesRoute,
+    postV1ProductsAttributeSetsAttributesRouteHandler,
+  )
+  .openapi(postV1ProductsAttributeSetsGroupsRoute, postV1ProductsAttributeSetsGroupsRouteHandler)
+  .openapi(
+    getV1ProductsAttributeSetsGroupsListRoute,
+    getV1ProductsAttributeSetsGroupsListRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductsAttributeSetsGroupsGroupIdRoute,
+    deleteV1ProductsAttributeSetsGroupsGroupIdRouteHandler,
+  )
+  .openapi(getV1ProductsAttributeSetsSetsListRoute, getV1ProductsAttributeSetsSetsListRouteHandler)
+  .openapi(
+    deleteV1ProductsAttributeSetsAttributeSetIdRoute,
+    deleteV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(
+    getV1ProductsAttributeSetsAttributeSetIdRoute,
+    getV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(
+    putV1ProductsAttributeSetsAttributeSetIdRoute,
+    putV1ProductsAttributeSetsAttributeSetIdRouteHandler,
+  )
+  .openapi(
+    getV1ProductsAttributeSetsAttributeSetIdAttributesRoute,
+    getV1ProductsAttributeSetsAttributeSetIdAttributesRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductsAttributeSetsAttributeSetIdAttributesAttributeCodeRoute,
+    deleteV1ProductsAttributeSetsAttributeSetIdAttributesAttributeCodeRouteHandler,
+  )
+  .openapi(
+    putV1ProductsAttributeSetsAttributeSetIdGroupsRoute,
+    putV1ProductsAttributeSetsAttributeSetIdGroupsRouteHandler,
+  )
+  .openapi(getV1ProductsAttributesRoute, getV1ProductsAttributesRouteHandler)
+  .openapi(postV1ProductsAttributesRoute, postV1ProductsAttributesRouteHandler)
+  .openapi(getV1ProductsAttributesTypesRoute, getV1ProductsAttributesTypesRouteHandler)
+  .openapi(
+    deleteV1ProductsAttributesAttributeCodeRoute,
+    deleteV1ProductsAttributesAttributeCodeRouteHandler,
+  )
+  .openapi(
+    getV1ProductsAttributesAttributeCodeRoute,
+    getV1ProductsAttributesAttributeCodeRouteHandler,
+  )
+  .openapi(
+    putV1ProductsAttributesAttributeCodeRoute,
+    putV1ProductsAttributesAttributeCodeRouteHandler,
+  )
+  .openapi(
+    getV1ProductsAttributesAttributeCodeOptionsRoute,
+    getV1ProductsAttributesAttributeCodeOptionsRouteHandler,
+  )
+  .openapi(
+    postV1ProductsAttributesAttributeCodeOptionsRoute,
+    postV1ProductsAttributesAttributeCodeOptionsRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductsAttributesAttributeCodeOptionsOptionIdRoute,
+    deleteV1ProductsAttributesAttributeCodeOptionsOptionIdRouteHandler,
+  )
+  .openapi(postV1ProductsBasePricesRoute, postV1ProductsBasePricesRouteHandler)
+  .openapi(
+    postV1ProductsBasePricesInformationRoute,
+    postV1ProductsBasePricesInformationRouteHandler,
+  )
+  .openapi(postV1ProductsCostRoute, postV1ProductsCostRouteHandler)
+  .openapi(postV1ProductsCostDeleteRoute, postV1ProductsCostDeleteRouteHandler)
+  .openapi(postV1ProductsCostInformationRoute, postV1ProductsCostInformationRouteHandler)
+  .openapi(
+    deleteV1ProductsDownloadableLinksSamplesIdRoute,
+    deleteV1ProductsDownloadableLinksSamplesIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductsDownloadableLinksIdRoute,
+    deleteV1ProductsDownloadableLinksIdRouteHandler,
+  )
+  .openapi(getV1ProductsLinksTypesRoute, getV1ProductsLinksTypesRouteHandler)
+  .openapi(getV1ProductsLinksTypeAttributesRoute, getV1ProductsLinksTypeAttributesRouteHandler)
+  .openapi(
+    getV1ProductsMediaTypesAttributeSetNameRoute,
+    getV1ProductsMediaTypesAttributeSetNameRouteHandler,
+  )
+  .openapi(postV1ProductsOptionsRoute, postV1ProductsOptionsRouteHandler)
+  .openapi(getV1ProductsOptionsTypesRoute, getV1ProductsOptionsTypesRouteHandler)
+  .openapi(putV1ProductsOptionsOptionIdRoute, putV1ProductsOptionsOptionIdRouteHandler)
+  .openapi(postV1ProductsSpecialPriceRoute, postV1ProductsSpecialPriceRouteHandler)
+  .openapi(postV1ProductsSpecialPriceDeleteRoute, postV1ProductsSpecialPriceDeleteRouteHandler)
+  .openapi(
+    postV1ProductsSpecialPriceInformationRoute,
+    postV1ProductsSpecialPriceInformationRouteHandler,
+  )
+  .openapi(postV1ProductsTierPricesRoute, postV1ProductsTierPricesRouteHandler)
+  .openapi(putV1ProductsTierPricesRoute, putV1ProductsTierPricesRouteHandler)
+  .openapi(postV1ProductsTierPricesDeleteRoute, postV1ProductsTierPricesDeleteRouteHandler)
+  .openapi(
+    postV1ProductsTierPricesInformationRoute,
+    postV1ProductsTierPricesInformationRouteHandler,
+  )
+  .openapi(getV1ProductsTypesRoute, getV1ProductsTypesRouteHandler)
+  .openapi(
+    putV1ProductsProductSkuStockItemsItemIdRoute,
+    putV1ProductsProductSkuStockItemsItemIdRouteHandler,
+  )
+  .openapi(deleteV1ProductsSkuRoute, deleteV1ProductsSkuRouteHandler)
+  .openapi(getV1ProductsSkuRoute, getV1ProductsSkuRouteHandler)
+  .openapi(putV1ProductsSkuRoute, putV1ProductsSkuRouteHandler)
+  .openapi(getV1ProductsSkuDownloadableLinksRoute, getV1ProductsSkuDownloadableLinksRouteHandler)
+  .openapi(postV1ProductsSkuDownloadableLinksRoute, postV1ProductsSkuDownloadableLinksRouteHandler)
+  .openapi(
+    getV1ProductsSkuDownloadableLinksSamplesRoute,
+    getV1ProductsSkuDownloadableLinksSamplesRouteHandler,
+  )
+  .openapi(
+    postV1ProductsSkuDownloadableLinksSamplesRoute,
+    postV1ProductsSkuDownloadableLinksSamplesRouteHandler,
+  )
+  .openapi(
+    putV1ProductsSkuDownloadableLinksSamplesIdRoute,
+    putV1ProductsSkuDownloadableLinksSamplesIdRouteHandler,
+  )
+  .openapi(
+    putV1ProductsSkuDownloadableLinksIdRoute,
+    putV1ProductsSkuDownloadableLinksIdRouteHandler,
+  )
+  .openapi(
+    getV1ProductsSkuGroupPricesCustomerGroupIdTiersRoute,
+    getV1ProductsSkuGroupPricesCustomerGroupIdTiersRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyRoute,
+    deleteV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyRouteHandler,
+  )
+  .openapi(
+    postV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyPricePriceRoute,
+    postV1ProductsSkuGroupPricesCustomerGroupIdTiersQtyPricePriceRouteHandler,
+  )
+  .openapi(postV1ProductsSkuLinksRoute, postV1ProductsSkuLinksRouteHandler)
+  .openapi(putV1ProductsSkuLinksRoute, putV1ProductsSkuLinksRouteHandler)
+  .openapi(getV1ProductsSkuLinksTypeRoute, getV1ProductsSkuLinksTypeRouteHandler)
+  .openapi(
+    deleteV1ProductsSkuLinksTypeLinkedProductSkuRoute,
+    deleteV1ProductsSkuLinksTypeLinkedProductSkuRouteHandler,
+  )
+  .openapi(getV1ProductsSkuMediaRoute, getV1ProductsSkuMediaRouteHandler)
+  .openapi(postV1ProductsSkuMediaRoute, postV1ProductsSkuMediaRouteHandler)
+  .openapi(deleteV1ProductsSkuMediaEntryIdRoute, deleteV1ProductsSkuMediaEntryIdRouteHandler)
+  .openapi(getV1ProductsSkuMediaEntryIdRoute, getV1ProductsSkuMediaEntryIdRouteHandler)
+  .openapi(putV1ProductsSkuMediaEntryIdRoute, putV1ProductsSkuMediaEntryIdRouteHandler)
+  .openapi(getV1ProductsSkuOptionsRoute, getV1ProductsSkuOptionsRouteHandler)
+  .openapi(deleteV1ProductsSkuOptionsOptionIdRoute, deleteV1ProductsSkuOptionsOptionIdRouteHandler)
+  .openapi(getV1ProductsSkuOptionsOptionIdRoute, getV1ProductsSkuOptionsOptionIdRouteHandler)
+  .openapi(postV1ProductsSkuWebsitesRoute, postV1ProductsSkuWebsitesRouteHandler)
+  .openapi(putV1ProductsSkuWebsitesRoute, putV1ProductsSkuWebsitesRouteHandler)
+  .openapi(
+    deleteV1ProductsSkuWebsitesWebsiteIdRoute,
+    deleteV1ProductsSkuWebsitesWebsiteIdRouteHandler,
+  )
+  .openapi(postV1RequisitionListsRoute, postV1RequisitionListsRouteHandler)
+  .openapi(getV1ReturnsRoute, getV1ReturnsRouteHandler)
+  .openapi(postV1ReturnsRoute, postV1ReturnsRouteHandler)
+  .openapi(deleteV1ReturnsIdRoute, deleteV1ReturnsIdRouteHandler)
+  .openapi(getV1ReturnsIdRoute, getV1ReturnsIdRouteHandler)
+  .openapi(putV1ReturnsIdRoute, putV1ReturnsIdRouteHandler)
+  .openapi(getV1ReturnsIdCommentsRoute, getV1ReturnsIdCommentsRouteHandler)
+  .openapi(postV1ReturnsIdCommentsRoute, postV1ReturnsIdCommentsRouteHandler)
+  .openapi(getV1ReturnsIdLabelsRoute, getV1ReturnsIdLabelsRouteHandler)
+  .openapi(getV1ReturnsIdTrackingNumbersRoute, getV1ReturnsIdTrackingNumbersRouteHandler)
+  .openapi(postV1ReturnsIdTrackingNumbersRoute, postV1ReturnsIdTrackingNumbersRouteHandler)
+  .openapi(
+    deleteV1ReturnsIdTrackingNumbersTrackIdRoute,
+    deleteV1ReturnsIdTrackingNumbersTrackIdRouteHandler,
+  )
+  .openapi(getV1ReturnsAttributeMetadataRoute, getV1ReturnsAttributeMetadataRouteHandler)
+  .openapi(
+    getV1ReturnsAttributeMetadataCustomRoute,
+    getV1ReturnsAttributeMetadataCustomRouteHandler,
+  )
+  .openapi(
+    getV1ReturnsAttributeMetadataFormFormCodeRoute,
+    getV1ReturnsAttributeMetadataFormFormCodeRouteHandler,
+  )
+  .openapi(
+    getV1ReturnsAttributeMetadataAttributeCodeRoute,
+    getV1ReturnsAttributeMetadataAttributeCodeRouteHandler,
+  )
+  .openapi(postV1RewardMineUseRewardRoute, postV1RewardMineUseRewardRouteHandler)
+  .openapi(postV1SalesRulesRoute, postV1SalesRulesRouteHandler)
+  .openapi(getV1SalesRulesSearchRoute, getV1SalesRulesSearchRouteHandler)
+  .openapi(deleteV1SalesRulesRuleIdRoute, deleteV1SalesRulesRuleIdRouteHandler)
+  .openapi(getV1SalesRulesRuleIdRoute, getV1SalesRulesRuleIdRouteHandler)
+  .openapi(putV1SalesRulesRuleIdRoute, putV1SalesRulesRuleIdRouteHandler)
+  .openapi(getV1SearchRoute, getV1SearchRouteHandler)
+  .openapi(postV1SharedCatalogRoute, postV1SharedCatalogRouteHandler)
+  .openapi(getV1SharedCatalogIndexRoute, getV1SharedCatalogIndexRouteHandler)
+  .openapi(putV1SharedCatalogIdRoute, putV1SharedCatalogIdRouteHandler)
+  .openapi(
+    postV1SharedCatalogIdAssignCategoriesRoute,
+    postV1SharedCatalogIdAssignCategoriesRouteHandler,
+  )
+  .openapi(
+    postV1SharedCatalogIdAssignProductsRoute,
+    postV1SharedCatalogIdAssignProductsRouteHandler,
+  )
+  .openapi(getV1SharedCatalogIdCategoriesRoute, getV1SharedCatalogIdCategoriesRouteHandler)
+  .openapi(getV1SharedCatalogIdProductsRoute, getV1SharedCatalogIdProductsRouteHandler)
+  .openapi(
+    postV1SharedCatalogIdUnassignCategoriesRoute,
+    postV1SharedCatalogIdUnassignCategoriesRouteHandler,
+  )
+  .openapi(
+    postV1SharedCatalogIdUnassignProductsRoute,
+    postV1SharedCatalogIdUnassignProductsRouteHandler,
+  )
+  .openapi(
+    deleteV1SharedCatalogSharedCatalogIdRoute,
+    deleteV1SharedCatalogSharedCatalogIdRouteHandler,
+  )
+  .openapi(getV1SharedCatalogSharedCatalogIdRoute, getV1SharedCatalogSharedCatalogIdRouteHandler)
+  .openapi(
+    postV1SharedCatalogSharedCatalogIdAssignCompaniesRoute,
+    postV1SharedCatalogSharedCatalogIdAssignCompaniesRouteHandler,
+  )
+  .openapi(
+    getV1SharedCatalogSharedCatalogIdCompaniesRoute,
+    getV1SharedCatalogSharedCatalogIdCompaniesRouteHandler,
+  )
+  .openapi(
+    postV1SharedCatalogSharedCatalogIdUnassignCompaniesRoute,
+    postV1SharedCatalogSharedCatalogIdUnassignCompaniesRouteHandler,
+  )
+  .openapi(postV1ShipmentIndexRoute, postV1ShipmentIndexRouteHandler)
+  .openapi(postV1ShipmentTrackRoute, postV1ShipmentTrackRouteHandler)
+  .openapi(deleteV1ShipmentTrackIdRoute, deleteV1ShipmentTrackIdRouteHandler)
+  .openapi(getV1ShipmentIdRoute, getV1ShipmentIdRouteHandler)
+  .openapi(getV1ShipmentIdCommentsRoute, getV1ShipmentIdCommentsRouteHandler)
+  .openapi(postV1ShipmentIdCommentsRoute, postV1ShipmentIdCommentsRouteHandler)
+  .openapi(postV1ShipmentIdEmailsRoute, postV1ShipmentIdEmailsRouteHandler)
+  .openapi(getV1ShipmentIdLabelRoute, getV1ShipmentIdLabelRouteHandler)
+  .openapi(getV1ShipmentsRoute, getV1ShipmentsRouteHandler)
+  .openapi(getV1StockItemsLowStockIndexRoute, getV1StockItemsLowStockIndexRouteHandler)
+  .openapi(getV1StockItemsProductSkuRoute, getV1StockItemsProductSkuRouteHandler)
+  .openapi(getV1StockStatusesProductSkuRoute, getV1StockStatusesProductSkuRouteHandler)
+  .openapi(getV1StoreStoreConfigsRoute, getV1StoreStoreConfigsRouteHandler)
+  .openapi(getV1StoreStoreGroupsRoute, getV1StoreStoreGroupsRouteHandler)
+  .openapi(getV1StoreStoreViewsRoute, getV1StoreStoreViewsRouteHandler)
+  .openapi(getV1StoreWebsitesRoute, getV1StoreWebsitesRouteHandler)
+  .openapi(postV1TaxClassesRoute, postV1TaxClassesRouteHandler)
+  .openapi(getV1TaxClassesSearchRoute, getV1TaxClassesSearchRouteHandler)
+  .openapi(putV1TaxClassesClassIdRoute, putV1TaxClassesClassIdRouteHandler)
+  .openapi(deleteV1TaxClassesTaxClassIdRoute, deleteV1TaxClassesTaxClassIdRouteHandler)
+  .openapi(getV1TaxClassesTaxClassIdRoute, getV1TaxClassesTaxClassIdRouteHandler)
+  .openapi(postV1TaxRatesRoute, postV1TaxRatesRouteHandler)
+  .openapi(putV1TaxRatesRoute, putV1TaxRatesRouteHandler)
+  .openapi(getV1TaxRatesSearchRoute, getV1TaxRatesSearchRouteHandler)
+  .openapi(deleteV1TaxRatesRateIdRoute, deleteV1TaxRatesRateIdRouteHandler)
+  .openapi(getV1TaxRatesRateIdRoute, getV1TaxRatesRateIdRouteHandler)
+  .openapi(postV1TaxRulesRoute, postV1TaxRulesRouteHandler)
+  .openapi(putV1TaxRulesRoute, putV1TaxRulesRouteHandler)
+  .openapi(getV1TaxRulesSearchRoute, getV1TaxRulesSearchRouteHandler)
+  .openapi(deleteV1TaxRulesRuleIdRoute, deleteV1TaxRulesRuleIdRouteHandler)
+  .openapi(getV1TaxRulesRuleIdRoute, getV1TaxRulesRuleIdRouteHandler)
+  .openapi(getV1TeamIndexRoute, getV1TeamIndexRouteHandler)
+  .openapi(postV1TeamCompanyIdRoute, postV1TeamCompanyIdRouteHandler)
+  .openapi(deleteV1TeamTeamIdRoute, deleteV1TeamTeamIdRouteHandler)
+  .openapi(getV1TeamTeamIdRoute, getV1TeamTeamIdRouteHandler)
+  .openapi(putV1TeamTeamIdRoute, putV1TeamTeamIdRouteHandler)
+  .openapi(putV1TemandoRmaRmaIdShipmentsRoute, putV1TemandoRmaRmaIdShipmentsRouteHandler)
+  .openapi(getV1TransactionsRoute, getV1TransactionsRouteHandler)
+  .openapi(getV1TransactionsIdRoute, getV1TransactionsIdRouteHandler)
+  .openapi(
+    postV1WorldpayGuestCartsCartIdPaymentInformationRoute,
+    postV1WorldpayGuestCartsCartIdPaymentInformationRouteHandler,
+  )
 
 export default app

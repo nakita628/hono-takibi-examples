@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAlmawsV1TaskListsPrintoutsPrintoutIdRoute,
   getAlmawsV1TaskListsPrintoutsRoute,
   getAlmawsV1TaskListsRequestedResourcesRoute,
@@ -12,36 +12,62 @@ import {
   postAlmawsV1TaskListsTestRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlmawsV1TaskListsPrintoutsRouteHandler: RouteHandler<
+  typeof getAlmawsV1TaskListsPrintoutsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const almawsHandler = app
-  .openapi(getAlmawsV1TaskListsPrintoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlmawsV1TaskListsPrintoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlmawsV1TaskListsPrintoutsPrintoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlmawsV1TaskListsPrintoutsPrintoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlmawsV1TaskListsRequestedResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlmawsV1TaskListsRequestedResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlmawsV1TaskListsRsLendingRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlmawsV1TaskListsRsLendingRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlmawsV1TaskListsTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlmawsV1TaskListsTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlmawsV1TaskListsPrintoutsRouteHandler: RouteHandler<
+  typeof postAlmawsV1TaskListsPrintoutsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlmawsV1TaskListsPrintoutsPrintoutIdRouteHandler: RouteHandler<
+  typeof getAlmawsV1TaskListsPrintoutsPrintoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlmawsV1TaskListsPrintoutsPrintoutIdRouteHandler: RouteHandler<
+  typeof postAlmawsV1TaskListsPrintoutsPrintoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlmawsV1TaskListsRequestedResourcesRouteHandler: RouteHandler<
+  typeof getAlmawsV1TaskListsRequestedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlmawsV1TaskListsRequestedResourcesRouteHandler: RouteHandler<
+  typeof postAlmawsV1TaskListsRequestedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlmawsV1TaskListsRsLendingRequestsRouteHandler: RouteHandler<
+  typeof getAlmawsV1TaskListsRsLendingRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlmawsV1TaskListsRsLendingRequestsRouteHandler: RouteHandler<
+  typeof postAlmawsV1TaskListsRsLendingRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlmawsV1TaskListsTestRouteHandler: RouteHandler<
+  typeof getAlmawsV1TaskListsTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlmawsV1TaskListsTestRouteHandler: RouteHandler<
+  typeof postAlmawsV1TaskListsTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

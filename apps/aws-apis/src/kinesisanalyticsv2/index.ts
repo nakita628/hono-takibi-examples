@@ -1,74 +1,197 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionHandler,
-  xAmzTargetKinesisAnalytics20180523AddApplicationInputHandler,
-  xAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationHandler,
-  xAmzTargetKinesisAnalytics20180523AddApplicationOutputHandler,
-  xAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceHandler,
-  xAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationHandler,
-  xAmzTargetKinesisAnalytics20180523CreateApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlHandler,
-  xAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationOutputHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotHandler,
-  xAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationHandler,
-  xAmzTargetKinesisAnalytics20180523DescribeApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotHandler,
-  xAmzTargetKinesisAnalytics20180523DescribeApplicationVersionHandler,
-  xAmzTargetKinesisAnalytics20180523DiscoverInputSchemaHandler,
-  xAmzTargetKinesisAnalytics20180523ListApplicationsHandler,
-  xAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsHandler,
-  xAmzTargetKinesisAnalytics20180523ListApplicationVersionsHandler,
-  xAmzTargetKinesisAnalytics20180523ListTagsForResourceHandler,
-  xAmzTargetKinesisAnalytics20180523RollbackApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523StartApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523StopApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523TagResourceHandler,
-  xAmzTargetKinesisAnalytics20180523UntagResourceHandler,
-  xAmzTargetKinesisAnalytics20180523UpdateApplicationHandler,
-  xAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionRoute,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationInputRoute,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationOutputRoute,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceRoute,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlRoute,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationOutputRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotRoute,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotRoute,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationVersionRoute,
+  postXAmzTargetKinesisAnalytics20180523DiscoverInputSchemaRoute,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsRoute,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationsRoute,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationVersionsRoute,
+  postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute,
+  postXAmzTargetKinesisAnalytics20180523RollbackApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523StartApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523StopApplicationRoute,
+  postXAmzTargetKinesisAnalytics20180523TagResourceRoute,
+  postXAmzTargetKinesisAnalytics20180523UntagResourceRoute,
+  postXAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationRoute,
+  postXAmzTargetKinesisAnalytics20180523UpdateApplicationRoute,
+} from './routes'
+import {
+  postXAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationInputRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationOutputRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationOutputRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DescribeApplicationVersionRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523DiscoverInputSchemaRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationsRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523ListApplicationVersionsRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523RollbackApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523StartApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523StopApplicationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523TagResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523UntagResourceRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationRouteHandler,
+  postXAmzTargetKinesisAnalytics20180523UpdateApplicationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationInputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationOutputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523CreateApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionHandler)
-  .route(
-    '/',
-    xAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationHandler,
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationCloudWatchLoggingOptionRouteHandler,
   )
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationOutputHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DescribeApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DescribeApplicationVersionHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523DiscoverInputSchemaHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523ListApplicationVersionsHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523ListApplicationsHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523ListTagsForResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523RollbackApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523StartApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523StopApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523TagResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523UntagResourceHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523UpdateApplicationHandler)
-  .route('/', xAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationHandler)
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationInputRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationInputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationInputProcessingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationOutputRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationOutputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationReferenceDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20180523AddApplicationVpcConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlRoute,
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationPresignedUrlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotRoute,
+    postXAmzTargetKinesisAnalytics20180523CreateApplicationSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationCloudWatchLoggingOptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationInputProcessingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationOutputRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationOutputRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationReferenceDataSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20180523DeleteApplicationVpcConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotRoute,
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationVersionRoute,
+    postXAmzTargetKinesisAnalytics20180523DescribeApplicationVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523DiscoverInputSchemaRoute,
+    postXAmzTargetKinesisAnalytics20180523DiscoverInputSchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsRoute,
+    postXAmzTargetKinesisAnalytics20180523ListApplicationSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523ListApplicationVersionsRoute,
+    postXAmzTargetKinesisAnalytics20180523ListApplicationVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523ListApplicationsRoute,
+    postXAmzTargetKinesisAnalytics20180523ListApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute,
+    postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523RollbackApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523RollbackApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523StartApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523StartApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523StopApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523StopApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523TagResourceRoute,
+    postXAmzTargetKinesisAnalytics20180523TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523UntagResourceRoute,
+    postXAmzTargetKinesisAnalytics20180523UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523UpdateApplicationRoute,
+    postXAmzTargetKinesisAnalytics20180523UpdateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationRoute,
+    postXAmzTargetKinesisAnalytics20180523UpdateApplicationMaintenanceConfigurationRouteHandler,
+  )
 
 export default app

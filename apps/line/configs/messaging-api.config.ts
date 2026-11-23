@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/messaging-api.yml',
   output: './src/messaging-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/messaging-api/types.ts' },
   client: { output: './src/messaging-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/messaging-api/rpc.ts', parseResponse: true },

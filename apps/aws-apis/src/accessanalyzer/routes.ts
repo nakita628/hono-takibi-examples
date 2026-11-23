@@ -566,12 +566,12 @@ const AccessPreviewStatusReasonSchema = z
   .openapi('AccessPreviewStatusReason')
 
 type AccessPreviewType = {
-  id: z.infer<typeof AccessPreviewIdSchema> & unknown
-  analyzerArn: z.infer<typeof AnalyzerArnSchema> & unknown
-  configurations: z.infer<typeof ConfigurationsMapSchema> & unknown
-  createdAt: z.infer<typeof TimestampSchema> & unknown
-  status: z.infer<typeof AccessPreviewStatusSchema> & unknown
-  statusReason?: z.infer<typeof AccessPreviewStatusReasonSchema> & unknown
+  id: z.infer<typeof AccessPreviewIdSchema>
+  analyzerArn: z.infer<typeof AnalyzerArnSchema>
+  configurations: z.infer<typeof ConfigurationsMapSchema>
+  createdAt: z.infer<typeof TimestampSchema>
+  status: z.infer<typeof AccessPreviewStatusSchema>
+  statusReason?: z.infer<typeof AccessPreviewStatusReasonSchema>
 }
 
 const AccessPreviewSchema: z.ZodType<AccessPreviewType> = z
@@ -601,7 +601,7 @@ const AccessPreviewSchema: z.ZodType<AccessPreviewType> = z
   })
   .openapi('AccessPreview')
 
-type GetAccessPreviewResponseType = { accessPreview: z.infer<typeof AccessPreviewSchema> & unknown }
+type GetAccessPreviewResponseType = { accessPreview: z.infer<typeof AccessPreviewSchema> }
 
 const StringSchema = z.string().openapi('String')
 
@@ -725,14 +725,14 @@ const ValidatePolicyFindingListSchema = z
 const TokenSchema = z.string().openapi('Token')
 
 type ValidatePolicyResponseType = {
-  findings: z.infer<typeof ValidatePolicyFindingListSchema> & unknown
-  nextToken?: z.infer<typeof TokenSchema> & unknown
+  findings: z.infer<typeof ValidatePolicyFindingListSchema>
+  nextToken?: z.infer<typeof TokenSchema>
 }
 
 type CreateAccessPreviewRequestType = {
-  analyzerArn: z.infer<typeof AnalyzerArnSchema> & unknown
-  configurations: z.infer<typeof ConfigurationsMapSchema> & unknown
-  clientToken?: z.infer<typeof StringSchema> & unknown
+  analyzerArn: z.infer<typeof AnalyzerArnSchema>
+  configurations: z.infer<typeof ConfigurationsMapSchema>
+  clientToken?: z.infer<typeof StringSchema>
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')

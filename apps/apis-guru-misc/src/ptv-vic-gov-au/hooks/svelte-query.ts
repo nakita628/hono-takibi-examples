@@ -1133,29 +1133,29 @@ export function createV3Outlets<
 }
 
 export function getV3OutletsLocationLatitudeLongitudeQueryKey(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['v3', '/v3/outlets/location/:latitude,:longitude', args] as const
+  return ['v3', '/v3/outlets/location/:latitude,{longitude}', args] as const
 }
 
 export function getV3OutletsLocationLatitudeLongitudeQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+          Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>>
         >
       >
     >,
@@ -1166,7 +1166,7 @@ export function getV3OutletsLocationLatitudeLongitudeQueryOptions<
     queryKey: getV3OutletsLocationLatitudeLongitudeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.v3.outlets.location[':latitude,:longitude'].$get(args, {
+        client.v3.outlets.location[':latitude,{longitude}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1179,13 +1179,15 @@ export function createV3OutletsLocationLatitudeLongitude<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>,
+  args: () => InferRequestType<
+    (typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']
+  >,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
@@ -1193,7 +1195,7 @@ export function createV3OutletsLocationLatitudeLongitude<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.v3.outlets.location)[':latitude,:longitude']['$get']>
+                ReturnType<(typeof client.v3.outlets.location)[':latitude,{longitude}']['$get']>
               >
             >
           >
@@ -1924,29 +1926,29 @@ export function createV3SearchSearchTerm<
 }
 
 export function getV3StopsLocationLatitudeLongitudeQueryKey(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
 ) {
-  return ['v3', '/v3/stops/location/:latitude,:longitude', args] as const
+  return ['v3', '/v3/stops/location/:latitude,{longitude}', args] as const
 }
 
 export function getV3StopsLocationLatitudeLongitudeQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+          Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
         >
       >
     >,
@@ -1957,7 +1959,7 @@ export function getV3StopsLocationLatitudeLongitudeQueryOptions<
     queryKey: getV3StopsLocationLatitudeLongitudeQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.v3.stops.location[':latitude,:longitude'].$get(args, {
+        client.v3.stops.location[':latitude,{longitude}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1970,20 +1972,22 @@ export function createV3StopsLocationLatitudeLongitude<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>,
+  args: () => InferRequestType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.v3.stops.location)[':latitude,:longitude']['$get']>>
+              Awaited<
+                ReturnType<(typeof client.v3.stops.location)[':latitude,{longitude}']['$get']>
+              >
             >
           >
         >,

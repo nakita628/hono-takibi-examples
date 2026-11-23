@@ -116,9 +116,9 @@ const DetectedMetricSourceSchema = z
   .openapi('DetectedMetricSource')
 
 type DetectedMetricSetConfigType = {
-  Offset?: z.infer<typeof DetectedFieldSchema> & unknown
-  MetricSetFrequency?: z.infer<typeof DetectedFieldSchema> & unknown
-  MetricSource?: z.infer<typeof DetectedMetricSourceSchema> & unknown
+  Offset?: z.infer<typeof DetectedFieldSchema>
+  MetricSetFrequency?: z.infer<typeof DetectedFieldSchema>
+  MetricSource?: z.infer<typeof DetectedMetricSourceSchema>
 }
 
 const DetectedMetricSetConfigSchema: z.ZodType<DetectedMetricSetConfigType> = z
@@ -135,7 +135,7 @@ const DetectedMetricSetConfigSchema: z.ZodType<DetectedMetricSetConfigType> = z
   .openapi('DetectedMetricSetConfig')
 
 type DetectMetricSetConfigResponseType = {
-  DetectedMetricSetConfig?: z.infer<typeof DetectedMetricSetConfigSchema> & unknown
+  DetectedMetricSetConfig?: z.infer<typeof DetectedMetricSetConfigSchema>
 }
 
 const TimestampStringSchema = z
@@ -241,12 +241,12 @@ const MetricLevelImpactListSchema = z
   .openapi('MetricLevelImpactList')
 
 type AnomalyGroupType = {
-  StartTime?: z.infer<typeof TimestampStringSchema> & unknown
-  EndTime?: z.infer<typeof TimestampStringSchema> & unknown
-  AnomalyGroupId?: z.infer<typeof UUIDSchema> & unknown
-  AnomalyGroupScore?: z.infer<typeof ScoreSchema> & unknown
-  PrimaryMetricName?: z.infer<typeof MetricNameSchema> & unknown
-  MetricLevelImpactList?: z.infer<typeof MetricLevelImpactListSchema> & unknown
+  StartTime?: z.infer<typeof TimestampStringSchema>
+  EndTime?: z.infer<typeof TimestampStringSchema>
+  AnomalyGroupId?: z.infer<typeof UUIDSchema>
+  AnomalyGroupScore?: z.infer<typeof ScoreSchema>
+  PrimaryMetricName?: z.infer<typeof MetricNameSchema>
+  MetricLevelImpactList?: z.infer<typeof MetricLevelImpactListSchema>
 }
 
 const AnomalyGroupSchema: z.ZodType<AnomalyGroupType> = z
@@ -273,7 +273,7 @@ const AnomalyGroupSchema: z.ZodType<AnomalyGroupType> = z
   .openapi({ description: 'A group of anomalous metrics', required: [] })
   .openapi('AnomalyGroup')
 
-type GetAnomalyGroupResponseType = { AnomalyGroup?: z.infer<typeof AnomalyGroupSchema> & unknown }
+type GetAnomalyGroupResponseType = { AnomalyGroup?: z.infer<typeof AnomalyGroupSchema> }
 
 const ActivateAnomalyDetectorResponseSchema = z
   .looseObject({})

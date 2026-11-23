@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteContactContactIdRoute, getContactContactIdRoute, postContactRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteContactContactIdRoute,
+  getContactContactIdRoute,
+  postContactRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteContactContactIdRouteHandler: RouteHandler<
+  typeof deleteContactContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contactHandler = app
-  .openapi(deleteContactContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getContactContactIdRouteHandler: RouteHandler<
+  typeof getContactContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactRouteHandler: RouteHandler<typeof postContactRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

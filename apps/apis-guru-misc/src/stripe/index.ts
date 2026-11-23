@@ -1,8 +1,1718 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler } from './handlers'
+import {
+  deleteV1AccountsAccountBankAccountsIdRoute,
+  deleteV1AccountsAccountExternalAccountsIdRoute,
+  deleteV1AccountsAccountPeoplePersonRoute,
+  deleteV1AccountsAccountPersonsPersonRoute,
+  deleteV1AccountsAccountRoute,
+  deleteV1ApplePayDomainsDomainRoute,
+  deleteV1CouponsCouponRoute,
+  deleteV1CustomersCustomerBankAccountsIdRoute,
+  deleteV1CustomersCustomerCardsIdRoute,
+  deleteV1CustomersCustomerDiscountRoute,
+  deleteV1CustomersCustomerRoute,
+  deleteV1CustomersCustomerSourcesIdRoute,
+  deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRoute,
+  deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+  deleteV1CustomersCustomerTaxIdsIdRoute,
+  deleteV1EphemeralKeysKeyRoute,
+  deleteV1InvoiceitemsInvoiceitemRoute,
+  deleteV1InvoicesInvoiceRoute,
+  deleteV1PlansPlanRoute,
+  deleteV1ProductsIdRoute,
+  deleteV1RadarValueListItemsItemRoute,
+  deleteV1RadarValueListsValueListRoute,
+  deleteV1SubscriptionItemsItemRoute,
+  deleteV1SubscriptionsSubscriptionExposedIdDiscountRoute,
+  deleteV1SubscriptionsSubscriptionExposedIdRoute,
+  deleteV1TerminalConfigurationsConfigurationRoute,
+  deleteV1TerminalLocationsLocationRoute,
+  deleteV1TerminalReadersReaderRoute,
+  deleteV1TestHelpersTestClocksTestClockRoute,
+  deleteV1WebhookEndpointsWebhookEndpointRoute,
+  getV1AccountRoute,
+  getV1AccountsAccountBankAccountsIdRoute,
+  getV1AccountsAccountCapabilitiesCapabilityRoute,
+  getV1AccountsAccountCapabilitiesRoute,
+  getV1AccountsAccountExternalAccountsIdRoute,
+  getV1AccountsAccountExternalAccountsRoute,
+  getV1AccountsAccountPeoplePersonRoute,
+  getV1AccountsAccountPeopleRoute,
+  getV1AccountsAccountPersonsPersonRoute,
+  getV1AccountsAccountPersonsRoute,
+  getV1AccountsAccountRoute,
+  getV1AccountsRoute,
+  getV1ApplePayDomainsDomainRoute,
+  getV1ApplePayDomainsRoute,
+  getV1ApplicationFeesFeeRefundsIdRoute,
+  getV1ApplicationFeesIdRefundsRoute,
+  getV1ApplicationFeesIdRoute,
+  getV1ApplicationFeesRoute,
+  getV1AppsSecretsFindRoute,
+  getV1AppsSecretsRoute,
+  getV1BalanceHistoryIdRoute,
+  getV1BalanceHistoryRoute,
+  getV1BalanceRoute,
+  getV1BalanceTransactionsIdRoute,
+  getV1BalanceTransactionsRoute,
+  getV1BillingPortalConfigurationsConfigurationRoute,
+  getV1BillingPortalConfigurationsRoute,
+  getV1ChargesChargeDisputeRoute,
+  getV1ChargesChargeRefundsRefundRoute,
+  getV1ChargesChargeRefundsRoute,
+  getV1ChargesChargeRoute,
+  getV1ChargesRoute,
+  getV1ChargesSearchRoute,
+  getV1CheckoutSessionsRoute,
+  getV1CheckoutSessionsSessionLineItemsRoute,
+  getV1CheckoutSessionsSessionRoute,
+  getV1CountrySpecsCountryRoute,
+  getV1CountrySpecsRoute,
+  getV1CouponsCouponRoute,
+  getV1CouponsRoute,
+  getV1CreditNotesCreditNoteLinesRoute,
+  getV1CreditNotesIdRoute,
+  getV1CreditNotesPreviewLinesRoute,
+  getV1CreditNotesPreviewRoute,
+  getV1CreditNotesRoute,
+  getV1CustomersCustomerBalanceTransactionsRoute,
+  getV1CustomersCustomerBalanceTransactionsTransactionRoute,
+  getV1CustomersCustomerBankAccountsIdRoute,
+  getV1CustomersCustomerBankAccountsRoute,
+  getV1CustomersCustomerCardsIdRoute,
+  getV1CustomersCustomerCardsRoute,
+  getV1CustomersCustomerCashBalanceRoute,
+  getV1CustomersCustomerCashBalanceTransactionsRoute,
+  getV1CustomersCustomerCashBalanceTransactionsTransactionRoute,
+  getV1CustomersCustomerDiscountRoute,
+  getV1CustomersCustomerPaymentMethodsPaymentMethodRoute,
+  getV1CustomersCustomerPaymentMethodsRoute,
+  getV1CustomersCustomerRoute,
+  getV1CustomersCustomerSourcesIdRoute,
+  getV1CustomersCustomerSourcesRoute,
+  getV1CustomersCustomerSubscriptionsRoute,
+  getV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRoute,
+  getV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+  getV1CustomersCustomerTaxIdsIdRoute,
+  getV1CustomersCustomerTaxIdsRoute,
+  getV1CustomersRoute,
+  getV1CustomersSearchRoute,
+  getV1DisputesDisputeRoute,
+  getV1DisputesRoute,
+  getV1EventsIdRoute,
+  getV1EventsRoute,
+  getV1ExchangeRatesRateIdRoute,
+  getV1ExchangeRatesRoute,
+  getV1FileLinksLinkRoute,
+  getV1FileLinksRoute,
+  getV1FilesFileRoute,
+  getV1FilesRoute,
+  getV1FinancialConnectionsAccountsAccountOwnersRoute,
+  getV1FinancialConnectionsAccountsAccountRoute,
+  getV1FinancialConnectionsAccountsRoute,
+  getV1FinancialConnectionsSessionsSessionRoute,
+  getV1IdentityVerificationReportsReportRoute,
+  getV1IdentityVerificationReportsRoute,
+  getV1IdentityVerificationSessionsRoute,
+  getV1IdentityVerificationSessionsSessionRoute,
+  getV1InvoiceitemsInvoiceitemRoute,
+  getV1InvoiceitemsRoute,
+  getV1InvoicesInvoiceLinesRoute,
+  getV1InvoicesInvoiceRoute,
+  getV1InvoicesRoute,
+  getV1InvoicesSearchRoute,
+  getV1InvoicesUpcomingLinesRoute,
+  getV1InvoicesUpcomingRoute,
+  getV1IssuingAuthorizationsAuthorizationRoute,
+  getV1IssuingAuthorizationsRoute,
+  getV1IssuingCardholdersCardholderRoute,
+  getV1IssuingCardholdersRoute,
+  getV1IssuingCardsCardRoute,
+  getV1IssuingCardsRoute,
+  getV1IssuingDisputesDisputeRoute,
+  getV1IssuingDisputesRoute,
+  getV1IssuingSettlementsRoute,
+  getV1IssuingSettlementsSettlementRoute,
+  getV1IssuingTransactionsRoute,
+  getV1IssuingTransactionsTransactionRoute,
+  getV1LinkAccountSessionsSessionRoute,
+  getV1LinkedAccountsAccountOwnersRoute,
+  getV1LinkedAccountsAccountRoute,
+  getV1LinkedAccountsRoute,
+  getV1MandatesMandateRoute,
+  getV1PaymentIntentsIntentRoute,
+  getV1PaymentIntentsRoute,
+  getV1PaymentIntentsSearchRoute,
+  getV1PaymentLinksPaymentLinkLineItemsRoute,
+  getV1PaymentLinksPaymentLinkRoute,
+  getV1PaymentLinksRoute,
+  getV1PaymentMethodsPaymentMethodRoute,
+  getV1PaymentMethodsRoute,
+  getV1PayoutsPayoutRoute,
+  getV1PayoutsRoute,
+  getV1PlansPlanRoute,
+  getV1PlansRoute,
+  getV1PricesPriceRoute,
+  getV1PricesRoute,
+  getV1PricesSearchRoute,
+  getV1ProductsIdRoute,
+  getV1ProductsRoute,
+  getV1ProductsSearchRoute,
+  getV1PromotionCodesPromotionCodeRoute,
+  getV1PromotionCodesRoute,
+  getV1QuotesQuoteComputedUpfrontLineItemsRoute,
+  getV1QuotesQuoteLineItemsRoute,
+  getV1QuotesQuotePdfRoute,
+  getV1QuotesQuoteRoute,
+  getV1QuotesRoute,
+  getV1RadarEarlyFraudWarningsEarlyFraudWarningRoute,
+  getV1RadarEarlyFraudWarningsRoute,
+  getV1RadarValueListItemsItemRoute,
+  getV1RadarValueListItemsRoute,
+  getV1RadarValueListsRoute,
+  getV1RadarValueListsValueListRoute,
+  getV1RefundsRefundRoute,
+  getV1RefundsRoute,
+  getV1ReportingReportRunsReportRunRoute,
+  getV1ReportingReportRunsRoute,
+  getV1ReportingReportTypesReportTypeRoute,
+  getV1ReportingReportTypesRoute,
+  getV1ReviewsReviewRoute,
+  getV1ReviewsRoute,
+  getV1SetupAttemptsRoute,
+  getV1SetupIntentsIntentRoute,
+  getV1SetupIntentsRoute,
+  getV1ShippingRatesRoute,
+  getV1ShippingRatesShippingRateTokenRoute,
+  getV1SigmaScheduledQueryRunsRoute,
+  getV1SigmaScheduledQueryRunsScheduledQueryRunRoute,
+  getV1SourcesSourceMandateNotificationsMandateNotificationRoute,
+  getV1SourcesSourceRoute,
+  getV1SourcesSourceSourceTransactionsRoute,
+  getV1SourcesSourceSourceTransactionsSourceTransactionRoute,
+  getV1SubscriptionItemsItemRoute,
+  getV1SubscriptionItemsRoute,
+  getV1SubscriptionItemsSubscriptionItemUsageRecordSummariesRoute,
+  getV1SubscriptionSchedulesRoute,
+  getV1SubscriptionSchedulesScheduleRoute,
+  getV1SubscriptionsRoute,
+  getV1SubscriptionsSearchRoute,
+  getV1SubscriptionsSubscriptionExposedIdRoute,
+  getV1TaxCodesIdRoute,
+  getV1TaxCodesRoute,
+  getV1TaxRatesRoute,
+  getV1TaxRatesTaxRateRoute,
+  getV1TerminalConfigurationsConfigurationRoute,
+  getV1TerminalConfigurationsRoute,
+  getV1TerminalLocationsLocationRoute,
+  getV1TerminalLocationsRoute,
+  getV1TerminalReadersReaderRoute,
+  getV1TerminalReadersRoute,
+  getV1TestHelpersTestClocksRoute,
+  getV1TestHelpersTestClocksTestClockRoute,
+  getV1TokensTokenRoute,
+  getV1TopupsRoute,
+  getV1TopupsTopupRoute,
+  getV1TransfersIdReversalsRoute,
+  getV1TransfersRoute,
+  getV1TransfersTransferReversalsIdRoute,
+  getV1TransfersTransferRoute,
+  getV1TreasuryCreditReversalsCreditReversalRoute,
+  getV1TreasuryCreditReversalsRoute,
+  getV1TreasuryDebitReversalsDebitReversalRoute,
+  getV1TreasuryDebitReversalsRoute,
+  getV1TreasuryFinancialAccountsFinancialAccountFeaturesRoute,
+  getV1TreasuryFinancialAccountsFinancialAccountRoute,
+  getV1TreasuryFinancialAccountsRoute,
+  getV1TreasuryInboundTransfersIdRoute,
+  getV1TreasuryInboundTransfersRoute,
+  getV1TreasuryOutboundPaymentsIdRoute,
+  getV1TreasuryOutboundPaymentsRoute,
+  getV1TreasuryOutboundTransfersOutboundTransferRoute,
+  getV1TreasuryOutboundTransfersRoute,
+  getV1TreasuryReceivedCreditsIdRoute,
+  getV1TreasuryReceivedCreditsRoute,
+  getV1TreasuryReceivedDebitsIdRoute,
+  getV1TreasuryReceivedDebitsRoute,
+  getV1TreasuryTransactionEntriesIdRoute,
+  getV1TreasuryTransactionEntriesRoute,
+  getV1TreasuryTransactionsIdRoute,
+  getV1TreasuryTransactionsRoute,
+  getV1WebhookEndpointsRoute,
+  getV1WebhookEndpointsWebhookEndpointRoute,
+  postV1AccountLinksRoute,
+  postV1AccountsAccountBankAccountsIdRoute,
+  postV1AccountsAccountBankAccountsRoute,
+  postV1AccountsAccountCapabilitiesCapabilityRoute,
+  postV1AccountsAccountExternalAccountsIdRoute,
+  postV1AccountsAccountExternalAccountsRoute,
+  postV1AccountsAccountLoginLinksRoute,
+  postV1AccountsAccountPeoplePersonRoute,
+  postV1AccountsAccountPeopleRoute,
+  postV1AccountsAccountPersonsPersonRoute,
+  postV1AccountsAccountPersonsRoute,
+  postV1AccountsAccountRejectRoute,
+  postV1AccountsAccountRoute,
+  postV1AccountsRoute,
+  postV1ApplePayDomainsRoute,
+  postV1ApplicationFeesFeeRefundsIdRoute,
+  postV1ApplicationFeesIdRefundRoute,
+  postV1ApplicationFeesIdRefundsRoute,
+  postV1AppsSecretsDeleteRoute,
+  postV1AppsSecretsRoute,
+  postV1BillingPortalConfigurationsConfigurationRoute,
+  postV1BillingPortalConfigurationsRoute,
+  postV1BillingPortalSessionsRoute,
+  postV1ChargesChargeCaptureRoute,
+  postV1ChargesChargeDisputeCloseRoute,
+  postV1ChargesChargeDisputeRoute,
+  postV1ChargesChargeRefundRoute,
+  postV1ChargesChargeRefundsRefundRoute,
+  postV1ChargesChargeRefundsRoute,
+  postV1ChargesChargeRoute,
+  postV1ChargesRoute,
+  postV1CheckoutSessionsRoute,
+  postV1CheckoutSessionsSessionExpireRoute,
+  postV1CouponsCouponRoute,
+  postV1CouponsRoute,
+  postV1CreditNotesIdRoute,
+  postV1CreditNotesIdVoidRoute,
+  postV1CreditNotesRoute,
+  postV1CustomersCustomerBalanceTransactionsRoute,
+  postV1CustomersCustomerBalanceTransactionsTransactionRoute,
+  postV1CustomersCustomerBankAccountsIdRoute,
+  postV1CustomersCustomerBankAccountsIdVerifyRoute,
+  postV1CustomersCustomerBankAccountsRoute,
+  postV1CustomersCustomerCardsIdRoute,
+  postV1CustomersCustomerCardsRoute,
+  postV1CustomersCustomerCashBalanceRoute,
+  postV1CustomersCustomerFundingInstructionsRoute,
+  postV1CustomersCustomerRoute,
+  postV1CustomersCustomerSourcesIdRoute,
+  postV1CustomersCustomerSourcesIdVerifyRoute,
+  postV1CustomersCustomerSourcesRoute,
+  postV1CustomersCustomerSubscriptionsRoute,
+  postV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+  postV1CustomersCustomerTaxIdsRoute,
+  postV1CustomersRoute,
+  postV1DisputesDisputeCloseRoute,
+  postV1DisputesDisputeRoute,
+  postV1EphemeralKeysRoute,
+  postV1FileLinksLinkRoute,
+  postV1FileLinksRoute,
+  postV1FilesRoute,
+  postV1FinancialConnectionsAccountsAccountDisconnectRoute,
+  postV1FinancialConnectionsAccountsAccountRefreshRoute,
+  postV1FinancialConnectionsSessionsRoute,
+  postV1IdentityVerificationSessionsRoute,
+  postV1IdentityVerificationSessionsSessionCancelRoute,
+  postV1IdentityVerificationSessionsSessionRedactRoute,
+  postV1IdentityVerificationSessionsSessionRoute,
+  postV1InvoiceitemsInvoiceitemRoute,
+  postV1InvoiceitemsRoute,
+  postV1InvoicesInvoiceFinalizeRoute,
+  postV1InvoicesInvoiceMarkUncollectibleRoute,
+  postV1InvoicesInvoicePayRoute,
+  postV1InvoicesInvoiceRoute,
+  postV1InvoicesInvoiceSendRoute,
+  postV1InvoicesInvoiceVoidRoute,
+  postV1InvoicesRoute,
+  postV1IssuingAuthorizationsAuthorizationApproveRoute,
+  postV1IssuingAuthorizationsAuthorizationDeclineRoute,
+  postV1IssuingAuthorizationsAuthorizationRoute,
+  postV1IssuingCardholdersCardholderRoute,
+  postV1IssuingCardholdersRoute,
+  postV1IssuingCardsCardRoute,
+  postV1IssuingCardsRoute,
+  postV1IssuingDisputesDisputeRoute,
+  postV1IssuingDisputesDisputeSubmitRoute,
+  postV1IssuingDisputesRoute,
+  postV1IssuingSettlementsSettlementRoute,
+  postV1IssuingTransactionsTransactionRoute,
+  postV1LinkAccountSessionsRoute,
+  postV1LinkedAccountsAccountDisconnectRoute,
+  postV1LinkedAccountsAccountRefreshRoute,
+  postV1PaymentIntentsIntentApplyCustomerBalanceRoute,
+  postV1PaymentIntentsIntentCancelRoute,
+  postV1PaymentIntentsIntentCaptureRoute,
+  postV1PaymentIntentsIntentConfirmRoute,
+  postV1PaymentIntentsIntentIncrementAuthorizationRoute,
+  postV1PaymentIntentsIntentRoute,
+  postV1PaymentIntentsIntentVerifyMicrodepositsRoute,
+  postV1PaymentIntentsRoute,
+  postV1PaymentLinksPaymentLinkRoute,
+  postV1PaymentLinksRoute,
+  postV1PaymentMethodsPaymentMethodAttachRoute,
+  postV1PaymentMethodsPaymentMethodDetachRoute,
+  postV1PaymentMethodsPaymentMethodRoute,
+  postV1PaymentMethodsRoute,
+  postV1PayoutsPayoutCancelRoute,
+  postV1PayoutsPayoutReverseRoute,
+  postV1PayoutsPayoutRoute,
+  postV1PayoutsRoute,
+  postV1PlansPlanRoute,
+  postV1PlansRoute,
+  postV1PricesPriceRoute,
+  postV1PricesRoute,
+  postV1ProductsIdRoute,
+  postV1ProductsRoute,
+  postV1PromotionCodesPromotionCodeRoute,
+  postV1PromotionCodesRoute,
+  postV1QuotesQuoteAcceptRoute,
+  postV1QuotesQuoteCancelRoute,
+  postV1QuotesQuoteFinalizeRoute,
+  postV1QuotesQuoteRoute,
+  postV1QuotesRoute,
+  postV1RadarValueListItemsRoute,
+  postV1RadarValueListsRoute,
+  postV1RadarValueListsValueListRoute,
+  postV1RefundsRefundCancelRoute,
+  postV1RefundsRefundRoute,
+  postV1RefundsRoute,
+  postV1ReportingReportRunsRoute,
+  postV1ReviewsReviewApproveRoute,
+  postV1SetupIntentsIntentCancelRoute,
+  postV1SetupIntentsIntentConfirmRoute,
+  postV1SetupIntentsIntentRoute,
+  postV1SetupIntentsIntentVerifyMicrodepositsRoute,
+  postV1SetupIntentsRoute,
+  postV1ShippingRatesRoute,
+  postV1ShippingRatesShippingRateTokenRoute,
+  postV1SourcesRoute,
+  postV1SourcesSourceRoute,
+  postV1SourcesSourceVerifyRoute,
+  postV1SubscriptionItemsItemRoute,
+  postV1SubscriptionItemsRoute,
+  postV1SubscriptionItemsSubscriptionItemUsageRecordsRoute,
+  postV1SubscriptionSchedulesRoute,
+  postV1SubscriptionSchedulesScheduleCancelRoute,
+  postV1SubscriptionSchedulesScheduleReleaseRoute,
+  postV1SubscriptionSchedulesScheduleRoute,
+  postV1SubscriptionsRoute,
+  postV1SubscriptionsSubscriptionExposedIdRoute,
+  postV1SubscriptionsSubscriptionResumeRoute,
+  postV1TaxRatesRoute,
+  postV1TaxRatesTaxRateRoute,
+  postV1TerminalConfigurationsConfigurationRoute,
+  postV1TerminalConfigurationsRoute,
+  postV1TerminalConnectionTokensRoute,
+  postV1TerminalLocationsLocationRoute,
+  postV1TerminalLocationsRoute,
+  postV1TerminalReadersReaderCancelActionRoute,
+  postV1TerminalReadersReaderProcessPaymentIntentRoute,
+  postV1TerminalReadersReaderProcessSetupIntentRoute,
+  postV1TerminalReadersReaderRefundPaymentRoute,
+  postV1TerminalReadersReaderRoute,
+  postV1TerminalReadersReaderSetReaderDisplayRoute,
+  postV1TerminalReadersRoute,
+  postV1TestHelpersCustomersCustomerFundCashBalanceRoute,
+  postV1TestHelpersIssuingCardsCardShippingDeliverRoute,
+  postV1TestHelpersIssuingCardsCardShippingFailRoute,
+  postV1TestHelpersIssuingCardsCardShippingReturnRoute,
+  postV1TestHelpersIssuingCardsCardShippingShipRoute,
+  postV1TestHelpersRefundsRefundExpireRoute,
+  postV1TestHelpersTerminalReadersReaderPresentPaymentMethodRoute,
+  postV1TestHelpersTestClocksRoute,
+  postV1TestHelpersTestClocksTestClockAdvanceRoute,
+  postV1TestHelpersTreasuryInboundTransfersIdFailRoute,
+  postV1TestHelpersTreasuryInboundTransfersIdReturnRoute,
+  postV1TestHelpersTreasuryInboundTransfersIdSucceedRoute,
+  postV1TestHelpersTreasuryOutboundPaymentsIdFailRoute,
+  postV1TestHelpersTreasuryOutboundPaymentsIdPostRoute,
+  postV1TestHelpersTreasuryOutboundPaymentsIdReturnRoute,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferFailRoute,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferPostRoute,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferReturnRoute,
+  postV1TestHelpersTreasuryReceivedCreditsRoute,
+  postV1TestHelpersTreasuryReceivedDebitsRoute,
+  postV1TokensRoute,
+  postV1TopupsRoute,
+  postV1TopupsTopupCancelRoute,
+  postV1TopupsTopupRoute,
+  postV1TransfersIdReversalsRoute,
+  postV1TransfersRoute,
+  postV1TransfersTransferReversalsIdRoute,
+  postV1TransfersTransferRoute,
+  postV1TreasuryCreditReversalsRoute,
+  postV1TreasuryDebitReversalsRoute,
+  postV1TreasuryFinancialAccountsFinancialAccountFeaturesRoute,
+  postV1TreasuryFinancialAccountsFinancialAccountRoute,
+  postV1TreasuryFinancialAccountsRoute,
+  postV1TreasuryInboundTransfersInboundTransferCancelRoute,
+  postV1TreasuryInboundTransfersRoute,
+  postV1TreasuryOutboundPaymentsIdCancelRoute,
+  postV1TreasuryOutboundPaymentsRoute,
+  postV1TreasuryOutboundTransfersOutboundTransferCancelRoute,
+  postV1TreasuryOutboundTransfersRoute,
+  postV1WebhookEndpointsRoute,
+  postV1WebhookEndpointsWebhookEndpointRoute,
+} from './routes'
+import {
+  deleteV1AccountsAccountBankAccountsIdRouteHandler,
+  deleteV1AccountsAccountExternalAccountsIdRouteHandler,
+  deleteV1AccountsAccountPeoplePersonRouteHandler,
+  deleteV1AccountsAccountPersonsPersonRouteHandler,
+  deleteV1AccountsAccountRouteHandler,
+  deleteV1ApplePayDomainsDomainRouteHandler,
+  deleteV1CouponsCouponRouteHandler,
+  deleteV1CustomersCustomerBankAccountsIdRouteHandler,
+  deleteV1CustomersCustomerCardsIdRouteHandler,
+  deleteV1CustomersCustomerDiscountRouteHandler,
+  deleteV1CustomersCustomerRouteHandler,
+  deleteV1CustomersCustomerSourcesIdRouteHandler,
+  deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  deleteV1CustomersCustomerTaxIdsIdRouteHandler,
+  deleteV1EphemeralKeysKeyRouteHandler,
+  deleteV1InvoiceitemsInvoiceitemRouteHandler,
+  deleteV1InvoicesInvoiceRouteHandler,
+  deleteV1PlansPlanRouteHandler,
+  deleteV1ProductsIdRouteHandler,
+  deleteV1RadarValueListItemsItemRouteHandler,
+  deleteV1RadarValueListsValueListRouteHandler,
+  deleteV1SubscriptionItemsItemRouteHandler,
+  deleteV1SubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  deleteV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  deleteV1TerminalConfigurationsConfigurationRouteHandler,
+  deleteV1TerminalLocationsLocationRouteHandler,
+  deleteV1TerminalReadersReaderRouteHandler,
+  deleteV1TestHelpersTestClocksTestClockRouteHandler,
+  deleteV1WebhookEndpointsWebhookEndpointRouteHandler,
+  getV1AccountRouteHandler,
+  getV1AccountsAccountBankAccountsIdRouteHandler,
+  getV1AccountsAccountCapabilitiesCapabilityRouteHandler,
+  getV1AccountsAccountCapabilitiesRouteHandler,
+  getV1AccountsAccountExternalAccountsIdRouteHandler,
+  getV1AccountsAccountExternalAccountsRouteHandler,
+  getV1AccountsAccountPeoplePersonRouteHandler,
+  getV1AccountsAccountPeopleRouteHandler,
+  getV1AccountsAccountPersonsPersonRouteHandler,
+  getV1AccountsAccountPersonsRouteHandler,
+  getV1AccountsAccountRouteHandler,
+  getV1AccountsRouteHandler,
+  getV1ApplePayDomainsDomainRouteHandler,
+  getV1ApplePayDomainsRouteHandler,
+  getV1ApplicationFeesFeeRefundsIdRouteHandler,
+  getV1ApplicationFeesIdRefundsRouteHandler,
+  getV1ApplicationFeesIdRouteHandler,
+  getV1ApplicationFeesRouteHandler,
+  getV1AppsSecretsFindRouteHandler,
+  getV1AppsSecretsRouteHandler,
+  getV1BalanceHistoryIdRouteHandler,
+  getV1BalanceHistoryRouteHandler,
+  getV1BalanceRouteHandler,
+  getV1BalanceTransactionsIdRouteHandler,
+  getV1BalanceTransactionsRouteHandler,
+  getV1BillingPortalConfigurationsConfigurationRouteHandler,
+  getV1BillingPortalConfigurationsRouteHandler,
+  getV1ChargesChargeDisputeRouteHandler,
+  getV1ChargesChargeRefundsRefundRouteHandler,
+  getV1ChargesChargeRefundsRouteHandler,
+  getV1ChargesChargeRouteHandler,
+  getV1ChargesRouteHandler,
+  getV1ChargesSearchRouteHandler,
+  getV1CheckoutSessionsRouteHandler,
+  getV1CheckoutSessionsSessionLineItemsRouteHandler,
+  getV1CheckoutSessionsSessionRouteHandler,
+  getV1CountrySpecsCountryRouteHandler,
+  getV1CountrySpecsRouteHandler,
+  getV1CouponsCouponRouteHandler,
+  getV1CouponsRouteHandler,
+  getV1CreditNotesCreditNoteLinesRouteHandler,
+  getV1CreditNotesIdRouteHandler,
+  getV1CreditNotesPreviewLinesRouteHandler,
+  getV1CreditNotesPreviewRouteHandler,
+  getV1CreditNotesRouteHandler,
+  getV1CustomersCustomerBalanceTransactionsRouteHandler,
+  getV1CustomersCustomerBalanceTransactionsTransactionRouteHandler,
+  getV1CustomersCustomerBankAccountsIdRouteHandler,
+  getV1CustomersCustomerBankAccountsRouteHandler,
+  getV1CustomersCustomerCardsIdRouteHandler,
+  getV1CustomersCustomerCardsRouteHandler,
+  getV1CustomersCustomerCashBalanceRouteHandler,
+  getV1CustomersCustomerCashBalanceTransactionsRouteHandler,
+  getV1CustomersCustomerCashBalanceTransactionsTransactionRouteHandler,
+  getV1CustomersCustomerDiscountRouteHandler,
+  getV1CustomersCustomerPaymentMethodsPaymentMethodRouteHandler,
+  getV1CustomersCustomerPaymentMethodsRouteHandler,
+  getV1CustomersCustomerRouteHandler,
+  getV1CustomersCustomerSourcesIdRouteHandler,
+  getV1CustomersCustomerSourcesRouteHandler,
+  getV1CustomersCustomerSubscriptionsRouteHandler,
+  getV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  getV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  getV1CustomersCustomerTaxIdsIdRouteHandler,
+  getV1CustomersCustomerTaxIdsRouteHandler,
+  getV1CustomersRouteHandler,
+  getV1CustomersSearchRouteHandler,
+  getV1DisputesDisputeRouteHandler,
+  getV1DisputesRouteHandler,
+  getV1EventsIdRouteHandler,
+  getV1EventsRouteHandler,
+  getV1ExchangeRatesRateIdRouteHandler,
+  getV1ExchangeRatesRouteHandler,
+  getV1FileLinksLinkRouteHandler,
+  getV1FileLinksRouteHandler,
+  getV1FilesFileRouteHandler,
+  getV1FilesRouteHandler,
+  getV1FinancialConnectionsAccountsAccountOwnersRouteHandler,
+  getV1FinancialConnectionsAccountsAccountRouteHandler,
+  getV1FinancialConnectionsAccountsRouteHandler,
+  getV1FinancialConnectionsSessionsSessionRouteHandler,
+  getV1IdentityVerificationReportsReportRouteHandler,
+  getV1IdentityVerificationReportsRouteHandler,
+  getV1IdentityVerificationSessionsRouteHandler,
+  getV1IdentityVerificationSessionsSessionRouteHandler,
+  getV1InvoiceitemsInvoiceitemRouteHandler,
+  getV1InvoiceitemsRouteHandler,
+  getV1InvoicesInvoiceLinesRouteHandler,
+  getV1InvoicesInvoiceRouteHandler,
+  getV1InvoicesRouteHandler,
+  getV1InvoicesSearchRouteHandler,
+  getV1InvoicesUpcomingLinesRouteHandler,
+  getV1InvoicesUpcomingRouteHandler,
+  getV1IssuingAuthorizationsAuthorizationRouteHandler,
+  getV1IssuingAuthorizationsRouteHandler,
+  getV1IssuingCardholdersCardholderRouteHandler,
+  getV1IssuingCardholdersRouteHandler,
+  getV1IssuingCardsCardRouteHandler,
+  getV1IssuingCardsRouteHandler,
+  getV1IssuingDisputesDisputeRouteHandler,
+  getV1IssuingDisputesRouteHandler,
+  getV1IssuingSettlementsRouteHandler,
+  getV1IssuingSettlementsSettlementRouteHandler,
+  getV1IssuingTransactionsRouteHandler,
+  getV1IssuingTransactionsTransactionRouteHandler,
+  getV1LinkAccountSessionsSessionRouteHandler,
+  getV1LinkedAccountsAccountOwnersRouteHandler,
+  getV1LinkedAccountsAccountRouteHandler,
+  getV1LinkedAccountsRouteHandler,
+  getV1MandatesMandateRouteHandler,
+  getV1PaymentIntentsIntentRouteHandler,
+  getV1PaymentIntentsRouteHandler,
+  getV1PaymentIntentsSearchRouteHandler,
+  getV1PaymentLinksPaymentLinkLineItemsRouteHandler,
+  getV1PaymentLinksPaymentLinkRouteHandler,
+  getV1PaymentLinksRouteHandler,
+  getV1PaymentMethodsPaymentMethodRouteHandler,
+  getV1PaymentMethodsRouteHandler,
+  getV1PayoutsPayoutRouteHandler,
+  getV1PayoutsRouteHandler,
+  getV1PlansPlanRouteHandler,
+  getV1PlansRouteHandler,
+  getV1PricesPriceRouteHandler,
+  getV1PricesRouteHandler,
+  getV1PricesSearchRouteHandler,
+  getV1ProductsIdRouteHandler,
+  getV1ProductsRouteHandler,
+  getV1ProductsSearchRouteHandler,
+  getV1PromotionCodesPromotionCodeRouteHandler,
+  getV1PromotionCodesRouteHandler,
+  getV1QuotesQuoteComputedUpfrontLineItemsRouteHandler,
+  getV1QuotesQuoteLineItemsRouteHandler,
+  getV1QuotesQuotePdfRouteHandler,
+  getV1QuotesQuoteRouteHandler,
+  getV1QuotesRouteHandler,
+  getV1RadarEarlyFraudWarningsEarlyFraudWarningRouteHandler,
+  getV1RadarEarlyFraudWarningsRouteHandler,
+  getV1RadarValueListItemsItemRouteHandler,
+  getV1RadarValueListItemsRouteHandler,
+  getV1RadarValueListsRouteHandler,
+  getV1RadarValueListsValueListRouteHandler,
+  getV1RefundsRefundRouteHandler,
+  getV1RefundsRouteHandler,
+  getV1ReportingReportRunsReportRunRouteHandler,
+  getV1ReportingReportRunsRouteHandler,
+  getV1ReportingReportTypesReportTypeRouteHandler,
+  getV1ReportingReportTypesRouteHandler,
+  getV1ReviewsReviewRouteHandler,
+  getV1ReviewsRouteHandler,
+  getV1SetupAttemptsRouteHandler,
+  getV1SetupIntentsIntentRouteHandler,
+  getV1SetupIntentsRouteHandler,
+  getV1ShippingRatesRouteHandler,
+  getV1ShippingRatesShippingRateTokenRouteHandler,
+  getV1SigmaScheduledQueryRunsRouteHandler,
+  getV1SigmaScheduledQueryRunsScheduledQueryRunRouteHandler,
+  getV1SourcesSourceMandateNotificationsMandateNotificationRouteHandler,
+  getV1SourcesSourceRouteHandler,
+  getV1SourcesSourceSourceTransactionsRouteHandler,
+  getV1SourcesSourceSourceTransactionsSourceTransactionRouteHandler,
+  getV1SubscriptionItemsItemRouteHandler,
+  getV1SubscriptionItemsRouteHandler,
+  getV1SubscriptionItemsSubscriptionItemUsageRecordSummariesRouteHandler,
+  getV1SubscriptionSchedulesRouteHandler,
+  getV1SubscriptionSchedulesScheduleRouteHandler,
+  getV1SubscriptionsRouteHandler,
+  getV1SubscriptionsSearchRouteHandler,
+  getV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  getV1TaxCodesIdRouteHandler,
+  getV1TaxCodesRouteHandler,
+  getV1TaxRatesRouteHandler,
+  getV1TaxRatesTaxRateRouteHandler,
+  getV1TerminalConfigurationsConfigurationRouteHandler,
+  getV1TerminalConfigurationsRouteHandler,
+  getV1TerminalLocationsLocationRouteHandler,
+  getV1TerminalLocationsRouteHandler,
+  getV1TerminalReadersReaderRouteHandler,
+  getV1TerminalReadersRouteHandler,
+  getV1TestHelpersTestClocksRouteHandler,
+  getV1TestHelpersTestClocksTestClockRouteHandler,
+  getV1TokensTokenRouteHandler,
+  getV1TopupsRouteHandler,
+  getV1TopupsTopupRouteHandler,
+  getV1TransfersIdReversalsRouteHandler,
+  getV1TransfersRouteHandler,
+  getV1TransfersTransferReversalsIdRouteHandler,
+  getV1TransfersTransferRouteHandler,
+  getV1TreasuryCreditReversalsCreditReversalRouteHandler,
+  getV1TreasuryCreditReversalsRouteHandler,
+  getV1TreasuryDebitReversalsDebitReversalRouteHandler,
+  getV1TreasuryDebitReversalsRouteHandler,
+  getV1TreasuryFinancialAccountsFinancialAccountFeaturesRouteHandler,
+  getV1TreasuryFinancialAccountsFinancialAccountRouteHandler,
+  getV1TreasuryFinancialAccountsRouteHandler,
+  getV1TreasuryInboundTransfersIdRouteHandler,
+  getV1TreasuryInboundTransfersRouteHandler,
+  getV1TreasuryOutboundPaymentsIdRouteHandler,
+  getV1TreasuryOutboundPaymentsRouteHandler,
+  getV1TreasuryOutboundTransfersOutboundTransferRouteHandler,
+  getV1TreasuryOutboundTransfersRouteHandler,
+  getV1TreasuryReceivedCreditsIdRouteHandler,
+  getV1TreasuryReceivedCreditsRouteHandler,
+  getV1TreasuryReceivedDebitsIdRouteHandler,
+  getV1TreasuryReceivedDebitsRouteHandler,
+  getV1TreasuryTransactionEntriesIdRouteHandler,
+  getV1TreasuryTransactionEntriesRouteHandler,
+  getV1TreasuryTransactionsIdRouteHandler,
+  getV1TreasuryTransactionsRouteHandler,
+  getV1WebhookEndpointsRouteHandler,
+  getV1WebhookEndpointsWebhookEndpointRouteHandler,
+  postV1AccountLinksRouteHandler,
+  postV1AccountsAccountBankAccountsIdRouteHandler,
+  postV1AccountsAccountBankAccountsRouteHandler,
+  postV1AccountsAccountCapabilitiesCapabilityRouteHandler,
+  postV1AccountsAccountExternalAccountsIdRouteHandler,
+  postV1AccountsAccountExternalAccountsRouteHandler,
+  postV1AccountsAccountLoginLinksRouteHandler,
+  postV1AccountsAccountPeoplePersonRouteHandler,
+  postV1AccountsAccountPeopleRouteHandler,
+  postV1AccountsAccountPersonsPersonRouteHandler,
+  postV1AccountsAccountPersonsRouteHandler,
+  postV1AccountsAccountRejectRouteHandler,
+  postV1AccountsAccountRouteHandler,
+  postV1AccountsRouteHandler,
+  postV1ApplePayDomainsRouteHandler,
+  postV1ApplicationFeesFeeRefundsIdRouteHandler,
+  postV1ApplicationFeesIdRefundRouteHandler,
+  postV1ApplicationFeesIdRefundsRouteHandler,
+  postV1AppsSecretsDeleteRouteHandler,
+  postV1AppsSecretsRouteHandler,
+  postV1BillingPortalConfigurationsConfigurationRouteHandler,
+  postV1BillingPortalConfigurationsRouteHandler,
+  postV1BillingPortalSessionsRouteHandler,
+  postV1ChargesChargeCaptureRouteHandler,
+  postV1ChargesChargeDisputeCloseRouteHandler,
+  postV1ChargesChargeDisputeRouteHandler,
+  postV1ChargesChargeRefundRouteHandler,
+  postV1ChargesChargeRefundsRefundRouteHandler,
+  postV1ChargesChargeRefundsRouteHandler,
+  postV1ChargesChargeRouteHandler,
+  postV1ChargesRouteHandler,
+  postV1CheckoutSessionsRouteHandler,
+  postV1CheckoutSessionsSessionExpireRouteHandler,
+  postV1CouponsCouponRouteHandler,
+  postV1CouponsRouteHandler,
+  postV1CreditNotesIdRouteHandler,
+  postV1CreditNotesIdVoidRouteHandler,
+  postV1CreditNotesRouteHandler,
+  postV1CustomersCustomerBalanceTransactionsRouteHandler,
+  postV1CustomersCustomerBalanceTransactionsTransactionRouteHandler,
+  postV1CustomersCustomerBankAccountsIdRouteHandler,
+  postV1CustomersCustomerBankAccountsIdVerifyRouteHandler,
+  postV1CustomersCustomerBankAccountsRouteHandler,
+  postV1CustomersCustomerCardsIdRouteHandler,
+  postV1CustomersCustomerCardsRouteHandler,
+  postV1CustomersCustomerCashBalanceRouteHandler,
+  postV1CustomersCustomerFundingInstructionsRouteHandler,
+  postV1CustomersCustomerRouteHandler,
+  postV1CustomersCustomerSourcesIdRouteHandler,
+  postV1CustomersCustomerSourcesIdVerifyRouteHandler,
+  postV1CustomersCustomerSourcesRouteHandler,
+  postV1CustomersCustomerSubscriptionsRouteHandler,
+  postV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  postV1CustomersCustomerTaxIdsRouteHandler,
+  postV1CustomersRouteHandler,
+  postV1DisputesDisputeCloseRouteHandler,
+  postV1DisputesDisputeRouteHandler,
+  postV1EphemeralKeysRouteHandler,
+  postV1FileLinksLinkRouteHandler,
+  postV1FileLinksRouteHandler,
+  postV1FilesRouteHandler,
+  postV1FinancialConnectionsAccountsAccountDisconnectRouteHandler,
+  postV1FinancialConnectionsAccountsAccountRefreshRouteHandler,
+  postV1FinancialConnectionsSessionsRouteHandler,
+  postV1IdentityVerificationSessionsRouteHandler,
+  postV1IdentityVerificationSessionsSessionCancelRouteHandler,
+  postV1IdentityVerificationSessionsSessionRedactRouteHandler,
+  postV1IdentityVerificationSessionsSessionRouteHandler,
+  postV1InvoiceitemsInvoiceitemRouteHandler,
+  postV1InvoiceitemsRouteHandler,
+  postV1InvoicesInvoiceFinalizeRouteHandler,
+  postV1InvoicesInvoiceMarkUncollectibleRouteHandler,
+  postV1InvoicesInvoicePayRouteHandler,
+  postV1InvoicesInvoiceRouteHandler,
+  postV1InvoicesInvoiceSendRouteHandler,
+  postV1InvoicesInvoiceVoidRouteHandler,
+  postV1InvoicesRouteHandler,
+  postV1IssuingAuthorizationsAuthorizationApproveRouteHandler,
+  postV1IssuingAuthorizationsAuthorizationDeclineRouteHandler,
+  postV1IssuingAuthorizationsAuthorizationRouteHandler,
+  postV1IssuingCardholdersCardholderRouteHandler,
+  postV1IssuingCardholdersRouteHandler,
+  postV1IssuingCardsCardRouteHandler,
+  postV1IssuingCardsRouteHandler,
+  postV1IssuingDisputesDisputeRouteHandler,
+  postV1IssuingDisputesDisputeSubmitRouteHandler,
+  postV1IssuingDisputesRouteHandler,
+  postV1IssuingSettlementsSettlementRouteHandler,
+  postV1IssuingTransactionsTransactionRouteHandler,
+  postV1LinkAccountSessionsRouteHandler,
+  postV1LinkedAccountsAccountDisconnectRouteHandler,
+  postV1LinkedAccountsAccountRefreshRouteHandler,
+  postV1PaymentIntentsIntentApplyCustomerBalanceRouteHandler,
+  postV1PaymentIntentsIntentCancelRouteHandler,
+  postV1PaymentIntentsIntentCaptureRouteHandler,
+  postV1PaymentIntentsIntentConfirmRouteHandler,
+  postV1PaymentIntentsIntentIncrementAuthorizationRouteHandler,
+  postV1PaymentIntentsIntentRouteHandler,
+  postV1PaymentIntentsIntentVerifyMicrodepositsRouteHandler,
+  postV1PaymentIntentsRouteHandler,
+  postV1PaymentLinksPaymentLinkRouteHandler,
+  postV1PaymentLinksRouteHandler,
+  postV1PaymentMethodsPaymentMethodAttachRouteHandler,
+  postV1PaymentMethodsPaymentMethodDetachRouteHandler,
+  postV1PaymentMethodsPaymentMethodRouteHandler,
+  postV1PaymentMethodsRouteHandler,
+  postV1PayoutsPayoutCancelRouteHandler,
+  postV1PayoutsPayoutReverseRouteHandler,
+  postV1PayoutsPayoutRouteHandler,
+  postV1PayoutsRouteHandler,
+  postV1PlansPlanRouteHandler,
+  postV1PlansRouteHandler,
+  postV1PricesPriceRouteHandler,
+  postV1PricesRouteHandler,
+  postV1ProductsIdRouteHandler,
+  postV1ProductsRouteHandler,
+  postV1PromotionCodesPromotionCodeRouteHandler,
+  postV1PromotionCodesRouteHandler,
+  postV1QuotesQuoteAcceptRouteHandler,
+  postV1QuotesQuoteCancelRouteHandler,
+  postV1QuotesQuoteFinalizeRouteHandler,
+  postV1QuotesQuoteRouteHandler,
+  postV1QuotesRouteHandler,
+  postV1RadarValueListItemsRouteHandler,
+  postV1RadarValueListsRouteHandler,
+  postV1RadarValueListsValueListRouteHandler,
+  postV1RefundsRefundCancelRouteHandler,
+  postV1RefundsRefundRouteHandler,
+  postV1RefundsRouteHandler,
+  postV1ReportingReportRunsRouteHandler,
+  postV1ReviewsReviewApproveRouteHandler,
+  postV1SetupIntentsIntentCancelRouteHandler,
+  postV1SetupIntentsIntentConfirmRouteHandler,
+  postV1SetupIntentsIntentRouteHandler,
+  postV1SetupIntentsIntentVerifyMicrodepositsRouteHandler,
+  postV1SetupIntentsRouteHandler,
+  postV1ShippingRatesRouteHandler,
+  postV1ShippingRatesShippingRateTokenRouteHandler,
+  postV1SourcesRouteHandler,
+  postV1SourcesSourceRouteHandler,
+  postV1SourcesSourceVerifyRouteHandler,
+  postV1SubscriptionItemsItemRouteHandler,
+  postV1SubscriptionItemsRouteHandler,
+  postV1SubscriptionItemsSubscriptionItemUsageRecordsRouteHandler,
+  postV1SubscriptionSchedulesRouteHandler,
+  postV1SubscriptionSchedulesScheduleCancelRouteHandler,
+  postV1SubscriptionSchedulesScheduleReleaseRouteHandler,
+  postV1SubscriptionSchedulesScheduleRouteHandler,
+  postV1SubscriptionsRouteHandler,
+  postV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  postV1SubscriptionsSubscriptionResumeRouteHandler,
+  postV1TaxRatesRouteHandler,
+  postV1TaxRatesTaxRateRouteHandler,
+  postV1TerminalConfigurationsConfigurationRouteHandler,
+  postV1TerminalConfigurationsRouteHandler,
+  postV1TerminalConnectionTokensRouteHandler,
+  postV1TerminalLocationsLocationRouteHandler,
+  postV1TerminalLocationsRouteHandler,
+  postV1TerminalReadersReaderCancelActionRouteHandler,
+  postV1TerminalReadersReaderProcessPaymentIntentRouteHandler,
+  postV1TerminalReadersReaderProcessSetupIntentRouteHandler,
+  postV1TerminalReadersReaderRefundPaymentRouteHandler,
+  postV1TerminalReadersReaderRouteHandler,
+  postV1TerminalReadersReaderSetReaderDisplayRouteHandler,
+  postV1TerminalReadersRouteHandler,
+  postV1TestHelpersCustomersCustomerFundCashBalanceRouteHandler,
+  postV1TestHelpersIssuingCardsCardShippingDeliverRouteHandler,
+  postV1TestHelpersIssuingCardsCardShippingFailRouteHandler,
+  postV1TestHelpersIssuingCardsCardShippingReturnRouteHandler,
+  postV1TestHelpersIssuingCardsCardShippingShipRouteHandler,
+  postV1TestHelpersRefundsRefundExpireRouteHandler,
+  postV1TestHelpersTerminalReadersReaderPresentPaymentMethodRouteHandler,
+  postV1TestHelpersTestClocksRouteHandler,
+  postV1TestHelpersTestClocksTestClockAdvanceRouteHandler,
+  postV1TestHelpersTreasuryInboundTransfersIdFailRouteHandler,
+  postV1TestHelpersTreasuryInboundTransfersIdReturnRouteHandler,
+  postV1TestHelpersTreasuryInboundTransfersIdSucceedRouteHandler,
+  postV1TestHelpersTreasuryOutboundPaymentsIdFailRouteHandler,
+  postV1TestHelpersTreasuryOutboundPaymentsIdPostRouteHandler,
+  postV1TestHelpersTreasuryOutboundPaymentsIdReturnRouteHandler,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferFailRouteHandler,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferPostRouteHandler,
+  postV1TestHelpersTreasuryOutboundTransfersOutboundTransferReturnRouteHandler,
+  postV1TestHelpersTreasuryReceivedCreditsRouteHandler,
+  postV1TestHelpersTreasuryReceivedDebitsRouteHandler,
+  postV1TokensRouteHandler,
+  postV1TopupsRouteHandler,
+  postV1TopupsTopupCancelRouteHandler,
+  postV1TopupsTopupRouteHandler,
+  postV1TransfersIdReversalsRouteHandler,
+  postV1TransfersRouteHandler,
+  postV1TransfersTransferReversalsIdRouteHandler,
+  postV1TransfersTransferRouteHandler,
+  postV1TreasuryCreditReversalsRouteHandler,
+  postV1TreasuryDebitReversalsRouteHandler,
+  postV1TreasuryFinancialAccountsFinancialAccountFeaturesRouteHandler,
+  postV1TreasuryFinancialAccountsFinancialAccountRouteHandler,
+  postV1TreasuryFinancialAccountsRouteHandler,
+  postV1TreasuryInboundTransfersInboundTransferCancelRouteHandler,
+  postV1TreasuryInboundTransfersRouteHandler,
+  postV1TreasuryOutboundPaymentsIdCancelRouteHandler,
+  postV1TreasuryOutboundPaymentsRouteHandler,
+  postV1TreasuryOutboundTransfersOutboundTransferCancelRouteHandler,
+  postV1TreasuryOutboundTransfersRouteHandler,
+  postV1WebhookEndpointsRouteHandler,
+  postV1WebhookEndpointsWebhookEndpointRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler)
+export const api = app
+  .openapi(getV1AccountRoute, getV1AccountRouteHandler)
+  .openapi(postV1AccountLinksRoute, postV1AccountLinksRouteHandler)
+  .openapi(getV1AccountsRoute, getV1AccountsRouteHandler)
+  .openapi(postV1AccountsRoute, postV1AccountsRouteHandler)
+  .openapi(deleteV1AccountsAccountRoute, deleteV1AccountsAccountRouteHandler)
+  .openapi(getV1AccountsAccountRoute, getV1AccountsAccountRouteHandler)
+  .openapi(postV1AccountsAccountRoute, postV1AccountsAccountRouteHandler)
+  .openapi(postV1AccountsAccountBankAccountsRoute, postV1AccountsAccountBankAccountsRouteHandler)
+  .openapi(
+    deleteV1AccountsAccountBankAccountsIdRoute,
+    deleteV1AccountsAccountBankAccountsIdRouteHandler,
+  )
+  .openapi(getV1AccountsAccountBankAccountsIdRoute, getV1AccountsAccountBankAccountsIdRouteHandler)
+  .openapi(
+    postV1AccountsAccountBankAccountsIdRoute,
+    postV1AccountsAccountBankAccountsIdRouteHandler,
+  )
+  .openapi(getV1AccountsAccountCapabilitiesRoute, getV1AccountsAccountCapabilitiesRouteHandler)
+  .openapi(
+    getV1AccountsAccountCapabilitiesCapabilityRoute,
+    getV1AccountsAccountCapabilitiesCapabilityRouteHandler,
+  )
+  .openapi(
+    postV1AccountsAccountCapabilitiesCapabilityRoute,
+    postV1AccountsAccountCapabilitiesCapabilityRouteHandler,
+  )
+  .openapi(
+    getV1AccountsAccountExternalAccountsRoute,
+    getV1AccountsAccountExternalAccountsRouteHandler,
+  )
+  .openapi(
+    postV1AccountsAccountExternalAccountsRoute,
+    postV1AccountsAccountExternalAccountsRouteHandler,
+  )
+  .openapi(
+    deleteV1AccountsAccountExternalAccountsIdRoute,
+    deleteV1AccountsAccountExternalAccountsIdRouteHandler,
+  )
+  .openapi(
+    getV1AccountsAccountExternalAccountsIdRoute,
+    getV1AccountsAccountExternalAccountsIdRouteHandler,
+  )
+  .openapi(
+    postV1AccountsAccountExternalAccountsIdRoute,
+    postV1AccountsAccountExternalAccountsIdRouteHandler,
+  )
+  .openapi(postV1AccountsAccountLoginLinksRoute, postV1AccountsAccountLoginLinksRouteHandler)
+  .openapi(getV1AccountsAccountPeopleRoute, getV1AccountsAccountPeopleRouteHandler)
+  .openapi(postV1AccountsAccountPeopleRoute, postV1AccountsAccountPeopleRouteHandler)
+  .openapi(
+    deleteV1AccountsAccountPeoplePersonRoute,
+    deleteV1AccountsAccountPeoplePersonRouteHandler,
+  )
+  .openapi(getV1AccountsAccountPeoplePersonRoute, getV1AccountsAccountPeoplePersonRouteHandler)
+  .openapi(postV1AccountsAccountPeoplePersonRoute, postV1AccountsAccountPeoplePersonRouteHandler)
+  .openapi(getV1AccountsAccountPersonsRoute, getV1AccountsAccountPersonsRouteHandler)
+  .openapi(postV1AccountsAccountPersonsRoute, postV1AccountsAccountPersonsRouteHandler)
+  .openapi(
+    deleteV1AccountsAccountPersonsPersonRoute,
+    deleteV1AccountsAccountPersonsPersonRouteHandler,
+  )
+  .openapi(getV1AccountsAccountPersonsPersonRoute, getV1AccountsAccountPersonsPersonRouteHandler)
+  .openapi(postV1AccountsAccountPersonsPersonRoute, postV1AccountsAccountPersonsPersonRouteHandler)
+  .openapi(postV1AccountsAccountRejectRoute, postV1AccountsAccountRejectRouteHandler)
+  .openapi(getV1ApplePayDomainsRoute, getV1ApplePayDomainsRouteHandler)
+  .openapi(postV1ApplePayDomainsRoute, postV1ApplePayDomainsRouteHandler)
+  .openapi(deleteV1ApplePayDomainsDomainRoute, deleteV1ApplePayDomainsDomainRouteHandler)
+  .openapi(getV1ApplePayDomainsDomainRoute, getV1ApplePayDomainsDomainRouteHandler)
+  .openapi(getV1ApplicationFeesRoute, getV1ApplicationFeesRouteHandler)
+  .openapi(getV1ApplicationFeesFeeRefundsIdRoute, getV1ApplicationFeesFeeRefundsIdRouteHandler)
+  .openapi(postV1ApplicationFeesFeeRefundsIdRoute, postV1ApplicationFeesFeeRefundsIdRouteHandler)
+  .openapi(getV1ApplicationFeesIdRoute, getV1ApplicationFeesIdRouteHandler)
+  .openapi(postV1ApplicationFeesIdRefundRoute, postV1ApplicationFeesIdRefundRouteHandler)
+  .openapi(getV1ApplicationFeesIdRefundsRoute, getV1ApplicationFeesIdRefundsRouteHandler)
+  .openapi(postV1ApplicationFeesIdRefundsRoute, postV1ApplicationFeesIdRefundsRouteHandler)
+  .openapi(getV1AppsSecretsRoute, getV1AppsSecretsRouteHandler)
+  .openapi(postV1AppsSecretsRoute, postV1AppsSecretsRouteHandler)
+  .openapi(postV1AppsSecretsDeleteRoute, postV1AppsSecretsDeleteRouteHandler)
+  .openapi(getV1AppsSecretsFindRoute, getV1AppsSecretsFindRouteHandler)
+  .openapi(getV1BalanceRoute, getV1BalanceRouteHandler)
+  .openapi(getV1BalanceHistoryRoute, getV1BalanceHistoryRouteHandler)
+  .openapi(getV1BalanceHistoryIdRoute, getV1BalanceHistoryIdRouteHandler)
+  .openapi(getV1BalanceTransactionsRoute, getV1BalanceTransactionsRouteHandler)
+  .openapi(getV1BalanceTransactionsIdRoute, getV1BalanceTransactionsIdRouteHandler)
+  .openapi(getV1BillingPortalConfigurationsRoute, getV1BillingPortalConfigurationsRouteHandler)
+  .openapi(postV1BillingPortalConfigurationsRoute, postV1BillingPortalConfigurationsRouteHandler)
+  .openapi(
+    getV1BillingPortalConfigurationsConfigurationRoute,
+    getV1BillingPortalConfigurationsConfigurationRouteHandler,
+  )
+  .openapi(
+    postV1BillingPortalConfigurationsConfigurationRoute,
+    postV1BillingPortalConfigurationsConfigurationRouteHandler,
+  )
+  .openapi(postV1BillingPortalSessionsRoute, postV1BillingPortalSessionsRouteHandler)
+  .openapi(getV1ChargesRoute, getV1ChargesRouteHandler)
+  .openapi(postV1ChargesRoute, postV1ChargesRouteHandler)
+  .openapi(getV1ChargesSearchRoute, getV1ChargesSearchRouteHandler)
+  .openapi(getV1ChargesChargeRoute, getV1ChargesChargeRouteHandler)
+  .openapi(postV1ChargesChargeRoute, postV1ChargesChargeRouteHandler)
+  .openapi(postV1ChargesChargeCaptureRoute, postV1ChargesChargeCaptureRouteHandler)
+  .openapi(getV1ChargesChargeDisputeRoute, getV1ChargesChargeDisputeRouteHandler)
+  .openapi(postV1ChargesChargeDisputeRoute, postV1ChargesChargeDisputeRouteHandler)
+  .openapi(postV1ChargesChargeDisputeCloseRoute, postV1ChargesChargeDisputeCloseRouteHandler)
+  .openapi(postV1ChargesChargeRefundRoute, postV1ChargesChargeRefundRouteHandler)
+  .openapi(getV1ChargesChargeRefundsRoute, getV1ChargesChargeRefundsRouteHandler)
+  .openapi(postV1ChargesChargeRefundsRoute, postV1ChargesChargeRefundsRouteHandler)
+  .openapi(getV1ChargesChargeRefundsRefundRoute, getV1ChargesChargeRefundsRefundRouteHandler)
+  .openapi(postV1ChargesChargeRefundsRefundRoute, postV1ChargesChargeRefundsRefundRouteHandler)
+  .openapi(getV1CheckoutSessionsRoute, getV1CheckoutSessionsRouteHandler)
+  .openapi(postV1CheckoutSessionsRoute, postV1CheckoutSessionsRouteHandler)
+  .openapi(getV1CheckoutSessionsSessionRoute, getV1CheckoutSessionsSessionRouteHandler)
+  .openapi(
+    postV1CheckoutSessionsSessionExpireRoute,
+    postV1CheckoutSessionsSessionExpireRouteHandler,
+  )
+  .openapi(
+    getV1CheckoutSessionsSessionLineItemsRoute,
+    getV1CheckoutSessionsSessionLineItemsRouteHandler,
+  )
+  .openapi(getV1CountrySpecsRoute, getV1CountrySpecsRouteHandler)
+  .openapi(getV1CountrySpecsCountryRoute, getV1CountrySpecsCountryRouteHandler)
+  .openapi(getV1CouponsRoute, getV1CouponsRouteHandler)
+  .openapi(postV1CouponsRoute, postV1CouponsRouteHandler)
+  .openapi(deleteV1CouponsCouponRoute, deleteV1CouponsCouponRouteHandler)
+  .openapi(getV1CouponsCouponRoute, getV1CouponsCouponRouteHandler)
+  .openapi(postV1CouponsCouponRoute, postV1CouponsCouponRouteHandler)
+  .openapi(getV1CreditNotesRoute, getV1CreditNotesRouteHandler)
+  .openapi(postV1CreditNotesRoute, postV1CreditNotesRouteHandler)
+  .openapi(getV1CreditNotesPreviewRoute, getV1CreditNotesPreviewRouteHandler)
+  .openapi(getV1CreditNotesPreviewLinesRoute, getV1CreditNotesPreviewLinesRouteHandler)
+  .openapi(getV1CreditNotesCreditNoteLinesRoute, getV1CreditNotesCreditNoteLinesRouteHandler)
+  .openapi(getV1CreditNotesIdRoute, getV1CreditNotesIdRouteHandler)
+  .openapi(postV1CreditNotesIdRoute, postV1CreditNotesIdRouteHandler)
+  .openapi(postV1CreditNotesIdVoidRoute, postV1CreditNotesIdVoidRouteHandler)
+  .openapi(getV1CustomersRoute, getV1CustomersRouteHandler)
+  .openapi(postV1CustomersRoute, postV1CustomersRouteHandler)
+  .openapi(getV1CustomersSearchRoute, getV1CustomersSearchRouteHandler)
+  .openapi(deleteV1CustomersCustomerRoute, deleteV1CustomersCustomerRouteHandler)
+  .openapi(getV1CustomersCustomerRoute, getV1CustomersCustomerRouteHandler)
+  .openapi(postV1CustomersCustomerRoute, postV1CustomersCustomerRouteHandler)
+  .openapi(
+    getV1CustomersCustomerBalanceTransactionsRoute,
+    getV1CustomersCustomerBalanceTransactionsRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerBalanceTransactionsRoute,
+    postV1CustomersCustomerBalanceTransactionsRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerBalanceTransactionsTransactionRoute,
+    getV1CustomersCustomerBalanceTransactionsTransactionRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerBalanceTransactionsTransactionRoute,
+    postV1CustomersCustomerBalanceTransactionsTransactionRouteHandler,
+  )
+  .openapi(getV1CustomersCustomerBankAccountsRoute, getV1CustomersCustomerBankAccountsRouteHandler)
+  .openapi(
+    postV1CustomersCustomerBankAccountsRoute,
+    postV1CustomersCustomerBankAccountsRouteHandler,
+  )
+  .openapi(
+    deleteV1CustomersCustomerBankAccountsIdRoute,
+    deleteV1CustomersCustomerBankAccountsIdRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerBankAccountsIdRoute,
+    getV1CustomersCustomerBankAccountsIdRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerBankAccountsIdRoute,
+    postV1CustomersCustomerBankAccountsIdRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerBankAccountsIdVerifyRoute,
+    postV1CustomersCustomerBankAccountsIdVerifyRouteHandler,
+  )
+  .openapi(getV1CustomersCustomerCardsRoute, getV1CustomersCustomerCardsRouteHandler)
+  .openapi(postV1CustomersCustomerCardsRoute, postV1CustomersCustomerCardsRouteHandler)
+  .openapi(deleteV1CustomersCustomerCardsIdRoute, deleteV1CustomersCustomerCardsIdRouteHandler)
+  .openapi(getV1CustomersCustomerCardsIdRoute, getV1CustomersCustomerCardsIdRouteHandler)
+  .openapi(postV1CustomersCustomerCardsIdRoute, postV1CustomersCustomerCardsIdRouteHandler)
+  .openapi(getV1CustomersCustomerCashBalanceRoute, getV1CustomersCustomerCashBalanceRouteHandler)
+  .openapi(postV1CustomersCustomerCashBalanceRoute, postV1CustomersCustomerCashBalanceRouteHandler)
+  .openapi(
+    getV1CustomersCustomerCashBalanceTransactionsRoute,
+    getV1CustomersCustomerCashBalanceTransactionsRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerCashBalanceTransactionsTransactionRoute,
+    getV1CustomersCustomerCashBalanceTransactionsTransactionRouteHandler,
+  )
+  .openapi(deleteV1CustomersCustomerDiscountRoute, deleteV1CustomersCustomerDiscountRouteHandler)
+  .openapi(getV1CustomersCustomerDiscountRoute, getV1CustomersCustomerDiscountRouteHandler)
+  .openapi(
+    postV1CustomersCustomerFundingInstructionsRoute,
+    postV1CustomersCustomerFundingInstructionsRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerPaymentMethodsRoute,
+    getV1CustomersCustomerPaymentMethodsRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerPaymentMethodsPaymentMethodRoute,
+    getV1CustomersCustomerPaymentMethodsPaymentMethodRouteHandler,
+  )
+  .openapi(getV1CustomersCustomerSourcesRoute, getV1CustomersCustomerSourcesRouteHandler)
+  .openapi(postV1CustomersCustomerSourcesRoute, postV1CustomersCustomerSourcesRouteHandler)
+  .openapi(deleteV1CustomersCustomerSourcesIdRoute, deleteV1CustomersCustomerSourcesIdRouteHandler)
+  .openapi(getV1CustomersCustomerSourcesIdRoute, getV1CustomersCustomerSourcesIdRouteHandler)
+  .openapi(postV1CustomersCustomerSourcesIdRoute, postV1CustomersCustomerSourcesIdRouteHandler)
+  .openapi(
+    postV1CustomersCustomerSourcesIdVerifyRoute,
+    postV1CustomersCustomerSourcesIdVerifyRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerSubscriptionsRoute,
+    getV1CustomersCustomerSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerSubscriptionsRoute,
+    postV1CustomersCustomerSubscriptionsRouteHandler,
+  )
+  .openapi(
+    deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+    deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+    getV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    postV1CustomersCustomerSubscriptionsSubscriptionExposedIdRoute,
+    postV1CustomersCustomerSubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRoute,
+    deleteV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  )
+  .openapi(
+    getV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRoute,
+    getV1CustomersCustomerSubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  )
+  .openapi(getV1CustomersCustomerTaxIdsRoute, getV1CustomersCustomerTaxIdsRouteHandler)
+  .openapi(postV1CustomersCustomerTaxIdsRoute, postV1CustomersCustomerTaxIdsRouteHandler)
+  .openapi(deleteV1CustomersCustomerTaxIdsIdRoute, deleteV1CustomersCustomerTaxIdsIdRouteHandler)
+  .openapi(getV1CustomersCustomerTaxIdsIdRoute, getV1CustomersCustomerTaxIdsIdRouteHandler)
+  .openapi(getV1DisputesRoute, getV1DisputesRouteHandler)
+  .openapi(getV1DisputesDisputeRoute, getV1DisputesDisputeRouteHandler)
+  .openapi(postV1DisputesDisputeRoute, postV1DisputesDisputeRouteHandler)
+  .openapi(postV1DisputesDisputeCloseRoute, postV1DisputesDisputeCloseRouteHandler)
+  .openapi(postV1EphemeralKeysRoute, postV1EphemeralKeysRouteHandler)
+  .openapi(deleteV1EphemeralKeysKeyRoute, deleteV1EphemeralKeysKeyRouteHandler)
+  .openapi(getV1EventsRoute, getV1EventsRouteHandler)
+  .openapi(getV1EventsIdRoute, getV1EventsIdRouteHandler)
+  .openapi(getV1ExchangeRatesRoute, getV1ExchangeRatesRouteHandler)
+  .openapi(getV1ExchangeRatesRateIdRoute, getV1ExchangeRatesRateIdRouteHandler)
+  .openapi(getV1FileLinksRoute, getV1FileLinksRouteHandler)
+  .openapi(postV1FileLinksRoute, postV1FileLinksRouteHandler)
+  .openapi(getV1FileLinksLinkRoute, getV1FileLinksLinkRouteHandler)
+  .openapi(postV1FileLinksLinkRoute, postV1FileLinksLinkRouteHandler)
+  .openapi(getV1FilesRoute, getV1FilesRouteHandler)
+  .openapi(postV1FilesRoute, postV1FilesRouteHandler)
+  .openapi(getV1FilesFileRoute, getV1FilesFileRouteHandler)
+  .openapi(getV1FinancialConnectionsAccountsRoute, getV1FinancialConnectionsAccountsRouteHandler)
+  .openapi(
+    getV1FinancialConnectionsAccountsAccountRoute,
+    getV1FinancialConnectionsAccountsAccountRouteHandler,
+  )
+  .openapi(
+    postV1FinancialConnectionsAccountsAccountDisconnectRoute,
+    postV1FinancialConnectionsAccountsAccountDisconnectRouteHandler,
+  )
+  .openapi(
+    getV1FinancialConnectionsAccountsAccountOwnersRoute,
+    getV1FinancialConnectionsAccountsAccountOwnersRouteHandler,
+  )
+  .openapi(
+    postV1FinancialConnectionsAccountsAccountRefreshRoute,
+    postV1FinancialConnectionsAccountsAccountRefreshRouteHandler,
+  )
+  .openapi(postV1FinancialConnectionsSessionsRoute, postV1FinancialConnectionsSessionsRouteHandler)
+  .openapi(
+    getV1FinancialConnectionsSessionsSessionRoute,
+    getV1FinancialConnectionsSessionsSessionRouteHandler,
+  )
+  .openapi(getV1IdentityVerificationReportsRoute, getV1IdentityVerificationReportsRouteHandler)
+  .openapi(
+    getV1IdentityVerificationReportsReportRoute,
+    getV1IdentityVerificationReportsReportRouteHandler,
+  )
+  .openapi(getV1IdentityVerificationSessionsRoute, getV1IdentityVerificationSessionsRouteHandler)
+  .openapi(postV1IdentityVerificationSessionsRoute, postV1IdentityVerificationSessionsRouteHandler)
+  .openapi(
+    getV1IdentityVerificationSessionsSessionRoute,
+    getV1IdentityVerificationSessionsSessionRouteHandler,
+  )
+  .openapi(
+    postV1IdentityVerificationSessionsSessionRoute,
+    postV1IdentityVerificationSessionsSessionRouteHandler,
+  )
+  .openapi(
+    postV1IdentityVerificationSessionsSessionCancelRoute,
+    postV1IdentityVerificationSessionsSessionCancelRouteHandler,
+  )
+  .openapi(
+    postV1IdentityVerificationSessionsSessionRedactRoute,
+    postV1IdentityVerificationSessionsSessionRedactRouteHandler,
+  )
+  .openapi(getV1InvoiceitemsRoute, getV1InvoiceitemsRouteHandler)
+  .openapi(postV1InvoiceitemsRoute, postV1InvoiceitemsRouteHandler)
+  .openapi(deleteV1InvoiceitemsInvoiceitemRoute, deleteV1InvoiceitemsInvoiceitemRouteHandler)
+  .openapi(getV1InvoiceitemsInvoiceitemRoute, getV1InvoiceitemsInvoiceitemRouteHandler)
+  .openapi(postV1InvoiceitemsInvoiceitemRoute, postV1InvoiceitemsInvoiceitemRouteHandler)
+  .openapi(getV1InvoicesRoute, getV1InvoicesRouteHandler)
+  .openapi(postV1InvoicesRoute, postV1InvoicesRouteHandler)
+  .openapi(getV1InvoicesSearchRoute, getV1InvoicesSearchRouteHandler)
+  .openapi(getV1InvoicesUpcomingRoute, getV1InvoicesUpcomingRouteHandler)
+  .openapi(getV1InvoicesUpcomingLinesRoute, getV1InvoicesUpcomingLinesRouteHandler)
+  .openapi(deleteV1InvoicesInvoiceRoute, deleteV1InvoicesInvoiceRouteHandler)
+  .openapi(getV1InvoicesInvoiceRoute, getV1InvoicesInvoiceRouteHandler)
+  .openapi(postV1InvoicesInvoiceRoute, postV1InvoicesInvoiceRouteHandler)
+  .openapi(postV1InvoicesInvoiceFinalizeRoute, postV1InvoicesInvoiceFinalizeRouteHandler)
+  .openapi(getV1InvoicesInvoiceLinesRoute, getV1InvoicesInvoiceLinesRouteHandler)
+  .openapi(
+    postV1InvoicesInvoiceMarkUncollectibleRoute,
+    postV1InvoicesInvoiceMarkUncollectibleRouteHandler,
+  )
+  .openapi(postV1InvoicesInvoicePayRoute, postV1InvoicesInvoicePayRouteHandler)
+  .openapi(postV1InvoicesInvoiceSendRoute, postV1InvoicesInvoiceSendRouteHandler)
+  .openapi(postV1InvoicesInvoiceVoidRoute, postV1InvoicesInvoiceVoidRouteHandler)
+  .openapi(getV1IssuingAuthorizationsRoute, getV1IssuingAuthorizationsRouteHandler)
+  .openapi(
+    getV1IssuingAuthorizationsAuthorizationRoute,
+    getV1IssuingAuthorizationsAuthorizationRouteHandler,
+  )
+  .openapi(
+    postV1IssuingAuthorizationsAuthorizationRoute,
+    postV1IssuingAuthorizationsAuthorizationRouteHandler,
+  )
+  .openapi(
+    postV1IssuingAuthorizationsAuthorizationApproveRoute,
+    postV1IssuingAuthorizationsAuthorizationApproveRouteHandler,
+  )
+  .openapi(
+    postV1IssuingAuthorizationsAuthorizationDeclineRoute,
+    postV1IssuingAuthorizationsAuthorizationDeclineRouteHandler,
+  )
+  .openapi(getV1IssuingCardholdersRoute, getV1IssuingCardholdersRouteHandler)
+  .openapi(postV1IssuingCardholdersRoute, postV1IssuingCardholdersRouteHandler)
+  .openapi(getV1IssuingCardholdersCardholderRoute, getV1IssuingCardholdersCardholderRouteHandler)
+  .openapi(postV1IssuingCardholdersCardholderRoute, postV1IssuingCardholdersCardholderRouteHandler)
+  .openapi(getV1IssuingCardsRoute, getV1IssuingCardsRouteHandler)
+  .openapi(postV1IssuingCardsRoute, postV1IssuingCardsRouteHandler)
+  .openapi(getV1IssuingCardsCardRoute, getV1IssuingCardsCardRouteHandler)
+  .openapi(postV1IssuingCardsCardRoute, postV1IssuingCardsCardRouteHandler)
+  .openapi(getV1IssuingDisputesRoute, getV1IssuingDisputesRouteHandler)
+  .openapi(postV1IssuingDisputesRoute, postV1IssuingDisputesRouteHandler)
+  .openapi(getV1IssuingDisputesDisputeRoute, getV1IssuingDisputesDisputeRouteHandler)
+  .openapi(postV1IssuingDisputesDisputeRoute, postV1IssuingDisputesDisputeRouteHandler)
+  .openapi(postV1IssuingDisputesDisputeSubmitRoute, postV1IssuingDisputesDisputeSubmitRouteHandler)
+  .openapi(getV1IssuingSettlementsRoute, getV1IssuingSettlementsRouteHandler)
+  .openapi(getV1IssuingSettlementsSettlementRoute, getV1IssuingSettlementsSettlementRouteHandler)
+  .openapi(postV1IssuingSettlementsSettlementRoute, postV1IssuingSettlementsSettlementRouteHandler)
+  .openapi(getV1IssuingTransactionsRoute, getV1IssuingTransactionsRouteHandler)
+  .openapi(
+    getV1IssuingTransactionsTransactionRoute,
+    getV1IssuingTransactionsTransactionRouteHandler,
+  )
+  .openapi(
+    postV1IssuingTransactionsTransactionRoute,
+    postV1IssuingTransactionsTransactionRouteHandler,
+  )
+  .openapi(postV1LinkAccountSessionsRoute, postV1LinkAccountSessionsRouteHandler)
+  .openapi(getV1LinkAccountSessionsSessionRoute, getV1LinkAccountSessionsSessionRouteHandler)
+  .openapi(getV1LinkedAccountsRoute, getV1LinkedAccountsRouteHandler)
+  .openapi(getV1LinkedAccountsAccountRoute, getV1LinkedAccountsAccountRouteHandler)
+  .openapi(
+    postV1LinkedAccountsAccountDisconnectRoute,
+    postV1LinkedAccountsAccountDisconnectRouteHandler,
+  )
+  .openapi(getV1LinkedAccountsAccountOwnersRoute, getV1LinkedAccountsAccountOwnersRouteHandler)
+  .openapi(postV1LinkedAccountsAccountRefreshRoute, postV1LinkedAccountsAccountRefreshRouteHandler)
+  .openapi(getV1MandatesMandateRoute, getV1MandatesMandateRouteHandler)
+  .openapi(getV1PaymentIntentsRoute, getV1PaymentIntentsRouteHandler)
+  .openapi(postV1PaymentIntentsRoute, postV1PaymentIntentsRouteHandler)
+  .openapi(getV1PaymentIntentsSearchRoute, getV1PaymentIntentsSearchRouteHandler)
+  .openapi(getV1PaymentIntentsIntentRoute, getV1PaymentIntentsIntentRouteHandler)
+  .openapi(postV1PaymentIntentsIntentRoute, postV1PaymentIntentsIntentRouteHandler)
+  .openapi(
+    postV1PaymentIntentsIntentApplyCustomerBalanceRoute,
+    postV1PaymentIntentsIntentApplyCustomerBalanceRouteHandler,
+  )
+  .openapi(postV1PaymentIntentsIntentCancelRoute, postV1PaymentIntentsIntentCancelRouteHandler)
+  .openapi(postV1PaymentIntentsIntentCaptureRoute, postV1PaymentIntentsIntentCaptureRouteHandler)
+  .openapi(postV1PaymentIntentsIntentConfirmRoute, postV1PaymentIntentsIntentConfirmRouteHandler)
+  .openapi(
+    postV1PaymentIntentsIntentIncrementAuthorizationRoute,
+    postV1PaymentIntentsIntentIncrementAuthorizationRouteHandler,
+  )
+  .openapi(
+    postV1PaymentIntentsIntentVerifyMicrodepositsRoute,
+    postV1PaymentIntentsIntentVerifyMicrodepositsRouteHandler,
+  )
+  .openapi(getV1PaymentLinksRoute, getV1PaymentLinksRouteHandler)
+  .openapi(postV1PaymentLinksRoute, postV1PaymentLinksRouteHandler)
+  .openapi(getV1PaymentLinksPaymentLinkRoute, getV1PaymentLinksPaymentLinkRouteHandler)
+  .openapi(postV1PaymentLinksPaymentLinkRoute, postV1PaymentLinksPaymentLinkRouteHandler)
+  .openapi(
+    getV1PaymentLinksPaymentLinkLineItemsRoute,
+    getV1PaymentLinksPaymentLinkLineItemsRouteHandler,
+  )
+  .openapi(getV1PaymentMethodsRoute, getV1PaymentMethodsRouteHandler)
+  .openapi(postV1PaymentMethodsRoute, postV1PaymentMethodsRouteHandler)
+  .openapi(getV1PaymentMethodsPaymentMethodRoute, getV1PaymentMethodsPaymentMethodRouteHandler)
+  .openapi(postV1PaymentMethodsPaymentMethodRoute, postV1PaymentMethodsPaymentMethodRouteHandler)
+  .openapi(
+    postV1PaymentMethodsPaymentMethodAttachRoute,
+    postV1PaymentMethodsPaymentMethodAttachRouteHandler,
+  )
+  .openapi(
+    postV1PaymentMethodsPaymentMethodDetachRoute,
+    postV1PaymentMethodsPaymentMethodDetachRouteHandler,
+  )
+  .openapi(getV1PayoutsRoute, getV1PayoutsRouteHandler)
+  .openapi(postV1PayoutsRoute, postV1PayoutsRouteHandler)
+  .openapi(getV1PayoutsPayoutRoute, getV1PayoutsPayoutRouteHandler)
+  .openapi(postV1PayoutsPayoutRoute, postV1PayoutsPayoutRouteHandler)
+  .openapi(postV1PayoutsPayoutCancelRoute, postV1PayoutsPayoutCancelRouteHandler)
+  .openapi(postV1PayoutsPayoutReverseRoute, postV1PayoutsPayoutReverseRouteHandler)
+  .openapi(getV1PlansRoute, getV1PlansRouteHandler)
+  .openapi(postV1PlansRoute, postV1PlansRouteHandler)
+  .openapi(deleteV1PlansPlanRoute, deleteV1PlansPlanRouteHandler)
+  .openapi(getV1PlansPlanRoute, getV1PlansPlanRouteHandler)
+  .openapi(postV1PlansPlanRoute, postV1PlansPlanRouteHandler)
+  .openapi(getV1PricesRoute, getV1PricesRouteHandler)
+  .openapi(postV1PricesRoute, postV1PricesRouteHandler)
+  .openapi(getV1PricesSearchRoute, getV1PricesSearchRouteHandler)
+  .openapi(getV1PricesPriceRoute, getV1PricesPriceRouteHandler)
+  .openapi(postV1PricesPriceRoute, postV1PricesPriceRouteHandler)
+  .openapi(getV1ProductsRoute, getV1ProductsRouteHandler)
+  .openapi(postV1ProductsRoute, postV1ProductsRouteHandler)
+  .openapi(getV1ProductsSearchRoute, getV1ProductsSearchRouteHandler)
+  .openapi(deleteV1ProductsIdRoute, deleteV1ProductsIdRouteHandler)
+  .openapi(getV1ProductsIdRoute, getV1ProductsIdRouteHandler)
+  .openapi(postV1ProductsIdRoute, postV1ProductsIdRouteHandler)
+  .openapi(getV1PromotionCodesRoute, getV1PromotionCodesRouteHandler)
+  .openapi(postV1PromotionCodesRoute, postV1PromotionCodesRouteHandler)
+  .openapi(getV1PromotionCodesPromotionCodeRoute, getV1PromotionCodesPromotionCodeRouteHandler)
+  .openapi(postV1PromotionCodesPromotionCodeRoute, postV1PromotionCodesPromotionCodeRouteHandler)
+  .openapi(getV1QuotesRoute, getV1QuotesRouteHandler)
+  .openapi(postV1QuotesRoute, postV1QuotesRouteHandler)
+  .openapi(getV1QuotesQuoteRoute, getV1QuotesQuoteRouteHandler)
+  .openapi(postV1QuotesQuoteRoute, postV1QuotesQuoteRouteHandler)
+  .openapi(postV1QuotesQuoteAcceptRoute, postV1QuotesQuoteAcceptRouteHandler)
+  .openapi(postV1QuotesQuoteCancelRoute, postV1QuotesQuoteCancelRouteHandler)
+  .openapi(
+    getV1QuotesQuoteComputedUpfrontLineItemsRoute,
+    getV1QuotesQuoteComputedUpfrontLineItemsRouteHandler,
+  )
+  .openapi(postV1QuotesQuoteFinalizeRoute, postV1QuotesQuoteFinalizeRouteHandler)
+  .openapi(getV1QuotesQuoteLineItemsRoute, getV1QuotesQuoteLineItemsRouteHandler)
+  .openapi(getV1QuotesQuotePdfRoute, getV1QuotesQuotePdfRouteHandler)
+  .openapi(getV1RadarEarlyFraudWarningsRoute, getV1RadarEarlyFraudWarningsRouteHandler)
+  .openapi(
+    getV1RadarEarlyFraudWarningsEarlyFraudWarningRoute,
+    getV1RadarEarlyFraudWarningsEarlyFraudWarningRouteHandler,
+  )
+  .openapi(getV1RadarValueListItemsRoute, getV1RadarValueListItemsRouteHandler)
+  .openapi(postV1RadarValueListItemsRoute, postV1RadarValueListItemsRouteHandler)
+  .openapi(deleteV1RadarValueListItemsItemRoute, deleteV1RadarValueListItemsItemRouteHandler)
+  .openapi(getV1RadarValueListItemsItemRoute, getV1RadarValueListItemsItemRouteHandler)
+  .openapi(getV1RadarValueListsRoute, getV1RadarValueListsRouteHandler)
+  .openapi(postV1RadarValueListsRoute, postV1RadarValueListsRouteHandler)
+  .openapi(deleteV1RadarValueListsValueListRoute, deleteV1RadarValueListsValueListRouteHandler)
+  .openapi(getV1RadarValueListsValueListRoute, getV1RadarValueListsValueListRouteHandler)
+  .openapi(postV1RadarValueListsValueListRoute, postV1RadarValueListsValueListRouteHandler)
+  .openapi(getV1RefundsRoute, getV1RefundsRouteHandler)
+  .openapi(postV1RefundsRoute, postV1RefundsRouteHandler)
+  .openapi(getV1RefundsRefundRoute, getV1RefundsRefundRouteHandler)
+  .openapi(postV1RefundsRefundRoute, postV1RefundsRefundRouteHandler)
+  .openapi(postV1RefundsRefundCancelRoute, postV1RefundsRefundCancelRouteHandler)
+  .openapi(getV1ReportingReportRunsRoute, getV1ReportingReportRunsRouteHandler)
+  .openapi(postV1ReportingReportRunsRoute, postV1ReportingReportRunsRouteHandler)
+  .openapi(getV1ReportingReportRunsReportRunRoute, getV1ReportingReportRunsReportRunRouteHandler)
+  .openapi(getV1ReportingReportTypesRoute, getV1ReportingReportTypesRouteHandler)
+  .openapi(
+    getV1ReportingReportTypesReportTypeRoute,
+    getV1ReportingReportTypesReportTypeRouteHandler,
+  )
+  .openapi(getV1ReviewsRoute, getV1ReviewsRouteHandler)
+  .openapi(getV1ReviewsReviewRoute, getV1ReviewsReviewRouteHandler)
+  .openapi(postV1ReviewsReviewApproveRoute, postV1ReviewsReviewApproveRouteHandler)
+  .openapi(getV1SetupAttemptsRoute, getV1SetupAttemptsRouteHandler)
+  .openapi(getV1SetupIntentsRoute, getV1SetupIntentsRouteHandler)
+  .openapi(postV1SetupIntentsRoute, postV1SetupIntentsRouteHandler)
+  .openapi(getV1SetupIntentsIntentRoute, getV1SetupIntentsIntentRouteHandler)
+  .openapi(postV1SetupIntentsIntentRoute, postV1SetupIntentsIntentRouteHandler)
+  .openapi(postV1SetupIntentsIntentCancelRoute, postV1SetupIntentsIntentCancelRouteHandler)
+  .openapi(postV1SetupIntentsIntentConfirmRoute, postV1SetupIntentsIntentConfirmRouteHandler)
+  .openapi(
+    postV1SetupIntentsIntentVerifyMicrodepositsRoute,
+    postV1SetupIntentsIntentVerifyMicrodepositsRouteHandler,
+  )
+  .openapi(getV1ShippingRatesRoute, getV1ShippingRatesRouteHandler)
+  .openapi(postV1ShippingRatesRoute, postV1ShippingRatesRouteHandler)
+  .openapi(
+    getV1ShippingRatesShippingRateTokenRoute,
+    getV1ShippingRatesShippingRateTokenRouteHandler,
+  )
+  .openapi(
+    postV1ShippingRatesShippingRateTokenRoute,
+    postV1ShippingRatesShippingRateTokenRouteHandler,
+  )
+  .openapi(getV1SigmaScheduledQueryRunsRoute, getV1SigmaScheduledQueryRunsRouteHandler)
+  .openapi(
+    getV1SigmaScheduledQueryRunsScheduledQueryRunRoute,
+    getV1SigmaScheduledQueryRunsScheduledQueryRunRouteHandler,
+  )
+  .openapi(postV1SourcesRoute, postV1SourcesRouteHandler)
+  .openapi(getV1SourcesSourceRoute, getV1SourcesSourceRouteHandler)
+  .openapi(postV1SourcesSourceRoute, postV1SourcesSourceRouteHandler)
+  .openapi(
+    getV1SourcesSourceMandateNotificationsMandateNotificationRoute,
+    getV1SourcesSourceMandateNotificationsMandateNotificationRouteHandler,
+  )
+  .openapi(
+    getV1SourcesSourceSourceTransactionsRoute,
+    getV1SourcesSourceSourceTransactionsRouteHandler,
+  )
+  .openapi(
+    getV1SourcesSourceSourceTransactionsSourceTransactionRoute,
+    getV1SourcesSourceSourceTransactionsSourceTransactionRouteHandler,
+  )
+  .openapi(postV1SourcesSourceVerifyRoute, postV1SourcesSourceVerifyRouteHandler)
+  .openapi(getV1SubscriptionItemsRoute, getV1SubscriptionItemsRouteHandler)
+  .openapi(postV1SubscriptionItemsRoute, postV1SubscriptionItemsRouteHandler)
+  .openapi(deleteV1SubscriptionItemsItemRoute, deleteV1SubscriptionItemsItemRouteHandler)
+  .openapi(getV1SubscriptionItemsItemRoute, getV1SubscriptionItemsItemRouteHandler)
+  .openapi(postV1SubscriptionItemsItemRoute, postV1SubscriptionItemsItemRouteHandler)
+  .openapi(
+    getV1SubscriptionItemsSubscriptionItemUsageRecordSummariesRoute,
+    getV1SubscriptionItemsSubscriptionItemUsageRecordSummariesRouteHandler,
+  )
+  .openapi(
+    postV1SubscriptionItemsSubscriptionItemUsageRecordsRoute,
+    postV1SubscriptionItemsSubscriptionItemUsageRecordsRouteHandler,
+  )
+  .openapi(getV1SubscriptionSchedulesRoute, getV1SubscriptionSchedulesRouteHandler)
+  .openapi(postV1SubscriptionSchedulesRoute, postV1SubscriptionSchedulesRouteHandler)
+  .openapi(getV1SubscriptionSchedulesScheduleRoute, getV1SubscriptionSchedulesScheduleRouteHandler)
+  .openapi(
+    postV1SubscriptionSchedulesScheduleRoute,
+    postV1SubscriptionSchedulesScheduleRouteHandler,
+  )
+  .openapi(
+    postV1SubscriptionSchedulesScheduleCancelRoute,
+    postV1SubscriptionSchedulesScheduleCancelRouteHandler,
+  )
+  .openapi(
+    postV1SubscriptionSchedulesScheduleReleaseRoute,
+    postV1SubscriptionSchedulesScheduleReleaseRouteHandler,
+  )
+  .openapi(getV1SubscriptionsRoute, getV1SubscriptionsRouteHandler)
+  .openapi(postV1SubscriptionsRoute, postV1SubscriptionsRouteHandler)
+  .openapi(getV1SubscriptionsSearchRoute, getV1SubscriptionsSearchRouteHandler)
+  .openapi(
+    deleteV1SubscriptionsSubscriptionExposedIdRoute,
+    deleteV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    getV1SubscriptionsSubscriptionExposedIdRoute,
+    getV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    postV1SubscriptionsSubscriptionExposedIdRoute,
+    postV1SubscriptionsSubscriptionExposedIdRouteHandler,
+  )
+  .openapi(
+    deleteV1SubscriptionsSubscriptionExposedIdDiscountRoute,
+    deleteV1SubscriptionsSubscriptionExposedIdDiscountRouteHandler,
+  )
+  .openapi(
+    postV1SubscriptionsSubscriptionResumeRoute,
+    postV1SubscriptionsSubscriptionResumeRouteHandler,
+  )
+  .openapi(getV1TaxCodesRoute, getV1TaxCodesRouteHandler)
+  .openapi(getV1TaxCodesIdRoute, getV1TaxCodesIdRouteHandler)
+  .openapi(getV1TaxRatesRoute, getV1TaxRatesRouteHandler)
+  .openapi(postV1TaxRatesRoute, postV1TaxRatesRouteHandler)
+  .openapi(getV1TaxRatesTaxRateRoute, getV1TaxRatesTaxRateRouteHandler)
+  .openapi(postV1TaxRatesTaxRateRoute, postV1TaxRatesTaxRateRouteHandler)
+  .openapi(getV1TerminalConfigurationsRoute, getV1TerminalConfigurationsRouteHandler)
+  .openapi(postV1TerminalConfigurationsRoute, postV1TerminalConfigurationsRouteHandler)
+  .openapi(
+    deleteV1TerminalConfigurationsConfigurationRoute,
+    deleteV1TerminalConfigurationsConfigurationRouteHandler,
+  )
+  .openapi(
+    getV1TerminalConfigurationsConfigurationRoute,
+    getV1TerminalConfigurationsConfigurationRouteHandler,
+  )
+  .openapi(
+    postV1TerminalConfigurationsConfigurationRoute,
+    postV1TerminalConfigurationsConfigurationRouteHandler,
+  )
+  .openapi(postV1TerminalConnectionTokensRoute, postV1TerminalConnectionTokensRouteHandler)
+  .openapi(getV1TerminalLocationsRoute, getV1TerminalLocationsRouteHandler)
+  .openapi(postV1TerminalLocationsRoute, postV1TerminalLocationsRouteHandler)
+  .openapi(deleteV1TerminalLocationsLocationRoute, deleteV1TerminalLocationsLocationRouteHandler)
+  .openapi(getV1TerminalLocationsLocationRoute, getV1TerminalLocationsLocationRouteHandler)
+  .openapi(postV1TerminalLocationsLocationRoute, postV1TerminalLocationsLocationRouteHandler)
+  .openapi(getV1TerminalReadersRoute, getV1TerminalReadersRouteHandler)
+  .openapi(postV1TerminalReadersRoute, postV1TerminalReadersRouteHandler)
+  .openapi(deleteV1TerminalReadersReaderRoute, deleteV1TerminalReadersReaderRouteHandler)
+  .openapi(getV1TerminalReadersReaderRoute, getV1TerminalReadersReaderRouteHandler)
+  .openapi(postV1TerminalReadersReaderRoute, postV1TerminalReadersReaderRouteHandler)
+  .openapi(
+    postV1TerminalReadersReaderCancelActionRoute,
+    postV1TerminalReadersReaderCancelActionRouteHandler,
+  )
+  .openapi(
+    postV1TerminalReadersReaderProcessPaymentIntentRoute,
+    postV1TerminalReadersReaderProcessPaymentIntentRouteHandler,
+  )
+  .openapi(
+    postV1TerminalReadersReaderProcessSetupIntentRoute,
+    postV1TerminalReadersReaderProcessSetupIntentRouteHandler,
+  )
+  .openapi(
+    postV1TerminalReadersReaderRefundPaymentRoute,
+    postV1TerminalReadersReaderRefundPaymentRouteHandler,
+  )
+  .openapi(
+    postV1TerminalReadersReaderSetReaderDisplayRoute,
+    postV1TerminalReadersReaderSetReaderDisplayRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersCustomersCustomerFundCashBalanceRoute,
+    postV1TestHelpersCustomersCustomerFundCashBalanceRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersIssuingCardsCardShippingDeliverRoute,
+    postV1TestHelpersIssuingCardsCardShippingDeliverRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersIssuingCardsCardShippingFailRoute,
+    postV1TestHelpersIssuingCardsCardShippingFailRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersIssuingCardsCardShippingReturnRoute,
+    postV1TestHelpersIssuingCardsCardShippingReturnRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersIssuingCardsCardShippingShipRoute,
+    postV1TestHelpersIssuingCardsCardShippingShipRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersRefundsRefundExpireRoute,
+    postV1TestHelpersRefundsRefundExpireRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTerminalReadersReaderPresentPaymentMethodRoute,
+    postV1TestHelpersTerminalReadersReaderPresentPaymentMethodRouteHandler,
+  )
+  .openapi(getV1TestHelpersTestClocksRoute, getV1TestHelpersTestClocksRouteHandler)
+  .openapi(postV1TestHelpersTestClocksRoute, postV1TestHelpersTestClocksRouteHandler)
+  .openapi(
+    deleteV1TestHelpersTestClocksTestClockRoute,
+    deleteV1TestHelpersTestClocksTestClockRouteHandler,
+  )
+  .openapi(
+    getV1TestHelpersTestClocksTestClockRoute,
+    getV1TestHelpersTestClocksTestClockRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTestClocksTestClockAdvanceRoute,
+    postV1TestHelpersTestClocksTestClockAdvanceRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryInboundTransfersIdFailRoute,
+    postV1TestHelpersTreasuryInboundTransfersIdFailRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryInboundTransfersIdReturnRoute,
+    postV1TestHelpersTreasuryInboundTransfersIdReturnRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryInboundTransfersIdSucceedRoute,
+    postV1TestHelpersTreasuryInboundTransfersIdSucceedRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundPaymentsIdFailRoute,
+    postV1TestHelpersTreasuryOutboundPaymentsIdFailRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundPaymentsIdPostRoute,
+    postV1TestHelpersTreasuryOutboundPaymentsIdPostRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundPaymentsIdReturnRoute,
+    postV1TestHelpersTreasuryOutboundPaymentsIdReturnRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferFailRoute,
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferFailRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferPostRoute,
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferPostRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferReturnRoute,
+    postV1TestHelpersTreasuryOutboundTransfersOutboundTransferReturnRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryReceivedCreditsRoute,
+    postV1TestHelpersTreasuryReceivedCreditsRouteHandler,
+  )
+  .openapi(
+    postV1TestHelpersTreasuryReceivedDebitsRoute,
+    postV1TestHelpersTreasuryReceivedDebitsRouteHandler,
+  )
+  .openapi(postV1TokensRoute, postV1TokensRouteHandler)
+  .openapi(getV1TokensTokenRoute, getV1TokensTokenRouteHandler)
+  .openapi(getV1TopupsRoute, getV1TopupsRouteHandler)
+  .openapi(postV1TopupsRoute, postV1TopupsRouteHandler)
+  .openapi(getV1TopupsTopupRoute, getV1TopupsTopupRouteHandler)
+  .openapi(postV1TopupsTopupRoute, postV1TopupsTopupRouteHandler)
+  .openapi(postV1TopupsTopupCancelRoute, postV1TopupsTopupCancelRouteHandler)
+  .openapi(getV1TransfersRoute, getV1TransfersRouteHandler)
+  .openapi(postV1TransfersRoute, postV1TransfersRouteHandler)
+  .openapi(getV1TransfersIdReversalsRoute, getV1TransfersIdReversalsRouteHandler)
+  .openapi(postV1TransfersIdReversalsRoute, postV1TransfersIdReversalsRouteHandler)
+  .openapi(getV1TransfersTransferRoute, getV1TransfersTransferRouteHandler)
+  .openapi(postV1TransfersTransferRoute, postV1TransfersTransferRouteHandler)
+  .openapi(getV1TransfersTransferReversalsIdRoute, getV1TransfersTransferReversalsIdRouteHandler)
+  .openapi(postV1TransfersTransferReversalsIdRoute, postV1TransfersTransferReversalsIdRouteHandler)
+  .openapi(getV1TreasuryCreditReversalsRoute, getV1TreasuryCreditReversalsRouteHandler)
+  .openapi(postV1TreasuryCreditReversalsRoute, postV1TreasuryCreditReversalsRouteHandler)
+  .openapi(
+    getV1TreasuryCreditReversalsCreditReversalRoute,
+    getV1TreasuryCreditReversalsCreditReversalRouteHandler,
+  )
+  .openapi(getV1TreasuryDebitReversalsRoute, getV1TreasuryDebitReversalsRouteHandler)
+  .openapi(postV1TreasuryDebitReversalsRoute, postV1TreasuryDebitReversalsRouteHandler)
+  .openapi(
+    getV1TreasuryDebitReversalsDebitReversalRoute,
+    getV1TreasuryDebitReversalsDebitReversalRouteHandler,
+  )
+  .openapi(getV1TreasuryFinancialAccountsRoute, getV1TreasuryFinancialAccountsRouteHandler)
+  .openapi(postV1TreasuryFinancialAccountsRoute, postV1TreasuryFinancialAccountsRouteHandler)
+  .openapi(
+    getV1TreasuryFinancialAccountsFinancialAccountRoute,
+    getV1TreasuryFinancialAccountsFinancialAccountRouteHandler,
+  )
+  .openapi(
+    postV1TreasuryFinancialAccountsFinancialAccountRoute,
+    postV1TreasuryFinancialAccountsFinancialAccountRouteHandler,
+  )
+  .openapi(
+    getV1TreasuryFinancialAccountsFinancialAccountFeaturesRoute,
+    getV1TreasuryFinancialAccountsFinancialAccountFeaturesRouteHandler,
+  )
+  .openapi(
+    postV1TreasuryFinancialAccountsFinancialAccountFeaturesRoute,
+    postV1TreasuryFinancialAccountsFinancialAccountFeaturesRouteHandler,
+  )
+  .openapi(getV1TreasuryInboundTransfersRoute, getV1TreasuryInboundTransfersRouteHandler)
+  .openapi(postV1TreasuryInboundTransfersRoute, postV1TreasuryInboundTransfersRouteHandler)
+  .openapi(getV1TreasuryInboundTransfersIdRoute, getV1TreasuryInboundTransfersIdRouteHandler)
+  .openapi(
+    postV1TreasuryInboundTransfersInboundTransferCancelRoute,
+    postV1TreasuryInboundTransfersInboundTransferCancelRouteHandler,
+  )
+  .openapi(getV1TreasuryOutboundPaymentsRoute, getV1TreasuryOutboundPaymentsRouteHandler)
+  .openapi(postV1TreasuryOutboundPaymentsRoute, postV1TreasuryOutboundPaymentsRouteHandler)
+  .openapi(getV1TreasuryOutboundPaymentsIdRoute, getV1TreasuryOutboundPaymentsIdRouteHandler)
+  .openapi(
+    postV1TreasuryOutboundPaymentsIdCancelRoute,
+    postV1TreasuryOutboundPaymentsIdCancelRouteHandler,
+  )
+  .openapi(getV1TreasuryOutboundTransfersRoute, getV1TreasuryOutboundTransfersRouteHandler)
+  .openapi(postV1TreasuryOutboundTransfersRoute, postV1TreasuryOutboundTransfersRouteHandler)
+  .openapi(
+    getV1TreasuryOutboundTransfersOutboundTransferRoute,
+    getV1TreasuryOutboundTransfersOutboundTransferRouteHandler,
+  )
+  .openapi(
+    postV1TreasuryOutboundTransfersOutboundTransferCancelRoute,
+    postV1TreasuryOutboundTransfersOutboundTransferCancelRouteHandler,
+  )
+  .openapi(getV1TreasuryReceivedCreditsRoute, getV1TreasuryReceivedCreditsRouteHandler)
+  .openapi(getV1TreasuryReceivedCreditsIdRoute, getV1TreasuryReceivedCreditsIdRouteHandler)
+  .openapi(getV1TreasuryReceivedDebitsRoute, getV1TreasuryReceivedDebitsRouteHandler)
+  .openapi(getV1TreasuryReceivedDebitsIdRoute, getV1TreasuryReceivedDebitsIdRouteHandler)
+  .openapi(getV1TreasuryTransactionEntriesRoute, getV1TreasuryTransactionEntriesRouteHandler)
+  .openapi(getV1TreasuryTransactionEntriesIdRoute, getV1TreasuryTransactionEntriesIdRouteHandler)
+  .openapi(getV1TreasuryTransactionsRoute, getV1TreasuryTransactionsRouteHandler)
+  .openapi(getV1TreasuryTransactionsIdRoute, getV1TreasuryTransactionsIdRouteHandler)
+  .openapi(getV1WebhookEndpointsRoute, getV1WebhookEndpointsRouteHandler)
+  .openapi(postV1WebhookEndpointsRoute, postV1WebhookEndpointsRouteHandler)
+  .openapi(
+    deleteV1WebhookEndpointsWebhookEndpointRoute,
+    deleteV1WebhookEndpointsWebhookEndpointRouteHandler,
+  )
+  .openapi(
+    getV1WebhookEndpointsWebhookEndpointRoute,
+    getV1WebhookEndpointsWebhookEndpointRouteHandler,
+  )
+  .openapi(
+    postV1WebhookEndpointsWebhookEndpointRoute,
+    postV1WebhookEndpointsWebhookEndpointRouteHandler,
+  )
 
 export default app

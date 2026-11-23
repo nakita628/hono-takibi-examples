@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsfms20180101GetThirdPartyFirewallAssociationStatusHandler = app.openapi(
-  postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSFMS20180101GetThirdPartyFirewallAssociationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

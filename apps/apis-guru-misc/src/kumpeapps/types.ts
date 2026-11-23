@@ -2,7 +2,6 @@ type InlineResponse_202 = { success?: boolean | undefined }
 type InlineResponse_201 = { app_key: string; success?: boolean | undefined }
 type InlineResponse_201_1 = { auth_key?: string | undefined; success?: boolean | undefined }
 type _403 = { error?: string | undefined; success?: boolean | undefined }
-type _449 = { message?: string | undefined; success?: boolean | undefined }
 type AllowanceAllowanceTransaction = {
   amount?: number | undefined
   date?: string | undefined
@@ -222,20 +221,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 403
           }
-        | {
-            input: {
-              query: {
-                username: string
-                password: string
-                otp?: string | undefined
-                deviceName?: string | undefined
-                identifierForVendor?: string | undefined
-              }
-            }
-            output: _449
-            outputFormat: 'json'
-            status: 449
-          }
       $patch:
         | {
             input: { query: { auth_key: string; comments?: string | undefined } }
@@ -267,12 +252,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: _403
             outputFormat: 'json'
             status: 403
-          }
-        | {
-            input: { query: { username: string; password: string; otp?: string | undefined } }
-            output: _449
-            outputFormat: 'json'
-            status: 449
           }
       $put:
         | {
@@ -311,12 +290,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 403
           }
-        | {
-            input: { query: { username: string; password: string; otp?: string | undefined } }
-            output: _449
-            outputFormat: 'json'
-            status: 449
-          }
       $patch:
         | {
             input: { query: { auth_key: string; comments?: string | undefined } }
@@ -349,12 +322,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 403
           }
-        | {
-            input: { query: { username: string; password: string; otp?: string | undefined } }
-            output: _449
-            outputFormat: 'json'
-            status: 449
-          }
       $put:
         | {
             input: { query: { auth_key: string } }
@@ -375,9 +342,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { kidUserId: number; transactionDays?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { query: { kidUserId: number; transactionDays?: number | undefined } }
             output: Nodata
             outputFormat: 'json'
             status: 206
+          }
+        | {
+            input: { query: { kidUserId: number; transactionDays?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { kidUserId: number; transactionDays?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { kidUserId: number; transactionDays?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: { query: { kidUserId: number; transactionDays?: number | undefined } }
@@ -414,9 +405,61 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 transactionType: 'Add' | 'Subtract'
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                amount: number
+                description: string
+                transactionType: 'Add' | 'Subtract'
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 206
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                amount: number
+                description: string
+                transactionType: 'Add' | 'Subtract'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                amount: number
+                description: string
+                transactionType: 'Add' | 'Subtract'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                amount: number
+                description: string
+                transactionType: 'Add' | 'Subtract'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: {
@@ -496,9 +539,113 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 priority?: 'passive' | 'active' | 'time-sensitive' | 'critical' | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                tool: 'register' | 'subscribe' | 'unsubscribe' | 'send'
+                token?: string | undefined
+                devicename?: string | undefined
+                title?: string | undefined
+                message?: string | undefined
+                badge?: number | undefined
+                sound?: string | undefined
+                section?:
+                  | 'Chores'
+                  | 'Chores-New'
+                  | 'Chores-Reminders'
+                  | 'Allowance'
+                  | 'Allowance-New'
+                  | 'WishList'
+                  | undefined
+                priority?: 'passive' | 'active' | 'time-sensitive' | 'critical' | undefined
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 206
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                tool: 'register' | 'subscribe' | 'unsubscribe' | 'send'
+                token?: string | undefined
+                devicename?: string | undefined
+                title?: string | undefined
+                message?: string | undefined
+                badge?: number | undefined
+                sound?: string | undefined
+                section?:
+                  | 'Chores'
+                  | 'Chores-New'
+                  | 'Chores-Reminders'
+                  | 'Allowance'
+                  | 'Allowance-New'
+                  | 'WishList'
+                  | undefined
+                priority?: 'passive' | 'active' | 'time-sensitive' | 'critical' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                tool: 'register' | 'subscribe' | 'unsubscribe' | 'send'
+                token?: string | undefined
+                devicename?: string | undefined
+                title?: string | undefined
+                message?: string | undefined
+                badge?: number | undefined
+                sound?: string | undefined
+                section?:
+                  | 'Chores'
+                  | 'Chores-New'
+                  | 'Chores-Reminders'
+                  | 'Allowance'
+                  | 'Allowance-New'
+                  | 'WishList'
+                  | undefined
+                priority?: 'passive' | 'active' | 'time-sensitive' | 'critical' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                kidUserId: number
+                tool: 'register' | 'subscribe' | 'unsubscribe' | 'send'
+                token?: string | undefined
+                devicename?: string | undefined
+                title?: string | undefined
+                message?: string | undefined
+                badge?: number | undefined
+                sound?: string | undefined
+                section?:
+                  | 'Chores'
+                  | 'Chores-New'
+                  | 'Chores-Reminders'
+                  | 'Allowance'
+                  | 'Allowance-New'
+                  | 'WishList'
+                  | undefined
+                priority?: 'passive' | 'active' | 'time-sensitive' | 'critical' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: {
@@ -564,15 +711,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { idChoreList: number } }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { query: { idChoreList: number } }
             output: Nodata
             outputFormat: 'json'
             status: 206
           }
         | {
             input: { query: { idChoreList: number } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { idChoreList: number } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { idChoreList: number } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { idChoreList: number } }
             output: _405
             outputFormat: 'json'
             status: 405
+          }
+        | {
+            input: { query: { idChoreList: number } }
+            output: {}
+            outputFormat: string
+            status: 409
           }
         | {
             input: { query: { idChoreList: number } }
@@ -627,9 +804,109 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 includeCalendar?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                kidUsername?: string | undefined
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | undefined
+                status?: string | undefined
+                blockDash?: boolean | undefined
+                optional?: boolean | undefined
+                canSteal?: boolean | undefined
+                includeCalendar?: boolean | undefined
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 206
+          }
+        | {
+            input: {
+              query: {
+                kidUsername?: string | undefined
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | undefined
+                status?: string | undefined
+                blockDash?: boolean | undefined
+                optional?: boolean | undefined
+                canSteal?: boolean | undefined
+                includeCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                kidUsername?: string | undefined
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | undefined
+                status?: string | undefined
+                blockDash?: boolean | undefined
+                optional?: boolean | undefined
+                canSteal?: boolean | undefined
+                includeCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                kidUsername?: string | undefined
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | undefined
+                status?: string | undefined
+                blockDash?: boolean | undefined
+                optional?: boolean | undefined
+                canSteal?: boolean | undefined
+                includeCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: {
@@ -756,6 +1033,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 isCalendar?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                kidUsername: string
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                nfcTag?: string | undefined
+                status?: string | undefined
+                choreName: string
+                choreDescription?: string | undefined
+                choreNumber?: number | undefined
+                blockDash?: boolean | undefined
+                oneTime?: boolean | undefined
+                extraAllowance?: number | undefined
+                optional?: boolean | undefined
+                reassignable?: boolean | undefined
+                canSteal?: boolean | undefined
+                startDate?: string | undefined
+                notes?: string | undefined
+                requireObjectDetection?: boolean | undefined
+                objectDetectionTag?: string | undefined
+                updatedByAutomation?: boolean | undefined
+                aiIcon?: string | undefined
+                isCalendar?: boolean | undefined
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 206
@@ -795,9 +1111,165 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 isCalendar?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                kidUsername: string
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                nfcTag?: string | undefined
+                status?: string | undefined
+                choreName: string
+                choreDescription?: string | undefined
+                choreNumber?: number | undefined
+                blockDash?: boolean | undefined
+                oneTime?: boolean | undefined
+                extraAllowance?: number | undefined
+                optional?: boolean | undefined
+                reassignable?: boolean | undefined
+                canSteal?: boolean | undefined
+                startDate?: string | undefined
+                notes?: string | undefined
+                requireObjectDetection?: boolean | undefined
+                objectDetectionTag?: string | undefined
+                updatedByAutomation?: boolean | undefined
+                aiIcon?: string | undefined
+                isCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                kidUsername: string
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                nfcTag?: string | undefined
+                status?: string | undefined
+                choreName: string
+                choreDescription?: string | undefined
+                choreNumber?: number | undefined
+                blockDash?: boolean | undefined
+                oneTime?: boolean | undefined
+                extraAllowance?: number | undefined
+                optional?: boolean | undefined
+                reassignable?: boolean | undefined
+                canSteal?: boolean | undefined
+                startDate?: string | undefined
+                notes?: string | undefined
+                requireObjectDetection?: boolean | undefined
+                objectDetectionTag?: string | undefined
+                updatedByAutomation?: boolean | undefined
+                aiIcon?: string | undefined
+                isCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                kidUsername: string
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                nfcTag?: string | undefined
+                status?: string | undefined
+                choreName: string
+                choreDescription?: string | undefined
+                choreNumber?: number | undefined
+                blockDash?: boolean | undefined
+                oneTime?: boolean | undefined
+                extraAllowance?: number | undefined
+                optional?: boolean | undefined
+                reassignable?: boolean | undefined
+                canSteal?: boolean | undefined
+                startDate?: string | undefined
+                notes?: string | undefined
+                requireObjectDetection?: boolean | undefined
+                objectDetectionTag?: string | undefined
+                updatedByAutomation?: boolean | undefined
+                aiIcon?: string | undefined
+                isCalendar?: boolean | undefined
+              }
+            }
             output: _405
             outputFormat: 'json'
             status: 405
+          }
+        | {
+            input: {
+              query: {
+                kidUsername: string
+                day?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                nfcTag?: string | undefined
+                status?: string | undefined
+                choreName: string
+                choreDescription?: string | undefined
+                choreNumber?: number | undefined
+                blockDash?: boolean | undefined
+                oneTime?: boolean | undefined
+                extraAllowance?: number | undefined
+                optional?: boolean | undefined
+                reassignable?: boolean | undefined
+                canSteal?: boolean | undefined
+                startDate?: string | undefined
+                notes?: string | undefined
+                requireObjectDetection?: boolean | undefined
+                objectDetectionTag?: string | undefined
+                updatedByAutomation?: boolean | undefined
+                aiIcon?: string | undefined
+                isCalendar?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
         | {
             input: {
@@ -899,9 +1371,137 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 whereName?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                idChoreList: number
+                status?: string | undefined
+                stolen?: boolean | undefined
+                stolenBy?: string | undefined
+                nfcTag?: string | undefined
+                notes?: string | undefined
+                latitude?: number | undefined
+                longitude?: number | undefined
+                altitude?: number | undefined
+                updatedByAutomation?: boolean | undefined
+                whereDay?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                whereStatus?: string | undefined
+                whereName?: string | undefined
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 206
+          }
+        | {
+            input: {
+              query: {
+                idChoreList: number
+                status?: string | undefined
+                stolen?: boolean | undefined
+                stolenBy?: string | undefined
+                nfcTag?: string | undefined
+                notes?: string | undefined
+                latitude?: number | undefined
+                longitude?: number | undefined
+                altitude?: number | undefined
+                updatedByAutomation?: boolean | undefined
+                whereDay?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                whereStatus?: string | undefined
+                whereName?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                idChoreList: number
+                status?: string | undefined
+                stolen?: boolean | undefined
+                stolenBy?: string | undefined
+                nfcTag?: string | undefined
+                notes?: string | undefined
+                latitude?: number | undefined
+                longitude?: number | undefined
+                altitude?: number | undefined
+                updatedByAutomation?: boolean | undefined
+                whereDay?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                whereStatus?: string | undefined
+                whereName?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                idChoreList: number
+                status?: string | undefined
+                stolen?: boolean | undefined
+                stolenBy?: string | undefined
+                nfcTag?: string | undefined
+                notes?: string | undefined
+                latitude?: number | undefined
+                longitude?: number | undefined
+                altitude?: number | undefined
+                updatedByAutomation?: boolean | undefined
+                whereDay?:
+                  | 'Sunday'
+                  | 'Monday'
+                  | 'Tuesday'
+                  | 'Wednesday'
+                  | 'Thursday'
+                  | 'Friday'
+                  | 'Saturday'
+                  | 'Weekly'
+                  | 'Today'
+                  | undefined
+                whereStatus?: string | undefined
+                whereName?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: {
@@ -995,9 +1595,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 lastName: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                username: string
+                password: string
+                email: string
+                firstName: string
+                lastName: string
+              }
+            }
             output: _405
             outputFormat: 'json'
             status: 405
+          }
+        | {
+            input: {
+              query: {
+                username: string
+                password: string
+                email: string
+                firstName: string
+                lastName: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
     }
   } & {
@@ -1032,7 +1660,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/kkid/userlist': {
       $delete:
+        | { input: { query: { userID: number } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { query: { userID: number } }; output: {}; outputFormat: string; status: 202 }
         | { input: { query: { userID: number } }; output: _405; outputFormat: 'json'; status: 405 }
+        | { input: { query: { userID: number } }; output: {}; outputFormat: string; status: 409 }
         | { input: { query: { userID: number } }; output: _412; outputFormat: 'json'; status: 412 }
       $get:
         | {
@@ -1065,9 +1696,77 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 email?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                isChild?: boolean | undefined
+                isActive?: boolean | undefined
+                isAdmin?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableChores?: boolean | undefined
+                userID?: number | undefined
+                username?: string | undefined
+                email?: string | undefined
+              }
+            }
             output: Nodata
             outputFormat: 'json'
             status: 204
+          }
+        | {
+            input: {
+              query: {
+                isChild?: boolean | undefined
+                isActive?: boolean | undefined
+                isAdmin?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableChores?: boolean | undefined
+                userID?: number | undefined
+                username?: string | undefined
+                email?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                isChild?: boolean | undefined
+                isActive?: boolean | undefined
+                isAdmin?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableChores?: boolean | undefined
+                userID?: number | undefined
+                username?: string | undefined
+                email?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                isChild?: boolean | undefined
+                isActive?: boolean | undefined
+                isAdmin?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableChores?: boolean | undefined
+                userID?: number | undefined
+                username?: string | undefined
+                email?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: {
@@ -1128,9 +1827,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 lastName: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                username: string
+                password: string
+                email: string
+                firstName: string
+                lastName: string
+              }
+            }
             output: _405
             outputFormat: 'json'
             status: 405
+          }
+        | {
+            input: {
+              query: {
+                username: string
+                password: string
+                email: string
+                firstName: string
+                lastName: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
         | {
             input: {
@@ -1187,9 +1914,53 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 enableObjectDetection?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: {
+              query: {
+                userID: number
+                username: string
+                email: string
+                firstName: string
+                lastName: string
+                emoji?: string | undefined
+                tmdbKey?: string | undefined
+                enableWishList?: boolean | undefined
+                enableChores?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableAdmin?: boolean | undefined
+                enableTmdb?: boolean | undefined
+                enableObjectDetection?: boolean | undefined
+              }
+            }
             output: _405
             outputFormat: 'json'
             status: 405
+          }
+        | {
+            input: {
+              query: {
+                userID: number
+                username: string
+                email: string
+                firstName: string
+                lastName: string
+                emoji?: string | undefined
+                tmdbKey?: string | undefined
+                enableWishList?: boolean | undefined
+                enableChores?: boolean | undefined
+                enableAllowance?: boolean | undefined
+                enableAdmin?: boolean | undefined
+                enableTmdb?: boolean | undefined
+                enableObjectDetection?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
         | {
             input: {

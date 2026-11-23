@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLedgerOperationsLedgerOperationIdRoute,
   getLedgerOperationsRoute,
   postLedgerOperationsAllocateRoute,
@@ -9,27 +9,44 @@ import {
   postLedgerOperationsReleaseAuthorizationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLedgerOperationsReleaseAuthorizationRouteHandler: RouteHandler<
+  typeof postLedgerOperationsReleaseAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ledgerOperationsHandler = app
-  .openapi(postLedgerOperationsReleaseAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgerOperationsCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgerOperationsAllocateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgerOperationsAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgerOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgerOperationsCaptureAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgerOperationsLedgerOperationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLedgerOperationsCaptureRouteHandler: RouteHandler<
+  typeof postLedgerOperationsCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgerOperationsAllocateRouteHandler: RouteHandler<
+  typeof postLedgerOperationsAllocateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgerOperationsAuthorizeRouteHandler: RouteHandler<
+  typeof postLedgerOperationsAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgerOperationsRouteHandler: RouteHandler<
+  typeof getLedgerOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgerOperationsCaptureAuthorizationRouteHandler: RouteHandler<
+  typeof postLedgerOperationsCaptureAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgerOperationsLedgerOperationIdRouteHandler: RouteHandler<
+  typeof getLedgerOperationsLedgerOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -42,9 +42,9 @@ const ConfigurationListSchema: z.ZodType<ConfigurationListType> = z
   .openapi('ConfigurationList')
 
 type ConfigurationType = {
-  classification: z.infer<typeof String1024Schema> & unknown
+  classification: z.infer<typeof String1024Schema>
   properties?: unknown
-  configurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  configurations?: z.infer<typeof ConfigurationListSchema>
 }
 
 const ResourceIdStringSchema = z

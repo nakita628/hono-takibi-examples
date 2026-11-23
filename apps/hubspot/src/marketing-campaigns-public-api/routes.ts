@@ -1863,7 +1863,7 @@ export const postMarketingCampaigns202609BatchArchiveRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })
 
@@ -2225,7 +2225,7 @@ export const deleteMarketingCampaigns202609CampaignGuidRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })
 
@@ -2442,7 +2442,7 @@ export const putMarketingCampaigns202609CampaignGuidAssetsAssetTypeAssetIdRoute 
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })
 
@@ -2502,7 +2502,7 @@ export const deleteMarketingCampaigns202609CampaignGuidAssetsAssetTypeAssetIdRou
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })
 
@@ -2757,7 +2757,7 @@ export const deleteMarketingCampaigns202609CampaignGuidBudgetBudgetIdRoute = cre
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })
 
@@ -3256,6 +3256,6 @@ export const deleteMarketingCampaigns202609CampaignGuidSpendSpendIdRoute = creat
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing.campaigns.write'] }],
 })

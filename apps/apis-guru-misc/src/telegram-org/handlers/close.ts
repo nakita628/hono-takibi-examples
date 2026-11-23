@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCloseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCloseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const closeHandler = app.openapi(postCloseRoute, (c) => {
+export const postCloseRouteHandler: RouteHandler<typeof postCloseRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

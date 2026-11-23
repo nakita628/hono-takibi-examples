@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/sharing/openapi.json',
   output: './src/sharing/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sharing/types.ts' },
   client: { output: './src/sharing/client.ts', baseUrl: '/' },
   rpc: { output: './src/sharing/rpc.ts', parseResponse: true },

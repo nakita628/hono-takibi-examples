@@ -673,37 +673,37 @@ const DeploymentControllerSchema = z
 const PropagateTagsSchema = z.enum(['TASK_DEFINITION', 'SERVICE', 'NONE']).openapi('PropagateTags')
 
 type ServiceType = {
-  serviceArn?: z.infer<typeof StringSchema> & unknown
-  serviceName?: z.infer<typeof StringSchema> & unknown
-  clusterArn?: z.infer<typeof StringSchema> & unknown
-  loadBalancers?: z.infer<typeof LoadBalancersSchema> & unknown
-  serviceRegistries?: z.infer<typeof ServiceRegistriesSchema> & unknown
-  status?: z.infer<typeof StringSchema> & unknown
-  desiredCount?: z.infer<typeof IntegerSchema> & unknown
-  runningCount?: z.infer<typeof IntegerSchema> & unknown
-  pendingCount?: z.infer<typeof IntegerSchema> & unknown
-  launchType?: z.infer<typeof LaunchTypeSchema> & unknown
-  capacityProviderStrategy?: z.infer<typeof CapacityProviderStrategySchema> & unknown
-  platformVersion?: z.infer<typeof StringSchema> & unknown
-  platformFamily?: z.infer<typeof StringSchema> & unknown
-  taskDefinition?: z.infer<typeof StringSchema> & unknown
-  deploymentConfiguration?: z.infer<typeof DeploymentConfigurationSchema> & unknown
-  taskSets?: z.infer<typeof TaskSetsSchema> & unknown
-  deployments?: z.infer<typeof DeploymentsSchema> & unknown
-  roleArn?: z.infer<typeof StringSchema> & unknown
-  events?: z.infer<typeof ServiceEventsSchema> & unknown
-  createdAt?: z.infer<typeof TimestampSchema> & unknown
-  placementConstraints?: z.infer<typeof PlacementConstraintsSchema> & unknown
-  placementStrategy?: z.infer<typeof PlacementStrategiesSchema> & unknown
-  networkConfiguration?: z.infer<typeof NetworkConfigurationSchema> & unknown
-  healthCheckGracePeriodSeconds?: z.infer<typeof BoxedIntegerSchema> & unknown
-  schedulingStrategy?: z.infer<typeof SchedulingStrategySchema> & unknown
-  deploymentController?: z.infer<typeof DeploymentControllerSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
-  createdBy?: z.infer<typeof StringSchema> & unknown
-  enableECSManagedTags?: z.infer<typeof BooleanSchema> & unknown
-  propagateTags?: z.infer<typeof PropagateTagsSchema> & unknown
-  enableExecuteCommand?: z.infer<typeof BooleanSchema> & unknown
+  serviceArn?: z.infer<typeof StringSchema>
+  serviceName?: z.infer<typeof StringSchema>
+  clusterArn?: z.infer<typeof StringSchema>
+  loadBalancers?: z.infer<typeof LoadBalancersSchema>
+  serviceRegistries?: z.infer<typeof ServiceRegistriesSchema>
+  status?: z.infer<typeof StringSchema>
+  desiredCount?: z.infer<typeof IntegerSchema>
+  runningCount?: z.infer<typeof IntegerSchema>
+  pendingCount?: z.infer<typeof IntegerSchema>
+  launchType?: z.infer<typeof LaunchTypeSchema>
+  capacityProviderStrategy?: z.infer<typeof CapacityProviderStrategySchema>
+  platformVersion?: z.infer<typeof StringSchema>
+  platformFamily?: z.infer<typeof StringSchema>
+  taskDefinition?: z.infer<typeof StringSchema>
+  deploymentConfiguration?: z.infer<typeof DeploymentConfigurationSchema>
+  taskSets?: z.infer<typeof TaskSetsSchema>
+  deployments?: z.infer<typeof DeploymentsSchema>
+  roleArn?: z.infer<typeof StringSchema>
+  events?: z.infer<typeof ServiceEventsSchema>
+  createdAt?: z.infer<typeof TimestampSchema>
+  placementConstraints?: z.infer<typeof PlacementConstraintsSchema>
+  placementStrategy?: z.infer<typeof PlacementStrategiesSchema>
+  networkConfiguration?: z.infer<typeof NetworkConfigurationSchema>
+  healthCheckGracePeriodSeconds?: z.infer<typeof BoxedIntegerSchema>
+  schedulingStrategy?: z.infer<typeof SchedulingStrategySchema>
+  deploymentController?: z.infer<typeof DeploymentControllerSchema>
+  tags?: z.infer<typeof TagsSchema>
+  createdBy?: z.infer<typeof StringSchema>
+  enableECSManagedTags?: z.infer<typeof BooleanSchema>
+  propagateTags?: z.infer<typeof PropagateTagsSchema>
+  enableExecuteCommand?: z.infer<typeof BooleanSchema>
 }
 
 const ServiceSchema: z.ZodType<ServiceType> = z
@@ -827,9 +827,9 @@ const ServiceSchema: z.ZodType<ServiceType> = z
   .openapi({ description: 'Details on a service within a cluster.', required: [] })
   .openapi('Service')
 
-type CreateServiceResponseType = { service?: z.infer<typeof ServiceSchema> & unknown }
+type CreateServiceResponseType = { service?: z.infer<typeof ServiceSchema> }
 
-type DeleteServiceResponseType = { service?: z.infer<typeof ServiceSchema> & unknown }
+type DeleteServiceResponseType = { service?: z.infer<typeof ServiceSchema> }
 
 const RepositoryCredentialsSchema = z
   .object({
@@ -1874,12 +1874,12 @@ const FailureSchema = z
 const FailuresSchema = z.array(FailureSchema).openapi('Failures')
 
 type DeleteTaskDefinitionsResponseType = {
-  taskDefinitions?: z.infer<typeof TaskDefinitionListSchema> & unknown
-  failures?: z.infer<typeof FailuresSchema> & unknown
+  taskDefinitions?: z.infer<typeof TaskDefinitionListSchema>
+  failures?: z.infer<typeof FailuresSchema>
 }
 
 type DeregisterTaskDefinitionResponseType = {
-  taskDefinition?: z.infer<typeof TaskDefinitionSchema> & unknown
+  taskDefinition?: z.infer<typeof TaskDefinitionSchema>
 }
 
 type ServicesType = z.infer<typeof ServiceSchema>[]
@@ -1887,13 +1887,13 @@ type ServicesType = z.infer<typeof ServiceSchema>[]
 const ServicesSchema: z.ZodType<ServicesType> = z.array(ServiceSchema).openapi('Services')
 
 type DescribeServicesResponseType = {
-  services?: z.infer<typeof ServicesSchema> & unknown
-  failures?: z.infer<typeof FailuresSchema> & unknown
+  services?: z.infer<typeof ServicesSchema>
+  failures?: z.infer<typeof FailuresSchema>
 }
 
 type DescribeTaskDefinitionResponseType = {
-  taskDefinition?: z.infer<typeof TaskDefinitionSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
+  taskDefinition?: z.infer<typeof TaskDefinitionSchema>
+  tags?: z.infer<typeof TagsSchema>
 }
 
 const AttachmentDetailsSchema = z.array(KeyValuePairSchema).openapi('AttachmentDetails')
@@ -2310,26 +2310,26 @@ const TaskSchema = z
 const TasksSchema = z.array(TaskSchema).openapi('Tasks')
 
 type DescribeTasksResponseType = {
-  tasks?: z.infer<typeof TasksSchema> & unknown
-  failures?: z.infer<typeof FailuresSchema> & unknown
+  tasks?: z.infer<typeof TasksSchema>
+  failures?: z.infer<typeof FailuresSchema>
 }
 
 type RegisterTaskDefinitionResponseType = {
-  taskDefinition?: z.infer<typeof TaskDefinitionSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
+  taskDefinition?: z.infer<typeof TaskDefinitionSchema>
+  tags?: z.infer<typeof TagsSchema>
 }
 
 type RunTaskResponseType = {
-  tasks?: z.infer<typeof TasksSchema> & unknown
-  failures?: z.infer<typeof FailuresSchema> & unknown
+  tasks?: z.infer<typeof TasksSchema>
+  failures?: z.infer<typeof FailuresSchema>
 }
 
 type StartTaskResponseType = {
-  tasks?: z.infer<typeof TasksSchema> & unknown
-  failures?: z.infer<typeof FailuresSchema> & unknown
+  tasks?: z.infer<typeof TasksSchema>
+  failures?: z.infer<typeof FailuresSchema>
 }
 
-type UpdateServiceResponseType = { service?: z.infer<typeof ServiceSchema> & unknown }
+type UpdateServiceResponseType = { service?: z.infer<typeof ServiceSchema> }
 
 const CapacityProviderStatusSchema = z
   .enum(['ACTIVE', 'INACTIVE'])

@@ -6412,7 +6412,7 @@ export const getClientConfigureGetRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Successfully get client filters', content: {} } },
+  responses: { 200: { description: 'Successfully get client filters' } },
 })
 
 export const postClientConfigureSetRoute = createRoute({

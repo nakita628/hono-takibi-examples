@@ -3768,7 +3768,7 @@ export const postAppsAppIdKeysKeyIdRevokeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Key revoked', content: {} },
+    200: { description: 'Key revoked' },
     401: {
       description: 'Authentication failed',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3907,7 +3907,7 @@ export const deleteAppsAppIdNamespacesNamespaceIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Namespace deleted', content: {} },
+    204: { description: 'Namespace deleted' },
     401: {
       description: 'Authentication failed',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -4109,7 +4109,7 @@ export const deleteAppsAppIdQueuesQueueIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Queue deleted', content: {} },
+    204: { description: 'Queue deleted' },
     400: { description: 'Bad request', content: { 'application/json': { schema: ErrorSchema } } },
     401: {
       description: 'Authentication failed',
@@ -4310,7 +4310,7 @@ export const deleteAppsAppIdRulesRuleIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Reactor rule deleted', content: {} },
+    204: { description: 'Reactor rule deleted' },
     401: {
       description: 'Authentication failed',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -4412,7 +4412,7 @@ export const deleteAppsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'App deleted', content: {} },
+    204: { description: 'App deleted' },
     401: {
       description: 'Authentication failed',
       content: { 'application/json': { schema: ErrorSchema } },

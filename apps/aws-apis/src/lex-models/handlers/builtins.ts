@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBuiltinsIntentsIndexRoute,
   getBuiltinsIntentsSignatureRoute,
   getBuiltinsSlottypesIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBuiltinsIntentsSignatureRouteHandler: RouteHandler<
+  typeof getBuiltinsIntentsSignatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const builtinsHandler = app
-  .openapi(getBuiltinsIntentsSignatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuiltinsIntentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuiltinsSlottypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBuiltinsIntentsIndexRouteHandler: RouteHandler<
+  typeof getBuiltinsIntentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuiltinsSlottypesIndexRouteHandler: RouteHandler<
+  typeof getBuiltinsSlottypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

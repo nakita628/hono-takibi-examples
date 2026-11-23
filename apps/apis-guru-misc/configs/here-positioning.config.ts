@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/here.com/positioning/2.1.1/openapi.yaml',
   output: './src/here-positioning/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/here-positioning/types.ts' },
   client: { output: './src/here-positioning/client.ts', baseUrl: '/' },
   rpc: { output: './src/here-positioning/rpc.ts', parseResponse: true },

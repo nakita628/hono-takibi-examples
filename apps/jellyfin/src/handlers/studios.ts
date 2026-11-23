@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStudiosNameImagesImageTypeImageIndexRoute,
   getStudiosNameImagesImageTypeRoute,
   getStudiosNameRoute,
@@ -8,24 +8,34 @@ import {
   headStudiosNameImagesImageTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStudiosNameImagesImageTypeRouteHandler: RouteHandler<
+  typeof getStudiosNameImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const studiosHandler = app
-  .openapi(getStudiosNameImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headStudiosNameImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStudiosNameImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headStudiosNameImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStudiosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStudiosNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const headStudiosNameImagesImageTypeRouteHandler: RouteHandler<
+  typeof headStudiosNameImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStudiosNameImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof getStudiosNameImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headStudiosNameImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof headStudiosNameImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStudiosRouteHandler: RouteHandler<typeof getStudiosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStudiosNameRouteHandler: RouteHandler<typeof getStudiosNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

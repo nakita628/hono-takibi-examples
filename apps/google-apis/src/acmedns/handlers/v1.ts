@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1AcmeChallengeSetsRootDomainRoute,
   postV1AcmeChallengeSetsRootDomainRotateChallengesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1AcmeChallengeSetsRootDomainRouteHandler: RouteHandler<
+  typeof getV1AcmeChallengeSetsRootDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1AcmeChallengeSetsRootDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AcmeChallengeSetsRootDomainRotateChallengesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1AcmeChallengeSetsRootDomainRotateChallengesRouteHandler: RouteHandler<
+  typeof postV1AcmeChallengeSetsRootDomainRotateChallengesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

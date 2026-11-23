@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTenancyContactAssignmentsIdIndexRoute,
   deleteTenancyContactAssignmentsIndexRoute,
   deleteTenancyContactGroupsIdIndexRoute,
@@ -56,168 +56,326 @@ import {
   putTenancyTenantsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteTenancyContactAssignmentsIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tenancyHandler = app
-  .openapi(deleteTenancyContactAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyContactAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactAssignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactAssignmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactAssignmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactAssignmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactAssignmentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyContactGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyContactRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactRolesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactRolesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactRolesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactRolesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyContactsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyContactsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyContactsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyContactsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyContactsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyTenantGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyTenantGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyTenantGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyTenantGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyTenantGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyTenantGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyTenantGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyTenantGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyTenantGroupsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyTenantsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyTenantsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyTenantsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTenancyTenantsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyTenantsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTenancyTenantsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTenancyTenantsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTenancyTenantsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTenancyTenantsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTenancyContactAssignmentsIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactAssignmentsIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyContactAssignmentsIndexRouteHandler: RouteHandler<
+  typeof postTenancyContactAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactAssignmentsIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactAssignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactAssignmentsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactAssignmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactAssignmentsIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactAssignmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactAssignmentsIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactAssignmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactAssignmentsIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactAssignmentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactGroupsIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactGroupsIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactGroupsIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyContactGroupsIndexRouteHandler: RouteHandler<
+  typeof postTenancyContactGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactGroupsIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactGroupsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactGroupsIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactGroupsIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactGroupsIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactRolesIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactRolesIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactRolesIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyContactRolesIndexRouteHandler: RouteHandler<
+  typeof postTenancyContactRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactRolesIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactRolesIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactRolesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactRolesIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactRolesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactRolesIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactRolesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactRolesIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactRolesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactsIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactsIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactsIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyContactsIndexRouteHandler: RouteHandler<
+  typeof postTenancyContactsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactsIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyContactsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyContactsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyContactsIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyContactsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyContactsIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyContactsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyContactsIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyContactsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyTenantGroupsIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyTenantGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyTenantGroupsIndexRouteHandler: RouteHandler<
+  typeof getTenancyTenantGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyTenantGroupsIndexRouteHandler: RouteHandler<
+  typeof patchTenancyTenantGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyTenantGroupsIndexRouteHandler: RouteHandler<
+  typeof postTenancyTenantGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyTenantGroupsIndexRouteHandler: RouteHandler<
+  typeof putTenancyTenantGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyTenantGroupsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyTenantGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyTenantGroupsIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyTenantGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyTenantGroupsIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyTenantGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyTenantGroupsIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyTenantGroupsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyTenantsIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyTenantsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyTenantsIndexRouteHandler: RouteHandler<
+  typeof getTenancyTenantsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyTenantsIndexRouteHandler: RouteHandler<
+  typeof patchTenancyTenantsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTenancyTenantsIndexRouteHandler: RouteHandler<
+  typeof postTenancyTenantsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyTenantsIndexRouteHandler: RouteHandler<
+  typeof putTenancyTenantsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTenancyTenantsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTenancyTenantsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTenancyTenantsIdIndexRouteHandler: RouteHandler<
+  typeof getTenancyTenantsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTenancyTenantsIdIndexRouteHandler: RouteHandler<
+  typeof patchTenancyTenantsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTenancyTenantsIdIndexRouteHandler: RouteHandler<
+  typeof putTenancyTenantsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

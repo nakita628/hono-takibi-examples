@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRechargeCreditCardRoute,
   getRechargePackagesCountryCountryRoute,
   getRechargeTransactionsRoute,
@@ -8,24 +8,38 @@ import {
   putRechargePurchasePackageIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRechargeCreditCardRouteHandler: RouteHandler<
+  typeof getRechargeCreditCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rechargeHandler = app
-  .openapi(getRechargeCreditCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRechargeCreditCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRechargePackagesCountryCountryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRechargePurchasePackageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRechargeTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRechargeTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRechargeCreditCardRouteHandler: RouteHandler<
+  typeof putRechargeCreditCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRechargePackagesCountryCountryRouteHandler: RouteHandler<
+  typeof getRechargePackagesCountryCountryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRechargePurchasePackageIdRouteHandler: RouteHandler<
+  typeof putRechargePurchasePackageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRechargeTransactionsRouteHandler: RouteHandler<
+  typeof getRechargeTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRechargeTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof getRechargeTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

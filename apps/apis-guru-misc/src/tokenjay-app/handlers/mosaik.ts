@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMosaikBabelfeeIndexRoute,
   getMosaikBabelfeeNewofferRoute,
   getMosaikBabelfeeNotificationcheckRoute,
@@ -12,36 +12,62 @@ import {
   postMosaikTokenburnPrepareRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMosaikBabelfeeIndexRouteHandler: RouteHandler<
+  typeof getMosaikBabelfeeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mosaikHandler = app
-  .openapi(getMosaikBabelfeeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikBabelfeeNewofferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMosaikBabelfeeNewofferDoitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMosaikBabelfeeNewofferNewInputRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikBabelfeeNotificationcheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikBoxconsolidationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikBoxconsolidationConsolidateP2pkaddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikTokenburnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMosaikTokenburnGetUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMosaikTokenburnPrepareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMosaikBabelfeeNewofferRouteHandler: RouteHandler<
+  typeof getMosaikBabelfeeNewofferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMosaikBabelfeeNewofferDoitRouteHandler: RouteHandler<
+  typeof postMosaikBabelfeeNewofferDoitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMosaikBabelfeeNewofferNewInputRouteHandler: RouteHandler<
+  typeof postMosaikBabelfeeNewofferNewInputRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMosaikBabelfeeNotificationcheckRouteHandler: RouteHandler<
+  typeof getMosaikBabelfeeNotificationcheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMosaikBoxconsolidationIndexRouteHandler: RouteHandler<
+  typeof getMosaikBoxconsolidationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMosaikBoxconsolidationConsolidateP2pkaddressRouteHandler: RouteHandler<
+  typeof getMosaikBoxconsolidationConsolidateP2pkaddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMosaikTokenburnRouteHandler: RouteHandler<typeof getMosaikTokenburnRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMosaikTokenburnGetUuidRouteHandler: RouteHandler<
+  typeof getMosaikTokenburnGetUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMosaikTokenburnPrepareRouteHandler: RouteHandler<
+  typeof postMosaikTokenburnPrepareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

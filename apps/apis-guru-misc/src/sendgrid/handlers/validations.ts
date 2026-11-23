@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postValidationsEmailRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postValidationsEmailRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const validationsHandler = app.openapi(postValidationsEmailRoute, (c) => {
+export const postValidationsEmailRouteHandler: RouteHandler<
+  typeof postValidationsEmailRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsGrafanaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsGrafanaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsGrafanaHandler = app.openapi(getDbaasSettingsGrafanaRoute, (c) => {
+export const getDbaasSettingsGrafanaRouteHandler: RouteHandler<
+  typeof getDbaasSettingsGrafanaRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

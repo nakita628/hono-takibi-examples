@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/buy-deal/v1.3.0/openapi.yaml',
   output: './src/buy-deal/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/buy-deal/types.ts' },
   client: { output: './src/buy-deal/client.ts', baseUrl: '/' },
   rpc: { output: './src/buy-deal/rpc.ts', parseResponse: true },

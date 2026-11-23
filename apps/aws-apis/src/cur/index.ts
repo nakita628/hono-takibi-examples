@@ -1,17 +1,35 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsOrigamiServiceGatewayServiceDeleteReportDefinitionHandler,
-  xAmzTargetAwsOrigamiServiceGatewayServiceDescribeReportDefinitionsHandler,
-  xAmzTargetAwsOrigamiServiceGatewayServiceModifyReportDefinitionHandler,
-  xAmzTargetAwsOrigamiServiceGatewayServicePutReportDefinitionHandler,
+  postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute,
+  postXAmzTargetAWSOrigamiServiceGatewayServiceDescribeReportDefinitionsRoute,
+  postXAmzTargetAWSOrigamiServiceGatewayServiceModifyReportDefinitionRoute,
+  postXAmzTargetAWSOrigamiServiceGatewayServicePutReportDefinitionRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRouteHandler,
+  postXAmzTargetAWSOrigamiServiceGatewayServiceDescribeReportDefinitionsRouteHandler,
+  postXAmzTargetAWSOrigamiServiceGatewayServiceModifyReportDefinitionRouteHandler,
+  postXAmzTargetAWSOrigamiServiceGatewayServicePutReportDefinitionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsOrigamiServiceGatewayServiceDeleteReportDefinitionHandler)
-  .route('/', xAmzTargetAwsOrigamiServiceGatewayServiceDescribeReportDefinitionsHandler)
-  .route('/', xAmzTargetAwsOrigamiServiceGatewayServiceModifyReportDefinitionHandler)
-  .route('/', xAmzTargetAwsOrigamiServiceGatewayServicePutReportDefinitionHandler)
+  .openapi(
+    postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRoute,
+    postXAmzTargetAWSOrigamiServiceGatewayServiceDeleteReportDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrigamiServiceGatewayServiceDescribeReportDefinitionsRoute,
+    postXAmzTargetAWSOrigamiServiceGatewayServiceDescribeReportDefinitionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrigamiServiceGatewayServiceModifyReportDefinitionRoute,
+    postXAmzTargetAWSOrigamiServiceGatewayServiceModifyReportDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrigamiServiceGatewayServicePutReportDefinitionRoute,
+    postXAmzTargetAWSOrigamiServiceGatewayServicePutReportDefinitionRouteHandler,
+  )
 
 export default app

@@ -524,46 +524,47 @@ type FunctionDeploymentResultResponse = {
     | { code: string; message: string; payload?: { [x: string]: unknown } | undefined }
     | undefined
 }
+type ConnectSessionInputEndUser = {
+  id: string
+  email?: string | undefined
+  display_name?: string | undefined
+  tags?: { [x: string]: string } | undefined
+}
+type ConnectSessionInputOrganization = { id: string; display_name?: string | undefined }
+type ConnectSessionInputIntegrationsConfigDefaults = {
+  [x: string]: {
+    user_scopes?: string | undefined
+    authorization_params?: { [x: string]: unknown } | undefined
+    connection_config?:
+      | {
+          oauth_scopes_override?: string | undefined
+          oauth_client_id_override?: string | undefined
+          oauth_client_secret_override?: string | undefined
+        }
+      | undefined
+  }
+}
+type ConnectSessionInputOverrides = { [x: string]: { docs_connect?: string | undefined } }
+type ConnectSessionInputWebhookUrlOverride = string
 type ConnectSessionInput = {
   tags?: Tags | undefined
-  end_user?:
-    | {
-        id: string
-        email?: string | undefined
-        display_name?: string | undefined
-        tags?: { [x: string]: string } | undefined
-      }
-    | undefined
-  organization?: { id: string; display_name?: string | undefined } | undefined
+  end_user?: ConnectSessionInputEndUser | undefined
+  organization?: ConnectSessionInputOrganization | undefined
   allowed_integrations?: string[] | undefined
-  integrations_config_defaults?:
-    | {
-        [x: string]: {
-          user_scopes?: string | undefined
-          authorization_params?: { [x: string]: unknown } | undefined
-          connection_config?:
-            | {
-                oauth_scopes_override?: string | undefined
-                oauth_client_id_override?: string | undefined
-                oauth_client_secret_override?: string | undefined
-              }
-            | undefined
-        }
-      }
-    | undefined
-  overrides?: { [x: string]: { docs_connect?: string | undefined } } | undefined
-  webhook_url_override?: string | undefined
+  integrations_config_defaults?: ConnectSessionInputIntegrationsConfigDefaults | undefined
+  overrides?: ConnectSessionInputOverrides | undefined
+  webhook_url_override?: ConnectSessionInputWebhookUrlOverride | undefined
 }
 type ConnectSession = { token: string; connect_link?: string | undefined; expires_at: string }
 type ConnectSessionReconnectInput = {
   connection_id: string
   integration_id: string
   tags?: Tags | undefined
-  end_user?: unknown | undefined
-  organization?: unknown | undefined
-  integrations_config_defaults?: unknown | undefined
-  overrides?: unknown | undefined
-  webhook_url_override?: unknown | undefined
+  end_user?: ConnectSessionInputEndUser | undefined
+  organization?: ConnectSessionInputOrganization | undefined
+  integrations_config_defaults?: ConnectSessionInputIntegrationsConfigDefaults | undefined
+  overrides?: ConnectSessionInputOverrides | undefined
+  webhook_url_override?: ConnectSessionInputWebhookUrlOverride | undefined
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,

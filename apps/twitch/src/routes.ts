@@ -17543,7 +17543,6 @@ export const postModerationBansRoute = createRoute({
     400: {
       description:
         '* The _broadcaster\\_id_ query parameter is required.\n* The _moderator\\_id_ query parameter is required.\n* The `user_id` field is required.\n* The text in the `reason` field is too long.\n* The value in the `duration` field is not valid.\n* The user specified in the `user_id` field may not be banned.\n* The user specified in the `user_id` field may not be put in a timeout.\n* The user specified in the `user_id` field is already banned.',
-      content: {},
     },
     401: {
       description:
@@ -17623,7 +17622,6 @@ export const deleteModerationBansRoute = createRoute({
     400: {
       description:
         '* The _broadcaster\\_id_ query parameter is required.\n* The _moderator\\_id_ query parameter is required.\n* The _user\\_id_ query parameter is required.\n* The user specified in the _user\\_id_ query parameter is not banned.',
-      content: {},
     },
     401: {
       description:
@@ -20272,10 +20270,7 @@ export const getScheduleIcalendarRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: 'Successfully retrieved the broadcaster’s schedule as an iCalendar.',
-      content: {},
-    },
+    200: { description: 'Successfully retrieved the broadcaster’s schedule as an iCalendar.' },
     400: {
       description:
         '* The _broadcaster\\_id_ query parameter is required.\n* The ID in the _broadcaster\\_id_ query parameter is not valid.',

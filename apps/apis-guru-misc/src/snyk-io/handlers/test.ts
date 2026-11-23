@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTestGradleGroupNameVersionRoute,
   getTestMavenGroupIdArtifactIdVersionRoute,
   getTestNpmPackageNameVersionRoute,
@@ -19,57 +19,92 @@ import {
   postTestYarnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTestComposerRouteHandler: RouteHandler<typeof postTestComposerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const testHandler = app
-  .openapi(postTestComposerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestDepGraphRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestGolangdepRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestGovendorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestGradleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestGradleGroupNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestMavenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestMavenGroupIdArtifactIdVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestNpmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestNpmPackageNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestPipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestPipPackageNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestRubygemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestRubygemsGemNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestSbtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestSbtGroupIdArtifactIdVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestYarnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTestDepGraphRouteHandler: RouteHandler<typeof postTestDepGraphRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestGolangdepRouteHandler: RouteHandler<typeof postTestGolangdepRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestGovendorRouteHandler: RouteHandler<typeof postTestGovendorRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestGradleRouteHandler: RouteHandler<typeof postTestGradleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestGradleGroupNameVersionRouteHandler: RouteHandler<
+  typeof getTestGradleGroupNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestMavenRouteHandler: RouteHandler<typeof postTestMavenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestMavenGroupIdArtifactIdVersionRouteHandler: RouteHandler<
+  typeof getTestMavenGroupIdArtifactIdVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestNpmRouteHandler: RouteHandler<typeof postTestNpmRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestNpmPackageNameVersionRouteHandler: RouteHandler<
+  typeof getTestNpmPackageNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestPipRouteHandler: RouteHandler<typeof postTestPipRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestPipPackageNameVersionRouteHandler: RouteHandler<
+  typeof getTestPipPackageNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestRubygemsRouteHandler: RouteHandler<typeof postTestRubygemsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestRubygemsGemNameVersionRouteHandler: RouteHandler<
+  typeof getTestRubygemsGemNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestSbtRouteHandler: RouteHandler<typeof postTestSbtRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestSbtGroupIdArtifactIdVersionRouteHandler: RouteHandler<
+  typeof getTestSbtGroupIdArtifactIdVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestYarnRouteHandler: RouteHandler<typeof postTestYarnRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

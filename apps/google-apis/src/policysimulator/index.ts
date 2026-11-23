@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1betaHandler } from './handlers'
+import { getV1betaNameRoute } from './routes'
+import { getV1betaNameRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1betaHandler)
+export const api = app.openapi(getV1betaNameRoute, getV1betaNameRouteHandler)
 
 export default app

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNavigationViewsFragmentRoute,
   getNavigationViewsRoute,
   patchNavigationViewsFragmentRoute,
   postNavigationViewsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNavigationViewsRouteHandler: RouteHandler<typeof getNavigationViewsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const navigationViewsHandler = app
-  .openapi(getNavigationViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNavigationViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNavigationViewsFragmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNavigationViewsFragmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNavigationViewsRouteHandler: RouteHandler<
+  typeof postNavigationViewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNavigationViewsFragmentRouteHandler: RouteHandler<
+  typeof patchNavigationViewsFragmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNavigationViewsFragmentRouteHandler: RouteHandler<
+  typeof deleteNavigationViewsFragmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReportsReportIdRoute,
   getReportsReportIdResultCsvRoute,
   getReportsReportIdResultPrinterFriendlyRoute,
@@ -9,27 +9,44 @@ import {
   putReportsReportIdPreferredRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postReportsExportXmlRouteHandler: RouteHandler<
+  typeof postReportsExportXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportsHandler = app
-  .openapi(postReportsExportXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsImportXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReportsReportIdDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReportsReportIdPreferredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsReportIdResultCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportsReportIdResultPrinterFriendlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postReportsImportXmlRouteHandler: RouteHandler<
+  typeof postReportsImportXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportsReportIdRouteHandler: RouteHandler<
+  typeof deleteReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReportsReportIdDuplicateRouteHandler: RouteHandler<
+  typeof postReportsReportIdDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putReportsReportIdPreferredRouteHandler: RouteHandler<
+  typeof putReportsReportIdPreferredRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsReportIdResultCsvRouteHandler: RouteHandler<
+  typeof getReportsReportIdResultCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportsReportIdResultPrinterFriendlyRouteHandler: RouteHandler<
+  typeof getReportsReportIdResultPrinterFriendlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -41,7 +41,7 @@ type SiteTypeLayer = { Sites?: Sites[] | undefined }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/v:version/areas': {
+    '/v{version}/areas': {
       $get:
         | {
             input: { param: { version: string } }
@@ -53,7 +53,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { version: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/v:version/areas/:area_Ids': {
+    '/v{version}/areas/:area_Ids': {
       $get:
         | {
             input: { param: { area_Ids: string; version: string } }
@@ -75,7 +75,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/quality/daily': {
+    '/v{version}/quality/daily': {
       $get:
         | {
             input: { param: { version: string } } & {
@@ -103,7 +103,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/quality/overall': {
+    '/v{version}/quality/overall': {
       $get:
         | {
             input: { param: { version: string } } & {
@@ -131,7 +131,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/reports/:report_type': {
+    '/v{version}/reports/:report_type': {
       $get:
         | {
             input: { param: { report_type: string; version: string } } & {
@@ -180,7 +180,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/reports/:start_date/to/:end_date/:report_type': {
+    '/v{version}/reports/:start_date/to/:end_date/:report_type': {
       $get:
         | {
             input: {
@@ -229,7 +229,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/sites': {
+    '/v{version}/sites': {
       $get:
         | {
             input: { param: { version: string } }
@@ -241,7 +241,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { version: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/v:version/sites/:site_Ids': {
+    '/v{version}/sites/:site_Ids': {
       $get:
         | {
             input: { param: { site_Ids: string; version: string } }
@@ -263,7 +263,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v:version/sitetypes': {
+    '/v{version}/sitetypes': {
       $get:
         | {
             input: { param: { version: string } }
@@ -275,7 +275,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { version: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/v:version/sitetypes/:siteType_Id/sites': {
+    '/v{version}/sitetypes/:siteType_Id/sites': {
       $get:
         | {
             input: { param: { siteType_Id: number; version: string } }

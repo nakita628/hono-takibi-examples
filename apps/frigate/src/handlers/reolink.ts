@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReolinkDetectRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReolinkDetectRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const reolinkHandler = app.openapi(getReolinkDetectRoute, (c) => {
+export const getReolinkDetectRouteHandler: RouteHandler<typeof getReolinkDetectRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

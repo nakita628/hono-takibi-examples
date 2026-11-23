@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListTagsForStreamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListTagsForStreamRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listTagsForStreamHandler = app.openapi(postListTagsForStreamRoute, (c) => {
+export const postListTagsForStreamRouteHandler: RouteHandler<
+  typeof postListTagsForStreamRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3LogsAppIdDrainsIdOrUrlRoute,
   getV3LogsAppIdDrainsIdOrUrlRoute,
   getV3LogsAppIdDrainsRoute,
@@ -9,27 +9,42 @@ import {
   postV3LogsAppIdDrainsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3LogsAppIdRouteHandler: RouteHandler<typeof getV3LogsAppIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3LogsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsAppIdDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3LogsAppIdDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3LogsAppIdDrainsIdOrUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsAppIdDrainsIdOrUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsAppIdLogsChunkedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsAppIdLogsSocketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3LogsAppIdDrainsRouteHandler: RouteHandler<
+  typeof getV3LogsAppIdDrainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3LogsAppIdDrainsRouteHandler: RouteHandler<
+  typeof postV3LogsAppIdDrainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3LogsAppIdDrainsIdOrUrlRouteHandler: RouteHandler<
+  typeof deleteV3LogsAppIdDrainsIdOrUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsAppIdDrainsIdOrUrlRouteHandler: RouteHandler<
+  typeof getV3LogsAppIdDrainsIdOrUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsAppIdLogsChunkedRouteHandler: RouteHandler<
+  typeof getV3LogsAppIdLogsChunkedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsAppIdLogsSocketRouteHandler: RouteHandler<
+  typeof getV3LogsAppIdLogsSocketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

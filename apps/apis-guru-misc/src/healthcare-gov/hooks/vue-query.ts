@@ -41,15 +41,15 @@ export function getStateNameMediaTypeExtensionKey() {
 
 export function getApiArticlesMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['api', '/api/articles:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/articles{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiArticlesMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -57,7 +57,7 @@ export function getApiArticlesMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getApiArticlesMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['articles:mediaTypeExtension'].$get(toValue(args), {
+        client.api['articles{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -70,14 +70,14 @@ export function useApiArticlesMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -86,7 +86,7 @@ export function useApiArticlesMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -95,7 +95,7 @@ export function useApiArticlesMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -114,7 +114,7 @@ export function useApiArticlesMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -127,7 +127,7 @@ export function useApiArticlesMediaTypeExtension<
       queryKey: computed(() => getApiArticlesMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['articles:mediaTypeExtension'].$get(toValue(args), {
+          client.api['articles{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -139,20 +139,20 @@ export function useApiArticlesMediaTypeExtension<
 }
 
 export function getApiBlogMediaTypeExtensionQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>,
 ) {
-  return ['api', '/api/blog:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/blog{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiBlogMediaTypeExtensionQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getApiBlogMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['blog:mediaTypeExtension'].$get(toValue(args), {
+        client.api['blog{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -165,13 +165,13 @@ export function useApiBlogMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -179,7 +179,7 @@ export function useApiBlogMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -188,7 +188,7 @@ export function useApiBlogMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -207,7 +207,7 @@ export function useApiBlogMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -220,7 +220,7 @@ export function useApiBlogMediaTypeExtension<
       queryKey: computed(() => getApiBlogMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['blog:mediaTypeExtension'].$get(toValue(args), {
+          client.api['blog{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -233,15 +233,15 @@ export function useApiBlogMediaTypeExtension<
 
 export function getApiGlossaryMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['api', '/api/glossary:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/glossary{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiGlossaryMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -249,7 +249,7 @@ export function getApiGlossaryMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getApiGlossaryMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['glossary:mediaTypeExtension'].$get(toValue(args), {
+        client.api['glossary{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -262,14 +262,14 @@ export function useApiGlossaryMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -278,7 +278,7 @@ export function useApiGlossaryMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -287,7 +287,7 @@ export function useApiGlossaryMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -306,7 +306,7 @@ export function useApiGlossaryMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -319,7 +319,7 @@ export function useApiGlossaryMediaTypeExtension<
       queryKey: computed(() => getApiGlossaryMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['glossary:mediaTypeExtension'].$get(toValue(args), {
+          client.api['glossary{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -332,15 +332,15 @@ export function useApiGlossaryMediaTypeExtension<
 
 export function getApiQuestionsMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['api', '/api/questions:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/questions{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiQuestionsMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -348,7 +348,7 @@ export function getApiQuestionsMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getApiQuestionsMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['questions:mediaTypeExtension'].$get(toValue(args), {
+        client.api['questions{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -361,14 +361,14 @@ export function useApiQuestionsMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -377,7 +377,7 @@ export function useApiQuestionsMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -386,7 +386,7 @@ export function useApiQuestionsMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -405,7 +405,7 @@ export function useApiQuestionsMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -418,7 +418,7 @@ export function useApiQuestionsMediaTypeExtension<
       queryKey: computed(() => getApiQuestionsMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['questions:mediaTypeExtension'].$get(toValue(args), {
+          client.api['questions{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -431,15 +431,15 @@ export function useApiQuestionsMediaTypeExtension<
 
 export function getApiStatesMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['api', '/api/states:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/states{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiStatesMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -447,7 +447,7 @@ export function getApiStatesMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getApiStatesMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['states:mediaTypeExtension'].$get(toValue(args), {
+        client.api['states{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -460,14 +460,14 @@ export function useApiStatesMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -476,7 +476,7 @@ export function useApiStatesMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -485,7 +485,7 @@ export function useApiStatesMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -504,7 +504,7 @@ export function useApiStatesMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -517,7 +517,7 @@ export function useApiStatesMediaTypeExtension<
       queryKey: computed(() => getApiStatesMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['states:mediaTypeExtension'].$get(toValue(args), {
+          client.api['states{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -530,15 +530,15 @@ export function useApiStatesMediaTypeExtension<
 
 export function getApiTopicsMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['api', '/api/topics:mediaTypeExtension', toValue(args)] as const
+  return ['api', '/api/topics{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getApiTopicsMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -546,7 +546,7 @@ export function getApiTopicsMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getApiTopicsMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api['topics:mediaTypeExtension'].$get(toValue(args), {
+        client.api['topics{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -559,14 +559,14 @@ export function useApiTopicsMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -575,7 +575,7 @@ export function useApiTopicsMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -584,7 +584,7 @@ export function useApiTopicsMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -603,7 +603,7 @@ export function useApiTopicsMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -616,7 +616,7 @@ export function useApiTopicsMediaTypeExtension<
       queryKey: computed(() => getApiTopicsMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api['topics:mediaTypeExtension'].$get(toValue(args), {
+          client.api['topics{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -629,15 +629,15 @@ export function useApiTopicsMediaTypeExtension<
 
 export function getBlogPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['blog', '/blog/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['blog', '/blog/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getBlogPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -645,7 +645,7 @@ export function getBlogPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getBlogPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.blog[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.blog[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -658,14 +658,14 @@ export function useBlogPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -674,7 +674,7 @@ export function useBlogPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -683,7 +683,7 @@ export function useBlogPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -702,7 +702,7 @@ export function useBlogPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -715,7 +715,7 @@ export function useBlogPageNameMediaTypeExtension<
       queryKey: computed(() => getBlogPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.blog[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.blog[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -728,15 +728,15 @@ export function useBlogPageNameMediaTypeExtension<
 
 export function getEsBlogPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['es', '/es/blog/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['es', '/es/blog/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getEsBlogPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -744,7 +744,7 @@ export function getEsBlogPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getEsBlogPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.es.blog[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.es.blog[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -757,14 +757,14 @@ export function useEsBlogPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -773,7 +773,9 @@ export function useEsBlogPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>
+                >
               >
             >
           >,
@@ -782,7 +784,9 @@ export function useEsBlogPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>
+                >
               >
             >
           >,
@@ -801,7 +805,7 @@ export function useEsBlogPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -814,7 +818,7 @@ export function useEsBlogPageNameMediaTypeExtension<
       queryKey: computed(() => getEsBlogPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.es.blog[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.es.blog[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -827,15 +831,15 @@ export function useEsBlogPageNameMediaTypeExtension<
 
 export function getEsGlossaryPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['es', '/es/glossary/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['es', '/es/glossary/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getEsGlossaryPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -843,7 +847,7 @@ export function getEsGlossaryPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getEsGlossaryPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.es.glossary[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.es.glossary[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -856,14 +860,14 @@ export function useEsGlossaryPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -873,7 +877,7 @@ export function useEsGlossaryPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -884,7 +888,7 @@ export function useEsGlossaryPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -904,7 +908,7 @@ export function useEsGlossaryPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -917,7 +921,7 @@ export function useEsGlossaryPageNameMediaTypeExtension<
       queryKey: computed(() => getEsGlossaryPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.es.glossary[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.es.glossary[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -930,15 +934,15 @@ export function useEsGlossaryPageNameMediaTypeExtension<
 
 export function getEsQuestionPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['es', '/es/question/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['es', '/es/question/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getEsQuestionPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -946,7 +950,7 @@ export function getEsQuestionPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getEsQuestionPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.es.question[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.es.question[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -959,14 +963,14 @@ export function useEsQuestionPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -976,7 +980,7 @@ export function useEsQuestionPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -987,7 +991,7 @@ export function useEsQuestionPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -1007,7 +1011,7 @@ export function useEsQuestionPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1020,7 +1024,7 @@ export function useEsQuestionPageNameMediaTypeExtension<
       queryKey: computed(() => getEsQuestionPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.es.question[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.es.question[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1033,15 +1037,15 @@ export function useEsQuestionPageNameMediaTypeExtension<
 
 export function getEsPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['es', '/es/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['es', '/es/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getEsPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1049,7 +1053,7 @@ export function getEsPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getEsPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.es[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.es[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1062,14 +1066,14 @@ export function useEsPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1078,7 +1082,7 @@ export function useEsPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1087,7 +1091,7 @@ export function useEsPageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1106,7 +1110,7 @@ export function useEsPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1119,7 +1123,7 @@ export function useEsPageNameMediaTypeExtension<
       queryKey: computed(() => getEsPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.es[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.es[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1132,15 +1136,15 @@ export function useEsPageNameMediaTypeExtension<
 
 export function getEsStateNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['es', '/es/:stateName:mediaTypeExtension', toValue(args)] as const
+  return ['es', '/es/:stateName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getEsStateNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1148,7 +1152,7 @@ export function getEsStateNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getEsStateNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.es[':stateName:mediaTypeExtension'].$get(toValue(args), {
+        client.es[':stateName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1161,14 +1165,14 @@ export function useEsStateNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1177,7 +1181,7 @@ export function useEsStateNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1186,7 +1190,7 @@ export function useEsStateNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1205,7 +1209,7 @@ export function useEsStateNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1218,7 +1222,7 @@ export function useEsStateNameMediaTypeExtension<
       queryKey: computed(() => getEsStateNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.es[':stateName:mediaTypeExtension'].$get(toValue(args), {
+          client.es[':stateName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1231,15 +1235,15 @@ export function useEsStateNameMediaTypeExtension<
 
 export function getGlossaryPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['glossary', '/glossary/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['glossary', '/glossary/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getGlossaryPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1247,7 +1251,7 @@ export function getGlossaryPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getGlossaryPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.glossary[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.glossary[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1260,14 +1264,14 @@ export function useGlossaryPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1277,7 +1281,7 @@ export function useGlossaryPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -1288,7 +1292,7 @@ export function useGlossaryPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -1308,7 +1312,7 @@ export function useGlossaryPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1321,7 +1325,7 @@ export function useGlossaryPageNameMediaTypeExtension<
       queryKey: computed(() => getGlossaryPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.glossary[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.glossary[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1334,15 +1338,15 @@ export function useGlossaryPageNameMediaTypeExtension<
 
 export function getQuestionPageNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return ['question', '/question/:pageName:mediaTypeExtension', toValue(args)] as const
+  return ['question', '/question/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getQuestionPageNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1350,7 +1354,7 @@ export function getQuestionPageNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getQuestionPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.question[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client.question[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1363,14 +1367,14 @@ export function useQuestionPageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1380,7 +1384,7 @@ export function useQuestionPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -1391,7 +1395,7 @@ export function useQuestionPageNameMediaTypeExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>
+                  ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>
                 >
               >
             >
@@ -1411,7 +1415,7 @@ export function useQuestionPageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1424,7 +1428,7 @@ export function useQuestionPageNameMediaTypeExtension<
       queryKey: computed(() => getQuestionPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.question[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client.question[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1436,20 +1440,24 @@ export function useQuestionPageNameMediaTypeExtension<
 }
 
 export function getPageNameMediaTypeExtensionQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>
+  >,
 ) {
-  return [':pageName:mediaTypeExtension', '/:pageName:mediaTypeExtension', toValue(args)] as const
+  return [':pageName{mediaTypeExtension}', '/:pageName{mediaTypeExtension}', toValue(args)] as const
 }
 
 export function getPageNameMediaTypeExtensionQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>
+  >,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getPageNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client[':pageName:mediaTypeExtension'].$get(toValue(args), {
+        client[':pageName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1462,13 +1470,15 @@ export function usePageNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>
+  >,
   options?: {
     query?: Omit<
       Extract<
@@ -1476,7 +1486,7 @@ export function usePageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1485,7 +1495,7 @@ export function usePageNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1504,7 +1514,7 @@ export function usePageNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1517,7 +1527,7 @@ export function usePageNameMediaTypeExtension<
       queryKey: computed(() => getPageNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client[':pageName:mediaTypeExtension'].$get(toValue(args), {
+          client[':pageName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1530,15 +1540,19 @@ export function usePageNameMediaTypeExtension<
 
 export function getStateNameMediaTypeExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>
   >,
 ) {
-  return [':stateName:mediaTypeExtension', '/:stateName:mediaTypeExtension', toValue(args)] as const
+  return [
+    ':stateName{mediaTypeExtension}',
+    '/:stateName{mediaTypeExtension}',
+    toValue(args),
+  ] as const
 }
 
 export function getStateNameMediaTypeExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1546,7 +1560,7 @@ export function getStateNameMediaTypeExtensionQueryOptions(
     queryKey: computed(() => getStateNameMediaTypeExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client[':stateName:mediaTypeExtension'].$get(toValue(args), {
+        client[':stateName{mediaTypeExtension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1559,14 +1573,14 @@ export function useStateNameMediaTypeExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+        Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>
+    InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1575,7 +1589,7 @@ export function useStateNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1584,7 +1598,7 @@ export function useStateNameMediaTypeExtension<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+                Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
               >
             >
           >,
@@ -1603,7 +1617,7 @@ export function useStateNameMediaTypeExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+          Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
         >
       >
     >,
@@ -1616,7 +1630,7 @@ export function useStateNameMediaTypeExtension<
       queryKey: computed(() => getStateNameMediaTypeExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client[':stateName:mediaTypeExtension'].$get(toValue(args), {
+          client[':stateName{mediaTypeExtension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

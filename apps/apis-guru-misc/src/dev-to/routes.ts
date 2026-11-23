@@ -512,8 +512,8 @@ export const postApiAdminUsersRoute = createRoute({
   request: { body: { content: { 'application/json': { schema: UserInviteParamSchema } } } },
   responses: {
     200: { description: 'Successful' },
-    401: { description: 'Unauthorized', content: {} },
-    422: { description: 'Unprocessable Entity', content: {} },
+    401: { description: 'Unauthorized' },
+    422: { description: 'Unprocessable Entity' },
   },
 })
 
@@ -721,9 +721,9 @@ export const postApiArticlesRoute = createRoute({
   operationId: 'createArticle',
   request: { body: { content: { 'application/json': { schema: ArticleSchema } } } },
   responses: {
-    201: { description: 'An Article', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    422: { description: 'Unprocessable Entity', content: {} },
+    201: { description: 'An Article' },
+    401: { description: 'Unauthorized' },
+    422: { description: 'Unprocessable Entity' },
   },
 })
 
@@ -895,7 +895,7 @@ export const getApiArticlesMeRoute = createRoute({
       description: "A List of the authenticated user's Articles",
       content: { 'application/json': { schema: z.array(ArticleIndexSchema), example: [] } },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -915,7 +915,7 @@ export const getApiArticlesMeAllRoute = createRoute({
       description: "A List of the authenticated user's Articles",
       content: { 'application/json': { schema: z.array(ArticleIndexSchema), example: [] } },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -935,7 +935,7 @@ export const getApiArticlesMePublishedRoute = createRoute({
       description: "A List of the authenticated user's Articles",
       content: { 'application/json': { schema: z.array(ArticleIndexSchema), example: [] } },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -955,7 +955,7 @@ export const getApiArticlesMeUnpublishedRoute = createRoute({
       description: "A List of the authenticated user's Articles",
       content: { 'application/json': { schema: z.array(ArticleIndexSchema), example: [] } },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -1039,7 +1039,7 @@ export const getApiArticlesIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Article Not Found', content: {} },
+    404: { description: 'Article Not Found' },
   },
   security: [],
 })
@@ -1078,10 +1078,10 @@ export const putApiArticlesIdRoute = createRoute({
     body: { content: { 'application/json': { schema: ArticleSchema } } },
   },
   responses: {
-    200: { description: 'An Article', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Article Not Found', content: {} },
-    422: { description: 'Unprocessable Entity', content: {} },
+    200: { description: 'An Article' },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Article Not Found' },
+    422: { description: 'Unprocessable Entity' },
   },
 })
 
@@ -1134,8 +1134,8 @@ export const putApiArticlesIdUnpublishRoute = createRoute({
   },
   responses: {
     204: { description: 'Article successfully unpublished' },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Article Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Article Not Found' },
   },
 })
 
@@ -1216,7 +1216,7 @@ export const getApiArticlesUsernameSlugRoute = createRoute({
         },
       },
     },
-    404: { description: 'Article Not Found', content: {} },
+    404: { description: 'Article Not Found' },
   },
   security: [],
 })
@@ -1290,7 +1290,7 @@ export const getApiCommentsRoute = createRoute({
         },
       },
     },
-    404: { description: 'Resource Not Found', content: {} },
+    404: { description: 'Resource Not Found' },
   },
   security: [],
 })
@@ -1328,8 +1328,8 @@ export const getApiCommentsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'A List of the Comments', content: {} },
-    404: { description: 'Comment Not Found', content: {} },
+    200: { description: 'A List of the Comments' },
+    404: { description: 'Comment Not Found' },
   },
   security: [],
 })
@@ -1340,10 +1340,7 @@ export const getApiDisplayAdsRoute = createRoute({
   tags: ['display ads'],
   summary: 'display ads',
   description: 'This endpoint allows the client to retrieve a list of all display ads.',
-  responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-  },
+  responses: { 200: { description: 'successful' }, 401: { description: 'unauthorized' } },
 })
 
 export const postApiDisplayAdsRoute = createRoute({
@@ -1423,9 +1420,9 @@ export const postApiDisplayAdsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    422: { description: 'unprocessable', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    422: { description: 'unprocessable' },
   },
 })
 
@@ -1460,9 +1457,9 @@ export const getApiDisplayAdsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    404: { description: 'Unknown DisplayAd ID', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    404: { description: 'Unknown DisplayAd ID' },
   },
 })
 
@@ -1561,9 +1558,9 @@ export const putApiDisplayAdsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    404: { description: 'not found', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    404: { description: 'not found' },
   },
 })
 
@@ -1600,8 +1597,8 @@ export const putApiDisplayAdsIdUnpublishRoute = createRoute({
   },
   responses: {
     204: { description: 'no content' },
-    401: { description: 'unauthorized', content: {} },
-    404: { description: 'not found', content: {} },
+    401: { description: 'unauthorized' },
+    404: { description: 'not found' },
   },
 })
 
@@ -1689,7 +1686,7 @@ export const getApiFollowersUsersRoute = createRoute({
         },
       },
     },
-    401: { description: 'unauthorized', content: {} },
+    401: { description: 'unauthorized' },
   },
 })
 
@@ -1713,7 +1710,7 @@ export const getApiFollowsTagsRoute = createRoute({
         },
       },
     },
-    401: { description: 'unauthorized', content: {} },
+    401: { description: 'unauthorized' },
   },
 })
 
@@ -1761,7 +1758,7 @@ export const getApiOrganizationsUsernameRoute = createRoute({
         },
       },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
   security: [],
 })
@@ -1845,7 +1842,7 @@ export const getApiOrganizationsUsernameArticlesRoute = createRoute({
         },
       },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
   security: [],
 })
@@ -1907,7 +1904,7 @@ export const getApiOrganizationsUsernameUsersRoute = createRoute({
         },
       },
     },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
   security: [],
 })
@@ -1997,9 +1994,9 @@ export const postApiPagesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    422: { description: 'unprocessable', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    422: { description: 'unprocessable' },
   },
 })
 
@@ -2116,8 +2113,8 @@ export const putApiPagesIdRoute = createRoute({
         },
       },
     },
-    401: { description: 'unauthorized', content: {} },
-    422: { description: 'unprocessable', content: {} },
+    401: { description: 'unauthorized' },
+    422: { description: 'unprocessable' },
   },
 })
 
@@ -2174,8 +2171,8 @@ export const deleteApiPagesIdRoute = createRoute({
         },
       },
     },
-    401: { description: 'unauthorized', content: {} },
-    422: { description: 'unprocessable', content: {} },
+    401: { description: 'unauthorized' },
+    422: { description: 'unprocessable' },
   },
 })
 
@@ -2231,7 +2228,7 @@ export const getApiPodcastEpisodesRoute = createRoute({
         },
       },
     },
-    404: { description: 'Unknown Podcast username', content: {} },
+    404: { description: 'Unknown Podcast username' },
   },
   security: [],
 })
@@ -2278,7 +2275,7 @@ export const getApiProfileImagesUsernameRoute = createRoute({
         },
       },
     },
-    404: { description: 'Resource Not Found', content: {} },
+    404: { description: 'Resource Not Found' },
   },
 })
 
@@ -2334,10 +2331,7 @@ export const postApiReactionsRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-  },
+  responses: { 200: { description: 'successful' }, 401: { description: 'unauthorized' } },
 })
 
 export const postApiReactionsToggleRoute = createRoute({
@@ -2392,10 +2386,7 @@ export const postApiReactionsToggleRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-  },
+  responses: { 200: { description: 'successful' }, 401: { description: 'unauthorized' } },
 })
 
 export const getApiReadinglistRoute = createRoute({
@@ -2414,7 +2405,7 @@ export const getApiReadinglistRoute = createRoute({
       description: 'A list of articles in the users readinglist',
       content: { 'application/json': { schema: z.array(ArticleIndexSchema), example: [] } },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -2478,7 +2469,7 @@ export const getApiUsersMeRoute = createRoute({
         },
       },
     },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -2539,8 +2530,8 @@ export const putApiUsersIdSuspendRoute = createRoute({
   },
   responses: {
     204: { description: 'User successfully unpublished' },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Unknown User ID', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Unknown User ID' },
   },
 })
 
@@ -2578,8 +2569,8 @@ export const putApiUsersIdUnpublishRoute = createRoute({
   },
   responses: {
     204: { description: "User's articles and comments successfully unpublished" },
-    401: { description: 'Unauthorized', content: {} },
-    404: { description: 'Unknown User ID (still accepted for async processing)', content: {} },
+    401: { description: 'Unauthorized' },
+    404: { description: 'Unknown User ID (still accepted for async processing)' },
   },
 })
 

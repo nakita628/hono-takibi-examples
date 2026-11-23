@@ -23307,7 +23307,7 @@ export const putConsumersTenantMeCommunicationPreferencesTypeRoute = createRoute
     },
   },
   responses: {
-    204: { description: 'Success', content: {} },
+    204: { description: 'Success' },
     401: {
       description: 'Unauthorized',
       content: {
@@ -23385,7 +23385,7 @@ export const postConsumersTenantMeCommunicationPreferencesTypeSubscribedChannels
       body: { content: {} },
     },
     responses: {
-      204: { description: 'Success', content: {} },
+      204: { description: 'Success' },
       401: {
         description: 'Unauthorized',
         content: {
@@ -23483,7 +23483,7 @@ export const deleteConsumersTenantMeCommunicationPreferencesTypeSubscribedChanne
       body: { content: {} },
     },
     responses: {
-      204: { description: 'Success', content: {} },
+      204: { description: 'Success' },
       401: {
         description: 'Unauthorized',
         content: {
@@ -23843,7 +23843,7 @@ export const getDeliveryPoolsRoute = createRoute({
         },
       },
     },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -23861,9 +23861,8 @@ export const postDeliveryPoolsRoute = createRoute({
     201: { description: 'Pool has been created.' },
     400: {
       description: 'There was something invalid in your request - check response body for details',
-      content: {},
     },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -23915,7 +23914,7 @@ export const getDeliveryPoolsDeliveryPoolIdRoute = createRoute({
       },
     },
     404: { description: 'The pool could not be found' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -23968,14 +23967,10 @@ export const putDeliveryPoolsDeliveryPoolIdRoute = createRoute({
     },
     400: {
       description: 'There was something invalid in your request - check response body for details',
-      content: {},
     },
     404: { description: 'The pool could not be found' },
-    409: {
-      description: 'A restaurant in your request already belongs to another pool',
-      content: {},
-    },
-    500: { description: 'Internal Server Error', content: {} },
+    409: { description: 'A restaurant in your request already belongs to another pool' },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -24003,7 +23998,7 @@ export const deleteDeliveryPoolsDeliveryPoolIdRoute = createRoute({
   responses: {
     200: { description: 'Pool deleted' },
     404: { description: 'The pool could not be found' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -24061,14 +24056,10 @@ export const patchDeliveryPoolsDeliveryPoolIdRoute = createRoute({
     },
     400: {
       description: 'There was something invalid in your request - check response body for details',
-      content: {},
     },
     404: { description: 'The pool could not be found' },
-    409: {
-      description: 'A restaurant in your request already belongs to another pool',
-      content: {},
-    },
-    500: { description: 'Internal Server Error', content: {} },
+    409: { description: 'A restaurant in your request already belongs to another pool' },
+    500: { description: 'Internal Server Error' },
   },
 })
 

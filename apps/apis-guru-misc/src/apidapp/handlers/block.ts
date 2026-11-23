@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBlockIdRoute,
   getBlockIdTransactionIndexRoute,
   getBlockIdTransactionRoute,
@@ -10,30 +10,42 @@ import {
   optionsBlockRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBlockRouteHandler: RouteHandler<typeof getBlockRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const blockHandler = app
-  .openapi(getBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlockIdTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsBlockIdTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlockIdTransactionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsBlockIdTransactionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsBlockRouteHandler: RouteHandler<typeof optionsBlockRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlockIdRouteHandler: RouteHandler<typeof getBlockIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsBlockIdRouteHandler: RouteHandler<typeof optionsBlockIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlockIdTransactionRouteHandler: RouteHandler<
+  typeof getBlockIdTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsBlockIdTransactionRouteHandler: RouteHandler<
+  typeof optionsBlockIdTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlockIdTransactionIndexRouteHandler: RouteHandler<
+  typeof getBlockIdTransactionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsBlockIdTransactionIndexRouteHandler: RouteHandler<
+  typeof optionsBlockIdTransactionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

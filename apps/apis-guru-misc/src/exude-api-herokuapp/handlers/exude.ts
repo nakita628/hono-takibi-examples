@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postExudeTypeDataRoute, postExudeTypeFileRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postExudeTypeDataRoute, postExudeTypeFileRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postExudeTypeDataRouteHandler: RouteHandler<typeof postExudeTypeDataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const exudeHandler = app
-  .openapi(postExudeTypeDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExudeTypeFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postExudeTypeFileRouteHandler: RouteHandler<typeof postExudeTypeFileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

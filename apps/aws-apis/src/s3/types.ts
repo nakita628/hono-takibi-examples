@@ -1,5 +1,4 @@
 type AbortMultipartUploadOutput = { [x: string]: unknown }
-type NoSuchUpload = { [x: string]: unknown }
 type CompleteMultipartUploadOutput = {
   Location?: {} | undefined
   Bucket?: {} | undefined
@@ -37,11 +36,7 @@ type CopyObjectOutput = {
       }
     | undefined
 }
-type ObjectNotInActiveTierError = { [x: string]: unknown }
 type CreateBucketOutput = { [x: string]: unknown }
-type BucketAlreadyExists = { [x: string]: unknown }
-type BucketAlreadyOwnedByYou = { [x: string]: unknown }
-type NoSuchBucket = { [x: string]: unknown }
 type OptionalObjectAttributes = 'RestoreStatus'
 type ListObjectsOutput = {
   IsTruncated?: {} | undefined
@@ -169,8 +164,6 @@ type GetBucketWebsiteOutput = {
 }
 type DeleteObjectOutput = { [x: string]: unknown }
 type GetObjectOutput = { Body?: {} | undefined; Metadata?: {} | undefined }
-type NoSuchKey = { [x: string]: unknown }
-type InvalidObjectState = { [x: string]: unknown }
 type HeadObjectOutput = { Metadata?: {} | undefined }
 type PutObjectOutput = { [x: string]: unknown }
 type DeleteObjectTaggingOutput = { [x: string]: unknown }
@@ -357,7 +350,6 @@ type ListObjectsV2Output = {
 }
 type Encryption = { EncryptionType: {}; KMSKeyId?: {} | undefined; KMSContext?: {} | undefined }
 type RestoreObjectOutput = { [x: string]: unknown }
-type ObjectAlreadyInActiveTierError = { [x: string]: unknown }
 type SelectObjectContentOutput = {
   Payload?:
     | {
@@ -406,31 +398,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/:Bucket/:Key#uploadId': {
-      $delete:
-        | {
-            input: { param: { Bucket: string; Key: string } } & { query: { uploadId: string } } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: AbortMultipartUploadOutput
-            outputFormat: 'text'
-            status: 204
+      $delete: {
+        input: { param: { Bucket: string; Key: string } } & { query: { uploadId: string } } & {
+          header: {
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & { query: { uploadId: string } } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchUpload
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: AbortMultipartUploadOutput
+        outputFormat: 'text'
+        status: 204
+      }
       $post: {
         input: { param: { Bucket: string; Key: string } } & { query: { uploadId: string } } & {
           header: {
@@ -476,238 +455,105 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/:Bucket/:Key#x-amz-copy-source': {
-      $put:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | 'aws-exec-read'
-                  | 'bucket-owner-read'
-                  | 'bucket-owner-full-control'
-                  | undefined
-                'Cache-Control'?: string | undefined
-                'x-amz-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'Content-Disposition'?: string | undefined
-                'Content-Encoding'?: string | undefined
-                'Content-Language'?: string | undefined
-                'Content-Type'?: string | undefined
-                'x-amz-copy-source': string
-                'x-amz-copy-source-if-match'?: string | undefined
-                'x-amz-copy-source-if-modified-since'?: string | undefined
-                'x-amz-copy-source-if-none-match'?: string | undefined
-                'x-amz-copy-source-if-unmodified-since'?: string | undefined
-                Expires?: string | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-metadata-directive'?: 'COPY' | 'REPLACE' | undefined
-                'x-amz-tagging-directive'?: 'COPY' | 'REPLACE' | undefined
-                'x-amz-server-side-encryption'?: 'AES256' | 'aws:kms' | 'aws:kms:dsse' | undefined
-                'x-amz-storage-class'?:
-                  | 'STANDARD'
-                  | 'REDUCED_REDUNDANCY'
-                  | 'STANDARD_IA'
-                  | 'ONEZONE_IA'
-                  | 'INTELLIGENT_TIERING'
-                  | 'GLACIER'
-                  | 'DEEP_ARCHIVE'
-                  | 'OUTPOSTS'
-                  | 'GLACIER_IR'
-                  | 'SNOW'
-                  | undefined
-                'x-amz-website-redirect-location'?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-server-side-encryption-aws-kms-key-id'?: string | undefined
-                'x-amz-server-side-encryption-context'?: string | undefined
-                'x-amz-server-side-encryption-bucket-key-enabled'?: boolean | undefined
-                'x-amz-copy-source-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-copy-source-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-copy-source-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-tagging'?: string | undefined
-                'x-amz-object-lock-mode'?: 'GOVERNANCE' | 'COMPLIANCE' | undefined
-                'x-amz-object-lock-retain-until-date'?: string | undefined
-                'x-amz-object-lock-legal-hold'?: 'ON' | 'OFF' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-source-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & { json: { 'x-amz-meta-'?: { [x: string]: MetadataValue } | undefined } }
-            output: CopyObjectOutput
-            outputFormat: 'text'
-            status: 200
+      $put: {
+        input: { param: { Bucket: string; Key: string } } & {
+          header: {
+            'x-amz-acl'?:
+              | 'private'
+              | 'public-read'
+              | 'public-read-write'
+              | 'authenticated-read'
+              | 'aws-exec-read'
+              | 'bucket-owner-read'
+              | 'bucket-owner-full-control'
+              | undefined
+            'Cache-Control'?: string | undefined
+            'x-amz-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
+            'Content-Disposition'?: string | undefined
+            'Content-Encoding'?: string | undefined
+            'Content-Language'?: string | undefined
+            'Content-Type'?: string | undefined
+            'x-amz-copy-source': string
+            'x-amz-copy-source-if-match'?: string | undefined
+            'x-amz-copy-source-if-modified-since'?: string | undefined
+            'x-amz-copy-source-if-none-match'?: string | undefined
+            'x-amz-copy-source-if-unmodified-since'?: string | undefined
+            Expires?: string | undefined
+            'x-amz-grant-full-control'?: string | undefined
+            'x-amz-grant-read'?: string | undefined
+            'x-amz-grant-read-acp'?: string | undefined
+            'x-amz-grant-write-acp'?: string | undefined
+            'x-amz-metadata-directive'?: 'COPY' | 'REPLACE' | undefined
+            'x-amz-tagging-directive'?: 'COPY' | 'REPLACE' | undefined
+            'x-amz-server-side-encryption'?: 'AES256' | 'aws:kms' | 'aws:kms:dsse' | undefined
+            'x-amz-storage-class'?:
+              | 'STANDARD'
+              | 'REDUCED_REDUNDANCY'
+              | 'STANDARD_IA'
+              | 'ONEZONE_IA'
+              | 'INTELLIGENT_TIERING'
+              | 'GLACIER'
+              | 'DEEP_ARCHIVE'
+              | 'OUTPOSTS'
+              | 'GLACIER_IR'
+              | 'SNOW'
+              | undefined
+            'x-amz-website-redirect-location'?: string | undefined
+            'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
+            'x-amz-server-side-encryption-customer-key'?: string | undefined
+            'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
+            'x-amz-server-side-encryption-aws-kms-key-id'?: string | undefined
+            'x-amz-server-side-encryption-context'?: string | undefined
+            'x-amz-server-side-encryption-bucket-key-enabled'?: boolean | undefined
+            'x-amz-copy-source-server-side-encryption-customer-algorithm'?: string | undefined
+            'x-amz-copy-source-server-side-encryption-customer-key'?: string | undefined
+            'x-amz-copy-source-server-side-encryption-customer-key-MD5'?: string | undefined
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-tagging'?: string | undefined
+            'x-amz-object-lock-mode'?: 'GOVERNANCE' | 'COMPLIANCE' | undefined
+            'x-amz-object-lock-retain-until-date'?: string | undefined
+            'x-amz-object-lock-legal-hold'?: 'ON' | 'OFF' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-source-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | 'aws-exec-read'
-                  | 'bucket-owner-read'
-                  | 'bucket-owner-full-control'
-                  | undefined
-                'Cache-Control'?: string | undefined
-                'x-amz-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'Content-Disposition'?: string | undefined
-                'Content-Encoding'?: string | undefined
-                'Content-Language'?: string | undefined
-                'Content-Type'?: string | undefined
-                'x-amz-copy-source': string
-                'x-amz-copy-source-if-match'?: string | undefined
-                'x-amz-copy-source-if-modified-since'?: string | undefined
-                'x-amz-copy-source-if-none-match'?: string | undefined
-                'x-amz-copy-source-if-unmodified-since'?: string | undefined
-                Expires?: string | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-metadata-directive'?: 'COPY' | 'REPLACE' | undefined
-                'x-amz-tagging-directive'?: 'COPY' | 'REPLACE' | undefined
-                'x-amz-server-side-encryption'?: 'AES256' | 'aws:kms' | 'aws:kms:dsse' | undefined
-                'x-amz-storage-class'?:
-                  | 'STANDARD'
-                  | 'REDUCED_REDUNDANCY'
-                  | 'STANDARD_IA'
-                  | 'ONEZONE_IA'
-                  | 'INTELLIGENT_TIERING'
-                  | 'GLACIER'
-                  | 'DEEP_ARCHIVE'
-                  | 'OUTPOSTS'
-                  | 'GLACIER_IR'
-                  | 'SNOW'
-                  | undefined
-                'x-amz-website-redirect-location'?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-server-side-encryption-aws-kms-key-id'?: string | undefined
-                'x-amz-server-side-encryption-context'?: string | undefined
-                'x-amz-server-side-encryption-bucket-key-enabled'?: boolean | undefined
-                'x-amz-copy-source-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-copy-source-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-copy-source-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-tagging'?: string | undefined
-                'x-amz-object-lock-mode'?: 'GOVERNANCE' | 'COMPLIANCE' | undefined
-                'x-amz-object-lock-retain-until-date'?: string | undefined
-                'x-amz-object-lock-legal-hold'?: 'ON' | 'OFF' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-source-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & { json: { 'x-amz-meta-'?: { [x: string]: MetadataValue } | undefined } }
-            output: ObjectNotInActiveTierError
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: { 'x-amz-meta-'?: { [x: string]: MetadataValue } | undefined } }
+        output: CopyObjectOutput
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket': {
-      $put:
-        | {
-            input: { param: { Bucket: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-object-ownership'?:
-                  | 'BucketOwnerPreferred'
-                  | 'ObjectWriter'
-                  | 'BucketOwnerEnforced'
-                  | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: CreateBucketOutput
-            outputFormat: 'text'
-            status: 200
+      $put: {
+        input: { param: { Bucket: string } } & {
+          header: {
+            'x-amz-acl'?:
+              | 'private'
+              | 'public-read'
+              | 'public-read-write'
+              | 'authenticated-read'
+              | undefined
+            'x-amz-grant-full-control'?: string | undefined
+            'x-amz-grant-read'?: string | undefined
+            'x-amz-grant-read-acp'?: string | undefined
+            'x-amz-grant-write'?: string | undefined
+            'x-amz-grant-write-acp'?: string | undefined
+            'x-amz-bucket-object-lock-enabled'?: boolean | undefined
+            'x-amz-object-ownership'?:
+              | 'BucketOwnerPreferred'
+              | 'ObjectWriter'
+              | 'BucketOwnerEnforced'
+              | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-object-ownership'?:
-                  | 'BucketOwnerPreferred'
-                  | 'ObjectWriter'
-                  | 'BucketOwnerEnforced'
-                  | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: BucketAlreadyExists
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { Bucket: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-object-ownership'?:
-                  | 'BucketOwnerPreferred'
-                  | 'ObjectWriter'
-                  | 'BucketOwnerEnforced'
-                  | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: BucketAlreadyOwnedByYou
-            outputFormat: 'text'
-            status: 481
-          }
+        } & {
+          json: { CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined }
+        }
+        output: CreateBucketOutput
+        outputFormat: 'text'
+        status: 200
+      }
       $delete: {
         input: { param: { Bucket: string } } & {
           header: {
@@ -719,76 +565,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 204
       }
-      $head:
-        | {
-            input: { param: { Bucket: string } } & {
-              header: {
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $head: {
+        input: { param: { Bucket: string } } & {
+          header: {
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string } } & {
-              header: {
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchBucket
-            outputFormat: 'text'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { Bucket: string } } & {
+          query: {
+            delimiter?: string | undefined
+            'encoding-type'?: 'url' | undefined
+            marker?: string | undefined
+            'max-keys'?: number | undefined
+            prefix?: string | undefined
+            MaxKeys?: string | undefined
+            Marker?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { Bucket: string } } & {
-              query: {
-                delimiter?: string | undefined
-                'encoding-type'?: 'url' | undefined
-                marker?: string | undefined
-                'max-keys'?: number | undefined
-                prefix?: string | undefined
-                MaxKeys?: string | undefined
-                Marker?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: ListObjectsOutput
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string } } & {
-              query: {
-                delimiter?: string | undefined
-                'encoding-type'?: 'url' | undefined
-                marker?: string | undefined
-                'max-keys'?: number | undefined
-                prefix?: string | undefined
-                MaxKeys?: string | undefined
-                Marker?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchBucket
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: ListObjectsOutput
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket/:Key#uploads': {
@@ -1406,150 +1216,61 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'text'
         status: 204
       }
-      $get:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: {
-                'response-cache-control'?: string | undefined
-                'response-content-disposition'?: string | undefined
-                'response-content-encoding'?: string | undefined
-                'response-content-language'?: string | undefined
-                'response-content-type'?: string | undefined
-                'response-expires'?: string | undefined
-                versionId?: string | undefined
-                partNumber?: number | undefined
-              }
-            } & {
-              header: {
-                'If-Match'?: string | undefined
-                'If-Modified-Since'?: string | undefined
-                'If-None-Match'?: string | undefined
-                'If-Unmodified-Since'?: string | undefined
-                Range?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-checksum-mode'?: 'ENABLED' | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: GetObjectOutput
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: {
+            'response-cache-control'?: string | undefined
+            'response-content-disposition'?: string | undefined
+            'response-content-encoding'?: string | undefined
+            'response-content-language'?: string | undefined
+            'response-content-type'?: string | undefined
+            'response-expires'?: string | undefined
+            versionId?: string | undefined
+            partNumber?: number | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: {
-                'response-cache-control'?: string | undefined
-                'response-content-disposition'?: string | undefined
-                'response-content-encoding'?: string | undefined
-                'response-content-language'?: string | undefined
-                'response-content-type'?: string | undefined
-                'response-expires'?: string | undefined
-                versionId?: string | undefined
-                partNumber?: number | undefined
-              }
-            } & {
-              header: {
-                'If-Match'?: string | undefined
-                'If-Modified-Since'?: string | undefined
-                'If-None-Match'?: string | undefined
-                'If-Unmodified-Since'?: string | undefined
-                Range?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-checksum-mode'?: 'ENABLED' | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchKey
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'If-Match'?: string | undefined
+            'If-Modified-Since'?: string | undefined
+            'If-None-Match'?: string | undefined
+            'If-Unmodified-Since'?: string | undefined
+            Range?: string | undefined
+            'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
+            'x-amz-server-side-encryption-customer-key'?: string | undefined
+            'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-checksum-mode'?: 'ENABLED' | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: {
-                'response-cache-control'?: string | undefined
-                'response-content-disposition'?: string | undefined
-                'response-content-encoding'?: string | undefined
-                'response-content-language'?: string | undefined
-                'response-content-type'?: string | undefined
-                'response-expires'?: string | undefined
-                versionId?: string | undefined
-                partNumber?: number | undefined
-              }
-            } & {
-              header: {
-                'If-Match'?: string | undefined
-                'If-Modified-Since'?: string | undefined
-                'If-None-Match'?: string | undefined
-                'If-Unmodified-Since'?: string | undefined
-                Range?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-checksum-mode'?: 'ENABLED' | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: InvalidObjectState
-            outputFormat: 'text'
-            status: 481
+        }
+        output: GetObjectOutput
+        outputFormat: 'text'
+        status: 200
+      }
+      $head: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: { versionId?: string | undefined; partNumber?: number | undefined }
+        } & {
+          header: {
+            'If-Match'?: string | undefined
+            'If-Modified-Since'?: string | undefined
+            'If-None-Match'?: string | undefined
+            'If-Unmodified-Since'?: string | undefined
+            Range?: string | undefined
+            'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
+            'x-amz-server-side-encryption-customer-key'?: string | undefined
+            'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-checksum-mode'?: 'ENABLED' | undefined
+            'x-amz-security-token'?: string | undefined
           }
-      $head:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; partNumber?: number | undefined }
-            } & {
-              header: {
-                'If-Match'?: string | undefined
-                'If-Modified-Since'?: string | undefined
-                'If-None-Match'?: string | undefined
-                'If-Unmodified-Since'?: string | undefined
-                Range?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-checksum-mode'?: 'ENABLED' | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: HeadObjectOutput
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; partNumber?: number | undefined }
-            } & {
-              header: {
-                'If-Match'?: string | undefined
-                'If-Modified-Since'?: string | undefined
-                'If-None-Match'?: string | undefined
-                'If-Unmodified-Since'?: string | undefined
-                Range?: string | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-checksum-mode'?: 'ENABLED' | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchKey
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: HeadObjectOutput
+        outputFormat: 'text'
+        status: 200
+      }
       $put: {
         input: { param: { Bucket: string; Key: string } } & {
           header: {
@@ -2036,158 +1757,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/:Bucket/:Key#acl': {
-      $get:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; acl: true }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: GetObjectAclOutput
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: { versionId?: string | undefined; acl: true }
+        } & {
+          header: {
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; acl: true }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchKey
-            outputFormat: 'text'
-            status: 480
+        }
+        output: GetObjectAclOutput
+        outputFormat: 'text'
+        status: 200
+      }
+      $put: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: { versionId?: string | undefined; acl: true }
+        } & {
+          header: {
+            'x-amz-acl'?:
+              | 'private'
+              | 'public-read'
+              | 'public-read-write'
+              | 'authenticated-read'
+              | 'aws-exec-read'
+              | 'bucket-owner-read'
+              | 'bucket-owner-full-control'
+              | undefined
+            'Content-MD5'?: string | undefined
+            'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
+            'x-amz-grant-full-control'?: string | undefined
+            'x-amz-grant-read'?: string | undefined
+            'x-amz-grant-read-acp'?: string | undefined
+            'x-amz-grant-write'?: string | undefined
+            'x-amz-grant-write-acp'?: string | undefined
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-      $put:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; acl: true }
-            } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | 'aws-exec-read'
-                  | 'bucket-owner-read'
-                  | 'bucket-owner-full-control'
-                  | undefined
-                'Content-MD5'?: string | undefined
-                'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                AccessControlPolicy?:
-                  | {
-                      Grants?: {} | undefined
-                      Owner?: { DisplayName?: {} | undefined; ID?: {} | undefined } | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: PutObjectAclOutput
-            outputFormat: 'text'
-            status: 200
+        } & {
+          json: {
+            AccessControlPolicy?:
+              | {
+                  Grants?: {} | undefined
+                  Owner?: { DisplayName?: {} | undefined; ID?: {} | undefined } | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; acl: true }
-            } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | 'aws-exec-read'
-                  | 'bucket-owner-read'
-                  | 'bucket-owner-full-control'
-                  | undefined
-                'Content-MD5'?: string | undefined
-                'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                AccessControlPolicy?:
-                  | {
-                      Grants?: {} | undefined
-                      Owner?: { DisplayName?: {} | undefined; ID?: {} | undefined } | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: NoSuchKey
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: PutObjectAclOutput
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket/:Key#attributes&x-amz-object-attributes': {
-      $get:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; attributes: true }
-            } & {
-              header: {
-                'x-amz-max-parts'?: number | undefined
-                'x-amz-part-number-marker'?: number | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-object-attributes': ObjectAttributes[]
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: GetObjectAttributesOutput
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: { versionId?: string | undefined; attributes: true }
+        } & {
+          header: {
+            'x-amz-max-parts'?: number | undefined
+            'x-amz-part-number-marker'?: number | undefined
+            'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
+            'x-amz-server-side-encryption-customer-key'?: string | undefined
+            'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-object-attributes': ObjectAttributes[]
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; attributes: true }
-            } & {
-              header: {
-                'x-amz-max-parts'?: number | undefined
-                'x-amz-part-number-marker'?: number | undefined
-                'x-amz-server-side-encryption-customer-algorithm'?: string | undefined
-                'x-amz-server-side-encryption-customer-key'?: string | undefined
-                'x-amz-server-side-encryption-customer-key-MD5'?: string | undefined
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-object-attributes': ObjectAttributes[]
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchKey
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: GetObjectAttributesOutput
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket/:Key#legal-hold': {
@@ -2446,217 +2091,112 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/:Bucket#list-type=2': {
-      $get:
-        | {
-            input: { param: { Bucket: string } } & {
-              query: {
-                delimiter?: string | undefined
-                'encoding-type'?: 'url' | undefined
-                'max-keys'?: number | undefined
-                prefix?: string | undefined
-                'continuation-token'?: string | undefined
-                'fetch-owner'?: boolean | undefined
-                'start-after'?: string | undefined
-                MaxKeys?: string | undefined
-                ContinuationToken?: string | undefined
-                'list-type': '2'
-              }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: ListObjectsV2Output
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { param: { Bucket: string } } & {
+          query: {
+            delimiter?: string | undefined
+            'encoding-type'?: 'url' | undefined
+            'max-keys'?: number | undefined
+            prefix?: string | undefined
+            'continuation-token'?: string | undefined
+            'fetch-owner'?: boolean | undefined
+            'start-after'?: string | undefined
+            MaxKeys?: string | undefined
+            ContinuationToken?: string | undefined
+            'list-type': '2'
           }
-        | {
-            input: { param: { Bucket: string } } & {
-              query: {
-                delimiter?: string | undefined
-                'encoding-type'?: 'url' | undefined
-                'max-keys'?: number | undefined
-                prefix?: string | undefined
-                'continuation-token'?: string | undefined
-                'fetch-owner'?: boolean | undefined
-                'start-after'?: string | undefined
-                MaxKeys?: string | undefined
-                ContinuationToken?: string | undefined
-                'list-type': '2'
-              }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            }
-            output: NoSuchBucket
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-optional-object-attributes'?: OptionalObjectAttributes[] | undefined
+            'x-amz-security-token'?: string | undefined
           }
+        }
+        output: ListObjectsV2Output
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket/:Key#restore': {
-      $post:
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; restore: true }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                RestoreRequest?:
-                  | {
-                      Days?: {} | undefined
-                      GlacierJobParameters?: { Tier: {} } | undefined
-                      Type?: {} | undefined
-                      Tier?: {} | undefined
-                      Description?: {} | undefined
-                      SelectParameters?:
-                        | {
-                            InputSerialization: {
-                              CSV?:
-                                | {
-                                    FileHeaderInfo?: {} | undefined
-                                    Comments?: {} | undefined
-                                    QuoteEscapeCharacter?: {} | undefined
-                                    RecordDelimiter?: {} | undefined
-                                    FieldDelimiter?: {} | undefined
-                                    QuoteCharacter?: {} | undefined
-                                    AllowQuotedRecordDelimiter?: {} | undefined
-                                  }
-                                | undefined
-                              CompressionType?: {} | undefined
-                              JSON?: { Type?: {} | undefined } | undefined
-                              Parquet?: {} | undefined
-                            }
-                            ExpressionType: {}
-                            Expression: {}
-                            OutputSerialization: {
-                              CSV?:
-                                | {
-                                    QuoteFields?: {} | undefined
-                                    QuoteEscapeCharacter?: {} | undefined
-                                    RecordDelimiter?: {} | undefined
-                                    FieldDelimiter?: {} | undefined
-                                    QuoteCharacter?: {} | undefined
-                                  }
-                                | undefined
-                              JSON?: { RecordDelimiter?: {} | undefined } | undefined
-                            }
-                          }
-                        | undefined
-                      OutputLocation?:
-                        | {
-                            S3?:
-                              | {
-                                  BucketName: {}
-                                  Prefix: {}
-                                  Encryption?: Encryption | undefined
-                                  CannedACL?: {} | undefined
-                                  AccessControlList?: {} | undefined
-                                  Tagging?: { TagSet: {} } | undefined
-                                  UserMetadata?: {} | undefined
-                                  StorageClass?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: RestoreObjectOutput
-            outputFormat: 'text'
-            status: 200
+      $post: {
+        input: { param: { Bucket: string; Key: string } } & {
+          query: { versionId?: string | undefined; restore: true }
+        } & {
+          header: {
+            'x-amz-request-payer'?: 'requester' | undefined
+            'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
+            'x-amz-expected-bucket-owner'?: string | undefined
+            'x-amz-security-token'?: string | undefined
           }
-        | {
-            input: { param: { Bucket: string; Key: string } } & {
-              query: { versionId?: string | undefined; restore: true }
-            } & {
-              header: {
-                'x-amz-request-payer'?: 'requester' | undefined
-                'x-amz-sdk-checksum-algorithm'?: 'CRC32' | 'CRC32C' | 'SHA1' | 'SHA256' | undefined
-                'x-amz-expected-bucket-owner'?: string | undefined
-                'x-amz-security-token'?: string | undefined
-              }
-            } & {
-              json: {
-                RestoreRequest?:
-                  | {
-                      Days?: {} | undefined
-                      GlacierJobParameters?: { Tier: {} } | undefined
-                      Type?: {} | undefined
-                      Tier?: {} | undefined
-                      Description?: {} | undefined
-                      SelectParameters?:
-                        | {
-                            InputSerialization: {
-                              CSV?:
-                                | {
-                                    FileHeaderInfo?: {} | undefined
-                                    Comments?: {} | undefined
-                                    QuoteEscapeCharacter?: {} | undefined
-                                    RecordDelimiter?: {} | undefined
-                                    FieldDelimiter?: {} | undefined
-                                    QuoteCharacter?: {} | undefined
-                                    AllowQuotedRecordDelimiter?: {} | undefined
-                                  }
-                                | undefined
-                              CompressionType?: {} | undefined
-                              JSON?: { Type?: {} | undefined } | undefined
-                              Parquet?: {} | undefined
+        } & {
+          json: {
+            RestoreRequest?:
+              | {
+                  Days?: {} | undefined
+                  GlacierJobParameters?: { Tier: {} } | undefined
+                  Type?: {} | undefined
+                  Tier?: {} | undefined
+                  Description?: {} | undefined
+                  SelectParameters?:
+                    | {
+                        InputSerialization: {
+                          CSV?:
+                            | {
+                                FileHeaderInfo?: {} | undefined
+                                Comments?: {} | undefined
+                                QuoteEscapeCharacter?: {} | undefined
+                                RecordDelimiter?: {} | undefined
+                                FieldDelimiter?: {} | undefined
+                                QuoteCharacter?: {} | undefined
+                                AllowQuotedRecordDelimiter?: {} | undefined
+                              }
+                            | undefined
+                          CompressionType?: {} | undefined
+                          JSON?: { Type?: {} | undefined } | undefined
+                          Parquet?: {} | undefined
+                        }
+                        ExpressionType: {}
+                        Expression: {}
+                        OutputSerialization: {
+                          CSV?:
+                            | {
+                                QuoteFields?: {} | undefined
+                                QuoteEscapeCharacter?: {} | undefined
+                                RecordDelimiter?: {} | undefined
+                                FieldDelimiter?: {} | undefined
+                                QuoteCharacter?: {} | undefined
+                              }
+                            | undefined
+                          JSON?: { RecordDelimiter?: {} | undefined } | undefined
+                        }
+                      }
+                    | undefined
+                  OutputLocation?:
+                    | {
+                        S3?:
+                          | {
+                              BucketName: {}
+                              Prefix: {}
+                              Encryption?: Encryption | undefined
+                              CannedACL?: {} | undefined
+                              AccessControlList?: {} | undefined
+                              Tagging?: { TagSet: {} } | undefined
+                              UserMetadata?: {} | undefined
+                              StorageClass?: {} | undefined
                             }
-                            ExpressionType: {}
-                            Expression: {}
-                            OutputSerialization: {
-                              CSV?:
-                                | {
-                                    QuoteFields?: {} | undefined
-                                    QuoteEscapeCharacter?: {} | undefined
-                                    RecordDelimiter?: {} | undefined
-                                    FieldDelimiter?: {} | undefined
-                                    QuoteCharacter?: {} | undefined
-                                  }
-                                | undefined
-                              JSON?: { RecordDelimiter?: {} | undefined } | undefined
-                            }
-                          }
-                        | undefined
-                      OutputLocation?:
-                        | {
-                            S3?:
-                              | {
-                                  BucketName: {}
-                                  Prefix: {}
-                                  Encryption?: Encryption | undefined
-                                  CannedACL?: {} | undefined
-                                  AccessControlList?: {} | undefined
-                                  Tagging?: { TagSet: {} } | undefined
-                                  UserMetadata?: {} | undefined
-                                  StorageClass?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ObjectAlreadyInActiveTierError
-            outputFormat: 'text'
-            status: 480
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
           }
+        }
+        output: RestoreObjectOutput
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/:Bucket/:Key#select&select-type=2': {

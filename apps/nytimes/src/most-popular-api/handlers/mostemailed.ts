@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMostemailedSectionTimePeriodJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMostemailedSectionTimePeriodJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mostemailedHandler = app.openapi(getMostemailedSectionTimePeriodJsonRoute, (c) => {
+export const getMostemailedSectionTimePeriodJsonRouteHandler: RouteHandler<
+  typeof getMostemailedSectionTimePeriodJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

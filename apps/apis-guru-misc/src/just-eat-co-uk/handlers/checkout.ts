@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCheckoutTenantCheckoutIdFulfilmentAvailabletimesRoute,
   getCheckoutTenantCheckoutIdRoute,
   patchCheckoutTenantCheckoutIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCheckoutTenantCheckoutIdRouteHandler: RouteHandler<
+  typeof getCheckoutTenantCheckoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const checkoutHandler = app
-  .openapi(getCheckoutTenantCheckoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCheckoutTenantCheckoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCheckoutTenantCheckoutIdFulfilmentAvailabletimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchCheckoutTenantCheckoutIdRouteHandler: RouteHandler<
+  typeof patchCheckoutTenantCheckoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCheckoutTenantCheckoutIdFulfilmentAvailabletimesRouteHandler: RouteHandler<
+  typeof getCheckoutTenantCheckoutIdFulfilmentAvailabletimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

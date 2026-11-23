@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIndexerDeleteIdxNameRoute,
   getIndexerStatusRoute,
   getIndexerStorageRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteIndexerDeleteIdxNameRouteHandler: RouteHandler<
+  typeof deleteIndexerDeleteIdxNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const indexerHandler = app
-  .openapi(deleteIndexerDeleteIdxNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexerStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexerStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIndexerStorageRouteHandler: RouteHandler<typeof getIndexerStorageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexerStatusRouteHandler: RouteHandler<typeof getIndexerStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLicenseRoute,
   getLicenseBasicStatusRoute,
   getLicenseRoute,
@@ -10,30 +10,42 @@ import {
   putLicenseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLicenseRouteHandler: RouteHandler<typeof getLicenseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const licenseHandler = app
-  .openapi(getLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLicenseBasicStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLicenseTrialStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLicenseStartBasicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLicenseStartTrialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putLicenseRouteHandler: RouteHandler<typeof putLicenseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLicenseRouteHandler: RouteHandler<typeof postLicenseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLicenseRouteHandler: RouteHandler<typeof deleteLicenseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLicenseBasicStatusRouteHandler: RouteHandler<
+  typeof getLicenseBasicStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLicenseTrialStatusRouteHandler: RouteHandler<
+  typeof getLicenseTrialStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLicenseStartBasicRouteHandler: RouteHandler<
+  typeof postLicenseStartBasicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLicenseStartTrialRouteHandler: RouteHandler<
+  typeof postLicenseStartTrialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

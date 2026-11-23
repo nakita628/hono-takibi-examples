@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuthorizationRoute,
   postAuthorizationDeviceCodeRoute,
   postAuthorizationDeviceRoute,
@@ -9,27 +9,44 @@ import {
   postAuthorizationSsoRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAuthorizationRouteHandler: RouteHandler<
+  typeof deleteAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authorizationHandler = app
-  .openapi(deleteAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationDeviceCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthorizationSsoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthorizationRouteHandler: RouteHandler<typeof postAuthorizationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthorizationDeviceRouteHandler: RouteHandler<
+  typeof postAuthorizationDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthorizationDeviceCodeRouteHandler: RouteHandler<
+  typeof postAuthorizationDeviceCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthorizationProfileRouteHandler: RouteHandler<
+  typeof postAuthorizationProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthorizationRefreshRouteHandler: RouteHandler<
+  typeof postAuthorizationRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthorizationSsoRouteHandler: RouteHandler<
+  typeof postAuthorizationSsoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,47 +1,125 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateHandler,
-  xAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateHandler,
-  xAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateHandler,
-  xAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateHandler,
-  xAmzTargetServiceQuotasV20190624GetAwsDefaultServiceQuotaHandler,
-  xAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeHandler,
-  xAmzTargetServiceQuotasV20190624GetServiceQuotaHandler,
-  xAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateHandler,
-  xAmzTargetServiceQuotasV20190624ListAwsDefaultServiceQuotasHandler,
-  xAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaHandler,
-  xAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryHandler,
-  xAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateHandler,
-  xAmzTargetServiceQuotasV20190624ListServiceQuotasHandler,
-  xAmzTargetServiceQuotasV20190624ListServicesHandler,
-  xAmzTargetServiceQuotasV20190624ListTagsForResourceHandler,
-  xAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateHandler,
-  xAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseHandler,
-  xAmzTargetServiceQuotasV20190624TagResourceHandler,
-  xAmzTargetServiceQuotasV20190624UntagResourceHandler,
+  postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624GetAWSDefaultServiceQuotaRoute,
+  postXAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeRoute,
+  postXAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624GetServiceQuotaRoute,
+  postXAmzTargetServiceQuotasV20190624ListAWSDefaultServiceQuotasRoute,
+  postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaRoute,
+  postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryRoute,
+  postXAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624ListServiceQuotasRoute,
+  postXAmzTargetServiceQuotasV20190624ListServicesRoute,
+  postXAmzTargetServiceQuotasV20190624ListTagsForResourceRoute,
+  postXAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateRoute,
+  postXAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseRoute,
+  postXAmzTargetServiceQuotasV20190624TagResourceRoute,
+  postXAmzTargetServiceQuotasV20190624UntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624GetAWSDefaultServiceQuotaRouteHandler,
+  postXAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeRouteHandler,
+  postXAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624GetServiceQuotaRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListAWSDefaultServiceQuotasRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListServiceQuotasRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListServicesRouteHandler,
+  postXAmzTargetServiceQuotasV20190624ListTagsForResourceRouteHandler,
+  postXAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateRouteHandler,
+  postXAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseRouteHandler,
+  postXAmzTargetServiceQuotasV20190624TagResourceRouteHandler,
+  postXAmzTargetServiceQuotasV20190624UntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624GetAwsDefaultServiceQuotaHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624GetServiceQuotaHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListAwsDefaultServiceQuotasHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListServiceQuotasHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListServicesHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624ListTagsForResourceHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624TagResourceHandler)
-  .route('/', xAmzTargetServiceQuotasV20190624UntagResourceHandler)
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624DeleteServiceQuotaIncreaseRequestFromTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624DisassociateServiceQuotaTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624GetAWSDefaultServiceQuotaRoute,
+    postXAmzTargetServiceQuotasV20190624GetAWSDefaultServiceQuotaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624GetAssociationForServiceQuotaTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeRoute,
+    postXAmzTargetServiceQuotasV20190624GetRequestedServiceQuotaChangeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624GetServiceQuotaRoute,
+    postXAmzTargetServiceQuotasV20190624GetServiceQuotaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624GetServiceQuotaIncreaseRequestFromTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListAWSDefaultServiceQuotasRoute,
+    postXAmzTargetServiceQuotasV20190624ListAWSDefaultServiceQuotasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryRoute,
+    postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaRoute,
+    postXAmzTargetServiceQuotasV20190624ListRequestedServiceQuotaChangeHistoryByQuotaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624ListServiceQuotaIncreaseRequestsInTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListServiceQuotasRoute,
+    postXAmzTargetServiceQuotasV20190624ListServiceQuotasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListServicesRoute,
+    postXAmzTargetServiceQuotasV20190624ListServicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624ListTagsForResourceRoute,
+    postXAmzTargetServiceQuotasV20190624ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateRoute,
+    postXAmzTargetServiceQuotasV20190624PutServiceQuotaIncreaseRequestIntoTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseRoute,
+    postXAmzTargetServiceQuotasV20190624RequestServiceQuotaIncreaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624TagResourceRoute,
+    postXAmzTargetServiceQuotasV20190624TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetServiceQuotasV20190624UntagResourceRoute,
+    postXAmzTargetServiceQuotasV20190624UntagResourceRouteHandler,
+  )
 
 export default app

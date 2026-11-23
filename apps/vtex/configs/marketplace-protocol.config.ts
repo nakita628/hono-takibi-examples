@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Marketplace-Protocol/1.0/openapi.yaml',
   output: './src/marketplace-protocol/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/marketplace-protocol/types.ts' },
   client: { output: './src/marketplace-protocol/client.ts', baseUrl: '/' },
   rpc: { output: './src/marketplace-protocol/rpc.ts', parseResponse: true },

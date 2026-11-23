@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIncidentWorkflowsIdRoute,
   deleteIncidentWorkflowsTriggersIdRoute,
   deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRoute,
@@ -17,51 +17,92 @@ import {
   putIncidentWorkflowsTriggersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIncidentWorkflowsRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const incidentWorkflowsHandler = app
-  .openapi(getIncidentWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentWorkflowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentWorkflowsIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentWorkflowsActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentWorkflowsActionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentWorkflowsTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentWorkflowsTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentWorkflowsTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentWorkflowsTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentWorkflowsTriggersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentWorkflowsTriggersIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIncidentWorkflowsRouteHandler: RouteHandler<
+  typeof postIncidentWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentWorkflowsIdRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentWorkflowsIdRouteHandler: RouteHandler<
+  typeof deleteIncidentWorkflowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentWorkflowsIdRouteHandler: RouteHandler<
+  typeof putIncidentWorkflowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentWorkflowsIdInstancesRouteHandler: RouteHandler<
+  typeof postIncidentWorkflowsIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentWorkflowsActionsRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentWorkflowsActionsIdRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsActionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentWorkflowsTriggersRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentWorkflowsTriggersRouteHandler: RouteHandler<
+  typeof postIncidentWorkflowsTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentWorkflowsTriggersIdRouteHandler: RouteHandler<
+  typeof getIncidentWorkflowsTriggersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentWorkflowsTriggersIdRouteHandler: RouteHandler<
+  typeof putIncidentWorkflowsTriggersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentWorkflowsTriggersIdRouteHandler: RouteHandler<
+  typeof deleteIncidentWorkflowsTriggersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentWorkflowsTriggersIdServicesRouteHandler: RouteHandler<
+  typeof postIncidentWorkflowsTriggersIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRouteHandler: RouteHandler<
+  typeof deleteIncidentWorkflowsTriggersTriggerIdServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

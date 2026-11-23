@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRoute,
   deleteAppInstancesAppInstanceArnRoute,
   deleteAppInstancesAppInstanceArnStreamingConfigurationsRoute,
@@ -16,48 +16,84 @@ import {
   putAppInstancesAppInstanceArnStreamingConfigurationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppInstancesRouteHandler: RouteHandler<typeof postAppInstancesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const appInstancesHandler = app
-  .openapi(postAppInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppInstancesAppInstanceArnAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesAppInstanceArnAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppInstancesAppInstanceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesAppInstanceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppInstancesAppInstanceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppInstancesAppInstanceArnStreamingConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesAppInstanceArnStreamingConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppInstancesAppInstanceArnStreamingConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstancesAppInstanceArnRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppInstancesAppInstanceArnRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAppInstancesRouteHandler: RouteHandler<typeof getAppInstancesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppInstancesAppInstanceArnAdminsRouteHandler: RouteHandler<
+  typeof postAppInstancesAppInstanceArnAdminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstancesAppInstanceArnAdminsRouteHandler: RouteHandler<
+  typeof getAppInstancesAppInstanceArnAdminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppInstancesAppInstanceArnRouteHandler: RouteHandler<
+  typeof deleteAppInstancesAppInstanceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstancesAppInstanceArnRouteHandler: RouteHandler<
+  typeof getAppInstancesAppInstanceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppInstancesAppInstanceArnRouteHandler: RouteHandler<
+  typeof putAppInstancesAppInstanceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRouteHandler: RouteHandler<
+  typeof deleteAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRouteHandler: RouteHandler<
+  typeof getAppInstancesAppInstanceArnAdminsAppInstanceAdminArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppInstancesAppInstanceArnStreamingConfigurationsRouteHandler: RouteHandler<
+  typeof deleteAppInstancesAppInstanceArnStreamingConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstancesAppInstanceArnStreamingConfigurationsRouteHandler: RouteHandler<
+  typeof getAppInstancesAppInstanceArnStreamingConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppInstancesAppInstanceArnStreamingConfigurationsRouteHandler: RouteHandler<
+  typeof putAppInstancesAppInstanceArnStreamingConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstancesAppInstanceArnRetentionSettingsRouteHandler: RouteHandler<
+  typeof getAppInstancesAppInstanceArnRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppInstancesAppInstanceArnRetentionSettingsRouteHandler: RouteHandler<
+  typeof putAppInstancesAppInstanceArnRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

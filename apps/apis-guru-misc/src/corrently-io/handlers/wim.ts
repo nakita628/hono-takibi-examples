@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWimStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWimStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const wimHandler = app.openapi(getWimStatusRoute, (c) => {
+export const getWimStatusRouteHandler: RouteHandler<typeof getWimStatusRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

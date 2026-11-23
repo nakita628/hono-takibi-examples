@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTunnelauthRoute, postTunnelauthRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTunnelauthRoute, postTunnelauthRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTunnelauthRouteHandler: RouteHandler<typeof getTunnelauthRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tunnelauthHandler = app
-  .openapi(getTunnelauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTunnelauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTunnelauthRouteHandler: RouteHandler<typeof postTunnelauthRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -155,8 +155,8 @@ const CaseDetailsSchema = z
 const CaseListSchema = z.array(CaseDetailsSchema).openapi('CaseList')
 
 type DescribeCasesResponseType = {
-  cases?: z.infer<typeof CaseListSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  cases?: z.infer<typeof CaseListSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const AttachmentSetIdSchema = z.string().openapi('AttachmentSetId')

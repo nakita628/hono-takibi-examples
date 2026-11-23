@@ -843,88 +843,97 @@ const EndUserSchema = z
   .openapi({ deprecated: true, required: ['id'] })
   .openapi('EndUser')
 
+const ConnectSessionInputEndUserSchema = EndUserSchema.openapi({
+  deprecated: true,
+  description: 'Deprecated, use tags instead',
+}).openapi('ConnectSessionInputEndUser')
+
+const ConnectSessionInputOrganizationSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Uniquely identifies the organization the end user belongs to' }),
+    display_name: z.string().exactOptional(),
+  })
+  .openapi({ deprecated: true, description: 'Deprecated, use tags instead', required: ['id'] })
+  .openapi('ConnectSessionInputOrganization')
+
+const ConnectSessionInputIntegrationsConfigDefaultsSchema = z
+  .record(
+    z.string(),
+    z
+      .strictObject({
+        user_scopes: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'User scopes (for Slack only)' }),
+        authorization_params: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: 'Query params passed to the OAuth flow (for OAuth2 only)' }),
+        connection_config: z
+          .looseObject({
+            oauth_scopes_override: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Override oauth scopes' }),
+            oauth_client_id_override: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Set to empty string to allow end-users to provide their own OAuth client ID in Connect UI',
+              }),
+            oauth_client_secret_override: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Set to empty string to allow end-users to provide their own OAuth client secret in Connect UI',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({ description: 'the unique name of an integration', required: [] }),
+  )
+  .openapi('ConnectSessionInputIntegrationsConfigDefaults')
+
+const ConnectSessionInputOverridesSchema = z
+  .record(
+    z.string(),
+    z
+      .strictObject({
+        docs_connect: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Override the url of the docs we point to in the connect flow' }),
+      })
+      .openapi({ description: 'The unique name of an integration', required: [] }),
+  )
+  .openapi('ConnectSessionInputOverrides')
+
+const ConnectSessionInputWebhookUrlOverrideSchema = z
+  .string()
+  .openapi({
+    description:
+      "Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).",
+  })
+  .openapi('ConnectSessionInputWebhookUrlOverride')
+
 const ConnectSessionInputSchema = z
   .object({
     tags: TagsSchema.exactOptional(),
-    end_user: EndUserSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'Deprecated, use tags instead',
-    }),
-    organization: z
-      .object({
-        id: z
-          .string()
-          .openapi({ description: 'Uniquely identifies the organization the end user belongs to' }),
-        display_name: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Deprecated, use tags instead', required: ['id'] }),
+    end_user: ConnectSessionInputEndUserSchema.exactOptional(),
+    organization: ConnectSessionInputOrganizationSchema.exactOptional(),
     allowed_integrations: z
       .array(z.string())
       .exactOptional()
       .openapi({ description: 'Filters which integrations the end user can interact with' }),
-    integrations_config_defaults: z
-      .record(
-        z.string(),
-        z
-          .strictObject({
-            user_scopes: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'User scopes (for Slack only)' }),
-            authorization_params: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({ description: 'Query params passed to the OAuth flow (for OAuth2 only)' }),
-            connection_config: z
-              .looseObject({
-                oauth_scopes_override: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Override oauth scopes' }),
-                oauth_client_id_override: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Set to empty string to allow end-users to provide their own OAuth client ID in Connect UI',
-                  }),
-                oauth_client_secret_override: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Set to empty string to allow end-users to provide their own OAuth client secret in Connect UI',
-                  }),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({ description: 'the unique name of an integration', required: [] }),
-      )
-      .exactOptional(),
-    overrides: z
-      .record(
-        z.string(),
-        z
-          .strictObject({
-            docs_connect: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Override the url of the docs we point to in the connect flow',
-              }),
-          })
-          .openapi({ description: 'The unique name of an integration', required: [] }),
-      )
-      .exactOptional(),
-    webhook_url_override: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).",
-      }),
+    integrations_config_defaults:
+      ConnectSessionInputIntegrationsConfigDefaultsSchema.exactOptional(),
+    overrides: ConnectSessionInputOverridesSchema.exactOptional(),
+    webhook_url_override: ConnectSessionInputWebhookUrlOverrideSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ConnectSessionInput')
@@ -934,11 +943,12 @@ const ConnectSessionReconnectInputSchema = z
     connection_id: z.string(),
     integration_id: z.string(),
     tags: TagsSchema.exactOptional(),
-    end_user: z.lazy(() => ConnectSessionInputSchema).exactOptional(),
-    organization: z.lazy(() => ConnectSessionInputSchema).exactOptional(),
-    integrations_config_defaults: z.lazy(() => ConnectSessionInputSchema).exactOptional(),
-    overrides: z.lazy(() => ConnectSessionInputSchema).exactOptional(),
-    webhook_url_override: z.lazy(() => ConnectSessionInputSchema).exactOptional(),
+    end_user: ConnectSessionInputEndUserSchema.exactOptional(),
+    organization: ConnectSessionInputOrganizationSchema.exactOptional(),
+    integrations_config_defaults:
+      ConnectSessionInputIntegrationsConfigDefaultsSchema.exactOptional(),
+    overrides: ConnectSessionInputOverridesSchema.exactOptional(),
+    webhook_url_override: ConnectSessionInputWebhookUrlOverrideSchema.exactOptional(),
   })
   .openapi({ required: ['connection_id', 'integration_id'] })
   .openapi('ConnectSessionReconnectInput')

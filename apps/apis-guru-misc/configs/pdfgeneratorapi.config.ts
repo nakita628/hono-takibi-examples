@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pdfgeneratorapi.com/3.1.1/openapi.yaml',
   output: './src/pdfgeneratorapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pdfgeneratorapi/types.ts' },
   client: { output: './src/pdfgeneratorapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/pdfgeneratorapi/rpc.ts', parseResponse: true },

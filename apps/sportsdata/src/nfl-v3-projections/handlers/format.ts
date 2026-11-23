@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatDfsSlateOwnershipProjectionsBySlateIDSlateIdRoute,
   getFormatDfsSlatesByDateDateRoute,
   getFormatDfsSlatesByWeekSeasonWeekRoute,
@@ -18,54 +18,98 @@ import {
   getFormatUpcomingDfsSlateOwnershipProjectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatDfsSlateOwnershipProjectionsBySlateIDSlateIdRouteHandler: RouteHandler<
+  typeof getFormatDfsSlateOwnershipProjectionsBySlateIDSlateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatDfsSlateOwnershipProjectionsBySlateIDSlateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatDfsSlatesByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatDfsSlatesByWeekSeasonWeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatFantasyDefenseProjectionsByGameSeasonWeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatFantasyDefenseProjectionsBySeasonSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatIdpPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatIdpPlayerGameProjectionStatsByTeamSeasonWeekTeamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatIdpPlayerGameProjectionStatsByWeekSeasonWeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatInjuredPlayersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByTeamSeasonWeekTeamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByWeekSeasonWeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerSeasonProjectionStatsSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerSeasonProjectionStatsByPlayerIDSeasonPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerSeasonProjectionStatsByTeamSeasonTeamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatUpcomingDfsSlateOwnershipProjectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatDfsSlatesByDateDateRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatDfsSlatesByWeekSeasonWeekRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByWeekSeasonWeekRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatFantasyDefenseProjectionsByGameSeasonWeekRouteHandler: RouteHandler<
+  typeof getFormatFantasyDefenseProjectionsByGameSeasonWeekRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatFantasyDefenseProjectionsBySeasonSeasonRouteHandler: RouteHandler<
+  typeof getFormatFantasyDefenseProjectionsBySeasonSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatIdpPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRouteHandler: RouteHandler<
+  typeof getFormatIdpPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatIdpPlayerGameProjectionStatsByTeamSeasonWeekTeamRouteHandler: RouteHandler<
+  typeof getFormatIdpPlayerGameProjectionStatsByTeamSeasonWeekTeamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatIdpPlayerGameProjectionStatsByWeekSeasonWeekRouteHandler: RouteHandler<
+  typeof getFormatIdpPlayerGameProjectionStatsByWeekSeasonWeekRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatInjuredPlayersRouteHandler: RouteHandler<
+  typeof getFormatInjuredPlayersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByPlayerIDSeasonWeekPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByTeamSeasonWeekTeamRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByTeamSeasonWeekTeamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByWeekSeasonWeekRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByWeekSeasonWeekRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerSeasonProjectionStatsSeasonRouteHandler: RouteHandler<
+  typeof getFormatPlayerSeasonProjectionStatsSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerSeasonProjectionStatsByPlayerIDSeasonPlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerSeasonProjectionStatsByPlayerIDSeasonPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerSeasonProjectionStatsByTeamSeasonTeamRouteHandler: RouteHandler<
+  typeof getFormatPlayerSeasonProjectionStatsByTeamSeasonTeamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatUpcomingDfsSlateOwnershipProjectionsRouteHandler: RouteHandler<
+  typeof getFormatUpcomingDfsSlateOwnershipProjectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

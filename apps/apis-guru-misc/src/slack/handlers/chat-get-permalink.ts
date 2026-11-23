@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChatGetPermalinkRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChatGetPermalinkRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const chatGetPermalinkHandler = app.openapi(getChatGetPermalinkRoute, (c) => {
+export const getChatGetPermalinkRouteHandler: RouteHandler<
+  typeof getChatGetPermalinkRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

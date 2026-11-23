@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMembershipDatasourcesGetRoute, postMembershipRemovalRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMembershipDatasourcesGetRoute, postMembershipRemovalRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMembershipDatasourcesGetRouteHandler: RouteHandler<
+  typeof postMembershipDatasourcesGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const membershipHandler = app
-  .openapi(postMembershipDatasourcesGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembershipRemovalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMembershipRemovalRouteHandler: RouteHandler<
+  typeof postMembershipRemovalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

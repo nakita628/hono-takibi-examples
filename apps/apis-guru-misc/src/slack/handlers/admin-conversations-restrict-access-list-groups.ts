@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminConversationsRestrictAccessListGroupsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminConversationsRestrictAccessListGroupsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminConversationsRestrictAccessListGroupsHandler = app.openapi(
-  getAdminConversationsRestrictAccessListGroupsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAdminConversationsRestrictAccessListGroupsRouteHandler: RouteHandler<
+  typeof getAdminConversationsRestrictAccessListGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

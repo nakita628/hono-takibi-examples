@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInstanceIdFieldRoute,
   deleteInstanceIdRoute,
   getInstanceIdPasswordRoute,
@@ -21,63 +21,108 @@ import {
   putInstanceIdStopRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInstanceIdCreateSnapshotRouteHandler: RouteHandler<
+  typeof postInstanceIdCreateSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const instanceHandler = app
-  .openapi(postInstanceIdCreateSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstanceIdPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdResizeDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdResetPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstanceIdEnableTpmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdScaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdAddProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstanceIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdRemoveProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstanceIdRebootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstanceInstanceIdRevertSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInstanceIdPasswordRouteHandler: RouteHandler<
+  typeof getInstanceIdPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdResizeDiskRouteHandler: RouteHandler<
+  typeof putInstanceIdResizeDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdResetPasswordRouteHandler: RouteHandler<
+  typeof putInstanceIdResetPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdStartRouteHandler: RouteHandler<typeof putInstanceIdStartRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstanceIdEnableTpmRouteHandler: RouteHandler<
+  typeof postInstanceIdEnableTpmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdScaleRouteHandler: RouteHandler<typeof putInstanceIdScaleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdStopRouteHandler: RouteHandler<typeof putInstanceIdStopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdAddProtectionRouteHandler: RouteHandler<
+  typeof putInstanceIdAddProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstanceIdFieldRouteHandler: RouteHandler<
+  typeof deleteInstanceIdFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdRemoveProtectionRouteHandler: RouteHandler<
+  typeof putInstanceIdRemoveProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdResetRouteHandler: RouteHandler<typeof putInstanceIdResetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstanceIdRouteHandler: RouteHandler<typeof deleteInstanceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdRouteHandler: RouteHandler<typeof putInstanceIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstanceIdRouteHandler: RouteHandler<typeof getInstanceIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstanceIdRebootRouteHandler: RouteHandler<
+  typeof putInstanceIdRebootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstanceRouteHandler: RouteHandler<typeof postInstanceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstanceRouteHandler: RouteHandler<typeof getInstanceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstanceInstanceIdRevertSnapshotRouteHandler: RouteHandler<
+  typeof postInstanceInstanceIdRevertSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

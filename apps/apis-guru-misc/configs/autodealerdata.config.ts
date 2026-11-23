@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/autodealerdata.com/1.0/openapi.yaml',
   output: './src/autodealerdata/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/autodealerdata/types.ts' },
   client: { output: './src/autodealerdata/client.ts', baseUrl: '/' },
   rpc: { output: './src/autodealerdata/rpc.ts', parseResponse: true },

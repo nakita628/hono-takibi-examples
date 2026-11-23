@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const omnichannelSubscriptionItemsHandler = app.openapi(
-  getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRouteHandler: RouteHandler<
+  typeof getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

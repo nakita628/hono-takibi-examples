@@ -37124,7 +37124,7 @@ export function useDeleteApiV1SitesSiteIdDevicesDeviceIdHa<TError = unknown>(opt
 }
 
 export function getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberKey() {
-  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image:image_number', 'POST'] as const
+  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image{image_number}', 'POST'] as const
 }
 
 export function usePostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<TError = unknown>(options?: {
@@ -37134,7 +37134,7 @@ export function usePostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<TError = 
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
             >
           >
         >
@@ -37143,7 +37143,7 @@ export function usePostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<TError = 
     TError,
     Key,
     InferRequestType<
-      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -37161,12 +37161,12 @@ export function usePostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<TError = 
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$post(
+          client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$post(
             arg,
             clientOptions,
           ),
@@ -37177,7 +37177,7 @@ export function usePostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<TError = 
 }
 
 export function getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberKey() {
-  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image:image_number', 'DELETE'] as const
+  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image{image_number}', 'DELETE'] as const
 }
 
 export function useDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
@@ -37189,7 +37189,7 @@ export function useDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
             >
           >
         >
@@ -37198,7 +37198,7 @@ export function useDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
     TError,
     Key,
     InferRequestType<
-      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -37216,12 +37216,12 @@ export function useDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
           >
         },
       ) =>
         parseResponse(
-          client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$delete(
+          client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$delete(
             arg,
             clientOptions,
           ),

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/insight.yml',
   output: './src/insight/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/insight/types.ts' },
   client: { output: './src/insight/client.ts', baseUrl: '/' },
   rpc: { output: './src/insight/rpc.ts', parseResponse: true },

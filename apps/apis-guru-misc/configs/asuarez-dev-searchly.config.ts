@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/asuarez.dev/searchly/1.0/openapi.yaml',
   output: './src/asuarez-dev-searchly/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/asuarez-dev-searchly/types.ts' },
   client: { output: './src/asuarez-dev-searchly/client.ts', baseUrl: '/' },
   rpc: { output: './src/asuarez-dev-searchly/rpc.ts', parseResponse: true },

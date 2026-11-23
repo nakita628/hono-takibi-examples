@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVirtualclustersVirtualClusterIdEndpointsEndpointIdRoute,
   deleteVirtualclustersVirtualClusterIdJobrunsJobRunIdRoute,
   deleteVirtualclustersVirtualClusterIdRoute,
@@ -14,42 +14,74 @@ import {
   postVirtualclustersVirtualClusterIdJobrunsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteVirtualclustersVirtualClusterIdJobrunsJobRunIdRouteHandler: RouteHandler<
+  typeof deleteVirtualclustersVirtualClusterIdJobrunsJobRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const virtualclustersHandler = app
-  .openapi(deleteVirtualclustersVirtualClusterIdJobrunsJobRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersVirtualClusterIdJobrunsJobRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualclustersVirtualClusterIdEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersVirtualClusterIdEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualclustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVirtualclustersVirtualClusterIdEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersVirtualClusterIdEndpointsEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVirtualclustersVirtualClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersVirtualClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualclustersVirtualClusterIdJobrunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualclustersVirtualClusterIdJobrunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVirtualclustersVirtualClusterIdJobrunsJobRunIdRouteHandler: RouteHandler<
+  typeof getVirtualclustersVirtualClusterIdJobrunsJobRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVirtualclustersVirtualClusterIdEndpointsRouteHandler: RouteHandler<
+  typeof postVirtualclustersVirtualClusterIdEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualclustersVirtualClusterIdEndpointsRouteHandler: RouteHandler<
+  typeof getVirtualclustersVirtualClusterIdEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVirtualclustersRouteHandler: RouteHandler<
+  typeof postVirtualclustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualclustersRouteHandler: RouteHandler<typeof getVirtualclustersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVirtualclustersVirtualClusterIdEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof deleteVirtualclustersVirtualClusterIdEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualclustersVirtualClusterIdEndpointsEndpointIdRouteHandler: RouteHandler<
+  typeof getVirtualclustersVirtualClusterIdEndpointsEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVirtualclustersVirtualClusterIdRouteHandler: RouteHandler<
+  typeof deleteVirtualclustersVirtualClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualclustersVirtualClusterIdRouteHandler: RouteHandler<
+  typeof getVirtualclustersVirtualClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualclustersVirtualClusterIdJobrunsRouteHandler: RouteHandler<
+  typeof getVirtualclustersVirtualClusterIdJobrunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVirtualclustersVirtualClusterIdJobrunsRouteHandler: RouteHandler<
+  typeof postVirtualclustersVirtualClusterIdJobrunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

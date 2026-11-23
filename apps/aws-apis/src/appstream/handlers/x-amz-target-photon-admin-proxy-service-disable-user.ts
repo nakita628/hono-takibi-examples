@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetPhotonAdminProxyServiceDisableUserRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetPhotonAdminProxyServiceDisableUserRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetPhotonAdminProxyServiceDisableUserHandler = app.openapi(
-  postXAmzTargetPhotonAdminProxyServiceDisableUserRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetPhotonAdminProxyServiceDisableUserRouteHandler: RouteHandler<
+  typeof postXAmzTargetPhotonAdminProxyServiceDisableUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

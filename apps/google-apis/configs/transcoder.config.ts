@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/transcoder/v1/openapi.yaml',
   output: './src/transcoder/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/transcoder/types.ts' },
   client: { output: './src/transcoder/client.ts', baseUrl: '/' },
   rpc: { output: './src/transcoder/rpc.ts', parseResponse: true },

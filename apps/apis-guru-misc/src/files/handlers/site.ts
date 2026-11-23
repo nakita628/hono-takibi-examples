@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSiteApiKeysRoute,
   getSiteDnsRecordsRoute,
   getSiteIpAddressesRoute,
@@ -10,30 +10,40 @@ import {
   postSiteTestWebhookRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSiteRouteHandler: RouteHandler<typeof getSiteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const siteHandler = app
-  .openapi(getSiteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSiteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSiteApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSiteApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSiteDnsRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSiteIpAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSiteTestWebhookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSiteUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchSiteRouteHandler: RouteHandler<typeof patchSiteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSiteApiKeysRouteHandler: RouteHandler<typeof getSiteApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSiteApiKeysRouteHandler: RouteHandler<typeof postSiteApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSiteDnsRecordsRouteHandler: RouteHandler<typeof getSiteDnsRecordsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSiteIpAddressesRouteHandler: RouteHandler<typeof getSiteIpAddressesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSiteTestWebhookRouteHandler: RouteHandler<
+  typeof postSiteTestWebhookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSiteUsageRouteHandler: RouteHandler<typeof getSiteUsageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

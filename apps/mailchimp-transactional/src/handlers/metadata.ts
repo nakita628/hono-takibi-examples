@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMetadataAddRoute,
   postMetadataDeleteRoute,
   postMetadataListRoute,
   postMetadataUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMetadataListRouteHandler: RouteHandler<typeof postMetadataListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const metadataHandler = app
-  .openapi(postMetadataListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetadataAddRouteHandler: RouteHandler<typeof postMetadataAddRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataUpdateRouteHandler: RouteHandler<typeof postMetadataUpdateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataDeleteRouteHandler: RouteHandler<typeof postMetadataDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

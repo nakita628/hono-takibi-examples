@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/greengrass/2017-06-07/openapi.yaml',
   output: './src/greengrass/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/greengrass/types.ts' },
   client: { output: './src/greengrass/client.ts', baseUrl: '/' },
   rpc: { output: './src/greengrass/rpc.ts', parseResponse: true },

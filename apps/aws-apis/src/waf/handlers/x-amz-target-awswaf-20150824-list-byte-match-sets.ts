@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20150824ListByteMatchSetsHandler = app.openapi(
-  postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20150824ListByteMatchSetsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

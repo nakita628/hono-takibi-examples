@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRekognitionServiceCreateUserRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRekognitionServiceCreateUserRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRekognitionServiceCreateUserHandler = app.openapi(
-  postXAmzTargetRekognitionServiceCreateUserRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRekognitionServiceCreateUserRouteHandler: RouteHandler<
+  typeof postXAmzTargetRekognitionServiceCreateUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

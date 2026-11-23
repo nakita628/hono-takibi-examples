@@ -1,51 +1,2168 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  aiGatewayHandler,
-  aliasesHandler,
-  apiKeysHandler,
-  domainsHandler,
-  projectsHandler,
-  speedInsightsHandler,
-  storageHandler,
-  v10Handler,
-  v11Handler,
-  v12Handler,
-  v13Handler,
-  v1Handler,
-  v2Handler,
-  v3Handler,
-  v4Handler,
-  v5Handler,
-  v6Handler,
-  v7Handler,
-  v8Handler,
-  v9Handler,
-  webHandler,
+  deleteAiGatewayBudgetsDefaultsRoute,
+  deleteAiGatewayBudgetsRoute,
+  deleteAiGatewayByokCredentialsCredentialIdRoute,
+  deleteAiGatewayRulesRoute,
+  deleteAiGatewayVirtualModelConfigsRoute,
+  deleteAiGatewayVirtualModelConfigsVmcSlugRoute,
+  deleteStorageStoresBlobIdRoute,
+  deleteV13DeploymentsIdRoute,
+  deleteV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+  deleteV1AccessGroupsIdOrNameRoute,
+  deleteV1BulkRedirectsRoute,
+  deleteV1ConnectConnectorsConnectorProjectsProjectIdEnvironmentsEnvironmentRoute,
+  deleteV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+  deleteV1ConnectConnectorsConnectorRoute,
+  deleteV1ConnectNetworksNetworkIdRoute,
+  deleteV1DrainsIdRoute,
+  deleteV1DrivesNameOrIdRoute,
+  deleteV1EnvRoute,
+  deleteV1GlobalConfigEdgeConfigIdRoute,
+  deleteV1GlobalConfigEdgeConfigIdSchemaRoute,
+  deleteV1GlobalConfigEdgeConfigIdTokensRoute,
+  deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRoute,
+  deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+  deleteV1IntegrationsConfigurationIdRoute,
+  deleteV1IntegrationsLogDrainsIdRoute,
+  deleteV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRoute,
+  deleteV1KmsIssuersIssuerIdRoute,
+  deleteV1LogDrainsIdRoute,
+  deleteV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+  deleteV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+  deleteV1OrganizationsOrganizationIdTeamsTargetTeamIdRoute,
+  deleteV1ProjectsIdOrNameAvatarRoute,
+  deleteV1ProjectsIdOrNameEnvRoute,
+  deleteV1ProjectsIdOrNameMembersUidRoute,
+  deleteV1ProjectsIdOrNameRollingReleaseConfigRoute,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsConnectionsConsumerProjectIdRoute,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysHashKeyRoute,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+  deleteV1ProjectsProjectIdRoutesRoute,
+  deleteV1SecurityFirewallBypassRoute,
+  deleteV1SecurityFirewallBypassRulesRoute,
+  deleteV1SecurityFirewallConfigConfigVersionRoute,
+  deleteV1TeamsTeamIdInvitesInviteIdRoute,
+  deleteV1TeamsTeamIdMembersUidRoute,
+  deleteV1TeamsTeamIdMicrofrontendsGroupIdRoute,
+  deleteV1TeamsTeamIdRoute,
+  deleteV1UserRoute,
+  deleteV1VcrRepositoryIdOrNameImagesImageIdRoute,
+  deleteV1VcrRepositoryIdOrNamePermissionsAllRoute,
+  deleteV1VcrRepositoryIdOrNamePermissionsRoute,
+  deleteV1VcrRepositoryIdOrNameRoute,
+  deleteV1WebhooksIdRoute,
+  deleteV2AliasesAliasIdRoute,
+  deleteV2DomainsDomainRecordsRecordIdRoute,
+  deleteV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+  deleteV2SandboxesDrivesNameOrIdRoute,
+  deleteV2SandboxesNameRoute,
+  deleteV2SandboxesSnapshotsSnapshotIdRoute,
+  deleteV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+  deleteV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+  deleteV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+  deleteV3UserTokensTokenIdRoute,
+  deleteV6DomainsDomainRoute,
+  deleteV8ArtifactsRoute,
+  deleteV8CertsIdRoute,
+  deleteV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+  deleteV9ProjectsIdOrNameDomainsDomainRoute,
+  deleteV9ProjectsIdOrNameEnvIdRoute,
+  deleteV9ProjectsIdOrNameRoute,
+  getAiGatewayBudgetsDefaultsListRoute,
+  getAiGatewayBudgetsListRoute,
+  getAiGatewayByokCredentialsCredentialIdRoute,
+  getAiGatewayByokCredentialsListRoute,
+  getAiGatewayRulesRoute,
+  getAiGatewayVirtualModelConfigsListRoute,
+  getAiGatewayVirtualModelConfigsRoute,
+  getAiGatewayVirtualModelConfigsVmcSlugRoute,
+  getDomainsRecordsRecordIdRoute,
+  getStorageStoresIdRoute,
+  getV10ProjectsIdOrNameEnvRoute,
+  getV10ProjectsRoute,
+  getV13DeploymentsIdOrUrlRoute,
+  getV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+  getV1AccessGroupsIdOrNameMembersRoute,
+  getV1AccessGroupsIdOrNameProjectsRoute,
+  getV1AccessGroupsIdOrNameRoute,
+  getV1AccessGroupsRoute,
+  getV1AiGatewayRoutersRoute,
+  getV1BillingChargesRoute,
+  getV1BulkRedirectsRoute,
+  getV1BulkRedirectsVersionsRoute,
+  getV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+  getV1ConnectConnectorsConnectorRoute,
+  getV1ConnectNetworksNetworkIdRoute,
+  getV1ConnectNetworksRoute,
+  getV1DeploymentsDeploymentIdChecksCheckIdRoute,
+  getV1DeploymentsDeploymentIdChecksRoute,
+  getV1DeploymentsDeploymentIdFeatureFlagsRoute,
+  getV1DomainsDomainProjectDomainsRoute,
+  getV1DrainsIdRoute,
+  getV1DrainsRoute,
+  getV1DrivesNameOrIdRoute,
+  getV1DrivesRoute,
+  getV1EnvIdRoute,
+  getV1EnvRoute,
+  getV1EventsTypesRoute,
+  getV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRoute,
+  getV1GlobalConfigEdgeConfigIdBackupsRoute,
+  getV1GlobalConfigEdgeConfigIdItemEdgeConfigItemKeyRoute,
+  getV1GlobalConfigEdgeConfigIdItemsRoute,
+  getV1GlobalConfigEdgeConfigIdRoute,
+  getV1GlobalConfigEdgeConfigIdSchemaRoute,
+  getV1GlobalConfigEdgeConfigIdTokensRoute,
+  getV1GlobalConfigEdgeConfigIdTokenTokenRoute,
+  getV1GlobalConfigRoute,
+  getV1InstallationsIntegrationConfigurationIdAccountRoute,
+  getV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdRoute,
+  getV1InstallationsIntegrationConfigurationIdMemberMemberIdRoute,
+  getV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+  getV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+  getV1InstallationsIntegrationConfigurationIdResourcesRoute,
+  getV1IntegrationsConfigurationIdProductsRoute,
+  getV1IntegrationsConfigurationIdRoute,
+  getV1IntegrationsConfigurationsRoute,
+  getV1IntegrationsGitNamespacesRoute,
+  getV1IntegrationsIntegrationIntegrationIdOrSlugProductsProductIdOrSlugPlansRoute,
+  getV1IntegrationsSearchRepoRoute,
+  getV1KmsIssuersIssuerIdRoute,
+  getV1KmsIssuersRoute,
+  getV1LogDrainsIdRoute,
+  getV1LogDrainsRoute,
+  getV1MicrofrontendsDeploymentIdConfigRoute,
+  getV1MicrofrontendsGroupsGroupIdProjectsRoute,
+  getV1MicrofrontendsGroupsRoute,
+  getV1MicrofrontendsProjectsProjectIdOrNameProductionMfeConfigRoute,
+  getV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+  getV1NetworkingPrivatelinkEndpointsRoute,
+  getV1ObservabilityManageConfigurationProjectsRoute,
+  getV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+  getV1OrganizationsOrganizationIdDsyncGroupsRoute,
+  getV1OrganizationsOrganizationIdRoute,
+  getV1OrganizationsOrganizationIdTeamsRoute,
+  getV1OrganizationsRoute,
+  getV1ProjectsIdOrNameDaemonsRoute,
+  getV1ProjectsIdOrNameEnvIdRoute,
+  getV1ProjectsIdOrNameMembersRoute,
+  getV1ProjectsIdOrNameRollingReleaseBillingRoute,
+  getV1ProjectsIdOrNameRollingReleaseConfigRoute,
+  getV1ProjectsIdOrNameRollingReleaseRoute,
+  getV1ProjectsProjectIdDeploymentsDeploymentIdRuntimeLogsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugVersionsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsLabelsCountsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsLabelsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSettingsRoute,
+  getV1ProjectsProjectIdPromoteAliasesRoute,
+  getV1ProjectsProjectIdRoutesRoute,
+  getV1ProjectsProjectIdRoutesVersionsRoute,
+  getV1ProjectsTracesRoute,
+  getV1QueryWebAnalyticsEventsAggregateRoute,
+  getV1QueryWebAnalyticsEventsCountRoute,
+  getV1QueryWebAnalyticsVisitsAggregateRoute,
+  getV1QueryWebAnalyticsVisitsCountRoute,
+  getV1RegistrarDomainsDomainAuthCodeRoute,
+  getV1RegistrarDomainsDomainAvailabilityRoute,
+  getV1RegistrarDomainsDomainContactInfoSchemaRoute,
+  getV1RegistrarDomainsDomainContactVerificationRoute,
+  getV1RegistrarDomainsDomainPriceRoute,
+  getV1RegistrarDomainsDomainTransferRoute,
+  getV1RegistrarOrdersOrderIdRoute,
+  getV1RegistrarTldsSupportedRoute,
+  getV1RegistrarTldsTldPriceRoute,
+  getV1RegistrarTldsTldRoute,
+  getV1SecurityFirewallAttackStatusRoute,
+  getV1SecurityFirewallBypassRoute,
+  getV1SecurityFirewallBypassRulesRoute,
+  getV1SecurityFirewallConfigConfigVersionRoute,
+  getV1SecurityFirewallConfigRoute,
+  getV1SecurityFirewallEventsRoute,
+  getV1SecurityFirewallEventsSummaryRoute,
+  getV1TeamsTeamIdFeatureFlagsFlagsRoute,
+  getV1TeamsTeamIdFeatureFlagsSettingsRoute,
+  getV1TeamsTeamIdRequestUserIdRoute,
+  getV1VcrRepositoryIdOrNameImagesImageIdOrDigestRoute,
+  getV1VcrRepositoryIdOrNameImagesRoute,
+  getV1VcrRepositoryIdOrNamePermissionsRoute,
+  getV1VcrRepositoryIdOrNameRoute,
+  getV1VcrRepositoryIdOrNameTagsRoute,
+  getV1VcrRepositoryIdOrNameTagsTagRoute,
+  getV1VcrRepositoryRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptLogsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsTaskDefinitionIdRunsTaskRunAttemptLogsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskRunsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptLogsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptTaskLogsRoute,
+  getV1VercelCiInvocationsInvocationIdAttemptsRoute,
+  getV1VercelCiInvocationsInvocationIdTreeRoute,
+  getV1VercelCiLogSearchRoute,
+  getV1VercelCiRepositorySettingsRoute,
+  getV1VercelCiTaskAnalysesAnalysisIdRoute,
+  getV1VercelCiTaskAnalysesAnalysisIdTasksRoute,
+  getV1WebhooksIdRoute,
+  getV1WebhooksRoute,
+  getV2ConnectConnectorsConnectorProjectsRoute,
+  getV2ConnectConnectorsRoute,
+  getV2ConnectProjectsProjectIdConnectorsRoute,
+  getV2DeploymentsDeploymentIdCheckRunsCheckRunIdRoute,
+  getV2DeploymentsDeploymentIdCheckRunsRoute,
+  getV2DeploymentsIdAliasesRoute,
+  getV2IndexRoute,
+  getV2IntegrationsLogDrainsRoute,
+  getV2ObservabilitySchemaMetricIdRoute,
+  getV2ObservabilitySchemaRoute,
+  getV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+  getV2ProjectsProjectIdOrNameChecksCheckIdRunsRoute,
+  getV2ProjectsProjectIdOrNameChecksRoute,
+  getV2ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+  getV2SandboxesDrivesNameOrIdRoute,
+  getV2SandboxesDrivesRoute,
+  getV2SandboxesNameRoute,
+  getV2SandboxesRoute,
+  getV2SandboxesSessionsRoute,
+  getV2SandboxesSessionsSessionIdCmdCmdIdLogsRoute,
+  getV2SandboxesSessionsSessionIdCmdCmdIdRoute,
+  getV2SandboxesSessionsSessionIdCmdRoute,
+  getV2SandboxesSessionsSessionIdRoute,
+  getV2SandboxesSnapshotsRoute,
+  getV2SandboxesSnapshotsSnapshotIdRoute,
+  getV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+  getV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+  getV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+  getV2TeamSlugProjectSlugRepositoryNameTagsListRoute,
+  getV2TeamsRoute,
+  getV2TeamsTeamIdFeatureFlagsFlagsRoute,
+  getV2TeamsTeamIdRoute,
+  getV2UserRoute,
+  getV2VercelCiBranchesRoute,
+  getV2VercelCiInvocationsRoute,
+  getV3DeploymentsIdOrUrlEventsRoute,
+  getV3EventsRoute,
+  getV3TeamsTeamIdMembersRoute,
+  getV4AliasesIdOrAliasRoute,
+  getV4AliasesRoute,
+  getV5DomainsDomainRecordsRoute,
+  getV5DomainsDomainRoute,
+  getV5DomainsRoute,
+  getV5UserTokensTokenIdRoute,
+  getV6DeploymentsIdFilesRoute,
+  getV6DomainsDomainConfigRoute,
+  getV6UserTokensRoute,
+  getV7DeploymentsRoute,
+  getV8ArtifactsHashRoute,
+  getV8ArtifactsStatusRoute,
+  getV8CertsIdRoute,
+  getV8CertsRoute,
+  getV8DeploymentsIdFilesFileIdRoute,
+  getV9DomainsDomainVerificationRoute,
+  getV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+  getV9ProjectsIdOrNameCustomEnvironmentsRoute,
+  getV9ProjectsIdOrNameDomainsDomainRoute,
+  getV9ProjectsIdOrNameDomainsRoute,
+  getV9ProjectsIdOrNameRoute,
+  headV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+  headV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+  headV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+  headV8ArtifactsHashRoute,
+  patchAiGatewayByokCredentialsCredentialIdRoute,
+  patchAiGatewayRulesRoute,
+  patchAiGatewayVirtualModelConfigsRoute,
+  patchAiGatewayVirtualModelConfigsVmcSlugRoute,
+  patchAliasesIdProtectionBypassRoute,
+  patchApiKeysApiKeyIDQuotaRoute,
+  patchV12DeploymentsIdCancelRoute,
+  patchV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+  patchV1BulkRedirectsRoute,
+  patchV1ConnectConnectorsConnectorTriggerDestinationsRoute,
+  patchV1ConnectNetworksNetworkIdRoute,
+  patchV1DeploymentsDeploymentIdChecksCheckIdRoute,
+  patchV1DeploymentsDeploymentIdIntegrationsIntegrationConfigurationIdResourcesResourceIdActionsActionRoute,
+  patchV1DomainsRecordsRecordIdRoute,
+  patchV1DrainsIdRoute,
+  patchV1EnvIdUnlinkProjectIdRoute,
+  patchV1EnvRoute,
+  patchV1GlobalConfigEdgeConfigIdItemsRoute,
+  patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRoute,
+  patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+  patchV1InstallationsIntegrationConfigurationIdRoute,
+  patchV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRoute,
+  patchV1KmsIssuersIssuerIdRoute,
+  patchV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+  patchV1OrganizationsOrganizationIdRoute,
+  patchV1ProjectsIdOrNameProtectionBypassRoute,
+  patchV1ProjectsIdOrNameRollingReleaseConfigRoute,
+  patchV1ProjectsIdOrNameSharedConnectLinksRoute,
+  patchV1ProjectsProjectIdMicrofrontendsRoute,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsSettingsRoute,
+  patchV1ProjectsProjectIdRollbackDeploymentIdUpdateDescriptionRoute,
+  patchV1ProjectsProjectIdRoutesRouteIdRoute,
+  patchV1RegistrarDomainsDomainAutoRenewRoute,
+  patchV1RegistrarDomainsDomainNameserversRoute,
+  patchV1SecurityFirewallConfigRoute,
+  patchV1TeamsTeamIdMembersUidRoute,
+  patchV1TeamsTeamIdMicrofrontendsGroupIdRoute,
+  patchV1VercelCiRepositorySettingsRoute,
+  patchV2ConnectConnectorsConnectorRoute,
+  patchV2DeploymentsDeploymentIdCheckRunsCheckRunIdRoute,
+  patchV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+  patchV2SandboxesNameRoute,
+  patchV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+  patchV2TeamsTeamIdRoute,
+  patchV3DomainsDomainRoute,
+  patchV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+  patchV9ProjectsIdOrNameDomainsDomainRoute,
+  patchV9ProjectsIdOrNameEnvIdRoute,
+  patchV9ProjectsIdOrNameRoute,
+  postAiGatewayByokCredentialsRoute,
+  postAiGatewayRulesRoute,
+  postAiGatewayVirtualModelConfigsRoute,
+  postApiKeysRoute,
+  postProjectsIdOrNameTransferRequestRoute,
+  postSpeedInsightsToggleRoute,
+  postStorageStoresBlobRoute,
+  postV10ProjectsIdOrNameDomainsRoute,
+  postV10ProjectsIdOrNameEnvRoute,
+  postV10ProjectsProjectIdPromoteDeploymentIdRoute,
+  postV11ProjectsRoute,
+  postV13DeploymentsRoute,
+  postV1AccessGroupsAccessGroupIdOrNameProjectsRoute,
+  postV1AccessGroupsIdOrNameRoute,
+  postV1AccessGroupsRoute,
+  postV1BillingBuyRoute,
+  postV1BulkRedirectsRestoreRoute,
+  postV1BulkRedirectsVersionsRoute,
+  postV1ConnectAuthorizeConnectorRoute,
+  postV1ConnectConnectorsConnectorManagedEjectRoute,
+  postV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+  postV1ConnectConnectorsRoute,
+  postV1ConnectNetworksRoute,
+  postV1ConnectTokenConnectorRoute,
+  postV1DeploymentsDeploymentIdChecksCheckIdRerequestRoute,
+  postV1DeploymentsDeploymentIdChecksRoute,
+  postV1DrainsRoute,
+  postV1DrainsTestRoute,
+  postV1DrivesNameForkRoute,
+  postV1DrivesNameRoute,
+  postV1EdgeCacheDangerouslyDeleteBySrcImagesRoute,
+  postV1EdgeCacheDangerouslyDeleteByTagsRoute,
+  postV1EdgeCacheInvalidateBySrcImagesRoute,
+  postV1EdgeCacheInvalidateByTagsRoute,
+  postV1EnvRoute,
+  postV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRestoreRoute,
+  postV1GlobalConfigEdgeConfigIdSchemaRoute,
+  postV1GlobalConfigEdgeConfigIdTokenRoute,
+  postV1GlobalConfigRoute,
+  postV1InstallationsIntegrationConfigurationIdBillingBalanceRoute,
+  postV1InstallationsIntegrationConfigurationIdBillingFinalizeRoute,
+  postV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdActionsRoute,
+  postV1InstallationsIntegrationConfigurationIdBillingInvoicesRoute,
+  postV1InstallationsIntegrationConfigurationIdBillingRoute,
+  postV1InstallationsIntegrationConfigurationIdCredentialsRevokeRoute,
+  postV1InstallationsIntegrationConfigurationIdCredentialsRotateRoute,
+  postV1InstallationsIntegrationConfigurationIdEventsRoute,
+  postV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsRoute,
+  postV1IntegrationsInstallationsIntegrationConfigurationIdResourcesResourceIdConnectionsRoute,
+  postV1IntegrationsSsoTokenRoute,
+  postV1KmsIssuersIssuerIdKeysKeyIdActivateRoute,
+  postV1KmsIssuersIssuerIdKeysKeyIdRevokeRoute,
+  postV1KmsIssuersIssuerIdKeysRoute,
+  postV1KmsIssuersIssuerIdPoliciesRoute,
+  postV1KmsIssuersIssuerIdSignMessageRoute,
+  postV1KmsIssuersIssuerIdSignTokenRoute,
+  postV1KmsIssuersRoute,
+  postV1LogDrainsRoute,
+  postV1MicrofrontendsGroupRoute,
+  postV1NetworkingPrivatelinkEndpointsRoute,
+  postV1OrganizationsOrganizationIdTeamsRoute,
+  postV1OrganizationsRoute,
+  postV1ProjectsIdOrNameAvatarRoute,
+  postV1ProjectsIdOrNameDaemonsDaemonNameInstancesInstanceIdRestartRoute,
+  postV1ProjectsIdOrNameDomainsDomainMoveRoute,
+  postV1ProjectsIdOrNameMembersRoute,
+  postV1ProjectsIdOrNameRollingReleaseApproveStageRoute,
+  postV1ProjectsIdOrNameRollingReleaseCompleteRoute,
+  postV1ProjectsIdOrNameRollingReleaseStartRoute,
+  postV1ProjectsIdOrNameTokenRoute,
+  postV1ProjectsProjectIdOrNameFeatureFlagsLabelsLookupRoute,
+  postV1ProjectsProjectIdOrNameFeatureFlagsOverridesSignRoute,
+  postV1ProjectsProjectIdPauseRoute,
+  postV1ProjectsProjectIdRollbackDeploymentIdRoute,
+  postV1ProjectsProjectIdRoutesGenerateRoute,
+  postV1ProjectsProjectIdRoutesRoute,
+  postV1ProjectsProjectIdRoutesVersionsRoute,
+  postV1ProjectsProjectIdUnpauseRoute,
+  postV1ProjectsTracesSessionRoute,
+  postV1RegistrarDomainsAvailabilityRoute,
+  postV1RegistrarDomainsBuyRoute,
+  postV1RegistrarDomainsDomainBuyRoute,
+  postV1RegistrarDomainsDomainRenewRoute,
+  postV1RegistrarDomainsDomainTransferRoute,
+  postV1RegistrarDomainsPriceRoute,
+  postV1RegistrarDomainsSearchRoute,
+  postV1SecurityAttackModeRoute,
+  postV1SecurityFirewallBypassRoute,
+  postV1SecurityFirewallBypassRulesRoute,
+  postV1SecurityFirewallConfigConfigVersionActivateRoute,
+  postV1SecurityFirewallConfigGenerateRuleRoute,
+  postV1StorageStoresIntegrationDirectRoute,
+  postV1TeamsRoute,
+  postV1TeamsTeamIdDsyncRolesRoute,
+  postV1TeamsTeamIdMembersTeamsJoinRoute,
+  postV1TeamsTeamIdRequestRoute,
+  postV1VcrRepositoryIdOrNamePermissionsRoute,
+  postV1VcrRepositoryRoute,
+  postV1VercelCiInvocationsInvocationIdAttemptsAttemptRetryRoute,
+  postV1VercelCiTaskAnalysesAnalysisIdPullRequestRoute,
+  postV1VercelCiTaskAnalysesRoute,
+  postV1WebhooksRoute,
+  postV2DeploymentsDeploymentIdCheckRunsRoute,
+  postV2DeploymentsIdAliasesRoute,
+  postV2DomainsDomainRecordsRoute,
+  postV2FilesRoute,
+  postV2IntegrationsLogDrainsRoute,
+  postV2ObservabilityQueryRoute,
+  postV2ProjectsProjectIdOrNameChecksRoute,
+  postV2SandboxesDrivesNameForkRoute,
+  postV2SandboxesDrivesNameRoute,
+  postV2SandboxesNameForkRoute,
+  postV2SandboxesRoute,
+  postV2SandboxesSessionsSessionIdCmdCmdIdKillRoute,
+  postV2SandboxesSessionsSessionIdCmdCmdIdStdinRoute,
+  postV2SandboxesSessionsSessionIdCmdRoute,
+  postV2SandboxesSessionsSessionIdExtendTimeoutRoute,
+  postV2SandboxesSessionsSessionIdFsMkdirRoute,
+  postV2SandboxesSessionsSessionIdFsReadRoute,
+  postV2SandboxesSessionsSessionIdFsWriteRoute,
+  postV2SandboxesSessionsSessionIdNetworkPolicyRoute,
+  postV2SandboxesSessionsSessionIdSnapshotRoute,
+  postV2SandboxesSessionsSessionIdStopRoute,
+  postV2TeamSlugProjectSlugRepositoryNameBlobsUploadsIndexRoute,
+  postV2TeamsTeamIdMembersRoute,
+  postV3SandboxesNameForkRoute,
+  postV3SandboxesRoute,
+  postV3SandboxesSessionsSessionIdSnapshotRoute,
+  postV3UserTokensRoute,
+  postV4SandboxesRoute,
+  postV7DomainsRoute,
+  postV8ArtifactsEventsRoute,
+  postV8ArtifactsRoute,
+  postV8CertsRoute,
+  postV9DomainsDomainClaimRoute,
+  postV9ProjectsIdOrNameCustomEnvironmentsRoute,
+  postV9ProjectsIdOrNameDomainsDomainVerifyRoute,
+  postWebInsightsToggleRoute,
+  putAiGatewayBudgetsDefaultsRoute,
+  putAiGatewayBudgetsRoute,
+  putDomainsDomainRecordsRoute,
+  putProjectsTransferRequestCodeRoute,
+  putV1BulkRedirectsRoute,
+  putV1GlobalConfigEdgeConfigIdRoute,
+  putV1InstallationsIntegrationConfigurationIdProductsIntegrationProductIdOrSlugResourcesResourceIdSecretsRoute,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdSecretsRoute,
+  putV1ObservabilityManageConfigurationProjectsProjectIdOrNameRoute,
+  putV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+  putV1OrganizationsOrganizationIdTeamsTargetTeamIdDsyncRoute,
+  putV1ProjectsIdOrNameDaemonsDaemonNameInstancesRoute,
+  putV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRoute,
+  putV1ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+  putV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRoute,
+  putV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRoute,
+  putV1ProjectsProjectIdRoutesRoute,
+  putV1SecurityFirewallBypassRulesRoute,
+  putV1SecurityFirewallConfigRoute,
+  putV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+  putV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+  putV8ArtifactsHashRoute,
+  putV8CertsRoute,
+} from './routes'
+import {
+  deleteAiGatewayBudgetsDefaultsRouteHandler,
+  deleteAiGatewayBudgetsRouteHandler,
+  deleteAiGatewayByokCredentialsCredentialIdRouteHandler,
+  deleteAiGatewayRulesRouteHandler,
+  deleteAiGatewayVirtualModelConfigsRouteHandler,
+  deleteAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  deleteStorageStoresBlobIdRouteHandler,
+  deleteV13DeploymentsIdRouteHandler,
+  deleteV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  deleteV1AccessGroupsIdOrNameRouteHandler,
+  deleteV1BulkRedirectsRouteHandler,
+  deleteV1ConnectConnectorsConnectorProjectsProjectIdEnvironmentsEnvironmentRouteHandler,
+  deleteV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  deleteV1ConnectConnectorsConnectorRouteHandler,
+  deleteV1ConnectNetworksNetworkIdRouteHandler,
+  deleteV1DrainsIdRouteHandler,
+  deleteV1DrivesNameOrIdRouteHandler,
+  deleteV1EnvRouteHandler,
+  deleteV1GlobalConfigEdgeConfigIdRouteHandler,
+  deleteV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  deleteV1GlobalConfigEdgeConfigIdTokensRouteHandler,
+  deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRouteHandler,
+  deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  deleteV1IntegrationsConfigurationIdRouteHandler,
+  deleteV1IntegrationsLogDrainsIdRouteHandler,
+  deleteV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRouteHandler,
+  deleteV1KmsIssuersIssuerIdRouteHandler,
+  deleteV1LogDrainsIdRouteHandler,
+  deleteV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  deleteV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  deleteV1OrganizationsOrganizationIdTeamsTargetTeamIdRouteHandler,
+  deleteV1ProjectsIdOrNameAvatarRouteHandler,
+  deleteV1ProjectsIdOrNameEnvRouteHandler,
+  deleteV1ProjectsIdOrNameMembersUidRouteHandler,
+  deleteV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsConnectionsConsumerProjectIdRouteHandler,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysHashKeyRouteHandler,
+  deleteV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  deleteV1ProjectsProjectIdRoutesRouteHandler,
+  deleteV1SecurityFirewallBypassRouteHandler,
+  deleteV1SecurityFirewallBypassRulesRouteHandler,
+  deleteV1SecurityFirewallConfigConfigVersionRouteHandler,
+  deleteV1TeamsTeamIdInvitesInviteIdRouteHandler,
+  deleteV1TeamsTeamIdMembersUidRouteHandler,
+  deleteV1TeamsTeamIdMicrofrontendsGroupIdRouteHandler,
+  deleteV1TeamsTeamIdRouteHandler,
+  deleteV1UserRouteHandler,
+  deleteV1VcrRepositoryIdOrNameImagesImageIdRouteHandler,
+  deleteV1VcrRepositoryIdOrNamePermissionsAllRouteHandler,
+  deleteV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  deleteV1VcrRepositoryIdOrNameRouteHandler,
+  deleteV1WebhooksIdRouteHandler,
+  deleteV2AliasesAliasIdRouteHandler,
+  deleteV2DomainsDomainRecordsRecordIdRouteHandler,
+  deleteV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  deleteV2SandboxesDrivesNameOrIdRouteHandler,
+  deleteV2SandboxesNameRouteHandler,
+  deleteV2SandboxesSnapshotsSnapshotIdRouteHandler,
+  deleteV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  deleteV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  deleteV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  deleteV3UserTokensTokenIdRouteHandler,
+  deleteV6DomainsDomainRouteHandler,
+  deleteV8ArtifactsRouteHandler,
+  deleteV8CertsIdRouteHandler,
+  deleteV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  deleteV9ProjectsIdOrNameDomainsDomainRouteHandler,
+  deleteV9ProjectsIdOrNameEnvIdRouteHandler,
+  deleteV9ProjectsIdOrNameRouteHandler,
+  getAiGatewayBudgetsDefaultsListRouteHandler,
+  getAiGatewayBudgetsListRouteHandler,
+  getAiGatewayByokCredentialsCredentialIdRouteHandler,
+  getAiGatewayByokCredentialsListRouteHandler,
+  getAiGatewayRulesRouteHandler,
+  getAiGatewayVirtualModelConfigsListRouteHandler,
+  getAiGatewayVirtualModelConfigsRouteHandler,
+  getAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  getDomainsRecordsRecordIdRouteHandler,
+  getStorageStoresIdRouteHandler,
+  getV10ProjectsIdOrNameEnvRouteHandler,
+  getV10ProjectsRouteHandler,
+  getV13DeploymentsIdOrUrlRouteHandler,
+  getV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  getV1AccessGroupsIdOrNameMembersRouteHandler,
+  getV1AccessGroupsIdOrNameProjectsRouteHandler,
+  getV1AccessGroupsIdOrNameRouteHandler,
+  getV1AccessGroupsRouteHandler,
+  getV1AiGatewayRoutersRouteHandler,
+  getV1BillingChargesRouteHandler,
+  getV1BulkRedirectsRouteHandler,
+  getV1BulkRedirectsVersionsRouteHandler,
+  getV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  getV1ConnectConnectorsConnectorRouteHandler,
+  getV1ConnectNetworksNetworkIdRouteHandler,
+  getV1ConnectNetworksRouteHandler,
+  getV1DeploymentsDeploymentIdChecksCheckIdRouteHandler,
+  getV1DeploymentsDeploymentIdChecksRouteHandler,
+  getV1DeploymentsDeploymentIdFeatureFlagsRouteHandler,
+  getV1DomainsDomainProjectDomainsRouteHandler,
+  getV1DrainsIdRouteHandler,
+  getV1DrainsRouteHandler,
+  getV1DrivesNameOrIdRouteHandler,
+  getV1DrivesRouteHandler,
+  getV1EnvIdRouteHandler,
+  getV1EnvRouteHandler,
+  getV1EventsTypesRouteHandler,
+  getV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRouteHandler,
+  getV1GlobalConfigEdgeConfigIdBackupsRouteHandler,
+  getV1GlobalConfigEdgeConfigIdItemEdgeConfigItemKeyRouteHandler,
+  getV1GlobalConfigEdgeConfigIdItemsRouteHandler,
+  getV1GlobalConfigEdgeConfigIdRouteHandler,
+  getV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  getV1GlobalConfigEdgeConfigIdTokensRouteHandler,
+  getV1GlobalConfigEdgeConfigIdTokenTokenRouteHandler,
+  getV1GlobalConfigRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdAccountRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdMemberMemberIdRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  getV1InstallationsIntegrationConfigurationIdResourcesRouteHandler,
+  getV1IntegrationsConfigurationIdProductsRouteHandler,
+  getV1IntegrationsConfigurationIdRouteHandler,
+  getV1IntegrationsConfigurationsRouteHandler,
+  getV1IntegrationsGitNamespacesRouteHandler,
+  getV1IntegrationsIntegrationIntegrationIdOrSlugProductsProductIdOrSlugPlansRouteHandler,
+  getV1IntegrationsSearchRepoRouteHandler,
+  getV1KmsIssuersIssuerIdRouteHandler,
+  getV1KmsIssuersRouteHandler,
+  getV1LogDrainsIdRouteHandler,
+  getV1LogDrainsRouteHandler,
+  getV1MicrofrontendsDeploymentIdConfigRouteHandler,
+  getV1MicrofrontendsGroupsGroupIdProjectsRouteHandler,
+  getV1MicrofrontendsGroupsRouteHandler,
+  getV1MicrofrontendsProjectsProjectIdOrNameProductionMfeConfigRouteHandler,
+  getV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  getV1NetworkingPrivatelinkEndpointsRouteHandler,
+  getV1ObservabilityManageConfigurationProjectsRouteHandler,
+  getV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  getV1OrganizationsOrganizationIdDsyncGroupsRouteHandler,
+  getV1OrganizationsOrganizationIdRouteHandler,
+  getV1OrganizationsOrganizationIdTeamsRouteHandler,
+  getV1OrganizationsRouteHandler,
+  getV1ProjectsIdOrNameDaemonsRouteHandler,
+  getV1ProjectsIdOrNameEnvIdRouteHandler,
+  getV1ProjectsIdOrNameMembersRouteHandler,
+  getV1ProjectsIdOrNameRollingReleaseBillingRouteHandler,
+  getV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  getV1ProjectsIdOrNameRollingReleaseRouteHandler,
+  getV1ProjectsProjectIdDeploymentsDeploymentIdRuntimeLogsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugVersionsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsLabelsCountsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsLabelsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  getV1ProjectsProjectIdOrNameFeatureFlagsSettingsRouteHandler,
+  getV1ProjectsProjectIdPromoteAliasesRouteHandler,
+  getV1ProjectsProjectIdRoutesRouteHandler,
+  getV1ProjectsProjectIdRoutesVersionsRouteHandler,
+  getV1ProjectsTracesRouteHandler,
+  getV1QueryWebAnalyticsEventsAggregateRouteHandler,
+  getV1QueryWebAnalyticsEventsCountRouteHandler,
+  getV1QueryWebAnalyticsVisitsAggregateRouteHandler,
+  getV1QueryWebAnalyticsVisitsCountRouteHandler,
+  getV1RegistrarDomainsDomainAuthCodeRouteHandler,
+  getV1RegistrarDomainsDomainAvailabilityRouteHandler,
+  getV1RegistrarDomainsDomainContactInfoSchemaRouteHandler,
+  getV1RegistrarDomainsDomainContactVerificationRouteHandler,
+  getV1RegistrarDomainsDomainPriceRouteHandler,
+  getV1RegistrarDomainsDomainTransferRouteHandler,
+  getV1RegistrarOrdersOrderIdRouteHandler,
+  getV1RegistrarTldsSupportedRouteHandler,
+  getV1RegistrarTldsTldPriceRouteHandler,
+  getV1RegistrarTldsTldRouteHandler,
+  getV1SecurityFirewallAttackStatusRouteHandler,
+  getV1SecurityFirewallBypassRouteHandler,
+  getV1SecurityFirewallBypassRulesRouteHandler,
+  getV1SecurityFirewallConfigConfigVersionRouteHandler,
+  getV1SecurityFirewallConfigRouteHandler,
+  getV1SecurityFirewallEventsRouteHandler,
+  getV1SecurityFirewallEventsSummaryRouteHandler,
+  getV1TeamsTeamIdFeatureFlagsFlagsRouteHandler,
+  getV1TeamsTeamIdFeatureFlagsSettingsRouteHandler,
+  getV1TeamsTeamIdRequestUserIdRouteHandler,
+  getV1VcrRepositoryIdOrNameImagesImageIdOrDigestRouteHandler,
+  getV1VcrRepositoryIdOrNameImagesRouteHandler,
+  getV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  getV1VcrRepositoryIdOrNameRouteHandler,
+  getV1VcrRepositoryIdOrNameTagsRouteHandler,
+  getV1VcrRepositoryIdOrNameTagsTagRouteHandler,
+  getV1VcrRepositoryRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptLogsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsTaskDefinitionIdRunsTaskRunAttemptLogsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskRunsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptLogsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsAttemptTaskLogsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdAttemptsRouteHandler,
+  getV1VercelCiInvocationsInvocationIdTreeRouteHandler,
+  getV1VercelCiLogSearchRouteHandler,
+  getV1VercelCiRepositorySettingsRouteHandler,
+  getV1VercelCiTaskAnalysesAnalysisIdRouteHandler,
+  getV1VercelCiTaskAnalysesAnalysisIdTasksRouteHandler,
+  getV1WebhooksIdRouteHandler,
+  getV1WebhooksRouteHandler,
+  getV2ConnectConnectorsConnectorProjectsRouteHandler,
+  getV2ConnectConnectorsRouteHandler,
+  getV2ConnectProjectsProjectIdConnectorsRouteHandler,
+  getV2DeploymentsDeploymentIdCheckRunsCheckRunIdRouteHandler,
+  getV2DeploymentsDeploymentIdCheckRunsRouteHandler,
+  getV2DeploymentsIdAliasesRouteHandler,
+  getV2IndexRouteHandler,
+  getV2IntegrationsLogDrainsRouteHandler,
+  getV2ObservabilitySchemaMetricIdRouteHandler,
+  getV2ObservabilitySchemaRouteHandler,
+  getV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  getV2ProjectsProjectIdOrNameChecksCheckIdRunsRouteHandler,
+  getV2ProjectsProjectIdOrNameChecksRouteHandler,
+  getV2ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  getV2SandboxesDrivesNameOrIdRouteHandler,
+  getV2SandboxesDrivesRouteHandler,
+  getV2SandboxesNameRouteHandler,
+  getV2SandboxesRouteHandler,
+  getV2SandboxesSessionsRouteHandler,
+  getV2SandboxesSessionsSessionIdCmdCmdIdLogsRouteHandler,
+  getV2SandboxesSessionsSessionIdCmdCmdIdRouteHandler,
+  getV2SandboxesSessionsSessionIdCmdRouteHandler,
+  getV2SandboxesSessionsSessionIdRouteHandler,
+  getV2SandboxesSnapshotsRouteHandler,
+  getV2SandboxesSnapshotsSnapshotIdRouteHandler,
+  getV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  getV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  getV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  getV2TeamSlugProjectSlugRepositoryNameTagsListRouteHandler,
+  getV2TeamsRouteHandler,
+  getV2TeamsTeamIdFeatureFlagsFlagsRouteHandler,
+  getV2TeamsTeamIdRouteHandler,
+  getV2UserRouteHandler,
+  getV2VercelCiBranchesRouteHandler,
+  getV2VercelCiInvocationsRouteHandler,
+  getV3DeploymentsIdOrUrlEventsRouteHandler,
+  getV3EventsRouteHandler,
+  getV3TeamsTeamIdMembersRouteHandler,
+  getV4AliasesIdOrAliasRouteHandler,
+  getV4AliasesRouteHandler,
+  getV5DomainsDomainRecordsRouteHandler,
+  getV5DomainsDomainRouteHandler,
+  getV5DomainsRouteHandler,
+  getV5UserTokensTokenIdRouteHandler,
+  getV6DeploymentsIdFilesRouteHandler,
+  getV6DomainsDomainConfigRouteHandler,
+  getV6UserTokensRouteHandler,
+  getV7DeploymentsRouteHandler,
+  getV8ArtifactsHashRouteHandler,
+  getV8ArtifactsStatusRouteHandler,
+  getV8CertsIdRouteHandler,
+  getV8CertsRouteHandler,
+  getV8DeploymentsIdFilesFileIdRouteHandler,
+  getV9DomainsDomainVerificationRouteHandler,
+  getV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  getV9ProjectsIdOrNameCustomEnvironmentsRouteHandler,
+  getV9ProjectsIdOrNameDomainsDomainRouteHandler,
+  getV9ProjectsIdOrNameDomainsRouteHandler,
+  getV9ProjectsIdOrNameRouteHandler,
+  headV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  headV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  headV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  headV8ArtifactsHashRouteHandler,
+  patchAiGatewayByokCredentialsCredentialIdRouteHandler,
+  patchAiGatewayRulesRouteHandler,
+  patchAiGatewayVirtualModelConfigsRouteHandler,
+  patchAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  patchAliasesIdProtectionBypassRouteHandler,
+  patchApiKeysApiKeyIDQuotaRouteHandler,
+  patchV12DeploymentsIdCancelRouteHandler,
+  patchV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  patchV1BulkRedirectsRouteHandler,
+  patchV1ConnectConnectorsConnectorTriggerDestinationsRouteHandler,
+  patchV1ConnectNetworksNetworkIdRouteHandler,
+  patchV1DeploymentsDeploymentIdChecksCheckIdRouteHandler,
+  patchV1DeploymentsDeploymentIdIntegrationsIntegrationConfigurationIdResourcesResourceIdActionsActionRouteHandler,
+  patchV1DomainsRecordsRecordIdRouteHandler,
+  patchV1DrainsIdRouteHandler,
+  patchV1EnvIdUnlinkProjectIdRouteHandler,
+  patchV1EnvRouteHandler,
+  patchV1GlobalConfigEdgeConfigIdItemsRouteHandler,
+  patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRouteHandler,
+  patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  patchV1InstallationsIntegrationConfigurationIdRouteHandler,
+  patchV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRouteHandler,
+  patchV1KmsIssuersIssuerIdRouteHandler,
+  patchV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  patchV1OrganizationsOrganizationIdRouteHandler,
+  patchV1ProjectsIdOrNameProtectionBypassRouteHandler,
+  patchV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  patchV1ProjectsIdOrNameSharedConnectLinksRouteHandler,
+  patchV1ProjectsProjectIdMicrofrontendsRouteHandler,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  patchV1ProjectsProjectIdOrNameFeatureFlagsSettingsRouteHandler,
+  patchV1ProjectsProjectIdRollbackDeploymentIdUpdateDescriptionRouteHandler,
+  patchV1ProjectsProjectIdRoutesRouteIdRouteHandler,
+  patchV1RegistrarDomainsDomainAutoRenewRouteHandler,
+  patchV1RegistrarDomainsDomainNameserversRouteHandler,
+  patchV1SecurityFirewallConfigRouteHandler,
+  patchV1TeamsTeamIdMembersUidRouteHandler,
+  patchV1TeamsTeamIdMicrofrontendsGroupIdRouteHandler,
+  patchV1VercelCiRepositorySettingsRouteHandler,
+  patchV2ConnectConnectorsConnectorRouteHandler,
+  patchV2DeploymentsDeploymentIdCheckRunsCheckRunIdRouteHandler,
+  patchV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  patchV2SandboxesNameRouteHandler,
+  patchV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  patchV2TeamsTeamIdRouteHandler,
+  patchV3DomainsDomainRouteHandler,
+  patchV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  patchV9ProjectsIdOrNameDomainsDomainRouteHandler,
+  patchV9ProjectsIdOrNameEnvIdRouteHandler,
+  patchV9ProjectsIdOrNameRouteHandler,
+  postAiGatewayByokCredentialsRouteHandler,
+  postAiGatewayRulesRouteHandler,
+  postAiGatewayVirtualModelConfigsRouteHandler,
+  postApiKeysRouteHandler,
+  postProjectsIdOrNameTransferRequestRouteHandler,
+  postSpeedInsightsToggleRouteHandler,
+  postStorageStoresBlobRouteHandler,
+  postV10ProjectsIdOrNameDomainsRouteHandler,
+  postV10ProjectsIdOrNameEnvRouteHandler,
+  postV10ProjectsProjectIdPromoteDeploymentIdRouteHandler,
+  postV11ProjectsRouteHandler,
+  postV13DeploymentsRouteHandler,
+  postV1AccessGroupsAccessGroupIdOrNameProjectsRouteHandler,
+  postV1AccessGroupsIdOrNameRouteHandler,
+  postV1AccessGroupsRouteHandler,
+  postV1BillingBuyRouteHandler,
+  postV1BulkRedirectsRestoreRouteHandler,
+  postV1BulkRedirectsVersionsRouteHandler,
+  postV1ConnectAuthorizeConnectorRouteHandler,
+  postV1ConnectConnectorsConnectorManagedEjectRouteHandler,
+  postV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  postV1ConnectConnectorsRouteHandler,
+  postV1ConnectNetworksRouteHandler,
+  postV1ConnectTokenConnectorRouteHandler,
+  postV1DeploymentsDeploymentIdChecksCheckIdRerequestRouteHandler,
+  postV1DeploymentsDeploymentIdChecksRouteHandler,
+  postV1DrainsRouteHandler,
+  postV1DrainsTestRouteHandler,
+  postV1DrivesNameForkRouteHandler,
+  postV1DrivesNameRouteHandler,
+  postV1EdgeCacheDangerouslyDeleteBySrcImagesRouteHandler,
+  postV1EdgeCacheDangerouslyDeleteByTagsRouteHandler,
+  postV1EdgeCacheInvalidateBySrcImagesRouteHandler,
+  postV1EdgeCacheInvalidateByTagsRouteHandler,
+  postV1EnvRouteHandler,
+  postV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRestoreRouteHandler,
+  postV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  postV1GlobalConfigEdgeConfigIdTokenRouteHandler,
+  postV1GlobalConfigRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdBillingBalanceRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdBillingFinalizeRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdActionsRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdBillingInvoicesRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdBillingRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdCredentialsRevokeRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdCredentialsRotateRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdEventsRouteHandler,
+  postV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsRouteHandler,
+  postV1IntegrationsInstallationsIntegrationConfigurationIdResourcesResourceIdConnectionsRouteHandler,
+  postV1IntegrationsSsoTokenRouteHandler,
+  postV1KmsIssuersIssuerIdKeysKeyIdActivateRouteHandler,
+  postV1KmsIssuersIssuerIdKeysKeyIdRevokeRouteHandler,
+  postV1KmsIssuersIssuerIdKeysRouteHandler,
+  postV1KmsIssuersIssuerIdPoliciesRouteHandler,
+  postV1KmsIssuersIssuerIdSignMessageRouteHandler,
+  postV1KmsIssuersIssuerIdSignTokenRouteHandler,
+  postV1KmsIssuersRouteHandler,
+  postV1LogDrainsRouteHandler,
+  postV1MicrofrontendsGroupRouteHandler,
+  postV1NetworkingPrivatelinkEndpointsRouteHandler,
+  postV1OrganizationsOrganizationIdTeamsRouteHandler,
+  postV1OrganizationsRouteHandler,
+  postV1ProjectsIdOrNameAvatarRouteHandler,
+  postV1ProjectsIdOrNameDaemonsDaemonNameInstancesInstanceIdRestartRouteHandler,
+  postV1ProjectsIdOrNameDomainsDomainMoveRouteHandler,
+  postV1ProjectsIdOrNameMembersRouteHandler,
+  postV1ProjectsIdOrNameRollingReleaseApproveStageRouteHandler,
+  postV1ProjectsIdOrNameRollingReleaseCompleteRouteHandler,
+  postV1ProjectsIdOrNameRollingReleaseStartRouteHandler,
+  postV1ProjectsIdOrNameTokenRouteHandler,
+  postV1ProjectsProjectIdOrNameFeatureFlagsLabelsLookupRouteHandler,
+  postV1ProjectsProjectIdOrNameFeatureFlagsOverridesSignRouteHandler,
+  postV1ProjectsProjectIdPauseRouteHandler,
+  postV1ProjectsProjectIdRollbackDeploymentIdRouteHandler,
+  postV1ProjectsProjectIdRoutesGenerateRouteHandler,
+  postV1ProjectsProjectIdRoutesRouteHandler,
+  postV1ProjectsProjectIdRoutesVersionsRouteHandler,
+  postV1ProjectsProjectIdUnpauseRouteHandler,
+  postV1ProjectsTracesSessionRouteHandler,
+  postV1RegistrarDomainsAvailabilityRouteHandler,
+  postV1RegistrarDomainsBuyRouteHandler,
+  postV1RegistrarDomainsDomainBuyRouteHandler,
+  postV1RegistrarDomainsDomainRenewRouteHandler,
+  postV1RegistrarDomainsDomainTransferRouteHandler,
+  postV1RegistrarDomainsPriceRouteHandler,
+  postV1RegistrarDomainsSearchRouteHandler,
+  postV1SecurityAttackModeRouteHandler,
+  postV1SecurityFirewallBypassRouteHandler,
+  postV1SecurityFirewallBypassRulesRouteHandler,
+  postV1SecurityFirewallConfigConfigVersionActivateRouteHandler,
+  postV1SecurityFirewallConfigGenerateRuleRouteHandler,
+  postV1StorageStoresIntegrationDirectRouteHandler,
+  postV1TeamsRouteHandler,
+  postV1TeamsTeamIdDsyncRolesRouteHandler,
+  postV1TeamsTeamIdMembersTeamsJoinRouteHandler,
+  postV1TeamsTeamIdRequestRouteHandler,
+  postV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  postV1VcrRepositoryRouteHandler,
+  postV1VercelCiInvocationsInvocationIdAttemptsAttemptRetryRouteHandler,
+  postV1VercelCiTaskAnalysesAnalysisIdPullRequestRouteHandler,
+  postV1VercelCiTaskAnalysesRouteHandler,
+  postV1WebhooksRouteHandler,
+  postV2DeploymentsDeploymentIdCheckRunsRouteHandler,
+  postV2DeploymentsIdAliasesRouteHandler,
+  postV2DomainsDomainRecordsRouteHandler,
+  postV2FilesRouteHandler,
+  postV2IntegrationsLogDrainsRouteHandler,
+  postV2ObservabilityQueryRouteHandler,
+  postV2ProjectsProjectIdOrNameChecksRouteHandler,
+  postV2SandboxesDrivesNameForkRouteHandler,
+  postV2SandboxesDrivesNameRouteHandler,
+  postV2SandboxesNameForkRouteHandler,
+  postV2SandboxesRouteHandler,
+  postV2SandboxesSessionsSessionIdCmdCmdIdKillRouteHandler,
+  postV2SandboxesSessionsSessionIdCmdCmdIdStdinRouteHandler,
+  postV2SandboxesSessionsSessionIdCmdRouteHandler,
+  postV2SandboxesSessionsSessionIdExtendTimeoutRouteHandler,
+  postV2SandboxesSessionsSessionIdFsMkdirRouteHandler,
+  postV2SandboxesSessionsSessionIdFsReadRouteHandler,
+  postV2SandboxesSessionsSessionIdFsWriteRouteHandler,
+  postV2SandboxesSessionsSessionIdNetworkPolicyRouteHandler,
+  postV2SandboxesSessionsSessionIdSnapshotRouteHandler,
+  postV2SandboxesSessionsSessionIdStopRouteHandler,
+  postV2TeamSlugProjectSlugRepositoryNameBlobsUploadsIndexRouteHandler,
+  postV2TeamsTeamIdMembersRouteHandler,
+  postV3SandboxesNameForkRouteHandler,
+  postV3SandboxesRouteHandler,
+  postV3SandboxesSessionsSessionIdSnapshotRouteHandler,
+  postV3UserTokensRouteHandler,
+  postV4SandboxesRouteHandler,
+  postV7DomainsRouteHandler,
+  postV8ArtifactsEventsRouteHandler,
+  postV8ArtifactsRouteHandler,
+  postV8CertsRouteHandler,
+  postV9DomainsDomainClaimRouteHandler,
+  postV9ProjectsIdOrNameCustomEnvironmentsRouteHandler,
+  postV9ProjectsIdOrNameDomainsDomainVerifyRouteHandler,
+  postWebInsightsToggleRouteHandler,
+  putAiGatewayBudgetsDefaultsRouteHandler,
+  putAiGatewayBudgetsRouteHandler,
+  putDomainsDomainRecordsRouteHandler,
+  putProjectsTransferRequestCodeRouteHandler,
+  putV1BulkRedirectsRouteHandler,
+  putV1GlobalConfigEdgeConfigIdRouteHandler,
+  putV1InstallationsIntegrationConfigurationIdProductsIntegrationProductIdOrSlugResourcesResourceIdSecretsRouteHandler,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  putV1InstallationsIntegrationConfigurationIdResourcesResourceIdSecretsRouteHandler,
+  putV1ObservabilityManageConfigurationProjectsProjectIdOrNameRouteHandler,
+  putV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  putV1OrganizationsOrganizationIdTeamsTargetTeamIdDsyncRouteHandler,
+  putV1ProjectsIdOrNameDaemonsDaemonNameInstancesRouteHandler,
+  putV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRouteHandler,
+  putV1ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  putV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRouteHandler,
+  putV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRouteHandler,
+  putV1ProjectsProjectIdRoutesRouteHandler,
+  putV1SecurityFirewallBypassRulesRouteHandler,
+  putV1SecurityFirewallConfigRouteHandler,
+  putV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  putV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  putV8ArtifactsHashRouteHandler,
+  putV8CertsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', v1Handler)
-  .route('/', aiGatewayHandler)
-  .route('/', v8Handler)
-  .route('/', v2Handler)
-  .route('/', v3Handler)
-  .route('/', v13Handler)
-  .route('/', v12Handler)
-  .route('/', v5Handler)
-  .route('/', domainsHandler)
-  .route('/', v6Handler)
-  .route('/', v9Handler)
-  .route('/', v7Handler)
-  .route('/', apiKeysHandler)
-  .route('/', v10Handler)
-  .route('/', v11Handler)
-  .route('/', projectsHandler)
-  .route('/', v4Handler)
-  .route('/', speedInsightsHandler)
-  .route('/', storageHandler)
-  .route('/', webHandler)
-  .route('/', aliasesHandler)
+  .openapi(getV1AccessGroupsIdOrNameRoute, getV1AccessGroupsIdOrNameRouteHandler)
+  .openapi(postV1AccessGroupsIdOrNameRoute, postV1AccessGroupsIdOrNameRouteHandler)
+  .openapi(deleteV1AccessGroupsIdOrNameRoute, deleteV1AccessGroupsIdOrNameRouteHandler)
+  .openapi(getV1AccessGroupsIdOrNameMembersRoute, getV1AccessGroupsIdOrNameMembersRouteHandler)
+  .openapi(getV1AccessGroupsRoute, getV1AccessGroupsRouteHandler)
+  .openapi(postV1AccessGroupsRoute, postV1AccessGroupsRouteHandler)
+  .openapi(getV1AccessGroupsIdOrNameProjectsRoute, getV1AccessGroupsIdOrNameProjectsRouteHandler)
+  .openapi(
+    postV1AccessGroupsAccessGroupIdOrNameProjectsRoute,
+    postV1AccessGroupsAccessGroupIdOrNameProjectsRouteHandler,
+  )
+  .openapi(
+    getV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+    getV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    patchV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+    patchV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    deleteV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRoute,
+    deleteV1AccessGroupsAccessGroupIdOrNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(postAiGatewayByokCredentialsRoute, postAiGatewayByokCredentialsRouteHandler)
+  .openapi(getAiGatewayByokCredentialsListRoute, getAiGatewayByokCredentialsListRouteHandler)
+  .openapi(
+    getAiGatewayByokCredentialsCredentialIdRoute,
+    getAiGatewayByokCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(
+    patchAiGatewayByokCredentialsCredentialIdRoute,
+    patchAiGatewayByokCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(
+    deleteAiGatewayByokCredentialsCredentialIdRoute,
+    deleteAiGatewayByokCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(postAiGatewayVirtualModelConfigsRoute, postAiGatewayVirtualModelConfigsRouteHandler)
+  .openapi(getAiGatewayVirtualModelConfigsRoute, getAiGatewayVirtualModelConfigsRouteHandler)
+  .openapi(patchAiGatewayVirtualModelConfigsRoute, patchAiGatewayVirtualModelConfigsRouteHandler)
+  .openapi(deleteAiGatewayVirtualModelConfigsRoute, deleteAiGatewayVirtualModelConfigsRouteHandler)
+  .openapi(
+    getAiGatewayVirtualModelConfigsListRoute,
+    getAiGatewayVirtualModelConfigsListRouteHandler,
+  )
+  .openapi(
+    getAiGatewayVirtualModelConfigsVmcSlugRoute,
+    getAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  )
+  .openapi(
+    patchAiGatewayVirtualModelConfigsVmcSlugRoute,
+    patchAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  )
+  .openapi(
+    deleteAiGatewayVirtualModelConfigsVmcSlugRoute,
+    deleteAiGatewayVirtualModelConfigsVmcSlugRouteHandler,
+  )
+  .openapi(getV1AiGatewayRoutersRoute, getV1AiGatewayRoutersRouteHandler)
+  .openapi(postAiGatewayRulesRoute, postAiGatewayRulesRouteHandler)
+  .openapi(getAiGatewayRulesRoute, getAiGatewayRulesRouteHandler)
+  .openapi(patchAiGatewayRulesRoute, patchAiGatewayRulesRouteHandler)
+  .openapi(deleteAiGatewayRulesRoute, deleteAiGatewayRulesRouteHandler)
+  .openapi(getAiGatewayBudgetsListRoute, getAiGatewayBudgetsListRouteHandler)
+  .openapi(putAiGatewayBudgetsRoute, putAiGatewayBudgetsRouteHandler)
+  .openapi(deleteAiGatewayBudgetsRoute, deleteAiGatewayBudgetsRouteHandler)
+  .openapi(getAiGatewayBudgetsDefaultsListRoute, getAiGatewayBudgetsDefaultsListRouteHandler)
+  .openapi(putAiGatewayBudgetsDefaultsRoute, putAiGatewayBudgetsDefaultsRouteHandler)
+  .openapi(deleteAiGatewayBudgetsDefaultsRoute, deleteAiGatewayBudgetsDefaultsRouteHandler)
+  .openapi(postV8ArtifactsEventsRoute, postV8ArtifactsEventsRouteHandler)
+  .openapi(getV8ArtifactsStatusRoute, getV8ArtifactsStatusRouteHandler)
+  .openapi(putV8ArtifactsHashRoute, putV8ArtifactsHashRouteHandler)
+  .openapi(getV8ArtifactsHashRoute, getV8ArtifactsHashRouteHandler)
+  .openapi(headV8ArtifactsHashRoute, headV8ArtifactsHashRouteHandler)
+  .openapi(postV8ArtifactsRoute, postV8ArtifactsRouteHandler)
+  .openapi(deleteV8ArtifactsRoute, deleteV8ArtifactsRouteHandler)
+  .openapi(getV1BillingChargesRoute, getV1BillingChargesRouteHandler)
+  .openapi(postV1BillingBuyRoute, postV1BillingBuyRouteHandler)
+  .openapi(putV1BulkRedirectsRoute, putV1BulkRedirectsRouteHandler)
+  .openapi(getV1BulkRedirectsRoute, getV1BulkRedirectsRouteHandler)
+  .openapi(deleteV1BulkRedirectsRoute, deleteV1BulkRedirectsRouteHandler)
+  .openapi(patchV1BulkRedirectsRoute, patchV1BulkRedirectsRouteHandler)
+  .openapi(postV1BulkRedirectsRestoreRoute, postV1BulkRedirectsRestoreRouteHandler)
+  .openapi(getV1BulkRedirectsVersionsRoute, getV1BulkRedirectsVersionsRouteHandler)
+  .openapi(postV1BulkRedirectsVersionsRoute, postV1BulkRedirectsVersionsRouteHandler)
+  .openapi(getV2ProjectsProjectIdOrNameChecksRoute, getV2ProjectsProjectIdOrNameChecksRouteHandler)
+  .openapi(
+    postV2ProjectsProjectIdOrNameChecksRoute,
+    postV2ProjectsProjectIdOrNameChecksRouteHandler,
+  )
+  .openapi(
+    getV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+    getV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  )
+  .openapi(
+    patchV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+    patchV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  )
+  .openapi(
+    deleteV2ProjectsProjectIdOrNameChecksCheckIdRoute,
+    deleteV2ProjectsProjectIdOrNameChecksCheckIdRouteHandler,
+  )
+  .openapi(
+    getV2ProjectsProjectIdOrNameChecksCheckIdRunsRoute,
+    getV2ProjectsProjectIdOrNameChecksCheckIdRunsRouteHandler,
+  )
+  .openapi(
+    getV2DeploymentsDeploymentIdCheckRunsRoute,
+    getV2DeploymentsDeploymentIdCheckRunsRouteHandler,
+  )
+  .openapi(
+    postV2DeploymentsDeploymentIdCheckRunsRoute,
+    postV2DeploymentsDeploymentIdCheckRunsRouteHandler,
+  )
+  .openapi(
+    getV2DeploymentsDeploymentIdCheckRunsCheckRunIdRoute,
+    getV2DeploymentsDeploymentIdCheckRunsCheckRunIdRouteHandler,
+  )
+  .openapi(
+    patchV2DeploymentsDeploymentIdCheckRunsCheckRunIdRoute,
+    patchV2DeploymentsDeploymentIdCheckRunsCheckRunIdRouteHandler,
+  )
+  .openapi(
+    postV1DeploymentsDeploymentIdChecksRoute,
+    postV1DeploymentsDeploymentIdChecksRouteHandler,
+  )
+  .openapi(getV1DeploymentsDeploymentIdChecksRoute, getV1DeploymentsDeploymentIdChecksRouteHandler)
+  .openapi(
+    getV1DeploymentsDeploymentIdChecksCheckIdRoute,
+    getV1DeploymentsDeploymentIdChecksCheckIdRouteHandler,
+  )
+  .openapi(
+    patchV1DeploymentsDeploymentIdChecksCheckIdRoute,
+    patchV1DeploymentsDeploymentIdChecksCheckIdRouteHandler,
+  )
+  .openapi(
+    postV1DeploymentsDeploymentIdChecksCheckIdRerequestRoute,
+    postV1DeploymentsDeploymentIdChecksCheckIdRerequestRouteHandler,
+  )
+  .openapi(getV1ConnectNetworksRoute, getV1ConnectNetworksRouteHandler)
+  .openapi(postV1ConnectNetworksRoute, postV1ConnectNetworksRouteHandler)
+  .openapi(deleteV1ConnectNetworksNetworkIdRoute, deleteV1ConnectNetworksNetworkIdRouteHandler)
+  .openapi(patchV1ConnectNetworksNetworkIdRoute, patchV1ConnectNetworksNetworkIdRouteHandler)
+  .openapi(getV1ConnectNetworksNetworkIdRoute, getV1ConnectNetworksNetworkIdRouteHandler)
+  .openapi(
+    postV1NetworkingPrivatelinkEndpointsRoute,
+    postV1NetworkingPrivatelinkEndpointsRouteHandler,
+  )
+  .openapi(
+    getV1NetworkingPrivatelinkEndpointsRoute,
+    getV1NetworkingPrivatelinkEndpointsRouteHandler,
+  )
+  .openapi(
+    getV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+    getV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(
+    deleteV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+    deleteV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(
+    patchV1NetworkingPrivatelinkEndpointsEndpointIdRoute,
+    patchV1NetworkingPrivatelinkEndpointsEndpointIdRouteHandler,
+  )
+  .openapi(getV2ConnectConnectorsRoute, getV2ConnectConnectorsRouteHandler)
+  .openapi(getV1ConnectConnectorsConnectorRoute, getV1ConnectConnectorsConnectorRouteHandler)
+  .openapi(deleteV1ConnectConnectorsConnectorRoute, deleteV1ConnectConnectorsConnectorRouteHandler)
+  .openapi(postV1ConnectConnectorsRoute, postV1ConnectConnectorsRouteHandler)
+  .openapi(patchV2ConnectConnectorsConnectorRoute, patchV2ConnectConnectorsConnectorRouteHandler)
+  .openapi(
+    patchV1ConnectConnectorsConnectorTriggerDestinationsRoute,
+    patchV1ConnectConnectorsConnectorTriggerDestinationsRouteHandler,
+  )
+  .openapi(
+    postV1ConnectConnectorsConnectorManagedEjectRoute,
+    postV1ConnectConnectorsConnectorManagedEjectRouteHandler,
+  )
+  .openapi(
+    getV2ConnectConnectorsConnectorProjectsRoute,
+    getV2ConnectConnectorsConnectorProjectsRouteHandler,
+  )
+  .openapi(
+    getV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+    getV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    postV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+    postV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectConnectorsConnectorProjectsProjectIdRoute,
+    deleteV1ConnectConnectorsConnectorProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectConnectorsConnectorProjectsProjectIdEnvironmentsEnvironmentRoute,
+    deleteV1ConnectConnectorsConnectorProjectsProjectIdEnvironmentsEnvironmentRouteHandler,
+  )
+  .openapi(
+    getV2ConnectProjectsProjectIdConnectorsRoute,
+    getV2ConnectProjectsProjectIdConnectorsRouteHandler,
+  )
+  .openapi(postV1ConnectTokenConnectorRoute, postV1ConnectTokenConnectorRouteHandler)
+  .openapi(postV1ConnectAuthorizeConnectorRoute, postV1ConnectAuthorizeConnectorRouteHandler)
+  .openapi(getV1ProjectsIdOrNameDaemonsRoute, getV1ProjectsIdOrNameDaemonsRouteHandler)
+  .openapi(
+    putV1ProjectsIdOrNameDaemonsDaemonNameInstancesRoute,
+    putV1ProjectsIdOrNameDaemonsDaemonNameInstancesRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsIdOrNameDaemonsDaemonNameInstancesInstanceIdRestartRoute,
+    postV1ProjectsIdOrNameDaemonsDaemonNameInstancesInstanceIdRestartRouteHandler,
+  )
+  .openapi(getV3DeploymentsIdOrUrlEventsRoute, getV3DeploymentsIdOrUrlEventsRouteHandler)
+  .openapi(
+    patchV1DeploymentsDeploymentIdIntegrationsIntegrationConfigurationIdResourcesResourceIdActionsActionRoute,
+    patchV1DeploymentsDeploymentIdIntegrationsIntegrationConfigurationIdResourcesResourceIdActionsActionRouteHandler,
+  )
+  .openapi(getV13DeploymentsIdOrUrlRoute, getV13DeploymentsIdOrUrlRouteHandler)
+  .openapi(postV13DeploymentsRoute, postV13DeploymentsRouteHandler)
+  .openapi(patchV12DeploymentsIdCancelRoute, patchV12DeploymentsIdCancelRouteHandler)
+  .openapi(getV5DomainsDomainRecordsRoute, getV5DomainsDomainRecordsRouteHandler)
+  .openapi(postV2DomainsDomainRecordsRoute, postV2DomainsDomainRecordsRouteHandler)
+  .openapi(patchV1DomainsRecordsRecordIdRoute, patchV1DomainsRecordsRecordIdRouteHandler)
+  .openapi(putDomainsDomainRecordsRoute, putDomainsDomainRecordsRouteHandler)
+  .openapi(getDomainsRecordsRecordIdRoute, getDomainsRecordsRecordIdRouteHandler)
+  .openapi(
+    deleteV2DomainsDomainRecordsRecordIdRoute,
+    deleteV2DomainsDomainRecordsRecordIdRouteHandler,
+  )
+  .openapi(postV1RegistrarDomainsSearchRoute, postV1RegistrarDomainsSearchRouteHandler)
+  .openapi(getV1RegistrarTldsSupportedRoute, getV1RegistrarTldsSupportedRouteHandler)
+  .openapi(getV1RegistrarTldsTldRoute, getV1RegistrarTldsTldRouteHandler)
+  .openapi(getV1RegistrarTldsTldPriceRoute, getV1RegistrarTldsTldPriceRouteHandler)
+  .openapi(
+    getV1RegistrarDomainsDomainAvailabilityRoute,
+    getV1RegistrarDomainsDomainAvailabilityRouteHandler,
+  )
+  .openapi(getV1RegistrarDomainsDomainPriceRoute, getV1RegistrarDomainsDomainPriceRouteHandler)
+  .openapi(postV1RegistrarDomainsPriceRoute, postV1RegistrarDomainsPriceRouteHandler)
+  .openapi(postV1RegistrarDomainsAvailabilityRoute, postV1RegistrarDomainsAvailabilityRouteHandler)
+  .openapi(
+    getV1RegistrarDomainsDomainContactInfoSchemaRoute,
+    getV1RegistrarDomainsDomainContactInfoSchemaRouteHandler,
+  )
+  .openapi(
+    getV1RegistrarDomainsDomainAuthCodeRoute,
+    getV1RegistrarDomainsDomainAuthCodeRouteHandler,
+  )
+  .openapi(postV1RegistrarDomainsDomainBuyRoute, postV1RegistrarDomainsDomainBuyRouteHandler)
+  .openapi(postV1RegistrarDomainsBuyRoute, postV1RegistrarDomainsBuyRouteHandler)
+  .openapi(
+    postV1RegistrarDomainsDomainTransferRoute,
+    postV1RegistrarDomainsDomainTransferRouteHandler,
+  )
+  .openapi(
+    getV1RegistrarDomainsDomainTransferRoute,
+    getV1RegistrarDomainsDomainTransferRouteHandler,
+  )
+  .openapi(postV1RegistrarDomainsDomainRenewRoute, postV1RegistrarDomainsDomainRenewRouteHandler)
+  .openapi(
+    patchV1RegistrarDomainsDomainAutoRenewRoute,
+    patchV1RegistrarDomainsDomainAutoRenewRouteHandler,
+  )
+  .openapi(
+    patchV1RegistrarDomainsDomainNameserversRoute,
+    patchV1RegistrarDomainsDomainNameserversRouteHandler,
+  )
+  .openapi(
+    getV1RegistrarDomainsDomainContactVerificationRoute,
+    getV1RegistrarDomainsDomainContactVerificationRouteHandler,
+  )
+  .openapi(getV1RegistrarOrdersOrderIdRoute, getV1RegistrarOrdersOrderIdRouteHandler)
+  .openapi(getV6DomainsDomainConfigRoute, getV6DomainsDomainConfigRouteHandler)
+  .openapi(getV9DomainsDomainVerificationRoute, getV9DomainsDomainVerificationRouteHandler)
+  .openapi(postV9DomainsDomainClaimRoute, postV9DomainsDomainClaimRouteHandler)
+  .openapi(getV1DomainsDomainProjectDomainsRoute, getV1DomainsDomainProjectDomainsRouteHandler)
+  .openapi(getV5DomainsDomainRoute, getV5DomainsDomainRouteHandler)
+  .openapi(getV5DomainsRoute, getV5DomainsRouteHandler)
+  .openapi(postV7DomainsRoute, postV7DomainsRouteHandler)
+  .openapi(patchV3DomainsDomainRoute, patchV3DomainsDomainRouteHandler)
+  .openapi(deleteV6DomainsDomainRoute, deleteV6DomainsDomainRouteHandler)
+  .openapi(getV1LogDrainsIdRoute, getV1LogDrainsIdRouteHandler)
+  .openapi(deleteV1LogDrainsIdRoute, deleteV1LogDrainsIdRouteHandler)
+  .openapi(getV1LogDrainsRoute, getV1LogDrainsRouteHandler)
+  .openapi(postV1LogDrainsRoute, postV1LogDrainsRouteHandler)
+  .openapi(postV1DrainsRoute, postV1DrainsRouteHandler)
+  .openapi(getV1DrainsRoute, getV1DrainsRouteHandler)
+  .openapi(deleteV1DrainsIdRoute, deleteV1DrainsIdRouteHandler)
+  .openapi(getV1DrainsIdRoute, getV1DrainsIdRouteHandler)
+  .openapi(patchV1DrainsIdRoute, patchV1DrainsIdRouteHandler)
+  .openapi(postV1DrainsTestRoute, postV1DrainsTestRouteHandler)
+  .openapi(getV1DrivesRoute, getV1DrivesRouteHandler)
+  .openapi(getV1DrivesNameOrIdRoute, getV1DrivesNameOrIdRouteHandler)
+  .openapi(deleteV1DrivesNameOrIdRoute, deleteV1DrivesNameOrIdRouteHandler)
+  .openapi(postV1DrivesNameRoute, postV1DrivesNameRouteHandler)
+  .openapi(postV1DrivesNameForkRoute, postV1DrivesNameForkRouteHandler)
+  .openapi(postV1EdgeCacheInvalidateByTagsRoute, postV1EdgeCacheInvalidateByTagsRouteHandler)
+  .openapi(
+    postV1EdgeCacheDangerouslyDeleteByTagsRoute,
+    postV1EdgeCacheDangerouslyDeleteByTagsRouteHandler,
+  )
+  .openapi(
+    postV1EdgeCacheInvalidateBySrcImagesRoute,
+    postV1EdgeCacheInvalidateBySrcImagesRouteHandler,
+  )
+  .openapi(
+    postV1EdgeCacheDangerouslyDeleteBySrcImagesRoute,
+    postV1EdgeCacheDangerouslyDeleteBySrcImagesRouteHandler,
+  )
+  .openapi(getV1GlobalConfigRoute, getV1GlobalConfigRouteHandler)
+  .openapi(postV1GlobalConfigRoute, postV1GlobalConfigRouteHandler)
+  .openapi(getV1GlobalConfigEdgeConfigIdRoute, getV1GlobalConfigEdgeConfigIdRouteHandler)
+  .openapi(putV1GlobalConfigEdgeConfigIdRoute, putV1GlobalConfigEdgeConfigIdRouteHandler)
+  .openapi(deleteV1GlobalConfigEdgeConfigIdRoute, deleteV1GlobalConfigEdgeConfigIdRouteHandler)
+  .openapi(getV1GlobalConfigEdgeConfigIdItemsRoute, getV1GlobalConfigEdgeConfigIdItemsRouteHandler)
+  .openapi(
+    patchV1GlobalConfigEdgeConfigIdItemsRoute,
+    patchV1GlobalConfigEdgeConfigIdItemsRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdSchemaRoute,
+    getV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  )
+  .openapi(
+    postV1GlobalConfigEdgeConfigIdSchemaRoute,
+    postV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  )
+  .openapi(
+    deleteV1GlobalConfigEdgeConfigIdSchemaRoute,
+    deleteV1GlobalConfigEdgeConfigIdSchemaRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdItemEdgeConfigItemKeyRoute,
+    getV1GlobalConfigEdgeConfigIdItemEdgeConfigItemKeyRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdTokensRoute,
+    getV1GlobalConfigEdgeConfigIdTokensRouteHandler,
+  )
+  .openapi(
+    deleteV1GlobalConfigEdgeConfigIdTokensRoute,
+    deleteV1GlobalConfigEdgeConfigIdTokensRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdTokenTokenRoute,
+    getV1GlobalConfigEdgeConfigIdTokenTokenRouteHandler,
+  )
+  .openapi(
+    postV1GlobalConfigEdgeConfigIdTokenRoute,
+    postV1GlobalConfigEdgeConfigIdTokenRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRoute,
+    getV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRouteHandler,
+  )
+  .openapi(
+    postV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRestoreRoute,
+    postV1GlobalConfigEdgeConfigIdBackupsEdgeConfigBackupVersionIdRestoreRouteHandler,
+  )
+  .openapi(
+    getV1GlobalConfigEdgeConfigIdBackupsRoute,
+    getV1GlobalConfigEdgeConfigIdBackupsRouteHandler,
+  )
+  .openapi(postV1EnvRoute, postV1EnvRouteHandler)
+  .openapi(getV1EnvRoute, getV1EnvRouteHandler)
+  .openapi(patchV1EnvRoute, patchV1EnvRouteHandler)
+  .openapi(deleteV1EnvRoute, deleteV1EnvRouteHandler)
+  .openapi(getV1EnvIdRoute, getV1EnvIdRouteHandler)
+  .openapi(patchV1EnvIdUnlinkProjectIdRoute, patchV1EnvIdUnlinkProjectIdRouteHandler)
+  .openapi(getV3EventsRoute, getV3EventsRouteHandler)
+  .openapi(getV1EventsTypesRoute, getV1EventsTypesRouteHandler)
+  .openapi(
+    postV1ProjectsProjectIdOrNameFeatureFlagsOverridesSignRoute,
+    postV1ProjectsProjectIdOrNameFeatureFlagsOverridesSignRouteHandler,
+  )
+  .openapi(
+    getV2ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+    getV2ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  )
+  .openapi(
+    putV1ProjectsProjectIdOrNameFeatureFlagsFlagsRoute,
+    putV1ProjectsProjectIdOrNameFeatureFlagsFlagsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+    patchV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  )
+  .openapi(
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRoute,
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugVersionsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsFlagsFlagIdOrSlugVersionsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsSettingsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsSettingsRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsProjectIdOrNameFeatureFlagsSettingsRoute,
+    patchV1ProjectsProjectIdOrNameFeatureFlagsSettingsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsLabelsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsLabelsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsLabelsCountsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsLabelsCountsRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsProjectIdOrNameFeatureFlagsLabelsLookupRoute,
+    postV1ProjectsProjectIdOrNameFeatureFlagsLabelsLookupRouteHandler,
+  )
+  .openapi(
+    getV1TeamsTeamIdFeatureFlagsSettingsRoute,
+    getV1TeamsTeamIdFeatureFlagsSettingsRouteHandler,
+  )
+  .openapi(getV2TeamsTeamIdFeatureFlagsFlagsRoute, getV2TeamsTeamIdFeatureFlagsFlagsRouteHandler)
+  .openapi(getV1TeamsTeamIdFeatureFlagsFlagsRoute, getV1TeamsTeamIdFeatureFlagsFlagsRouteHandler)
+  .openapi(
+    putV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRoute,
+    putV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  )
+  .openapi(
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRoute,
+    patchV1ProjectsProjectIdOrNameFeatureFlagsSegmentsSegmentIdOrSlugRouteHandler,
+  )
+  .openapi(
+    getV1DeploymentsDeploymentIdFeatureFlagsRoute,
+    getV1DeploymentsDeploymentIdFeatureFlagsRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRouteHandler,
+  )
+  .openapi(
+    putV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRoute,
+    putV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysRouteHandler,
+  )
+  .openapi(
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysHashKeyRoute,
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsSdkKeysHashKeyRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRoute,
+    getV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRouteHandler,
+  )
+  .openapi(
+    putV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRoute,
+    putV1ProjectsProjectIdOrNameFeatureFlagsConnectionsRouteHandler,
+  )
+  .openapi(
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsConnectionsConsumerProjectIdRoute,
+    deleteV1ProjectsProjectIdOrNameFeatureFlagsConnectionsConsumerProjectIdRouteHandler,
+  )
+  .openapi(getV1IntegrationsGitNamespacesRoute, getV1IntegrationsGitNamespacesRouteHandler)
+  .openapi(getV1IntegrationsSearchRepoRoute, getV1IntegrationsSearchRepoRouteHandler)
+  .openapi(
+    getV1IntegrationsIntegrationIntegrationIdOrSlugProductsProductIdOrSlugPlansRoute,
+    getV1IntegrationsIntegrationIntegrationIdOrSlugProductsProductIdOrSlugPlansRouteHandler,
+  )
+  .openapi(
+    postV1IntegrationsInstallationsIntegrationConfigurationIdResourcesResourceIdConnectionsRoute,
+    postV1IntegrationsInstallationsIntegrationConfigurationIdResourcesResourceIdConnectionsRouteHandler,
+  )
+  .openapi(
+    patchV1InstallationsIntegrationConfigurationIdRoute,
+    patchV1InstallationsIntegrationConfigurationIdRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdAccountRoute,
+    getV1InstallationsIntegrationConfigurationIdAccountRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdMemberMemberIdRoute,
+    getV1InstallationsIntegrationConfigurationIdMemberMemberIdRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdCredentialsRotateRoute,
+    postV1InstallationsIntegrationConfigurationIdCredentialsRotateRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdCredentialsRevokeRoute,
+    postV1InstallationsIntegrationConfigurationIdCredentialsRevokeRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdEventsRoute,
+    postV1InstallationsIntegrationConfigurationIdEventsRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdResourcesRoute,
+    getV1InstallationsIntegrationConfigurationIdResourcesRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+    getV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+    deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdRoute,
+    patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdBillingRoute,
+    postV1InstallationsIntegrationConfigurationIdBillingRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdBillingInvoicesRoute,
+    postV1InstallationsIntegrationConfigurationIdBillingInvoicesRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdBillingFinalizeRoute,
+    postV1InstallationsIntegrationConfigurationIdBillingFinalizeRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdRoute,
+    getV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdActionsRoute,
+    postV1InstallationsIntegrationConfigurationIdBillingInvoicesInvoiceIdActionsRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdBillingBalanceRoute,
+    postV1InstallationsIntegrationConfigurationIdBillingBalanceRouteHandler,
+  )
+  .openapi(
+    putV1InstallationsIntegrationConfigurationIdProductsIntegrationProductIdOrSlugResourcesResourceIdSecretsRoute,
+    putV1InstallationsIntegrationConfigurationIdProductsIntegrationProductIdOrSlugResourcesResourceIdSecretsRouteHandler,
+  )
+  .openapi(
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdSecretsRoute,
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdSecretsRouteHandler,
+  )
+  .openapi(getV1IntegrationsConfigurationsRoute, getV1IntegrationsConfigurationsRouteHandler)
+  .openapi(getV1IntegrationsConfigurationIdRoute, getV1IntegrationsConfigurationIdRouteHandler)
+  .openapi(
+    deleteV1IntegrationsConfigurationIdRoute,
+    deleteV1IntegrationsConfigurationIdRouteHandler,
+  )
+  .openapi(
+    getV1IntegrationsConfigurationIdProductsRoute,
+    getV1IntegrationsConfigurationIdProductsRouteHandler,
+  )
+  .openapi(postV1IntegrationsSsoTokenRoute, postV1IntegrationsSsoTokenRouteHandler)
+  .openapi(getV2IntegrationsLogDrainsRoute, getV2IntegrationsLogDrainsRouteHandler)
+  .openapi(postV2IntegrationsLogDrainsRoute, postV2IntegrationsLogDrainsRouteHandler)
+  .openapi(deleteV1IntegrationsLogDrainsIdRoute, deleteV1IntegrationsLogDrainsIdRouteHandler)
+  .openapi(postApiKeysRoute, postApiKeysRouteHandler)
+  .openapi(patchApiKeysApiKeyIDQuotaRoute, patchApiKeysApiKeyIDQuotaRouteHandler)
+  .openapi(
+    postV1KmsIssuersIssuerIdSignMessageRoute,
+    postV1KmsIssuersIssuerIdSignMessageRouteHandler,
+  )
+  .openapi(postV1KmsIssuersIssuerIdSignTokenRoute, postV1KmsIssuersIssuerIdSignTokenRouteHandler)
+  .openapi(getV1KmsIssuersRoute, getV1KmsIssuersRouteHandler)
+  .openapi(postV1KmsIssuersRoute, postV1KmsIssuersRouteHandler)
+  .openapi(postV1KmsIssuersIssuerIdKeysRoute, postV1KmsIssuersIssuerIdKeysRouteHandler)
+  .openapi(
+    postV1KmsIssuersIssuerIdKeysKeyIdActivateRoute,
+    postV1KmsIssuersIssuerIdKeysKeyIdActivateRouteHandler,
+  )
+  .openapi(
+    postV1KmsIssuersIssuerIdKeysKeyIdRevokeRoute,
+    postV1KmsIssuersIssuerIdKeysKeyIdRevokeRouteHandler,
+  )
+  .openapi(getV1KmsIssuersIssuerIdRoute, getV1KmsIssuersIssuerIdRouteHandler)
+  .openapi(patchV1KmsIssuersIssuerIdRoute, patchV1KmsIssuersIssuerIdRouteHandler)
+  .openapi(deleteV1KmsIssuersIssuerIdRoute, deleteV1KmsIssuersIssuerIdRouteHandler)
+  .openapi(postV1KmsIssuersIssuerIdPoliciesRoute, postV1KmsIssuersIssuerIdPoliciesRouteHandler)
+  .openapi(
+    patchV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRoute,
+    patchV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRouteHandler,
+  )
+  .openapi(
+    deleteV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRoute,
+    deleteV1KmsIssuersIssuerIdPoliciesKindPolicyKeyRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdDeploymentsDeploymentIdRuntimeLogsRoute,
+    getV1ProjectsProjectIdDeploymentsDeploymentIdRuntimeLogsRouteHandler,
+  )
+  .openapi(
+    postV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsRoute,
+    postV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsRouteHandler,
+  )
+  .openapi(
+    patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRoute,
+    patchV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRouteHandler,
+  )
+  .openapi(
+    deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRoute,
+    deleteV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationItemsItemIdRouteHandler,
+  )
+  .openapi(
+    headV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+    headV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  )
+  .openapi(
+    getV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+    getV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  )
+  .openapi(
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRoute,
+    putV1InstallationsIntegrationConfigurationIdResourcesResourceIdExperimentationGlobalConfigRouteHandler,
+  )
+  .openapi(getV1MicrofrontendsGroupsRoute, getV1MicrofrontendsGroupsRouteHandler)
+  .openapi(
+    getV1MicrofrontendsGroupsGroupIdProjectsRoute,
+    getV1MicrofrontendsGroupsGroupIdProjectsRouteHandler,
+  )
+  .openapi(
+    getV1MicrofrontendsDeploymentIdConfigRoute,
+    getV1MicrofrontendsDeploymentIdConfigRouteHandler,
+  )
+  .openapi(
+    getV1MicrofrontendsProjectsProjectIdOrNameProductionMfeConfigRoute,
+    getV1MicrofrontendsProjectsProjectIdOrNameProductionMfeConfigRouteHandler,
+  )
+  .openapi(postV1MicrofrontendsGroupRoute, postV1MicrofrontendsGroupRouteHandler)
+  .openapi(
+    getV1ObservabilityManageConfigurationProjectsRoute,
+    getV1ObservabilityManageConfigurationProjectsRouteHandler,
+  )
+  .openapi(
+    putV1ObservabilityManageConfigurationProjectsProjectIdOrNameRoute,
+    putV1ObservabilityManageConfigurationProjectsProjectIdOrNameRouteHandler,
+  )
+  .openapi(postV2ObservabilityQueryRoute, postV2ObservabilityQueryRouteHandler)
+  .openapi(getV2ObservabilitySchemaRoute, getV2ObservabilitySchemaRouteHandler)
+  .openapi(getV2ObservabilitySchemaMetricIdRoute, getV2ObservabilitySchemaMetricIdRouteHandler)
+  .openapi(postV1OrganizationsRoute, postV1OrganizationsRouteHandler)
+  .openapi(getV1OrganizationsRoute, getV1OrganizationsRouteHandler)
+  .openapi(getV1OrganizationsOrganizationIdRoute, getV1OrganizationsOrganizationIdRouteHandler)
+  .openapi(patchV1OrganizationsOrganizationIdRoute, patchV1OrganizationsOrganizationIdRouteHandler)
+  .openapi(
+    getV1OrganizationsOrganizationIdTeamsRoute,
+    getV1OrganizationsOrganizationIdTeamsRouteHandler,
+  )
+  .openapi(
+    postV1OrganizationsOrganizationIdTeamsRoute,
+    postV1OrganizationsOrganizationIdTeamsRouteHandler,
+  )
+  .openapi(
+    deleteV1OrganizationsOrganizationIdTeamsTargetTeamIdRoute,
+    deleteV1OrganizationsOrganizationIdTeamsTargetTeamIdRouteHandler,
+  )
+  .openapi(
+    putV1OrganizationsOrganizationIdTeamsTargetTeamIdDsyncRoute,
+    putV1OrganizationsOrganizationIdTeamsTargetTeamIdDsyncRouteHandler,
+  )
+  .openapi(
+    getV1OrganizationsOrganizationIdDsyncGroupsRoute,
+    getV1OrganizationsOrganizationIdDsyncGroupsRouteHandler,
+  )
+  .openapi(
+    putV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+    putV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+    deleteV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    getV1OrganizationsOrganizationIdDsyncGroupsGroupIdRoute,
+    getV1OrganizationsOrganizationIdDsyncGroupsGroupIdRouteHandler,
+  )
+  .openapi(getV1ProjectsIdOrNameMembersRoute, getV1ProjectsIdOrNameMembersRouteHandler)
+  .openapi(postV1ProjectsIdOrNameMembersRoute, postV1ProjectsIdOrNameMembersRouteHandler)
+  .openapi(deleteV1ProjectsIdOrNameMembersUidRoute, deleteV1ProjectsIdOrNameMembersUidRouteHandler)
+  .openapi(getV1ProjectsProjectIdRoutesRoute, getV1ProjectsProjectIdRoutesRouteHandler)
+  .openapi(putV1ProjectsProjectIdRoutesRoute, putV1ProjectsProjectIdRoutesRouteHandler)
+  .openapi(postV1ProjectsProjectIdRoutesRoute, postV1ProjectsProjectIdRoutesRouteHandler)
+  .openapi(deleteV1ProjectsProjectIdRoutesRoute, deleteV1ProjectsProjectIdRoutesRouteHandler)
+  .openapi(
+    patchV1ProjectsProjectIdRoutesRouteIdRoute,
+    patchV1ProjectsProjectIdRoutesRouteIdRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsProjectIdRoutesGenerateRoute,
+    postV1ProjectsProjectIdRoutesGenerateRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdRoutesVersionsRoute,
+    getV1ProjectsProjectIdRoutesVersionsRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsProjectIdRoutesVersionsRoute,
+    postV1ProjectsProjectIdRoutesVersionsRouteHandler,
+  )
+  .openapi(getV10ProjectsRoute, getV10ProjectsRouteHandler)
+  .openapi(getV1ProjectsTracesRoute, getV1ProjectsTracesRouteHandler)
+  .openapi(postV11ProjectsRoute, postV11ProjectsRouteHandler)
+  .openapi(postV1ProjectsIdOrNameTokenRoute, postV1ProjectsIdOrNameTokenRouteHandler)
+  .openapi(postV1ProjectsTracesSessionRoute, postV1ProjectsTracesSessionRouteHandler)
+  .openapi(getV9ProjectsIdOrNameRoute, getV9ProjectsIdOrNameRouteHandler)
+  .openapi(patchV9ProjectsIdOrNameRoute, patchV9ProjectsIdOrNameRouteHandler)
+  .openapi(deleteV9ProjectsIdOrNameRoute, deleteV9ProjectsIdOrNameRouteHandler)
+  .openapi(postV1ProjectsIdOrNameAvatarRoute, postV1ProjectsIdOrNameAvatarRouteHandler)
+  .openapi(deleteV1ProjectsIdOrNameAvatarRoute, deleteV1ProjectsIdOrNameAvatarRouteHandler)
+  .openapi(
+    patchV1ProjectsIdOrNameSharedConnectLinksRoute,
+    patchV1ProjectsIdOrNameSharedConnectLinksRouteHandler,
+  )
+  .openapi(
+    postV9ProjectsIdOrNameCustomEnvironmentsRoute,
+    postV9ProjectsIdOrNameCustomEnvironmentsRouteHandler,
+  )
+  .openapi(
+    getV9ProjectsIdOrNameCustomEnvironmentsRoute,
+    getV9ProjectsIdOrNameCustomEnvironmentsRouteHandler,
+  )
+  .openapi(
+    getV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+    getV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  )
+  .openapi(
+    patchV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+    patchV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  )
+  .openapi(
+    deleteV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRoute,
+    deleteV9ProjectsIdOrNameCustomEnvironmentsEnvironmentSlugOrIdRouteHandler,
+  )
+  .openapi(getV9ProjectsIdOrNameDomainsRoute, getV9ProjectsIdOrNameDomainsRouteHandler)
+  .openapi(getV9ProjectsIdOrNameDomainsDomainRoute, getV9ProjectsIdOrNameDomainsDomainRouteHandler)
+  .openapi(
+    patchV9ProjectsIdOrNameDomainsDomainRoute,
+    patchV9ProjectsIdOrNameDomainsDomainRouteHandler,
+  )
+  .openapi(
+    deleteV9ProjectsIdOrNameDomainsDomainRoute,
+    deleteV9ProjectsIdOrNameDomainsDomainRouteHandler,
+  )
+  .openapi(postV10ProjectsIdOrNameDomainsRoute, postV10ProjectsIdOrNameDomainsRouteHandler)
+  .openapi(
+    postV1ProjectsIdOrNameDomainsDomainMoveRoute,
+    postV1ProjectsIdOrNameDomainsDomainMoveRouteHandler,
+  )
+  .openapi(
+    postV9ProjectsIdOrNameDomainsDomainVerifyRoute,
+    postV9ProjectsIdOrNameDomainsDomainVerifyRouteHandler,
+  )
+  .openapi(getV10ProjectsIdOrNameEnvRoute, getV10ProjectsIdOrNameEnvRouteHandler)
+  .openapi(postV10ProjectsIdOrNameEnvRoute, postV10ProjectsIdOrNameEnvRouteHandler)
+  .openapi(getV1ProjectsIdOrNameEnvIdRoute, getV1ProjectsIdOrNameEnvIdRouteHandler)
+  .openapi(deleteV9ProjectsIdOrNameEnvIdRoute, deleteV9ProjectsIdOrNameEnvIdRouteHandler)
+  .openapi(patchV9ProjectsIdOrNameEnvIdRoute, patchV9ProjectsIdOrNameEnvIdRouteHandler)
+  .openapi(deleteV1ProjectsIdOrNameEnvRoute, deleteV1ProjectsIdOrNameEnvRouteHandler)
+  .openapi(
+    getV1ProjectsIdOrNameRollingReleaseBillingRoute,
+    getV1ProjectsIdOrNameRollingReleaseBillingRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsIdOrNameRollingReleaseConfigRoute,
+    getV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  )
+  .openapi(
+    deleteV1ProjectsIdOrNameRollingReleaseConfigRoute,
+    deleteV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsIdOrNameRollingReleaseConfigRoute,
+    patchV1ProjectsIdOrNameRollingReleaseConfigRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsIdOrNameRollingReleaseRoute,
+    getV1ProjectsIdOrNameRollingReleaseRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsIdOrNameRollingReleaseApproveStageRoute,
+    postV1ProjectsIdOrNameRollingReleaseApproveStageRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsIdOrNameRollingReleaseStartRoute,
+    postV1ProjectsIdOrNameRollingReleaseStartRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsIdOrNameRollingReleaseCompleteRoute,
+    postV1ProjectsIdOrNameRollingReleaseCompleteRouteHandler,
+  )
+  .openapi(
+    postProjectsIdOrNameTransferRequestRoute,
+    postProjectsIdOrNameTransferRequestRouteHandler,
+  )
+  .openapi(putProjectsTransferRequestCodeRoute, putProjectsTransferRequestCodeRouteHandler)
+  .openapi(
+    patchV1ProjectsIdOrNameProtectionBypassRoute,
+    patchV1ProjectsIdOrNameProtectionBypassRouteHandler,
+  )
+  .openapi(
+    postV1ProjectsProjectIdRollbackDeploymentIdRoute,
+    postV1ProjectsProjectIdRollbackDeploymentIdRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsProjectIdRollbackDeploymentIdUpdateDescriptionRoute,
+    patchV1ProjectsProjectIdRollbackDeploymentIdUpdateDescriptionRouteHandler,
+  )
+  .openapi(
+    patchV1ProjectsProjectIdMicrofrontendsRoute,
+    patchV1ProjectsProjectIdMicrofrontendsRouteHandler,
+  )
+  .openapi(
+    postV10ProjectsProjectIdPromoteDeploymentIdRoute,
+    postV10ProjectsProjectIdPromoteDeploymentIdRouteHandler,
+  )
+  .openapi(
+    getV1ProjectsProjectIdPromoteAliasesRoute,
+    getV1ProjectsProjectIdPromoteAliasesRouteHandler,
+  )
+  .openapi(postV1ProjectsProjectIdPauseRoute, postV1ProjectsProjectIdPauseRouteHandler)
+  .openapi(postV1ProjectsProjectIdUnpauseRoute, postV1ProjectsProjectIdUnpauseRouteHandler)
+  .openapi(getV2SandboxesRoute, getV2SandboxesRouteHandler)
+  .openapi(postV2SandboxesRoute, postV2SandboxesRouteHandler)
+  .openapi(getV2SandboxesDrivesRoute, getV2SandboxesDrivesRouteHandler)
+  .openapi(getV2SandboxesDrivesNameOrIdRoute, getV2SandboxesDrivesNameOrIdRouteHandler)
+  .openapi(deleteV2SandboxesDrivesNameOrIdRoute, deleteV2SandboxesDrivesNameOrIdRouteHandler)
+  .openapi(postV2SandboxesDrivesNameRoute, postV2SandboxesDrivesNameRouteHandler)
+  .openapi(postV2SandboxesDrivesNameForkRoute, postV2SandboxesDrivesNameForkRouteHandler)
+  .openapi(getV2SandboxesSnapshotsRoute, getV2SandboxesSnapshotsRouteHandler)
+  .openapi(getV2SandboxesSnapshotsSnapshotIdRoute, getV2SandboxesSnapshotsSnapshotIdRouteHandler)
+  .openapi(
+    deleteV2SandboxesSnapshotsSnapshotIdRoute,
+    deleteV2SandboxesSnapshotsSnapshotIdRouteHandler,
+  )
+  .openapi(getV2SandboxesSessionsRoute, getV2SandboxesSessionsRouteHandler)
+  .openapi(getV2SandboxesSessionsSessionIdRoute, getV2SandboxesSessionsSessionIdRouteHandler)
+  .openapi(getV2SandboxesNameRoute, getV2SandboxesNameRouteHandler)
+  .openapi(patchV2SandboxesNameRoute, patchV2SandboxesNameRouteHandler)
+  .openapi(deleteV2SandboxesNameRoute, deleteV2SandboxesNameRouteHandler)
+  .openapi(getV2SandboxesSessionsSessionIdCmdRoute, getV2SandboxesSessionsSessionIdCmdRouteHandler)
+  .openapi(
+    postV2SandboxesSessionsSessionIdCmdRoute,
+    postV2SandboxesSessionsSessionIdCmdRouteHandler,
+  )
+  .openapi(
+    getV2SandboxesSessionsSessionIdCmdCmdIdRoute,
+    getV2SandboxesSessionsSessionIdCmdCmdIdRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdCmdCmdIdKillRoute,
+    postV2SandboxesSessionsSessionIdCmdCmdIdKillRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdCmdCmdIdStdinRoute,
+    postV2SandboxesSessionsSessionIdCmdCmdIdStdinRouteHandler,
+  )
+  .openapi(
+    getV2SandboxesSessionsSessionIdCmdCmdIdLogsRoute,
+    getV2SandboxesSessionsSessionIdCmdCmdIdLogsRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdStopRoute,
+    postV2SandboxesSessionsSessionIdStopRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdExtendTimeoutRoute,
+    postV2SandboxesSessionsSessionIdExtendTimeoutRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdNetworkPolicyRoute,
+    postV2SandboxesSessionsSessionIdNetworkPolicyRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdFsReadRoute,
+    postV2SandboxesSessionsSessionIdFsReadRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdFsMkdirRoute,
+    postV2SandboxesSessionsSessionIdFsMkdirRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdFsWriteRoute,
+    postV2SandboxesSessionsSessionIdFsWriteRouteHandler,
+  )
+  .openapi(
+    postV2SandboxesSessionsSessionIdSnapshotRoute,
+    postV2SandboxesSessionsSessionIdSnapshotRouteHandler,
+  )
+  .openapi(postV2SandboxesNameForkRoute, postV2SandboxesNameForkRouteHandler)
+  .openapi(postV3SandboxesRoute, postV3SandboxesRouteHandler)
+  .openapi(
+    postV3SandboxesSessionsSessionIdSnapshotRoute,
+    postV3SandboxesSessionsSessionIdSnapshotRouteHandler,
+  )
+  .openapi(postV3SandboxesNameForkRoute, postV3SandboxesNameForkRouteHandler)
+  .openapi(postV4SandboxesRoute, postV4SandboxesRouteHandler)
+  .openapi(postV1SecurityAttackModeRoute, postV1SecurityAttackModeRouteHandler)
+  .openapi(getV1SecurityFirewallConfigRoute, getV1SecurityFirewallConfigRouteHandler)
+  .openapi(putV1SecurityFirewallConfigRoute, putV1SecurityFirewallConfigRouteHandler)
+  .openapi(patchV1SecurityFirewallConfigRoute, patchV1SecurityFirewallConfigRouteHandler)
+  .openapi(
+    getV1SecurityFirewallConfigConfigVersionRoute,
+    getV1SecurityFirewallConfigConfigVersionRouteHandler,
+  )
+  .openapi(
+    deleteV1SecurityFirewallConfigConfigVersionRoute,
+    deleteV1SecurityFirewallConfigConfigVersionRouteHandler,
+  )
+  .openapi(
+    postV1SecurityFirewallConfigConfigVersionActivateRoute,
+    postV1SecurityFirewallConfigConfigVersionActivateRouteHandler,
+  )
+  .openapi(getV1SecurityFirewallAttackStatusRoute, getV1SecurityFirewallAttackStatusRouteHandler)
+  .openapi(getV1SecurityFirewallBypassRoute, getV1SecurityFirewallBypassRouteHandler)
+  .openapi(postV1SecurityFirewallBypassRoute, postV1SecurityFirewallBypassRouteHandler)
+  .openapi(deleteV1SecurityFirewallBypassRoute, deleteV1SecurityFirewallBypassRouteHandler)
+  .openapi(getV1SecurityFirewallBypassRulesRoute, getV1SecurityFirewallBypassRulesRouteHandler)
+  .openapi(postV1SecurityFirewallBypassRulesRoute, postV1SecurityFirewallBypassRulesRouteHandler)
+  .openapi(putV1SecurityFirewallBypassRulesRoute, putV1SecurityFirewallBypassRulesRouteHandler)
+  .openapi(
+    deleteV1SecurityFirewallBypassRulesRoute,
+    deleteV1SecurityFirewallBypassRulesRouteHandler,
+  )
+  .openapi(getV1SecurityFirewallEventsRoute, getV1SecurityFirewallEventsRouteHandler)
+  .openapi(getV1SecurityFirewallEventsSummaryRoute, getV1SecurityFirewallEventsSummaryRouteHandler)
+  .openapi(
+    postV1SecurityFirewallConfigGenerateRuleRoute,
+    postV1SecurityFirewallConfigGenerateRuleRouteHandler,
+  )
+  .openapi(postSpeedInsightsToggleRoute, postSpeedInsightsToggleRouteHandler)
+  .openapi(getStorageStoresIdRoute, getStorageStoresIdRouteHandler)
+  .openapi(postStorageStoresBlobRoute, postStorageStoresBlobRouteHandler)
+  .openapi(deleteStorageStoresBlobIdRoute, deleteStorageStoresBlobIdRouteHandler)
+  .openapi(
+    postV1StorageStoresIntegrationDirectRoute,
+    postV1StorageStoresIntegrationDirectRouteHandler,
+  )
+  .openapi(getV3TeamsTeamIdMembersRoute, getV3TeamsTeamIdMembersRouteHandler)
+  .openapi(postV2TeamsTeamIdMembersRoute, postV2TeamsTeamIdMembersRouteHandler)
+  .openapi(postV1TeamsTeamIdRequestRoute, postV1TeamsTeamIdRequestRouteHandler)
+  .openapi(getV1TeamsTeamIdRequestUserIdRoute, getV1TeamsTeamIdRequestUserIdRouteHandler)
+  .openapi(postV1TeamsTeamIdMembersTeamsJoinRoute, postV1TeamsTeamIdMembersTeamsJoinRouteHandler)
+  .openapi(patchV1TeamsTeamIdMembersUidRoute, patchV1TeamsTeamIdMembersUidRouteHandler)
+  .openapi(deleteV1TeamsTeamIdMembersUidRoute, deleteV1TeamsTeamIdMembersUidRouteHandler)
+  .openapi(getV2TeamsTeamIdRoute, getV2TeamsTeamIdRouteHandler)
+  .openapi(patchV2TeamsTeamIdRoute, patchV2TeamsTeamIdRouteHandler)
+  .openapi(getV2TeamsRoute, getV2TeamsRouteHandler)
+  .openapi(postV1TeamsRoute, postV1TeamsRouteHandler)
+  .openapi(postV1TeamsTeamIdDsyncRolesRoute, postV1TeamsTeamIdDsyncRolesRouteHandler)
+  .openapi(deleteV1TeamsTeamIdRoute, deleteV1TeamsTeamIdRouteHandler)
+  .openapi(deleteV1TeamsTeamIdInvitesInviteIdRoute, deleteV1TeamsTeamIdInvitesInviteIdRouteHandler)
+  .openapi(
+    patchV1TeamsTeamIdMicrofrontendsGroupIdRoute,
+    patchV1TeamsTeamIdMicrofrontendsGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteV1TeamsTeamIdMicrofrontendsGroupIdRoute,
+    deleteV1TeamsTeamIdMicrofrontendsGroupIdRouteHandler,
+  )
+  .openapi(postV2FilesRoute, postV2FilesRouteHandler)
+  .openapi(getV6UserTokensRoute, getV6UserTokensRouteHandler)
+  .openapi(postV3UserTokensRoute, postV3UserTokensRouteHandler)
+  .openapi(getV5UserTokensTokenIdRoute, getV5UserTokensTokenIdRouteHandler)
+  .openapi(deleteV3UserTokensTokenIdRoute, deleteV3UserTokensTokenIdRouteHandler)
+  .openapi(getV2UserRoute, getV2UserRouteHandler)
+  .openapi(deleteV1UserRoute, deleteV1UserRouteHandler)
+  .openapi(postV1VcrRepositoryRoute, postV1VcrRepositoryRouteHandler)
+  .openapi(getV1VcrRepositoryRoute, getV1VcrRepositoryRouteHandler)
+  .openapi(getV1VcrRepositoryIdOrNameRoute, getV1VcrRepositoryIdOrNameRouteHandler)
+  .openapi(deleteV1VcrRepositoryIdOrNameRoute, deleteV1VcrRepositoryIdOrNameRouteHandler)
+  .openapi(getV1VcrRepositoryIdOrNameImagesRoute, getV1VcrRepositoryIdOrNameImagesRouteHandler)
+  .openapi(
+    postV1VcrRepositoryIdOrNamePermissionsRoute,
+    postV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  )
+  .openapi(
+    deleteV1VcrRepositoryIdOrNamePermissionsRoute,
+    deleteV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  )
+  .openapi(
+    getV1VcrRepositoryIdOrNamePermissionsRoute,
+    getV1VcrRepositoryIdOrNamePermissionsRouteHandler,
+  )
+  .openapi(
+    deleteV1VcrRepositoryIdOrNamePermissionsAllRoute,
+    deleteV1VcrRepositoryIdOrNamePermissionsAllRouteHandler,
+  )
+  .openapi(getV1VcrRepositoryIdOrNameTagsRoute, getV1VcrRepositoryIdOrNameTagsRouteHandler)
+  .openapi(getV1VcrRepositoryIdOrNameTagsTagRoute, getV1VcrRepositoryIdOrNameTagsTagRouteHandler)
+  .openapi(
+    getV1VcrRepositoryIdOrNameImagesImageIdOrDigestRoute,
+    getV1VcrRepositoryIdOrNameImagesImageIdOrDigestRouteHandler,
+  )
+  .openapi(
+    deleteV1VcrRepositoryIdOrNameImagesImageIdRoute,
+    deleteV1VcrRepositoryIdOrNameImagesImageIdRouteHandler,
+  )
+  .openapi(getV2IndexRoute, getV2IndexRouteHandler)
+  .openapi(
+    headV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+    headV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  )
+  .openapi(
+    getV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+    getV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  )
+  .openapi(
+    deleteV2TeamSlugProjectSlugRepositoryNameBlobsDigestRoute,
+    deleteV2TeamSlugProjectSlugRepositoryNameBlobsDigestRouteHandler,
+  )
+  .openapi(
+    getV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+    getV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  )
+  .openapi(
+    deleteV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+    deleteV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  )
+  .openapi(
+    patchV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+    patchV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  )
+  .openapi(
+    putV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRoute,
+    putV2TeamSlugProjectSlugRepositoryNameBlobsUploadsUuidRouteHandler,
+  )
+  .openapi(
+    postV2TeamSlugProjectSlugRepositoryNameBlobsUploadsIndexRoute,
+    postV2TeamSlugProjectSlugRepositoryNameBlobsUploadsIndexRouteHandler,
+  )
+  .openapi(
+    putV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+    putV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  )
+  .openapi(
+    headV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+    headV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  )
+  .openapi(
+    getV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+    getV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  )
+  .openapi(
+    deleteV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRoute,
+    deleteV2TeamSlugProjectSlugRepositoryNameManifestsReferenceRouteHandler,
+  )
+  .openapi(
+    getV2TeamSlugProjectSlugRepositoryNameTagsListRoute,
+    getV2TeamSlugProjectSlugRepositoryNameTagsListRouteHandler,
+  )
+  .openapi(getV1VercelCiRepositorySettingsRoute, getV1VercelCiRepositorySettingsRouteHandler)
+  .openapi(patchV1VercelCiRepositorySettingsRoute, patchV1VercelCiRepositorySettingsRouteHandler)
+  .openapi(getV2VercelCiInvocationsRoute, getV2VercelCiInvocationsRouteHandler)
+  .openapi(getV2VercelCiBranchesRoute, getV2VercelCiBranchesRouteHandler)
+  .openapi(postV1VercelCiTaskAnalysesRoute, postV1VercelCiTaskAnalysesRouteHandler)
+  .openapi(
+    getV1VercelCiTaskAnalysesAnalysisIdRoute,
+    getV1VercelCiTaskAnalysesAnalysisIdRouteHandler,
+  )
+  .openapi(
+    postV1VercelCiTaskAnalysesAnalysisIdPullRequestRoute,
+    postV1VercelCiTaskAnalysesAnalysisIdPullRequestRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiTaskAnalysesAnalysisIdTasksRoute,
+    getV1VercelCiTaskAnalysesAnalysisIdTasksRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdTreeRoute,
+    getV1VercelCiInvocationsInvocationIdTreeRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptRouteHandler,
+  )
+  .openapi(
+    postV1VercelCiInvocationsInvocationIdAttemptsAttemptRetryRoute,
+    postV1VercelCiInvocationsInvocationIdAttemptsAttemptRetryRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskRunsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskRunsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptLogsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptLogsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptTaskLogsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptTaskLogsRouteHandler,
+  )
+  .openapi(getV1VercelCiLogSearchRoute, getV1VercelCiLogSearchRouteHandler)
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptLogsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptLogsRouteHandler,
+  )
+  .openapi(
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsTaskDefinitionIdRunsTaskRunAttemptLogsRoute,
+    getV1VercelCiInvocationsInvocationIdAttemptsAttemptJobDefinitionsJobDefinitionIdRunsRunAttemptTaskDefinitionsTaskDefinitionIdRunsTaskRunAttemptLogsRouteHandler,
+  )
+  .openapi(postWebInsightsToggleRoute, postWebInsightsToggleRouteHandler)
+  .openapi(
+    getV1QueryWebAnalyticsVisitsAggregateRoute,
+    getV1QueryWebAnalyticsVisitsAggregateRouteHandler,
+  )
+  .openapi(
+    getV1QueryWebAnalyticsEventsAggregateRoute,
+    getV1QueryWebAnalyticsEventsAggregateRouteHandler,
+  )
+  .openapi(getV1QueryWebAnalyticsVisitsCountRoute, getV1QueryWebAnalyticsVisitsCountRouteHandler)
+  .openapi(getV1QueryWebAnalyticsEventsCountRoute, getV1QueryWebAnalyticsEventsCountRouteHandler)
+  .openapi(postV1WebhooksRoute, postV1WebhooksRouteHandler)
+  .openapi(getV1WebhooksRoute, getV1WebhooksRouteHandler)
+  .openapi(getV1WebhooksIdRoute, getV1WebhooksIdRouteHandler)
+  .openapi(deleteV1WebhooksIdRoute, deleteV1WebhooksIdRouteHandler)
+  .openapi(getV2DeploymentsIdAliasesRoute, getV2DeploymentsIdAliasesRouteHandler)
+  .openapi(postV2DeploymentsIdAliasesRoute, postV2DeploymentsIdAliasesRouteHandler)
+  .openapi(getV4AliasesRoute, getV4AliasesRouteHandler)
+  .openapi(getV4AliasesIdOrAliasRoute, getV4AliasesIdOrAliasRouteHandler)
+  .openapi(deleteV2AliasesAliasIdRoute, deleteV2AliasesAliasIdRouteHandler)
+  .openapi(patchAliasesIdProtectionBypassRoute, patchAliasesIdProtectionBypassRouteHandler)
+  .openapi(getV8CertsIdRoute, getV8CertsIdRouteHandler)
+  .openapi(deleteV8CertsIdRoute, deleteV8CertsIdRouteHandler)
+  .openapi(getV8CertsRoute, getV8CertsRouteHandler)
+  .openapi(postV8CertsRoute, postV8CertsRouteHandler)
+  .openapi(putV8CertsRoute, putV8CertsRouteHandler)
+  .openapi(getV6DeploymentsIdFilesRoute, getV6DeploymentsIdFilesRouteHandler)
+  .openapi(getV8DeploymentsIdFilesFileIdRoute, getV8DeploymentsIdFilesFileIdRouteHandler)
+  .openapi(getV7DeploymentsRoute, getV7DeploymentsRouteHandler)
+  .openapi(deleteV13DeploymentsIdRoute, deleteV13DeploymentsIdRouteHandler)
 
 export default app

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteAppinstalls202609ExternalInstallRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteAppinstalls202609ExternalInstallRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const appinstallsHandler = app.openapi(deleteAppinstalls202609ExternalInstallRoute, (c) => {
+export const deleteAppinstalls202609ExternalInstallRouteHandler: RouteHandler<
+  typeof deleteAppinstalls202609ExternalInstallRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

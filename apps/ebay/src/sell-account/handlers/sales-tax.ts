@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSalesTaxCountryCodeJurisdictionIdRoute,
   getSalesTaxCountryCodeJurisdictionIdRoute,
   getSalesTaxRoute,
   putSalesTaxCountryCodeJurisdictionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSalesTaxRouteHandler: RouteHandler<typeof getSalesTaxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const salesTaxHandler = app
-  .openapi(getSalesTaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSalesTaxCountryCodeJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSalesTaxCountryCodeJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSalesTaxCountryCodeJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSalesTaxCountryCodeJurisdictionIdRouteHandler: RouteHandler<
+  typeof deleteSalesTaxCountryCodeJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSalesTaxCountryCodeJurisdictionIdRouteHandler: RouteHandler<
+  typeof getSalesTaxCountryCodeJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSalesTaxCountryCodeJurisdictionIdRouteHandler: RouteHandler<
+  typeof putSalesTaxCountryCodeJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

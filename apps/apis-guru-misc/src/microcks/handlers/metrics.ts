@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetricsConformanceAggregateRoute,
   getMetricsConformanceServiceServiceIdRoute,
   getMetricsInvocationsGlobalLatestRoute,
@@ -9,27 +9,44 @@ import {
   getMetricsTestsLatestRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetricsConformanceAggregateRouteHandler: RouteHandler<
+  typeof getMetricsConformanceAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsHandler = app
-  .openapi(getMetricsConformanceAggregateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsConformanceServiceServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsInvocationsGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsInvocationsGlobalLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsInvocationsTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsInvocationsServiceNameServiceVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsTestsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetricsConformanceServiceServiceIdRouteHandler: RouteHandler<
+  typeof getMetricsConformanceServiceServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsInvocationsGlobalRouteHandler: RouteHandler<
+  typeof getMetricsInvocationsGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsInvocationsGlobalLatestRouteHandler: RouteHandler<
+  typeof getMetricsInvocationsGlobalLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsInvocationsTopRouteHandler: RouteHandler<
+  typeof getMetricsInvocationsTopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsInvocationsServiceNameServiceVersionRouteHandler: RouteHandler<
+  typeof getMetricsInvocationsServiceNameServiceVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsTestsLatestRouteHandler: RouteHandler<
+  typeof getMetricsTestsLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

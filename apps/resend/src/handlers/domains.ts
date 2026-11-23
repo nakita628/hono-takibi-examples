@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDomainsDomainIdRoute,
   getDomainsDomainIdClaimRoute,
   getDomainsDomainIdRoute,
@@ -12,36 +12,58 @@ import {
   postDomainsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDomainsRouteHandler: RouteHandler<typeof postDomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const domainsHandler = app
-  .openapi(postDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainIdVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainIdForgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainIdClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainIdClaimVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDomainsRouteHandler: RouteHandler<typeof getDomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainIdRouteHandler: RouteHandler<typeof getDomainsDomainIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDomainsDomainIdRouteHandler: RouteHandler<
+  typeof patchDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainsDomainIdRouteHandler: RouteHandler<
+  typeof deleteDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainIdVerifyRouteHandler: RouteHandler<
+  typeof postDomainsDomainIdVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainIdForgeRouteHandler: RouteHandler<
+  typeof postDomainsDomainIdForgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsClaimRouteHandler: RouteHandler<typeof postDomainsClaimRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainIdClaimRouteHandler: RouteHandler<
+  typeof getDomainsDomainIdClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainIdClaimVerifyRouteHandler: RouteHandler<
+  typeof postDomainsDomainIdClaimVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

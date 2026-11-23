@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceUpdateLagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceUpdateLagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceUpdateLagHandler = app.openapi(
-  postXAmzTargetOvertureServiceUpdateLagRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceUpdateLagRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceUpdateLagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

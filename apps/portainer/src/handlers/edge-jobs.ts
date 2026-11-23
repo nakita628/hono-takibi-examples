@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEdgeJobsIdRoute,
   deleteEdgeJobsIdTasksTaskIDLogsRoute,
   getEdgeJobsIdFileRoute,
@@ -13,39 +13,62 @@ import {
   putEdgeJobsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEdgeJobsRouteHandler: RouteHandler<typeof getEdgeJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const edgeJobsHandler = app
-  .openapi(getEdgeJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEdgeJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEdgeJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeJobsIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeJobsIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEdgeJobsIdTasksTaskIDLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeJobsIdTasksTaskIDLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeJobsIdTasksTaskIDLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeJobsCreateFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeJobsCreateStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteEdgeJobsIdRouteHandler: RouteHandler<typeof deleteEdgeJobsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeJobsIdRouteHandler: RouteHandler<typeof getEdgeJobsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEdgeJobsIdRouteHandler: RouteHandler<typeof putEdgeJobsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeJobsIdFileRouteHandler: RouteHandler<typeof getEdgeJobsIdFileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeJobsIdTasksRouteHandler: RouteHandler<typeof getEdgeJobsIdTasksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEdgeJobsIdTasksTaskIDLogsRouteHandler: RouteHandler<
+  typeof deleteEdgeJobsIdTasksTaskIDLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeJobsIdTasksTaskIDLogsRouteHandler: RouteHandler<
+  typeof getEdgeJobsIdTasksTaskIDLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEdgeJobsIdTasksTaskIDLogsRouteHandler: RouteHandler<
+  typeof postEdgeJobsIdTasksTaskIDLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEdgeJobsCreateFileRouteHandler: RouteHandler<
+  typeof postEdgeJobsCreateFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEdgeJobsCreateStringRouteHandler: RouteHandler<
+  typeof postEdgeJobsCreateStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

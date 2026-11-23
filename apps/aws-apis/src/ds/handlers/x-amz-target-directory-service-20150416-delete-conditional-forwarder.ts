@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDirectoryService20150416DeleteConditionalForwarderHandler = app.openapi(
-  postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRouteHandler: RouteHandler<
+  typeof postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

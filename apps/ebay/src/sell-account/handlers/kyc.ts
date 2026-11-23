@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getKycRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getKycRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const kycHandler = app.openapi(getKycRoute, (c) => {
+export const getKycRouteHandler: RouteHandler<typeof getKycRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

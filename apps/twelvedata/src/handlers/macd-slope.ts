@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMacdSlopeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMacdSlopeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const macdSlopeHandler = app.openapi(getMacdSlopeRoute, (c) => {
+export const getMacdSlopeRouteHandler: RouteHandler<typeof getMacdSlopeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLedgersNameJournalKinesisStreamsStreamIdRoute,
   deleteLedgersNameRoute,
   getLedgersNameJournalKinesisStreamsRoute,
@@ -18,54 +18,92 @@ import {
   postLedgersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteLedgersNameJournalKinesisStreamsStreamIdRouteHandler: RouteHandler<
+  typeof deleteLedgersNameJournalKinesisStreamsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ledgersHandler = app
-  .openapi(deleteLedgersNameJournalKinesisStreamsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersNameJournalKinesisStreamsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLedgersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLedgersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersNameJournalS3ExportsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersNameJournalS3ExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersNameJournalS3ExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersNameBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersNameDigestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersNameRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgersNameJournalKinesisStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLedgersNameJournalKinesisStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLedgersNamePermissionsModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLedgersNameJournalKinesisStreamsStreamIdRouteHandler: RouteHandler<
+  typeof getLedgersNameJournalKinesisStreamsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersRouteHandler: RouteHandler<typeof postLedgersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgersRouteHandler: RouteHandler<typeof getLedgersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLedgersNameRouteHandler: RouteHandler<typeof deleteLedgersNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgersNameRouteHandler: RouteHandler<typeof getLedgersNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLedgersNameRouteHandler: RouteHandler<typeof patchLedgersNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgersNameJournalS3ExportsExportIdRouteHandler: RouteHandler<
+  typeof getLedgersNameJournalS3ExportsExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersNameJournalS3ExportsRouteHandler: RouteHandler<
+  typeof postLedgersNameJournalS3ExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgersNameJournalS3ExportsRouteHandler: RouteHandler<
+  typeof getLedgersNameJournalS3ExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersNameBlockRouteHandler: RouteHandler<
+  typeof postLedgersNameBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersNameDigestRouteHandler: RouteHandler<
+  typeof postLedgersNameDigestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersNameRevisionRouteHandler: RouteHandler<
+  typeof postLedgersNameRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLedgersNameJournalKinesisStreamsRouteHandler: RouteHandler<
+  typeof getLedgersNameJournalKinesisStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLedgersNameJournalKinesisStreamsRouteHandler: RouteHandler<
+  typeof postLedgersNameJournalKinesisStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLedgersNamePermissionsModeRouteHandler: RouteHandler<
+  typeof patchLedgersNamePermissionsModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

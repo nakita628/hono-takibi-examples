@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTranscribeListVocabularyFiltersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTranscribeListVocabularyFiltersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTranscribeListVocabularyFiltersHandler = app.openapi(
-  postXAmzTargetTranscribeListVocabularyFiltersRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTranscribeListVocabularyFiltersRouteHandler: RouteHandler<
+  typeof postXAmzTargetTranscribeListVocabularyFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

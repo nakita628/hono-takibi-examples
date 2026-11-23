@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/aharakar/3.0.0/openapi.yaml',
   output: './src/aharakar/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/aharakar/types.ts' },
   client: { output: './src/aharakar/client.ts', baseUrl: '/' },
   rpc: { output: './src/aharakar/rpc.ts', parseResponse: true },

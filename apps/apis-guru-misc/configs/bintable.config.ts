@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bintable.com/1.0.0-oas3/openapi.yaml',
   output: './src/bintable/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bintable/types.ts' },
   client: { output: './src/bintable/client.ts', baseUrl: '/' },
   rpc: { output: './src/bintable/rpc.ts', parseResponse: true },

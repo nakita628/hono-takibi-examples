@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSuffixesRoute, getSuffixesSuffixRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSuffixesRoute, getSuffixesSuffixRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSuffixesRouteHandler: RouteHandler<typeof getSuffixesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const suffixesHandler = app
-  .openapi(getSuffixesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSuffixesSuffixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSuffixesSuffixRouteHandler: RouteHandler<typeof getSuffixesSuffixRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

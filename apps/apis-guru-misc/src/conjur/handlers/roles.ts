@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRolesAccountKindIdentifierRoute,
   getRolesAccountKindIdentifierRoute,
   postRolesAccountKindIdentifierRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteRolesAccountKindIdentifierRouteHandler: RouteHandler<
+  typeof deleteRolesAccountKindIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rolesHandler = app
-  .openapi(deleteRolesAccountKindIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRolesAccountKindIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRolesAccountKindIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRolesAccountKindIdentifierRouteHandler: RouteHandler<
+  typeof getRolesAccountKindIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRolesAccountKindIdentifierRouteHandler: RouteHandler<
+  typeof postRolesAccountKindIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

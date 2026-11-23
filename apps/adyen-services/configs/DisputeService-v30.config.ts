@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/DisputeService-v30.json',
   output: './src/DisputeService-v30/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/DisputeService-v30/types.ts' },
   client: { output: './src/DisputeService-v30/client.ts', baseUrl: '/' },
   rpc: { output: './src/DisputeService-v30/rpc.ts', parseResponse: true },

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRoute,
   putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRouteHandler: RouteHandler<
+  typeof postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountNameVtexcommercestableComBrHandler = app
-  .openapi(postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRouteHandler: RouteHandler<
+  typeof putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,19 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  assignTerminalsHandler,
-  findTerminalHandler,
-  getStoresUnderAccountHandler,
-  getTerminalDetailsHandler,
-  getTerminalsUnderAccountHandler,
+  postAssignTerminalsRoute,
+  postFindTerminalRoute,
+  postGetStoresUnderAccountRoute,
+  postGetTerminalDetailsRoute,
+  postGetTerminalsUnderAccountRoute,
+} from './routes'
+import {
+  postAssignTerminalsRouteHandler,
+  postFindTerminalRouteHandler,
+  postGetStoresUnderAccountRouteHandler,
+  postGetTerminalDetailsRouteHandler,
+  postGetTerminalsUnderAccountRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', assignTerminalsHandler)
-  .route('/', findTerminalHandler)
-  .route('/', getStoresUnderAccountHandler)
-  .route('/', getTerminalDetailsHandler)
-  .route('/', getTerminalsUnderAccountHandler)
+  .openapi(postAssignTerminalsRoute, postAssignTerminalsRouteHandler)
+  .openapi(postFindTerminalRoute, postFindTerminalRouteHandler)
+  .openapi(postGetStoresUnderAccountRoute, postGetStoresUnderAccountRouteHandler)
+  .openapi(postGetTerminalDetailsRoute, postGetTerminalDetailsRouteHandler)
+  .openapi(postGetTerminalsUnderAccountRoute, postGetTerminalsUnderAccountRouteHandler)
 
 export default app

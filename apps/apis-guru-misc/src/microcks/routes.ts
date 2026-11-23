@@ -1097,7 +1097,7 @@ export const getFeaturesConfigRoute = createRoute({
   tags: ['config'],
   summary: 'Get features configuration',
   operationId: 'GetFeaturesConfiguration',
-  responses: { 200: { description: 'Get features configuration', content: {} } },
+  responses: { 200: { description: 'Get features configuration' } },
 })
 
 export const postImportRoute = createRoute({
@@ -1303,7 +1303,7 @@ export const deleteJobsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'ImportJob deleted', content: {} } },
+  responses: { 200: { description: 'ImportJob deleted' } },
   security: [{ 'jwt-bearer': ['admin'] }],
 })
 

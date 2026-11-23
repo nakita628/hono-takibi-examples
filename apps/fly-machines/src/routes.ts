@@ -1881,7 +1881,7 @@ export const postAppsRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {} },
+    201: { description: 'Created' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -1932,7 +1932,7 @@ export const deleteAppsAppNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 202: { description: 'Accepted', content: {} } },
+  responses: { 202: { description: 'Accepted' } },
 })
 
 export const getAppsAppNameMachinesRoute = createRoute({
@@ -2128,7 +2128,7 @@ export const deleteAppsAppNameMachinesMachineIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postAppsAppNameMachinesMachineIdCordonRoute = createRoute({
@@ -2164,7 +2164,7 @@ export const postAppsAppNameMachinesMachineIdCordonRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getAppsAppNameMachinesMachineIdEventsRoute = createRoute({
@@ -2368,7 +2368,7 @@ export const deleteAppsAppNameMachinesMachineIdLeaseRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getAppsAppNameMachinesMachineIdMetadataRoute = createRoute({
@@ -2453,7 +2453,7 @@ export const postAppsAppNameMachinesMachineIdMetadataKeyRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'No Content', content: {} },
+    204: { description: 'No Content' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -2503,7 +2503,7 @@ export const deleteAppsAppNameMachinesMachineIdMetadataKeyRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getAppsAppNameMachinesMachineIdPsRoute = createRoute({
@@ -2621,7 +2621,7 @@ export const postAppsAppNameMachinesMachineIdRestartRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -2666,7 +2666,7 @@ export const postAppsAppNameMachinesMachineIdSignalRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -2705,7 +2705,7 @@ export const postAppsAppNameMachinesMachineIdStartRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postAppsAppNameMachinesMachineIdStopRoute = createRoute({
@@ -2744,7 +2744,7 @@ export const postAppsAppNameMachinesMachineIdStopRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -2785,7 +2785,7 @@ export const postAppsAppNameMachinesMachineIdUncordonRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getAppsAppNameMachinesMachineIdVersionsRoute = createRoute({
@@ -2905,7 +2905,7 @@ export const getAppsAppNameMachinesMachineIdWaitRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorResponseSchema } },
@@ -3199,5 +3199,5 @@ export const postAppsAppNameVolumesVolumeIdSnapshotsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })

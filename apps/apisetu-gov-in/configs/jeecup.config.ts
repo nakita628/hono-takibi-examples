@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/jeecup/3.0.0/openapi.yaml',
   output: './src/jeecup/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/jeecup/types.ts' },
   client: { output: './src/jeecup/client.ts', baseUrl: '/' },
   rpc: { output: './src/jeecup/rpc.ts', parseResponse: true },

@@ -187,9 +187,9 @@ export const getApiV1ClipsRoute = createRoute({
       ),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -226,10 +226,10 @@ export const postApiV1ClipsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    402: { description: 'payment required', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    402: { description: 'payment required' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -254,10 +254,10 @@ export const getApiV1ClipsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -304,9 +304,9 @@ export const putApiV1ClipsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'not authorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'not authorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -332,9 +332,9 @@ export const deleteApiV1ClipsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'no content' },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -344,9 +344,9 @@ export const getApiV1DirectUploadsRoute = createRoute({
   path: '/api/v1/direct_uploads',
   summary: 'prepare presigned upload url',
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -531,9 +531,9 @@ export const getApiV1MediasRoute = createRoute({
       ),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -583,10 +583,10 @@ export const postApiV1MediasRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    402: { description: 'payment required', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    402: { description: 'payment required' },
+    429: { description: 'too many requests' },
   },
   callbacks: {
     'media.processing_finished': {
@@ -897,10 +897,10 @@ export const getApiV1MediasIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -954,9 +954,9 @@ export const putApiV1MediasIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'not authorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'not authorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -982,9 +982,9 @@ export const deleteApiV1MediasIdRoute = createRoute({
   },
   responses: {
     204: { description: 'no content' },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -1153,9 +1153,9 @@ export const getApiV1WebhookSubscriptionsRoute = createRoute({
       ),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -1193,9 +1193,9 @@ export const postApiV1WebhookSubscriptionsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'unauthorized', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'unauthorized' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -1220,10 +1220,10 @@ export const getApiV1WebhookSubscriptionsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful', content: {} },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    200: { description: 'successful' },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })
@@ -1249,9 +1249,9 @@ export const deleteApiV1WebhookSubscriptionsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'no content' },
-    401: { description: 'not authorized', content: {} },
-    404: { description: 'not found', content: {} },
-    429: { description: 'too many requests', content: {} },
+    401: { description: 'not authorized' },
+    404: { description: 'not found' },
+    429: { description: 'too many requests' },
   },
   security: [{ BearerHeader: [] }],
 })

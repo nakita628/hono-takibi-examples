@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRtmConnectRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRtmConnectRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rtmConnectHandler = app.openapi(getRtmConnectRoute, (c) => {
+export const getRtmConnectRouteHandler: RouteHandler<typeof getRtmConnectRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

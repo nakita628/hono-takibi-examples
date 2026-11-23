@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSectionsSectionGidRoute,
   getSectionsSectionGidRoute,
   getSectionsSectionGidTasksRoute,
@@ -7,21 +7,32 @@ import {
   putSectionsSectionGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSectionsSectionGidRouteHandler: RouteHandler<
+  typeof getSectionsSectionGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sectionsHandler = app
-  .openapi(getSectionsSectionGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSectionsSectionGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSectionsSectionGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSectionsSectionGidAddTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSectionsSectionGidTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSectionsSectionGidRouteHandler: RouteHandler<
+  typeof putSectionsSectionGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSectionsSectionGidRouteHandler: RouteHandler<
+  typeof deleteSectionsSectionGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSectionsSectionGidAddTaskRouteHandler: RouteHandler<
+  typeof postSectionsSectionGidAddTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSectionsSectionGidTasksRouteHandler: RouteHandler<
+  typeof getSectionsSectionGidTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

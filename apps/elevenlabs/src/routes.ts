@@ -66741,7 +66741,7 @@ export const postV1AudioIsolationRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -66999,7 +66999,7 @@ export const postV1AudioIsolationStreamRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -67236,7 +67236,7 @@ export const getV1VoicesVoiceIdSamplesSampleIdAudioRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -78322,13 +78322,13 @@ export const getV1DubbingDubbingIdAudioLanguageCodeRoute = createRoute({
         'video/mp4': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
     },
-    403: { description: 'Permission denied', content: {} },
-    404: { description: 'Dubbing not found', content: {} },
+    403: { description: 'Permission denied' },
+    404: { description: 'Dubbing not found' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
     },
-    425: { description: 'Dubbing not ready', content: {} },
+    425: { description: 'Dubbing not ready' },
   },
   deprecated: true,
 })
@@ -78456,13 +78456,13 @@ export const getV1DubbingDubbingIdTranscriptLanguageCodeRoute = createRoute({
         },
       },
     },
-    403: { description: 'Anonymous users cannot use this function', content: {} },
-    404: { description: 'Dubbing or transcript not found', content: {} },
+    403: { description: 'Anonymous users cannot use this function' },
+    404: { description: 'Dubbing or transcript not found' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
     },
-    425: { description: 'Dubbing not ready', content: {} },
+    425: { description: 'Dubbing not ready' },
   },
   deprecated: true,
 })
@@ -85061,7 +85061,7 @@ export const postV1SpeechToTextRoute = createRoute({
         },
       },
     },
-    202: { description: 'Asynchronous request accepted', content: {} },
+    202: { description: 'Asynchronous request accepted' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -85953,8 +85953,8 @@ export const getV1SpeechToTextTranscriptsTranscriptionIdRoute = createRoute({
         },
       },
     },
-    401: { description: 'Authentication required', content: {} },
-    404: { description: 'Transcript not found', content: {} },
+    401: { description: 'Authentication required' },
+    404: { description: 'Transcript not found' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -86023,7 +86023,7 @@ export const deleteV1SpeechToTextTranscriptsTranscriptionIdRoute = createRoute({
       description: 'Delete completed successfully.',
       content: { 'application/json': { schema: z.any() } },
     },
-    401: { description: 'Authentication required', content: {} },
+    401: { description: 'Authentication required' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -92537,7 +92537,7 @@ export const getV1ConvaiConversationsConversationIdAudioRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -92622,7 +92622,7 @@ export const getV1ConvaiConversationsConversationIdFilesFileIdRoute = createRout
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },

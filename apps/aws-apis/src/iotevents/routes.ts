@@ -632,8 +632,8 @@ const TransitionEventSchema = z
 const TransitionEventsSchema = z.array(TransitionEventSchema).openapi('TransitionEvents')
 
 type OnInputLifecycleType = {
-  events?: z.infer<typeof EventsSchema> & unknown
-  transitionEvents?: z.infer<typeof TransitionEventsSchema> & unknown
+  events?: z.infer<typeof EventsSchema>
+  transitionEvents?: z.infer<typeof TransitionEventsSchema>
 }
 
 const OnInputLifecycleSchema: z.ZodType<OnInputLifecycleType> = z
@@ -654,7 +654,7 @@ const OnInputLifecycleSchema: z.ZodType<OnInputLifecycleType> = z
   })
   .openapi('OnInputLifecycle')
 
-type OnEnterLifecycleType = { events?: z.infer<typeof EventsSchema> & unknown }
+type OnEnterLifecycleType = { events?: z.infer<typeof EventsSchema> }
 
 const OnEnterLifecycleSchema: z.ZodType<OnEnterLifecycleType> = z
   .object({
@@ -670,7 +670,7 @@ const OnEnterLifecycleSchema: z.ZodType<OnEnterLifecycleType> = z
   })
   .openapi('OnEnterLifecycle')
 
-type OnExitLifecycleType = { events?: z.infer<typeof EventsSchema> & unknown }
+type OnExitLifecycleType = { events?: z.infer<typeof EventsSchema> }
 
 const OnExitLifecycleSchema: z.ZodType<OnExitLifecycleType> = z
   .object({
@@ -687,10 +687,10 @@ const OnExitLifecycleSchema: z.ZodType<OnExitLifecycleType> = z
   .openapi('OnExitLifecycle')
 
 type StateType = {
-  stateName: z.infer<typeof StateNameSchema> & unknown
-  onInput?: z.infer<typeof OnInputLifecycleSchema> & unknown
-  onEnter?: z.infer<typeof OnEnterLifecycleSchema> & unknown
-  onExit?: z.infer<typeof OnExitLifecycleSchema> & unknown
+  stateName: z.infer<typeof StateNameSchema>
+  onInput?: z.infer<typeof OnInputLifecycleSchema>
+  onEnter?: z.infer<typeof OnEnterLifecycleSchema>
+  onExit?: z.infer<typeof OnExitLifecycleSchema>
 }
 
 const StateSchema: z.ZodType<StateType> = z
@@ -791,9 +791,7 @@ const NotificationActionsSchema: z.ZodType<NotificationActionsType> = z
   .min(1)
   .openapi('NotificationActions')
 
-type AlarmNotificationType = {
-  notificationActions?: z.infer<typeof NotificationActionsSchema> & unknown
-}
+type AlarmNotificationType = { notificationActions?: z.infer<typeof NotificationActionsSchema> }
 
 const AlarmNotificationSchema: z.ZodType<AlarmNotificationType> = z
   .object({
@@ -887,28 +885,28 @@ const AlarmCapabilitiesSchema = z
   .openapi('AlarmCapabilities')
 
 type DescribeAlarmModelResponseType = {
-  creationTime?: z.infer<typeof TimestampSchema> & unknown
-  alarmModelArn?: z.infer<typeof AlarmModelArnSchema> & unknown
-  alarmModelVersion?: z.infer<typeof AlarmModelVersionSchema> & unknown
-  lastUpdateTime?: z.infer<typeof TimestampSchema> & unknown
-  status?: z.infer<typeof AlarmModelVersionStatusSchema> & unknown
-  statusMessage?: z.infer<typeof StatusMessageSchema> & unknown
-  alarmModelName?: z.infer<typeof AlarmModelNameSchema> & unknown
-  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
-  roleArn?: z.infer<typeof AmazonResourceNameSchema> & unknown
-  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
-  severity?: z.infer<typeof SeveritySchema> & unknown
-  alarmRule?: z.infer<typeof AlarmRuleSchema> & unknown
-  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
-  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
-  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+  creationTime?: z.infer<typeof TimestampSchema>
+  alarmModelArn?: z.infer<typeof AlarmModelArnSchema>
+  alarmModelVersion?: z.infer<typeof AlarmModelVersionSchema>
+  lastUpdateTime?: z.infer<typeof TimestampSchema>
+  status?: z.infer<typeof AlarmModelVersionStatusSchema>
+  statusMessage?: z.infer<typeof StatusMessageSchema>
+  alarmModelName?: z.infer<typeof AlarmModelNameSchema>
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema>
+  roleArn?: z.infer<typeof AmazonResourceNameSchema>
+  key?: z.infer<typeof AttributeJsonPathSchema>
+  severity?: z.infer<typeof SeveritySchema>
+  alarmRule?: z.infer<typeof AlarmRuleSchema>
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema>
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema>
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema>
 }
 
 const StatesSchema: z.ZodType<StatesType> = z.array(StateSchema).min(1).openapi('States')
 
 type DetectorModelDefinitionType = {
-  states: z.infer<typeof StatesSchema> & unknown
-  initialStateName: z.infer<typeof StateNameSchema> & unknown
+  states: z.infer<typeof StatesSchema>
+  initialStateName: z.infer<typeof StateNameSchema>
 }
 
 const DetectorModelDefinitionSchema: z.ZodType<DetectorModelDefinitionType> = z
@@ -983,8 +981,8 @@ const DetectorModelConfigurationSchema = z
   .openapi('DetectorModelConfiguration')
 
 type DetectorModelType = {
-  detectorModelDefinition?: z.infer<typeof DetectorModelDefinitionSchema> & unknown
-  detectorModelConfiguration?: z.infer<typeof DetectorModelConfigurationSchema> & unknown
+  detectorModelDefinition?: z.infer<typeof DetectorModelDefinitionSchema>
+  detectorModelConfiguration?: z.infer<typeof DetectorModelConfigurationSchema>
 }
 
 const DetectorModelSchema: z.ZodType<DetectorModelType> = z
@@ -999,9 +997,7 @@ const DetectorModelSchema: z.ZodType<DetectorModelType> = z
   .openapi({ description: 'Information about the detector model.', required: [] })
   .openapi('DetectorModel')
 
-type DescribeDetectorModelResponseType = {
-  detectorModel?: z.infer<typeof DetectorModelSchema> & unknown
-}
+type DescribeDetectorModelResponseType = { detectorModel?: z.infer<typeof DetectorModelSchema> }
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
@@ -1021,26 +1017,26 @@ const TagSchema = z
 const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 type CreateAlarmModelRequestType = {
-  alarmModelName: z.infer<typeof AlarmModelNameSchema> & unknown
-  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
-  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
-  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
-  severity?: z.infer<typeof SeveritySchema> & unknown
-  alarmRule: z.infer<typeof AlarmRuleSchema> & unknown
-  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
-  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
-  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+  alarmModelName: z.infer<typeof AlarmModelNameSchema>
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema>
+  roleArn: z.infer<typeof AmazonResourceNameSchema>
+  tags?: z.infer<typeof TagsSchema>
+  key?: z.infer<typeof AttributeJsonPathSchema>
+  severity?: z.infer<typeof SeveritySchema>
+  alarmRule: z.infer<typeof AlarmRuleSchema>
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema>
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema>
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema>
 }
 
 type CreateDetectorModelRequestType = {
-  detectorModelName: z.infer<typeof DetectorModelNameSchema> & unknown
-  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema> & unknown
-  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema> & unknown
-  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
-  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
-  tags?: z.infer<typeof TagsSchema> & unknown
-  evaluationMethod?: z.infer<typeof EvaluationMethodSchema> & unknown
+  detectorModelName: z.infer<typeof DetectorModelNameSchema>
+  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema>
+  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema>
+  key?: z.infer<typeof AttributeJsonPathSchema>
+  roleArn: z.infer<typeof AmazonResourceNameSchema>
+  tags?: z.infer<typeof TagsSchema>
+  evaluationMethod?: z.infer<typeof EvaluationMethodSchema>
 }
 
 type StartDetectorModelAnalysisRequestType = {
@@ -1048,20 +1044,20 @@ type StartDetectorModelAnalysisRequestType = {
 }
 
 type UpdateAlarmModelRequestType = {
-  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
-  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
-  severity?: z.infer<typeof SeveritySchema> & unknown
-  alarmRule: z.infer<typeof AlarmRuleSchema> & unknown
-  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
-  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
-  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema>
+  roleArn: z.infer<typeof AmazonResourceNameSchema>
+  severity?: z.infer<typeof SeveritySchema>
+  alarmRule: z.infer<typeof AlarmRuleSchema>
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema>
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema>
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema>
 }
 
 type UpdateDetectorModelRequestType = {
-  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema> & unknown
-  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema> & unknown
-  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
-  evaluationMethod?: z.infer<typeof EvaluationMethodSchema> & unknown
+  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema>
+  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema>
+  roleArn: z.infer<typeof AmazonResourceNameSchema>
+  evaluationMethod?: z.infer<typeof EvaluationMethodSchema>
 }
 
 const CreateAlarmModelResponseSchema = z

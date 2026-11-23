@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStromkontoBalancesRoute,
   getStromkontoChoicesRoute,
   postStromkontoLoginRoute,
@@ -7,21 +7,32 @@ import {
   postStromkontoRegisterRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStromkontoBalancesRouteHandler: RouteHandler<
+  typeof getStromkontoBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stromkontoHandler = app
-  .openapi(getStromkontoBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStromkontoChoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStromkontoLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStromkontoPrepareTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStromkontoRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStromkontoChoicesRouteHandler: RouteHandler<
+  typeof getStromkontoChoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStromkontoLoginRouteHandler: RouteHandler<
+  typeof postStromkontoLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStromkontoPrepareTransactionRouteHandler: RouteHandler<
+  typeof postStromkontoPrepareTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStromkontoRegisterRouteHandler: RouteHandler<
+  typeof postStromkontoRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

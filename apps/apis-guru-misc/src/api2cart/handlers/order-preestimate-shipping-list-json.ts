@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOrderPreestimateShippingListJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOrderPreestimateShippingListJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const orderPreestimateShippingListJsonHandler = app.openapi(
-  postOrderPreestimateShippingListJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postOrderPreestimateShippingListJsonRouteHandler: RouteHandler<
+  typeof postOrderPreestimateShippingListJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

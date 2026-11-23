@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNumbersRoute,
   getNumbersSearchCountrySearch1SearchType2Route,
   postNumbersBuyDedicatedNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNumbersRouteHandler: RouteHandler<typeof getNumbersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const numbersHandler = app
-  .openapi(getNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNumbersBuyDedicatedNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNumbersSearchCountrySearch1SearchType2Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNumbersBuyDedicatedNumberRouteHandler: RouteHandler<
+  typeof postNumbersBuyDedicatedNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNumbersSearchCountrySearch1SearchType2RouteHandler: RouteHandler<
+  typeof getNumbersSearchCountrySearch1SearchType2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

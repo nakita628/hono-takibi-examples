@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSamplingSettingsScopeRoute,
   getSamplingSettingsRoute,
   getSamplingSettingsScopeRoute,
   patchSamplingSettingsScopeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSamplingSettingsRouteHandler: RouteHandler<
+  typeof getSamplingSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const samplingSettingsHandler = app
-  .openapi(getSamplingSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSamplingSettingsScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSamplingSettingsScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSamplingSettingsScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSamplingSettingsScopeRouteHandler: RouteHandler<
+  typeof deleteSamplingSettingsScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSamplingSettingsScopeRouteHandler: RouteHandler<
+  typeof getSamplingSettingsScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSamplingSettingsScopeRouteHandler: RouteHandler<
+  typeof patchSamplingSettingsScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

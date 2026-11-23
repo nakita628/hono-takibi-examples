@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/microsoft.com/graph-beta/1.0.1/openapi.yaml',
   output: './src/microsoft-graph-beta/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/microsoft-graph-beta/types.ts' },
   client: { output: './src/microsoft-graph-beta/client.ts', baseUrl: '/' },
   rpc: { output: './src/microsoft-graph-beta/rpc.ts', parseResponse: true },

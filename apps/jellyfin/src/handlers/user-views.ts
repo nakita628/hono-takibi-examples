@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUserViewsGroupingOptionsRoute, getUserViewsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUserViewsGroupingOptionsRoute, getUserViewsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserViewsRouteHandler: RouteHandler<typeof getUserViewsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userViewsHandler = app
-  .openapi(getUserViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserViewsGroupingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserViewsGroupingOptionsRouteHandler: RouteHandler<
+  typeof getUserViewsGroupingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

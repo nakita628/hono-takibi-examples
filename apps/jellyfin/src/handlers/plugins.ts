@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePluginsPluginIdRoute,
   deletePluginsPluginIdVersionRoute,
   getPluginsPluginIdConfigurationRoute,
@@ -11,33 +11,54 @@ import {
   postPluginsPluginIdVersionEnableRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPluginsRouteHandler: RouteHandler<typeof getPluginsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pluginsHandler = app
-  .openapi(getPluginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePluginsPluginIdVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPluginsPluginIdVersionDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPluginsPluginIdVersionEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPluginsPluginIdVersionImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPluginsPluginIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPluginsPluginIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPluginsPluginIdManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deletePluginsPluginIdRouteHandler: RouteHandler<
+  typeof deletePluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePluginsPluginIdVersionRouteHandler: RouteHandler<
+  typeof deletePluginsPluginIdVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPluginsPluginIdVersionDisableRouteHandler: RouteHandler<
+  typeof postPluginsPluginIdVersionDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPluginsPluginIdVersionEnableRouteHandler: RouteHandler<
+  typeof postPluginsPluginIdVersionEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPluginsPluginIdVersionImageRouteHandler: RouteHandler<
+  typeof getPluginsPluginIdVersionImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPluginsPluginIdConfigurationRouteHandler: RouteHandler<
+  typeof getPluginsPluginIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPluginsPluginIdConfigurationRouteHandler: RouteHandler<
+  typeof postPluginsPluginIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPluginsPluginIdManifestRouteHandler: RouteHandler<
+  typeof postPluginsPluginIdManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

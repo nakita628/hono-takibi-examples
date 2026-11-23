@@ -1,11 +1,16 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { circularHandler, nestedTestHandler, notQuiteCircularHandler } from './handlers'
+import { postNotQuiteCircularRoute, putCircularRoute, putNestedTestRoute } from './routes'
+import {
+  postNotQuiteCircularRouteHandler,
+  putCircularRouteHandler,
+  putNestedTestRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', nestedTestHandler)
-  .route('/', circularHandler)
-  .route('/', notQuiteCircularHandler)
+  .openapi(putNestedTestRoute, putNestedTestRouteHandler)
+  .openapi(putCircularRoute, putCircularRouteHandler)
+  .openapi(postNotQuiteCircularRoute, postNotQuiteCircularRouteHandler)
 
 export default app

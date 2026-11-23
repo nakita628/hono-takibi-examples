@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteHelpCenterCollectionsCollectionIdRoute,
   deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute,
   getHelpCenterCollectionsCollectionIdRoute,
@@ -13,39 +13,68 @@ import {
   putHelpCenterCollectionsCollectionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHelpCenterHelpCentersHelpCenterIdRedirectsRouteHandler: RouteHandler<
+  typeof getHelpCenterHelpCentersHelpCenterIdRedirectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const helpCenterHandler = app
-  .openapi(getHelpCenterHelpCentersHelpCenterIdRedirectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHelpCenterHelpCentersHelpCenterIdRedirectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHelpCenterCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postHelpCenterCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHelpCenterCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putHelpCenterCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteHelpCenterCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHelpCenterHelpCentersHelpCenterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHelpCenterHelpCentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postHelpCenterHelpCentersHelpCenterIdRedirectsRouteHandler: RouteHandler<
+  typeof postHelpCenterHelpCentersHelpCenterIdRedirectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHelpCenterHelpCentersHelpCenterIdRedirectsIdRouteHandler: RouteHandler<
+  typeof getHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRouteHandler: RouteHandler<
+  typeof deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHelpCenterCollectionsRouteHandler: RouteHandler<
+  typeof getHelpCenterCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postHelpCenterCollectionsRouteHandler: RouteHandler<
+  typeof postHelpCenterCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHelpCenterCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof getHelpCenterCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putHelpCenterCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof putHelpCenterCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteHelpCenterCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof deleteHelpCenterCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHelpCenterHelpCentersHelpCenterIdRouteHandler: RouteHandler<
+  typeof getHelpCenterHelpCentersHelpCenterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHelpCenterHelpCentersRouteHandler: RouteHandler<
+  typeof getHelpCenterHelpCentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

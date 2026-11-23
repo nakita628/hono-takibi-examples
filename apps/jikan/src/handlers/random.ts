@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRandomAnimeRoute,
   getRandomCharactersRoute,
   getRandomMangaRoute,
@@ -7,21 +7,24 @@ import {
   getRandomUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRandomAnimeRouteHandler: RouteHandler<typeof getRandomAnimeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const randomHandler = app
-  .openapi(getRandomAnimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRandomMangaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRandomCharactersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRandomPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRandomUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRandomMangaRouteHandler: RouteHandler<typeof getRandomMangaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRandomCharactersRouteHandler: RouteHandler<
+  typeof getRandomCharactersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRandomPeopleRouteHandler: RouteHandler<typeof getRandomPeopleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRandomUsersRouteHandler: RouteHandler<typeof getRandomUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

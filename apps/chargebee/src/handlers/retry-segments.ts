@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRetrySegmentsRetrySegmentIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRetrySegmentsRetrySegmentIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const retrySegmentsHandler = app.openapi(getRetrySegmentsRetrySegmentIdRoute, (c) => {
+export const getRetrySegmentsRetrySegmentIdRouteHandler: RouteHandler<
+  typeof getRetrySegmentsRetrySegmentIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/doqs.dev/1.0/openapi.yaml',
   output: './src/doqs-dev/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/doqs-dev/types.ts' },
   client: { output: './src/doqs-dev/client.ts', baseUrl: '/' },
   rpc: { output: './src/doqs-dev/rpc.ts', parseResponse: true },

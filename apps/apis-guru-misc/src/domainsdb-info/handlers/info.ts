@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInfoApiRoute,
   getInfoStatIndexRoute,
   getInfoStatZoneRoute,
@@ -7,21 +7,24 @@ import {
   getInfoTldZoneRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInfoApiRouteHandler: RouteHandler<typeof getInfoApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const infoHandler = app
-  .openapi(getInfoApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoStatIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoStatZoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoTldIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoTldZoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInfoStatIndexRouteHandler: RouteHandler<typeof getInfoStatIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoStatZoneRouteHandler: RouteHandler<typeof getInfoStatZoneRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoTldIndexRouteHandler: RouteHandler<typeof getInfoTldIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoTldZoneRouteHandler: RouteHandler<typeof getInfoTldZoneRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

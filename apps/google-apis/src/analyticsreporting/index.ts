@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v4Handler } from './handlers'
+import { postV4ReportsBatchGetRoute, postV4UserActivitySearchRoute } from './routes'
+import { postV4ReportsBatchGetRouteHandler, postV4UserActivitySearchRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v4Handler)
+export const api = app
+  .openapi(postV4ReportsBatchGetRoute, postV4ReportsBatchGetRouteHandler)
+  .openapi(postV4UserActivitySearchRoute, postV4UserActivitySearchRouteHandler)
 
 export default app

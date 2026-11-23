@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInvitesCodeRoute,
   deleteInvitesCodeTargetUsersUserIdRoute,
   getInvitesCodeRoute,
@@ -11,33 +11,54 @@ import {
   putInvitesCodeTargetUsersUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInvitesCodeRouteHandler: RouteHandler<typeof getInvitesCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const invitesHandler = app
-  .openapi(getInvitesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInvitesCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInvitesCodeTargetUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInvitesCodeTargetUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvitesCodeTargetUsersBulkAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvitesCodeTargetUsersBulkDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInvitesCodeTargetUsersJobStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInvitesCodeTargetUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInvitesCodeTargetUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteInvitesCodeRouteHandler: RouteHandler<typeof deleteInvitesCodeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInvitesCodeTargetUsersRouteHandler: RouteHandler<
+  typeof getInvitesCodeTargetUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInvitesCodeTargetUsersRouteHandler: RouteHandler<
+  typeof putInvitesCodeTargetUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvitesCodeTargetUsersBulkAddRouteHandler: RouteHandler<
+  typeof postInvitesCodeTargetUsersBulkAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvitesCodeTargetUsersBulkDeleteRouteHandler: RouteHandler<
+  typeof postInvitesCodeTargetUsersBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInvitesCodeTargetUsersJobStatusRouteHandler: RouteHandler<
+  typeof getInvitesCodeTargetUsersJobStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInvitesCodeTargetUsersUserIdRouteHandler: RouteHandler<
+  typeof putInvitesCodeTargetUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInvitesCodeTargetUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteInvitesCodeTargetUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

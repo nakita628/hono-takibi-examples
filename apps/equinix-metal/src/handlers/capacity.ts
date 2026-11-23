@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCapacityMetrosRoute,
   getCapacityRoute,
   postCapacityMetrosRoute,
   postCapacityRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCapacityRouteHandler: RouteHandler<typeof getCapacityRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const capacityHandler = app
-  .openapi(getCapacityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCapacityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCapacityMetrosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCapacityMetrosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCapacityRouteHandler: RouteHandler<typeof postCapacityRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCapacityMetrosRouteHandler: RouteHandler<typeof getCapacityMetrosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCapacityMetrosRouteHandler: RouteHandler<typeof postCapacityMetrosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

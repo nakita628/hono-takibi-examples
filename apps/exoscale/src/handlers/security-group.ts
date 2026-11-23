@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSecurityGroupIdRoute,
   deleteSecurityGroupIdRulesRuleIdRoute,
   getSecurityGroupIdRoute,
@@ -12,36 +12,62 @@ import {
   putSecurityGroupIdRemoveSourceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSecurityGroupIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteSecurityGroupIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const securityGroupHandler = app
-  .openapi(deleteSecurityGroupIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSecurityGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSecurityGroupIdAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityGroupIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSecurityGroupIdRemoveSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSecurityGroupIdDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSecurityGroupIdAddSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSecurityGroupRouteHandler: RouteHandler<typeof postSecurityGroupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityGroupRouteHandler: RouteHandler<typeof getSecurityGroupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecurityGroupIdRouteHandler: RouteHandler<typeof getSecurityGroupIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSecurityGroupIdRouteHandler: RouteHandler<
+  typeof deleteSecurityGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSecurityGroupIdAttachRouteHandler: RouteHandler<
+  typeof putSecurityGroupIdAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSecurityGroupIdRulesRouteHandler: RouteHandler<
+  typeof postSecurityGroupIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSecurityGroupIdRemoveSourceRouteHandler: RouteHandler<
+  typeof putSecurityGroupIdRemoveSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSecurityGroupIdDetachRouteHandler: RouteHandler<
+  typeof putSecurityGroupIdDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSecurityGroupIdAddSourceRouteHandler: RouteHandler<
+  typeof putSecurityGroupIdAddSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

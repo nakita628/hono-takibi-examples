@@ -1,19 +1,35 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  infoHandler,
-  linksHandler,
-  referencesHandler,
-  structuresHandler,
-  versionsHandler,
+  getInfoEntryRoute,
+  getInfoRoute,
+  getLinksRoute,
+  getReferencesEntryIdRoute,
+  getReferencesRoute,
+  getStructuresEntryIdRoute,
+  getStructuresRoute,
+  getVersionsRoute,
+} from './routes'
+import {
+  getInfoEntryRouteHandler,
+  getInfoRouteHandler,
+  getLinksRouteHandler,
+  getReferencesEntryIdRouteHandler,
+  getReferencesRouteHandler,
+  getStructuresEntryIdRouteHandler,
+  getStructuresRouteHandler,
+  getVersionsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', infoHandler)
-  .route('/', linksHandler)
-  .route('/', referencesHandler)
-  .route('/', structuresHandler)
-  .route('/', versionsHandler)
+  .openapi(getInfoRoute, getInfoRouteHandler)
+  .openapi(getInfoEntryRoute, getInfoEntryRouteHandler)
+  .openapi(getLinksRoute, getLinksRouteHandler)
+  .openapi(getReferencesRoute, getReferencesRouteHandler)
+  .openapi(getReferencesEntryIdRoute, getReferencesEntryIdRouteHandler)
+  .openapi(getStructuresRoute, getStructuresRouteHandler)
+  .openapi(getStructuresEntryIdRoute, getStructuresEntryIdRouteHandler)
+  .openapi(getVersionsRoute, getVersionsRouteHandler)
 
 export default app

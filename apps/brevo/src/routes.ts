@@ -5130,7 +5130,7 @@ export const putCorporateGroupUnlinkGroupIdSubAccountsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'SubAccounts removed from the group', content: {} },
+    204: { description: 'SubAccounts removed from the group' },
     400: {
       description: 'bad request',
       content: {
@@ -5341,7 +5341,7 @@ export const putCorporateGroupIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Group details updated', content: {} },
+    204: { description: 'Group details updated' },
     400: {
       description: 'bad request',
       content: {
@@ -6388,7 +6388,7 @@ export const putCorporateSubAccountIpDissociateRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'IP has been dissociated from sub-accounts successfully', content: {} },
+    204: { description: 'IP has been dissociated from sub-accounts successfully' },
     400: {
       description: 'Bad request',
       content: {
@@ -7249,7 +7249,7 @@ export const putCorporateSubAccountIdApplicationsToggleRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Sub-account application(s) enabled/disabled', content: {} },
+    204: { description: 'Sub-account application(s) enabled/disabled' },
     400: ErrorModelResponse,
     403: {
       description: 'Current account is not a master account',
@@ -7448,7 +7448,7 @@ export const putCorporateSubAccountIdPlanRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Sub account plan updated', content: {} },
+    204: { description: 'Sub account plan updated' },
     400: ErrorModelResponse,
     403: {
       description: 'Current account is not a master account',
@@ -7629,7 +7629,7 @@ export const putCorporateSubAccountsPlanRoute = createRoute({
     },
   },
   responses: {
-    202: { description: 'Request accepted', content: {} },
+    202: { description: 'Request accepted' },
     400: ErrorModelResponse,
     403: {
       description: 'Current account is not a master account',
@@ -8104,7 +8104,7 @@ export const putCorporateUserEmailPermissionsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'User permissions has been modified', content: {} },
+    204: { description: 'User permissions has been modified' },
     400: {
       description: 'bad request',
       content: {
@@ -10095,7 +10095,7 @@ export const deleteSendersDomainsDomainNameRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Domain deleted successfully', content: {} },
+    200: { description: 'Domain deleted successfully' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -10380,7 +10380,7 @@ export const putSendersSenderIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Sender updated successfully', content: {} },
+    204: { description: 'Sender updated successfully' },
     400: ErrorModelResponse,
     404: {
       description: 'Sender ID not found',
@@ -10419,7 +10419,7 @@ export const deleteSendersSenderIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Sender deleted successfully', content: {} },
+    204: { description: 'Sender deleted successfully' },
     400: ErrorModelResponse,
     404: {
       description: 'Sender ID not found',
@@ -10595,7 +10595,7 @@ export const putSendersSenderIdValidateRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Sender verified successfully', content: {} },
+    204: { description: 'Sender verified successfully' },
     400: ErrorModelResponse,
     404: {
       description: 'Sender ID not found',
@@ -11118,7 +11118,7 @@ export const putWebhooksWebhookIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Webhook updated', content: {} },
+    204: { description: 'Webhook updated' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -11154,7 +11154,7 @@ export const deleteWebhooksWebhookIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Webhook deleted', content: {} },
+    204: { description: 'Webhook deleted' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -11938,7 +11938,7 @@ export const putFeedsUuidRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'External feed updated successfully', content: {} },
+    204: { description: 'External feed updated successfully' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -11969,7 +11969,7 @@ export const deleteFeedsUuidRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'External feed deleted successfully', content: {} },
+    204: { description: 'External feed deleted successfully' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -13347,7 +13347,7 @@ export const postContactsRoute = createRoute({
         },
       },
     },
-    204: { description: 'Contact updated', content: {} },
+    204: { description: 'Contact updated' },
     400: {
       description: 'bad request',
       content: { 'application/json': { schema: ContactErrorModelSchema } },
@@ -13580,7 +13580,7 @@ export const putContactsAttributesAttributeCategoryAttributeNameRoute = createRo
     },
   },
   responses: {
-    204: { description: 'Attribute updated', content: {} },
+    204: { description: 'Attribute updated' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -13691,7 +13691,7 @@ export const postContactsAttributesAttributeCategoryAttributeNameRoute = createR
       required: true,
     },
   },
-  responses: { 201: { description: 'Attribute created', content: {} }, 400: ErrorModelResponse },
+  responses: { 201: { description: 'Attribute created' }, 400: ErrorModelResponse },
 })
 
 export const deleteContactsAttributesAttributeCategoryAttributeNameRoute = createRoute({
@@ -13732,7 +13732,7 @@ export const deleteContactsAttributesAttributeCategoryAttributeNameRoute = creat
     }),
   },
   responses: {
-    204: { description: 'Attribute deleted', content: {} },
+    204: { description: 'Attribute deleted' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -13937,7 +13937,7 @@ export const postContactsBatchRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'All contacts updated', content: {} }, 400: ErrorModelResponse },
+  responses: { 204: { description: 'All contacts updated' }, 400: ErrorModelResponse },
 })
 
 export const postContactsDoubleOptinConfirmationRoute = createRoute({
@@ -14055,8 +14055,8 @@ export const postContactsDoubleOptinConfirmationRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'DOI Contact created', content: {} },
-    204: { description: 'DOI Contact updated', content: {} },
+    201: { description: 'DOI Contact created' },
+    204: { description: 'DOI Contact updated' },
     400: ErrorModelResponse,
   },
 })
@@ -14506,7 +14506,7 @@ export const putContactsFoldersFolderIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Folder updated', content: {} },
+    204: { description: 'Folder updated' },
     400: ErrorModelResponse,
     404: {
       description: 'Folder ID not found',
@@ -14545,7 +14545,7 @@ export const deleteContactsFoldersFolderIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Folder deleted', content: {} },
+    204: { description: 'Folder deleted' },
     400: ErrorModelResponse,
     404: {
       description: 'Folder ID not found',
@@ -15355,7 +15355,7 @@ export const putContactsListsListIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'List updated', content: {} },
+    204: { description: 'List updated' },
     400: ErrorModelResponse,
     404: {
       description: 'List ID not found',
@@ -15394,7 +15394,7 @@ export const deleteContactsListsListIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'List deleted', content: {} },
+    204: { description: 'List deleted' },
     400: ErrorModelResponse,
     404: {
       description: 'List ID not found',
@@ -17111,7 +17111,7 @@ export const putContactsIdentifierRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Contact updated', content: {} },
+    204: { description: 'Contact updated' },
     400: {
       description: 'bad request',
       content: { 'application/json': { schema: ContactErrorModelSchema } },
@@ -17186,7 +17186,7 @@ export const deleteContactsIdentifierRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Contact deleted', content: {} },
+    204: { description: 'Contact deleted' },
     400: ErrorModelResponse,
     404: {
       description: 'Contact not found',
@@ -18603,7 +18603,7 @@ export const postCategoriesRoute = createRoute({
         },
       },
     },
-    204: { description: 'Category updated', content: {} },
+    204: { description: 'Category updated' },
     400: ErrorModelResponse,
   },
 })
@@ -19149,7 +19149,7 @@ export const postCouponsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Coupons creation in progress', content: {} },
+    204: { description: 'Coupons creation in progress' },
     400: ErrorModelResponse,
     401: ErrorModelResponse,
     404: {
@@ -19669,10 +19669,7 @@ export const getOrdersRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'orders fetched successfully', content: {} },
-    400: ErrorModelResponse,
-  },
+  responses: { 200: { description: 'orders fetched successfully' }, 400: ErrorModelResponse },
 })
 
 export const postOrdersStatusRoute = createRoute({
@@ -19683,7 +19680,7 @@ export const postOrdersStatusRoute = createRoute({
   description: 'Manages the transactional status of the order',
   operationId: 'createOrder',
   request: { body: { content: { 'application/json': { schema: OrderSchema } }, required: true } },
-  responses: { 204: { description: 'Order Event posted', content: {} }, 400: ErrorModelResponse },
+  responses: { 204: { description: 'Order Event posted' }, 400: ErrorModelResponse },
 })
 
 export const postOrdersStatusBatchRoute = createRoute({
@@ -21280,7 +21277,7 @@ export const postEventsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Event posted', content: {} },
+    204: { description: 'Event posted' },
     400: ErrorModelResponse,
     401: ErrorModelResponse,
   },
@@ -29980,7 +29977,7 @@ export const putEmailCampaignsCampaignIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Email campaign updated', content: {} },
+    204: { description: 'Email campaign updated' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
     405: {
@@ -30021,7 +30018,7 @@ export const deleteEmailCampaignsCampaignIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Email campaign has been deleted', content: {} },
+    204: { description: 'Email campaign has been deleted' },
     400: ErrorModelResponse,
     403: {
       description:
@@ -30266,7 +30263,7 @@ export const postEmailCampaignsCampaignIdSendNowRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Email campaign has been scheduled', content: {} },
+    204: { description: 'Email campaign has been scheduled' },
     400: {
       description: 'Campaign could not be sent',
       content: { 'application/json': { schema: ErrorModelSchema } },
@@ -30313,10 +30310,7 @@ export const postEmailCampaignsCampaignIdSendReportRoute = createRoute({
     },
   },
   responses: {
-    204: {
-      description: 'Report has been successfully sent to the defined recipients',
-      content: {},
-    },
+    204: { description: 'Report has been successfully sent to the defined recipients' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -30353,7 +30347,7 @@ export const postEmailCampaignsCampaignIdSendTestRoute = createRoute({
     body: { content: { 'application/json': { schema: SendTestEmailSchema } }, required: true },
   },
   responses: {
-    204: { description: 'Test email has been sent successfully to all recipients', content: {} },
+    204: { description: 'Test email has been sent successfully to all recipients' },
     400: {
       description: 'Test email could not be sent to the following email addresses',
       content: { 'application/json': { schema: PostSendFailedSchema } },
@@ -30469,7 +30463,7 @@ export const putEmailCampaignsCampaignIdStatusRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'The campaign status has been updated successfully', content: {} },
+    204: { description: 'The campaign status has been updated successfully' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -31107,7 +31101,7 @@ export const putSmsCampaignsCampaignIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'SMS campaign updated', content: {} },
+    204: { description: 'SMS campaign updated' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -31143,7 +31137,7 @@ export const deleteSmsCampaignsCampaignIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'SMS campaign has been deleted', content: {} },
+    204: { description: 'SMS campaign has been deleted' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -31244,7 +31238,7 @@ export const postSmsCampaignsCampaignIdSendNowRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'SMS campaign has been scheduled', content: {} },
+    204: { description: 'SMS campaign has been scheduled' },
     400: {
       description: 'SMS Campaign could not be sent',
       content: { 'application/json': { schema: ErrorModelSchema } },
@@ -31292,10 +31286,7 @@ export const postSmsCampaignsCampaignIdSendReportRoute = createRoute({
     },
   },
   responses: {
-    204: {
-      description: 'Report has been successfully sent to the defined recipients',
-      content: {},
-    },
+    204: { description: 'Report has been successfully sent to the defined recipients' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -31352,7 +31343,7 @@ export const postSmsCampaignsCampaignIdSendTestRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'Test SMS has been sent successfully to the recipient', content: {} },
+    204: { description: 'Test SMS has been sent successfully to the recipient' },
     400: {
       description: 'Test SMS could not be sent to the following email addresses',
       content: {
@@ -31433,7 +31424,7 @@ export const putSmsCampaignsCampaignIdStatusRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'The campaign status has been updated successfully', content: {} },
+    204: { description: 'The campaign status has been updated successfully' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -32227,7 +32218,7 @@ export const postWhatsappCampaignsTemplateApprovalTemplateIdRoute = createRoute(
     }),
   },
   responses: {
-    200: { description: 'WhatsApp template sent for approval', content: {} },
+    200: { description: 'WhatsApp template sent for approval' },
     400: ErrorModelResponse,
   },
 })
@@ -32618,7 +32609,7 @@ export const putWhatsappCampaignsCampaignIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'WhatsApp campaign has been deleted', content: {} },
+    204: { description: 'WhatsApp campaign has been deleted' },
     400: ErrorModelResponse,
   },
 })
@@ -32653,7 +32644,7 @@ export const deleteWhatsappCampaignsCampaignIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'WhatsApp campaign has been deleted', content: {} },
+    204: { description: 'WhatsApp campaign has been deleted' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -35963,7 +35954,7 @@ export const deleteSmtpBlockedContactsEmailRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Contact unblocked', content: {} },
+    204: { description: 'Contact unblocked' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -36027,10 +36018,7 @@ export const postSmtpBlockedDomainsRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    201: { description: 'Domain is successfully blocked', content: {} },
-    400: ErrorModelResponse,
-  },
+  responses: { 201: { description: 'Domain is successfully blocked' }, 400: ErrorModelResponse },
 })
 
 export const deleteSmtpBlockedDomainsDomainRoute = createRoute({
@@ -36056,10 +36044,7 @@ export const deleteSmtpBlockedDomainsDomainRoute = createRoute({
     }),
   },
   responses: {
-    204: {
-      description: 'Domain is successfully deleted from the list of blocked domains',
-      content: {},
-    },
+    204: { description: 'Domain is successfully deleted from the list of blocked domains' },
     400: ErrorModelResponse,
     404: {
       description: 'Domain not found',
@@ -36115,9 +36100,8 @@ export const postSmtpDeleteHardbouncesRoute = createRoute({
     200: {
       description:
         'No matching hardbounces found for the given filters. The request was processed successfully but no records were deleted.',
-      content: {},
     },
-    204: { description: 'Hardbounces deleted successfully', content: {} },
+    204: { description: 'Hardbounces deleted successfully' },
     400: ErrorModelResponse,
   },
 })
@@ -36784,7 +36768,7 @@ export const deleteSmtpEmailIdentifierRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Scheduled email(s) deleted', content: {} },
+    204: { description: 'Scheduled email(s) deleted' },
     400: ErrorModelResponse,
     404: ErrorModelResponse,
   },
@@ -37454,7 +37438,7 @@ export const deleteSmtpLogIdentifierRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Transactional Logs deleted', content: {} },
+    204: { description: 'Transactional Logs deleted' },
     400: ErrorModelResponse,
     404: {
       description: 'Message ID not found',
@@ -39203,7 +39187,7 @@ export const putSmtpTemplatesTemplateIdRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'transactional email template updated', content: {} },
+    204: { description: 'transactional email template updated' },
     400: ErrorModelResponse,
     404: {
       description: 'Template ID not found',
@@ -39242,7 +39226,7 @@ export const deleteSmtpTemplatesTemplateIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Inactive transactional email template has been deleted', content: {} },
+    204: { description: 'Inactive transactional email template has been deleted' },
     400: ErrorModelResponse,
     404: {
       description: 'Template ID not found',
@@ -39282,7 +39266,7 @@ export const postSmtpTemplatesTemplateIdSendTestRoute = createRoute({
     body: { content: { 'application/json': { schema: SendTestEmailSchema } }, required: true },
   },
   responses: {
-    204: { description: 'Test email has been sent successfully to all recipients', content: {} },
+    204: { description: 'Test email has been sent successfully to all recipients' },
     400: {
       description: 'Test email could not be sent to the following email addresses',
       content: { 'application/json': { schema: PostSendFailedSchema } },

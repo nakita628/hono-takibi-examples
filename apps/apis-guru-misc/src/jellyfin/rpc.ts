@@ -97,12 +97,12 @@ export async function getAudioItemIdHlsSegmentIdStreamMp3(
 
 export async function getAudioItemIdHls1PlaylistIdSegmentIdContainer(
   args: InferRequestType<
-    (typeof client.Audio)[':itemId']['hls1'][':playlistId'][':segmentId.:container']['$get']
+    (typeof client.Audio)[':itemId']['hls1'][':playlistId'][':segmentId.{container}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.Audio[':itemId'].hls1[':playlistId'][':segmentId.:container'].$get(args, options),
+    client.Audio[':itemId'].hls1[':playlistId'][':segmentId.{container}'].$get(args, options),
   )
 }
 
@@ -142,17 +142,17 @@ export async function headAudioItemIdStream(
 }
 
 export async function getAudioItemIdStreamContainer(
-  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.Audio[':itemId']['stream.:container'].$get(args, options))
+  return await parseResponse(client.Audio[':itemId']['stream.{container}'].$get(args, options))
 }
 
 export async function headAudioItemIdStreamContainer(
-  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.:container']['$head']>,
+  args: InferRequestType<(typeof client.Audio)[':itemId']['stream.{container}']['$head']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.Audio[':itemId']['stream.:container'].$head(args, options))
+  return await parseResponse(client.Audio[':itemId']['stream.{container}'].$head(args, options))
 }
 
 export async function getAudioItemIdUniversal(
@@ -1226,12 +1226,12 @@ export async function getLiveTvLiveRecordingsRecordingIdStream(
 
 export async function getLiveTvLiveStreamFilesStreamIdStreamContainer(
   args: InferRequestType<
-    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.:container']['$get']
+    (typeof client.LiveTv.LiveStreamFiles)[':streamId']['stream.{container}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.LiveTv.LiveStreamFiles[':streamId']['stream.:container'].$get(args, options),
+    client.LiveTv.LiveStreamFiles[':streamId']['stream.{container}'].$get(args, options),
   )
 }
 
@@ -2730,23 +2730,26 @@ export async function getVideosItemIdHlsPlaylistIdStreamM3u8(
 
 export async function getVideosItemIdHlsPlaylistIdSegmentIdSegmentContainer(
   args: InferRequestType<
-    (typeof client.Videos)[':itemId']['hls'][':playlistId'][':segmentId.:segmentContainer']['$get']
+    (typeof client.Videos)[':itemId']['hls'][':playlistId'][':segmentId.{segmentContainer}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.Videos[':itemId'].hls[':playlistId'][':segmentId.:segmentContainer'].$get(args, options),
+    client.Videos[':itemId'].hls[':playlistId'][':segmentId.{segmentContainer}'].$get(
+      args,
+      options,
+    ),
   )
 }
 
 export async function getVideosItemIdHls1PlaylistIdSegmentIdContainer(
   args: InferRequestType<
-    (typeof client.Videos)[':itemId']['hls1'][':playlistId'][':segmentId.:container']['$get']
+    (typeof client.Videos)[':itemId']['hls1'][':playlistId'][':segmentId.{container}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.Videos[':itemId'].hls1[':playlistId'][':segmentId.:container'].$get(args, options),
+    client.Videos[':itemId'].hls1[':playlistId'][':segmentId.{container}'].$get(args, options),
   )
 }
 
@@ -2794,12 +2797,12 @@ export async function headVideosItemIdStream(
 
 export async function getVideosItemIdMediaSourceIdSubtitlesIndexStreamFormat(
   args: InferRequestType<
-    (typeof client.Videos)[':itemId'][':mediaSourceId']['Subtitles'][':index']['Stream.:format']['$get']
+    (typeof client.Videos)[':itemId'][':mediaSourceId']['Subtitles'][':index']['Stream.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.Videos[':itemId'][':mediaSourceId'].Subtitles[':index']['Stream.:format'].$get(
+    client.Videos[':itemId'][':mediaSourceId'].Subtitles[':index']['Stream.{format}'].$get(
       args,
       options,
     ),
@@ -2822,29 +2825,29 @@ export async function getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8(
 
 export async function getVideosItemIdMediaSourceIdSubtitlesIndexStartPositionTicksStreamFormat(
   args: InferRequestType<
-    (typeof client.Videos)[':itemId'][':mediaSourceId']['Subtitles'][':index'][':startPositionTicks']['Stream.:format']['$get']
+    (typeof client.Videos)[':itemId'][':mediaSourceId']['Subtitles'][':index'][':startPositionTicks']['Stream.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.Videos[':itemId'][':mediaSourceId'].Subtitles[':index'][':startPositionTicks'][
-      'Stream.:format'
+      'Stream.{format}'
     ].$get(args, options),
   )
 }
 
 export async function getVideosItemIdStreamContainer(
-  args: InferRequestType<(typeof client.Videos)[':itemId'][':stream.:container']['$get']>,
+  args: InferRequestType<(typeof client.Videos)[':itemId'][':stream.{container}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.Videos[':itemId'][':stream.:container'].$get(args, options))
+  return await parseResponse(client.Videos[':itemId'][':stream.{container}'].$get(args, options))
 }
 
 export async function headVideosItemIdStreamContainer(
-  args: InferRequestType<(typeof client.Videos)[':itemId'][':stream.:container']['$head']>,
+  args: InferRequestType<(typeof client.Videos)[':itemId'][':stream.{container}']['$head']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.Videos[':itemId'][':stream.:container'].$head(args, options))
+  return await parseResponse(client.Videos[':itemId'][':stream.{container}'].$head(args, options))
 }
 
 export async function getVideosVideoIdMediaSourceIdAttachmentsIndex(

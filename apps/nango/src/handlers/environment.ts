@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEnvironmentWebhookSigningKeyRotateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEnvironmentWebhookSigningKeyRotateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const environmentHandler = app.openapi(postEnvironmentWebhookSigningKeyRotateRoute, (c) => {
+export const postEnvironmentWebhookSigningKeyRotateRouteHandler: RouteHandler<
+  typeof postEnvironmentWebhookSigningKeyRotateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getVXReferenceIposRoute, getVXReferenceTickersIdEventsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getVXReferenceIposRoute, getVXReferenceTickersIdEventsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVXReferenceIposRouteHandler: RouteHandler<typeof getVXReferenceIposRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const vXHandler = app
-  .openapi(getVXReferenceIposRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVXReferenceTickersIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVXReferenceTickersIdEventsRouteHandler: RouteHandler<
+  typeof getVXReferenceTickersIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

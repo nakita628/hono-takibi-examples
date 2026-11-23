@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ato.gov.au/0.0.6/openapi.yaml',
   output: './src/ato-gov-au/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ato-gov-au/types.ts' },
   client: { output: './src/ato-gov-au/client.ts', baseUrl: '/' },
   rpc: { output: './src/ato-gov-au/rpc.ts', parseResponse: true },

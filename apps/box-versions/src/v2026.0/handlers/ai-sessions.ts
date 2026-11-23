@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteAiSessionsAiSessionIdRoute, getAiSessionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteAiSessionsAiSessionIdRoute, getAiSessionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAiSessionsRouteHandler: RouteHandler<typeof getAiSessionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aiSessionsHandler = app
-  .openapi(getAiSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiSessionsAiSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAiSessionsAiSessionIdRouteHandler: RouteHandler<
+  typeof deleteAiSessionsAiSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

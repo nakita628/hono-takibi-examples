@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerUpdatePipelineRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerUpdatePipelineRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerUpdatePipelineHandler = app.openapi(
-  postXAmzTargetSageMakerUpdatePipelineRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerUpdatePipelineRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerUpdatePipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -2120,7 +2120,7 @@ export const getApiFileSharePhpRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'File stream or password prompt', content: {} },
+    200: { description: 'File stream or password prompt' },
     400: { description: 'Missing/invalid token' },
     403: { description: 'Forbidden or expired' },
     404: { description: 'Not found' },
@@ -3258,7 +3258,7 @@ export const getApiFolderShareFolderPhpRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'HTML page (password form or folder listing)', content: {} },
+    200: { description: 'HTML page (password form or folder listing)' },
     400: { description: 'Missing/invalid token' },
     403: { description: 'Forbidden or wrong password' },
   },
@@ -3585,7 +3585,7 @@ export const getApiProAuditExportCsvPhpRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'CSV stream', content: {} },
+    200: { description: 'CSV stream' },
     400: { description: 'Invalid input' },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden or Pro required' },
@@ -4482,7 +4482,7 @@ export const getApiProfileTotpSetupPhpRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'QR code image for TOTP setup', content: {} },
+    200: { description: 'QR code image for TOTP setup' },
     400: { description: 'Missing username' },
     403: { description: 'Not authorized or invalid CSRF token' },
     500: { description: 'Server error' },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServiceInitiateLayerUploadHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

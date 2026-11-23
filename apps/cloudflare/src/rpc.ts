@@ -20431,13 +20431,13 @@ export async function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEve
 
 export async function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEventTEventN(
   args: InferRequestType<
-    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.accounts[':account_id'].magic.connectors[':connector_id'].telemetry.events[
-      ':event_t.:event_n'
+      ':event_t.{event_n}'
     ].$get(args, options),
   )
 }

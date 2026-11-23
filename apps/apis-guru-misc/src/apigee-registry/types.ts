@@ -142,14 +142,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api': {
-      $delete: {
-        input: { param: { project: string; location: string; api: string } } & {
-          query: { force?: boolean | undefined }
-        }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { project: string; location: string; api: string } } & {
+              query: { force?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { project: string; location: string; api: string } } & {
+              query: { force?: boolean | undefined }
+            }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $get:
         | {
             input: { param: { project: string; location: string; api: string } }
@@ -228,14 +237,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api/deployments/:deployment': {
-      $delete: {
-        input: { param: { project: string; location: string; api: string; deployment: string } } & {
-          query: { force?: boolean | undefined }
-        }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: { project: string; location: string; api: string; deployment: string }
+            } & { query: { force?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: { project: string; location: string; api: string; deployment: string }
+            } & { query: { force?: boolean | undefined } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $get:
         | {
             input: { param: { project: string; location: string; api: string; deployment: string } }
@@ -394,14 +412,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api/versions/:version': {
-      $delete: {
-        input: { param: { project: string; location: string; api: string; version: string } } & {
-          query: { force?: boolean | undefined }
-        }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: { project: string; location: string; api: string; version: string }
+            } & { query: { force?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: { project: string; location: string; api: string; version: string }
+            } & { query: { force?: boolean | undefined } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $get:
         | {
             input: { param: { project: string; location: string; api: string; version: string } }
@@ -488,14 +515,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api/versions/:version/specs/:spec': {
-      $delete: {
-        input: {
-          param: { project: string; location: string; api: string; version: string; spec: string }
-        } & { query: { force?: boolean | undefined } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: {
+                project: string
+                location: string
+                api: string
+                version: string
+                spec: string
+              }
+            } & { query: { force?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: {
+                project: string
+                location: string
+                api: string
+                version: string
+                spec: string
+              }
+            } & { query: { force?: boolean | undefined } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $get:
         | {
             input: {
@@ -593,14 +641,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api/versions/:version/specs/:spec:getContents': {
-      $get: {
-        input: {
-          param: { project: string; location: string; api: string; version: string; spec: string }
-        }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: {
+              param: {
+                project: string
+                location: string
+                api: string
+                version: string
+                spec: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              param: {
+                project: string
+                location: string
+                api: string
+                version: string
+                spec: string
+              }
+            }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/v1/projects/:project/locations/:location/apis/:api/versions/:version/specs/:spec:listRevisions': {
@@ -745,12 +814,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/artifacts/:artifact': {
-      $delete: {
-        input: { param: { project: string; location: string; artifact: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { project: string; location: string; artifact: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { project: string; location: string; artifact: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $get:
         | {
             input: { param: { project: string; location: string; artifact: string } }
@@ -784,12 +860,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/projects/:project/locations/:location/artifacts/:artifact:getContents': {
-      $get: {
-        input: { param: { project: string; location: string; artifact: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { project: string; location: string; artifact: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { project: string; location: string; artifact: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   },
   '/'

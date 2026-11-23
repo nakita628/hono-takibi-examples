@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Public%20App%20Feature%20Flags%20V3/Rollouts/195919/2026-09/publicAppFeatureFlagsV3.json',
   output: './src/crm-public-app-feature-flags-v3/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-public-app-feature-flags-v3/types.ts' },
   client: { output: './src/crm-public-app-feature-flags-v3/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-public-app-feature-flags-v3/rpc.ts', parseResponse: true },

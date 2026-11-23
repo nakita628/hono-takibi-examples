@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAowDateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAowDateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const aowDateHandler = app.openapi(getAowDateRoute, (c) => {
+export const getAowDateRouteHandler: RouteHandler<typeof getAowDateRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

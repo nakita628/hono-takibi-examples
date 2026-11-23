@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/polly/2016-06-10/openapi.yaml',
   output: './src/polly/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/polly/types.ts' },
   client: { output: './src/polly/client.ts', baseUrl: '/' },
   rpc: { output: './src/polly/rpc.ts', parseResponse: true },

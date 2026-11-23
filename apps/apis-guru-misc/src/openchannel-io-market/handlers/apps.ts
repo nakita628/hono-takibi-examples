@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppsAppIdRoute,
   deleteAppsAppIdVersionsVersionRoute,
   getAppsAppIdRoute,
@@ -16,48 +16,76 @@ import {
   postAppsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppsRouteHandler: RouteHandler<typeof getAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appsHandler = app
-  .openapi(getAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsBySafeNameSafeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsTextSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsAppIdVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsAppIdVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsAppIdVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppsAppIdVersionsVersionStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAppsRouteHandler: RouteHandler<typeof postAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsBySafeNameSafeNameRouteHandler: RouteHandler<
+  typeof getAppsBySafeNameSafeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsTextSearchRouteHandler: RouteHandler<typeof getAppsTextSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsVersionsRouteHandler: RouteHandler<typeof getAppsVersionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppIdRouteHandler: RouteHandler<typeof deleteAppsAppIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdRouteHandler: RouteHandler<typeof getAppsAppIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdLiveRouteHandler: RouteHandler<typeof postAppsAppIdLiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdPublishRouteHandler: RouteHandler<
+  typeof postAppsAppIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppsAppIdVersionsVersionRouteHandler: RouteHandler<
+  typeof deleteAppsAppIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsAppIdVersionsVersionRouteHandler: RouteHandler<
+  typeof getAppsAppIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsAppIdVersionsVersionRouteHandler: RouteHandler<
+  typeof patchAppsAppIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdVersionsVersionRouteHandler: RouteHandler<
+  typeof postAppsAppIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppsAppIdVersionsVersionStatusRouteHandler: RouteHandler<
+  typeof postAppsAppIdVersionsVersionStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

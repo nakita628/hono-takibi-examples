@@ -276,12 +276,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/objects/2026-09/:objectType/batch/archive': {
-      $post: {
-        input: { param: { objectType: string } } & { json: BatchInputSimplePublicObjectId }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { objectType: string } } & { json: BatchInputSimplePublicObjectId }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string } } & { json: BatchInputSimplePublicObjectId }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/objects/2026-09/:objectType/batch/create': {
@@ -426,12 +433,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectId: string; objectType: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectId: string; objectType: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectId: string; objectType: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectId: string; objectType: string } } & {
@@ -479,14 +493,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: {
-          param: { objectId: string; objectType: string; toObjectId: string; toObjectType: string }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCacheNonceRoute, postCacheRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCacheNonceRoute, postCacheRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCacheRouteHandler: RouteHandler<typeof postCacheRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cacheHandler = app
-  .openapi(postCacheRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCacheNonceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCacheNonceRouteHandler: RouteHandler<typeof getCacheNonceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

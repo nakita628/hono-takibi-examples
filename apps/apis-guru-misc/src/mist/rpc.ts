@@ -4482,12 +4482,12 @@ export async function deleteApiV1SitesSiteIdDevicesDeviceIdHa(
 
 export async function postApiV1SitesSiteIdDevicesDeviceIdImageImageNumber(
   args: InferRequestType<
-    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$post(
+    client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$post(
       args,
       options,
     ),
@@ -4496,12 +4496,12 @@ export async function postApiV1SitesSiteIdDevicesDeviceIdImageImageNumber(
 
 export async function deleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber(
   args: InferRequestType<
-    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$delete(
+    client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$delete(
       args,
       options,
     ),

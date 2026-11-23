@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler } from './handlers'
+import { postV1FlightsComputeFlightEmissionsRoute } from './routes'
+import { postV1FlightsComputeFlightEmissionsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler)
+export const api = app.openapi(
+  postV1FlightsComputeFlightEmissionsRoute,
+  postV1FlightsComputeFlightEmissionsRouteHandler,
+)
 
 export default app

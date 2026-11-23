@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMacieServiceListMemberAccountsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMacieServiceListMemberAccountsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMacieServiceListMemberAccountsHandler = app.openapi(
-  postXAmzTargetMacieServiceListMemberAccountsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMacieServiceListMemberAccountsRouteHandler: RouteHandler<
+  typeof postXAmzTargetMacieServiceListMemberAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

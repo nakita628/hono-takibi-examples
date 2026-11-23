@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAliasNameRoute,
   getAliasRoute,
   headAliasNameRoute,
@@ -10,30 +10,38 @@ import {
   putAliasRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAliasRouteHandler: RouteHandler<typeof getAliasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aliasHandler = app
-  .openapi(getAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAliasRolloverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAliasRolloverNewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAliasRouteHandler: RouteHandler<typeof putAliasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAliasNameRouteHandler: RouteHandler<typeof getAliasNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headAliasNameRouteHandler: RouteHandler<typeof headAliasNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAliasNameRouteHandler: RouteHandler<typeof postAliasNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAliasNameRouteHandler: RouteHandler<typeof putAliasNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAliasRolloverRouteHandler: RouteHandler<typeof postAliasRolloverRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAliasRolloverNewIndexRouteHandler: RouteHandler<
+  typeof postAliasRolloverNewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

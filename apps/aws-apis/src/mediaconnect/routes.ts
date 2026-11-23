@@ -337,8 +337,8 @@ const OutputSchema = z
 const ListOfOutputSchema = z.array(OutputSchema).openapi('ListOfOutput')
 
 type AddFlowOutputsResponseType = {
-  FlowArn?: z.infer<typeof StringSchema> & unknown
-  Outputs?: z.infer<typeof ListOfOutputSchema> & unknown
+  FlowArn?: z.infer<typeof StringSchema>
+  Outputs?: z.infer<typeof ListOfOutputSchema>
 }
 
 const InputConfigurationSchema = z
@@ -488,8 +488,8 @@ const SourceSchema = z
 const ListOfSourceSchema = z.array(SourceSchema).openapi('ListOfSource')
 
 type AddFlowSourcesResponseType = {
-  FlowArn?: z.infer<typeof StringSchema> & unknown
-  Sources?: z.infer<typeof ListOfSourceSchema> & unknown
+  FlowArn?: z.infer<typeof StringSchema>
+  Sources?: z.infer<typeof ListOfSourceSchema>
 }
 
 const EntitlementStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('EntitlementStatus')
@@ -777,20 +777,20 @@ const MaintenanceSchema = z
   .openapi('Maintenance')
 
 type FlowType = {
-  AvailabilityZone: z.infer<typeof StringSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  EgressIp?: z.infer<typeof StringSchema> & unknown
-  Entitlements: z.infer<typeof ListOfEntitlementSchema> & unknown
-  FlowArn: z.infer<typeof StringSchema> & unknown
-  MediaStreams?: z.infer<typeof ListOfMediaStreamSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Outputs: z.infer<typeof ListOfOutputSchema> & unknown
-  Source: z.infer<typeof SourceSchema> & unknown
-  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema> & unknown
-  Sources?: z.infer<typeof ListOfSourceSchema> & unknown
-  Status: z.infer<typeof StatusSchema> & unknown
-  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceSchema> & unknown
+  AvailabilityZone: z.infer<typeof StringSchema>
+  Description?: z.infer<typeof StringSchema>
+  EgressIp?: z.infer<typeof StringSchema>
+  Entitlements: z.infer<typeof ListOfEntitlementSchema>
+  FlowArn: z.infer<typeof StringSchema>
+  MediaStreams?: z.infer<typeof ListOfMediaStreamSchema>
+  Name: z.infer<typeof StringSchema>
+  Outputs: z.infer<typeof ListOfOutputSchema>
+  Source: z.infer<typeof SourceSchema>
+  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema>
+  Sources?: z.infer<typeof ListOfSourceSchema>
+  Status: z.infer<typeof StatusSchema>
+  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceSchema>
+  Maintenance?: z.infer<typeof MaintenanceSchema>
 }
 
 const FlowSchema: z.ZodType<FlowType> = z
@@ -856,7 +856,7 @@ const FlowSchema: z.ZodType<FlowType> = z
   })
   .openapi('Flow')
 
-type CreateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> & unknown }
+type CreateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> }
 
 const MessagesSchema = z
   .object({
@@ -869,11 +869,11 @@ const MessagesSchema = z
   .openapi('Messages')
 
 type DescribeFlowResponseType = {
-  Flow?: z.infer<typeof FlowSchema> & unknown
-  Messages?: z.infer<typeof MessagesSchema> & unknown
+  Flow?: z.infer<typeof FlowSchema>
+  Messages?: z.infer<typeof MessagesSchema>
 }
 
-type UpdateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> & unknown }
+type UpdateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> }
 
 const InterfaceRequestSchema = z
   .object({
@@ -1049,7 +1049,7 @@ const ListOfAddOutputRequestSchema = z
   .array(AddOutputRequestSchema)
   .openapi('ListOfAddOutputRequest')
 
-type AddFlowOutputsRequestType = { Outputs: z.infer<typeof ListOfAddOutputRequestSchema> & unknown }
+type AddFlowOutputsRequestType = { Outputs: z.infer<typeof ListOfAddOutputRequestSchema> }
 
 const InputConfigurationRequestSchema = z
   .object({
@@ -1235,7 +1235,7 @@ const ListOfSetSourceRequestSchema = z
   .array(SetSourceRequestSchema)
   .openapi('ListOfSetSourceRequest')
 
-type AddFlowSourcesRequestType = { Sources: z.infer<typeof ListOfSetSourceRequestSchema> & unknown }
+type AddFlowSourcesRequestType = { Sources: z.infer<typeof ListOfSetSourceRequestSchema> }
 
 const GrantEntitlementRequestSchema = z
   .object({
@@ -1430,16 +1430,16 @@ const AddMaintenanceSchema = z
   .openapi('AddMaintenance')
 
 type CreateFlowRequestType = {
-  AvailabilityZone?: z.infer<typeof StringSchema> & unknown
-  Entitlements?: z.infer<typeof ListOfGrantEntitlementRequestSchema> & unknown
-  MediaStreams?: z.infer<typeof ListOfAddMediaStreamRequestSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  Outputs?: z.infer<typeof ListOfAddOutputRequestSchema> & unknown
-  Source?: z.infer<typeof SetSourceRequestSchema> & unknown
-  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema> & unknown
-  Sources?: z.infer<typeof ListOfSetSourceRequestSchema> & unknown
-  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceRequestSchema> & unknown
-  Maintenance?: z.infer<typeof AddMaintenanceSchema> & unknown
+  AvailabilityZone?: z.infer<typeof StringSchema>
+  Entitlements?: z.infer<typeof ListOfGrantEntitlementRequestSchema>
+  MediaStreams?: z.infer<typeof ListOfAddMediaStreamRequestSchema>
+  Name: z.infer<typeof StringSchema>
+  Outputs?: z.infer<typeof ListOfAddOutputRequestSchema>
+  Source?: z.infer<typeof SetSourceRequestSchema>
+  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema>
+  Sources?: z.infer<typeof ListOfSetSourceRequestSchema>
+  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceRequestSchema>
+  Maintenance?: z.infer<typeof AddMaintenanceSchema>
 }
 
 const BridgeFlowOutputSchema = z

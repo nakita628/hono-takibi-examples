@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLicensetemplateLicenseTemplateNumberRoute,
   getLicensetemplateLicenseTemplateNumberRoute,
   getLicensetemplateRoute,
@@ -7,21 +7,32 @@ import {
   postLicensetemplateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLicensetemplateRouteHandler: RouteHandler<typeof getLicensetemplateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const licensetemplateHandler = app
-  .openapi(getLicensetemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLicensetemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLicensetemplateLicenseTemplateNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLicensetemplateLicenseTemplateNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLicensetemplateLicenseTemplateNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLicensetemplateRouteHandler: RouteHandler<
+  typeof postLicensetemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLicensetemplateLicenseTemplateNumberRouteHandler: RouteHandler<
+  typeof deleteLicensetemplateLicenseTemplateNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLicensetemplateLicenseTemplateNumberRouteHandler: RouteHandler<
+  typeof getLicensetemplateLicenseTemplateNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLicensetemplateLicenseTemplateNumberRouteHandler: RouteHandler<
+  typeof postLicensetemplateLicenseTemplateNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

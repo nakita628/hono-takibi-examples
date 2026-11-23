@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getcountrystandard/1.0.0/openapi.yaml',
   output: './src/getcountrystandard/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getcountrystandard/types.ts' },
   client: { output: './src/getcountrystandard/client.ts', baseUrl: '/' },
   rpc: { output: './src/getcountrystandard/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53ResolverGetResolverDnssecConfigHandler = app.openapi(
-  postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53ResolverGetResolverDnssecConfigRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

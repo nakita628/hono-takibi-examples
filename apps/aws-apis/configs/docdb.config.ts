@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/docdb/2014-10-31/openapi.yaml',
   output: './src/docdb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/docdb/types.ts' },
   client: { output: './src/docdb/client.ts', baseUrl: '/' },
   rpc: { output: './src/docdb/rpc.ts', parseResponse: true },

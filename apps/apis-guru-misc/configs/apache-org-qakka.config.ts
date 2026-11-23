@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apache.org/qakka/v1/openapi.yaml',
   output: './src/apache-org-qakka/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apache-org-qakka/types.ts' },
   client: { output: './src/apache-org-qakka/client.ts', baseUrl: '/' },
   rpc: { output: './src/apache-org-qakka/rpc.ts', parseResponse: true },

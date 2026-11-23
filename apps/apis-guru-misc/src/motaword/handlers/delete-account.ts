@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDeleteAccountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDeleteAccountRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteAccountHandler = app.openapi(deleteDeleteAccountRoute, (c) => {
+export const deleteDeleteAccountRouteHandler: RouteHandler<
+  typeof deleteDeleteAccountRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

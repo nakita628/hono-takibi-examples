@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRoute,
   deleteGlobalNetworksGlobalNetworkIdConnectPeerAssociationsConnectPeerIdRoute,
   deleteGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsCustomerGatewayArnRoute,
@@ -45,144 +45,260 @@ import {
   postGlobalNetworksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const globalNetworksHandler = app
-  .openapi(postGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdLinkAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdLinkAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGlobalNetworksGlobalNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGlobalNetworksGlobalNetworkIdLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGlobalNetworksGlobalNetworkIdSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsTransitGatewayArnRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteGlobalNetworksGlobalNetworkIdConnectPeerAssociationsConnectPeerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsCustomerGatewayArnRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteGlobalNetworksGlobalNetworkIdLinkAssociationsDeviceIdLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsTransitGatewayConnectPeerArnRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGlobalNetworksGlobalNetworkIdNetworkResourceCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdNetworkResourceRelationshipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdNetworkResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdNetworkRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdNetworkTelemetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdRouteAnalysesRouteAnalysisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGlobalNetworksGlobalNetworkIdRouteAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGlobalNetworksGlobalNetworkIdNetworkResourcesResourceArnMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdConnectPeerAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdLinkAssociationsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdLinkAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdLinkAssociationsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdLinkAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdConnectionsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdConnectionsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdDevicesRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdDevicesRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksRouteHandler: RouteHandler<typeof postGlobalNetworksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksRouteHandler: RouteHandler<typeof getGlobalNetworksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdLinksRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdLinksRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdSitesRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdSitesRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdLinksLinkIdRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdSitesSiteIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdSitesSiteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdSitesSiteIdRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdSitesSiteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsTransitGatewayArnRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsTransitGatewayArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdConnectPeerAssociationsConnectPeerIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdConnectPeerAssociationsConnectPeerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsCustomerGatewayArnRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdCustomerGatewayAssociationsCustomerGatewayArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdLinkAssociationsDeviceIdLinkIdRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdLinkAssociationsDeviceIdLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsTransitGatewayConnectPeerArnRouteHandler: RouteHandler<
+  typeof deleteGlobalNetworksGlobalNetworkIdTransitGatewayConnectPeerAssociationsTransitGatewayConnectPeerArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdNetworkResourceCountRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdNetworkResourceCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdNetworkResourceRelationshipsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdNetworkResourceRelationshipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdNetworkResourcesRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdNetworkResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdNetworkRoutesRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdNetworkRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdNetworkTelemetryRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdNetworkTelemetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdRouteAnalysesRouteAnalysisIdRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdRouteAnalysesRouteAnalysisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRouteHandler: RouteHandler<
+  typeof getGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdTransitGatewayRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGlobalNetworksGlobalNetworkIdRouteAnalysesRouteHandler: RouteHandler<
+  typeof postGlobalNetworksGlobalNetworkIdRouteAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGlobalNetworksGlobalNetworkIdNetworkResourcesResourceArnMetadataRouteHandler: RouteHandler<
+  typeof patchGlobalNetworksGlobalNetworkIdNetworkResourcesResourceArnMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -20162,10 +20162,10 @@ export const postAdminRealmsRealmUsersRoute = createRoute({
   },
   responses: {
     201: { description: 'Created' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
-    409: { description: 'Conflict', content: {} },
-    500: { description: 'Internal Server Error', content: {} },
+    409: { description: 'Conflict' },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -20579,10 +20579,10 @@ export const putAdminRealmsRealmUsersUserIdRoute = createRoute({
   },
   responses: {
     204: { description: 'No Content' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
-    409: { description: 'Conflict', content: {} },
-    500: { description: 'Internal Server Error', content: {} },
+    409: { description: 'Conflict' },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -20613,7 +20613,7 @@ export const deleteAdminRealmsRealmUsersUserIdRoute = createRoute({
   },
   responses: {
     204: { description: 'No Content' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
   },
 })
@@ -21040,10 +21040,10 @@ export const putAdminRealmsRealmUsersUserIdExecuteActionsEmailRoute = createRout
   },
   responses: {
     204: { description: 'No Content' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -21121,7 +21121,7 @@ export const postAdminRealmsRealmUsersUserIdFederatedIdentityProviderRoute = cre
   responses: {
     204: { description: 'No Content' },
     403: { description: 'Forbidden' },
-    409: { description: 'Conflict', content: {} },
+    409: { description: 'Conflict' },
   },
 })
 
@@ -21387,7 +21387,7 @@ export const deleteAdminRealmsRealmUsersUserIdGroupsGroupIdRoute = createRoute({
     400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -21528,7 +21528,7 @@ export const putAdminRealmsRealmUsersUserIdResetPasswordRoute = createRoute({
     204: { description: 'No Content' },
     400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 
@@ -21587,10 +21587,10 @@ export const putAdminRealmsRealmUsersUserIdResetPasswordEmailRoute = createRoute
   },
   responses: {
     204: { description: 'No Content' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
   deprecated: true,
 })
@@ -22120,9 +22120,9 @@ export const putAdminRealmsRealmUsersUserIdSendVerifyEmailRoute = createRoute({
   },
   responses: {
     204: { description: 'No Content' },
-    400: { description: 'Bad Request', content: {} },
+    400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
-    500: { description: 'Internal Server Error', content: {} },
+    500: { description: 'Internal Server Error' },
   },
 })
 

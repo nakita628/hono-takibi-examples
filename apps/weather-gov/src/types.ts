@@ -1611,7 +1611,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ProblemDetail; outputFormat: 'json'; status: 200 }
     }
   } & {
-    '/gridpoints/:wfo/:x,:y': {
+    '/gridpoints/:wfo/:x,{y}': {
       $get:
         | {
             input: { param: { wfo: NWSForecastOfficeId; x: number; y: number } }
@@ -1633,7 +1633,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/gridpoints/:wfo/:x,:y/forecast': {
+    '/gridpoints/:wfo/:x,{y}/forecast': {
       $get:
         | {
             input: { param: { wfo: NWSForecastOfficeId; x: number; y: number } } & {
@@ -1693,7 +1693,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/gridpoints/:wfo/:x,:y/forecast/hourly': {
+    '/gridpoints/:wfo/:x,{y}/forecast/hourly': {
       $get:
         | {
             input: { param: { wfo: NWSForecastOfficeId; x: number; y: number } } & {
@@ -1753,7 +1753,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/gridpoints/:wfo/:x,:y/stations': {
+    '/gridpoints/:wfo/:x,{y}/stations': {
       $get:
         | {
             input: { param: { wfo: NWSForecastOfficeId; x: number; y: number } } & {
@@ -2209,7 +2209,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/points/:latitude,:longitude': {
+    '/points/:latitude,{longitude}': {
       $get:
         | {
             input: { param: { latitude: number; longitude: number } }
@@ -2231,7 +2231,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/points/:latitude,:longitude/radio': {
+    '/points/:latitude,{longitude}/radio': {
       $get:
         | {
             input: { param: { latitude: number; longitude: number } }
@@ -2247,7 +2247,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/points/:latitude,:longitude/stations': {
+    '/points/:latitude,{longitude}/stations': {
       $get:
         | {
             input: { param: { latitude: number; longitude: number } }

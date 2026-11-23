@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getJsonEmailYOURAPIKEYHEREUSEREMAILHERERoute,
   getJsonPhoneYOURAPIKEYHEREUSERPHONEHERERoute,
   getJsonUrlYOURAPIKEYHEREURLHERERoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getJsonEmailYOURAPIKEYHEREUSEREMAILHERERouteHandler: RouteHandler<
+  typeof getJsonEmailYOURAPIKEYHEREUSEREMAILHERERoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const jsonHandler = app
-  .openapi(getJsonEmailYOURAPIKEYHEREUSEREMAILHERERoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJsonPhoneYOURAPIKEYHEREUSERPHONEHERERoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJsonUrlYOURAPIKEYHEREURLHERERoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getJsonPhoneYOURAPIKEYHEREUSERPHONEHERERouteHandler: RouteHandler<
+  typeof getJsonPhoneYOURAPIKEYHEREUSERPHONEHERERoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJsonUrlYOURAPIKEYHEREURLHERERouteHandler: RouteHandler<
+  typeof getJsonUrlYOURAPIKEYHEREURLHERERoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

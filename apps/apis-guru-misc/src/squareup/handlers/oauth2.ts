@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postOauth2ClientsClientIdAccessTokenRenewRoute,
   postOauth2RevokeRoute,
   postOauth2TokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOauth2ClientsClientIdAccessTokenRenewRouteHandler: RouteHandler<
+  typeof postOauth2ClientsClientIdAccessTokenRenewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(postOauth2ClientsClientIdAccessTokenRenewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2RevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauth2RevokeRouteHandler: RouteHandler<typeof postOauth2RevokeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2TokenRouteHandler: RouteHandler<typeof postOauth2TokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSksClusterVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSksClusterVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sksClusterVersionHandler = app.openapi(getSksClusterVersionRoute, (c) => {
+export const getSksClusterVersionRouteHandler: RouteHandler<
+  typeof getSksClusterVersionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

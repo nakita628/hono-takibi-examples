@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getResourceMigrationsRetrieveLatestRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getResourceMigrationsRetrieveLatestRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const resourceMigrationsHandler = app.openapi(
-  getResourceMigrationsRetrieveLatestRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getResourceMigrationsRetrieveLatestRouteHandler: RouteHandler<
+  typeof getResourceMigrationsRetrieveLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

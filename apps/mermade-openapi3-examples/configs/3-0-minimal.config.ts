@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/minimal.yaml',
   output: './src/3-0-minimal/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-minimal/types.ts' },
   client: { output: './src/3-0-minimal/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-minimal/rpc.ts', parseResponse: true },

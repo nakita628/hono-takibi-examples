@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/sms-voice/2018-09-05/openapi.yaml',
   output: './src/sms-voice/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sms-voice/types.ts' },
   client: { output: './src/sms-voice/client.ts', baseUrl: '/' },
   rpc: { output: './src/sms-voice/rpc.ts', parseResponse: true },

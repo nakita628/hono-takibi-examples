@@ -3752,7 +3752,7 @@ export const deleteConversationsConversations202609ThreadsThreadIdRoute = create
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['conversations.write'] }],
 })
 
@@ -3903,7 +3903,7 @@ export const deleteConversationsConversations202609ThreadsThreadIdAssigneeRoute 
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['conversations.write'] }],
 })
 

@@ -28,8 +28,8 @@ const IdentifierSchema = z
   .openapi('Identifier')
 
 type ResourceType = {
-  URI: z.infer<typeof IdentifierSchema> & unknown
-  AccountId?: z.infer<typeof AWSAccountIdSchema> & unknown
+  URI: z.infer<typeof IdentifierSchema>
+  AccountId?: z.infer<typeof AWSAccountIdSchema>
 }
 
 const ResourceTypeSchema = z
@@ -1066,8 +1066,8 @@ const PossibleRemediationActionListSchema = z
   .openapi('PossibleRemediationActionList')
 
 type PossibleRemediationActionsType = {
-  Description?: z.infer<typeof LengthBoundedStringSchema> & unknown
-  Actions?: z.infer<typeof PossibleRemediationActionListSchema> & unknown
+  Description?: z.infer<typeof LengthBoundedStringSchema>
+  Actions?: z.infer<typeof PossibleRemediationActionListSchema>
 }
 
 const PossibleRemediationActionsSchema: z.ZodType<PossibleRemediationActionsType> = z
@@ -1254,76 +1254,59 @@ const FirewallSubnetMissingVPCEndpointViolationSchema = z
   .openapi('FirewallSubnetMissingVPCEndpointViolation')
 
 type ResourceViolationType = {
-  AwsVPCSecurityGroupViolation?: z.infer<typeof AwsVPCSecurityGroupViolationSchema> & unknown
-  AwsEc2NetworkInterfaceViolation?: z.infer<typeof AwsEc2NetworkInterfaceViolationSchema> & unknown
-  AwsEc2InstanceViolation?: z.infer<typeof AwsEc2InstanceViolationSchema> & unknown
+  AwsVPCSecurityGroupViolation?: z.infer<typeof AwsVPCSecurityGroupViolationSchema>
+  AwsEc2NetworkInterfaceViolation?: z.infer<typeof AwsEc2NetworkInterfaceViolationSchema>
+  AwsEc2InstanceViolation?: z.infer<typeof AwsEc2InstanceViolationSchema>
   NetworkFirewallMissingFirewallViolation?: z.infer<
     typeof NetworkFirewallMissingFirewallViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallMissingSubnetViolation?: z.infer<
     typeof NetworkFirewallMissingSubnetViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallMissingExpectedRTViolation?: z.infer<
     typeof NetworkFirewallMissingExpectedRTViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallPolicyModifiedViolation?: z.infer<
     typeof NetworkFirewallPolicyModifiedViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallInternetTrafficNotInspectedViolation?: z.infer<
     typeof NetworkFirewallInternetTrafficNotInspectedViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallInvalidRouteConfigurationViolation?: z.infer<
     typeof NetworkFirewallInvalidRouteConfigurationViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallBlackHoleRouteDetectedViolation?: z.infer<
     typeof NetworkFirewallBlackHoleRouteDetectedViolationSchema
   >
   NetworkFirewallUnexpectedFirewallRoutesViolation?: z.infer<
     typeof NetworkFirewallUnexpectedFirewallRoutesViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallUnexpectedGatewayRoutesViolation?: z.infer<
     typeof NetworkFirewallUnexpectedGatewayRoutesViolationSchema
-  > &
-    unknown
+  >
   NetworkFirewallMissingExpectedRoutesViolation?: z.infer<
     typeof NetworkFirewallMissingExpectedRoutesViolationSchema
-  > &
-    unknown
+  >
   DnsRuleGroupPriorityConflictViolation?: z.infer<
     typeof DnsRuleGroupPriorityConflictViolationSchema
-  > &
-    unknown
-  DnsDuplicateRuleGroupViolation?: z.infer<typeof DnsDuplicateRuleGroupViolationSchema> & unknown
-  DnsRuleGroupLimitExceededViolation?: z.infer<typeof DnsRuleGroupLimitExceededViolationSchema> &
-    unknown
-  PossibleRemediationActions?: z.infer<typeof PossibleRemediationActionsSchema> & unknown
-  FirewallSubnetIsOutOfScopeViolation?: z.infer<typeof FirewallSubnetIsOutOfScopeViolationSchema> &
-    unknown
-  RouteHasOutOfScopeEndpointViolation?: z.infer<typeof RouteHasOutOfScopeEndpointViolationSchema> &
-    unknown
+  >
+  DnsDuplicateRuleGroupViolation?: z.infer<typeof DnsDuplicateRuleGroupViolationSchema>
+  DnsRuleGroupLimitExceededViolation?: z.infer<typeof DnsRuleGroupLimitExceededViolationSchema>
+  PossibleRemediationActions?: z.infer<typeof PossibleRemediationActionsSchema>
+  FirewallSubnetIsOutOfScopeViolation?: z.infer<typeof FirewallSubnetIsOutOfScopeViolationSchema>
+  RouteHasOutOfScopeEndpointViolation?: z.infer<typeof RouteHasOutOfScopeEndpointViolationSchema>
   ThirdPartyFirewallMissingFirewallViolation?: z.infer<
     typeof ThirdPartyFirewallMissingFirewallViolationSchema
-  > &
-    unknown
+  >
   ThirdPartyFirewallMissingSubnetViolation?: z.infer<
     typeof ThirdPartyFirewallMissingSubnetViolationSchema
-  > &
-    unknown
+  >
   ThirdPartyFirewallMissingExpectedRouteTableViolation?: z.infer<
     typeof ThirdPartyFirewallMissingExpectedRouteTableViolationSchema
-  > &
-    unknown
+  >
   FirewallSubnetMissingVPCEndpointViolation?: z.infer<
     typeof FirewallSubnetMissingVPCEndpointViolationSchema
-  > &
-    unknown
+  >
 }
 
 const ResourceViolationSchema: z.ZodType<ResourceViolationType> = z
@@ -1470,13 +1453,13 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 type ViolationDetailType = {
-  PolicyId: z.infer<typeof PolicyIdSchema> & unknown
-  MemberAccount: z.infer<typeof AWSAccountIdSchema> & unknown
-  ResourceId: z.infer<typeof ResourceIdSchema> & unknown
-  ResourceType: z.infer<typeof ResourceTypeSchema> & unknown
-  ResourceViolations: z.infer<typeof ResourceViolationsSchema> & unknown
-  ResourceTags?: z.infer<typeof TagListSchema> & unknown
-  ResourceDescription?: z.infer<typeof LengthBoundedStringSchema> & unknown
+  PolicyId: z.infer<typeof PolicyIdSchema>
+  MemberAccount: z.infer<typeof AWSAccountIdSchema>
+  ResourceId: z.infer<typeof ResourceIdSchema>
+  ResourceType: z.infer<typeof ResourceTypeSchema>
+  ResourceViolations: z.infer<typeof ResourceViolationsSchema>
+  ResourceTags?: z.infer<typeof TagListSchema>
+  ResourceDescription?: z.infer<typeof LengthBoundedStringSchema>
 }
 
 const ViolationDetailSchema: z.ZodType<ViolationDetailType> = z
@@ -1511,9 +1494,7 @@ const ViolationDetailSchema: z.ZodType<ViolationDetailType> = z
   })
   .openapi('ViolationDetail')
 
-type GetViolationDetailsResponseType = {
-  ViolationDetail?: z.infer<typeof ViolationDetailSchema> & unknown
-}
+type GetViolationDetailsResponseType = { ViolationDetail?: z.infer<typeof ViolationDetailSchema> }
 
 const AssociateAdminAccountRequestSchema = z
   .object({

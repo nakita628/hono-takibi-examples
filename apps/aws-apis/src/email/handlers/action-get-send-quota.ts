@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionGetSendQuotaRoute, postActionGetSendQuotaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionGetSendQuotaRoute, postActionGetSendQuotaRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetSendQuotaRouteHandler: RouteHandler<
+  typeof getActionGetSendQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetSendQuotaHandler = app
-  .openapi(getActionGetSendQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetSendQuotaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetSendQuotaRouteHandler: RouteHandler<
+  typeof postActionGetSendQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postPaymentInitiationConsentCreateRoute,
   postPaymentInitiationConsentGetRoute,
   postPaymentInitiationConsentPaymentExecuteRoute,
@@ -14,42 +14,74 @@ import {
   postPaymentInitiationRecipientListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPaymentInitiationConsentCreateRouteHandler: RouteHandler<
+  typeof postPaymentInitiationConsentCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentInitiationHandler = app
-  .openapi(postPaymentInitiationConsentCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationConsentGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationConsentPaymentExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationConsentRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationPaymentCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationPaymentGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationPaymentListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationPaymentReverseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationPaymentTokenCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationRecipientCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationRecipientGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentInitiationRecipientListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentInitiationConsentGetRouteHandler: RouteHandler<
+  typeof postPaymentInitiationConsentGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationConsentPaymentExecuteRouteHandler: RouteHandler<
+  typeof postPaymentInitiationConsentPaymentExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationConsentRevokeRouteHandler: RouteHandler<
+  typeof postPaymentInitiationConsentRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationPaymentCreateRouteHandler: RouteHandler<
+  typeof postPaymentInitiationPaymentCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationPaymentGetRouteHandler: RouteHandler<
+  typeof postPaymentInitiationPaymentGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationPaymentListRouteHandler: RouteHandler<
+  typeof postPaymentInitiationPaymentListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationPaymentReverseRouteHandler: RouteHandler<
+  typeof postPaymentInitiationPaymentReverseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationPaymentTokenCreateRouteHandler: RouteHandler<
+  typeof postPaymentInitiationPaymentTokenCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationRecipientCreateRouteHandler: RouteHandler<
+  typeof postPaymentInitiationRecipientCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationRecipientGetRouteHandler: RouteHandler<
+  typeof postPaymentInitiationRecipientGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentInitiationRecipientListRouteHandler: RouteHandler<
+  typeof postPaymentInitiationRecipientListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJobsCompletedCountByTagRoute, getJobsDbClockRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJobsCompletedCountByTagRoute, getJobsDbClockRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getJobsDbClockRouteHandler: RouteHandler<typeof getJobsDbClockRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const jobsHandler = app
-  .openapi(getJobsDbClockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobsCompletedCountByTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getJobsCompletedCountByTagRouteHandler: RouteHandler<
+  typeof getJobsCompletedCountByTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

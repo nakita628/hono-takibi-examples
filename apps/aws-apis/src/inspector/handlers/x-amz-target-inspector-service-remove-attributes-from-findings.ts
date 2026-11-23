@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetInspectorServiceRemoveAttributesFromFindingsHandler = app.openapi(
-  postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRouteHandler: RouteHandler<
+  typeof postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

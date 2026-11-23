@@ -781,7 +781,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/oauth/rights': { $get: { input: {}; output: Rights; outputFormat: 'json'; status: 200 } }
   } & {
-    '/openapi.:type': {
+    '/openapi.{type}': {
       $get: { input: { param: { type: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
@@ -1712,7 +1712,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/products/instances/:type-:version': {
+    '/products/instances/:type-{version}': {
       $get: {
         input: { param: { type: string; version: string } } & {
           query: { for?: string | undefined; app?: string | undefined }

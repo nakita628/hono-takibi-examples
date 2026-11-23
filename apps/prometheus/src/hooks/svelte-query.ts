@@ -128,7 +128,7 @@ export function getQueryQueryOptions<
   })
 }
 
-export function createQuery<
+export function createGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
